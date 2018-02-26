@@ -2,255 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="110d75cb-f891-472f-ad38-eb28a4256d6c" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/django_webpack_loader-0.6.0.dist-info/DESCRIPTION.rst" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/django_webpack_loader-0.6.0.dist-info/INSTALLER" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/django_webpack_loader-0.6.0.dist-info/METADATA" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/django_webpack_loader-0.6.0.dist-info/RECORD" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/django_webpack_loader-0.6.0.dist-info/WHEEL" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/django_webpack_loader-0.6.0.dist-info/metadata.json" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/django_webpack_loader-0.6.0.dist-info/top_level.txt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/djangorestframework-3.7.7.dist-info/DESCRIPTION.rst" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/djangorestframework-3.7.7.dist-info/INSTALLER" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/djangorestframework-3.7.7.dist-info/LICENSE.txt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/djangorestframework-3.7.7.dist-info/METADATA" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/djangorestframework-3.7.7.dist-info/RECORD" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/djangorestframework-3.7.7.dist-info/WHEEL" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/djangorestframework-3.7.7.dist-info/metadata.json" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/djangorestframework-3.7.7.dist-info/top_level.txt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/apps.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authentication.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/admin.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/apps.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/management/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/management/commands/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/management/commands/drf_create_token.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/migrations/0001_initial.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/migrations/0002_auto_20160226_1747.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/migrations/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/models.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/serializers.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/authtoken/views.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/checks.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/compat.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/decorators.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/documentation.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/exceptions.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/fields.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/filters.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/generics.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/ach/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/ar/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/be/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/ca/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/ca_ES/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/cs/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/da/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/de/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/el/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/el_GR/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/en/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/en_AU/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/en_CA/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/en_US/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/es/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/et/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/fa/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/fa_IR/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/fi/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/fr/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/fr_CA/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/gl/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/gl_ES/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/he_IL/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/hu/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/id/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/it/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/ja/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/ko_KR/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/lv/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/mk/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/nb/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/nl/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/nn/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/no/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/pl/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/pt/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/pt_BR/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/pt_PT/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/ro/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/ru/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/sk/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/sl/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/sv/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/tr/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/tr_TR/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/uk/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/vi/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/zh_CN/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/zh_Hans/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/zh_Hant/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/locale/zh_TW/LC_MESSAGES/django.mo" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/metadata.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/mixins.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/models.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/negotiation.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/pagination.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/parsers.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/permissions.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/relations.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/renderers.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/request.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/response.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/reverse.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/routers.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/schemas/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/schemas/generators.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/schemas/inspectors.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/schemas/utils.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/schemas/views.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/serializers.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/settings.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/css/bootstrap-tweaks.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/css/bootstrap.min.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/css/default.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/css/prettify.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/css/base.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/css/bootstrap-theme.min.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/css/bootstrap.min.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/css/font-awesome-4.0.3.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/css/highlight.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/css/jquery.json-view.min.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/fontawesome-webfont.eot" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/fontawesome-webfont.svg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/fontawesome-webfont.ttf" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/fontawesome-webfont.woff" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/glyphicons-halflings-regular.eot" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/glyphicons-halflings-regular.svg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/glyphicons-halflings-regular.ttf" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/glyphicons-halflings-regular.woff" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/fonts/glyphicons-halflings-regular.woff2" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/img/favicon.ico" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/img/grid.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/js/api.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/js/bootstrap.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/js/highlight.pack.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/js/jquery-1.10.2.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/docs/js/jquery.json-view.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/fonts/glyphicons-halflings-regular.eot" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/fonts/glyphicons-halflings-regular.svg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/fonts/glyphicons-halflings-regular.ttf" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/fonts/glyphicons-halflings-regular.woff" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/fonts/glyphicons-halflings-regular.woff2" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/img/glyphicons-halflings-white.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/img/glyphicons-halflings.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/img/grid.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/js/ajax-form.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/js/bootstrap.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/js/coreapi-0.1.1.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/js/csrf.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/js/default.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/js/jquery-1.12.4.min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/static/rest_framework/js/prettify-min.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/status.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/admin.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/admin/detail.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/admin/dict_value.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/admin/list.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/admin/list_value.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/admin/simple_list_value.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/api.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/base.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/auth/basic.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/auth/session.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/auth/token.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/document.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/error.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/index.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/interact.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/langs/javascript-intro.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/langs/javascript.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/langs/python-intro.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/langs/python.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/langs/shell-intro.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/langs/shell.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/link.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/docs/sidebar.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/filters/base.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/filters/ordering.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/filters/search.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/checkbox.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/checkbox_multiple.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/fieldset.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/form.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/input.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/list_fieldset.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/radio.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/select.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/select_multiple.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/horizontal/textarea.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/checkbox.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/checkbox_multiple.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/fieldset.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/form.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/input.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/list_fieldset.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/radio.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/select.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/select_multiple.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/inline/textarea.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/login.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/login_base.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/pagination/numbers.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/pagination/previous_and_next.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/raw_data_form.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/schema.js" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/checkbox.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/checkbox_multiple.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/fieldset.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/form.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/input.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/list_fieldset.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/radio.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/select.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/select_multiple.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templates/rest_framework/vertical/textarea.html" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templatetags/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/templatetags/rest_framework.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/test.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/throttling.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/urlpatterns.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/urls.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/breadcrumbs.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/encoders.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/field_mapping.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/formatting.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/html.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/humanize_datetime.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/json.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/mediatypes.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/model_meta.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/representation.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/serializer_helpers.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/utils/urls.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/validators.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/versioning.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/views.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/rest_framework/viewsets.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/apps.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/config.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/contrib/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/contrib/jinja2ext.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/errors.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/exceptions.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/loader.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/signals.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/templatetags/__init__.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/templatetags/webpack_loader.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/webpack_loader/utils.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/README.md" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -277,12 +29,55 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/up/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
+            <state relative-caret-position="442">
               <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/up/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="19" column="34" lean-forward="false" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/up/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="17">
+                <caret line="1" column="27" lean-forward="false" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
+                <folding />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
@@ -319,6 +114,7 @@
         <option value="$PROJECT_DIR$/frontend/config/webpackDevServer.config.js" />
         <option value="$PROJECT_DIR$/frontend/src/App.js" />
         <option value="$PROJECT_DIR$/up/settings.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -339,7 +135,7 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/frontend/node_modules" />
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
@@ -367,6 +163,16 @@
             <path>
               <item name="up" type="b2602c69:ProjectViewProjectNode" />
               <item name="up" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="up" type="b2602c69:ProjectViewProjectNode" />
+              <item name="up" type="462c0819:PsiDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="up" type="b2602c69:ProjectViewProjectNode" />
+              <item name="up" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="up" type="b2602c69:ProjectViewProjectNode" />
@@ -491,27 +297,34 @@
       <option name="project" value="LOCAL" />
       <updated>1519680871920</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="verzuje se vse, v budoucnu bude upraveno, prozatim staci takto">
+      <created>1519681920891</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1519681920891</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="974" height="1047" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.50208336" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33297643" sideWeight="0.49791667" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29645094" sideWeight="0.32747602" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14791666" sideWeight="0.32755905" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29645094" sideWeight="0.672524" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14791666" sideWeight="0.67244095" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296875" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="manage.py@up" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32976446" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="manage.py@up" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32661718" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -570,14 +383,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/up/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="34" lean-forward="false" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/config/paths.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="456">
@@ -598,14 +403,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="32" lean-forward="true" selection-start-line="12" selection-start-column="32" selection-end-line="12" selection-end-column="32" />
           <folding />
         </state>
       </provider>
@@ -666,10 +463,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="17">
+            <caret line="1" column="27" lean-forward="false" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/up/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
+        <state relative-caret-position="442">
           <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/up/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="34" lean-forward="false" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/up/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="33" />
           <folding />
         </state>
       </provider>
