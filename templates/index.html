@@ -1,12 +1,15 @@
+{% load render_bundle from webpack_loader %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>UPadmin</title>
+  </head>
+  <body>
     <div id="root">
-        This is where React will be mounted
+        React app should go here!
     </div>
-</body>
+      {% render_bundle 'main' %}
+  </body>
 </html>
