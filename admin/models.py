@@ -12,9 +12,9 @@ class AttendanceState(models.Model):
 class Client(models.Model):
     name = models.TextField()
     surname = models.TextField()
-    phone = models.TextField(blank=True)
-    email = models.TextField(blank=True)
-    note = models.TextField(blank=True)
+    phone = models.TextField(null=True)
+    email = models.TextField(null=True)
+    note = models.TextField(blank=True, null=True)
 
 
 class Course(models.Model):
