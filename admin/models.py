@@ -1,3 +1,42 @@
 from django.db import models
 
-# Create your models here.
+
+class Group(models.Model):
+    name = models.TextField(blank=True)
+
+
+class AttendanceState(models.Model):
+    name = models.TextField()
+
+
+class Client(models.Model):
+    name = models.TextField()
+    surname = models.TextField()
+    phone = models.TextField(blank=True)
+    email = models.TextField(blank=True)
+    note = models.TextField(blank=True)
+
+
+class Course(models.Model):
+    name = models.TextField()
+
+
+class Lecture(models.Model):
+    start = models.DateTimeField(blank=True, null=True)
+    duration = models.PositiveSmallIntegerField(blank=True, null=True)
+    courseid = models.ForeignKey(Course, models.DO_NOTHING)
+    groupid = models.ForeignKey(Group, models.DO_NOTHING, blank=True, null=True)
+
+
+class Attendance(models.Model):
+    paid = models.TextField()
+    clientid = models.ForeignKey(Client, models.DO_NOTHING)
+    lectureid = models.ForeignKey(Lecture, models.DO_NOTHING)
+    attendancestateid = models.ForeignKey(AttendanceState, models.DO_NOTHING)
+
+
+class MemberOf(models.Model):
+    start = models.DateTimeField()
+    end = models.DateTimeField(blank=True, null=True)
+    clientid = models.ForeignKey(Client, models.DO_NOTHING)
+    groupid = models.ForeignKey(Group, models.DO_NOTHING)
