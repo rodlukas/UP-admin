@@ -4,7 +4,6 @@ python:
 install:
 - pip install -r requirements.txt
 - pip install codecov
-- pip install whitenoise
 script:
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
 after_success:
