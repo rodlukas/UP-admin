@@ -6,7 +6,7 @@ install:
 - pip install codecov
 script:
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
-- manage.py --settings=up.production_settings
+- export DJANGO_SETTINGS_MODULE=up.production-settings
 after_success:
 - codecov --token=711f2ba1-59bf-4dbc-95da-9d25ef91c932
 deploy:
