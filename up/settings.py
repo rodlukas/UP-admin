@@ -36,10 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'admin.apps.AdminConfig',
+    'admin',
     'webpack_loader',
     'rest_framework',
-    'api.apps.ApiConfig',
+    'api',
 ]
 
 WEBPACK_LOADER = {
