@@ -6,5 +6,4 @@ from admin.models import Client
 
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all()
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = ClientSerializer
