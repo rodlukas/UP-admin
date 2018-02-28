@@ -5,7 +5,5 @@ install:
   - pip install -r requirements.txt
   - pip install coverage
 script:
-  - python manage.py test
-  - cd up
   - coverage run --omit=*/migrations/* --source=admin,api manage.py test
 after_success: coverage report
