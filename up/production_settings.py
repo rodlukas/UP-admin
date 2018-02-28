@@ -13,10 +13,6 @@ WEBPACK_LOADER = {
         }
 }
 
-ALLOWED_HOSTS = [
-    'uspesnyprvnacek.herokuapp.com'
-]
-
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = False
