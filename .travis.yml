@@ -2,13 +2,13 @@ language: python
 python:
 - '3.6'
 before_install:
-- export DJANGO_SETTINGS_MODULE=up.production-settings
+- export DJANGO_SETTINGS_MODULE=production-settings
 install:
 - pip install -r requirements.txt
 - pip install codecov
 script:
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
-- python manage.py --settings=up.production-settings
+- python manage.py --settings=production-settings
 after_success:
 - codecov --token=711f2ba1-59bf-4dbc-95da-9d25ef91c932
 deploy:
