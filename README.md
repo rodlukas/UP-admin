@@ -1,5 +1,6 @@
 # cvut-fit-bibap-uspesnyprvnacek-code
 [![Build Status](https://travis-ci.com/rodlukas/cvut-fit-bibap-uspesnyprvnacek-code.svg?token=g1rDdptQG4SVzcH6FMo5&branch=master)](https://travis-ci.com/rodlukas/cvut-fit-bibap-uspesnyprvnacek-code)
+[![codecov](https://codecov.io/gh/rodlukas/cvut-fit-bibap-uspesnyprvnacek-code/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/cvut-fit-bibap-uspesnyprvnacek-code)
 
 FIT CTU bachelor thesis - code
 
