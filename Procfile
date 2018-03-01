@@ -1,2 +1,2 @@
-release: python manage.py --settings=up.production_settings migrate
+release: python manage.py migrate --settings=up.production_settings
 web: gunicorn up.wsgi --log-file -
