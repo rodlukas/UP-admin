@@ -13,7 +13,7 @@ WEBPACK_LOADER = {
         }
 }
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'u-y&tu264zgfp1pc$q(xki+y^+c6zm2#z++%$xqn=!tum8i6e!'
 
 DEBUG = False
 
