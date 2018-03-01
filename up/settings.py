@@ -44,12 +44,13 @@ INSTALLED_APPS = [
     'webpack_loader',
     'rest_framework',
     'api',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        # zabezpeceni pres session -> 'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
