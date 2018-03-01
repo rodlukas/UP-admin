@@ -1,0 +1,10 @@
+{
+  "name": "up",
+  "version": "0.0.1",
+  "dependencies": {
+    
+  },
+  "scripts": {
+  "postinstall": "cd frontend && npm install"
+}
+}
