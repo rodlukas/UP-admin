@@ -1,4 +1,3 @@
-from rest_framework import permissions
 from rest_framework import viewsets
 from .serializers import ClientSerializer
 from admin.models import Client
