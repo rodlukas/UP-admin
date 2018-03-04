@@ -32,7 +32,7 @@ class Attendance(models.Model):
     paid = models.BooleanField()
     client = models.ForeignKey(Client, models.DO_NOTHING)
     lecture = models.ForeignKey(Lecture, models.DO_NOTHING)
-    attendancestate = models.ForeignKey(AttendanceState, models.DO_NOTHING)
+    attendance_state = models.ForeignKey(AttendanceState, models.DO_NOTHING)
     note = models.TextField(blank=True, null=True)
 
 
