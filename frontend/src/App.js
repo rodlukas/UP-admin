@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
 import axios from 'axios'
 
 class App extends Component {
@@ -7,7 +7,8 @@ class App extends Component {
     super(props);
     this.title = "Klienti";
     this.state = {
-        users: []
+        users: [],
+        attendance: []
     }
   }
 
@@ -21,12 +22,34 @@ class App extends Component {
         });
   }
 
-  componentWillMount() {
+
+  getClientLectures = (id) => {
+    axios.get('/api/v1/attendances/' + id + '/').then( (response) => {
+            this.setState({attendance: response.data});
+            console.log(this.state.attendance)
+        })
+      .catch( (error) => {
+            console.log(error);
+        });
+    this.state.attendance.forEach(function(e){
+
+    })
+      /*
+    axios.get('/api/v1/clients/', id, '/lectures/')
+        .then( (response) => {
+            this.setState({users: response.data});
+        })
+        .catch( (error) => {
+            console.log(error);
+        });*/
+  }
+
+  componentDidMount() {
     this.getUsers();
+    this.getClientLectures(1);
   }
 
   render() {
-    console.log(this.state.users);
     return (
         <div>
             <h1>{this.title}</h1>
