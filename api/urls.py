@@ -12,6 +12,5 @@ router.register(r'lectures', views.LectureViewSet)
 router.register(r'attendances', views.AttendanceViewSet)
 router.register(r'member_of', views.MemberOfViewSet)
 
-urlpatterns = [
-    path('', include(router.urls)),
-]
+urlpatterns = router.urls
+# [path('', include(router.urls))]
