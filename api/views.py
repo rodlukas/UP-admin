@@ -21,3 +21,18 @@ class AttendanceStateViewSet(viewsets.ModelViewSet):
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+
+
+class LectureViewSet(viewsets.ModelViewSet):
+    queryset = Lecture.objects.all()
+    serializer_class = LectureSerializer
+
+
+class AttendanceViewSet(viewsets.ModelViewSet):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+
+
+class MemberOfViewSet(viewsets.ModelViewSet):
+    queryset = MemberOf.objects.all()
+    serializer_class = MemberOfSerializer
