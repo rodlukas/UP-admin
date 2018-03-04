@@ -1,30 +1,45 @@
-import React, { Component } from 'react'
-import './App.css'
-
+import React, { Component } from 'react';
+import './App.css';
 import axios from 'axios'
 
 class App extends Component {
-  constructor () {
-    super()
+  constructor(props) {
+    super(props);
+    this.title = "Klienti";
     this.state = {
-      username: ''
+        users: []
     }
-
-    this.handleClick = this.handleClick.bind(this)
   }
 
-  handleClick () {
-    axios.get('/api/v1/clients/1/')
-      .then(response => this.setState({username: response.data.name}))
+  getUsers = () => {
+    axios.get('/api/v1/clients/')
+        .then( (response) => {
+            this.setState({users: response.data});
+        })
+        .catch( (error) => {
+            console.log(error);
+        });
   }
 
-  render () {
+  componentWillMount() {
+    this.getUsers();
+  }
+
+  render() {
+    console.log(this.state.users);
     return (
-      <div className='button__container'>
-        <button className='button' onClick={this.handleClick}>Click Me</button>
-        <p>{this.state.username}</p>
-      </div>
-    )
+        <div>
+            <h1>{this.title}</h1>
+            <ul>
+                {
+                    this.state.users.map(
+                        user => <li>{user.name} {user.surname} - tel: {user.phone}, e-mail: {user.email}</li>
+                    )
+                }
+            </ul>
+        </div>
+    );
   }
 }
+
 export default App
