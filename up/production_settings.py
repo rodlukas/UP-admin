@@ -2,10 +2,6 @@ from .settings import *
 import dj_database_url
 
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "assets"),
-]
-
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',
@@ -21,4 +17,4 @@ DEBUG = False
 db_from_env = dj_database_url.config(conn_max_age=60)
 DATABASES['default'].update(db_from_env)
 
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
