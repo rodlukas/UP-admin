@@ -1,16 +1,18 @@
 from django.urls import include, path
 from rest_framework import routers
+#from rest_framework_nested import routers
 from api import views
 
 
 router = routers.DefaultRouter()
-router.register(r'clients', views.ClientViewSet)
-router.register(r'groups', views.GroupViewSet)
-router.register(r'attendance_states', views.AttendanceStateViewSet)
-router.register(r'courses', views.CourseViewSet)
-router.register(r'lectures', views.LectureViewSet)
-router.register(r'attendances', views.AttendanceViewSet)
-router.register(r'member_of', views.MemberOfViewSet)
 
-urlpatterns = router.urls
-# [path('', include(router.urls))]
+router.register('lectures', views.LectureViewSet)
+router.register('clients', views.ClientViewSet)
+
+#nested_router = routers.NestedSimpleRouter(router, 'clients', lookup='client')
+#nested_router.register('lectures', views.TestViewSet, base_name='domain-nameservers')
+
+urlpatterns = [
+    path('lectures-day/<str:date>/', views.LecturesOnDay.as_view()),
+    path('', include(router.urls)),
+]

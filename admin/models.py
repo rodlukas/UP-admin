@@ -24,20 +24,20 @@ class Course(models.Model):
 class Lecture(models.Model):
     start = models.DateTimeField(blank=True, null=True)
     duration = models.PositiveIntegerField(blank=True, null=True)
-    course = models.ForeignKey(Course, models.DO_NOTHING)
-    group = models.ForeignKey(Group, models.DO_NOTHING, blank=True, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name='lectures', on_delete=models.CASCADE, blank=True, null=True)
 
 
 class Attendance(models.Model):
     paid = models.BooleanField()
-    client = models.ForeignKey(Client, models.DO_NOTHING)
-    lecture = models.ForeignKey(Lecture, models.DO_NOTHING)
-    attendance_state = models.ForeignKey(AttendanceState, models.DO_NOTHING)
+    client = models.ForeignKey(Client, related_name='attendances', on_delete=models.CASCADE)
+    lecture = models.ForeignKey(Lecture, related_name='attendances', on_delete=models.CASCADE)
+    attendancestate = models.ForeignKey(AttendanceState, on_delete=models.CASCADE)
     note = models.TextField(blank=True, null=True)
 
 
 class MemberOf(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField(blank=True, null=True)
-    client = models.ForeignKey(Client, models.DO_NOTHING)
-    group = models.ForeignKey(Group, models.DO_NOTHING)
+    client = models.ForeignKey(Client, related_name='memberof', on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name='memberof', on_delete=models.CASCADE)

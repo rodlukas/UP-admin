@@ -1,26 +1,8 @@
 from rest_framework import viewsets
 from .serializers import *
 from admin.models import *
-
-
-class ClientViewSet(viewsets.ModelViewSet):
-    queryset = Client.objects.all()
-    serializer_class = ClientSerializer
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-
-class AttendanceStateViewSet(viewsets.ModelViewSet):
-    queryset = AttendanceState.objects.all()
-    serializer_class = AttendanceStateSerializer
-
-
-class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
+from rest_framework import generics
+from datetime import datetime
 
 
 class LectureViewSet(viewsets.ModelViewSet):
@@ -28,11 +10,14 @@ class LectureViewSet(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
 
 
-class AttendanceViewSet(viewsets.ModelViewSet):
-    queryset = Attendance.objects.all()
-    serializer_class = AttendanceSerializer
+class ClientViewSet(viewsets.ModelViewSet):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
 
 
-class MemberOfViewSet(viewsets.ModelViewSet):
-    queryset = MemberOf.objects.all()
-    serializer_class = MemberOfSerializer
+class LecturesOnDay(generics.ListAPIView):
+    serializer_class = LectureSerializer
+
+    def get_queryset(self):
+        date = datetime.date(datetime.strptime(self.kwargs['date'], "%Y-%m-%d"))
+        return Lecture.objects.filter(start__contains=date)
