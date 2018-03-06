@@ -12,7 +12,7 @@ class LectureViewSet(viewsets.ModelViewSet):
 
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all()
-    serializer_class = ClientSerializer
+    serializer_class = ClientFlatSerializer
 
 
 class LecturesOnDay(generics.ListAPIView):

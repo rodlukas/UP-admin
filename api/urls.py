@@ -6,8 +6,8 @@ from api import views
 
 router = routers.DefaultRouter()
 
-router.register('lectures', views.LectureViewSet)
-router.register('clients', views.ClientViewSet)
+router.register('lectures', views.LectureViewSet, 'Lecture')
+router.register('clients', views.ClientViewSet, 'Client')
 
 #nested_router = routers.NestedSimpleRouter(router, 'clients', lookup='client')
 #nested_router.register('lectures', views.TestViewSet, base_name='domain-nameservers')
