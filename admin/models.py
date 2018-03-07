@@ -36,8 +36,8 @@ class Attendance(models.Model):
     note = models.TextField(blank=True, null=True)
 
 
-class MemberOf(models.Model):
+class Membership(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField(blank=True, null=True)
-    client = models.ForeignKey(Client, related_name='memberof', on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, related_name='memberof', on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, related_name='memberships', on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name='memberships', on_delete=models.CASCADE)

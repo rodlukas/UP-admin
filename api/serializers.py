@@ -1,6 +1,5 @@
 from admin.models import *
 from rest_framework import serializers
-import json
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -9,18 +8,43 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-#class MemberOfSerializer(serializers.ModelSerializer):
-#    class Meta:
-#        model = MemberOf
-#        fields = '__all__'
+class MembershipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Membership
+        exclude = 'group',
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    #memberof = MemberOfSerializer(many=True)
+    memberships = MembershipSerializer(many=True)
 
     class Meta:
         model = Group
         fields = '__all__'
+
+    def create(self, validated_data):
+        memberships_data = validated_data.pop('memberships')
+        instance = Group.objects.create(**validated_data)
+        for membership_data in memberships_data:
+            client = Client.objects.get(pk=membership_data.pop('client').id)
+            Membership.objects.create(client=client, group=instance, **membership_data)
+        return instance
+
+    def update(self, instance, validated_data):
+        memberships_data = validated_data.pop('memberships')
+
+        memberships = instance.memberships.all()
+        memberships = list(memberships)
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+
+        for membership_data in memberships_data:
+            membership = memberships.pop(0)
+            client = Client.objects.get(pk=membership_data.pop('client').id)
+            membership.client = client
+            membership.start = membership_data.get('start', membership.start)
+            membership.end = membership_data.get('end', membership.end)
+            membership.save()
+        return instance
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -65,7 +89,7 @@ class LectureSerializer(serializers.ModelSerializer):
         course = Course.objects.get(pk=validated_data.pop('course').id)
         group = Group.objects.get(pk=validated_data.pop('group').id)
 
-        attendances = (instance.attendances).all()
+        attendances = instance.attendances.all()
         attendances = list(attendances)
         instance.start = validated_data.get('start', instance.start)
         instance.duration = validated_data.get('duration', instance.duration)
@@ -76,11 +100,10 @@ class LectureSerializer(serializers.ModelSerializer):
         for attendance_data in attendances_data:
             attendance = attendances.pop(0)
             attendance.paid = attendance_data.get('paid', attendance.paid)
-            client = Client.objects.get(pk=attendance_data.pop('paid'))
+            client = Client.objects.get(pk=attendance_data.pop('client').id)
             attendance.client = client
             attendance.note = attendance_data.get('note', attendance.note)
             attendancestate = AttendanceState.objects.get(pk=attendance.attendancestate_id)
             attendance.attendancestate = attendancestate
             attendance.save()
-
         return instance
