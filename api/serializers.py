@@ -75,7 +75,7 @@ class LectureSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         attendances_data = validated_data.pop('attendances')
         course = Course.objects.get(pk=validated_data.pop('course').id)
-        #for k, v in validated_data.items():
+        # for k, v in validated_data.items():
         #    print(k, v)
         group = Group.objects.get(pk=validated_data.pop('group').id)
         instance = Lecture.objects.create(course=course, group=group, **validated_data)

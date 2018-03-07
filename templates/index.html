@@ -1,15 +1,15 @@
 {% load render_bundle from webpack_loader %}
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width"/>
     <title>UPadmin</title>
-  </head>
-  <body>
-    <div id="root">
-        React app should go here! (if you see this message, please, turn on javascript in your browser)
-    </div>
-      {% render_bundle 'main' %}
-  </body>
+</head>
+<body>
+<div id="root">
+    React app should go here! (if you see this message, please, turn on javascript in your browser)
+</div>
+{% render_bundle 'main' %}
+</body>
 </html>
