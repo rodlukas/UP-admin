@@ -49,8 +49,6 @@ class LectureSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        for k, v in validated_data.items():
-            print(k, v)
         attendances_data = validated_data.pop('attendances')
         course = Course.objects.get(pk=validated_data.pop('course').id)
         #for k, v in validated_data.items():
@@ -60,4 +58,29 @@ class LectureSerializer(serializers.ModelSerializer):
         for attendance_data in attendances_data:
             client = Client.objects.get(pk=attendance_data.pop('client').id)
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
+        return instance
+
+    def update(self, instance, validated_data):
+        attendances_data = validated_data.pop('attendances')
+        course = Course.objects.get(pk=validated_data.pop('course').id)
+        group = Group.objects.get(pk=validated_data.pop('group').id)
+
+        attendances = (instance.attendances).all()
+        attendances = list(attendances)
+        instance.start = validated_data.get('start', instance.start)
+        instance.duration = validated_data.get('duration', instance.duration)
+        instance.course = course
+        instance.group = group
+        instance.save()
+
+        for attendance_data in attendances_data:
+            attendance = attendances.pop(0)
+            attendance.paid = attendance_data.get('paid', attendance.paid)
+            client = Client.objects.get(pk=attendance_data.pop('paid'))
+            attendance.client = client
+            attendance.note = attendance_data.get('note', attendance.note)
+            attendancestate = AttendanceState.objects.get(pk=attendance.attendancestate_id)
+            attendance.attendancestate = attendancestate
+            attendance.save()
+
         return instance
