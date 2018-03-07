@@ -12,9 +12,9 @@ class AttendanceState(models.Model):
 class Client(models.Model):
     name = models.TextField()
     surname = models.TextField()
-    phone = models.TextField(null=True)
-    email = models.TextField(null=True)
-    note = models.TextField(blank=True, null=True)
+    phone = models.TextField(blank=True)
+    email = models.TextField(blank=True)
+    note = models.TextField(blank=True)
 
 
 class Course(models.Model):
@@ -30,10 +30,10 @@ class Lecture(models.Model):
 
 class Attendance(models.Model):
     paid = models.BooleanField()
+    note = models.TextField(blank=True)
     client = models.ForeignKey(Client, related_name='attendances', on_delete=models.CASCADE)
     lecture = models.ForeignKey(Lecture, related_name='attendances', on_delete=models.CASCADE)
     attendancestate = models.ForeignKey(AttendanceState, on_delete=models.CASCADE)
-    note = models.TextField(blank=True, null=True)
 
 
 class Membership(models.Model):

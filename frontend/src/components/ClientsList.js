@@ -41,7 +41,7 @@ export default class ClientsList extends React.Component {
         return (
             <div>
                 <h1>{this.title}</h1>
-                <Button color="info" onClick={this.toggle}>Přidat kurz</Button>
+                <Button color="info" onClick={this.toggle}>Přidat klienta</Button>
                 <Table>
                     <thead>
                     <tr>
@@ -61,9 +61,11 @@ export default class ClientsList extends React.Component {
                                     <td><a href={'tel:' + user.phone}>{user.phone}</a></td>
                                     <td><a href={'mailto:' + user.email}>{user.email}</a></td>
                                     <td>{user.note}</td>
-                                    <td><Button color="primary" onClick={() => this.toggle(user)}>Upravit</Button>
-                                        <Button color="secondary" onClick={this.toggle}>Karta</Button> <Button
-                                            color="info" onClick={this.toggle}>Přidat kurz</Button></td>
+                                    <td>
+                                        <Button color="primary" onClick={() => this.toggle(user)}>Upravit</Button>
+                                        &nbsp;<Button color="secondary" onClick={this.toggle}>Karta</Button>
+                                        &nbsp;<Button color="info" onClick={this.toggle}>Přidat kurz</Button>
+                                    </td>
                                 </tr>)
                     }
                     </tbody>

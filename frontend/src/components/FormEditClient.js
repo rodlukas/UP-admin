@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import {Col, Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
 export default class FormEditClient extends React.Component {
     constructor(props) {
@@ -37,14 +38,43 @@ export default class FormEditClient extends React.Component {
     render() {
         const {name, surname, email, phone, note} = this.state
         return (
-            <form onSubmit={this.onSubmit}>
-                <input type="text" name="name" value={name} onChange={this.onChange}/>
-                <input type="text" name="surname" value={surname} onChange={this.onChange}/>
-                <input type="text" name="phone" value={phone} onChange={this.onChange}/>
-                <input type="text" name="email" value={email} onChange={this.onChange}/>
-                <textarea name="note" value={note} onChange={this.onChange}/>
-                <button type="submit">Submit</button>
-            </form>
+            <Form onSubmit={this.onSubmit}>
+                <FormGroup row>
+                    <Label for="name" sm={2}>Jméno</Label>
+                    <Col sm={10}>
+                        <Input type="text" name="name" id="name" value={name} onChange={this.onChange}/>
+                    </Col>
+                </FormGroup>
+                <FormGroup row>
+                    <Label for="surname" sm={2}>Příjmení</Label>
+                    <Col sm={10}>
+                        <Input type="text" name="surname" id="surname" value={surname} onChange={this.onChange}/>
+                    </Col>
+                </FormGroup>
+                <FormGroup row>
+                    <Label for="note" sm={2}>Poznámka</Label>
+                    <Col sm={10}>
+                        <Input type="text" name="note" id="note" value={note} onChange={this.onChange}/>
+                    </Col>
+                </FormGroup>
+                <FormGroup row>
+                    <Label for="email" sm={2}>Email</Label>
+                    <Col sm={10}>
+                        <Input type="email" name="email" id="email" value={email} onChange={this.onChange}/>
+                    </Col>
+                </FormGroup>
+                <FormGroup row>
+                    <Label for="phone" sm={2}>Telefon</Label>
+                    <Col sm={10}>
+                        <Input type="tel" name="phone" id="phone" value={phone} onChange={this.onChange}/>
+                    </Col>
+                </FormGroup>
+                <FormGroup check row>
+                    <Col sm={{size: 10, offset: 2}}>
+                        <Button type="submit">Submit</Button>
+                    </Col>
+                </FormGroup>
+            </Form>
         )
     }
 }
