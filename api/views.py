@@ -41,7 +41,7 @@ class LectureViewSet(viewsets.ModelViewSet):
         id_client = self.request.query_params.get('client', None)
         if date is not None:
             date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
-            queryset = queryset.filter(start__contains=date)
+            queryset = queryset.filter(start__contains=date).order_by('start')
         elif id_client is not None:
-            queryset = queryset.filter(attendances__client=id_client)
+            queryset = queryset.filter(attendances__client=id_client).order_by('start')
         return queryset

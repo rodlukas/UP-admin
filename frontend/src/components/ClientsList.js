@@ -36,7 +36,6 @@ export default class ClientsList extends React.Component {
         this.getUsers()
     }
 
-
     render() {
         return (
             <div>
