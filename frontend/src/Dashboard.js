@@ -7,7 +7,7 @@ class Dashboard extends Component {
         super(props)
         this.date = new Date().toISOString().substring(0, 10)
         this.prettydate = new Date()
-        this.title = "Dnešní přehled - " + this.prettydate.getDay() + ". " + this.prettydate.getMonth() + ". " + this.prettydate.getFullYear()
+        this.title = "Dnešní přehled - " + this.prettydate.getDate() + ". " + (this.prettydate.getMonth()+1) + ". " + this.prettydate.getFullYear()
         this.state = {
             lectures: [],
             modal: false,
