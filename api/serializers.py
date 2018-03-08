@@ -60,6 +60,16 @@ class AttendanceStateSerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
+    # client - pro GET, vypise vsechny informace o klientovi
+    # client_id - pro PUT/POST
+    #           - source='client' spolu s queryset zarizuje, ze staci zaslat v pozadavku "client_id" : <id> a
+    #             serializer se bude k tomuto udaji chovat jako k objektu client (jako o radek vyse) bez nutnosti
+    #             jakkoliv prepisovat serializer a upravovat client na client_id apod.
+    #           - podle https://stackoverflow.com/a/33048798
+    #                   https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
+    client = ClientSerializer(read_only=True)
+    client_id = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), source='client', write_only=True)
+
     class Meta:
         model = Attendance
         exclude = 'lecture',
@@ -78,7 +88,6 @@ class LectureSerializer(serializers.ModelSerializer):
         # for k, v in validated_data.items():
         #    print(k, v)
         group = validated_data.pop('group')
-        print(group)
         if group is not None:
             group = Group.objects.get(pk=group.id)
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
