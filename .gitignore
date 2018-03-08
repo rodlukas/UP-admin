@@ -1,4 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
+### Moje
+webpack-stats.dev.json
+webpack-stats.prod.json
+
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
