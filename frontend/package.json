@@ -2,10 +2,6 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "8.9.x",
-    "npm": "5.7.x"
-  },
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.4",
     "@fortawesome/fontawesome-pro-solid": "^5.0.8",
