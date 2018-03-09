@@ -1,8 +1,8 @@
-import React from 'react'
+import React, {Component} from "react"
 import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input} from 'reactstrap';
 
-export default class FormEditClient extends React.Component {
+export default class FormEditClient extends Component {
     constructor(props) {
         super(props)
         this.state = {

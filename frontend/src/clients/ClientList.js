@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {Component} from "react"
 import {Table, Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import axios from "axios"
 import FormEditClient from '../components/FormEditClient'
 
-export default class ClientsList extends React.Component {
+export default class ClientList extends Component {
     constructor(props) {
         super(props)
         this.title = "Klienti"
@@ -39,7 +39,7 @@ export default class ClientsList extends React.Component {
     render() {
         return (
             <div>
-                <h1>{this.title}</h1>
+                <h1 className="text-center mb-4">{this.title}</h1>
                 <Button color="info" onClick={this.toggle}>Přidat klienta</Button>
                 <Table>
                     <thead>

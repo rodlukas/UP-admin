@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import axios from 'axios'
-import LoginControl from './components/LoginControl'
+import LoginControl from './LoginControl'
 
 function WarningBanner(props) {
     if (!props.warn) {
