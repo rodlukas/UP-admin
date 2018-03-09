@@ -10,20 +10,14 @@ export default class Diary extends Component {
         this.lastMonday.setDate(this.lastMonday.getDate() + 1 - (this.lastMonday.getDay() || 7))
         this.days = []
         this.endDate = new Date(this.lastMonday)
-        console.log(this.endDate)
         let workDays = 5
         while (workDays > 0) {
-            this.days.push(<Col key={workDays}><DashboardDay date={Diary.toISODate(this.endDate)}/></Col>)
+            this.days.push(<Col key={workDays}><DashboardDay date={DashboardDay.toISODate(this.endDate)}/></Col>)
             this.endDate.setDate(this.endDate.getDate() + 1)
             workDays--
         }
         this.endDate.setDate(this.endDate.getDate() - 1)
         this.title = "Týdenní přehled: " + this.lastMonday.getDate() + ". " + (this.lastMonday.getMonth() + 1) + ". - " + this.endDate.getDate() + ". " + (this.endDate.getMonth() + 1) + ". "
-    }
-
-    static toISODate(date)
-    {
-        return date.toISOString().substring(0, 10)
     }
 
     render() {

@@ -5,7 +5,8 @@ import DashboardDay from '../dashboard/DashboardDay'
 export default class Dashboard extends Component {
     constructor(props) {
         super(props)
-        this.date = new Date().toISOString().substring(0, 10)
+        this.date = new Date()
+        this.dateString = DashboardDay.toISODate(this.date)
         this.title = "Dnešní přehled"
     }
 
@@ -16,7 +17,7 @@ export default class Dashboard extends Component {
                 <Container>
                     <Row>
                         <Col sm="12" md={{size: 8, offset: 2}}>
-                            <DashboardDay date={this.date}/>
+                            <DashboardDay date={this.dateString}/>
                         </Col>
                     </Row>
                 </Container>

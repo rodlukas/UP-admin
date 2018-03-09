@@ -15,6 +15,10 @@ export default class DashboardDay extends Component {
         this.title = this.day + " " + this.prettydate.getDate() + ". " + (this.prettydate.getMonth() + 1) + ". "
     }
 
+    static toISODate(date) {
+        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+    }
+
     getLectures = () => {
         axios.get('/api/v1/lectures/?date=' + this.props.date)
             .then((response) => {
