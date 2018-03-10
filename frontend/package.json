@@ -77,7 +77,8 @@
       "^(?!.*\\.(js|jsx|mjs|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$",
+      "node_modules/?!(react-icons)"
     ],
     "moduleNameMapper": {
       "^react-native$": "react-native-web"
