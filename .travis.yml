@@ -7,8 +7,12 @@ install:
 - pip install codecov
 - cd frontend
 - npm install
+- cd ..
 script:
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
+- cd frontend
+- npm test
+- cd ..
 after_success:
 - codecov --token=711f2ba1-59bf-4dbc-95da-9d25ef91c932
 notifications:
