@@ -9,6 +9,9 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class MembershipSerializer(serializers.ModelSerializer):
+    client = ClientSerializer(read_only=True)
+    client_id = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), source='client', write_only=True)
+
     class Meta:
         model = Membership
         exclude = 'group',
@@ -31,19 +34,22 @@ class GroupSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         memberships_data = validated_data.pop('memberships')
-
         memberships = instance.memberships.all()
         memberships = list(memberships)
         instance.name = validated_data.get('name', instance.name)
         instance.save()
-
         for membership_data in memberships_data:
-            membership = memberships.pop(0)
             client = Client.objects.get(pk=membership_data.pop('client').id)
-            membership.client = client
-            membership.start = membership_data.get('start', membership.start)
-            membership.end = membership_data.get('end', membership.end)
-            membership.save()
+            if len(list(memberships)):
+                membership = memberships.pop(0)
+                membership.client = client
+                membership.start = membership_data.get('start', membership.start)
+                membership.end = membership_data.get('end', membership.end)
+                membership.save()
+            else:
+                Membership.objects.create(client=client, group=instance, **membership_data)
+        for membership in memberships:
+            membership.delete()
         return instance
 
 

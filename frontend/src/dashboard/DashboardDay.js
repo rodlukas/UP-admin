@@ -57,7 +57,10 @@ export default class DashboardDay extends Component {
                                                 attendance =>
                                                     <li key={attendance.id}>
                                                         {attendance.client.name} {attendance.client.surname} -
-                                                        <FontAwesomeIcon icon={faUsdCircle} size="2x" className={attendance.paid ? "text-success" : "text-danger"}/> {attendance.attendancestate.name}
+                                                        <FontAwesomeIcon icon={faUsdCircle} size="2x" className={attendance.paid ? "text-success" : "text-danger"}/>{' '}
+                                                        <Input type="select" bsSize="sm">
+                                                            <option>{attendance.attendancestate.name}</option>
+                                                        </Input>
                                                     </li>
                                             ) : <p>
                                                 <FontAwesomeIcon icon={faUsdCircle} size="2x"

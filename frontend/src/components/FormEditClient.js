@@ -6,17 +6,17 @@ export default class FormEditClient extends Component {
     constructor(props) {
         super(props)
         this.isClient = false
+        const {id, name, surname, email, phone, note} = props.client
         this.state = {
-            id: props.user.id || '',
-            name: props.user.name || '',
-            surname: props.user.surname || '',
-            email: props.user.email || '',
-            phone: props.user.phone || '',
-            note: props.user.note || ''
+            id: id || '',
+            name: name || '',
+            surname: surname || '',
+            email: email || '',
+            phone: phone || '',
+            note: note || ''
         }
-        if(props.user.length !== 0)
+        if(props.client.length !== 0)
             this.isClient = true
-
     }
 
     onChange = (e) => {
@@ -27,15 +27,13 @@ export default class FormEditClient extends Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        // get our form data out of state
-        const {name, surname, email, phone, note, id} = this.state
+        const {id, name, surname, email, phone, note} = this.state
         let request
         if(this.isClient)
             request = axios.put('/api/v1/clients/' + id + '/', {id, name, surname, email, phone, note})
         else
             request = axios.post('/api/v1/clients/', {name, surname, email, phone, note})
-        request.then((response) => {
-                this.setState({users: response.data})
+        request.then(() => {
                 this.close()
                 this.refresh()
             })
@@ -71,12 +69,6 @@ export default class FormEditClient extends Component {
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="note" sm={2}>Poznámka</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="note" id="note" value={note} onChange={this.onChange}/>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
                             <Label for="email" sm={2}>Email</Label>
                             <Col sm={10}>
                                 <Input type="email" name="email" id="email" value={email} onChange={this.onChange}/>
@@ -88,7 +80,12 @@ export default class FormEditClient extends Component {
                                 <Input type="tel" name="phone" id="phone" value={phone} onChange={this.onChange}/>
                             </Col>
                         </FormGroup>
-
+                        <FormGroup row>
+                            <Label for="note" sm={2}>Poznámka</Label>
+                            <Col sm={10}>
+                                <Input type="text" name="note" id="note" value={note} onChange={this.onChange}/>
+                            </Col>
+                        </FormGroup>
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" type="submit">{this.isClient ? 'Uložit' : 'Přidat'}</Button>{' '}

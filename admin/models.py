@@ -37,7 +37,7 @@ class Attendance(models.Model):
 
 
 class Membership(models.Model):
-    start = models.DateTimeField()
+    start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(blank=True, null=True)
     client = models.ForeignKey(Client, related_name='memberships', on_delete=models.CASCADE)
     group = models.ForeignKey(Group, related_name='memberships', on_delete=models.CASCADE)

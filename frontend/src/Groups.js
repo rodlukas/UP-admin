@@ -1,55 +1,74 @@
 import React, {Component} from "react"
-import Select from 'react-select';
-import 'react-select/dist/react-select.css'
+import {Table, Button, Modal} from 'reactstrap'
 import axios from "axios"
+import FormEditGroup from './components/FormEditGroup'
 
 export default class Groups extends Component {
     constructor(props) {
         super(props)
         this.title = "Skupiny"
         this.state = {
-            users: [],
-            selectedOption: ''
+            groups: [],
+            modal: false,
+            currentGroup: []
         }
+        this.toggle = this.toggle.bind(this)
     }
 
-    handleChange = (selectedOptions) => {
-        this.setState({selectedOptions});
-        selectedOptions.forEach(selectedOption =>
-            console.log(`Selected: ${selectedOption.label}`)
-        );
+    toggle(group = []) {
+        this.setState({
+            currentGroup: group,
+            modal: !this.state.modal
+        })
     }
 
-    getUsers = () => {
-        axios.get('/api/v1/clients/')
+    getGroups = () => {
+        axios.get('/api/v1/groups/')
             .then((response) => {
-                this.setState({users: response.data})
+                this.setState({groups: response.data})
             })
             .catch((error) => {
                 console.log(error)
             })
     }
 
-    componentWillMount() {
-        this.getUsers()
+    componentDidMount() {
+        this.getGroups()
     }
 
     render() {
-        let array = []
-        this.state.users.map(user => {return array.push({value: user.id, label: user.name + " " + user.surname})})
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>
-                <Select
-                    name="form-field-name"
-                    closeOnSelect={false}
-                    value={this.state.selectedOptions}
-                    multi={true}
-                    onChange={this.handleChange}
-                    options={array}
-                    placeholder={"Vyberte členy skupiny..."}
-                    noResultsText={"Nic nenalezeno"}
-                />
+                <Button color="info" onClick={() => this.toggle()}>Přidat skupinu</Button>
+                <Table striped size="sm">
+                    <thead className="thead-dark">
+                    <tr>
+                        <th>Název</th>
+                        <th>Členové</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        this.state.groups.map(
+                            group =>
+                                <tr key={group.id.toString()}>
+                                    <td>{group.name}</td>
+                                    <td>
+                                        {group.memberships.map(membership => membership.client.name + " " + membership.client.surname).join(", ")}
+                                    </td>
+                                    <td>
+                                        <Button color="primary" onClick={() => this.toggle(group)}>Upravit</Button>{' '}
+                                        <Button color="secondary">Karta</Button>
+                                    </td>
+                                </tr>)
+                    }
+                    </tbody>
+                </Table>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                    <FormEditGroup group={this.state.currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}/>
+                </Modal>
             </div>
         )
     }

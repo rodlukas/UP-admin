@@ -15,11 +15,11 @@ class AttendanceStateViewSet(viewsets.ModelViewSet):
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all().order_by('name')
+    queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        queryset = Group.objects.all()
+        queryset = Group.objects.all().order_by('name')
         id_client = self.request.query_params.get('client', None)
         if id_client is not None:
             queryset = queryset.filter(memberof__client=id_client)
@@ -36,12 +36,12 @@ class LectureViewSet(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
 
     def get_queryset(self):
-        queryset = Lecture.objects.all()
+        queryset = Lecture.objects.all().order_by('start')
         date = self.request.query_params.get('date', None)
         id_client = self.request.query_params.get('client', None)
         if date is not None:
             date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
-            queryset = queryset.filter(start__contains=date).order_by('start')
+            queryset = queryset.filter(start__contains=date)
         elif id_client is not None:
-            queryset = queryset.filter(attendances__client=id_client).order_by('start')
+            queryset = queryset.filter(attendances__client=id_client)
         return queryset
