@@ -1,6 +1,7 @@
 language: python
 python:
 - '3.6'
+node_js: 8
 install:
 - pip install -r requirements.txt
 - pip install codecov
