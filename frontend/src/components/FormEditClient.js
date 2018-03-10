@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import axios from 'axios'
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap';
 
 export default class FormEditClient extends Component {
     constructor(props) {
@@ -50,8 +50,19 @@ export default class FormEditClient extends Component {
         this.props.funcRefresh();
     }
 
+    delete = (id) => {
+        axios.delete('/api/v1/clients/' + id + '/')
+            .then(() => {
+                this.close()
+                this.refresh()
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
     render() {
-        const {name, surname, email, phone, note} = this.state
+        const {id, name, surname, email, phone, note} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>{this.isClient ? 'Úprava' : 'Přidání'} klienta</ModalHeader>
@@ -86,10 +97,18 @@ export default class FormEditClient extends Component {
                                 <Input type="text" name="note" id="note" value={note} onChange={this.onChange}/>
                             </Col>
                         </FormGroup>
+                        <FormGroup row className="border-top pt-3">
+                            <Label for="note" sm={2} className="text-muted">Smazání</Label>
+                            <Col sm={10}>
+                                <Button color="danger" onClick={() => {
+                                    if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?')) this.delete(id)}}>Smazat klienta</Button>{' '}
+                                <Badge color="warning" pill>Nevratně smaže klienta i s jeho lekcemi</Badge>
+                            </Col>
+                        </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" type="submit">{this.isClient ? 'Uložit' : 'Přidat'}</Button>{' '}
-                    <Button color="secondary" onClick={this.close}>Zrušit</Button>
+                    <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}
+                    <Button color="primary" type="submit">{this.isClient ? 'Uložit' : 'Přidat'}</Button>
                 </ModalFooter>
             </Form>
         )

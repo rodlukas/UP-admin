@@ -40,6 +40,7 @@ class GroupSerializer(serializers.ModelSerializer):
         instance.save()
         for membership_data in memberships_data:
             client = Client.objects.get(pk=membership_data.pop('client').id)
+            # pokud jeste zbyvaji clenstvi, uprav je, jinak vytvor nove
             if len(list(memberships)):
                 membership = memberships.pop(0)
                 membership.client = client
@@ -48,6 +49,7 @@ class GroupSerializer(serializers.ModelSerializer):
                 membership.save()
             else:
                 Membership.objects.create(client=client, group=instance, **membership_data)
+        # smazani zbylych clenstvi
         for membership in memberships:
             membership.delete()
         return instance

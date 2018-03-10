@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import axios from 'axios'
 import Select from 'react-select';
 import 'react-select/dist/react-select.css'
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap';
 
 export default class FormEditGroup extends Component {
     constructor(props) {
@@ -66,6 +66,17 @@ export default class FormEditGroup extends Component {
         this.props.funcRefresh();
     }
 
+    delete = (id) => {
+        axios.delete('/api/v1/groups/' + id + '/')
+            .then(() => {
+                this.close()
+                this.refresh()
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
     getClients = () => {
         axios.get('/api/v1/clients/')
             .then((response) => {
@@ -85,7 +96,7 @@ export default class FormEditGroup extends Component {
         this.state.clients.map(client => {
             return clients.push({client_id: client.id, label: client.name + " " + client.surname})
         })
-        const {name} = this.state
+        const {id, name} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny</ModalHeader>
@@ -112,10 +123,20 @@ export default class FormEditGroup extends Component {
                             />
                         </Col>
                     </FormGroup>
+                    <FormGroup row className="border-top pt-3">
+                        <Label for="note" sm={2} className="text-muted">Smazání</Label>
+                        <Col sm={10}>
+                            <Button color="danger" onClick={() => {
+                                if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?')) this.delete(id)
+                            }}>Smazat skupinu</Button>{' '}
+                            <Badge color="warning" pill>Nevratně smaže skupinu i s jejími lekcemi</Badge>
+                        </Col>
+                    </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" type="submit">{this.isGroup ? 'Uložit' : 'Přidat'}</Button>{' '}
-                    <Button color="secondary" onClick={this.close}>Zrušit</Button>
+                    <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}
+                    <Button color="primary" type="submit">{this.isGroup ? 'Uložit' : 'Přidat'}</Button>
+
                 </ModalFooter>
             </Form>
         )
