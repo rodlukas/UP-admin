@@ -2,8 +2,6 @@ language: python
 python:
 - '3.6'
 node_js: 8
-before_install:
-- npm config set //npm.fontawesome.com/:_authToken=$NPM_TOKEN
 install:
 - pip install -r requirements.txt
 - pip install codecov
@@ -23,6 +21,3 @@ deploy:
   app: uspesnyprvnacek
   on:
     repo: rodlukas/cvut-fit-bibap-uspesnyprvnacek-code
-env:
-  global:
-    secure: PaKtCRtHQ5wh2wolDMZCz4vE7+9/qwDEtx4dlAyIkAyaWcudmCdnmHI/ZQIaPzozRAldY1LwdPQ8RFI5+l1a3z4klO6fTb4IHxU1wlDmqRtnFR1vHOe9d5ED2g5vhSujOs23/2QPDSl2BoqJGg6JtxcDedNcYwKp7zKI6h6ddzsQnYvcSe2UvamZrWCsuZTb6AObsDq0HwOawZps4POwZKePKOCBdjl6J8+X+4S+qjQ04kChlxp80ux3UutI8Q2APJecDtxzSsKekCilyr6FImAnxkt9qQce0089QDiar7We5+eyP/9F1D55CHWEpC8u/SLweUn9ZZ3Jt8Yn4I3sV6PeTUL8P8pI7At5BqJsv93zn7dWUbWnQMognqz7TSbC2DrCdvf6ZRpFf+sodN+zzKx5PGegka7RUeshSb9nG6IR4ODmeEQ81CChfgw60xwqc3jtEnD//vpj6IylzQs1CIINOGnj8UvqfK+ILbAEailga8z6vA9pru+gEkfr8OhnOynvvSUM4kyLU7wBv0OWpoHjGCF3g9kwDuDtBFHqBeGhpeEQ1wKoOzKfflMlvUq0Z7qFMNNrQcFd9oVKRevZUpWhhIitivw7MrNn1/n9Ms0sDXLn2JZfZSknT/3GQMkXim65KKsS2FjD00BDW/hpFwDQKrXfJF3TO4ZQbwC67KY=
