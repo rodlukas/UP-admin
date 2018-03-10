@@ -5,23 +5,25 @@ import DashboardDay from './dashboard/DashboardDay'
 export default class Diary extends Component {
     constructor(props) {
         super(props)
-        this.date = new Date()
-        console.log(this.date)
-        this.endDate = new Date(Diary.addDate(this.date, 4))
-
-        this.title = "Týdenní přehled: " + this.date.getDate() + ". " + (this.date.getMonth() + 1) + ". " + this.date.getFullYear() + " - " + this.endDate.getDate() + ". " + (this.endDate.getMonth() + 1) + ". " + this.endDate.getFullYear()
+        this.lastMonday = new Date()
+        // zjisti datum nejblizsiho pondeli predchazejici datumu (pripadne tentyz datum pokud uz pondeli je)
+        this.lastMonday.setDate(this.lastMonday.getDate() + 1 - (this.lastMonday.getDay() || 7))
+        this.days = []
+        this.endDate = new Date(this.lastMonday)
+        console.log(this.endDate)
+        let workDays = 5
+        while (workDays > 0) {
+            this.days.push(<Col key={workDays}><DashboardDay date={Diary.toISODate(this.endDate)}/></Col>)
+            this.endDate.setDate(this.endDate.getDate() + 1)
+            workDays--
+        }
+        this.endDate.setDate(this.endDate.getDate() - 1)
+        this.title = "Týdenní přehled: " + this.lastMonday.getDate() + ". " + (this.lastMonday.getMonth() + 1) + ". - " + this.endDate.getDate() + ". " + (this.endDate.getMonth() + 1) + ". "
     }
 
     static toISODate(date)
     {
         return date.toISOString().substring(0, 10)
-    }
-
-    static addDate(date, cnt)
-    {
-        let d = new Date(date)
-        d.setDate(d.getDate() + cnt)
-        return d
     }
 
     render() {
@@ -30,11 +32,7 @@ export default class Diary extends Component {
                 <h1 className="text-center mb-4">{this.title}</h1>
                 <Container fluid={true}>
                     <Row>
-                        <Col><DashboardDay date={Diary.toISODate(this.date)}/></Col>
-                        <Col><DashboardDay date={Diary.toISODate(Diary.addDate(this.date, 1))}/></Col>
-                        <Col><DashboardDay date={Diary.toISODate(Diary.addDate(this.date, 2))}/></Col>
-                        <Col><DashboardDay date={Diary.toISODate(Diary.addDate(this.date, 3))}/></Col>
-                        <Col><DashboardDay date={Diary.toISODate(Diary.addDate(this.date, 4))}/></Col>
+                        {this.days}
                     </Row>
                 </Container>
             </div>

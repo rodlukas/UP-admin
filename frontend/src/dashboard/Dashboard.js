@@ -6,8 +6,7 @@ export default class Dashboard extends Component {
     constructor(props) {
         super(props)
         this.date = new Date().toISOString().substring(0, 10)
-        this.prettydate = new Date()
-        this.title = "Dnešní přehled: " + this.prettydate.getDate() + ". " + (this.prettydate.getMonth()+1) + ". " + this.prettydate.getFullYear()
+        this.title = "Dnešní přehled"
     }
 
     render() {

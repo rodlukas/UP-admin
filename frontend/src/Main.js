@@ -6,7 +6,7 @@ import ClientEdit from "./clients/ClientEdit"
 import Diary from "./Diary"
 import Groups from "./Groups"
 import Dashboard from "./dashboard/Dashboard"
-import {Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink,} from 'reactstrap'
+import {Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} from 'reactstrap'
 
 export default class Main extends Component {
     constructor(props) {
@@ -28,13 +28,14 @@ export default class Main extends Component {
         return (
             <HashRouter>
                 <div>
-                    <Navbar color="faded" light expand="md">
+                    <Navbar color="faded" light expand="md" className="border-bottom">
                         <NavbarBrand href="/">UPadmin</NavbarBrand>
                         <NavbarToggler onClick={this.toggle}/>
                         <Collapse isOpen={this.state.isOpen} navbar>
                             <Nav className="ml-auto" navbar>
                                 <NavItem>
-                                    <NavLink tag={RouterNavLink} exact activeClassName="active" to="/">Přehled</NavLink>
+                                    <NavLink tag={RouterNavLink} exact activeClassName="active"
+                                             to="/">Přehled</NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink tag={RouterNavLink} to="/diar">Diář</NavLink>

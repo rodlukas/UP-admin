@@ -1,3 +1,11 @@
 .active {
   font-weight: bold;
 }
+
+html, .content {
+  background-color: #ECF0F5;
+}
+
+table {
+  background-color: white !important;
+}

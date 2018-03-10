@@ -41,8 +41,8 @@ export default class ClientList extends Component {
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>
                 <Button color="info" onClick={this.toggle}>Přidat klienta</Button>
-                <Table>
-                    <thead>
+                <Table striped size="sm">
+                    <thead className="thead-dark">
                     <tr>
                         <th>Jméno</th>
                         <th>Telefon</th>
