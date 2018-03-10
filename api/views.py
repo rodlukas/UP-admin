@@ -5,17 +5,17 @@ from datetime import datetime
 
 
 class ClientViewSet(viewsets.ModelViewSet):
-    queryset = Client.objects.all()
+    queryset = Client.objects.all().order_by('surname', 'name')
     serializer_class = ClientSerializer
 
 
 class AttendanceStateViewSet(viewsets.ModelViewSet):
-    queryset = AttendanceState.objects.all()
+    queryset = AttendanceState.objects.all().order_by('name')
     serializer_class = AttendanceStateSerializer
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
+    queryset = Group.objects.all().order_by('name')
     serializer_class = GroupSerializer
 
     def get_queryset(self):
@@ -27,7 +27,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
+    queryset = Course.objects.all().order_by('name')
     serializer_class = CourseSerializer
 
 

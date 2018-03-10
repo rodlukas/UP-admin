@@ -5,14 +5,18 @@ import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, Moda
 export default class FormEditClient extends Component {
     constructor(props) {
         super(props)
+        this.isClient = false
         this.state = {
-            id: props.user.id,
-            name: props.user.name,
-            surname: props.user.surname,
-            email: props.user.email,
-            phone: props.user.phone,
-            note: props.user.note
+            id: props.user.id || '',
+            name: props.user.name || '',
+            surname: props.user.surname || '',
+            email: props.user.email || '',
+            phone: props.user.phone || '',
+            note: props.user.note || ''
         }
+        if(props.user.length !== 0)
+            this.isClient = true
+
     }
 
     onChange = (e) => {
@@ -25,9 +29,12 @@ export default class FormEditClient extends Component {
         e.preventDefault()
         // get our form data out of state
         const {name, surname, email, phone, note, id} = this.state
-
-        axios.put('/api/v1/clients/' + id + '/', {id, name, surname, email, phone, note})
-            .then((response) => {
+        let request
+        if(this.isClient)
+            request = axios.put('/api/v1/clients/' + id + '/', {id, name, surname, email, phone, note})
+        else
+            request = axios.post('/api/v1/clients/', {name, surname, email, phone, note})
+        request.then((response) => {
                 this.setState({users: response.data})
                 this.close()
                 this.refresh()
@@ -49,9 +56,8 @@ export default class FormEditClient extends Component {
         const {name, surname, email, phone, note} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
-                <ModalHeader toggle={this.toggle}>Úprava klienta</ModalHeader>
+                <ModalHeader toggle={this.close}>{this.isClient ? 'Úprava' : 'Přidání'} klienta</ModalHeader>
                 <ModalBody>
-
                         <FormGroup row>
                             <Label for="name" sm={2}>Jméno</Label>
                             <Col sm={10}>
@@ -85,8 +91,8 @@ export default class FormEditClient extends Component {
 
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" type="submit">Uložit</Button>{' '}
-                    <Button color="secondary" onClick={this.toggle}>Zrušit</Button>
+                    <Button color="primary" type="submit">{this.isClient ? 'Uložit' : 'Přidat'}</Button>{' '}
+                    <Button color="secondary" onClick={this.close}>Zrušit</Button>
                 </ModalFooter>
             </Form>
         )

@@ -10,14 +10,14 @@ export default class ClientList extends Component {
         this.state = {
             users: [],
             modal: false,
-            currentuser: []
+            currentUser: []
         }
         this.toggle = this.toggle.bind(this)
     }
 
-    toggle(user) {
+    toggle(user = []) {
         this.setState({
-            currentuser: user,
+            currentUser: user,
             modal: !this.state.modal
         })
     }
@@ -40,7 +40,7 @@ export default class ClientList extends Component {
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>
-                <Button color="info">Přidat klienta</Button>
+                <Button color="info" onClick={() => this.toggle()}>Přidat klienta</Button>
                 <Table striped size="sm">
                     <thead className="thead-dark">
                     <tr>
@@ -70,7 +70,7 @@ export default class ClientList extends Component {
                     </tbody>
                 </Table>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditClient user={this.state.currentuser} funcClose={this.toggle} funcRefresh={this.getUsers}/>
+                    <FormEditClient user={this.state.currentUser} funcClose={this.toggle} funcRefresh={this.getUsers}/>
                 </Modal>
             </div>
         )
