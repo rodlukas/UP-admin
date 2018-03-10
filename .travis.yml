@@ -3,7 +3,7 @@ python:
 - '3.6'
 node_js: 8
 before_install:
-- npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
+- npm config set //npm.fontawesome.com/:_authToken=$NPM_TOKEN
 install:
 - pip install -r requirements.txt
 - pip install codecov
