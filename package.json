@@ -1,4 +1,6 @@
 {
+  "name": "frontend-root",
+  "version": "0.1.0",
   "engines": {
     "node": "8.10.x",
     "npm": "5.7.x"
