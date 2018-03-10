@@ -1,11 +1,15 @@
 .active {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 html, .content {
-  background-color: #ECF0F5;
+    background-color: #ECF0F5;
 }
 
-table {
-  background-color: white !important;
+.table {
+    background-color: white !important;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
 }

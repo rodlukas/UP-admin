@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Table, Button, Modal} from 'reactstrap'
 import axios from "axios"
-import FormEditClient from '../components/FormEditClient'
+import FormEditClient from '../forms/FormEditClient'
 
 export default class ClientList extends Component {
     constructor(props) {

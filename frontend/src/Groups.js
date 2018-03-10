@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Table, Button, Modal} from 'reactstrap'
 import axios from "axios"
-import FormEditGroup from './components/FormEditGroup'
+import FormEditGroup from './forms/FormEditGroup'
 
 export default class Groups extends Component {
     constructor(props) {
