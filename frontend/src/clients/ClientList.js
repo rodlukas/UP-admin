@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Table, Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
+import {Table, Button, Modal} from 'reactstrap'
 import axios from "axios"
 import FormEditClient from '../components/FormEditClient'
 
@@ -40,7 +40,7 @@ export default class ClientList extends Component {
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>
-                <Button color="info" onClick={this.toggle}>Přidat klienta</Button>
+                <Button color="info">Přidat klienta</Button>
                 <Table striped size="sm">
                     <thead className="thead-dark">
                     <tr>
@@ -61,23 +61,16 @@ export default class ClientList extends Component {
                                     <td><a href={'mailto:' + user.email}>{user.email}</a></td>
                                     <td>{user.note}</td>
                                     <td>
-                                        <Button color="primary" onClick={() => this.toggle(user)}>Upravit</Button>
-                                        &nbsp;<Button color="secondary" onClick={this.toggle}>Karta</Button>
-                                        &nbsp;<Button color="info" onClick={this.toggle}>Přidat kurz</Button>
+                                        <Button color="primary" onClick={() => this.toggle(user)}>Upravit</Button>{' '}
+                                        <Button color="secondary">Karta</Button>{' '}
+                                        <Button color="info">Přidat kurz</Button>
                                     </td>
                                 </tr>)
                     }
                     </tbody>
                 </Table>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
-                    <ModalBody>
-                        <FormEditClient user={this.state.currentuser}/>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
-                        <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-                    </ModalFooter>
+                    <FormEditClient user={this.state.currentuser} funcClose={this.toggle} funcRefresh={this.getUsers}/>
                 </Modal>
             </div>
         )

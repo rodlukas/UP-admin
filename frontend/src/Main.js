@@ -2,7 +2,6 @@ import React, {Component} from "react"
 import {Route, NavLink as RouterNavLink, HashRouter} from "react-router-dom"
 import ClientList from "./clients/ClientList"
 import ClientView from "./clients/ClientView"
-import ClientEdit from "./clients/ClientEdit"
 import Diary from "./Diary"
 import Groups from "./Groups"
 import Dashboard from "./dashboard/Dashboard"
@@ -55,8 +54,6 @@ export default class Main extends Component {
                         <Route path="/diar" component={Diary}/>
                         <Route path="/klienti" component={ClientList}/>
                         <Route path="/klienti/:clientId" component={ClientView}/>
-                        <Route path="/klienti/:clientId/upravit" component={ClientEdit}/>
-                        <Route path="/klienti/:clientId/pridat" component={ClientEdit}/>
                     </div>
                 </div>
             </HashRouter>
