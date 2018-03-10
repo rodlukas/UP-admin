@@ -5,6 +5,7 @@ node_js: 8
 install:
 - pip install -r requirements.txt
 - pip install codecov
+- npm install
 script:
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
 after_success:
