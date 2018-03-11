@@ -52,7 +52,7 @@ export default class Main extends Component {
                         <Route exact path="/" component={Dashboard}/>
                         <Route path="/skupiny" component={Groups}/>
                         <Route path="/diar" component={Diary}/>
-                        <Route path="/klienti" component={Clients}/>
+                        <Route exact path="/klienti" component={Clients}/>
                         <Route path="/klienti/:clientId" component={ClientView}/>
                     </div>
                 </div>

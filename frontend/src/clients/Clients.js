@@ -1,5 +1,6 @@
 import React, {Component} from "react"
 import {Table, Button, Modal} from 'reactstrap'
+import {Link} from 'react-router-dom'
 import axios from "axios"
 import FormEditClient from '../forms/FormEditClient'
 
@@ -36,6 +37,8 @@ export default class ClientList extends Component {
         this.getClients()
     }
 
+
+
     render() {
         return (
             <div>
@@ -62,7 +65,7 @@ export default class ClientList extends Component {
                                     <td>{client.note}</td>
                                     <td>
                                         <Button color="primary" onClick={() => this.toggle(client)}>Upravit</Button>{' '}
-                                        <Button color="secondary">Karta</Button>
+                                        <Link to={"/klienti/" + client.id.toString()}><Button color="secondary">Karta</Button></Link>
                                     </td>
                                 </tr>)
                     }
