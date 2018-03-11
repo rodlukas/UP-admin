@@ -12,7 +12,7 @@ export default class Diary extends Component {
         this.endDate = new Date(this.lastMonday)
         let workDays = 5
         while (workDays > 0) {
-            this.days.push(<Col key={workDays}><DashboardDay date={DashboardDay.toISODate(this.endDate)}/></Col>)
+            this.days.push(<Col key={workDays}><DashboardDay date={this.endDate.toString()}/></Col>)
             this.endDate.setDate(this.endDate.getDate() + 1)
             workDays--
         }

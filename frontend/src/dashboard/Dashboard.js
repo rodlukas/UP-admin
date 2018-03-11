@@ -6,7 +6,6 @@ export default class Dashboard extends Component {
     constructor(props) {
         super(props)
         this.date = new Date()
-        this.dateString = DashboardDay.toISODate(this.date)
         this.title = "Dnešní přehled"
     }
 
@@ -17,7 +16,7 @@ export default class Dashboard extends Component {
                 <Container>
                     <Row>
                         <Col sm="12" md={{size: 8, offset: 2}}>
-                            <DashboardDay date={this.dateString}/>
+                            <DashboardDay date={this.date.toString()}/>
                         </Col>
                     </Row>
                 </Container>

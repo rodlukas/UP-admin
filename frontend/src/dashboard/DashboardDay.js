@@ -10,17 +10,17 @@ export default class DashboardDay extends Component {
         this.state = {
             lectures: []
         }
-        this.prettydate = new Date(this.props.date)
+        this.prettydate = new Date(props.date)
         this.day = this.prettydate.toLocaleDateString('cs-CZ', {weekday: 'long'})
         this.title = this.day + " " + this.prettydate.getDate() + ". " + (this.prettydate.getMonth() + 1) + ". "
     }
 
-    static toISODate(date) {
-        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+    toISODate() {
+        return this.prettydate.getFullYear() + "-" + (this.prettydate.getMonth() + 1) + "-" + this.prettydate.getDate()
     }
 
     getLectures = () => {
-        axios.get('/api/v1/lectures/?date=' + this.props.date)
+        axios.get('/api/v1/lectures/?date=' + this.toISODate())
             .then((response) => {
                 this.setState({lectures: response.data})
             })
@@ -29,7 +29,7 @@ export default class DashboardDay extends Component {
             })
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.getLectures()
     }
 
