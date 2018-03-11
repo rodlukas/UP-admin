@@ -97,14 +97,15 @@ export default class FormEditClient extends Component {
                                 <Input type="text" name="note" id="note" value={note} onChange={this.onChange}/>
                             </Col>
                         </FormGroup>
-                        <FormGroup row className="border-top pt-3">
+                        {this.isGroup ? <FormGroup row className="border-top pt-3">
                             <Label for="note" sm={2} className="text-muted">Smazání</Label>
                             <Col sm={10}>
                                 <Button color="danger" onClick={() => {
-                                    if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?')) this.delete(id)}}>Smazat klienta</Button>{' '}
+                                    if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?')) this.delete(id)
+                                }}>Smazat klienta</Button>{' '}
                                 <Badge color="warning" pill>Nevratně smaže klienta i s jeho lekcemi</Badge>
                             </Col>
-                        </FormGroup>
+                        </FormGroup> : ''}
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}

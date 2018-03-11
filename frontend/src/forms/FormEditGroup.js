@@ -123,7 +123,7 @@ export default class FormEditGroup extends Component {
                             />
                         </Col>
                     </FormGroup>
-                    <FormGroup row className="border-top pt-3">
+                    {this.isGroup ? <FormGroup row className="border-top pt-3">
                         <Label for="note" sm={2} className="text-muted">Smazání</Label>
                         <Col sm={10}>
                             <Button color="danger" onClick={() => {
@@ -131,12 +131,11 @@ export default class FormEditGroup extends Component {
                             }}>Smazat skupinu</Button>{' '}
                             <Badge color="warning" pill>Nevratně smaže skupinu i s jejími lekcemi</Badge>
                         </Col>
-                    </FormGroup>
+                    </FormGroup> : ''}
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}
                     <Button color="primary" type="submit">{this.isGroup ? 'Uložit' : 'Přidat'}</Button>
-
                 </ModalFooter>
             </Form>
         )
