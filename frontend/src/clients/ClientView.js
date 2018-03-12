@@ -1,8 +1,11 @@
 import React, {Component} from "react"
-import {Table, Button, Modal} from 'reactstrap'
+import {Container, Row, Col, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading, Input} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import axios from "axios"
 import FormEditClient from '../forms/FormEditClient'
+import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import FormEditLecture from "../forms/FormEditLecture"
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -18,9 +21,9 @@ export default class ClientView extends Component {
         this.toggle = this.toggle.bind(this)
     }
 
-    toggle(client = []) {
+    toggle(lecture = []) {
         this.setState({
-            currentLecture: client,
+            currentLecture: lecture,
             modal: !this.state.modal
         })
     }
@@ -69,7 +72,6 @@ export default class ClientView extends Component {
                 var groups = Object.keys(group_to_values).map(function (key) {
                     return {course: key, values: group_to_values[key]};
                 });
-                console.log(groups)
                 this.setState({lectures: groups})
             })
             .catch((error) => {
@@ -86,35 +88,50 @@ export default class ClientView extends Component {
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}: {this.state.client.name} {this.state.client.surname}</h1>
-                <Button color="info" onClick={() => this.toggle()}>Přidat klienta</Button>
-                <Table>
-                    <tbody>
-                        <tr>
+                <Button color="info" onClick={() => this.toggle()}>Přidat kurz</Button>
+                <Container fluid={true}>
+                    <Row>
                         {
                             this.state.lectures.map(
                                 lecture =>
-                                        <td key={lecture.course.toString()}>
-                                            {lecture.course}
-                                            <ul>
-                                            {
-                                                lecture.values.map(
-                                                    lectureVal =>
-                                                        <li key={'l' + lectureVal.id.toString()}>
-
-                                                            {lectureVal.attendances[0].paid ? 'placeno' : 'NEPLACENO'}<br/>
-                                                            {lectureVal.start}<br/>
-                                                            {lectureVal.attendances[0].attendancestate.name}
-                                                        </li>)
-                                            }
-                                            </ul>
-                                        </td>)
+                                    <Col key={lecture.course.toString()}>
+                                        <div>
+                                            <h4 className="text-center">{lecture.course}</h4>
+                                            <ListGroup>
+                                                {
+                                                    lecture.values.map(
+                                                        lectureVal =>
+                                                        {
+                                                            const d = new Date(lectureVal.start)
+                                                            return (
+                                                                <ListGroupItem key={'l' + lectureVal.id.toString()}>
+                                                                    <ListGroupItemHeading>
+                                                                        {d.getHours() + ":" + d.getMinutes()}{' '}
+                                                                        <FontAwesomeIcon icon={faUsdCircle}
+                                                                                         size="2x"
+                                                                                         className={lectureVal.attendances[0].paid ? "text-success" : "text-danger"}/>
+                                                                    </ListGroupItemHeading>{' '}
+                                                                    <p>
+                                                                        <Input type="select" bsSize="sm">
+                                                                            <option>{lectureVal.attendances[0].attendancestate.name}</option>
+                                                                        </Input>{' '}
+                                                                        <Button color="primary"
+                                                                                onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                                                    </p>
+                                                                </ListGroupItem>)
+                                                        })
+                                                }
+                                            </ListGroup>
+                                        </div>
+                                    </Col>)
                         }
-                        </tr>
-                    </tbody>
-                </Table>
+                    </Row>
+                </Container>
+
+
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditClient client={this.state.currentLecture} funcClose={this.toggle}
-                                    funcRefresh={this.getClients}/>
+                    <FormEditLecture lecture={this.state.currentLecture} funcClose={this.toggle}
+                                    funcRefresh={this.getLectures}/>
                 </Modal>
             </div>
         )

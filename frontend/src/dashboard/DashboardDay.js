@@ -45,10 +45,8 @@ export default class DashboardDay extends Component {
                                 return (
                                     <ListGroupItem key={lecture.id}>
                                         <ListGroupItemHeading>
-                                            {d.getHours() + ":" + d.getMinutes()} - {lecture.group ? lecture.group.name : lecture.attendances[0].client.name + " " + lecture.attendances[0].client.surname}
-                                            &nbsp;
-                                            <Badge pill>{lecture.course.name}</Badge>
-                                            &nbsp;
+                                            {d.getHours() + ":" + d.getMinutes()} - {lecture.group ? lecture.group.name : lecture.attendances[0].client.name + " " + lecture.attendances[0].client.surname}{' '}
+                                            <Badge pill>{lecture.course.name}</Badge>{' '}
                                             <Badge color="warning" pill>Příště platit</Badge>
                                         </ListGroupItemHeading>
 
