@@ -6,14 +6,13 @@ export default class FormEditLecture extends Component {
     constructor(props) {
         super(props)
         this.isLecture = false
-        const {id, attendances, group, start, course, duration} = props.lecture
+        const {id, attendances, start, course, duration} = props.lecture
         this.state = {
             id: id || '',
             attendances: attendances || '',
             at_state:  '',
             at_paid:  '',
             at_note:  '',
-            group: group || '',
             start: start || '',
             course: course || '',
             duration: duration || ''
@@ -36,7 +35,7 @@ export default class FormEditLecture extends Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        const {id, course, group, start, duration, at_note, at_paid, at_state} = this.state
+        const {id, course, start, duration, at_note, at_paid, at_state} = this.state
         let attendances = this.state.attendances
         attendances[0]["client_id"] = attendances[0].client.id
         attendances[0]["attendancestate_id"] = at_state.id
@@ -44,9 +43,9 @@ export default class FormEditLecture extends Component {
         attendances[0].paid = at_paid
         let request
         if (this.isLecture)
-            request = axios.put('/api/v1/lectures/' + id + '/', {id, attendances, course_id: course.id, group, start, duration})
+            request = axios.put('/api/v1/lectures/' + id + '/', {id, attendances, course_id: course.id, start, duration})
         else
-            request = axios.post('/api/v1/lectures/', {attendances, course, group, start, duration})
+            request = axios.post('/api/v1/lectures/', {attendances, course, start, duration})
         request.then(() => {
             this.close()
             this.refresh()
@@ -76,7 +75,7 @@ export default class FormEditLecture extends Component {
     }
 
     render() {
-        const {attendances, course, group, start, duration, at_state, at_note, at_paid} = this.state
+        const {id, course, start, duration, at_state, at_note, at_paid} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>{this.isLecture ? 'Úprava' : 'Přidání'} lekce klienta</ModalHeader>
@@ -123,6 +122,14 @@ export default class FormEditLecture extends Component {
                             <Input type="text" name="at_note" id="at_note" value={at_note} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
+                    {this.isLecture ? <FormGroup row className="border-top pt-3">
+                        <Label for="note" sm={2} className="text-muted">Smazání</Label>
+                        <Col sm={10}>
+                            <Button color="danger" onClick={() => {
+                                if (window.confirm('Opravdu chcete smazat lekci klienta ' + this.state.attendances[0].client.name + " " + this.state.attendances[0].client.surname + " v " + start + '?')) this.delete(id)
+                            }}>Smazat lekci</Button>
+                        </Col>
+                    </FormGroup> : ''}
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}

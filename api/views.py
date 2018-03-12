@@ -43,5 +43,5 @@ class LectureViewSet(viewsets.ModelViewSet):
             date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
             queryset = queryset.filter(start__contains=date)
         elif id_client is not None:
-            queryset = queryset.filter(attendances__client=id_client)
+            queryset = queryset.filter(attendances__client=id_client).filter(group__isnull=True)
         return queryset
