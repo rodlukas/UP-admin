@@ -12,10 +12,9 @@ export default class Groups extends Component {
             modal: false,
             currentGroup: []
         }
-        this.toggle = this.toggle.bind(this)
     }
 
-    toggle(group = []) {
+    toggle = (group = []) => {
         this.setState({
             currentGroup: group,
             modal: !this.state.modal
@@ -67,7 +66,8 @@ export default class Groups extends Component {
                     </tbody>
                 </Table>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditGroup group={this.state.currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}/>
+                    <FormEditGroup group={this.state.currentGroup} funcClose={this.toggle}
+                                   funcRefresh={this.getGroups}/>
                 </Modal>
             </div>
         )

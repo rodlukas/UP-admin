@@ -16,10 +16,9 @@ export default class ClientView extends Component {
             currentLecture: [],
             lectures: []
         }
-        this.toggle = this.toggle.bind(this)
     }
 
-    toggle(lecture = []) {
+    toggle = (lecture = []) => {
         this.setState({
             currentLecture: lecture,
             modal: !this.state.modal
@@ -27,7 +26,7 @@ export default class ClientView extends Component {
     }
 
     goBack = () => {
-        this.props.history.goBack();
+        this.props.history.goBack()
     }
 
     getClient = () => {
@@ -44,13 +43,13 @@ export default class ClientView extends Component {
         axios.get('/api/v1/lectures/?client=' + this.clientId)
             .then((response) => {
                 let group_to_values = response.data.reduce(function (obj, item) {
-                    obj[item.course.name] = obj[item.course.name] || [];
-                    obj[item.course.name].push(item);
-                    return obj;
-                }, {});
+                    obj[item.course.name] = obj[item.course.name] || []
+                    obj[item.course.name].push(item)
+                    return obj
+                }, {})
                 let groups = Object.keys(group_to_values).map(function (key) {
-                    return {course: key, values: group_to_values[key]};
-                });
+                    return {course: key, values: group_to_values[key]}
+                })
                 this.setState({lectures: groups})
             })
             .catch((error) => {
@@ -80,8 +79,7 @@ export default class ClientView extends Component {
                                             <ListGroup>
                                                 {
                                                     lecture.values.map(
-                                                        lectureVal =>
-                                                        {
+                                                        lectureVal => {
                                                             const d = new Date(lectureVal.start)
                                                             return (
                                                                 <ListGroupItem key={'l' + lectureVal.id.toString()}>
@@ -111,7 +109,7 @@ export default class ClientView extends Component {
 
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <FormEditLecture lecture={this.state.currentLecture} funcClose={this.toggle}
-                                    funcRefresh={this.getLectures}/>
+                                     funcRefresh={this.getLectures}/>
                 </Modal>
             </div>
         )

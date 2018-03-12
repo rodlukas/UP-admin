@@ -13,10 +13,9 @@ export default class ClientList extends Component {
             modal: false,
             currentClient: []
         }
-        this.toggle = this.toggle.bind(this)
     }
 
-    toggle(client = []) {
+    toggle = (client = []) => {
         this.setState({
             currentClient: client,
             modal: !this.state.modal
@@ -36,7 +35,6 @@ export default class ClientList extends Component {
     componentDidMount() {
         this.getClients()
     }
-
 
 
     render() {
@@ -64,15 +62,18 @@ export default class ClientList extends Component {
                                     <td><a href={'mailto:' + client.email}>{client.email}</a></td>
                                     <td>{client.note}</td>
                                     <td>
-                                        <Button color="primary" onClick={() => this.toggle(client)}>Upravit</Button>{' '}
-                                        <Link to={"/klienti/" + client.id.toString()}><Button color="secondary">Karta</Button></Link>
+                                        <Button color="primary"
+                                                onClick={() => this.toggle(client)}>Upravit</Button>{' '}
+                                        <Link to={"/klienti/" + client.id.toString()}><Button
+                                            color="secondary">Karta</Button></Link>
                                     </td>
                                 </tr>)
                     }
                     </tbody>
                 </Table>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditClient client={this.state.currentClient} funcClose={this.toggle} funcRefresh={this.getClients}/>
+                    <FormEditClient client={this.state.currentClient} funcClose={this.toggle}
+                                    funcRefresh={this.getClients}/>
                 </Modal>
             </div>
         )

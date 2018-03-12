@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Container, Row, Col} from 'reactstrap';
+import {Container, Row, Col} from 'reactstrap'
 import DashboardDay from './dashboard/DashboardDay'
 
 export default class Diary extends Component {

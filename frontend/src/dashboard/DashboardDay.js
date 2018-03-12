@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, Input} from 'reactstrap';
+import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, Input} from 'reactstrap'
 import axios from "axios"
 import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
@@ -39,8 +39,8 @@ export default class DashboardDay extends Component {
                 <h4 className="text-center">{this.title}</h4>
                 <ListGroup>
                     {this.state.lectures.length ?
-                        this.state.lectures.map(
-                            lecture => {
+                        this.state.lectures.map(lecture =>
+                            {
                                 const d = new Date(lecture.start)
                                 return (
                                     <ListGroupItem key={lecture.id}>
@@ -49,24 +49,23 @@ export default class DashboardDay extends Component {
                                             <Badge pill>{lecture.course.name}</Badge>{' '}
                                             <Badge color="warning" pill>Příště platit</Badge>
                                         </ListGroupItemHeading>
-
                                         <ul>
-                                            {lecture.group ? lecture.attendances.map(
-                                                attendance =>
-                                                    <li key={attendance.id}>
-                                                        {attendance.client.name} {attendance.client.surname} -
-                                                        <FontAwesomeIcon icon={faUsdCircle} size="2x" className={attendance.paid ? "text-success" : "text-danger"}/>{' '}
-                                                        <Input type="select" bsSize="sm">
-                                                            <option>{attendance.attendancestate.name}</option>
-                                                        </Input>
-                                                    </li>
+                                            {lecture.group ? lecture.attendances.map(attendance =>
+                                                <li key={attendance.id}>
+                                                    {attendance.client.name} {attendance.client.surname} -
+                                                    <FontAwesomeIcon icon={faUsdCircle} size="2x"
+                                                                     className={attendance.paid ? "text-success" : "text-danger"}/>{' '}
+                                                    <Input type="select" bsSize="sm">
+                                                        <option>{attendance.attendancestate.name}</option>
+                                                    </Input>
+                                                </li>
                                             ) : <p>
-                                                <FontAwesomeIcon icon={faUsdCircle} size="2x"
-                                                                 className={lecture.attendances[0].paid ? "text-success" : "text-danger"}/>
-                                                <Input type="select" bsSize="sm">
-                                                    <option>{lecture.attendances[0].attendancestate.name}</option>
-                                                </Input>
-                                            </p>
+                                                    <FontAwesomeIcon icon={faUsdCircle} size="2x"
+                                                                     className={lecture.attendances[0].paid ? "text-success" : "text-danger"}/>
+                                                    <Input type="select" bsSize="sm">
+                                                        <option>{lecture.attendances[0].attendancestate.name}</option>
+                                                    </Input>
+                                                </p>
                                             }
                                         </ul>
                                     </ListGroupItem>)
