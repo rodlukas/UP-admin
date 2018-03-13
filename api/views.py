@@ -36,7 +36,7 @@ class LectureViewSet(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
 
     def get_queryset(self):
-        queryset = Lecture.objects.all().order_by('start')
+        queryset = Lecture.objects.all().order_by('-start')
         date = self.request.query_params.get('date', None)
         id_client = self.request.query_params.get('client', None)
         if date is not None:

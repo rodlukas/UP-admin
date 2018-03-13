@@ -9,22 +9,37 @@ export default class FormEditLecture extends Component {
         const {id, attendances, start, course, duration} = props.lecture
         this.state = {
             id: id || '',
-            attendances: attendances || '',
-            at_state: '',
-            at_paid: '',
+            attendances: attendances || [],
+            at_state: 5,
+            at_paid: false,
             at_note: '',
-            start: start || '',
-            course: course || '',
+            date: '',
+            time: '',
+            course_id: 1,
             duration: duration || '',
             attendancestates: props.attendancestates,
-            courses: []
+            courses: [],
+            client: []
         }
         if (props.lecture.length !== 0) {
             this.isLecture = true
             this.state.at_state = attendances[0].attendancestate.id
             this.state.at_paid = attendances[0].paid
             this.state.at_note = attendances[0].note
+            this.state.course_id = course.id
+            this.state.date = this.toISODate(new Date(start))
+            this.state.time = this.toISOTime(new Date(start))
         }
+        else
+            this.state.client = props.client
+    }
+
+    toISODate(date) {
+        return date.getFullYear() + "-" + ((date.getMonth()+1) < 10 ? '0' : '') + (date.getMonth() + 1) + "-" + (date.getDate() < 10 ? '0' : '') + date.getDate()
+    }
+
+    toISOTime(date) {
+        return (date.getHours() < 10 ? '0' : '') + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
     }
 
     getDataCourses = () => {
@@ -46,24 +61,30 @@ export default class FormEditLecture extends Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        const {id, course, start, duration, at_note, at_paid, at_state} = this.state
+        const {id, course_id, time, date, duration, at_note, at_paid, at_state} = this.state
         let attendances = this.state.attendances
-        attendances[0]["client_id"] = attendances[0].client.id
-        attendances[0]["attendancestate_id"] = at_state
-        attendances[0].note = at_note
-        attendances[0].paid = at_paid
+        const start = date + " " + time
+        if(this.isLecture)
+        {
+            attendances[0].attendancestate_id = at_state
+            attendances[0].note = at_note
+            attendances[0].paid = at_paid
+        }
+        else {
+            attendances.push({client_id: this.state.client.id, attendancestate_id: at_state, paid: at_paid, note: at_note})
+        }
         console.log(attendances)
         let request
         if (this.isLecture)
             request = axios.put('/api/v1/lectures/' + id + '/', {
                 id,
                 attendances,
-                course_id: course.id,
+                course_id,
                 start,
                 duration
             })
         else
-            request = axios.post('/api/v1/lectures/', {attendances, course, start, duration})
+            request = axios.post('/api/v1/lectures/', {attendances, course_id, start, duration})
         request.then(() => {
             this.close()
             this.refresh()
@@ -98,15 +119,21 @@ export default class FormEditLecture extends Component {
     }
 
     render() {
-        const {id, course, start, duration, at_state, at_note, at_paid} = this.state
+        const {id, course_id, date, time, duration, at_state, at_note, at_paid} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>{this.isLecture ? 'Úprava' : 'Přidání'} lekce klienta</ModalHeader>
                 <ModalBody>
                     <FormGroup row>
-                        <Label for="start" sm={2}>start</Label>
+                        <Label for="date" sm={2}>Datum</Label>
                         <Col sm={10}>
-                            <Input type="text" name="start" id="start" value={start} onChange={this.onChange}/>
+                            <Input type="date" name="date" id="date" value={date} onChange={this.onChange}/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label for="time" sm={2}>Čas</Label>
+                        <Col sm={10}>
+                            <Input type="time" name="time" id="time" value={time} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -129,9 +156,9 @@ export default class FormEditLecture extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="course" sm={2}>Kurz</Label>
+                        <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
-                            <Input type="select" bsSize="sm" name="course" id="course" value={course.id}
+                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id}
                                    onChange={this.onChange}>
                                 {this.state.courses.map(course =>
                                     <option key={course.id}
@@ -160,7 +187,7 @@ export default class FormEditLecture extends Component {
                         <Col sm={10}>
                             <Button color="danger"
                                     onClick={() => {
-                                        if (window.confirm('Opravdu chcete smazat lekci klienta ' + this.state.attendances[0].client.name + " " + this.state.attendances[0].client.surname + " v " + start + '?'))
+                                        if (window.confirm('Opravdu chcete smazat lekci klienta ' + this.state.attendances[0].client.name + " " + this.state.attendances[0].client.surname + " v " + date + " " + time + '?'))
                                             this.delete(id)}}>
                                 Smazat lekci</Button>
                         </Col>

@@ -103,7 +103,7 @@ export default class ClientView extends Component {
                                                             return (
                                                                 <ListGroupItem key={'l' + lectureVal.id.toString()}>
                                                                     <ListGroupItemHeading>
-                                                                        {d.getHours() + ":" + d.getMinutes()}{' '}
+                                                                        {d.getDate() + ". " + (d.getMonth()+1) + ". " + d.getFullYear() + " - " + d.getHours() + ":" + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()}{' '}
                                                                         <FontAwesomeIcon icon={faUsdCircle}
                                                                                          size="2x"
                                                                                          className={lectureVal.attendances[0].paid ? "text-success" : "text-danger"}/>
@@ -132,7 +132,7 @@ export default class ClientView extends Component {
 
 
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditLecture lecture={this.state.currentLecture} funcClose={this.toggle}
+                    <FormEditLecture lecture={this.state.currentLecture} client={this.state.client} funcClose={this.toggle}
                                      funcRefresh={this.getLectures} attendancestates={this.state.attendancestates}/>
                 </Modal>
             </div>
