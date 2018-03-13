@@ -7,12 +7,24 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 export default class DashboardDay extends Component {
     constructor(props) {
         super(props)
+        console.log()
         this.state = {
-            lectures: []
+            lectures: [],
+            attendancestates: []
         }
         this.prettydate = new Date(props.date)
         this.day = this.prettydate.toLocaleDateString('cs-CZ', {weekday: 'long'})
         this.title = this.day + " " + this.prettydate.getDate() + ". " + (this.prettydate.getMonth() + 1) + ". "
+    }
+
+    getDataAttendanceStates = () => {
+        axios.get('/api/v1/attendancestates/')
+            .then((response) => {
+                this.setState({attendancestates: response.data})
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     toISODate() {
@@ -29,8 +41,16 @@ export default class DashboardDay extends Component {
             })
     }
 
-    componentWillMount() {
+    onChange = (e) => {
+        const target = e.target
+        const state = this.state
+        state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
+        this.setState(state)
+    }
+
+    componentDidMount() {
         this.getLectures()
+        this.getDataAttendanceStates()
     }
 
     render() {
@@ -55,15 +75,23 @@ export default class DashboardDay extends Component {
                                                     {attendance.client.name} {attendance.client.surname} -
                                                     <FontAwesomeIcon icon={faUsdCircle} size="2x"
                                                                      className={attendance.paid ? "text-success" : "text-danger"}/>{' '}
-                                                    <Input type="select" bsSize="sm">
-                                                        <option>{attendance.attendancestate.name}</option>
+                                                    <Input type="select" bsSize="sm" onChange={this.onChange}
+                                                           value={attendance.attendancestate.id}>
+                                                        {this.state.attendancestates.map(attendancestate =>
+                                                            <option key={attendancestate.id}
+                                                                    value={attendancestate.id}>{attendancestate.name}</option>)
+                                                        }
                                                     </Input>
                                                 </li>
                                             ) : <p>
                                                     <FontAwesomeIcon icon={faUsdCircle} size="2x"
                                                                      className={lecture.attendances[0].paid ? "text-success" : "text-danger"}/>
-                                                    <Input type="select" bsSize="sm">
-                                                        <option>{lecture.attendances[0].attendancestate.name}</option>
+                                                    <Input type="select" bsSize="sm" onChange={this.onChange}
+                                                           value={lecture.attendances[0].attendancestate.id}>
+                                                        {this.state.attendancestates.map(attendancestate =>
+                                                            <option key={attendancestate.id}
+                                                                    value={attendancestate.id}>{attendancestate.name}</option>)
+                                                        }
                                                     </Input>
                                                 </p>
                                             }

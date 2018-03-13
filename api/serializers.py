@@ -133,7 +133,7 @@ class LectureSerializer(serializers.ModelSerializer):
             client = Client.objects.get(pk=attendance_data.pop('client').id)
             attendance.client = client
             attendance.note = attendance_data.get('note', attendance.note)
-            attendancestate = AttendanceState.objects.get(pk=attendance.attendancestate_id)
+            attendancestate = AttendanceState.objects.get(pk=attendance_data.pop('attendancestate').id)
             attendance.attendancestate = attendancestate
             attendance.save()
         return instance

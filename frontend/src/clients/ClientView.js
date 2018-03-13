@@ -14,8 +14,26 @@ export default class ClientView extends Component {
             client: [],
             modal: false,
             currentLecture: [],
-            lectures: []
+            lectures: [],
+            attendancestates: []
         }
+    }
+
+    getDataAttendanceStates = () => {
+        axios.get('/api/v1/attendancestates/')
+            .then((response) => {
+                this.setState({attendancestates: response.data})
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    onChange = (e) => {
+        const target = e.target
+        const state = this.state
+        state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
+        this.setState(state)
     }
 
     toggle = (lecture = []) => {
@@ -60,6 +78,7 @@ export default class ClientView extends Component {
     componentDidMount() {
         this.getClient()
         this.getLectures()
+        this.getDataAttendanceStates()
     }
 
     render() {
@@ -90,8 +109,13 @@ export default class ClientView extends Component {
                                                                                          className={lectureVal.attendances[0].paid ? "text-success" : "text-danger"}/>
                                                                     </ListGroupItemHeading>{' '}
                                                                     <p>
-                                                                        <Input type="select" bsSize="sm">
-                                                                            <option>{lectureVal.attendances[0].attendancestate.name}</option>
+                                                                        <Input type="select" bsSize="sm"
+                                                                               onChange={this.onChange}
+                                                                               value={lectureVal.attendances[0].attendancestate.id}>
+                                                                            {this.state.attendancestates.map(attendancestate =>
+                                                                                <option key={attendancestate.id}
+                                                                                        value={attendancestate.id}>{attendancestate.name}</option>)
+                                                                            }
                                                                         </Input>{' '}
                                                                         <Button color="primary"
                                                                                 onClick={() => this.toggle(lectureVal)}>Upravit</Button>
@@ -109,7 +133,7 @@ export default class ClientView extends Component {
 
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <FormEditLecture lecture={this.state.currentLecture} funcClose={this.toggle}
-                                     funcRefresh={this.getLectures}/>
+                                     funcRefresh={this.getLectures} attendancestates={this.state.attendancestates}/>
                 </Modal>
             </div>
         )

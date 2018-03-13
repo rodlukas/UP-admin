@@ -15,14 +15,26 @@ export default class FormEditLecture extends Component {
             at_note: '',
             start: start || '',
             course: course || '',
-            duration: duration || ''
+            duration: duration || '',
+            attendancestates: props.attendancestates,
+            courses: []
         }
         if (props.lecture.length !== 0) {
             this.isLecture = true
-            this.state.at_state = attendances[0].attendancestate
+            this.state.at_state = attendances[0].attendancestate.id
             this.state.at_paid = attendances[0].paid
             this.state.at_note = attendances[0].note
         }
+    }
+
+    getDataCourses = () => {
+        axios.get('/api/v1/courses/')
+            .then((response) => {
+                this.setState({courses: response.data})
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     onChange = (e) => {
@@ -37,9 +49,10 @@ export default class FormEditLecture extends Component {
         const {id, course, start, duration, at_note, at_paid, at_state} = this.state
         let attendances = this.state.attendances
         attendances[0]["client_id"] = attendances[0].client.id
-        attendances[0]["attendancestate_id"] = at_state.id
+        attendances[0]["attendancestate_id"] = at_state
         attendances[0].note = at_note
         attendances[0].paid = at_paid
+        console.log(attendances)
         let request
         if (this.isLecture)
             request = axios.put('/api/v1/lectures/' + id + '/', {
@@ -79,6 +92,11 @@ export default class FormEditLecture extends Component {
             })
     }
 
+    componentDidMount()
+    {
+        this.getDataCourses()
+    }
+
     render() {
         const {id, course, start, duration, at_state, at_note, at_paid} = this.state
         return (
@@ -103,7 +121,10 @@ export default class FormEditLecture extends Component {
                         <Col sm={10}>
                             <Input type="select" bsSize="sm" name="at_state" id="at_state" value={at_state}
                                    onChange={this.onChange}>
-                                <option value={at_state}>{at_state.name}</option>
+                                {this.state.attendancestates.map(attendancestate =>
+                                    <option key={attendancestate.id}
+                                            value={attendancestate.id}>{attendancestate.name}</option>)
+                                }
                             </Input>
                         </Col>
                     </FormGroup>
@@ -112,7 +133,10 @@ export default class FormEditLecture extends Component {
                         <Col sm={10}>
                             <Input type="select" bsSize="sm" name="course" id="course" value={course.id}
                                    onChange={this.onChange}>
-                                <option value={course.id}>{course.name}</option>
+                                {this.state.courses.map(course =>
+                                    <option key={course.id}
+                                            value={course.id}>{course.name}</option>)
+                                }
                             </Input>
                         </Col>
                     </FormGroup>
