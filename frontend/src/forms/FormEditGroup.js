@@ -113,7 +113,7 @@ export default class FormEditGroup extends Component {
         const {id, name, clients, memberships, courses, course_id} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
-                <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny</ModalHeader>
+                <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny: {name}</ModalHeader>
                 <ModalBody>
                     <FormGroup row>
                         <Label for="name" sm={2}>Název</Label>

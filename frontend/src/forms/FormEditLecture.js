@@ -94,7 +94,7 @@ export default class FormEditLecture extends Component {
         const {id, course_id, date, time, duration, at_state, at_note, at_paid, client, attendancestates, courses} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
-                <ModalHeader toggle={this.close}>{this.isLecture ? 'Úprava' : 'Přidání'} lekce klienta</ModalHeader>
+                <ModalHeader toggle={this.close}>{this.isLecture ? 'Úprava' : 'Přidání'} lekce klienta: {client.name + " " + client.surname}</ModalHeader>
                 <ModalBody>
                     <FormGroup row>
                         <Label for="date" sm={2}>Datum</Label>

@@ -38,10 +38,13 @@ class LectureViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Lecture.objects.all().order_by('-start')
         date = self.request.query_params.get('date', None)
-        id_client = self.request.query_params.get('client', None)
+        client_id = self.request.query_params.get('client', None)
+        group_id = self.request.query_params.get('group', None)
         if date is not None:
             date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
             queryset = queryset.filter(start__contains=date)
-        elif id_client is not None:
-            queryset = queryset.filter(attendances__client=id_client).filter(group__isnull=True)
+        elif client_id is not None:
+            queryset = queryset.filter(attendances__client=client_id).filter(group__isnull=True)
+        elif group_id is not None:
+            queryset = queryset.filter(group=group_id)
         return queryset
