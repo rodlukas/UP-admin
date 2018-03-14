@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Route, NavLink as RouterNavLink, HashRouter} from "react-router-dom"
 import Clients from "./clients/Clients"
-import ClientView from "./clients/ClientView"
+import Card from "./clients/Card"
 import Diary from "./Diary"
 import Groups from "./Groups"
 import Dashboard from "./dashboard/Dashboard"
@@ -48,10 +48,11 @@ export default class Main extends Component {
                     </Navbar>
                     <div className="content">
                         <Route exact path="/" component={Dashboard}/>
-                        <Route path="/skupiny" component={Groups}/>
+                        <Route exact path="/skupiny" component={Groups}/>
                         <Route path="/diar" component={Diary}/>
                         <Route exact path="/klienti" component={Clients}/>
-                        <Route path="/klienti/:clientId" component={ClientView}/>
+                        <Route path="/klienti/:id" component={Card}/>
+                        <Route path="/skupiny/:id" component={Card}/>
                     </div>
                 </div>
             </HashRouter>

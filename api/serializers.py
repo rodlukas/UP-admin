@@ -44,7 +44,9 @@ class GroupSerializer(serializers.ModelSerializer):
         memberships_data = validated_data.pop('memberships')
         memberships = instance.memberships.all()
         memberships = list(memberships)
+        course = Course.objects.get(pk=validated_data.pop('course').id)
         instance.name = validated_data.get('name', instance.name)
+        instance.course = course
         instance.save()
         for membership_data in memberships_data:
             client = Client.objects.get(pk=membership_data.pop('client').id)
@@ -104,9 +106,9 @@ class LectureSerializer(serializers.ModelSerializer):
         # for k, v in validated_data.items():
         #    print(k, v)
         group = None
-        if group in validated_data:
-            group = Group.objects.get(pk=group.id)
-            validated_data.pop('group')
+        if 'group' in validated_data:
+            group = Group.objects.get(pk=validated_data.pop('group').id)
+
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
         for attendance_data in attendances_data:
             client = Client.objects.get(pk=attendance_data.pop('client').id)
@@ -117,9 +119,8 @@ class LectureSerializer(serializers.ModelSerializer):
         attendances_data = validated_data.pop('attendances')
         course = Course.objects.get(pk=validated_data.pop('course').id)
         group = None
-        if group in validated_data:
-            group = Group.objects.get(pk=group.id)
-            validated_data.pop('group')
+        if 'group' in validated_data:
+            group = Group.objects.get(pk=validated_data.pop('group').id)
 
         attendances = instance.attendances.all()
         attendances = list(attendances)

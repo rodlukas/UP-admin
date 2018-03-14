@@ -62,7 +62,7 @@ export default class ClientList extends Component {
                             <td>
                                 <Button color="primary"
                                         onClick={() => this.toggle(client)}>Upravit</Button>{' '}
-                                <Link to={"/klienti/" + client.id.toString()}>
+                                <Link to={"/klienti/" + client.id}>
                                     <Button color="secondary">Karta</Button></Link>
                             </td>
                         </tr>)

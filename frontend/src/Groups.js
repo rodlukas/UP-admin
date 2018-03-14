@@ -1,5 +1,6 @@
 import React, {Component} from "react"
 import {Table, Button, Modal, Badge} from 'reactstrap'
+import {Link} from 'react-router-dom'
 import axios from "axios"
 import FormEditGroup from './forms/FormEditGroup'
 
@@ -74,7 +75,8 @@ export default class Groups extends Component {
                             <td><ClientsList clients={group.memberships}/></td>
                             <td>
                                 <Button color="primary" onClick={() => this.toggle(group)}>Upravit</Button>{' '}
-                                <Button color="secondary">Karta</Button>
+                                <Link to={"/skupiny/" + group.id}>
+                                    <Button color="secondary">Karta</Button></Link>
                             </td>
                         </tr>)
                     }

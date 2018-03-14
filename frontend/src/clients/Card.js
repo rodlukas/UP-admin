@@ -9,10 +9,11 @@ import {prettyTime, prettyDate} from "../components/FuncDateTime"
 export default class ClientView extends Component {
     constructor(props) {
         super(props)
-        this.clientId = this.props.match.params.clientId
-        this.title = "Karta klienta"
+        this.id = this.props.match.params.id
+        this.CLIENT = this.props.match.path.includes("klienti")
+        this.title = "Karta " + (this.CLIENT ? "klienta" : "skupiny")
         this.state = {
-            client: {},
+            object: {},
             modal: false,
             currentLecture: {},
             lectures: [],
@@ -48,10 +49,10 @@ export default class ClientView extends Component {
         this.props.history.goBack()
     }
 
-    getClient = () => {
-        axios.get('/api/v1/clients/' + this.clientId)
+    getObject = () => {
+        axios.get('/api/v1/' + (this.CLIENT ? 'clients/' : 'groups/') + this.id)
             .then((response) => {
-                this.setState({client: response.data})
+                this.setState({object: response.data})
             })
             .catch((error) => {
                 console.log(error)
@@ -59,7 +60,7 @@ export default class ClientView extends Component {
     }
 
     getLectures = () => {
-        axios.get('/api/v1/lectures/?client=' + this.clientId)
+        axios.get('/api/v1/lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id)
             .then((response) => {
                 // groupby courses
                 let group_to_values = response.data.reduce(function (obj, item) {
@@ -78,7 +79,7 @@ export default class ClientView extends Component {
     }
 
     componentDidMount() {
-        this.getClient()
+        this.getObject()
         this.getLectures()
         this.getDataAttendanceStates()
     }
@@ -91,15 +92,15 @@ export default class ClientView extends Component {
                 {this.state.attendancestates.map(attendancestate =>
                     <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
             </Input>
-        const {client, attendancestates} = this.state
+        const {object, attendancestates, lectures, currentLecture} = this.state
         return (
             <div>
-                <h1 className="text-center mb-4">{this.title}: {client.name} {client.surname}</h1>
+                <h1 className="text-center mb-4">{this.title}: {this.CLIENT ? (object.name + " " + object.surname) : object.name}</h1>
                 <Button color="secondary" onClick={this.goBack}>Jít zpět</Button>{' '}
                 <Button color="info" onClick={() => this.toggle()}>Přidat kurz</Button>
                 <Container fluid={true}>
                     <Row>
-                    {this.state.lectures.map(lecture =>
+                    {lectures.map(lecture =>
                         <Col key={lecture.course}>
                             <div>
                                 <h4 className="text-center">{lecture.course}</h4>
@@ -110,11 +111,14 @@ export default class ClientView extends Component {
                                         <ListGroupItem key={lectureVal.id}>
                                             <ListGroupItemHeading>
                                                 {prettyDate(d) + " - " + prettyTime(d)}{' '}
-                                                <PaidButton state={lectureVal.attendances[0].paid}/>
                                             </ListGroupItemHeading>{' '}
-                                            <SelectAttendanceState value={lectureVal.attendances[0].attendancestate.id}/>{' '}
-                                            <Button color="primary"
-                                                    onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                            {lectureVal.attendances.map(attendance =>
+                                                <div key={attendance.id}>
+                                                    <h6>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</h6>
+                                                    <PaidButton state={attendance.paid}/>
+                                                    <SelectAttendanceState value={attendance.attendancestate.id}/>{' '}
+                                                </div>)}
+                                            <Button color="primary" onClick={() => this.toggle(lectureVal)}>Upravit</Button>
                                         </ListGroupItem>)
                                 })}
                                 </ListGroup>
@@ -123,7 +127,8 @@ export default class ClientView extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditLecture lecture={this.state.currentLecture} client={client} funcClose={this.toggle}
+                    <FormEditLecture lecture={currentLecture} object={object} funcClose={this.toggle}
+                                     CLIENT={this.CLIENT}
                                      funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>
             </div>
