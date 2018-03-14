@@ -63,40 +63,40 @@ export default class DashboardDay extends Component {
             <div>
                 <h4 className="text-center">{this.title}</h4>
                 <ListGroup>
-                    {this.state.lectures.length ?
-                        this.state.lectures.map(lecture => {
-                            return (
-                                <ListGroupItem key={lecture.id}>
-                                    <ListGroupItemHeading>
-                                        {prettyTime(new Date(lecture.start))} -
-                                        {lecture.group ?
-                                            lecture.group.name :
-                                            <ClientName name={lecture.attendances[0].client.name}
-                                                        surname={lecture.attendances[0].client.surname}/>}{' '}
-                                        <Badge pill>{lecture.course.name}</Badge>{' '}
-                                        <Badge color="warning" pill>Příště platit</Badge>
-                                    </ListGroupItemHeading>
-                                    {lecture.group ?
-                                        <ul>
-                                            {lecture.attendances.map(attendance =>
-                                                <li key={attendance.id}>
-                                                    <ClientName name={attendance.client.name}
-                                                                surname={attendance.client.surname}/>{' '}
-                                                    <PaidButton state={attendance.paid}/>
-                                                    <SelectAttendanceState value={attendance.attendancestate.id}/>
-                                                </li>)}
-                                        </ul>
-                                        :
-                                        <div>
-                                            <PaidButton state={lecture.attendances[0].paid}/>
-                                            <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}/>
-                                        </div>}
-                                </ListGroupItem>)
-                        })
-                        :
-                        <ListGroupItem>
-                            <ListGroupItemHeading>Volno</ListGroupItemHeading>
-                        </ListGroupItem>}
+                {this.state.lectures.length ?
+                    this.state.lectures.map(lecture => {
+                    return (
+                        <ListGroupItem key={lecture.id}>
+                            <ListGroupItemHeading>
+                                {prettyTime(new Date(lecture.start))} -
+                                {lecture.group ?
+                                    lecture.group.name :
+                                    <ClientName name={lecture.attendances[0].client.name}
+                                                surname={lecture.attendances[0].client.surname}/>}{' '}
+                                <Badge pill>{lecture.course.name}</Badge>{' '}
+                                <Badge color="warning" pill>Příště platit</Badge>
+                            </ListGroupItemHeading>
+                            {lecture.group ?
+                                <ul>
+                                    {lecture.attendances.map(attendance =>
+                                        <li key={attendance.id}>
+                                            <ClientName name={attendance.client.name}
+                                                        surname={attendance.client.surname}/>{' '}
+                                            <PaidButton state={attendance.paid}/>
+                                            <SelectAttendanceState value={attendance.attendancestate.id}/>
+                                        </li>)}
+                                </ul>
+                                :
+                                <div>
+                                    <PaidButton state={lecture.attendances[0].paid}/>
+                                    <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}/>
+                                </div>}
+                        </ListGroupItem>)
+                    })
+                    :
+                    <ListGroupItem>
+                        <ListGroupItemHeading>Volno</ListGroupItemHeading>
+                    </ListGroupItem>}
                 </ListGroup>
             </div>
         )

@@ -4,6 +4,7 @@ import axios from "axios"
 import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import FormEditLecture from "../forms/FormEditLecture"
+import {prettyTime, prettyDate} from "../components/FuncDateTime"
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -60,6 +61,7 @@ export default class ClientView extends Component {
     getLectures = () => {
         axios.get('/api/v1/lectures/?client=' + this.clientId)
             .then((response) => {
+                // groupby courses
                 let group_to_values = response.data.reduce(function (obj, item) {
                     obj[item.course.name] = obj[item.course.name] || []
                     obj[item.course.name].push(item)
@@ -82,6 +84,13 @@ export default class ClientView extends Component {
     }
 
     render() {
+        const PaidButton = ({state}) =>
+            <FontAwesomeIcon icon={faUsdCircle} size="2x" className={state ? "text-success" : "text-danger"}/>
+        const SelectAttendanceState = ({value}) =>
+            <Input type="select" bsSize="sm" onChange={this.onChange} value={value}>
+                {this.state.attendancestates.map(attendancestate =>
+                    <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
+            </Input>
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}: {this.state.client.name} {this.state.client.surname}</h1>
@@ -89,48 +98,29 @@ export default class ClientView extends Component {
                 <Button color="info" onClick={() => this.toggle()}>Přidat kurz</Button>
                 <Container fluid={true}>
                     <Row>
-                        {
-                            this.state.lectures.map(
-                                lecture =>
-                                    <Col key={lecture.course.toString()}>
-                                        <div>
-                                            <h4 className="text-center">{lecture.course}</h4>
-                                            <ListGroup>
-                                                {
-                                                    lecture.values.map(
-                                                        lectureVal => {
-                                                            const d = new Date(lectureVal.start)
-                                                            return (
-                                                                <ListGroupItem key={'l' + lectureVal.id.toString()}>
-                                                                    <ListGroupItemHeading>
-                                                                        {d.getDate() + ". " + (d.getMonth()+1) + ". " + d.getFullYear() + " - " + d.getHours() + ":" + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes()}{' '}
-                                                                        <FontAwesomeIcon icon={faUsdCircle}
-                                                                                         size="2x"
-                                                                                         className={lectureVal.attendances[0].paid ? "text-success" : "text-danger"}/>
-                                                                    </ListGroupItemHeading>{' '}
-                                                                    <p>
-                                                                        <Input type="select" bsSize="sm"
-                                                                               onChange={this.onChange}
-                                                                               value={lectureVal.attendances[0].attendancestate.id}>
-                                                                            {this.state.attendancestates.map(attendancestate =>
-                                                                                <option key={attendancestate.id}
-                                                                                        value={attendancestate.id}>{attendancestate.name}</option>)
-                                                                            }
-                                                                        </Input>{' '}
-                                                                        <Button color="primary"
-                                                                                onClick={() => this.toggle(lectureVal)}>Upravit</Button>
-                                                                    </p>
-                                                                </ListGroupItem>)
-                                                        })
-                                                }
-                                            </ListGroup>
-                                        </div>
-                                    </Col>)
-                        }
+                    {this.state.lectures.map(lecture =>
+                        <Col key={lecture.course.toString()}>
+                            <div>
+                                <h4 className="text-center">{lecture.course}</h4>
+                                <ListGroup>
+                                {lecture.values.map(lectureVal => {
+                                    const d = new Date(lectureVal.start)
+                                    return (
+                                        <ListGroupItem key={'l' + lectureVal.id.toString()}>
+                                            <ListGroupItemHeading>
+                                                {prettyDate(d) + " - " + prettyTime(d)}{' '}
+                                                <PaidButton state={lectureVal.attendances[0].paid}/>
+                                            </ListGroupItemHeading>{' '}
+                                            <SelectAttendanceState value={lectureVal.attendances[0].attendancestate.id}/>{' '}
+                                            <Button color="primary"
+                                                    onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                        </ListGroupItem>)
+                                })}
+                                </ListGroup>
+                            </div>
+                        </Col>)}
                     </Row>
                 </Container>
-
-
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <FormEditLecture lecture={this.state.currentLecture} client={this.state.client} funcClose={this.toggle}
                                      funcRefresh={this.getLectures} attendancestates={this.state.attendancestates}/>

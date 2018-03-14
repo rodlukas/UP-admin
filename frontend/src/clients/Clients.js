@@ -36,8 +36,8 @@ export default class ClientList extends Component {
         this.getClients()
     }
 
-
     render() {
+        const ClientName = ({name, surname}) => <span>{surname} {name}</span>
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>
@@ -53,21 +53,19 @@ export default class ClientList extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {
-                        this.state.clients.map(
-                            client =>
-                                <tr key={client.id.toString()}>
-                                    <td>{client.surname} {client.name}</td>
-                                    <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
-                                    <td><a href={'mailto:' + client.email}>{client.email}</a></td>
-                                    <td>{client.note}</td>
-                                    <td>
-                                        <Button color="primary"
-                                                onClick={() => this.toggle(client)}>Upravit</Button>{' '}
-                                        <Link to={"/klienti/" + client.id.toString()}><Button
-                                            color="secondary">Karta</Button></Link>
-                                    </td>
-                                </tr>)
+                    {this.state.clients.map(client =>
+                        <tr key={client.id.toString()}>
+                            <td><ClientName name={client.name} surname={client.surname}/></td>
+                            <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
+                            <td><a href={'mailto:' + client.email}>{client.email}</a></td>
+                            <td>{client.note}</td>
+                            <td>
+                                <Button color="primary"
+                                        onClick={() => this.toggle(client)}>Upravit</Button>{' '}
+                                <Link to={"/klienti/" + client.id.toString()}>
+                                    <Button color="secondary">Karta</Button></Link>
+                            </td>
+                        </tr>)
                     }
                     </tbody>
                 </Table>
