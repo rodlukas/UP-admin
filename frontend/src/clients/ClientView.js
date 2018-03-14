@@ -37,7 +37,7 @@ export default class ClientView extends Component {
         this.setState(state)
     }
 
-    toggle = (lecture = []) => {
+    toggle = (lecture = {}) => {
         this.setState({
             currentLecture: lecture,
             modal: !this.state.modal
@@ -91,9 +91,10 @@ export default class ClientView extends Component {
                 {this.state.attendancestates.map(attendancestate =>
                     <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
             </Input>
+        const {client, attendancestates} = this.state
         return (
             <div>
-                <h1 className="text-center mb-4">{this.title}: {this.state.client.name} {this.state.client.surname}</h1>
+                <h1 className="text-center mb-4">{this.title}: {client.name} {client.surname}</h1>
                 <Button color="secondary" onClick={this.goBack}>Jít zpět</Button>{' '}
                 <Button color="info" onClick={() => this.toggle()}>Přidat kurz</Button>
                 <Container fluid={true}>
@@ -122,8 +123,8 @@ export default class ClientView extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditLecture lecture={this.state.currentLecture} client={this.state.client} funcClose={this.toggle}
-                                     funcRefresh={this.getLectures} attendancestates={this.state.attendancestates}/>
+                    <FormEditLecture lecture={this.state.currentLecture} client={client} funcClose={this.toggle}
+                                     funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>
             </div>
         )

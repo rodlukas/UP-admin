@@ -15,7 +15,7 @@ export default class ClientList extends Component {
         }
     }
 
-    toggle = (client = []) => {
+    toggle = (client = {}) => {
         this.setState({
             currentClient: client,
             modal: !this.state.modal

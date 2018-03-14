@@ -5,7 +5,7 @@ import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, Moda
 export default class FormEditClient extends Component {
     constructor(props) {
         super(props)
-        this.isClient = false
+        this.isClient = Boolean(Object.keys(props.client).length)
         const {id, name, surname, email, phone, note} = props.client
         this.state = {
             id: id || '',
@@ -15,8 +15,6 @@ export default class FormEditClient extends Component {
             phone: phone || '',
             note: note || ''
         }
-        if (props.client.length !== 0)
-            this.isClient = true
     }
 
     onChange = (e) => {
@@ -28,11 +26,12 @@ export default class FormEditClient extends Component {
     onSubmit = (e) => {
         e.preventDefault()
         const {id, name, surname, email, phone, note} = this.state
+        const data = {name, surname, email, phone, note}
         let request
         if (this.isClient)
-            request = axios.put('/api/v1/clients/' + id + '/', {id, name, surname, email, phone, note})
+            request = axios.put('/api/v1/clients/' + id + '/', data)
         else
-            request = axios.post('/api/v1/clients/', {name, surname, email, phone, note})
+            request = axios.post('/api/v1/clients/', data)
         request.then(() => {
             this.close()
             this.refresh()
@@ -102,8 +101,7 @@ export default class FormEditClient extends Component {
                         <Label for="note" sm={2} className="text-muted">Smazání</Label>
                         <Col sm={10}>
                             <Button color="danger"
-                                    onClick={() => {
-                                        if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?')) this.delete(id)}}>
+                                    onClick={() => {if(window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?')) this.delete(id)}}>
                                 Smazat klienta</Button>{' '}
                             <Badge color="warning" pill>Nevratně smaže klienta i s jeho lekcemi</Badge>
                         </Col>
