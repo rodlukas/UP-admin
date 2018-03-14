@@ -10,11 +10,11 @@ export default class Groups extends Component {
         this.state = {
             groups: [],
             modal: false,
-            currentGroup: []
+            currentGroup: {}
         }
     }
 
-    toggle = (group = []) => {
+    toggle = (group = {}) => {
         this.setState({
             currentGroup: group,
             modal: !this.state.modal
@@ -36,6 +36,23 @@ export default class Groups extends Component {
     }
 
     render() {
+        const {groups, currentGroup} = this.state
+        const ClientName = ({name, surname}) => <span>{name} {surname}</span>
+        const ClientsList = ({clients}) => {
+            return (
+                <div>
+                    {clients.length ?
+                        clients.map(membership =>
+                            <ClientName key={membership.client.id} name={membership.client.name}
+                                        surname={membership.client.surname}/>)
+                            .reduce((accu, elem) => {
+                                return accu === null ? [elem] : [...accu, ', ', elem]
+                            }, null)
+                        :
+                        <span className="text-muted">žádní členové</span>
+                    }
+                </div>)
+        }
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>
@@ -49,24 +66,20 @@ export default class Groups extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {
-                        this.state.groups.map(
-                            group =>
-                                <tr key={group.id.toString()}>
-                                    <td>{group.name}</td>
-                                    <td>
-                                        {group.memberships.map(membership => membership.client.name + " " + membership.client.surname).join(", ")}
-                                    </td>
-                                    <td>
-                                        <Button color="primary" onClick={() => this.toggle(group)}>Upravit</Button>{' '}
-                                        <Button color="secondary">Karta</Button>
-                                    </td>
-                                </tr>)
+                    {groups.map(group =>
+                        <tr key={group.id}>
+                            <td>{group.name}</td>
+                            <td><ClientsList clients={group.memberships}/></td>
+                            <td>
+                                <Button color="primary" onClick={() => this.toggle(group)}>Upravit</Button>{' '}
+                                <Button color="secondary">Karta</Button>
+                            </td>
+                        </tr>)
                     }
                     </tbody>
                 </Table>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditGroup group={this.state.currentGroup} funcClose={this.toggle}
+                    <FormEditGroup group={currentGroup} funcClose={this.toggle}
                                    funcRefresh={this.getGroups}/>
                 </Modal>
             </div>

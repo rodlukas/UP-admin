@@ -95,7 +95,7 @@ export default class DashboardDay extends Component {
                     })
                     :
                     <ListGroupItem>
-                        <ListGroupItemHeading>Volno</ListGroupItemHeading>
+                        <ListGroupItemHeading className="text-muted">Volno</ListGroupItemHeading>
                     </ListGroupItem>}
                 </ListGroup>
             </div>

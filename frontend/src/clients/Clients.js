@@ -11,7 +11,7 @@ export default class ClientList extends Component {
         this.state = {
             clients: [],
             modal: false,
-            currentClient: []
+            currentClient: {}
         }
     }
 
@@ -26,6 +26,7 @@ export default class ClientList extends Component {
         axios.get('/api/v1/clients/')
             .then((response) => {
                 this.setState({clients: response.data})
+                console.log(response.data)
             })
             .catch((error) => {
                 console.log(error)
@@ -54,7 +55,7 @@ export default class ClientList extends Component {
                     </thead>
                     <tbody>
                     {this.state.clients.map(client =>
-                        <tr key={client.id.toString()}>
+                        <tr key={client.id}>
                             <td><ClientName name={client.name} surname={client.surname}/></td>
                             <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
                             <td><a href={'mailto:' + client.email}>{client.email}</a></td>

@@ -7,31 +7,30 @@ import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, Moda
 export default class FormEditGroup extends Component {
     constructor(props) {
         super(props)
-        this.isGroup = false
+        this.isGroup = Boolean(Object.keys(props.group).length)
         const {name, memberships, id} = props.group
-
-        let memberships_tmp = []
-        if (props.group.length !== 0) {
-            this.isGroup = true
-            memberships.map(membership => {
-                return memberships_tmp.push({
-                    client_id: membership.client.id,
-                    label: membership.client.name + " " + membership.client.surname
-                })
-            })
-        }
-
         this.state = {
             id: id || '',
             name: name || '',
-            memberships: memberships_tmp,
+            memberships: this.isGroup ? this.getMembersArray(memberships) : [],
             clients: []
         }
     }
 
+    getMembersArray(memberships) {
+        // pripravi pole se cleny ve spravnem formatu, aby pak slo rovnou zaslat do API
+        let arrayOfMembers = []
+        memberships.map(membership => {
+            return arrayOfMembers.push({
+                client_id: membership.client.id,
+                label: membership.client.name + " " + membership.client.surname
+            })
+        })
+        return arrayOfMembers
+    }
+
     handleChange = (memberships) => {
         this.setState({memberships})
-        //selectedOptions.forEach(selectedOption => console.log(`Selected: ${selectedOption.label}`));
     }
 
     onChange = (e) => {
@@ -43,11 +42,12 @@ export default class FormEditGroup extends Component {
     onSubmit = (e) => {
         e.preventDefault()
         const {id, name, memberships} = this.state
+        const data = {name, memberships}
         let request
         if (this.isGroup)
-            request = axios.put('/api/v1/groups/' + id + '/', {id, name, memberships})
+            request = axios.put('/api/v1/groups/' + id + '/', data)
         else
-            request = axios.post('/api/v1/groups/', {name, memberships})
+            request = axios.post('/api/v1/groups/', data)
         request.then(() => {
             this.close()
             this.refresh()
@@ -79,7 +79,13 @@ export default class FormEditGroup extends Component {
     getClients = () => {
         axios.get('/api/v1/clients/')
             .then((response) => {
-                this.setState({clients: response.data})
+                let clients = []
+                response.data.map(client => {
+                    return clients.push({
+                        client_id: client.id,
+                        label: client.name + " " + client.surname})
+                })
+                this.setState({clients: clients})
             })
             .catch((error) => {
                 console.log(error)
@@ -91,11 +97,7 @@ export default class FormEditGroup extends Component {
     }
 
     render() {
-        let clients = []
-        this.state.clients.map(client => {
-            return clients.push({client_id: client.id, label: client.name + " " + client.surname})
-        })
-        const {id, name} = this.state
+        const {id, name, clients, memberships} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny</ModalHeader>
@@ -111,9 +113,8 @@ export default class FormEditGroup extends Component {
                         <Col sm={10}>
                             <Select
                                 name="form-field-name"
-                                closeOnSelect={false}
                                 valueKey={'client_id'}
-                                value={this.state.memberships}
+                                value={memberships}
                                 multi={true}
                                 onChange={this.handleChange}
                                 options={clients}

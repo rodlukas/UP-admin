@@ -12,9 +12,9 @@ export default class ClientView extends Component {
         this.clientId = this.props.match.params.clientId
         this.title = "Karta klienta"
         this.state = {
-            client: [],
+            client: {},
             modal: false,
-            currentLecture: [],
+            currentLecture: {},
             lectures: [],
             attendancestates: []
         }
@@ -100,14 +100,14 @@ export default class ClientView extends Component {
                 <Container fluid={true}>
                     <Row>
                     {this.state.lectures.map(lecture =>
-                        <Col key={lecture.course.toString()}>
+                        <Col key={lecture.course}>
                             <div>
                                 <h4 className="text-center">{lecture.course}</h4>
                                 <ListGroup>
                                 {lecture.values.map(lectureVal => {
                                     const d = new Date(lectureVal.start)
                                     return (
-                                        <ListGroupItem key={'l' + lectureVal.id.toString()}>
+                                        <ListGroupItem key={lectureVal.id}>
                                             <ListGroupItemHeading>
                                                 {prettyDate(d) + " - " + prettyTime(d)}{' '}
                                                 <PaidButton state={lectureVal.attendances[0].paid}/>
