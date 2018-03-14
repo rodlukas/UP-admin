@@ -8,12 +8,14 @@ export default class FormEditGroup extends Component {
     constructor(props) {
         super(props)
         this.isGroup = Boolean(Object.keys(props.group).length)
-        const {name, memberships, id} = props.group
+        const {name, memberships, id, course} = props.group
         this.state = {
             id: id || '',
             name: name || '',
+            course_id: this.isGroup ? course.id : "undef",
             memberships: this.isGroup ? this.getMembersArray(memberships) : [],
-            clients: []
+            clients: [],
+            courses: []
         }
     }
 
@@ -29,6 +31,16 @@ export default class FormEditGroup extends Component {
         return arrayOfMembers
     }
 
+    getDataCourses = () => {
+        axios.get('/api/v1/courses/')
+            .then((response) => {
+                this.setState({courses: response.data})
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
     handleChange = (memberships) => {
         this.setState({memberships})
     }
@@ -41,8 +53,8 @@ export default class FormEditGroup extends Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        const {id, name, memberships} = this.state
-        const data = {name, memberships}
+        const {id, name, memberships, course_id} = this.state
+        const data = {name, memberships, course_id}
         let request
         if (this.isGroup)
             request = axios.put('/api/v1/groups/' + id + '/', data)
@@ -94,10 +106,11 @@ export default class FormEditGroup extends Component {
 
     componentWillMount() {
         this.getClients()
+        this.getDataCourses()
     }
 
     render() {
-        const {id, name, clients, memberships} = this.state
+        const {id, name, clients, memberships, courses, course_id} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny</ModalHeader>
@@ -106,6 +119,16 @@ export default class FormEditGroup extends Component {
                         <Label for="name" sm={2}>Název</Label>
                         <Col sm={10}>
                             <Input type="text" name="name" id="name" value={name} onChange={this.onChange}/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label for="course_id" sm={2}>Kurz</Label>
+                        <Col sm={10}>
+                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange}>
+                                <option disabled value="undef">Vyberte kurz...</option>
+                                {courses.map(course =>
+                                    <option key={course.id} value={course.id}>{course.name}</option>)}
+                            </Input>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -129,7 +152,8 @@ export default class FormEditGroup extends Component {
                         <Col sm={10}>
                             <Button color="danger"
                                     onClick={() => {
-                                        if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?')) this.delete(id)}}>
+                                        if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?'))
+                                            this.delete(id)}}>
                                 Smazat skupinu</Button>{' '}
                             <Badge color="warning" pill>Nevratně smaže skupinu i s jejími lekcemi</Badge>
                         </Col>

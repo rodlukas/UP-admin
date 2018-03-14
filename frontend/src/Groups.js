@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Table, Button, Modal} from 'reactstrap'
+import {Table, Button, Modal, Badge} from 'reactstrap'
 import axios from "axios"
 import FormEditGroup from './forms/FormEditGroup'
 
@@ -61,6 +61,7 @@ export default class Groups extends Component {
                     <thead className="thead-dark">
                     <tr>
                         <th>Název</th>
+                        <th>Kurz</th>
                         <th>Členové</th>
                         <th>Akce</th>
                     </tr>
@@ -69,6 +70,7 @@ export default class Groups extends Component {
                     {groups.map(group =>
                         <tr key={group.id}>
                             <td>{group.name}</td>
+                            <td><Badge pill>{group.course.name}</Badge></td>
                             <td><ClientsList clients={group.memberships}/></td>
                             <td>
                                 <Button color="primary" onClick={() => this.toggle(group)}>Upravit</Button>{' '}

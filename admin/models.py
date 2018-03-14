@@ -1,10 +1,6 @@
 from django.db import models
 
 
-class Group(models.Model):
-    name = models.TextField(blank=True)
-
-
 class AttendanceState(models.Model):
     name = models.TextField()
 
@@ -19,6 +15,11 @@ class Client(models.Model):
 
 class Course(models.Model):
     name = models.TextField()
+
+
+class Group(models.Model):
+    name = models.TextField(blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
 
 class Lecture(models.Model):

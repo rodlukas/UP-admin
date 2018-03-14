@@ -101,7 +101,8 @@ export default class FormEditClient extends Component {
                         <Label for="note" sm={2} className="text-muted">Smazání</Label>
                         <Col sm={10}>
                             <Button color="danger"
-                                    onClick={() => {if(window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?')) this.delete(id)}}>
+                                    onClick={() => {if(window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))
+                                        this.delete(id)}}>
                                 Smazat klienta</Button>{' '}
                             <Badge color="warning" pill>Nevratně smaže klienta i s jeho lekcemi</Badge>
                         </Col>

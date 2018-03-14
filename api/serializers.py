@@ -8,6 +8,12 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+
 class MembershipSerializer(serializers.ModelSerializer):
     client = ClientSerializer(read_only=True)
     client_id = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), source='client', write_only=True)
@@ -19,6 +25,8 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 class GroupSerializer(serializers.ModelSerializer):
     memberships = MembershipSerializer(many=True)
+    course = CourseSerializer(read_only=True)
+    course_id = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), source='course', write_only=True)
 
     class Meta:
         model = Group
@@ -53,12 +61,6 @@ class GroupSerializer(serializers.ModelSerializer):
         for membership in memberships:
             membership.delete()
         return instance
-
-
-class CourseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Course
-        fields = '__all__'
 
 
 class AttendanceStateSerializer(serializers.ModelSerializer):

@@ -16,7 +16,7 @@ export default class FormEditLecture extends Component {
             at_note: this.isLecture ? attendances[0].note : '',
             date: this.isLecture ? toISODate(date) : '',
             time: this.isLecture ? toISOTime(date) : '',
-            course_id: this.isLecture ? course.id : 1,
+            course_id: this.isLecture ? course.id : "undef",
             duration: duration || '',
             attendancestates: props.attendancestates,
             courses: [],
@@ -119,9 +119,7 @@ export default class FormEditLecture extends Component {
                         <Col sm={10}>
                             <Input type="select" bsSize="sm" name="at_state" id="at_state" value={at_state} onChange={this.onChange}>
                                 {attendancestates.map(attendancestate =>
-                                    <option key={attendancestate.id}
-                                            value={attendancestate.id}>{attendancestate.name}</option>)
-                                }
+                                    <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
                             </Input>
                         </Col>
                     </FormGroup>
@@ -129,10 +127,9 @@ export default class FormEditLecture extends Component {
                         <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
                             <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange}>
+                                <option disabled value="undef">Vyberte kurz...</option>
                                 {courses.map(course =>
-                                    <option key={course.id}
-                                            value={course.id}>{course.name}</option>)
-                                }
+                                    <option key={course.id} value={course.id}>{course.name}</option>)}
                             </Input>
                         </Col>
                     </FormGroup>
@@ -155,8 +152,7 @@ export default class FormEditLecture extends Component {
                             <Button color="danger"
                                     onClick={() => {
                                         if (window.confirm('Opravdu chcete smazat lekci klienta ' + client.name + " " + client.surname + " v " + date + " " + time + '?'))
-                                            this.delete(id)
-                                    }}>
+                                            this.delete(id)}}>
                                 Smazat lekci</Button>
                         </Col>
                     </FormGroup>}
