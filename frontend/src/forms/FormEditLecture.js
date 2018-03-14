@@ -115,21 +115,23 @@ export default class FormEditLecture extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="at_state" sm={2}>Stav</Label>
-                        <Col sm={10}>
-                            <Input type="select" bsSize="sm" name="at_state" id="at_state" value={at_state} onChange={this.onChange}>
-                                {attendancestates.map(attendancestate =>
-                                    <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
-                            </Input>
-                        </Col>
-                    </FormGroup>
-                    <FormGroup row>
                         <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
                             <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange}>
                                 <option disabled value="undef">Vyberte kurz...</option>
                                 {courses.map(course =>
                                     <option key={course.id} value={course.id}>{course.name}</option>)}
+                            </Input>
+                        </Col>
+                    </FormGroup>
+                    <hr/>
+                    <FormGroup row>
+                        <Label for="at_state" sm={2}>Stav</Label>
+                        <Col sm={10}>
+                            <Input type="select" bsSize="sm" name="at_state" id="at_state" value={at_state} onChange={this.onChange}>
+                                {attendancestates.map(attendancestate =>
+                                    <option key={attendancestate.id}
+                                            value={attendancestate.id}>{attendancestate.name}</option>)}
                             </Input>
                         </Col>
                     </FormGroup>

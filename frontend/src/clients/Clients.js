@@ -26,7 +26,6 @@ export default class ClientList extends Component {
         axios.get('/api/v1/clients/')
             .then((response) => {
                 this.setState({clients: response.data})
-                console.log(response.data)
             })
             .catch((error) => {
                 console.log(error)
