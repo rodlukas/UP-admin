@@ -127,9 +127,8 @@ export default class ClientView extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle}
-                                     CLIENT={this.CLIENT}
-                                     funcRefresh={this.getLectures} attendancestates={attendancestates}/>
+                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} CLIENT={this.CLIENT}
+                                  funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>
             </div>
         )

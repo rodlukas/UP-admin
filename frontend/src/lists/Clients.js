@@ -74,8 +74,7 @@ export default class ClientList extends Component {
                     Žádní klienti
                 </p>}
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormClients client={this.state.currentClient} funcClose={this.toggle}
-                                    funcRefresh={this.getClients}/>
+                    <FormClients client={this.state.currentClient} funcClose={this.toggle} funcRefresh={this.getClients}/>
                 </Modal>
             </div>
         )
