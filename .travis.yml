@@ -7,7 +7,6 @@ install:
 - pip install codecov
 - cd frontend
 - npm i -g npm
-- sudo npm i -g npm
 - npm --version
 - npm install
 - cd ..
