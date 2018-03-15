@@ -21,7 +21,7 @@ export default class FormLectures extends Component {
             course_id: (this.isLecture ?
                 course.id :
                 (this.CLIENT ? "undef" : props.object.course.id)),
-            duration: duration || '',
+            duration: duration || 30,
             attendancestates: props.attendancestates,
             courses: [],
             object: props.object
@@ -93,8 +93,9 @@ export default class FormLectures extends Component {
                 paid: at_paid[member.id],
                 note: at_note[member.id]
             }))
-
-        const data = {attendances, course_id, start, duration, group_id: (this.CLIENT ? null : object.id)}
+        let data = {attendances, course_id, start, duration}
+        if(!this.CLIENT)
+            data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
         let request
         if (this.isLecture)
             request = axios.put('/api/v1/lectures/' + id + '/', data)
@@ -155,7 +156,7 @@ export default class FormLectures extends Component {
                     <FormGroup row>
                         <Label for="duration" sm={2}>Trvání</Label>
                         <Col sm={10}>
-                            <Input type="number" name="duration" id="duration" value={duration} onChange={this.onChange}/>
+                            <Input type="number" name="duration" id="duration" value={duration} onChange={this.onChange} required="true"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

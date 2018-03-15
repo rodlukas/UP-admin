@@ -1,10 +1,11 @@
 import React, {Component} from "react"
-import {Route, NavLink as RouterNavLink, BrowserRouter} from "react-router-dom"
+import {Route, NavLink as RouterNavLink, BrowserRouter, Switch} from "react-router-dom"
 import Clients from "./lists/Clients"
 import Card from "./lists/Card"
 import Diary from "./days/Diary"
 import Groups from "./lists/Groups"
 import Dashboard from "./days/Dashboard"
+import NotFound from "./NotFound";
 import {Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} from 'reactstrap'
 
 export default class Main extends Component {
@@ -47,12 +48,15 @@ export default class Main extends Component {
                         </Collapse>
                     </Navbar>
                     <div className="content">
-                        <Route exact path="/" component={Dashboard}/>
-                        <Route exact path="/skupiny" component={Groups}/>
-                        <Route path="/diar" component={Diary}/>
-                        <Route exact path="/klienti" component={Clients}/>
-                        <Route path="/klienti/:id" component={Card}/>
-                        <Route path="/skupiny/:id" component={Card}/>
+                        <Switch>
+                            <Route exact path="/" component={Dashboard}/>
+                            <Route exact path="/skupiny" component={Groups}/>
+                            <Route path="/diar" component={Diary}/>
+                            <Route exact path="/klienti" component={Clients}/>
+                            <Route path="/klienti/:id" component={Card}/>
+                            <Route path="/skupiny/:id" component={Card}/>
+                            <Route component={NotFound}/>
+                        </Switch>
                     </div>
                 </div>
             </BrowserRouter>

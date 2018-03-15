@@ -64,7 +64,7 @@ export default class FormClients extends Component {
         const {id, name, surname, email, phone, note} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
-                <ModalHeader toggle={this.close}>{this.isClient ? 'Úprava' : 'Přidání'} klienta</ModalHeader>
+                <ModalHeader toggle={this.close}>{this.isClient ? 'Úprava' : 'Přidání'} klienta: {name} {surname}</ModalHeader>
                 <ModalBody>
                     <FormGroup row>
                         <Label for="name" sm={2}>Jméno</Label>

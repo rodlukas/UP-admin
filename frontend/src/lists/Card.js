@@ -50,7 +50,7 @@ export default class ClientView extends Component {
     }
 
     getObject = () => {
-        axios.get('/api/v1/' + (this.CLIENT ? 'clients/' : 'groups/') + this.id)
+        axios.get('/api/v1/' + (this.CLIENT ? 'clients/' : 'groups/') + this.id + '/')
             .then((response) => {
                 this.setState({object: response.data})
             })
