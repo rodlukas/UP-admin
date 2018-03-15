@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Route, NavLink as RouterNavLink, HashRouter} from "react-router-dom"
+import {Route, NavLink as RouterNavLink, BrowserRouter} from "react-router-dom"
 import Clients from "./lists/Clients"
 import Card from "./lists/Card"
 import Diary from "./days/Diary"
@@ -23,7 +23,7 @@ export default class Main extends Component {
 
     render() {
         return (
-            <HashRouter>
+            <BrowserRouter>
                 <div>
                     <Navbar color="faded" light expand="md" className="border-bottom">
                         <NavbarBrand tag={RouterNavLink} exact to="/">
@@ -55,7 +55,7 @@ export default class Main extends Component {
                         <Route path="/skupiny/:id" component={Card}/>
                     </div>
                 </div>
-            </HashRouter>
+            </BrowserRouter>
         )
     }
 }
