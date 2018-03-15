@@ -3,7 +3,7 @@ import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import {toISODate, toISOTime} from "../components/FuncDateTime"
 
-export default class FormEditLecture extends Component {
+export default class FormLectures extends Component {
     constructor(props) {
         super(props)
         this.isLecture = Boolean(Object.keys(props.lecture).length)
@@ -161,7 +161,7 @@ export default class FormEditLecture extends Component {
                     <FormGroup row>
                         <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
-                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.CLIENT && 'disabled'}>
+                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.CLIENT && 'disabled'} required="true">
                                 <option disabled value="undef">Vyberte kurz...</option>
                                 {courses.map(course =>
                                     <option key={course.id} value={course.id}>{course.name}</option>)}
@@ -175,7 +175,7 @@ export default class FormEditLecture extends Component {
                         <FormGroup row>
                             <Label for={"at_state" + member.id} sm={2}>Stav</Label>
                             <Col sm={10}>
-                                <Input type="select" bsSize="sm" name="at_state" id={"at_state" + member.id} value={at_state[member.id]} onChange={this.onChangeMultiple} data-id={member.id}>
+                                <Input type="select" bsSize="sm" name="at_state" id={"at_state" + member.id} value={at_state[member.id]} onChange={this.onChangeMultiple} data-id={member.id} required="true">
                                     {attendancestates.map(attendancestate =>
                                         <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
                                 </Input>

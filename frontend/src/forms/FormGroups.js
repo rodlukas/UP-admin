@@ -4,7 +4,7 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap'
 
-export default class FormEditGroup extends Component {
+export default class FormGroups extends Component {
     constructor(props) {
         super(props)
         this.isGroup = Boolean(Object.keys(props.group).length)
@@ -124,7 +124,7 @@ export default class FormEditGroup extends Component {
                     <FormGroup row>
                         <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
-                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange}>
+                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required="true">
                                 <option disabled value="undef">Vyberte kurz...</option>
                                 {courses.map(course =>
                                     <option key={course.id} value={course.id}>{course.name}</option>)}

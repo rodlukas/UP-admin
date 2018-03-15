@@ -3,7 +3,7 @@ import {Container, Row, Col, Button, Modal, ListGroup, ListGroupItem, ListGroupI
 import axios from "axios"
 import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import FormEditLecture from "../forms/FormEditLecture"
+import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDate} from "../components/FuncDateTime"
 
 export default class ClientView extends Component {
@@ -127,7 +127,7 @@ export default class ClientView extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditLecture lecture={currentLecture} object={object} funcClose={this.toggle}
+                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle}
                                      CLIENT={this.CLIENT}
                                      funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>

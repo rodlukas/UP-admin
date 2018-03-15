@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Container, Row, Col} from 'reactstrap'
-import DashboardDay from './dashboard/DashboardDay'
-import {prettyDate} from "./components/FuncDateTime"
+import DashboardDay from './DashboardDay'
+import {prettyDate} from "../components/FuncDateTime"
 
 export default class Diary extends Component {
     constructor(props) {

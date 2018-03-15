@@ -63,12 +63,11 @@ export default class DashboardDay extends Component {
             <div>
                 <h4 className="text-center">{this.title}</h4>
                 <ListGroup>
-                {this.state.lectures.length ?
-                    this.state.lectures.map(lecture => {
+                {this.state.lectures.map(lecture => {
                     return (
                         <ListGroupItem key={lecture.id}>
                             <ListGroupItemHeading>
-                                {prettyTime(new Date(lecture.start))} -
+                                {prettyTime(new Date(lecture.start))} -{' '}
                                 {lecture.group ?
                                     lecture.group.name :
                                     <ClientName name={lecture.attendances[0].client.name}
@@ -92,11 +91,11 @@ export default class DashboardDay extends Component {
                                     <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}/>
                                 </div>}
                         </ListGroupItem>)
-                    })
-                    :
-                    <ListGroupItem>
-                        <ListGroupItemHeading className="text-muted">Volno</ListGroupItemHeading>
-                    </ListGroupItem>}
+                    })}
+                    {!Boolean(this.state.lectures.length) &&
+                        <ListGroupItem>
+                            <ListGroupItemHeading className="text-muted text-center">Volno</ListGroupItemHeading>
+                        </ListGroupItem>}
                 </ListGroup>
             </div>
         )

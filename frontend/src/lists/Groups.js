@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import {Table, Button, Modal, Badge} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import axios from "axios"
-import FormEditGroup from './forms/FormEditGroup'
+import FormGroups from '../forms/FormGroups'
 
 export default class Groups extends Component {
     constructor(props) {
@@ -82,8 +82,12 @@ export default class Groups extends Component {
                     }
                     </tbody>
                 </Table>
+                {!Boolean(this.state.groups.length) &&
+                <p className="text-muted text-center">
+                    Žádné skupiny
+                </p>}
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditGroup group={currentGroup} funcClose={this.toggle}
+                    <FormGroups group={currentGroup} funcClose={this.toggle}
                                    funcRefresh={this.getGroups}/>
                 </Modal>
             </div>

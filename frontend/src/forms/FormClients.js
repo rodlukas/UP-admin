@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap'
 
-export default class FormEditClient extends Component {
+export default class FormClients extends Component {
     constructor(props) {
         super(props)
         this.isClient = Boolean(Object.keys(props.client).length)
@@ -69,13 +69,13 @@ export default class FormEditClient extends Component {
                     <FormGroup row>
                         <Label for="name" sm={2}>Jméno</Label>
                         <Col sm={10}>
-                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange}/>
+                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required="true"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="surname" sm={2}>Příjmení</Label>
                         <Col sm={10}>
-                            <Input type="text" name="surname" id="surname" value={surname} onChange={this.onChange}/>
+                            <Input type="text" name="surname" id="surname" value={surname} onChange={this.onChange} required="true"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -96,7 +96,7 @@ export default class FormEditClient extends Component {
                             <Input type="text" name="note" id="note" value={note} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
-                    {this.isGroup &&
+                    {this.isClient &&
                     <FormGroup row className="border-top pt-3">
                         <Label for="note" sm={2} className="text-muted">Smazání</Label>
                         <Col sm={10}>

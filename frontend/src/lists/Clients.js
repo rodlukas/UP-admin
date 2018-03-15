@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import {Table, Button, Modal} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import axios from "axios"
-import FormEditClient from '../forms/FormEditClient'
+import FormClients from '../forms/FormClients'
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -69,8 +69,12 @@ export default class ClientList extends Component {
                     }
                     </tbody>
                 </Table>
+                {!Boolean(this.state.clients.length) &&
+                <p className="text-muted text-center">
+                    Žádní klienti
+                </p>}
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormEditClient client={this.state.currentClient} funcClose={this.toggle}
+                    <FormClients client={this.state.currentClient} funcClose={this.toggle}
                                     funcRefresh={this.getClients}/>
                 </Modal>
             </div>

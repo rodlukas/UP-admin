@@ -1,10 +1,10 @@
 import React, {Component} from "react"
 import {Route, NavLink as RouterNavLink, HashRouter} from "react-router-dom"
-import Clients from "./clients/Clients"
-import Card from "./clients/Card"
-import Diary from "./Diary"
-import Groups from "./Groups"
-import Dashboard from "./dashboard/Dashboard"
+import Clients from "./lists/Clients"
+import Card from "./lists/Card"
+import Diary from "./days/Diary"
+import Groups from "./lists/Groups"
+import Dashboard from "./days/Dashboard"
 import {Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} from 'reactstrap'
 
 export default class Main extends Component {
