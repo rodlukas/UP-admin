@@ -15,7 +15,7 @@ export class Login extends Component {
     }
 
     login = () => {
-        fakeAuth.authenticate(this.state.username, this.state.password, () => {
+        AuthService.authenticate(this.state.username, this.state.password, () => {
             this.setState({redirectToReferrer: true})
         })
     }
@@ -33,36 +33,28 @@ export class Login extends Component {
 
     render() {
         const {from} = this.props.location.state || {from: {pathname: "/"}}
-        const {redirectToReferrer} = this.state
-
+        const {redirectToReferrer, username, password} = this.state
         if (redirectToReferrer) {
-            return <Redirect to={from}/>
-        }
-        const {username, password} = this.state
+            return <Redirect to={from}/>}
         return (
-            <div>
-                <Container>
-                    <h1 className="text-center mb-4">{this.title}</h1>
-                    <Form onSubmit={this.onSubmit}>
-                        <FormGroup row>
-                            <Label for="username" sm={2}>Uživatelské jméno</Label>
-                            <Col sm={10}>
-                                <Input type="text" name="username" id="username" value={username} onChange={this.onChange}
-                                       required="true"/>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="password" sm={2}>Heslo</Label>
-                            <Col sm={10}>
-                                <Input type="password" name="password" id="password" value={password}
-                                       onChange={this.onChange}
-                                       required="true"/>
-                            </Col>
-                        </FormGroup>
-                        <Button color="primary" type="submit">Přihlásit</Button>
-                    </Form>
-                </Container>
-            </div>
+            <Container>
+                <h1 className="text-center mb-4">{this.title}</h1>
+                <Form onSubmit={this.onSubmit}>
+                    <FormGroup row>
+                        <Label for="username" sm={2}>Uživatelské jméno</Label>
+                        <Col sm={10}>
+                            <Input type="text" name="username" id="username" value={username} onChange={this.onChange} required="true"/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label for="password" sm={2}>Heslo</Label>
+                        <Col sm={10}>
+                            <Input type="password" name="password" id="password" value={password} onChange={this.onChange} required="true"/>
+                        </Col>
+                    </FormGroup>
+                    <Button color="primary" type="submit">Přihlásit</Button>
+                </Form>
+            </Container>
         )
     }
 }
@@ -71,30 +63,31 @@ export const PrivateRoute = ({component: Component, ...rest}) => (
     <Route
         {...rest}
         render={props =>
-            fakeAuth.isAuthenticated ? (
+            AuthService.isAuthenticated() ? (
                 <Component {...props} />
             ) : (
                 <Redirect
                     to={{
                         pathname: "/prihlasit",
-                        state: {from: props.location}
-                    }}
-                />
-            )
-        }
+                        state: {from: props.location}}}
+                />)}
     />
 )
 
 export const AuthButton = withRouter(
     ({history}) =>
-        fakeAuth.isAuthenticated &&
-            <Button color="secondary" onClick={() => fakeAuth.signout(() => history.push("/"))}>Odhlásit</Button>
+        AuthService.isAuthenticated() &&
+            <Button color="secondary" onClick={() => AuthService.signout(() => history.push("/"))}>Odhlásit</Button>
 )
 
-const fakeAuth = {
-    isAuthenticated: false,
+const AuthService = {
+    is_authenticated: false,
+    isAuthenticated() {
+        if(localStorage.getItem("jwt"))
+            this.isAuthenticated = true
+        return this.isAuthenticated
+    },
     authenticate(username, password, callback) {
-        console.log(username + " " + password)
         axios.post('/api/v1/api-jwt-auth/', {username, password})
             .then((response) => {
                 this.isAuthenticated = true
@@ -104,7 +97,7 @@ const fakeAuth = {
             })
             .catch((error) => {
                 console.log(error)
-                alert("Username or password incorrect.")
+                alert("Špatné jméno nebo heslo!")
                 this.props.history.push("/login")
             })
     },

@@ -5,11 +5,13 @@ dj-database-url==0.4.2
 Django==2.0.3
 django-webpack-loader==0.6.0
 djangorestframework==3.7.7
+djangorestframework-jwt==1.11.0
 docopt==0.6.2
 gunicorn==19.7.1
 idna==2.6
 pipreqs==0.4.9
 psycopg2==2.7.4
+PyJWT==1.6.0
 pytz==2018.3
 requests==2.18.4
 six==1.11.0
