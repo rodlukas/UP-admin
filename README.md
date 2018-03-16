@@ -13,5 +13,6 @@ FIT CTU bachelor thesis - code
 
 * custom serializer for nested resources (create, udpate) - [tady](https://django.cowhite.com/blog/create-and-update-django-rest-framework-nested-serializers/)
 
-* prihlaseni: [zaklad od reactu](https://reacttraining.com/react-router/web/example/auth-workflow)
+* prihlaseni: [zaklad od reactu](https://reacttraining.com/react-router/web/example/auth-workflow), [dokumentace djangorestframework-jwt](decoded.exp)
     * inspirace: https://github.com/curtisgreene/message
+    * hezky popis: https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec

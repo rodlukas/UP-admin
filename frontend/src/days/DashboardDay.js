@@ -4,6 +4,7 @@ import axios from "axios"
 import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {prettyDateWithDay, toISODate, prettyTime} from "../components/FuncDateTime"
+import {getToken} from "../Auth/Procedures"
 
 export default class DashboardDay extends Component {
     constructor(props) {
