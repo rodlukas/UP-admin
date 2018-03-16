@@ -84,14 +84,13 @@ const AuthService = {
     is_authenticated: false,
     isAuthenticated() {
         if(localStorage.getItem("jwt"))
-            this.isAuthenticated = true
-        return this.isAuthenticated
+            this.is_authenticated = true
+        return this.is_authenticated
     },
     authenticate(username, password, callback) {
         axios.post('/api/v1/api-jwt-auth/', {username, password})
             .then((response) => {
-                this.isAuthenticated = true
-                console.log(response.data)
+                this.is_authenticated = true
                 localStorage.setItem("jwt", response.data.token)
                 callback()
             })
@@ -102,7 +101,7 @@ const AuthService = {
             })
     },
     signout(callback) {
-        this.isAuthenticated = false
+        this.is_authenticated = false
         localStorage.clear()
         callback()
     }
