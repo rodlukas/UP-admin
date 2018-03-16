@@ -22,7 +22,7 @@ export default class ClientView extends Component {
     }
 
     getDataAttendanceStates = () => {
-        axios.get('/api/v1/attendancestates/')
+        axios.get('/api/v1/attendancestates/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 this.setState({attendancestates: response.data})
             })
@@ -50,7 +50,7 @@ export default class ClientView extends Component {
     }
 
     getObject = () => {
-        axios.get('/api/v1/' + (this.CLIENT ? 'clients/' : 'groups/') + this.id + '/')
+        axios.get('/api/v1/' + (this.CLIENT ? 'clients/' : 'groups/') + this.id + '/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 this.setState({object: response.data})
             })
@@ -60,7 +60,7 @@ export default class ClientView extends Component {
     }
 
     getLectures = () => {
-        axios.get('/api/v1/lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id)
+        axios.get('/api/v1/lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 // groupby courses
                 let group_to_values = response.data.reduce(function (obj, item) {

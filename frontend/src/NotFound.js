@@ -1,9 +1,9 @@
 import React from 'react';
 
-const NotFound = () => {
+export const NotFound = () => {
     return (
         <div className="text-center">
-            <h2>Nenalezeno</h2>
+            <h1 className="text-center mb-4">Nenalezeno</h1>
             <p>Stránka neexistuje!</p>
         </div>
     )

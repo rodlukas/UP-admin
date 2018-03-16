@@ -65,7 +65,7 @@ export default class FormLectures extends Component {
     }
 
     getDataCourses = () => {
-        axios.get('/api/v1/courses/')
+        axios.get('/api/v1/courses/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 this.setState({courses: response.data})
             })
@@ -98,9 +98,9 @@ export default class FormLectures extends Component {
             data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
         let request
         if (this.isLecture)
-            request = axios.put('/api/v1/lectures/' + id + '/', data)
+            request = axios.put('/api/v1/lectures/' + id + '/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
         else
-            request = axios.post('/api/v1/lectures/', data)
+            request = axios.post('/api/v1/lectures/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
         request.then(() => {
             this.close()
             this.refresh()
@@ -119,7 +119,7 @@ export default class FormLectures extends Component {
     }
 
     delete = (id) => {
-        axios.delete('/api/v1/lectures/' + id + '/')
+        axios.delete('/api/v1/lectures/' + id + '/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then(() => {
                 this.close()
                 this.refresh()

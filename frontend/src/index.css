@@ -2,7 +2,7 @@
     font-weight: bold;
 }
 
-html, .content {
+html, body, .content, .root {
     background-color: #ECF0F5;
 }
 
@@ -12,4 +12,8 @@ html, .content {
 
 .table > tbody > tr > td {
     vertical-align: middle;
+}
+
+.navbar {
+    background-color: white;
 }

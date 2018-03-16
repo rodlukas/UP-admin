@@ -23,7 +23,7 @@ export default class Groups extends Component {
     }
 
     getGroups = () => {
-        axios.get('/api/v1/groups/')
+        axios.get('/api/v1/groups/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 this.setState({groups: response.data})
             })

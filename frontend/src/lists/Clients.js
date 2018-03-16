@@ -23,7 +23,7 @@ export default class ClientList extends Component {
     }
 
     getClients = () => {
-        axios.get('/api/v1/clients/')
+        axios.get('/api/v1/clients/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 this.setState({clients: response.data})
             })

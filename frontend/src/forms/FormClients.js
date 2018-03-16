@@ -29,9 +29,9 @@ export default class FormClients extends Component {
         const data = {name, surname, email, phone, note}
         let request
         if (this.isClient)
-            request = axios.put('/api/v1/clients/' + id + '/', data)
+            request = axios.put('/api/v1/clients/' + id + '/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
         else
-            request = axios.post('/api/v1/clients/', data)
+            request = axios.post('/api/v1/clients/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
         request.then(() => {
             this.close()
             this.refresh()
@@ -50,7 +50,7 @@ export default class FormClients extends Component {
     }
 
     delete = (id) => {
-        axios.delete('/api/v1/clients/' + id + '/')
+        axios.delete('/api/v1/clients/' + id + '/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then(() => {
                 this.close()
                 this.refresh()

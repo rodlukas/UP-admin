@@ -32,7 +32,7 @@ export default class FormGroups extends Component {
     }
 
     getDataCourses = () => {
-        axios.get('/api/v1/courses/')
+        axios.get('/api/v1/courses/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 this.setState({courses: response.data})
             })
@@ -57,9 +57,9 @@ export default class FormGroups extends Component {
         const data = {name, memberships, course_id}
         let request
         if (this.isGroup)
-            request = axios.put('/api/v1/groups/' + id + '/', data)
+            request = axios.put('/api/v1/groups/' + id + '/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
         else
-            request = axios.post('/api/v1/groups/', data)
+            request = axios.post('/api/v1/groups/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
         request.then(() => {
             this.close()
             this.refresh()
@@ -78,7 +78,7 @@ export default class FormGroups extends Component {
     }
 
     delete = (id) => {
-        axios.delete('/api/v1/groups/' + id + '/')
+        axios.delete('/api/v1/groups/' + id + '/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then(() => {
                 this.close()
                 this.refresh()
@@ -89,7 +89,7 @@ export default class FormGroups extends Component {
     }
 
     getClients = () => {
-        axios.get('/api/v1/clients/')
+        axios.get('/api/v1/clients/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 let clients = []
                 response.data.map(client => {

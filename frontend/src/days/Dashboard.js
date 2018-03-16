@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {Container, Row, Col} from 'reactstrap'
-import DashboardDay from './/DashboardDay'
+import DashboardDay from './DashboardDay'
 
 export default class Dashboard extends Component {
     constructor(props) {

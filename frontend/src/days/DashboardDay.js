@@ -17,7 +17,7 @@ export default class DashboardDay extends Component {
     }
 
     getDataAttendanceStates = () => {
-        axios.get('/api/v1/attendancestates/')
+        axios.get('/api/v1/attendancestates/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 this.setState({attendancestates: response.data})
             })
@@ -27,7 +27,7 @@ export default class DashboardDay extends Component {
     }
 
     getLectures = () => {
-        axios.get('/api/v1/lectures/?date=' + toISODate(this.date))
+        axios.get('/api/v1/lectures/?date=' + toISODate(this.date), {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
             .then((response) => {
                 this.setState({lectures: response.data})
             })

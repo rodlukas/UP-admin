@@ -7,6 +7,7 @@ import Groups from "./lists/Groups"
 import Dashboard from "./days/Dashboard"
 import NotFound from "./NotFound";
 import {Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} from 'reactstrap'
+import {Login, PrivateRoute, AuthButton} from "./Auth/Login"
 
 export default class Main extends Component {
     constructor(props) {
@@ -26,7 +27,7 @@ export default class Main extends Component {
         return (
             <BrowserRouter>
                 <div>
-                    <Navbar color="faded" light expand="md" className="border-bottom">
+                    <Navbar light className="border-bottom" expand="md">
                         <NavbarBrand tag={RouterNavLink} exact to="/">
                             ÚP<sub>admin</sub></NavbarBrand>
                         <NavbarToggler onClick={this.toggle}/>
@@ -45,16 +46,18 @@ export default class Main extends Component {
                                     <NavLink tag={RouterNavLink} to="/skupiny">Skupiny</NavLink>
                                 </NavItem>
                             </Nav>
+                            <AuthButton/>
                         </Collapse>
                     </Navbar>
                     <div className="content">
                         <Switch>
-                            <Route exact path="/" component={Dashboard}/>
-                            <Route exact path="/skupiny" component={Groups}/>
-                            <Route path="/diar" component={Diary}/>
-                            <Route exact path="/klienti" component={Clients}/>
-                            <Route path="/klienti/:id" component={Card}/>
-                            <Route path="/skupiny/:id" component={Card}/>
+                            <PrivateRoute exact path="/" component={Dashboard}/>
+                            <Route path="/prihlasit" component={Login}/>
+                            <PrivateRoute exact path="/skupiny" component={Groups}/>
+                            <PrivateRoute path="/diar" component={Diary}/>
+                            <PrivateRoute exact path="/klienti" component={Clients}/>
+                            <PrivateRoute path="/klienti/:id" component={Card}/>
+                            <PrivateRoute path="/skupiny/:id" component={Card}/>
                             <Route component={NotFound}/>
                         </Switch>
                     </div>
