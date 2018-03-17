@@ -1,10 +1,11 @@
 import React, {Component} from "react"
-import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, Input} from 'reactstrap'
+import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge} from 'reactstrap'
 import axios from "axios"
 import {prettyDateWithDay, toISODate, prettyTime} from "../components/FuncDateTime"
 import AuthService from "../Auth/AuthService"
 import {API_URL} from "../components/GlobalConstants"
 import PaidButton from "../components/PaidButton"
+import SelectAttendanceState from "../components/SelectAttendanceState"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -37,20 +38,6 @@ export default class DashboardDay extends Component {
             })
     }
 
-    onChange = (e) => {
-        const target = e.target
-        const state = this.state
-        state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
-        this.setState(state)
-    }
-
-    onChangePaid = (context) => {
-        let lectures = this.state.lectures
-        let findAttendance = lectures.find(el => el.id === context.lectureId).attendances
-        findAttendance.find(el => el.id === context.attendanceId).paid ^= true // negace
-        this.setState({lectures: lectures})
-    }
-
     componentDidMount() {
         this.getLectures()
         this.getDataAttendanceStates()
@@ -59,17 +46,12 @@ export default class DashboardDay extends Component {
 
     render() {
         const ClientName = ({name, surname}) => <span>{name} {surname}</span>
-        const SelectAttendanceState = ({value}) =>
-            <Input type="select" bsSize="sm" onChange={this.onChange} value={value}>
-                {this.state.attendancestates.map(attendancestate =>
-                    <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
-            </Input>
-
+        const {attendancestates, lectures} = this.state
         return (
             <div>
                 <h4 className="text-center">{this.title}</h4>
                 <ListGroup>
-                {this.state.lectures.map(lecture => {
+                {lectures.map(lecture => {
                     return (
                         <ListGroupItem key={lecture.id}>
                             <ListGroupItemHeading>
@@ -88,19 +70,24 @@ export default class DashboardDay extends Component {
                                             <ClientName name={attendance.client.name}
                                                         surname={attendance.client.surname}/>{' '}
                                             <PaidButton paid={attendance.paid} attendanceId={attendance.id}
-                                                        lectureId={lecture.id} onChange={this.onChangePaid}/>
-                                            <SelectAttendanceState value={attendance.attendancestate.id}/>
+                                                        funcRefresh={this.getLectures}/>
+                                            <SelectAttendanceState value={attendance.attendancestate.id}
+                                                                   attendanceId={attendance.id}
+                                                                   attendancestates={attendancestates}
+                                                                   funcRefresh={this.getLectures}/>
                                         </li>)}
                                 </ul>
                                 :
                                 <div>
                                     <PaidButton paid={lecture.attendances[0].paid} attendanceId={lecture.attendances[0].id}
-                                                lectureId={lecture.id} onChange={this.onChangePaid}/>
-                                    <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}/>
+                                                funcRefresh={this.getLectures}/>
+                                    <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}
+                                                           attendancestates={attendancestates}
+                                                           funcRefresh={this.getLectures}/>
                                 </div>}
                         </ListGroupItem>)
                     })}
-                    {!Boolean(this.state.lectures.length) &&
+                    {!Boolean(lectures.length) &&
                         <ListGroupItem>
                             <ListGroupItemHeading className="text-muted text-center">Volno</ListGroupItemHeading>
                         </ListGroupItem>}

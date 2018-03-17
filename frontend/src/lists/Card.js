@@ -1,11 +1,12 @@
 import React, {Component} from "react"
-import {Container, Row, Col, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading, Input} from 'reactstrap'
+import {Container, Row, Col, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading} from 'reactstrap'
 import axios from "axios"
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDate} from "../components/FuncDateTime"
 import AuthService from "../Auth/AuthService"
 import {API_URL} from "../components/GlobalConstants"
 import PaidButton from "../components/PaidButton"
+import SelectAttendanceState from "../components/SelectAttendanceState"
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -32,21 +33,6 @@ export default class ClientView extends Component {
             })
     }
 
-    onChange = (e) => {
-        const target = e.target
-        const state = this.state
-        state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
-        this.setState(state)
-    }
-
-    onChangePaid = (context) => {
-        let lectures = this.state.lectures
-        let findLecture = lectures.find(el => el.course === context.lectureCourse).values
-        let findAttendance = findLecture.find(el => el.id === context.lectureId).attendances
-        findAttendance.find(el => el.id === context.attendanceId).paid ^= true // negace
-        this.setState({lectures: lectures})
-    }
-
     toggle = (lecture = {}) => {
         this.setState({
             currentLecture: lecture,
@@ -69,6 +55,7 @@ export default class ClientView extends Component {
     }
 
     getLectures = () => {
+        console.log("refresh")
         axios.get(API_URL + 'lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id, AuthService.getHeaders())
             .then((response) => {
                 // groupby courses
@@ -90,15 +77,14 @@ export default class ClientView extends Component {
     componentDidMount() {
         this.getObject()
         this.getLectures()
+    }
+
+    componentWillMount() {
+        // aby se vzdy predalo do potomka (selectbox), nesmi byt v componentDidMount
         this.getDataAttendanceStates()
     }
 
     render() {
-        const SelectAttendanceState = ({value}) =>
-            <Input type="select" bsSize="sm" onChange={this.onChange} value={value}>
-                {this.state.attendancestates.map(attendancestate =>
-                    <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
-            </Input>
         const {object, attendancestates, lectures, currentLecture} = this.state
         return (
             <div>
@@ -123,9 +109,10 @@ export default class ClientView extends Component {
                                                 <div key={attendance.id}>
                                                     <h6>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</h6>
                                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
-                                                                lectureId={lectureVal.id} lectureCourse={lecture.course}
-                                                                onChange={this.onChangePaid}/>
-                                                    <SelectAttendanceState value={attendance.attendancestate.id}/>{' '}
+                                                                funcRefresh={this.getLectures}/>
+                                                    <SelectAttendanceState value={attendance.attendancestate.id} attendanceId={attendance.id}
+                                                                attendancestates={attendancestates}
+                                                                funcRefresh={this.getLectures}/>{' '}
                                                 </div>)}
                                             <Button color="primary" onClick={() => this.toggle(lectureVal)}>Upravit</Button>
                                         </ListGroupItem>)
