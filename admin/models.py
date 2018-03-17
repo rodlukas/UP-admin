@@ -36,6 +36,9 @@ class Attendance(models.Model):
     lecture = models.ForeignKey(Lecture, related_name='attendances', on_delete=models.CASCADE)
     attendancestate = models.ForeignKey(AttendanceState, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ['client__surname']
+
 
 class Membership(models.Model):
     start = models.DateTimeField(auto_now_add=True)

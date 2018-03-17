@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from .serializers import *
 from admin.models import *
 from datetime import datetime
+from rest_framework.filters import OrderingFilter
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -39,6 +40,8 @@ class CourseViewSet(viewsets.ModelViewSet):
 class LectureViewSet(viewsets.ModelViewSet):
     queryset = Lecture.objects.all()
     serializer_class = LectureSerializer
+    filter_backends = OrderingFilter,
+    ordering_fields = 'start',
 
     def get_queryset(self):
         queryset = Lecture.objects.order_by('-start')

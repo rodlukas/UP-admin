@@ -56,7 +56,7 @@ export default class ClientView extends Component {
 
     getLectures = () => {
         console.log("refresh")
-        axios.get(API_URL + 'lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id, AuthService.getHeaders())
+        axios.get(API_URL + 'lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id + '&ordering=-start', AuthService.getHeaders())
             .then((response) => {
                 // groupby courses
                 let group_to_values = response.data.reduce(function (obj, item) {

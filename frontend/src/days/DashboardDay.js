@@ -29,7 +29,7 @@ export default class DashboardDay extends Component {
     }
 
     getLectures = () => {
-        axios.get(API_URL + 'lectures/?date=' + toISODate(this.date), AuthService.getHeaders())
+        axios.get(API_URL + 'lectures/?date=' + toISODate(this.date) + '&ordering=start', AuthService.getHeaders())
             .then((response) => {
                 this.setState({lectures: response.data})
             })
