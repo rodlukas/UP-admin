@@ -2,11 +2,11 @@ language: python
 python:
 - '3.6.4'
 node_js: 8
+before_install: npm i -g npm
 install:
 - pip install -r requirements.txt
 - pip install codecov
 - cd frontend
-- npm i -g npm
 - npm --version
 - npm install
 - cd ..
