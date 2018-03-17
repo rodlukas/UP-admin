@@ -4,6 +4,7 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap'
 import AuthService from "../Auth/AuthService"
+import {API_URL} from "../components/GlobalConstants"
 
 export default class FormGroups extends Component {
     constructor(props) {
@@ -33,7 +34,7 @@ export default class FormGroups extends Component {
     }
 
     getDataCourses = () => {
-        axios.get('/api/v1/courses/', AuthService.getHeaders())
+        axios.get(API_URL + 'courses/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({courses: response.data})
             })
@@ -58,9 +59,9 @@ export default class FormGroups extends Component {
         const data = {name, memberships, course_id}
         let request
         if (this.isGroup)
-            request = axios.put('/api/v1/groups/' + id + '/', data, AuthService.getHeaders())
+            request = axios.put(API_URL + 'groups/' + id + '/', data, AuthService.getHeaders())
         else
-            request = axios.post('/api/v1/groups/', data, AuthService.getHeaders())
+            request = axios.post(API_URL + 'groups/', data, AuthService.getHeaders())
         request.then(() => {
             this.close()
             this.refresh()
@@ -79,7 +80,7 @@ export default class FormGroups extends Component {
     }
 
     delete = (id) => {
-        axios.delete('/api/v1/groups/' + id + '/', AuthService.getHeaders())
+        axios.delete(API_URL + 'groups/' + id + '/', AuthService.getHeaders())
             .then(() => {
                 this.close()
                 this.refresh()
@@ -90,7 +91,7 @@ export default class FormGroups extends Component {
     }
 
     getClients = () => {
-        axios.get('/api/v1/clients/', AuthService.getHeaders())
+        axios.get(API_URL + 'clients/', AuthService.getHeaders())
             .then((response) => {
                 let clients = []
                 response.data.map(client => {

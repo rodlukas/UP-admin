@@ -1,5 +1,6 @@
 import axios from "axios"
 import decode from 'jwt-decode'
+import {API_URL} from "../components/GlobalConstants"
 
 const AUTH_REFRESH_THRESHOLD = 60
 const AUTH_STORAGE_KEY = "jwt"
@@ -33,7 +34,7 @@ export default class AuthService {
     }
 
     static refreshToken(token) {
-        axios.post('/api/v1/jwt-refresh/', {token})
+        axios.post(API_URL + 'jwt-refresh/', {token})
             .then((response) => {
                 this.saveToken(response.data.token)
             })
@@ -45,7 +46,7 @@ export default class AuthService {
     }
 
     static authenticate(username, password, callback) {
-        axios.post('/api/v1/jwt-auth/', {username, password})
+        axios.post(API_URL + 'jwt-auth/', {username, password})
             .then((response) => {
                 this.saveToken(response.data.token)
                 callback()

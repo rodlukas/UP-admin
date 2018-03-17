@@ -6,6 +6,7 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDate} from "../components/FuncDateTime"
 import AuthService from "../Auth/AuthService"
+import {API_URL} from "../components/GlobalConstants"
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export default class ClientView extends Component {
     }
 
     getDataAttendanceStates = () => {
-        axios.get('/api/v1/attendancestates/', AuthService.getHeaders())
+        axios.get(API_URL + 'attendancestates/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({attendancestates: response.data})
             })
@@ -51,7 +52,7 @@ export default class ClientView extends Component {
     }
 
     getObject = () => {
-        axios.get('/api/v1/' + (this.CLIENT ? 'clients/' : 'groups/') + this.id + '/', AuthService.getHeaders())
+        axios.get(API_URL + (this.CLIENT ? 'clients/' : 'groups/') + this.id + '/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({object: response.data})
             })
@@ -61,7 +62,7 @@ export default class ClientView extends Component {
     }
 
     getLectures = () => {
-        axios.get('/api/v1/lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id, AuthService.getHeaders())
+        axios.get(API_URL + 'lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id, AuthService.getHeaders())
             .then((response) => {
                 // groupby courses
                 let group_to_values = response.data.reduce(function (obj, item) {

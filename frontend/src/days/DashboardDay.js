@@ -5,6 +5,7 @@ import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {prettyDateWithDay, toISODate, prettyTime} from "../components/FuncDateTime"
 import AuthService from "../Auth/AuthService"
+import {API_URL} from "../components/GlobalConstants"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -18,7 +19,7 @@ export default class DashboardDay extends Component {
     }
 
     getDataAttendanceStates = () => {
-        axios.get('/api/v1/attendancestates/', AuthService.getHeaders())
+        axios.get(API_URL + 'attendancestates/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({attendancestates: response.data})
             })
@@ -28,7 +29,7 @@ export default class DashboardDay extends Component {
     }
 
     getLectures = () => {
-        axios.get('/api/v1/lectures/?date=' + toISODate(this.date), AuthService.getHeaders())
+        axios.get(API_URL + 'lectures/?date=' + toISODate(this.date), AuthService.getHeaders())
             .then((response) => {
                 this.setState({lectures: response.data})
             })

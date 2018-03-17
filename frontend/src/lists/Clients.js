@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import axios from "axios"
 import FormClients from '../forms/FormClients'
 import AuthService from "../Auth/AuthService"
+import {API_URL} from "../components/GlobalConstants"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -24,7 +25,7 @@ export default class ClientList extends Component {
     }
 
     getClients = () => {
-        axios.get('/api/v1/clients/', AuthService.getHeaders())
+        axios.get(API_URL + 'clients/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({clients: response.data})
             })
