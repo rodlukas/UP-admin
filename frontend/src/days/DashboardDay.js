@@ -39,10 +39,9 @@ export default class DashboardDay extends Component {
     }
 
     componentDidMount() {
-        this.getLectures()
         this.getDataAttendanceStates()
+        this.getLectures()
     }
-
 
     render() {
         const ClientName = ({name, surname}) => <span>{name} {surname}</span>
@@ -82,6 +81,7 @@ export default class DashboardDay extends Component {
                                     <PaidButton paid={lecture.attendances[0].paid} attendanceId={lecture.attendances[0].id}
                                                 funcRefresh={this.getLectures}/>
                                     <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}
+                                                           attendanceId={lecture.attendances[0].id}
                                                            attendancestates={attendancestates}
                                                            funcRefresh={this.getLectures}/>
                                 </div>}

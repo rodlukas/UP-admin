@@ -77,10 +77,6 @@ export default class ClientView extends Component {
     componentDidMount() {
         this.getObject()
         this.getLectures()
-    }
-
-    componentWillMount() {
-        // aby se vzdy predalo do potomka (selectbox), nesmi byt v componentDidMount
         this.getDataAttendanceStates()
     }
 

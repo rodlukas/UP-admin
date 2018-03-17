@@ -9,16 +9,22 @@ import {API_URL} from "./GlobalConstants"
 export default class PaidButton extends Component {
     constructor(props) {
         super(props)
-        this.attendanceId = props.attendanceId
         this.state = {
+            attendanceId: props.attendanceId,
             paid: props.paid
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            attendanceId: nextProps.attendanceId,
+            paid: nextProps.paid})
     }
 
     onClick = () => {
         const newState = !this.state.paid
         const data = {paid: newState}
-        axios.patch(API_URL + 'attendances/' + this.attendanceId + '/', data, AuthService.getHeaders())
+        axios.patch(API_URL + 'attendances/' + this.state.attendanceId + '/', data, AuthService.getHeaders())
             .then(() => {
                 this.props.funcRefresh()
                 this.setState({paid: newState})

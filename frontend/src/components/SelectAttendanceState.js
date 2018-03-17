@@ -8,17 +8,25 @@ import {Input} from 'reactstrap'
 export default class SelectAttendanceState extends Component {
     constructor(props) {
         super(props)
-        this.attendanceId = props.attendanceId
-        this.attendancestates = props.attendancestates
         this.state = {
+            attendanceId: props.attendanceId,
+            attendancestates: props.attendancestates,
             value: props.value
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            attendanceId: nextProps.attendanceId,
+            attendancestates: nextProps.attendancestates,
+            value: nextProps.value
+        })
     }
 
     onChange = (e) => {
         const newValue = e.target.value
         const data = {attendancestate_id: newValue}
-        axios.patch(API_URL + 'attendances/' + this.attendanceId + '/', data, AuthService.getHeaders())
+        axios.patch(API_URL + 'attendances/' + this.state.attendanceId + '/', data, AuthService.getHeaders())
             .then(() => {
                 this.props.funcRefresh()
                 this.setState({value: newValue})
@@ -30,10 +38,10 @@ export default class SelectAttendanceState extends Component {
     }
 
     render() {
-        const {value} = this.state
+        const {value, attendancestates} = this.state
         return (
             <Input type="select" bsSize="sm" onChange={this.onChange} value={value}>
-                {this.attendancestates.map(attendancestate =>
+                {attendancestates.map(attendancestate =>
                     <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
             </Input>
         )
