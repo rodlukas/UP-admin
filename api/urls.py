@@ -9,6 +9,7 @@ router.register('clients', views.ClientViewSet, 'clients')
 router.register('groups', views.GroupViewSet, 'groups')
 router.register('courses', views.CourseViewSet, 'courses')
 router.register('lectures', views.LectureViewSet, 'lectures')
+router.register('attendances', views.AttendanceViewSet, 'lectures')
 router.register('attendancestates', views.AttendanceStateViewSet, 'attendancestates')
 
 urlpatterns = [

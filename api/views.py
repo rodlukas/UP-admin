@@ -9,6 +9,11 @@ class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
 
 
+class AttendanceViewSet(viewsets.ModelViewSet):
+    queryset = Attendance.objects.all()
+    serializer_class = AttendanceSerializer
+
+
 class AttendanceStateViewSet(viewsets.ModelViewSet):
     queryset = AttendanceState.objects.all().order_by('name')
     serializer_class = AttendanceStateSerializer

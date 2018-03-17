@@ -40,21 +40,21 @@ export default class FormLectures extends Component {
     createAttendanceStateArray() {
         let array = []
         this.members.map((client, id) =>
-            array.push(array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : 5))
+            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : 5)
         return array
     }
 
     createPaidArray() {
         let array = []
         this.members.map((client, id) =>
-            array.push(array[client.id] = this.isLecture ? this.props.lecture.attendances[id].paid : false))
+            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].paid : false)
         return array
     }
 
     createNoteArray() {
         let array = []
         this.members.map((client, id) =>
-            array.push(array[client.id] = this.isLecture ? this.props.lecture.attendances[id].note : ''))
+            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].note : '')
         return array
     }
 
