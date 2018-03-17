@@ -3,12 +3,14 @@ import {Container, Row, Col} from 'reactstrap'
 import DashboardDay from './DashboardDay'
 import {prettyDate} from "../components/FuncDateTime"
 
+const WORK_DAYS_COUNT = 5
+
 export default class Diary extends Component {
     constructor(props) {
         super(props)
         this.thisMonday = Diary.getLastMonday()
         this.thisFriday = new Date(this.thisMonday)
-        this.thisFriday.setDate(this.thisMonday.getDate() + 4)
+        this.thisFriday.setDate(this.thisMonday.getDate() + (WORK_DAYS_COUNT-1))
         this.title = "Týdenní přehled: " + prettyDate(this.thisMonday) + " - " + prettyDate(this.thisFriday)
     }
 
@@ -22,7 +24,7 @@ export default class Diary extends Component {
     generateWeekOverview() {
         let result = []
         let endDate = new Date(this.thisMonday)
-        let workDays = 5
+        let workDays = WORK_DAYS_COUNT
         while (workDays > 0) {
             result.push(
                 <Col key={workDays}>

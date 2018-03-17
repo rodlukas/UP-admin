@@ -1,6 +1,7 @@
 import React, {Component} from "react"
 import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap'
+import AuthService from "../Auth/AuthService"
 
 export default class FormClients extends Component {
     constructor(props) {
@@ -29,9 +30,9 @@ export default class FormClients extends Component {
         const data = {name, surname, email, phone, note}
         let request
         if (this.isClient)
-            request = axios.put('/api/v1/clients/' + id + '/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+            request = axios.put('/api/v1/clients/' + id + '/', data, AuthService.getHeaders())
         else
-            request = axios.post('/api/v1/clients/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+            request = axios.post('/api/v1/clients/', data, AuthService.getHeaders())
         request.then(() => {
             this.close()
             this.refresh()
@@ -50,7 +51,7 @@ export default class FormClients extends Component {
     }
 
     delete = (id) => {
-        axios.delete('/api/v1/clients/' + id + '/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.delete('/api/v1/clients/' + id + '/', AuthService.getHeaders())
             .then(() => {
                 this.close()
                 this.refresh()

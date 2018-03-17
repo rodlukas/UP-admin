@@ -3,6 +3,7 @@ import axios from 'axios'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap'
+import AuthService from "../Auth/AuthService"
 
 export default class FormGroups extends Component {
     constructor(props) {
@@ -32,7 +33,7 @@ export default class FormGroups extends Component {
     }
 
     getDataCourses = () => {
-        axios.get('/api/v1/courses/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.get('/api/v1/courses/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({courses: response.data})
             })
@@ -57,9 +58,9 @@ export default class FormGroups extends Component {
         const data = {name, memberships, course_id}
         let request
         if (this.isGroup)
-            request = axios.put('/api/v1/groups/' + id + '/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+            request = axios.put('/api/v1/groups/' + id + '/', data, AuthService.getHeaders())
         else
-            request = axios.post('/api/v1/groups/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+            request = axios.post('/api/v1/groups/', data, AuthService.getHeaders())
         request.then(() => {
             this.close()
             this.refresh()
@@ -78,7 +79,7 @@ export default class FormGroups extends Component {
     }
 
     delete = (id) => {
-        axios.delete('/api/v1/groups/' + id + '/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.delete('/api/v1/groups/' + id + '/', AuthService.getHeaders())
             .then(() => {
                 this.close()
                 this.refresh()
@@ -89,7 +90,7 @@ export default class FormGroups extends Component {
     }
 
     getClients = () => {
-        axios.get('/api/v1/clients/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.get('/api/v1/clients/', AuthService.getHeaders())
             .then((response) => {
                 let clients = []
                 response.data.map(client => {

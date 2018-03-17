@@ -2,6 +2,7 @@ import React, {Component} from "react"
 import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import {toISODate, toISOTime} from "../components/FuncDateTime"
+import AuthService from "../Auth/AuthService"
 
 export default class FormLectures extends Component {
     constructor(props) {
@@ -65,7 +66,7 @@ export default class FormLectures extends Component {
     }
 
     getDataCourses = () => {
-        axios.get('/api/v1/courses/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.get('/api/v1/courses/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({courses: response.data})
             })
@@ -98,9 +99,9 @@ export default class FormLectures extends Component {
             data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
         let request
         if (this.isLecture)
-            request = axios.put('/api/v1/lectures/' + id + '/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+            request = axios.put('/api/v1/lectures/' + id + '/', data, AuthService.getHeaders())
         else
-            request = axios.post('/api/v1/lectures/', data, {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+            request = axios.post('/api/v1/lectures/', data, AuthService.getHeaders())
         request.then(() => {
             this.close()
             this.refresh()
@@ -119,7 +120,7 @@ export default class FormLectures extends Component {
     }
 
     delete = (id) => {
-        axios.delete('/api/v1/lectures/' + id + '/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.delete('/api/v1/lectures/' + id + '/', AuthService.getHeaders())
             .then(() => {
                 this.close()
                 this.refresh()

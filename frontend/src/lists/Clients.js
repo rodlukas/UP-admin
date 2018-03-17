@@ -3,6 +3,7 @@ import {Table, Button, Modal} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import axios from "axios"
 import FormClients from '../forms/FormClients'
+import AuthService from "../Auth/AuthService"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export default class ClientList extends Component {
     }
 
     getClients = () => {
-        axios.get('/api/v1/clients/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.get('/api/v1/clients/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({clients: response.data})
             })

@@ -3,6 +3,7 @@ import {Table, Button, Modal, Badge} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import axios from "axios"
 import FormGroups from '../forms/FormGroups'
+import AuthService from "../Auth/AuthService"
 
 export default class Groups extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export default class Groups extends Component {
     }
 
     getGroups = () => {
-        axios.get('/api/v1/groups/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.get('/api/v1/groups/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({groups: response.data})
             })

@@ -6,8 +6,10 @@ import Diary from "./days/Diary"
 import Groups from "./lists/Groups"
 import Dashboard from "./days/Dashboard"
 import NotFound from "./NotFound";
-import {Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink} from 'reactstrap'
-import {Login, PrivateRoute, AuthButton} from "./Auth/Login"
+import {Collapse, Navbar, NavbarToggler, NavbarBrand} from 'reactstrap'
+import Login from "./Auth/Login"
+import PrivateRoute from "./Auth/PrivateRoute"
+import Menu from "./Menu"
 
 export default class Main extends Component {
     constructor(props) {
@@ -29,24 +31,11 @@ export default class Main extends Component {
                 <div>
                     <Navbar light className="border-bottom" expand="md">
                         <NavbarBrand tag={RouterNavLink} exact to="/">
-                            ÚP<sub>admin</sub></NavbarBrand>
+                            ÚP<sub>admin</sub>
+                        </NavbarBrand>
                         <NavbarToggler onClick={this.toggle}/>
                         <Collapse isOpen={this.state.isOpen} navbar>
-                            <Nav className="ml-auto" navbar>
-                                <NavItem>
-                                    <NavLink tag={RouterNavLink} exact activeClassName="active" to="/">Přehled</NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink tag={RouterNavLink} to="/diar">Diář</NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink tag={RouterNavLink} to="/klienti">Klienti</NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink tag={RouterNavLink} to="/skupiny">Skupiny</NavLink>
-                                </NavItem>
-                            </Nav>
-                            <AuthButton/>
+                            <Menu/>
                         </Collapse>
                     </Navbar>
                     <div className="content">

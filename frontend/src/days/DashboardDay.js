@@ -4,7 +4,7 @@ import axios from "axios"
 import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {prettyDateWithDay, toISODate, prettyTime} from "../components/FuncDateTime"
-import {getToken} from "../Auth/Procedures"
+import AuthService from "../Auth/AuthService"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -18,7 +18,7 @@ export default class DashboardDay extends Component {
     }
 
     getDataAttendanceStates = () => {
-        axios.get('/api/v1/attendancestates/', {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.get('/api/v1/attendancestates/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({attendancestates: response.data})
             })
@@ -28,7 +28,7 @@ export default class DashboardDay extends Component {
     }
 
     getLectures = () => {
-        axios.get('/api/v1/lectures/?date=' + toISODate(this.date), {headers: {"Authorization": "JWT " + localStorage.getItem("jwt")}})
+        axios.get('/api/v1/lectures/?date=' + toISODate(this.date), AuthService.getHeaders())
             .then((response) => {
                 this.setState({lectures: response.data})
             })

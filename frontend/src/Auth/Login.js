@@ -1,11 +1,9 @@
 import React, {Component} from "react"
-import {Route, Redirect, withRouter} from "react-router-dom"
-import axios from "axios"
+import {Redirect} from "react-router-dom"
 import {Col, Form, FormGroup, Label, Button, Input, Container} from 'reactstrap'
-import {saveToken, getToken} from "./Procedures"
-import decode from 'jwt-decode'
+import AuthService from "../Auth/AuthService"
 
-export class Login extends Component {
+export default class Login extends Component {
     constructor(props) {
         super(props)
         this.title = "Přihlášení"
@@ -61,85 +59,5 @@ export class Login extends Component {
                 </Form>
             </Container>
         )
-    }
-}
-
-export const PrivateRoute = ({component: Component, ...rest}) => (
-    <Route
-        {...rest}
-        render={props =>
-            AuthService.isAuthenticated() ? (
-                <Component {...props} />
-            ) : (
-                <Redirect
-                    to={{
-                        pathname: "/prihlasit",
-                        state: {from: props.location}
-                    }}
-                />)}
-    />
-)
-
-export const AuthButton = withRouter(
-    ({history}) =>
-        AuthService.isAuthenticated() &&
-        <Button color="secondary" onClick={() => AuthService.signout(() => history.push("/"))}>Odhlásit</Button>
-)
-
-const AuthService = {
-    isAuthenticated() {
-        const token = getToken()
-        return !!token && !this.isTokenExpired(token)
-    },
-    getCurrentDate () {
-        return (Date.now() / 1000) // prevod na sekundy (decoded.exp je v sekundach)
-    },
-    isTokenExpired(token) {
-        try {
-            const decoded = decode(token)
-            console.log("token: " + token + '\n now: ' + new Date().toISOString())
-            console.log(decoded)
-            console.log("vyprsi: " + new Date(decoded.exp*1000).toISOString())
-
-            const dif = decoded.exp - this.getCurrentDate()
-            console.log("dif: " + dif)
-            if (dif > 0 && dif <= 60)
-            {
-                this.refreshToken(token)
-                return (decode(getToken()).exp < this.getCurrentDate()) // dekoduj novy token a porovnej
-            }
-            return decoded.exp < this.getCurrentDate()
-        }
-        catch (err) {
-            return false
-        }
-    },
-    refreshToken(token) {
-        axios.post('/api/v1/jwt-refresh/', {token})
-            .then((response) => {
-                saveToken(response.data.token)
-            })
-            .catch((error) => {
-                console.log(error)
-                alert("CHYBA - neúspěšný pokus o obnovení vašeho přihlášení. Přihlašte se, prosím, znovu!")
-                this.props.history.push("/login")
-            })
-    },
-    authenticate(username, password, callback) {
-        axios.post('/api/v1/jwt-auth/', {username, password})
-            .then((response) => {
-                saveToken(response.data.token)
-                callback()
-            })
-            .catch((error) => {
-                console.log(error)
-                alert("Špatné jméno nebo heslo!")
-                this.props.history.push("/login")
-            })
-    },
-    signout(callback) {
-        //this.is_authenticated = false
-        localStorage.clear()
-        callback()
     }
 }
