@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
-import {toISODate, toISOTime} from "../components/FuncDateTime"
+import {toISODate, toISOTime, prettyDateWithDay} from "../components/FuncDateTime"
 import AuthService from "../Auth/AuthService"
 import {API_URL} from "../components/GlobalConstants"
 
@@ -204,7 +204,7 @@ export default class FormLectures extends Component {
                         <Col sm={10}>
                             <Button color="danger"
                                     onClick={() => {
-                                        if (window.confirm('Opravdu chcete smazat lekci ' + (this.CLIENT ? "klienta" : "skupiny") + (this.CLIENT ? (object.name + " " + object.surname) : object.name) + " v " + date + " " + time + '?'))
+                                        if (window.confirm('Opravdu chcete smazat lekci ' + (this.CLIENT ? "klienta" : "skupiny") + " " + (this.CLIENT ? (object.name + " " + object.surname) : object.name) + " v " + prettyDateWithDay(new Date(date)) + " " + time + '?'))
                                             this.delete(id)}}>
                                 Smazat lekci</Button>
                         </Col>

@@ -1,12 +1,11 @@
 import React, {Component} from "react"
 import {Container, Row, Col, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading, Input} from 'reactstrap'
 import axios from "axios"
-import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDate} from "../components/FuncDateTime"
 import AuthService from "../Auth/AuthService"
 import {API_URL} from "../components/GlobalConstants"
+import PaidButton from "../components/PaidButton"
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -38,6 +37,14 @@ export default class ClientView extends Component {
         const state = this.state
         state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
         this.setState(state)
+    }
+
+    onChangePaid = (context) => {
+        let lectures = this.state.lectures
+        let findLecture = lectures.find(el => el.course === context.lectureCourse).values
+        let findAttendance = findLecture.find(el => el.id === context.lectureId).attendances
+        findAttendance.find(el => el.id === context.attendanceId).paid ^= true // negace
+        this.setState({lectures: lectures})
     }
 
     toggle = (lecture = {}) => {
@@ -87,8 +94,6 @@ export default class ClientView extends Component {
     }
 
     render() {
-        const PaidButton = ({state}) =>
-            <FontAwesomeIcon icon={faUsdCircle} size="2x" className={state ? "text-success" : "text-danger"}/>
         const SelectAttendanceState = ({value}) =>
             <Input type="select" bsSize="sm" onChange={this.onChange} value={value}>
                 {this.state.attendancestates.map(attendancestate =>
@@ -117,7 +122,9 @@ export default class ClientView extends Component {
                                             {lectureVal.attendances.map(attendance =>
                                                 <div key={attendance.id}>
                                                     <h6>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</h6>
-                                                    <PaidButton state={attendance.paid}/>
+                                                    <PaidButton paid={attendance.paid} attendanceId={attendance.id}
+                                                                lectureId={lectureVal.id} lectureCourse={lecture.course}
+                                                                onChange={this.onChangePaid}/>
                                                     <SelectAttendanceState value={attendance.attendancestate.id}/>{' '}
                                                 </div>)}
                                             <Button color="primary" onClick={() => this.toggle(lectureVal)}>Upravit</Button>

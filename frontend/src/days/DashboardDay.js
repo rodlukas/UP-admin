@@ -1,11 +1,10 @@
 import React, {Component} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, Input} from 'reactstrap'
 import axios from "axios"
-import {faUsdCircle} from '@fortawesome/fontawesome-pro-solid'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {prettyDateWithDay, toISODate, prettyTime} from "../components/FuncDateTime"
 import AuthService from "../Auth/AuthService"
 import {API_URL} from "../components/GlobalConstants"
+import PaidButton from "../components/PaidButton"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -45,6 +44,13 @@ export default class DashboardDay extends Component {
         this.setState(state)
     }
 
+    onChangePaid = (context) => {
+        let lectures = this.state.lectures
+        let findAttendance = lectures.find(el => el.id === context.lectureId).attendances
+        findAttendance.find(el => el.id === context.attendanceId).paid ^= true // negace
+        this.setState({lectures: lectures})
+    }
+
     componentDidMount() {
         this.getLectures()
         this.getDataAttendanceStates()
@@ -53,8 +59,6 @@ export default class DashboardDay extends Component {
 
     render() {
         const ClientName = ({name, surname}) => <span>{name} {surname}</span>
-        const PaidButton = ({state}) =>
-            <FontAwesomeIcon icon={faUsdCircle} size="2x" className={state ? "text-success" : "text-danger"}/>
         const SelectAttendanceState = ({value}) =>
             <Input type="select" bsSize="sm" onChange={this.onChange} value={value}>
                 {this.state.attendancestates.map(attendancestate =>
@@ -83,13 +87,15 @@ export default class DashboardDay extends Component {
                                         <li key={attendance.id}>
                                             <ClientName name={attendance.client.name}
                                                         surname={attendance.client.surname}/>{' '}
-                                            <PaidButton state={attendance.paid}/>
+                                            <PaidButton paid={attendance.paid} attendanceId={attendance.id}
+                                                        lectureId={lecture.id} onChange={this.onChangePaid}/>
                                             <SelectAttendanceState value={attendance.attendancestate.id}/>
                                         </li>)}
                                 </ul>
                                 :
                                 <div>
-                                    <PaidButton state={lecture.attendances[0].paid}/>
+                                    <PaidButton paid={lecture.attendances[0].paid} attendanceId={lecture.attendances[0].id}
+                                                lectureId={lecture.id} onChange={this.onChangePaid}/>
                                     <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}/>
                                 </div>}
                         </ListGroupItem>)
