@@ -2,9 +2,9 @@ import React, {Component} from "react"
 import {Container, Row, Col, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading} from 'reactstrap'
 import axios from "axios"
 import FormLectures from "../forms/FormLectures"
-import {prettyTime, prettyDate} from "../components/FuncDateTime"
+import {prettyTime, prettyDate} from "../global/FuncDateTime"
 import AuthService from "../Auth/AuthService"
-import {API_URL} from "../components/GlobalConstants"
+import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 import PaidButton from "../components/PaidButton"
 import SelectAttendanceState from "../components/SelectAttendanceState"
 
@@ -30,6 +30,7 @@ export default class ClientView extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -51,11 +52,11 @@ export default class ClientView extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 
     getLectures = () => {
-        console.log("refresh")
         axios.get(API_URL + 'lectures/?' + (this.CLIENT ? 'client' : 'group') + '=' + this.id + '&ordering=-start', AuthService.getHeaders())
             .then((response) => {
                 // groupby courses
@@ -71,6 +72,7 @@ export default class ClientView extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -105,10 +107,10 @@ export default class ClientView extends Component {
                                                 <div key={attendance.id}>
                                                     <h6>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</h6>
                                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
-                                                                funcRefresh={this.getLectures}/>
+                                                                funcRefresh={this.getLectures} notify={this.props.notify}/>
                                                     <SelectAttendanceState value={attendance.attendancestate.id} attendanceId={attendance.id}
                                                                 attendancestates={attendancestates}
-                                                                funcRefresh={this.getLectures}/>{' '}
+                                                                funcRefresh={this.getLectures} notify={this.props.notify}/>{' '}
                                                 </div>)}
                                             <Button color="primary" onClick={() => this.toggle(lectureVal)}>Upravit</Button>
                                         </ListGroupItem>)
@@ -120,7 +122,8 @@ export default class ClientView extends Component {
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} CLIENT={this.CLIENT}
-                                  funcRefresh={this.getLectures} attendancestates={attendancestates}/>
+                                  funcRefresh={this.getLectures} attendancestates={attendancestates}
+                                  notify={this.props.notify}/>
                 </Modal>
             </div>
         )

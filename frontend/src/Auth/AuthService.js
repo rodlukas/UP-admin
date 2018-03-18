@@ -1,6 +1,6 @@
 import axios from "axios"
 import decode from 'jwt-decode'
-import {API_URL} from "../components/GlobalConstants"
+import {API_URL} from "../global/GlobalConstants"
 
 const AUTH_REFRESH_THRESHOLD = 60
 const AUTH_STORAGE_KEY = "jwt"
@@ -20,7 +20,7 @@ export default class AuthService {
             const decoded = decode(token)
             if (!fastCheck) {//popis fastCheck v metode isAuthenticated
                 const dif = decoded.exp - AuthService.getCurrentDate()
-                console.log("--------\ntoken:\t" + token + '\naktual:\t' + new Date().toISOString() + "\nvyprsi:\t" + new Date(decoded.exp * 1000).toISOString() + "\ndif:\t" + dif)
+                //console.log("--------\ntoken:\t" + token + '\naktual:\t' + new Date().toISOString() + "\nvyprsi:\t" + new Date(decoded.exp * 1000).toISOString() + "\ndif:\t" + dif)
                 if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
                     this.refreshToken(token)
                     return (decode(this.getToken()).exp < this.getCurrentDate()) // dekoduj novy token a porovnej

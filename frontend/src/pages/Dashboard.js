@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {Container, Row, Col} from 'reactstrap'
-import DashboardDay from './DashboardDay'
+import DashboardDay from '../components/DashboardDay'
 
 export default class Dashboard extends Component {
     constructor(props) {
@@ -16,7 +16,7 @@ export default class Dashboard extends Component {
                 <Container>
                     <Row>
                         <Col sm="12" md={{size: 8, offset: 2}}>
-                            <DashboardDay date={this.date.toString()}/>
+                            <DashboardDay date={this.date.toString()} notify={this.props.notify}/>
                         </Col>
                     </Row>
                 </Container>

@@ -4,7 +4,7 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap'
 import AuthService from "../Auth/AuthService"
-import {API_URL} from "../components/GlobalConstants"
+import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 
 export default class FormGroups extends Component {
     constructor(props) {
@@ -40,6 +40,7 @@ export default class FormGroups extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -65,9 +66,11 @@ export default class FormGroups extends Component {
         request.then(() => {
             this.close()
             this.refresh()
+            this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
         })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -84,9 +87,11 @@ export default class FormGroups extends Component {
             .then(() => {
                 this.close()
                 this.refresh()
+                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -103,6 +108,7 @@ export default class FormGroups extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 

@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import "./PaidButton.css"
 import AuthService from "../Auth/AuthService"
 import axios from "axios/index"
-import {API_URL} from "./GlobalConstants"
+import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 import {Input} from 'reactstrap'
 
 export default class SelectAttendanceState extends Component {
@@ -30,10 +30,11 @@ export default class SelectAttendanceState extends Component {
             .then(() => {
                 this.props.funcRefresh()
                 this.setState({value: newValue})
-                console.log("uspesne zmenen stav ucasti")
+                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 

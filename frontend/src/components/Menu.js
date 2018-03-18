@@ -1,7 +1,8 @@
 import React from "react"
 import {NavLink as RouterNavLink, withRouter} from "react-router-dom"
 import {Nav, NavItem, NavLink, Button} from 'reactstrap'
-import AuthService from "./Auth/AuthService"
+import AuthService from "../Auth/AuthService"
+import "./Menu.css"
 
 const Menu = withRouter(
     ({history}) =>

@@ -4,7 +4,7 @@ import {faUsdCircle} from "@fortawesome/fontawesome-pro-solid"
 import "./PaidButton.css"
 import AuthService from "../Auth/AuthService"
 import axios from "axios/index"
-import {API_URL} from "./GlobalConstants"
+import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 
 export default class PaidButton extends Component {
     constructor(props) {
@@ -28,19 +28,23 @@ export default class PaidButton extends Component {
             .then(() => {
                 this.props.funcRefresh()
                 this.setState({paid: newState})
-                console.log("uspesne zmenen stav platby")
+                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 
     render() {
         const {paid} = this.state
         return (
-            <FontAwesomeIcon icon={faUsdCircle} size="2x"
-                             className={"PaidButton " + (paid ? "text-success" : "text-danger")}
-                             onClick={this.onClick}/>
+            <div>
+                <FontAwesomeIcon icon={faUsdCircle} size="2x"
+                                 className={"PaidButton " + (paid ? "text-success" : "text-danger")}
+                                 onClick={this.onClick}/>
+            </div>
+
         )
     }
 }

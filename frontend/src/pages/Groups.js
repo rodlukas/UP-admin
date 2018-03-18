@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import axios from "axios"
 import FormGroups from '../forms/FormGroups'
 import AuthService from "../Auth/AuthService"
-import {API_URL} from "../components/GlobalConstants"
+import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 
 export default class Groups extends Component {
     constructor(props) {
@@ -31,6 +31,7 @@ export default class Groups extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -89,7 +90,8 @@ export default class Groups extends Component {
                     Žádné skupiny
                 </p>}
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}/>
+                    <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}
+                                notify={this.props.notify}/>
                 </Modal>
             </div>
         )

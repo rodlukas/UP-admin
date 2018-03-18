@@ -1,15 +1,16 @@
 import React, {Component} from "react"
 import {Route, NavLink as RouterNavLink, BrowserRouter, Switch} from "react-router-dom"
-import Clients from "./lists/Clients"
-import Card from "./lists/Card"
-import Diary from "./days/Diary"
-import Groups from "./lists/Groups"
-import Dashboard from "./days/Dashboard"
-import NotFound from "./NotFound";
+import Clients from "./pages/Clients"
+import Card from "./pages/Card"
+import Diary from "./pages/Diary"
+import Groups from "./pages/Groups"
+import Dashboard from "./pages/Dashboard"
+import NotFound from "./pages/NotFound"
 import {Collapse, Navbar, NavbarToggler, NavbarBrand} from 'reactstrap'
-import Login from "./Auth/Login"
+import Login from "./pages/Login"
 import PrivateRoute from "./Auth/PrivateRoute"
-import Menu from "./Menu"
+import Menu from "./components/Menu"
+import {ToastContainer, toast} from 'react-toastify'
 
 export default class Main extends Component {
     constructor(props) {
@@ -25,7 +26,16 @@ export default class Main extends Component {
         })
     }
 
+    notify = (message, level) => {
+        const options = {
+            type: level,
+            position: toast.POSITION.TOP_CENTER
+        }
+        toast(message, options)
+    }
+
     render() {
+
         return (
             <BrowserRouter>
                 <div>
@@ -38,15 +48,16 @@ export default class Main extends Component {
                             <Menu/>
                         </Collapse>
                     </Navbar>
+                    <ToastContainer/>
                     <div className="content">
                         <Switch>
-                            <PrivateRoute exact path="/" component={Dashboard}/>
+                            <PrivateRoute exact path="/" component={Dashboard} notify={this.notify}/>
                             <Route path="/prihlasit" component={Login}/>
-                            <PrivateRoute exact path="/skupiny" component={Groups}/>
-                            <PrivateRoute path="/diar" component={Diary}/>
-                            <PrivateRoute exact path="/klienti" component={Clients}/>
-                            <PrivateRoute path="/klienti/:id" component={Card}/>
-                            <PrivateRoute path="/skupiny/:id" component={Card}/>
+                            <PrivateRoute exact path="/skupiny" component={Groups} notify={this.notify}/>
+                            <PrivateRoute path="/diar" component={Diary} notify={this.notify}/>
+                            <PrivateRoute exact path="/klienti" component={Clients} notify={this.notify}/>
+                            <PrivateRoute path="/klienti/:id" component={Card} notify={this.notify}/>
+                            <PrivateRoute path="/skupiny/:id" component={Card} notify={this.notify}/>
                             <Route component={NotFound}/>
                         </Switch>
                     </div>

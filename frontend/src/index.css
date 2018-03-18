@@ -1,7 +1,3 @@
-.active {
-    font-weight: bold;
-}
-
 html, body, .content, .root {
     background-color: #ECF0F5;
 }
@@ -12,8 +8,4 @@ html, body, .content, .root {
 
 .table > tbody > tr > td {
     vertical-align: middle;
-}
-
-.navbar {
-    background-color: white;
 }

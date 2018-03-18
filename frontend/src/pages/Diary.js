@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Container, Row, Col} from 'reactstrap'
-import DashboardDay from './DashboardDay'
-import {prettyDate} from "../components/FuncDateTime"
+import DashboardDay from '../components/DashboardDay'
+import {prettyDate} from "../global/FuncDateTime"
 
 const WORK_DAYS_COUNT = 5
 
@@ -28,7 +28,7 @@ export default class Diary extends Component {
         while (workDays > 0) {
             result.push(
                 <Col key={workDays}>
-                    <DashboardDay date={endDate.toString()}/>
+                    <DashboardDay date={endDate.toString()} notify={this.props.notify}/>
                 </Col>)
             endDate.setDate(endDate.getDate() + 1)
             workDays--

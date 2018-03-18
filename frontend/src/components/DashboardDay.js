@@ -1,11 +1,11 @@
 import React, {Component} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge} from 'reactstrap'
 import axios from "axios"
-import {prettyDateWithDay, toISODate, prettyTime} from "../components/FuncDateTime"
+import {prettyDateWithDay, toISODate, prettyTime} from "../global/FuncDateTime"
 import AuthService from "../Auth/AuthService"
-import {API_URL} from "../components/GlobalConstants"
-import PaidButton from "../components/PaidButton"
-import SelectAttendanceState from "../components/SelectAttendanceState"
+import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
+import PaidButton from "./PaidButton"
+import SelectAttendanceState from "./SelectAttendanceState"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -25,6 +25,7 @@ export default class DashboardDay extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -32,9 +33,11 @@ export default class DashboardDay extends Component {
         axios.get(API_URL + 'lectures/?date=' + toISODate(this.date) + '&ordering=start', AuthService.getHeaders())
             .then((response) => {
                 this.setState({lectures: response.data})
+
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -63,28 +66,28 @@ export default class DashboardDay extends Component {
                                 <Badge color="warning" pill>Příště platit</Badge>
                             </ListGroupItemHeading>
                             {lecture.group ?
-                                <ul>
-                                    {lecture.attendances.map(attendance =>
-                                        <li key={attendance.id}>
-                                            <ClientName name={attendance.client.name}
-                                                        surname={attendance.client.surname}/>{' '}
-                                            <PaidButton paid={attendance.paid} attendanceId={attendance.id}
-                                                        funcRefresh={this.getLectures}/>
-                                            <SelectAttendanceState value={attendance.attendancestate.id}
-                                                                   attendanceId={attendance.id}
-                                                                   attendancestates={attendancestates}
-                                                                   funcRefresh={this.getLectures}/>
-                                        </li>)}
-                                </ul>
-                                :
-                                <div>
-                                    <PaidButton paid={lecture.attendances[0].paid} attendanceId={lecture.attendances[0].id}
-                                                funcRefresh={this.getLectures}/>
-                                    <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}
-                                                           attendanceId={lecture.attendances[0].id}
-                                                           attendancestates={attendancestates}
-                                                           funcRefresh={this.getLectures}/>
-                                </div>}
+                            <ul>
+                                {lecture.attendances.map(attendance =>
+                                    <li key={attendance.id}>
+                                        <ClientName name={attendance.client.name}
+                                                    surname={attendance.client.surname}/>{' '}
+                                        <PaidButton paid={attendance.paid} attendanceId={attendance.id}
+                                                    funcRefresh={this.getLectures} notify={this.props.notify}/>
+                                        <SelectAttendanceState value={attendance.attendancestate.id}
+                                                               attendanceId={attendance.id}
+                                                               attendancestates={attendancestates}
+                                                               funcRefresh={this.getLectures} notify={this.props.notify}/>
+                                    </li>)}
+                            </ul>
+                            :
+                            <div>
+                                <PaidButton paid={lecture.attendances[0].paid} attendanceId={lecture.attendances[0].id}
+                                            funcRefresh={this.getLectures} notify={this.props.notify}/>
+                                <SelectAttendanceState value={lecture.attendances[0].attendancestate.id}
+                                                       attendanceId={lecture.attendances[0].id}
+                                                       attendancestates={attendancestates}
+                                                       funcRefresh={this.getLectures} notify={this.props.notify}/>
+                            </div>}
                         </ListGroupItem>)
                     })}
                     {!Boolean(lectures.length) &&

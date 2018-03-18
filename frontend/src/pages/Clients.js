@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import axios from "axios"
 import FormClients from '../forms/FormClients'
 import AuthService from "../Auth/AuthService"
-import {API_URL} from "../components/GlobalConstants"
+import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -31,6 +31,7 @@ export default class ClientList extends Component {
             })
             .catch((error) => {
                 console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 
@@ -76,7 +77,8 @@ export default class ClientList extends Component {
                     Žádní klienti
                 </p>}
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                    <FormClients client={this.state.currentClient} funcClose={this.toggle} funcRefresh={this.getClients}/>
+                    <FormClients client={this.state.currentClient} funcClose={this.toggle} funcRefresh={this.getClients}
+                                 notify={this.props.notify}/>
                 </Modal>
             </div>
         )
