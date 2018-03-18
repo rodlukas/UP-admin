@@ -1,0 +1,19 @@
+.list-clients {
+    padding-left: .5rem
+}
+
+.list-clients li {
+    list-style-type: none
+}
+
+.list-clients p {
+    margin: 0
+}
+
+.list-clientsGroup li {
+    list-style-type: "- ";
+}
+
+.list-bgGroup {
+    background-color: #e0e0e0 !important;
+}

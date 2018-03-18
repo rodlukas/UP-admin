@@ -39,12 +39,9 @@ export default class PaidButton extends Component {
     render() {
         const {paid} = this.state
         return (
-            <div>
                 <FontAwesomeIcon icon={faUsdCircle} size="2x"
                                  className={"PaidButton " + (paid ? "text-success" : "text-danger")}
                                  onClick={this.onClick}/>
-            </div>
-
         )
     }
 }

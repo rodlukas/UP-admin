@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Container, Row, Col, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading} from 'reactstrap'
+import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading} from 'reactstrap'
 import axios from "axios"
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDate} from "../global/FuncDateTime"
@@ -88,7 +88,7 @@ export default class ClientView extends Component {
             <div>
                 <h1 className="text-center mb-4">{this.title}: {this.CLIENT ? (object.name + " " + object.surname) : object.name}</h1>
                 <Button color="secondary" onClick={this.goBack}>Jít zpět</Button>{' '}
-                <Button color="info" onClick={() => this.toggle()}>Přidat kurz</Button>
+                <Button color="info" onClick={() => this.toggle()}>Přidat lekci</Button>
                 <Container fluid={true}>
                     <Row>
                     {lectures.map(lecture =>
@@ -107,10 +107,11 @@ export default class ClientView extends Component {
                                                 <div key={attendance.id}>
                                                     <h6>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</h6>
                                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
-                                                                funcRefresh={this.getLectures} notify={this.props.notify}/>
+                                                                funcRefresh={this.getLectures} notify={this.props.notify}/>{' '}
+                                                    <Badge color="info" pill>{attendance.note}</Badge>
                                                     <SelectAttendanceState value={attendance.attendancestate.id} attendanceId={attendance.id}
                                                                 attendancestates={attendancestates}
-                                                                funcRefresh={this.getLectures} notify={this.props.notify}/>{' '}
+                                                                funcRefresh={this.getLectures} notify={this.props.notify}/>
                                                 </div>)}
                                             <Button color="primary" onClick={() => this.toggle(lectureVal)}>Upravit</Button>
                                         </ListGroupItem>)

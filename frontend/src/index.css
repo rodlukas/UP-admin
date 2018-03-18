@@ -9,3 +9,8 @@ html, body, .content, .root {
 .table > tbody > tr > td {
     vertical-align: middle;
 }
+
+.badge {
+    font-size: 1rem;
+    font-weight: 600
+}

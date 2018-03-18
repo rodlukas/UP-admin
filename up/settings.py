@@ -14,9 +14,7 @@ SECRET_KEY = 'u-y&tu264zgfp1pc$q(xki+y^+c6zm2#z++%$xqn=!tum8i6e!'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'uspesnyprvnacek.herokuapp.com'
+    '*'
 ]
 
 # Application definition

@@ -1,6 +1,10 @@
 from .settings import *
 import dj_database_url
 
+ALLOWED_HOSTS = [
+    'uspesnyprvnacek.herokuapp.com'
+]
+
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',
