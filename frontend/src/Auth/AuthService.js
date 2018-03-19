@@ -71,7 +71,10 @@ export default class AuthService {
         return localStorage.getItem(AUTH_STORAGE_KEY)
     }
 
-    static getHeaders() {
-        return {headers: {Authorization: 'JWT ' + this.getToken()}}
+    static getHeaders() { // prida jwt token a csrf token
+        return {
+            xsrfCookieName: 'csrftoken',
+            xsrfHeaderName: 'X-CSRFToken',
+            headers: {Authorization: 'JWT ' + this.getToken()}}
     }
 }

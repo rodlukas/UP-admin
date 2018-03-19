@@ -26,6 +26,7 @@
         * https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
         * https://www.youtube.com/watch?v=WzfJgCOMIsU&feature=youtu.be&t=22m10s
         * https://auth0.com/blog/ten-things-you-should-know-about-tokens-and-cookies/#xss-xsrf
+        * i s komentari s protinazory: https://medium.com/@rajaraodv/securing-react-redux-apps-with-jwt-tokens-fcfe81356ea0
     * [zaklad od reactu](https://reacttraining.com/react-router/web/example/auth-workflow), [dokumentace djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
     * inspirace: https://github.com/curtisgreene/message
     * vetsi inspirace: https://hptechblogs.com/using-json-web-token-react/
