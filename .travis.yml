@@ -2,7 +2,9 @@ language: python
 python:
 - '3.6.4'
 node_js: 8
-before_install: npm i -g npm
+before_install:
+- npm i -g npm
+- npm install node-localstorage
 install:
 - pip install -r requirements.txt
 - pip install codecov
