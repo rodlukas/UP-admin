@@ -107,7 +107,7 @@ class LectureSerializer(serializers.ModelSerializer):
         #    print(k, v)
         group = None
         if 'group' in validated_data:
-            group = Group.objects.get(pk=validated_data.pop('group').id)
+            group = Group.objects.get(pk=validated_data.get('group').id)
 
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
         for attendance_data in attendances_data:
@@ -116,15 +116,15 @@ class LectureSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
+        print(validated_data)
         attendances_data = validated_data.pop('attendances')
         course = Course.objects.get(pk=validated_data.pop('course').id)
-        group = None
-        if 'group' in validated_data:
-            group = Group.objects.get(pk=validated_data.pop('group').id)
+        group = Group.objects.get(pk=validated_data.get('group').id)
 
         attendances = instance.attendances.all()
         attendances = list(attendances)
-        instance.start = validated_data.get('start', instance.start)
+        instance.start = validated_data.get('start')  # druhy parametr je default hodnota
+        print(instance.start)
         instance.duration = validated_data.get('duration', instance.duration)
         instance.course = course
         instance.group = group

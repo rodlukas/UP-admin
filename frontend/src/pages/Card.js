@@ -101,7 +101,10 @@ export default class ClientView extends Component {
                                     return (
                                         <ListGroupItem key={lectureVal.id}>
                                             <ListGroupItemHeading>
-                                                {prettyDate(d) + " - " + prettyTime(d)}{' '}
+                                            {lectureVal.start!==null ?
+                                                (prettyDate(d) + " - " + prettyTime(d))
+                                                :
+                                                "Předplacená lekce"}{' '}
                                             </ListGroupItemHeading>{' '}
                                             {lectureVal.attendances.map(attendance =>
                                                 <div key={attendance.id}>
