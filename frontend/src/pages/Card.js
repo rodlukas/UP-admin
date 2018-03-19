@@ -7,6 +7,7 @@ import AuthService from "../Auth/AuthService"
 import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 import PaidButton from "../components/PaidButton"
 import SelectAttendanceState from "../components/SelectAttendanceState"
+import RemindPay from "../components/RemindPay"
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -117,7 +118,8 @@ export default class ClientView extends Component {
                                                     <span>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</span>{' '}
                                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
                                                                 funcRefresh={this.getLectures} notify={this.props.notify}/>{' '}
-                                                    <Badge color="info" pill>{attendance.note}</Badge>
+                                                    <Badge color="info" pill>{attendance.note}</Badge>{' '}
+                                                    <RemindPay remind_pay={attendance.remind_pay}/>
                                                     <SelectAttendanceState value={attendance.attendancestate.id} attendanceId={attendance.id}
                                                                 attendancestates={attendancestates}
                                                                 funcRefresh={this.getLectures} notify={this.props.notify}/>

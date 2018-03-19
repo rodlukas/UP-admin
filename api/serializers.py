@@ -85,6 +85,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     attendancestate = AttendanceStateSerializer(read_only=True)
     attendancestate_id = serializers.PrimaryKeyRelatedField(queryset=AttendanceState.objects.all(), source='attendancestate', write_only=True)
     count = serializers.SerializerMethodField()
+    remind_pay = serializers.SerializerMethodField()
 
     class Meta:
         model = Attendance
@@ -97,6 +98,18 @@ class AttendanceSerializer(serializers.ModelSerializer):
                                      attendances__lecture__start__isnull=False,
                                      attendances__attendancestate__name="OK",
                                      attendances__lecture__start__lt=date).count()+1  # +1 aby prvni kurz nebyl jako 0.
+
+    @staticmethod
+    def get_remind_pay(obj):
+        # o predplacene a nezaplacene lekce se nezajimej
+        if obj.lecture.start is None or obj.paid is False:
+            return False
+        # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu a zjisti, zda existuje datumove po teto lekci dalsi zaplacena lekce
+        res = Attendance.objects.\
+            filter(client=obj.client.id, lecture__course=obj.lecture.course).\
+            exclude(lecture__start__lte=obj.lecture.start).filter(paid=True).count()
+        # pokud je pocet dalsich zaplacenych lekci 0, vrat True, jinak False
+        return not bool(res)
 
 
 class LectureSerializer(serializers.ModelSerializer):

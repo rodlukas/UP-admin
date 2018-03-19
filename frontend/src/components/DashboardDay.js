@@ -7,6 +7,7 @@ import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
 import "./DashboardDay.css"
+import RemindPay from "./RemindPay"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -80,7 +81,7 @@ export default class DashboardDay extends Component {
                                         <PaidButton paid={attendance.paid} attendanceId={attendance.id}
                                                     funcRefresh={this.getLectures} notify={this.props.notify}/>{' '}
                                         <Badge color="info" pill>{attendance.note}</Badge>{' '}
-                                        <Badge color="warning" pill>Příště platit</Badge>
+                                        <RemindPay remind_pay={attendance.remind_pay}/>
                                         <SelectAttendanceState value={attendance.attendancestate.id}
                                                                attendanceId={attendance.id}
                                                                attendancestates={attendancestates}
