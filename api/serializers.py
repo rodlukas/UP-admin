@@ -1,5 +1,6 @@
 from admin.models import *
 from rest_framework import serializers
+from django.utils import timezone
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -72,21 +73,30 @@ class AttendanceStateSerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    # client - pro GET, vypise vsechny informace o klientovi
-    # client_id - pro PUT/POST
-    #           - source='client' spolu s queryset zarizuje, ze staci zaslat v pozadavku "client_id" : <id> a
-    #             serializer se bude k tomuto udaji chovat jako k objektu client (jako o radek vyse) bez nutnosti
-    #             jakkoliv prepisovat serializer a upravovat client na client_id apod.
-    #           - podle https://stackoverflow.com/a/33048798
-    #                   https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
+    """ client - pro GET, vypise vsechny informace o klientovi
+     client_id - pro PUT/POST
+               - source='client' spolu s queryset zarizuje, ze staci zaslat v pozadavku "client_id" : <id> a
+                 serializer se bude k tomuto udaji chovat jako k objektu client (jako o radek vyse) bez nutnosti
+                 jakkoliv prepisovat serializer a upravovat client na client_id apod.
+               - podle https://stackoverflow.com/a/33048798
+                       https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ"""
     client = ClientSerializer(read_only=True)
     client_id = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), source='client', write_only=True)
     attendancestate = AttendanceStateSerializer(read_only=True)
     attendancestate_id = serializers.PrimaryKeyRelatedField(queryset=AttendanceState.objects.all(), source='attendancestate', write_only=True)
+    count = serializers.SerializerMethodField()
 
     class Meta:
         model = Attendance
-        exclude = 'lecture',
+        exclude = 'lecture',  # ochrana proti cykleni
+
+    @staticmethod
+    def get_count(obj):
+        date = obj.lecture.start if obj.lecture.start is not None else timezone.now()
+        return Client.objects.filter(pk=obj.client.id, attendances__lecture__course=obj.lecture.course,
+                                     attendances__lecture__start__isnull=False,
+                                     attendances__attendancestate__name="OK",
+                                     attendances__lecture__start__lt=date).count()+1  # +1 aby prvni kurz nebyl jako 0.
 
 
 class LectureSerializer(serializers.ModelSerializer):

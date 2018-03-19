@@ -58,7 +58,8 @@ export default class DashboardDay extends Component {
                     const cardUrl = (lecture.group ? ("skupiny/" + lecture.group.id) : ("klienti/" + lecture.attendances[0].client.id))
                     return (
                         <ListGroupItem key={lecture.id} className={lecture.group && "list-bgGroup"}>
-                            <h4>{prettyTime(new Date(lecture.start))} <Badge pill>{lecture.course.name}</Badge></h4>
+                            <h4>{prettyTime(new Date(lecture.start))} <Badge pill>{lecture.course.name}</Badge> <Badge
+                                color="secondary" pill>{lecture.attendances[0].count}.</Badge></h4>
                             <ListGroupItemHeading>
                                 <a href={cardUrl} id={"card" + lecture.id}>
                                 {lecture.group ?

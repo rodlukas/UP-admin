@@ -68,6 +68,11 @@ export default class ClientView extends Component {
                 let groups = Object.keys(group_to_values).map(function (key) {
                     return {course: key, values: group_to_values[key]}
                 })
+                groups.sort(function (a, b) { // serad podle abecedy
+                    if (a.course < b.course) return -1;
+                    if (a.course > b.course) return 1;
+                    return 0;
+                })
                 this.setState({lectures: groups})
             })
             .catch((error) => {
@@ -105,10 +110,11 @@ export default class ClientView extends Component {
                                                 (prettyDate(d) + " - " + prettyTime(d))
                                                 :
                                                 "Předplacená lekce"}{' '}
+                                                <Badge color="secondary" pill>{lectureVal.attendances[0].count}.</Badge>
                                             </ListGroupItemHeading>{' '}
                                             {lectureVal.attendances.map(attendance =>
                                                 <div key={attendance.id}>
-                                                    <h6>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</h6>
+                                                    <span>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</span>{' '}
                                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
                                                                 funcRefresh={this.getLectures} notify={this.props.notify}/>{' '}
                                                     <Badge color="info" pill>{attendance.note}</Badge>
@@ -124,7 +130,7 @@ export default class ClientView extends Component {
                         </Col>)}
                     </Row>
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} size="xl">
                     <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} CLIENT={this.CLIENT}
                                   funcRefresh={this.getLectures} attendancestates={attendancestates}
                                   notify={this.props.notify}/>

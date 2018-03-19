@@ -3,7 +3,9 @@ import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import {toISODate, toISOTime, prettyDateWithDay} from "../global/FuncDateTime"
 import AuthService from "../Auth/AuthService"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
+import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT, ATTENDANCESTATE_OK} from "../global/GlobalConstants"
+
+const DEFAULT_DURATION = 30
 
 export default class FormLectures extends Component {
     constructor(props) {
@@ -13,7 +15,6 @@ export default class FormLectures extends Component {
         const {id, start, course, duration} = props.lecture
         const isPrepaid = this.isLecture ? !Boolean(start) : false
         this.members = this.CLIENT ? [props.object] : this.createArrayOfMembers(props.object.memberships)
-        console.log(this.members)
         let date = new Date(start)
         this.state = {
             id: id || '',
@@ -26,7 +27,7 @@ export default class FormLectures extends Component {
             course_id: (this.isLecture ?
                 course.id :
                 (this.CLIENT ? "undef" : props.object.course.id)),
-            duration: duration || 30,
+            duration: duration || DEFAULT_DURATION,
             attendancestates: props.attendancestates,
             courses: [],
             object: props.object
@@ -43,7 +44,7 @@ export default class FormLectures extends Component {
     createAttendanceStateArray() {
         let array = []
         this.members.map((client, id) =>
-            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : 5)
+            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : ATTENDANCESTATE_OK)
         return array
     }
 
@@ -96,7 +97,6 @@ export default class FormLectures extends Component {
         //console.log(paid)
         //console.log(this.state.at_paid)
         this.setState({date: '', time: '', at_paid: paid})
-        console.log(this.state.at_paid)
     }
 
     onSubmit = (e) => {
@@ -116,7 +116,6 @@ export default class FormLectures extends Component {
             data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
         if(!prepaid)
             data.start = start // stejny duvod viz. vyse
-        console.log(data)
         let request
         if (this.isLecture)
             request = axios.put(API_URL + 'lectures/' + id + '/', data, AuthService.getHeaders())
@@ -167,35 +166,36 @@ export default class FormLectures extends Component {
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
-                        <Label for="prepaid" sm={2}>Předplacená lekce</Label>
-                        <Col sm={10}>
-                            <Input type="checkbox" bsSize="sm" name="prepaid" id="prepaid"
-                                   checked={prepaid} onChange={(e)=>{this.onChange(e); this.onChangePrepaid()}}/>
+                        <Col sm={3}>Naplánováno?</Col>
+                        <Col sm={9} className="custom-control custom-checkbox">
+                            <Input type="checkbox" className="custom-control-input" name="prepaid" id="prepaid"
+                                   checked={prepaid} onChange={(e) => {this.onChange(e);this.onChangePrepaid()}}/>
+                            <Label for="prepaid" className="custom-control-label">Nenaplánováno, ale předplaceno</Label>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="date" sm={2}>Datum</Label>
-                        <Col sm={10}>
+                        <Label for="date" sm={3}>Datum</Label>
+                        <Col sm={9}>
                             <Input type="date" name="date" id="date" value={date} disabled={prepaid}
                                    onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="time" sm={2}>Čas</Label>
-                        <Col sm={10}>
+                        <Label for="time" sm={3}>Čas</Label>
+                        <Col sm={9}>
                             <Input type="time" name="time" id="time" value={time} disabled={prepaid}
                                    onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="duration" sm={2}>Trvání</Label>
-                        <Col sm={10}>
+                        <Label for="duration" sm={3}>Trvání</Label>
+                        <Col sm={9}>
                             <Input type="number" name="duration" id="duration" value={duration} onChange={this.onChange} required="true"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="course_id" sm={2}>Kurz</Label>
-                        <Col sm={10}>
+                        <Label for="course_id" sm={3}>Kurz</Label>
+                        <Col sm={9}>
                             <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.CLIENT && 'disabled'} required="true">
                                 <option disabled value="undef">Vyberte kurz...</option>
                                 {courses.map(course =>
@@ -208,8 +208,8 @@ export default class FormLectures extends Component {
                     <div key={member.id}>
                         <h5>{!this.CLIENT && (member.name + " " + member.surname)}</h5>
                         <FormGroup row>
-                            <Label for={"at_state" + member.id} sm={2}>Stav</Label>
-                            <Col sm={10}>
+                            <Label for={"at_state" + member.id} sm={3}>Stav</Label>
+                            <Col sm={9}>
                                 <Input type="select" bsSize="sm" name="at_state" id={"at_state" + member.id} value={at_state[member.id]} onChange={this.onChangeMultiple} data-id={member.id} required="true">
                                     {attendancestates.map(attendancestate =>
                                         <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
@@ -217,14 +217,15 @@ export default class FormLectures extends Component {
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for={"at_paid" + member.id} sm={2}>Placeno</Label>
-                            <Col sm={10}>
-                                <Input type="checkbox" bsSize="sm" name="at_paid" id={"at_paid" + member.id} checked={at_paid[member.id]} onChange={this.onChangeMultiple} data-id={member.id}/>
+                            <Col sm={3}>Platba</Col>
+                            <Col sm={9} className="custom-control custom-checkbox">
+                                <Input type="checkbox" className="custom-control-input" name="at_paid" id={"at_paid" + member.id} checked={at_paid[member.id]} onChange={this.onChangeMultiple} data-id={member.id}/>
+                                <Label for={"at_paid" + member.id} className="custom-control-label">Placeno</Label>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for={"at_note" + member.id} sm={2}>Poznámka</Label>
-                            <Col sm={10}>
+                            <Label for={"at_note" + member.id} sm={3}>Poznámka</Label>
+                            <Col sm={9}>
                                 <Input type="text" name="at_note" id={"at_note" + member.id} value={at_note[member.id]} onChange={this.onChangeMultiple} data-id={member.id}/>
                             </Col>
                         </FormGroup>
@@ -232,8 +233,8 @@ export default class FormLectures extends Component {
                     )}
                     {this.isLecture &&
                     <FormGroup row className="border-top pt-3">
-                        <Label for="note" sm={2} className="text-muted">Smazání</Label>
-                        <Col sm={10}>
+                        <Label for="note" sm={3} className="text-muted">Smazání</Label>
+                        <Col sm={9}>
                             <Button color="danger"
                                     onClick={() => {
                                         if (window.confirm('Opravdu chcete smazat lekci ' + (this.CLIENT ? "klienta" : "skupiny") + " " + (this.CLIENT ? (object.name + " " + object.surname) : object.name) + " v " + prettyDateWithDay(new Date(date)) + " " + time + '?'))

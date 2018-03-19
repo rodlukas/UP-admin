@@ -13,3 +13,4 @@ export var NOTIFY_TEXT = {
     ERROR: "Chyba při ukládání",
     ERROR_LOADING: "Došlo k chybě při načítání dat"
 }
+export var ATTENDANCESTATE_OK = 5
