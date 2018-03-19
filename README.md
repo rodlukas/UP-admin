@@ -9,7 +9,7 @@
     * buildi se podle [tohoto odkazu](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) (super vysvetleni [tady](https://www.techiediaries.com/django-react-rest/) a taky jinde - [1](http://owaislone.org/blog/modern-frontends-with-django/), [2 (trochu deprecated)](http://owaislone.org/blog/webpack-plus-reactjs-and-django/)) a nodejs podle [tohoto odkazu](https://medium.com/@nicholaskajoh/deploy-your-react-django-app-on-heroku-335af9dab8a3)
     * deploy podle [tohoto odkazu](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Deployment) a inspirace take [timto](https://tutorial-extensions.djangogirls.org/en/heroku/) a [timto odkazem](https://simpleisbetterthancomplex.com/tutorial/2016/08/09/how-to-deploy-django-applications-on-heroku.html) a tutorialy (treba [tady](https://devcenter.heroku.com/articles/deploying-python)) na heroku + [git repo](https://github.com/sundayguru/django-react-heroku)
 
-* **deployment checklist - TODO**
+* **🔴 deployment checklist**
     * https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
     * https://wsvincent.com/django-best-practices/
 
@@ -22,10 +22,12 @@
     * [hezky popis django + api, proc je potreba, SPA...](https://wsvincent.com/django-rest-framework-tutorial/)
 
 * **prihlaseni**
-    * problematika ukladani tokenu (localstorage vs cookie)
+    * 🔴 problematika ukladani tokenu (localstorage vs cookie)
         * https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
         * https://www.youtube.com/watch?v=WzfJgCOMIsU&feature=youtu.be&t=22m10s
         * https://auth0.com/blog/ten-things-you-should-know-about-tokens-and-cookies/#xss-xsrf
+        * https://auth0.com/blog/cookies-vs-tokens-definitive-guide/
+        * https://www.rdegges.com/2018/please-stop-using-local-storage/
         * i s komentari s protinazory: https://medium.com/@rajaraodv/securing-react-redux-apps-with-jwt-tokens-fcfe81356ea0
     * [zaklad od reactu](https://reacttraining.com/react-router/web/example/auth-workflow), [dokumentace djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
     * inspirace: https://github.com/curtisgreene/message
