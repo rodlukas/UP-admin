@@ -229,15 +229,18 @@ export default class FormLectures extends Component {
                                 <Input type="text" name="at_note" id={"at_note" + member.id} value={at_note[member.id]} onChange={this.onChangeMultiple} data-id={member.id}/>
                             </Col>
                         </FormGroup>
-                    </div>
-                    )}
+                    </div>)}
                     {this.isLecture &&
                     <FormGroup row className="border-top pt-3">
                         <Label for="note" sm={3} className="text-muted">Smazání</Label>
                         <Col sm={9}>
                             <Button color="danger"
                                     onClick={() => {
-                                        if (window.confirm('Opravdu chcete smazat lekci ' + (this.CLIENT ? "klienta" : "skupiny") + " " + (this.CLIENT ? (object.name + " " + object.surname) : object.name) + " v " + prettyDateWithDay(new Date(date)) + " " + time + '?'))
+                                        let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
+                                            + (this.CLIENT ? "klienta" : "skupiny") + " "
+                                            + (this.CLIENT ? (object.name + " " + object.surname) : object.name)
+                                            + (!prepaid ? (" v " + prettyDateWithDay(new Date(date)) + " " + time) : '') + '?'
+                                        if (window.confirm(msg))
                                             this.delete(id)}}>
                                 Smazat lekci</Button>
                         </Col>

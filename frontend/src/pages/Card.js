@@ -8,6 +8,7 @@ import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 import PaidButton from "../components/PaidButton"
 import SelectAttendanceState from "../components/SelectAttendanceState"
 import RemindPay from "../components/RemindPay"
+import LectureNumber from "../components/LectureNumber"
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -111,7 +112,7 @@ export default class ClientView extends Component {
                                                 (prettyDate(d) + " - " + prettyTime(d))
                                                 :
                                                 "Předplacená lekce"}{' '}
-                                                <Badge color="secondary" pill>{lectureVal.attendances[0].count}.</Badge>
+                                                <LectureNumber number={lectureVal.attendances[0].count}/>
                                             </ListGroupItemHeading>{' '}
                                             {lectureVal.attendances.map(attendance =>
                                                 <div key={attendance.id}>

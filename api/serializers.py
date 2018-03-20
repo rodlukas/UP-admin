@@ -93,11 +93,17 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_count(obj):
-        date = obj.lecture.start if obj.lecture.start is not None else timezone.now()
+        # vrat null pokud se jedna o predplacenou lekci
+        if obj.lecture.start is None:
+            return None
+        """ funguje take, ale je zbytecne slozity:
         return Client.objects.filter(pk=obj.client.id, attendances__lecture__course=obj.lecture.course,
                                      attendances__lecture__start__isnull=False,
                                      attendances__attendancestate__name="OK",
-                                     attendances__lecture__start__lt=date).count()+1  # +1 aby prvni kurz nebyl jako 0.
+                                     attendances__lecture__start__lt=date).count()+1 """
+        return Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
+                                         lecture__start__isnull=False, attendancestate__name="OK",
+                                         lecture__start__lt=obj.lecture.start).count()+1  # +1 aby prvni kurz nebyl jako 0.
 
     @staticmethod
     def get_remind_pay(obj):
