@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Container, Row, Col} from 'reactstrap'
+import {Container, Row, Col, Button} from 'reactstrap'
 import DashboardDay from '../components/DashboardDay'
 import {prettyDate} from "../global/FuncDateTime"
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
@@ -12,8 +12,8 @@ export default class Diary extends Component {
     constructor(props) {
         super(props)
         this.titlePart = "Týdenní přehled: "
-        const thisMonday = Diary.getMonday(new Date())
-        this.state = this.getNewState(thisMonday)
+        this.thisMonday = Diary.getMonday(new Date())
+        this.state = this.getNewState(this.thisMonday)
     }
 
     getNewState(monday) {
@@ -58,11 +58,12 @@ export default class Diary extends Component {
         return (
             <div>
                 <h1 className="text-center mb-4">
-                    <FontAwesomeIcon icon={faArrowCircleLeft} className="arrowBtn text-primary"
+                    <FontAwesomeIcon icon={faArrowCircleLeft} className="arrowBtn text-muted"
                                      onClick={() => this.changeDate(this.state.prevMonday)}/>
                     {" " + this.state.title + " "}
-                    <FontAwesomeIcon icon={faArrowCircleRight} className="arrowBtn text-primary"
-                                     onClick={() => this.changeDate(this.state.nextMonday)}/>
+                    <FontAwesomeIcon icon={faArrowCircleRight} className="arrowBtn text-muted"
+                                     onClick={() => this.changeDate(this.state.nextMonday)}/>{' '}
+                    <Button color="secondary" onClick={() => this.changeDate(this.thisMonday)}>Dnes</Button>
                 </h1>
                 <Container fluid={true}>
                     <Row>

@@ -52,7 +52,6 @@ export default class FormLectures extends Component {
         let array = []
         this.members.map((client, id) =>
             array[client.id] = this.isLecture ? this.props.lecture.attendances[id].paid : false)
-        console.log(array)
         return array
     }
 
