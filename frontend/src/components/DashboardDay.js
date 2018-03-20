@@ -1,6 +1,7 @@
 import React, {Component} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, UncontrolledTooltip} from 'reactstrap'
 import axios from "axios"
+import {Link} from 'react-router-dom'
 import {prettyDateWithDay, toISODate, prettyTime} from "../global/FuncDateTime"
 import AuthService from "../Auth/AuthService"
 import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
@@ -63,12 +64,12 @@ export default class DashboardDay extends Component {
                             <h4>{prettyTime(new Date(lecture.start))} <Badge pill>{lecture.course.name}</Badge>{' '}
                                 <LectureNumber number={lecture.attendances[0].count}/></h4>
                             <ListGroupItemHeading>
-                                <a href={cardUrl} id={"card" + lecture.id}>
+                                <Link to={cardUrl} id={"card" + lecture.id}>
                                 {lecture.group ?
                                     <span>{lecture.group.name}</span> :
                                     <ClientName name={lecture.attendances[0].client.name}
                                                 surname={lecture.attendances[0].client.surname}/>}
-                                </a>
+                                </Link>
                                 <UncontrolledTooltip placement="right" target={"card" + lecture.id}>
                                     otevřít kartu
                                 </UncontrolledTooltip>

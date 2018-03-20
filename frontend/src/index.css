@@ -14,3 +14,7 @@ html, body, .content, .root {
     font-size: 1rem;
     font-weight: 600
 }
+
+.arrowBtn {
+    cursor: pointer
+}

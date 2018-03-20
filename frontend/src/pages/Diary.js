@@ -2,47 +2,74 @@ import React, {Component} from "react"
 import {Container, Row, Col} from 'reactstrap'
 import DashboardDay from '../components/DashboardDay'
 import {prettyDate} from "../global/FuncDateTime"
+import FontAwesomeIcon from '@fortawesome/react-fontawesome'
+import {faArrowCircleRight, faArrowCircleLeft} from "@fortawesome/fontawesome-pro-solid"
 
 const WORK_DAYS_COUNT = 5
+const DAYS_PER_WEEK = 7
 
 export default class Diary extends Component {
     constructor(props) {
         super(props)
-        this.thisMonday = Diary.getLastMonday()
-        this.thisFriday = new Date(this.thisMonday)
-        this.thisFriday.setDate(this.thisMonday.getDate() + (WORK_DAYS_COUNT-1))
-        this.title = "Týdenní přehled: " + prettyDate(this.thisMonday) + " - " + prettyDate(this.thisFriday)
+        this.titlePart = "Týdenní přehled: "
+        const thisMonday = Diary.getMonday(new Date())
+        this.state = this.getNewState(thisMonday)
     }
 
-    static getLastMonday() {
-        // zjisti datum nejblizsiho pondeli predchazejici datumu (pripadne tentyz datum pokud uz pondeli je)
-        let date = new Date()
-        date.setDate(date.getDate() + 1 - (date.getDay() || 7))
-        return date
+    getNewState(monday) {
+        const week = Diary.getWeekArray(monday)
+        return {
+            week: week,
+            title: this.titlePart + prettyDate(monday) + " - " + prettyDate(week[4]),
+            nextMonday: Diary.addDays(monday, DAYS_PER_WEEK),
+            prevMonday: Diary.addDays(monday, -DAYS_PER_WEEK)
+        }
     }
 
-    generateWeekOverview() {
+    static getWeekArray(monday) { // priprav pole datumu pracovnich dnu v prislusnem tydnu
         let result = []
-        let endDate = new Date(this.thisMonday)
+        let endDate = new Date(monday)
         let workDays = WORK_DAYS_COUNT
         while (workDays > 0) {
-            result.push(
-                <Col key={workDays}>
-                    <DashboardDay date={endDate.toString()} notify={this.props.notify}/>
-                </Col>)
+            result.push(new Date(endDate))
             endDate.setDate(endDate.getDate() + 1)
             workDays--
         }
         return result
     }
 
+    static getMonday(date) { // zjisti datum nejblizsiho pondeli predchazejici datumu (pripadne tentyz datum pokud uz pondeli je)
+        let res = new Date(date)
+        res.setDate(res.getDate() + 1 - (res.getDay() || 7))
+        return res
+    }
+
+    static addDays(date, days) {
+        let res = new Date(date)
+        res.setDate(res.getDate() + days)
+        return res
+    }
+
+    changeDate = (monday) => {
+        this.setState(this.getNewState(monday))
+    }
+
     render() {
         return (
             <div>
-                <h1 className="text-center mb-4">{this.title}</h1>
+                <h1 className="text-center mb-4">
+                    <FontAwesomeIcon icon={faArrowCircleLeft} className="arrowBtn text-primary"
+                                     onClick={() => this.changeDate(this.state.prevMonday)}/>
+                    {" " + this.state.title + " "}
+                    <FontAwesomeIcon icon={faArrowCircleRight} className="arrowBtn text-primary"
+                                     onClick={() => this.changeDate(this.state.nextMonday)}/>
+                </h1>
                 <Container fluid={true}>
                     <Row>
-                        {this.generateWeekOverview()}
+                    {this.state.week.map(day =>
+                        <Col key={day}>
+                            <DashboardDay date={day.toString()} notify={this.props.notify}/>
+                        </Col>)}
                     </Row>
                 </Container>
             </div>

@@ -3,7 +3,7 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {faUsdCircle} from "@fortawesome/fontawesome-pro-solid"
 import "./PaidButton.css"
 import AuthService from "../Auth/AuthService"
-import axios from "axios/index"
+import axios from "axios"
 import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 
 export default class PaidButton extends Component {
