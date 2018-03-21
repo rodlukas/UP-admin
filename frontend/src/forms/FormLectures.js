@@ -70,7 +70,7 @@ export default class FormLectures extends Component {
         this.setState(state)
     }
 
-    getDataCourses = () => {
+    getCourses = () => {
         axios.get(API_URL + 'courses/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({courses: response.data})
@@ -153,7 +153,7 @@ export default class FormLectures extends Component {
     }
 
     componentDidMount() {
-        this.getDataCourses()
+        this.getCourses()
     }
 
     render() {
@@ -198,7 +198,8 @@ export default class FormLectures extends Component {
                             <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.CLIENT && 'disabled'} required="true">
                                 <option disabled value="undef">Vyberte kurz...</option>
                                 {courses.map(course =>
-                                    <option key={course.id} value={course.id}>{course.name}</option>)}
+                                    (course.visible || course.id === course_id) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
+                                    && <option key={course.id} value={course.id}>{course.name}</option>)}
                             </Input>
                         </Col>
                     </FormGroup>
@@ -211,7 +212,8 @@ export default class FormLectures extends Component {
                             <Col sm={9}>
                                 <Input type="select" bsSize="sm" name="at_state" id={"at_state" + member.id} value={at_state[member.id]} onChange={this.onChangeMultiple} data-id={member.id} required="true">
                                     {attendancestates.map(attendancestate =>
-                                        <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
+                                        (attendancestate.visible || attendancestate.id === at_state[member.id]) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
+                                        && <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
                                 </Input>
                             </Col>
                         </FormGroup>

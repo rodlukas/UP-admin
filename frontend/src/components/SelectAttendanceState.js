@@ -43,7 +43,8 @@ export default class SelectAttendanceState extends Component {
         return (
             <Input type="select" bsSize="sm" onChange={this.onChange} value={value}>
                 {attendancestates.map(attendancestate =>
-                    <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
+                    (attendancestate.visible || attendancestate.id === value) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
+                    && <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
             </Input>
         )
     }

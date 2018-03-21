@@ -1,8 +1,9 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from .serializers import *
 from admin.models import *
 from datetime import datetime
 from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -10,7 +11,8 @@ class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
 
 
-class AttendanceViewSet(viewsets.ModelViewSet):
+class AttendanceViewSet(mixins.UpdateModelMixin,
+                        viewsets.GenericViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
 
@@ -21,7 +23,6 @@ class AttendanceStateViewSet(viewsets.ModelViewSet):
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
     def get_queryset(self):
@@ -38,21 +39,18 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class LectureViewSet(viewsets.ModelViewSet):
-    queryset = Lecture.objects.all()
     serializer_class = LectureSerializer
-    filter_backends = OrderingFilter,
+    filter_backends = OrderingFilter, DjangoFilterBackend,
     ordering_fields = 'start',
+    filter_fields = 'group',
 
     def get_queryset(self):
         queryset = Lecture.objects.order_by('-start')
         date = self.request.query_params.get('date', None)
         client_id = self.request.query_params.get('client', None)
-        group_id = self.request.query_params.get('group', None)
         if date is not None:
             date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
             queryset = queryset.filter(start__contains=date)
         elif client_id is not None:
             queryset = queryset.filter(attendances__client=client_id, group__isnull=True)
-        elif group_id is not None:
-            queryset = queryset.filter(group=group_id)
         return queryset

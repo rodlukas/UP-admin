@@ -22,7 +22,7 @@ export default class DashboardDay extends Component {
         this.title = prettyDateWithDay(this.date)
     }
 
-    getDataAttendanceStates = () => {
+    getAttendanceStates = () => {
         axios.get(API_URL + 'attendancestates/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({attendancestates: response.data})
@@ -46,7 +46,7 @@ export default class DashboardDay extends Component {
     }
 
     componentDidMount() {
-        this.getDataAttendanceStates()
+        this.getAttendanceStates()
         this.getLectures()
     }
 

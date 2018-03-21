@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import axios from 'axios'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Badge} from 'reactstrap'
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import AuthService from "../Auth/AuthService"
 import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 
@@ -158,12 +158,14 @@ export default class FormGroups extends Component {
                     <FormGroup row className="border-top pt-3">
                         <Label for="note" sm={2} className="text-muted">Smazání</Label>
                         <Col sm={10}>
-                            <Button color="danger"
-                                    onClick={() => {
-                                        if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?'))
-                                            this.delete(id)}}>
-                                Smazat skupinu</Button>{' '}
-                            <Badge color="warning" pill>Nevratně smaže skupinu i s jejími lekcemi</Badge>
+                            <Alert color="warning">
+                                <p>Nevratně smaže skupinu i s jejími lekcemi</p>
+                                <Button color="danger"
+                                        onClick={() => {
+                                            if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?'))
+                                                this.delete(id)
+                                        }}>Smazat skupinu</Button>
+                            </Alert>
                         </Col>
                     </FormGroup>}
                 </ModalBody>

@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import axios from 'axios'
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import AuthService from "../Auth/AuthService"
 import {API_URL, EDIT_TYPE, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 
@@ -54,12 +54,27 @@ export default class FormSettings extends Component {
         this.props.funcRefresh(type)
     }
 
+    delete = (id) => {
+        const apiTarget = (this.TYPE === EDIT_TYPE.COURSE ? 'courses' : 'attendancestates')
+        axios.delete(API_URL + apiTarget + '/' + id + '/', AuthService.getHeaders())
+            .then(() => {
+                this.close()
+                this.refresh(this.TYPE)
+                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
+            })
+            .catch((error) => {
+                console.log(error)
+                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
+            })
+    }
+
     render() {
-        const {name, visible} = this.state
+        const {id, name, visible} = this.state
+        const type = (this.TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav")
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
-                    {this.isObject ? 'Úprava' : 'Přidání'} {(this.TYPE === EDIT_TYPE.COURSE ? "kurzu" : "stavu")}: {name}
+                    {this.isObject ? 'Úprava' : 'Přidání'} {type}u: {name}
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
@@ -76,6 +91,23 @@ export default class FormSettings extends Component {
                             <Label for="visible" className="custom-control-label">Bude zobrazováno</Label>
                         </Col>
                     </FormGroup>
+                    {this.isObject &&
+                    <FormGroup row className="border-top pt-3">
+                        <Label for="note" sm={3} className="text-muted">Smazání</Label>
+                        <Col sm={9}>
+                            <Alert color="warning">
+                                <p>Lze smazat pouze když žádný klient nemá příšlušný {type} přiřazen</p>
+                                <Button color="danger"
+                                        onClick={() => {
+                                            let msg = "Opravdu chcete smazat "
+                                                + type + " "
+                                                + name + '?'
+                                            if (window.confirm(msg))
+                                                this.delete(id)
+                                        }}>Smazat {type}</Button>
+                            </Alert>
+                        </Col>
+                    </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}

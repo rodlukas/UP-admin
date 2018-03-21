@@ -25,7 +25,7 @@ export default class ClientView extends Component {
         }
     }
 
-    getDataAttendanceStates = () => {
+    getAttendanceStates = () => {
         axios.get(API_URL + 'attendancestates/', AuthService.getHeaders())
             .then((response) => {
                 this.setState({attendancestates: response.data})
@@ -86,7 +86,7 @@ export default class ClientView extends Component {
     componentDidMount() {
         this.getObject()
         this.getLectures()
-        this.getDataAttendanceStates()
+        this.getAttendanceStates()
     }
 
     render() {
