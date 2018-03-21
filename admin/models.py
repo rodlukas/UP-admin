@@ -21,14 +21,14 @@ class Course(models.Model):
 
 class Group(models.Model):
     name = models.TextField(blank=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.PROTECT)
 
 
 class Lecture(models.Model):
-    start = models.DateTimeField(blank=True, null=True)
+    start = models.DateTimeField(null=True)
     duration = models.PositiveIntegerField(blank=True, null=True)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, related_name='lectures', on_delete=models.CASCADE, blank=True, null=True)
+    course = models.ForeignKey(Course, on_delete=models.PROTECT)
+    group = models.ForeignKey(Group, related_name='lectures', on_delete=models.CASCADE, null=True)
 
 
 class Attendance(models.Model):
@@ -36,7 +36,7 @@ class Attendance(models.Model):
     note = models.TextField(blank=True)
     client = models.ForeignKey(Client, related_name='attendances', on_delete=models.CASCADE)
     lecture = models.ForeignKey(Lecture, related_name='attendances', on_delete=models.CASCADE)
-    attendancestate = models.ForeignKey(AttendanceState, on_delete=models.CASCADE)
+    attendancestate = models.ForeignKey(AttendanceState, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ['client__surname']
@@ -44,6 +44,6 @@ class Attendance(models.Model):
 
 class Membership(models.Model):
     start = models.DateTimeField(auto_now_add=True)
-    end = models.DateTimeField(blank=True, null=True)
+    end = models.DateTimeField(null=True)
     client = models.ForeignKey(Client, related_name='memberships', on_delete=models.CASCADE)
     group = models.ForeignKey(Group, related_name='memberships', on_delete=models.CASCADE)
