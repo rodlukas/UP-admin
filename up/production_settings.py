@@ -12,11 +12,7 @@ WEBPACK_LOADER = {
     }
 }
 
-REST_FRAMEWORK += {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-}
+REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = ('rest_framework.permissions.IsAuthenticated',)
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
