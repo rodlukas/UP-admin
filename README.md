@@ -29,6 +29,7 @@
         * https://auth0.com/blog/cookies-vs-tokens-definitive-guide/
         * https://www.rdegges.com/2018/please-stop-using-local-storage/
         * i s komentari s protinazory: https://medium.com/@rajaraodv/securing-react-redux-apps-with-jwt-tokens-fcfe81356ea0
+        * https://spectrum.chat/thread/a051f64d-8103-48e4-92f8-99fc701a7ae9
     * [zaklad od reactu](https://reacttraining.com/react-router/web/example/auth-workflow), [dokumentace djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
     * inspirace: https://github.com/curtisgreene/message
     * vetsi inspirace: https://hptechblogs.com/using-json-web-token-react/

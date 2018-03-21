@@ -3,6 +3,7 @@ from django.db import models
 
 class AttendanceState(models.Model):
     name = models.TextField()
+    visible = models.BooleanField()
 
 
 class Client(models.Model):
@@ -15,6 +16,7 @@ class Client(models.Model):
 
 class Course(models.Model):
     name = models.TextField()
+    visible = models.BooleanField()
 
 
 class Group(models.Model):

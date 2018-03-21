@@ -6,6 +6,7 @@ import Diary from "./pages/Diary"
 import Groups from "./pages/Groups"
 import Dashboard from "./pages/Dashboard"
 import NotFound from "./pages/NotFound"
+import Settings from "./pages/Settings"
 import {Collapse, Navbar, NavbarToggler, NavbarBrand} from 'reactstrap'
 import Login from "./pages/Login"
 import PrivateRoute from "./Auth/PrivateRoute"
@@ -58,6 +59,7 @@ export default class Main extends Component {
                             <PrivateRoute exact path="/klienti" component={Clients} notify={this.notify}/>
                             <PrivateRoute path="/klienti/:id" component={Card} notify={this.notify}/>
                             <PrivateRoute path="/skupiny/:id" component={Card} notify={this.notify}/>
+                            <PrivateRoute path="/nastaveni" component={Settings} notify={this.notify}/>
                             <Route component={NotFound}/>
                         </Switch>
                     </div>

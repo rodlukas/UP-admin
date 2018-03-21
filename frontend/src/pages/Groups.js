@@ -96,7 +96,7 @@ export default class Groups extends Component {
                         </Col>
                     </Row>
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}
                                 notify={this.props.notify}/>
                 </Modal>

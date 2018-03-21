@@ -71,8 +71,7 @@ export default class ClientList extends Component {
                                             <Link to={"/klienti/" + client.id}>
                                                 <Button color="secondary">Karta</Button></Link>
                                         </td>
-                                    </tr>)
-                                }
+                                    </tr>)}
                                 </tbody>
                             </Table>
                             {!Boolean(this.state.clients.length) &&
@@ -82,7 +81,7 @@ export default class ClientList extends Component {
                         </Col>
                     </Row>
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <FormClients client={this.state.currentClient} funcClose={this.toggle} funcRefresh={this.getClients}
                                  notify={this.props.notify}/>
                 </Modal>

@@ -20,6 +20,9 @@ const Menu = withRouter(
             <NavItem>
                 <NavLink tag={RouterNavLink} to="/skupiny">Skupiny</NavLink>
             </NavItem>
+            <NavItem>
+                <NavLink tag={RouterNavLink} to="/nastaveni">Nastavení</NavLink>
+            </NavItem>
             <Button color="secondary" onClick={() => AuthService.signout(() => history.push("/"))}>Odhlásit</Button>
         </Nav>
 )
