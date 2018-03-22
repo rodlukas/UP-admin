@@ -12,6 +12,7 @@
 * **🔴 deployment checklist**
     * https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
     * https://wsvincent.com/django-best-practices/
+    * http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/
 
 * **API**
     * [custom serializer for nested resources](https://django.cowhite.com/blog/create-and-update-django-rest-framework-nested-serializers/)
@@ -20,6 +21,7 @@
     * [test driven api v DRF](https://scotch.io/tutorials/build-a-rest-api-with-django-a-test-driven-approach-part-2)
     * [inspirace propojeni django, rest, react s reduxem](https://hackernoon.com/creating-websites-using-react-and-django-rest-framework-b14c066087c7)
     * [hezky popis django + api, proc je potreba, SPA...](https://wsvincent.com/django-rest-framework-tutorial/)
+    * struktura v reactu podle [tohoto](https://sheharyar.me/blog/axios-with-react-for-making-requests/)
 
 * **prihlaseni**
     * 🔴 problematika ukladani tokenu (localstorage vs cookie)

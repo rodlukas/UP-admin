@@ -14,7 +14,14 @@ export default class FormLectures extends Component {
         this.CLIENT = props.CLIENT
         const {id, start, course, duration} = props.lecture
         const isPrepaid = this.isLecture ? !Boolean(start) : false
-        this.members = this.CLIENT ? [props.object] : this.createArrayOfMembers(props.object.memberships)
+        this.members = []
+        if (this.CLIENT)
+            this.members = [props.object]
+        else if (this.isLecture)
+            this.members = this.getMembers(props.lecture.attendances)
+        else
+            this.members = this.getMembers(props.object.memberships)
+
         let date = new Date(start)
         this.state = {
             id: id || '',
@@ -34,7 +41,7 @@ export default class FormLectures extends Component {
         }
     }
 
-    createArrayOfMembers(memberships) {
+    getMembers(memberships) {
         let array = []
         memberships.map(member =>
             array.push(member.client))
