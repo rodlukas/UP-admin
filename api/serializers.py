@@ -55,8 +55,6 @@ class GroupSerializer(serializers.ModelSerializer):
             if len(list(memberships)):
                 membership = memberships.pop(0)
                 membership.client = client
-                membership.start = membership_data.get('start', membership.start)
-                membership.end = membership_data.get('end', membership.end)
                 membership.save()
             else:
                 Membership.objects.create(client=client, group=instance, **membership_data)
