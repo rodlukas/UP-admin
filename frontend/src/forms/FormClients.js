@@ -1,8 +1,6 @@
 import React, {Component} from "react"
-import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
-import AuthService from "../Auth/AuthService"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
+import ClientService from "../api/services/client"
 
 export default class FormClients extends Component {
     constructor(props) {
@@ -28,21 +26,16 @@ export default class FormClients extends Component {
     onSubmit = (e) => {
         e.preventDefault()
         const {id, name, surname, email, phone, note} = this.state
-        const data = {name, surname, email, phone, note}
+        const data = {id, name, surname, email, phone, note}
         let request
         if (this.isClient)
-            request = axios.put(API_URL + 'clients/' + id + '/', data, AuthService.getHeaders())
+            request = ClientService.update(data)
         else
-            request = axios.post(API_URL + 'clients/', data, AuthService.getHeaders())
+            request = ClientService.create(data)
         request.then(() => {
             this.close()
             this.refresh()
-            this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
         })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
-            })
     }
 
     close = () => {
@@ -54,15 +47,10 @@ export default class FormClients extends Component {
     }
 
     delete = (id) => {
-        axios.delete(API_URL + 'clients/' + id + '/', AuthService.getHeaders())
+        ClientService.remove(id)
             .then(() => {
                 this.close()
                 this.refresh()
-                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 

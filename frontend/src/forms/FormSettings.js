@@ -1,8 +1,8 @@
 import React, {Component} from "react"
-import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
-import AuthService from "../Auth/AuthService"
-import {API_URL, EDIT_TYPE, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
+import {EDIT_TYPE} from "../global/GlobalConstants"
+import AttendanceStateService from "../api/services/attendancestate"
+import CourseService from "../api/services/course"
 
 export default class FormSettings extends Component {
     constructor(props) {
@@ -30,20 +30,16 @@ export default class FormSettings extends Component {
         const {id, name, visible} = this.state
         const data = {id, name, visible}
         let request
-        const apiTarget = (this.TYPE === EDIT_TYPE.COURSE ? 'courses' : 'attendancestates')
+        let service = (this.TYPE === EDIT_TYPE.COURSE ? CourseService : AttendanceStateService)
         if (this.isObject)
-            request = axios.put(API_URL + apiTarget + '/' + id + '/', data, AuthService.getHeaders())
+            request = service.update(data)
         else
-            request = axios.post(API_URL + apiTarget + '/' , data, AuthService.getHeaders())
+            request = service.create(data)
+
         request.then(() => {
             this.close()
             this.refresh(this.TYPE)
-            this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
         })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
-            })
     }
 
     close = () => {
@@ -55,16 +51,11 @@ export default class FormSettings extends Component {
     }
 
     delete = (id) => {
-        const apiTarget = (this.TYPE === EDIT_TYPE.COURSE ? 'courses' : 'attendancestates')
-        axios.delete(API_URL + apiTarget + '/' + id + '/', AuthService.getHeaders())
+        let service = (this.TYPE === EDIT_TYPE.COURSE ? CourseService : AttendanceStateService)
+        service.remove(id)
             .then(() => {
                 this.close()
                 this.refresh(this.TYPE)
-                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 

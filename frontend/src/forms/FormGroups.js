@@ -1,10 +1,10 @@
 import React, {Component} from "react"
-import axios from 'axios'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
-import AuthService from "../Auth/AuthService"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
+import CourseService from "../api/services/course"
+import ClientService from "../api/services/client"
+import GroupService from "../api/services/group"
 
 export default class FormGroups extends Component {
     constructor(props) {
@@ -34,13 +34,10 @@ export default class FormGroups extends Component {
     }
 
     getDataCourses = () => {
-        axios.get(API_URL + 'courses/', AuthService.getHeaders())
+        CourseService
+            .getAll()
             .then((response) => {
-                this.setState({courses: response.data})
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
+                this.setState({courses: response})
             })
     }
 
@@ -57,20 +54,15 @@ export default class FormGroups extends Component {
     onSubmit = (e) => {
         e.preventDefault()
         const {id, name, memberships, course_id} = this.state
-        const data = {name, memberships, course_id}
+        const data = {id, name, memberships, course_id}
         let request
         if (this.isGroup)
-            request = axios.put(API_URL + 'groups/' + id + '/', data, AuthService.getHeaders())
+            request = GroupService.update(data)
         else
-            request = axios.post(API_URL + 'groups/', data, AuthService.getHeaders())
+            request = GroupService.create(data)
         request.then(() => {
-            this.close()
-            this.refresh()
-            this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
-        })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
+                this.close()
+                this.refresh()
             })
     }
 
@@ -83,32 +75,26 @@ export default class FormGroups extends Component {
     }
 
     delete = (id) => {
-        axios.delete(API_URL + 'groups/' + id + '/', AuthService.getHeaders())
+        GroupService
+            .remove(id)
             .then(() => {
                 this.close()
                 this.refresh()
-                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 
     getClients = () => {
-        axios.get(API_URL + 'clients/', AuthService.getHeaders())
+        ClientService
+            .getAll()
             .then((response) => {
                 let clients = []
-                response.data.map(client => {
+                response.map(client => {
                     return clients.push({
                         client_id: client.id,
-                        label: client.name + " " + client.surname})
+                        label: client.name + " " + client.surname
+                    })
                 })
                 this.setState({clients: clients})
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
             })
     }
 

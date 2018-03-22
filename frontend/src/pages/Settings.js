@@ -1,10 +1,9 @@
 import React, {Component} from "react"
 import {Table, Button, Modal, Container, Row, Col} from 'reactstrap'
-import axios from "axios"
-import AuthService from "../Auth/AuthService"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 import FormSettings from "../forms/FormSettings"
 import {EDIT_TYPE} from "../global/GlobalConstants"
+import AttendanceStateService from "../api/services/attendancestate"
+import CourseService from "../api/services/course"
 
 export default class Settings extends Component {
     constructor(props) {
@@ -28,31 +27,25 @@ export default class Settings extends Component {
     }
 
     refresh = (type) => {
-        if(type === EDIT_TYPE.COURSE)
+        if (type === EDIT_TYPE.COURSE)
             this.getCourses()
         else if (type === EDIT_TYPE.STATE)
             this.getAttendanceStates()
     }
 
     getAttendanceStates = () => {
-        axios.get(API_URL + 'attendancestates/', AuthService.getHeaders())
+        AttendanceStateService
+            .getAll()
             .then((response) => {
-                this.setState({attendancestates: response.data})
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
+                this.setState({attendancestates: response})
             })
     }
 
     getCourses = () => {
-        axios.get(API_URL + 'courses/', AuthService.getHeaders())
+        CourseService
+            .getAll()
             .then((response) => {
-                this.setState({courses: response.data})
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
+                this.setState({courses: response})
             })
     }
 
@@ -86,7 +79,8 @@ export default class Settings extends Component {
                                         <td>{attendancestate.name}</td>
                                         <td><Visible visible={attendancestate.visible}/></td>
                                         <td>
-                                            <Button color="primary" onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}>Upravit</Button>
+                                            <Button color="primary"
+                                                    onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}>Upravit</Button>
                                         </td>
                                     </tr>)}
                                 </tbody>
@@ -112,7 +106,8 @@ export default class Settings extends Component {
                                         <td>{course.name}</td>
                                         <td><Visible visible={course.visible}/></td>
                                         <td>
-                                            <Button color="primary" onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}>Upravit</Button>
+                                            <Button color="primary"
+                                                    onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}>Upravit</Button>
                                         </td>
                                     </tr>)}
                                 </tbody>
@@ -126,7 +121,7 @@ export default class Settings extends Component {
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
                     <FormSettings object={this.state.currentObject} funcClose={this.toggle} funcRefresh={this.refresh}
-                                  TYPE={this.state.currentType} notify={this.props.notify}/>
+                                  TYPE={this.state.currentType}/>
                 </Modal>
             </div>
         )

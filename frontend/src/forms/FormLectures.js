@@ -1,9 +1,9 @@
 import React, {Component} from "react"
-import axios from 'axios'
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import {toISODate, toISOTime, prettyDateWithDay} from "../global/FuncDateTime"
-import AuthService from "../Auth/AuthService"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT, ATTENDANCESTATE_OK} from "../global/GlobalConstants"
+import {ATTENDANCESTATE_OK} from "../global/GlobalConstants"
+import LectureService from "../api/services/lecture"
+import CourseService from "../api/services/course"
 
 const DEFAULT_DURATION = 30
 
@@ -71,13 +71,10 @@ export default class FormLectures extends Component {
     }
 
     getCourses = () => {
-        axios.get(API_URL + 'courses/', AuthService.getHeaders())
+        CourseService
+            .getAll()
             .then((response) => {
-                this.setState({courses: response.data})
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
+                this.setState({courses: response})
             })
     }
 
@@ -89,12 +86,9 @@ export default class FormLectures extends Component {
     }
 
     onChangePrepaid = () => {
-        //console.log(this.state.at_paid)
         let paid = this.state.at_paid
         this.members.map(member =>
             paid[member.id] = true)
-        //console.log(paid)
-        //console.log(this.state.at_paid)
         this.setState({date: '', time: '', at_paid: paid})
     }
 
@@ -110,25 +104,20 @@ export default class FormLectures extends Component {
                 paid: at_paid[member.id],
                 note: at_note[member.id]
             }))
-        let data = {attendances, course_id, duration}
+        let data = {id, attendances, course_id, duration}
         if(!this.CLIENT)
             data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
         if(!prepaid)
             data.start = start // stejny duvod viz. vyse
         let request
         if (this.isLecture)
-            request = axios.put(API_URL + 'lectures/' + id + '/', data, AuthService.getHeaders())
+            request = LectureService.update(data)
         else
-            request = axios.post(API_URL + 'lectures/', data, AuthService.getHeaders())
+            request = LectureService.create(data)
         request.then(() => {
             this.close()
             this.refresh()
-            this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
         })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
-            })
     }
 
     close = () => {
@@ -140,15 +129,11 @@ export default class FormLectures extends Component {
     }
 
     delete = (id) => {
-        axios.delete(API_URL + 'lectures/' + id + '/', AuthService.getHeaders())
+        LectureService
+            .remove(id)
             .then(() => {
                 this.close()
                 this.refresh()
-                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 

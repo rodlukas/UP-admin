@@ -1,9 +1,7 @@
 import React, {Component} from "react"
 import "./PaidButton.css"
-import AuthService from "../Auth/AuthService"
-import axios from "axios"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 import {Input} from 'reactstrap'
+import AttendanceService from "../api/services/attendance"
 
 export default class SelectAttendanceState extends Component {
     constructor(props) {
@@ -25,16 +23,12 @@ export default class SelectAttendanceState extends Component {
 
     onChange = (e) => {
         const newValue = e.target.value
-        const data = {attendancestate_id: newValue}
-        axios.patch(API_URL + 'attendances/' + this.state.attendanceId + '/', data, AuthService.getHeaders())
+        const id = this.state.attendanceId
+        const data = {id, attendancestate_id: newValue}
+        AttendanceService.patch(data)
             .then(() => {
                 this.props.funcRefresh()
                 this.setState({value: newValue})
-                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 

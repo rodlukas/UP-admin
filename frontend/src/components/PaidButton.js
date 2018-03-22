@@ -2,9 +2,7 @@ import React, {Component} from "react"
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {faUsdCircle} from "@fortawesome/fontawesome-pro-solid"
 import "./PaidButton.css"
-import AuthService from "../Auth/AuthService"
-import axios from "axios"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
+import AttendanceService from "../api/services/attendance"
 
 export default class PaidButton extends Component {
     constructor(props) {
@@ -23,16 +21,12 @@ export default class PaidButton extends Component {
 
     onClick = () => {
         const newState = !this.state.paid
-        const data = {paid: newState}
-        axios.patch(API_URL + 'attendances/' + this.state.attendanceId + '/', data, AuthService.getHeaders())
+        const id = this.state.attendanceId
+        const data = {id, paid: newState}
+        AttendanceService.patch(data)
             .then(() => {
                 this.props.funcRefresh()
                 this.setState({paid: newState})
-                this.props.notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
             })
     }
 

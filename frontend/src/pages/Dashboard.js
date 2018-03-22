@@ -16,7 +16,7 @@ export default class Dashboard extends Component {
                 <Container>
                     <Row>
                         <Col sm="12" md={{size: 8, offset: 2}}>
-                            <DashboardDay date={this.date.toString()} notify={this.props.notify}/>
+                            <DashboardDay date={this.date.toString()}/>
                         </Col>
                     </Row>
                 </Container>

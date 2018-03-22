@@ -11,7 +11,7 @@ import {Collapse, Navbar, NavbarToggler, NavbarBrand} from 'reactstrap'
 import Login from "./pages/Login"
 import PrivateRoute from "./Auth/PrivateRoute"
 import Menu from "./components/Menu"
-import {ToastContainer, toast} from 'react-toastify'
+import {ToastContainer} from 'react-toastify'
 
 export default class Main extends Component {
     constructor(props) {
@@ -25,14 +25,6 @@ export default class Main extends Component {
         this.setState({
             isOpen: !this.state.isOpen
         })
-    }
-
-    notify = (message, level) => {
-        const options = {
-            type: level,
-            position: toast.POSITION.TOP_CENTER
-        }
-        toast(message, options)
     }
 
     render() {
@@ -52,14 +44,14 @@ export default class Main extends Component {
                     <ToastContainer/>
                     <div className="content">
                         <Switch>
-                            <PrivateRoute exact path="/" component={Dashboard} notify={this.notify}/>
+                            <PrivateRoute exact path="/" component={Dashboard}/>
                             <Route path="/prihlasit" component={Login}/>
-                            <PrivateRoute exact path="/skupiny" component={Groups} notify={this.notify}/>
-                            <PrivateRoute path="/diar" component={Diary} notify={this.notify}/>
-                            <PrivateRoute exact path="/klienti" component={Clients} notify={this.notify}/>
-                            <PrivateRoute path="/klienti/:id" component={Card} notify={this.notify}/>
-                            <PrivateRoute path="/skupiny/:id" component={Card} notify={this.notify}/>
-                            <PrivateRoute path="/nastaveni" component={Settings} notify={this.notify}/>
+                            <PrivateRoute exact path="/skupiny" component={Groups}/>
+                            <PrivateRoute path="/diar" component={Diary}/>
+                            <PrivateRoute exact path="/klienti" component={Clients}/>
+                            <PrivateRoute path="/klienti/:id" component={Card}/>
+                            <PrivateRoute path="/skupiny/:id" component={Card}/>
+                            <PrivateRoute path="/nastaveni" component={Settings}/>
                             <Route component={NotFound}/>
                         </Switch>
                     </div>

@@ -1,15 +1,14 @@
 import React, {Component} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, UncontrolledTooltip} from 'reactstrap'
-import axios from "axios"
 import {Link} from 'react-router-dom'
 import {prettyDateWithDay, toISODate, prettyTime} from "../global/FuncDateTime"
-import AuthService from "../Auth/AuthService"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
 import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
 import "./DashboardDay.css"
 import RemindPay from "./RemindPay"
 import LectureNumber from "./LectureNumber"
+import AttendanceStateService from "../api/services/attendancestate"
+import LectureService from "../api/services/lecture"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -23,25 +22,18 @@ export default class DashboardDay extends Component {
     }
 
     getAttendanceStates = () => {
-        axios.get(API_URL + 'attendancestates/', AuthService.getHeaders())
+        AttendanceStateService
+            .getAll()
             .then((response) => {
-                this.setState({attendancestates: response.data})
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
+                this.setState({attendancestates: response})
             })
     }
 
     getLectures = () => {
-        axios.get(API_URL + 'lectures/?date=' + toISODate(this.date) + '&ordering=start', AuthService.getHeaders())
+        LectureService
+            .getAllFromDayOrdered(toISODate(this.date), true)
             .then((response) => {
-                this.setState({lectures: response.data})
-
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
+                this.setState({lectures: response})
             })
     }
 
@@ -81,13 +73,13 @@ export default class DashboardDay extends Component {
                                         <ClientName name={attendance.client.name}
                                                     surname={attendance.client.surname}/>}{' '}
                                         <PaidButton paid={attendance.paid} attendanceId={attendance.id}
-                                                    funcRefresh={this.getLectures} notify={this.props.notify}/>{' '}
+                                                    funcRefresh={this.getLectures}/>{' '}
                                         <Badge color="info" pill>{attendance.note}</Badge>{' '}
                                         <RemindPay remind_pay={attendance.remind_pay}/>
                                         <SelectAttendanceState value={attendance.attendancestate.id}
                                                                attendanceId={attendance.id}
                                                                attendancestates={attendancestates}
-                                                               funcRefresh={this.getLectures} notify={this.props.notify}/>
+                                                               funcRefresh={this.getLectures}/>
                                     </li>)}
                             </ul>
                         </ListGroupItem>)

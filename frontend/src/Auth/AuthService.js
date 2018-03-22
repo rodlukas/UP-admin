@@ -1,6 +1,5 @@
-import axios from "axios"
 import decode from 'jwt-decode'
-import {API_URL} from "../global/GlobalConstants"
+import LoginService from "../api/services/login"
 
 const AUTH_REFRESH_THRESHOLD = 60
 const AUTH_STORAGE_KEY = "jwt"
@@ -20,7 +19,7 @@ export default class AuthService {
             const decoded = decode(token)
             if (!fastCheck) {//popis fastCheck v metode isAuthenticated
                 const dif = decoded.exp - AuthService.getCurrentDate()
-                //console.log("--------\ntoken:\t" + token + '\naktual:\t' + new Date().toISOString() + "\nvyprsi:\t" + new Date(decoded.exp * 1000).toISOString() + "\ndif:\t" + dif)
+                console.log("--------\ntoken:\t" + token + '\naktual:\t' + new Date().toISOString() + "\nvyprsi:\t" + new Date(decoded.exp * 1000).toISOString() + "\ndif:\t" + dif)
                 if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
                     this.refreshToken(token)
                     return (decode(this.getToken()).exp < this.getCurrentDate()) // dekoduj novy token a porovnej
@@ -34,28 +33,22 @@ export default class AuthService {
     }
 
     static refreshToken(token) {
-        axios.post(API_URL + 'jwt-refresh/', {token})
+        LoginService.refresh(token)
             .then((response) => {
-                this.saveToken(response.data.token)
-            })
-            .catch((error) => {
-                console.log(error)
-                alert("CHYBA - neúspěšný pokus o obnovení vašeho přihlášení. Přihlašte se, prosím, znovu!")
-                this.props.history.push("/prihlasit")
-            })
+                this.saveToken(response.token)
+            }).catch(() => {
+            alert("CHYBA - neúspěšný pokus o obnovení vašeho přihlášení. Přihlašte se, prosím, znovu!")
+        })
     }
 
     static authenticate(username, password, callback) {
-        axios.post(API_URL + 'jwt-auth/', {username, password})
+        LoginService.authenticate({username, password})
             .then((response) => {
-                this.saveToken(response.data.token)
+                this.saveToken(response.token)
                 callback()
-            })
-            .catch((error) => {
-                console.log(error)
-                alert("Špatné jméno nebo heslo!")
-                this.props.history.push("/prihlasit")
-            })
+            }).catch(() => {
+            alert("Špatné jméno nebo heslo!")
+        })
     }
 
     static signout(callback) {
@@ -69,12 +62,5 @@ export default class AuthService {
 
     static getToken() {
         return localStorage.getItem(AUTH_STORAGE_KEY)
-    }
-
-    static getHeaders() { // prida jwt token a csrf token
-        return {
-            xsrfCookieName: 'csrftoken',
-            xsrfHeaderName: 'X-CSRFToken',
-            headers: {Authorization: 'JWT ' + this.getToken()}}
     }
 }

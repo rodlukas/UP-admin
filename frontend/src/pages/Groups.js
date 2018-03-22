@@ -1,10 +1,8 @@
 import React, {Component} from "react"
 import {Table, Button, Modal, Badge, Container, Row, Col} from 'reactstrap'
 import {Link} from 'react-router-dom'
-import axios from "axios"
 import FormGroups from '../forms/FormGroups'
-import AuthService from "../Auth/AuthService"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
+import GroupService from "../api/services/group"
 
 export default class Groups extends Component {
     constructor(props) {
@@ -25,13 +23,9 @@ export default class Groups extends Component {
     }
 
     getGroups = () => {
-        axios.get(API_URL + 'groups/', AuthService.getHeaders())
+        GroupService.getAll()
             .then((response) => {
-                this.setState({groups: response.data})
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
+                this.setState({groups: response})
             })
     }
 
@@ -97,8 +91,7 @@ export default class Groups extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}
-                                notify={this.props.notify}/>
+                    <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}/>
                 </Modal>
             </div>
         )

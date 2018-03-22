@@ -1,10 +1,8 @@
 import React, {Component} from "react"
 import {Table, Button, Modal, Container, Row, Col} from 'reactstrap'
 import {Link} from 'react-router-dom'
-import axios from "axios"
 import FormClients from '../forms/FormClients'
-import AuthService from "../Auth/AuthService"
-import {API_URL, NOTIFY_LEVEL, NOTIFY_TEXT} from "../global/GlobalConstants"
+import ClientService from "../api/services/client"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -25,13 +23,10 @@ export default class ClientList extends Component {
     }
 
     getClients = () => {
-        axios.get(API_URL + 'clients/', AuthService.getHeaders())
+        ClientService
+            .getAll()
             .then((response) => {
-                this.setState({clients: response.data})
-            })
-            .catch((error) => {
-                console.log(error)
-                this.props.notify(NOTIFY_TEXT.ERROR_LOADING, NOTIFY_LEVEL.ERROR)
+                this.setState({clients: response})
             })
     }
 
@@ -82,8 +77,7 @@ export default class ClientList extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    <FormClients client={this.state.currentClient} funcClose={this.toggle} funcRefresh={this.getClients}
-                                 notify={this.props.notify}/>
+                    <FormClients client={this.state.currentClient} funcClose={this.toggle} funcRefresh={this.getClients}/>
                 </Modal>
             </div>
         )

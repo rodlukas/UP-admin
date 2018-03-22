@@ -69,7 +69,7 @@ export default class Diary extends Component {
                     <Row>
                     {this.state.week.map(day =>
                         <Col key={day}>
-                            <DashboardDay date={day.toString()} notify={this.props.notify}/>
+                            <DashboardDay date={day.toString()}/>
                         </Col>)}
                     </Row>
                 </Container>
