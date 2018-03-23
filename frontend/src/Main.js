@@ -12,6 +12,7 @@ import Login from "./pages/Login"
 import PrivateRoute from "./auth/PrivateRoute"
 import Menu from "./components/Menu"
 import {ToastContainer} from 'react-toastify'
+import APP_URLS from "./urls"
 
 export default class Main extends Component {
     constructor(props) {
@@ -45,13 +46,13 @@ export default class Main extends Component {
                     <div className="content">
                         <Switch>
                             <PrivateRoute exact path="/" component={Dashboard}/>
-                            <Route path="/prihlasit" component={Login}/>
-                            <PrivateRoute exact path="/skupiny" component={Groups}/>
-                            <PrivateRoute path="/diar" component={Diary}/>
-                            <PrivateRoute exact path="/klienti" component={Clients}/>
-                            <PrivateRoute path="/klienti/:id" component={Card}/>
-                            <PrivateRoute path="/skupiny/:id" component={Card}/>
-                            <PrivateRoute path="/nastaveni" component={Settings}/>
+                            <Route path={APP_URLS.prihlasit} component={Login}/>
+                            <PrivateRoute exact path={APP_URLS.skupiny} component={Groups}/>
+                            <PrivateRoute path={APP_URLS.diar} component={Diary}/>
+                            <PrivateRoute exact path={APP_URLS.klienti} component={Clients}/>
+                            <PrivateRoute path={APP_URLS.klienti + "/:id"} component={Card}/>
+                            <PrivateRoute path={APP_URLS.skupiny + "/:id"} component={Card}/>
+                            <PrivateRoute path={APP_URLS.nastaveni} component={Settings}/>
                             <Route component={NotFound}/>
                         </Switch>
                     </div>

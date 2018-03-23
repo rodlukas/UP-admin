@@ -10,12 +10,13 @@ import AttendanceStateService from "../api/services/attendancestate"
 import GroupService from "../api/services/group"
 import ClientService from "../api/services/client"
 import LectureService from "../api/services/lecture"
+import APP_URLS from "../urls"
 
 export default class ClientView extends Component {
     constructor(props) {
         super(props)
         this.id = this.props.match.params.id
-        this.CLIENT = this.props.match.path.includes("klienti")
+        this.CLIENT = this.props.match.path.includes(APP_URLS.klienti)
         this.title = "Karta " + (this.CLIENT ? "klienta" : "skupiny")
         this.state = {
             object: {},

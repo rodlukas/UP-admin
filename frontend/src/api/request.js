@@ -4,6 +4,7 @@ import {toast} from "react-toastify"
 import AuthService from "../auth/authService"
 import {API_METHODS, API_URLS} from "./urls"
 import {API_URL, JWT_HEADER_PREFIX} from "../global/constants"
+import APP_URLS from "../urls"
 
 axios.defaults.baseURL = API_URL
 axios.defaults.xsrfCookieName = 'csrftoken'
@@ -30,7 +31,7 @@ const request = function (options) {
         }
         notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
         if (error.response.status === 401)
-            window.location.href = "/prihlasit" //TODO
+            window.location.href = APP_URLS.prihlasit //TODO
 
         return Promise.reject(error.response || error.message)
     }

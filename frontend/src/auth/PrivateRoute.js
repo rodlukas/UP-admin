@@ -1,6 +1,7 @@
 import React from "react"
 import AuthService from "./authService"
 import {Route, Redirect} from "react-router-dom"
+import APP_URLS from "../urls"
 
 const PrivateRoute = ({component: Component, ...rest}) => (
     <Route {...rest}
@@ -10,7 +11,7 @@ const PrivateRoute = ({component: Component, ...rest}) => (
             ) : (
                 <Redirect
                     to={{
-                        pathname: "/prihlasit",
+                        pathname: APP_URLS.prihlasit,
                         state: {from: props.location}
                     }}
                 />)}
