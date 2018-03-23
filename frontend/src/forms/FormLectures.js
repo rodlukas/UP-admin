@@ -59,9 +59,12 @@ export default class FormLectures extends Component {
     }
 
     prepareStateIndex(attendancestates) {
-        if(attendancestates)
-            return attendancestates.find(
-                elem => elem.name === ATTENDANCESTATE_OK).id
+        if(attendancestates.length)
+        {
+            const res = attendancestates.find(elem => elem.name === ATTENDANCESTATE_OK)
+            if(typeof res !== 'undefined')
+                return res.id
+        }
         return UNDEF
     }
 
