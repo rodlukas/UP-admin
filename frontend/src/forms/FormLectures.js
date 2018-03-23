@@ -64,6 +64,8 @@ export default class FormLectures extends Component {
             const res = attendancestates.find(elem => elem.name === ATTENDANCESTATE_OK)
             if(typeof res !== 'undefined')
                 return res.id
+            else
+                return attendancestates[0].id // pokud pole neni prazdne, ale neni v nem stav OK, vem prvni prvek
         }
         return UNDEF
     }
