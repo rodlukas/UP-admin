@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Container, Row, Col, Button} from 'reactstrap'
 import DashboardDay from '../components/DashboardDay'
-import {prettyDate} from "../global/FuncDateTime"
+import {prettyDate} from "../global/funcDateTime"
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {faArrowCircleRight, faArrowCircleLeft} from "@fortawesome/fontawesome-pro-solid"
 

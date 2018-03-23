@@ -1,9 +1,9 @@
 import React, {Component} from "react"
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
-import {toISODate, toISOTime, prettyDateWithDay} from "../global/FuncDateTime"
-import {ATTENDANCESTATE_OK} from "../global/GlobalConstants"
+import {toISODate, toISOTime, prettyDateWithDay} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
 import CourseService from "../api/services/course"
+import {ATTENDANCESTATE_OK} from "../global/constants"
 
 const DEFAULT_DURATION = 30
 
@@ -13,7 +13,9 @@ export default class FormLectures extends Component {
         this.isLecture = Boolean(Object.keys(props.lecture).length)
         this.CLIENT = props.CLIENT
         const {id, start, course, duration} = props.lecture
+        const {attendancestates} = props
         const isPrepaid = this.isLecture ? !Boolean(start) : false
+        this.ATTENDANCESTATE_OK_INDEX = this.prepareStateIndex(attendancestates)
         this.members = []
         if (this.CLIENT)
             this.members = [props.object]
@@ -35,9 +37,30 @@ export default class FormLectures extends Component {
                 course.id :
                 (this.CLIENT ? "undef" : props.object.course.id)),
             duration: duration || DEFAULT_DURATION,
-            attendancestates: props.attendancestates,
+            attendancestates: attendancestates,
             courses: [],
             object: props.object
+        }
+    }
+
+    prepareStateIndex(attendancestates) {
+        return attendancestates ? attendancestates.find(function (el) {
+            return el.name > ATTENDANCESTATE_OK
+        }) : "undef"
+    }
+
+    createAttendanceStateArray() { // najdi index stavu OK
+        let array = []
+        this.members.map((client, id) =>
+            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : this.ATTENDANCESTATE_OK_INDEX)
+        return array
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(this.state.attendancestates !== nextProps.attendancestates)
+        {
+            this.ATTENDANCESTATE_OK_INDEX = this.prepareStateIndex(nextProps.attendancestates)
+            this.setState({attendancestates: nextProps.attendancestates})
         }
     }
 
@@ -45,13 +68,6 @@ export default class FormLectures extends Component {
         let array = []
         memberships.map(member =>
             array.push(member.client))
-        return array
-    }
-
-    createAttendanceStateArray() {
-        let array = []
-        this.members.map((client, id) =>
-            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : ATTENDANCESTATE_OK)
         return array
     }
 

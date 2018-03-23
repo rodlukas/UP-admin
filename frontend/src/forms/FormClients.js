@@ -95,7 +95,7 @@ export default class FormClients extends Component {
                         <Label for="note" sm={2} className="text-muted">Smazání</Label>
                         <Col sm={10}>
                             <Alert color="warning">
-                                <p>Nevratně smaže klienta i s jeho lekcemi (včetně skupinových)</p>
+                                <p>Klienta lze smazat pouze pokud nemá žádné lekce</p>
                                 <Button color="danger"
                                         onClick={() => {
                                             if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))

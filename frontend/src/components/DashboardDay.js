@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, UncontrolledTooltip} from 'reactstrap'
 import {Link} from 'react-router-dom'
-import {prettyDateWithDay, toISODate, prettyTime} from "../global/FuncDateTime"
+import {prettyDateWithDay, toISODate, prettyTime} from "../global/funcDateTime"
 import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
 import "./DashboardDay.css"

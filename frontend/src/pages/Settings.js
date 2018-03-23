@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Table, Button, Modal, Container, Row, Col} from 'reactstrap'
 import FormSettings from "../forms/FormSettings"
-import {EDIT_TYPE} from "../global/GlobalConstants"
+import {EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 

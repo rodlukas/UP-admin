@@ -9,7 +9,7 @@ import NotFound from "./pages/NotFound"
 import Settings from "./pages/Settings"
 import {Collapse, Navbar, NavbarToggler, NavbarBrand} from 'reactstrap'
 import Login from "./pages/Login"
-import PrivateRoute from "./Auth/PrivateRoute"
+import PrivateRoute from "./auth/PrivateRoute"
 import Menu from "./components/Menu"
 import {ToastContainer} from 'react-toastify'
 

@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
-import {EDIT_TYPE} from "../global/GlobalConstants"
+import {EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 

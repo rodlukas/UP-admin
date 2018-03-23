@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading} from 'reactstrap'
 import FormLectures from "../forms/FormLectures"
-import {prettyTime, prettyDate} from "../global/FuncDateTime"
+import {prettyTime, prettyDateWithYear} from "../global/funcDateTime"
 import PaidButton from "../components/PaidButton"
 import SelectAttendanceState from "../components/SelectAttendanceState"
 import RemindPay from "../components/RemindPay"
@@ -105,7 +105,7 @@ export default class ClientView extends Component {
                                         <ListGroupItem key={lectureVal.id}>
                                             <ListGroupItemHeading>
                                             {lectureVal.start!==null ?
-                                                (prettyDate(d) + " - " + prettyTime(d))
+                                                (prettyDateWithYear(d) + " - " + prettyTime(d))
                                                 :
                                                 "Předplacená lekce"}{' '}
                                                 <LectureNumber number={lectureVal.attendances[0].count}/>

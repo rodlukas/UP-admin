@@ -98,7 +98,7 @@ export default class FormGroups extends Component {
             })
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.getClients()
         this.getDataCourses()
     }

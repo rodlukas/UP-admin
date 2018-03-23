@@ -2,6 +2,10 @@ export function prettyDate(date) {
     return date.getDate() + ". " + (date.getMonth() + 1) + "."
 }
 
+export function prettyDateWithYear(date) {
+    return prettyDate(date) + " " + (date.getFullYear())
+}
+
 export function prettyDateWithDay(date) {
     const day = date.toLocaleDateString('cs-CZ', {weekday: 'long'})
     return day + " " + prettyDate(date)

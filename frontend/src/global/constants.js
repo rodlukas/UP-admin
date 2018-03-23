@@ -13,7 +13,7 @@ export const NOTIFY_TEXT = {
     ERROR: "Chyba při ukládání",
     ERROR_LOADING: "Došlo k chybě při načítání dat"
 }
-export const ATTENDANCESTATE_OK = 5
+export const ATTENDANCESTATE_OK = "OK"
 export const EDIT_TYPE = {
     STATE: 0,
     COURSE: 1

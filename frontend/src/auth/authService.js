@@ -33,12 +33,13 @@ export default class AuthService {
     }
 
     static refreshToken(token) {
-        LoginService.refresh(token)
+        LoginService.refresh({token})
             .then((response) => {
                 this.saveToken(response.token)
-            }).catch(() => {
-            alert("CHYBA - neúspěšný pokus o obnovení vašeho přihlášení. Přihlašte se, prosím, znovu!")
-        })
+            })
+            .catch(() => {
+                alert("CHYBA - neúspěšný pokus o obnovení vašeho přihlášení. Přihlašte se, prosím, znovu!")
+            })
     }
 
     static authenticate(username, password, callback) {
@@ -46,9 +47,10 @@ export default class AuthService {
             .then((response) => {
                 this.saveToken(response.token)
                 callback()
-            }).catch(() => {
-            alert("Špatné jméno nebo heslo!")
-        })
+            })
+            .catch(() => {
+                alert("Špatné jméno nebo heslo!")
+            })
     }
 
     static signout(callback) {

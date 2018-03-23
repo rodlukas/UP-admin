@@ -2,6 +2,7 @@ import request from '../request'
 import {API_DELIM, API_METHODS, API_URLS, API_ORDERING} from "../urls"
 
 const baseUrl = API_URLS.Lectures.url
+const ordering = (asc) => "&" + API_ORDERING + "=" + (!asc ? '-' : '') + API_URLS.Lectures.ordering.start
 
 function get(id) {
     return request({
@@ -18,8 +19,7 @@ function getAll() {
 }
 
 function getAllFromGroupOrdered(group, asc) {
-    const url = baseUrl + "?" + API_URLS.Lectures.filters.group + "=" + group + "&" + API_ORDERING + "="
-        + (!asc ? '-' : '') + API_URLS.Lectures.ordering.start
+    const url = baseUrl + "?" + API_URLS.Lectures.filters.group + "=" + group + ordering(asc)
     return request({
         url: url,
         method: API_METHODS.get
@@ -27,8 +27,7 @@ function getAllFromGroupOrdered(group, asc) {
 }
 
 function getAllFromClientOrdered(client, asc) {
-    const url = baseUrl + "?" + API_URLS.Lectures.filters.client + "=" + client + "&" + API_ORDERING + "="
-        + (!asc ? '-' : '') + API_URLS.Lectures.ordering.start
+    const url = baseUrl + "?" + API_URLS.Lectures.filters.client + "=" + client + ordering(asc)
     return request({
         url: url,
         method: API_METHODS.get
@@ -36,8 +35,7 @@ function getAllFromClientOrdered(client, asc) {
 }
 
 function getAllFromDayOrdered(date, asc) {
-    const url = baseUrl + "?" + API_URLS.Lectures.filters.date + "=" + date + "&" + API_ORDERING + "="
-                + (!asc ? '-' : '') + API_URLS.Lectures.ordering.start
+    const url = baseUrl + "?" + API_URLS.Lectures.filters.date + "=" + date + ordering(asc)
     return request({
         url: url,
         method: API_METHODS.get
