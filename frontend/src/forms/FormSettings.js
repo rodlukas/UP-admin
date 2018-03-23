@@ -35,7 +35,6 @@ export default class FormSettings extends Component {
             request = service.update(data)
         else
             request = service.create(data)
-
         request.then(() => {
             this.close()
             this.refresh(this.TYPE)
@@ -71,7 +70,7 @@ export default class FormSettings extends Component {
                     <FormGroup row>
                         <Label for="name" sm={3}>Jméno</Label>
                         <Col sm={9}>
-                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange}/>
+                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -91,8 +90,7 @@ export default class FormSettings extends Component {
                                 <Button color="danger"
                                         onClick={() => {
                                             let msg = "Opravdu chcete smazat "
-                                                + type + " "
-                                                + name + '?'
+                                                + type + " " + name + '?'
                                             if (window.confirm(msg))
                                                 this.delete(id)
                                         }}>Smazat {type}</Button>

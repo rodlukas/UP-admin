@@ -12,14 +12,12 @@ WEBPACK_LOADER = {
     }
 }
 
-REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'] = ('rest_framework.permissions.IsAuthenticated',)
-
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = False
 
 # Heroku: Update database configuration from $DATABASE_URL.
-db_from_env = dj_database_url.config(conn_max_age=60)
+db_from_env = dj_database_url.config(conn_max_age=CONST_DB_CON_AGE)
 DATABASES['default'].update(db_from_env)
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

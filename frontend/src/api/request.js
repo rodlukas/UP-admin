@@ -3,17 +3,17 @@ import {NOTIFY_TEXT, NOTIFY_LEVEL} from '../global/constants'
 import {toast} from "react-toastify"
 import AuthService from "../auth/authService"
 import {API_METHODS, API_URLS} from "./urls"
-import {API_URL} from "../global/constants"
+import {API_URL, JWT_HEADER_PREFIX} from "../global/constants"
 
 axios.defaults.baseURL = API_URL
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-axios.defaults.headers.common['Authorization'] = AuthService.getToken()
 
 const request = function (options) {
+    axios.defaults.headers.common['Authorization'] = JWT_HEADER_PREFIX + AuthService.getToken()
+
     const onSuccess = function (response) {
         console.log('Request on ' + response.request.responseURL + ' successfull', response)
-
         if (options.method !== API_METHODS.get && !response.request.responseURL.match(API_URLS.Login.url))
             notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
         return response.data
@@ -30,7 +30,8 @@ const request = function (options) {
         }
         notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
         if (error.response.status === 401)
-            window.location.href = "/prihlasit" // TODO
+            window.location.href = "/prihlasit" //TODO
+
         return Promise.reject(error.response || error.message)
     }
 

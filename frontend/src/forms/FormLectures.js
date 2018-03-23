@@ -6,23 +6,24 @@ import CourseService from "../api/services/course"
 import {ATTENDANCESTATE_OK} from "../global/constants"
 
 const DEFAULT_DURATION = 30
+const UNDEF = "undef"
 
 export default class FormLectures extends Component {
     constructor(props) {
         super(props)
         this.isLecture = Boolean(Object.keys(props.lecture).length)
         this.CLIENT = props.CLIENT
-        const {id, start, course, duration} = props.lecture
-        const {attendancestates} = props
+        const {id, start, course, duration, attendances} = props.lecture
+        const {attendancestates, object} = props
         const isPrepaid = this.isLecture ? !Boolean(start) : false
         this.ATTENDANCESTATE_OK_INDEX = this.prepareStateIndex(attendancestates)
         this.members = []
         if (this.CLIENT)
-            this.members = [props.object]
+            this.members = [object]
         else if (this.isLecture)
-            this.members = this.getMembers(props.lecture.attendances)
+            this.members = this.getMembers(attendances)
         else
-            this.members = this.getMembers(props.object.memberships)
+            this.members = this.getMembers(object.memberships)
 
         let date = new Date(start)
         this.state = {
@@ -35,30 +36,16 @@ export default class FormLectures extends Component {
             time: (this.isLecture && !isPrepaid) ? toISOTime(date) : '',
             course_id: (this.isLecture ?
                 course.id :
-                (this.CLIENT ? "undef" : props.object.course.id)),
+                (this.CLIENT ? UNDEF : object.course.id)),
             duration: duration || DEFAULT_DURATION,
             attendancestates: attendancestates,
             courses: [],
-            object: props.object
+            object: object
         }
     }
 
-    prepareStateIndex(attendancestates) {
-        return attendancestates ? attendancestates.find(function (el) {
-            return el.name > ATTENDANCESTATE_OK
-        }) : "undef"
-    }
-
-    createAttendanceStateArray() { // najdi index stavu OK
-        let array = []
-        this.members.map((client, id) =>
-            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : this.ATTENDANCESTATE_OK_INDEX)
-        return array
-    }
-
     componentWillReceiveProps(nextProps) {
-        if(this.state.attendancestates !== nextProps.attendancestates)
-        {
+        if (this.state.attendancestates !== nextProps.attendancestates) {
             this.ATTENDANCESTATE_OK_INDEX = this.prepareStateIndex(nextProps.attendancestates)
             this.setState({attendancestates: nextProps.attendancestates})
         }
@@ -68,6 +55,20 @@ export default class FormLectures extends Component {
         let array = []
         memberships.map(member =>
             array.push(member.client))
+        return array
+    }
+
+    prepareStateIndex(attendancestates) {
+        if(attendancestates)
+            return attendancestates.find(
+                elem => elem.name === ATTENDANCESTATE_OK).id
+        return UNDEF
+    }
+
+    createAttendanceStateArray() { // najdi index stavu OK
+        let array = []
+        this.members.map((client, id) =>
+            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : this.ATTENDANCESTATE_OK_INDEX)
         return array
     }
 
@@ -183,15 +184,15 @@ export default class FormLectures extends Component {
                     <FormGroup row>
                         <Label for="date" sm={3}>Datum</Label>
                         <Col sm={9}>
-                            <Input type="date" name="date" id="date" value={date} disabled={prepaid}
-                                   onChange={this.onChange}/>
+                            <Input type="date" name="date" id="date" value={date} disabled={prepaid} onChange={this.onChange}
+                                   required={!prepaid}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="time" sm={3}>Čas</Label>
                         <Col sm={9}>
-                            <Input type="time" name="time" id="time" value={time} disabled={prepaid}
-                                   onChange={this.onChange}/>
+                            <Input type="time" name="time" id="time" value={time} disabled={prepaid} onChange={this.onChange}
+                                   required={!prepaid}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -204,7 +205,7 @@ export default class FormLectures extends Component {
                         <Label for="course_id" sm={3}>Kurz</Label>
                         <Col sm={9}>
                             <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.CLIENT && 'disabled'} required="true">
-                                <option disabled value="undef">Vyberte kurz...</option>
+                                <option disabled value={UNDEF}>Vyberte kurz...</option>
                                 {courses.map(course =>
                                     (course.visible || course.id === course_id) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                     && <option key={course.id} value={course.id}>{course.name}</option>)}

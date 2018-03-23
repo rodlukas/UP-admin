@@ -55,6 +55,7 @@ export default class Settings extends Component {
     }
 
     render() {
+        const {attendancestates, courses, currentType, currentObject} = this.state
         const Visible = ({visible}) => (visible ? 'ANO' : 'NE')
         return (
             <div>
@@ -74,7 +75,7 @@ export default class Settings extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.state.attendancestates.map(attendancestate =>
+                                {attendancestates.map(attendancestate =>
                                     <tr key={attendancestate.id}>
                                         <td>{attendancestate.name}</td>
                                         <td><Visible visible={attendancestate.visible}/></td>
@@ -85,7 +86,7 @@ export default class Settings extends Component {
                                     </tr>)}
                                 </tbody>
                             </Table>
-                            {!Boolean(this.state.attendancestates.length) &&
+                            {!Boolean(attendancestates.length) &&
                             <p className="text-muted text-center">
                                 Žádné stavy účasti
                             </p>}
@@ -101,7 +102,7 @@ export default class Settings extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.state.courses.map(course =>
+                                {courses.map(course =>
                                     <tr key={course.id}>
                                         <td>{course.name}</td>
                                         <td><Visible visible={course.visible}/></td>
@@ -112,7 +113,7 @@ export default class Settings extends Component {
                                     </tr>)}
                                 </tbody>
                             </Table>
-                            {!Boolean(this.state.courses.length) &&
+                            {!Boolean(courses.length) &&
                             <p className="text-muted text-center">
                                 Žádné kurzy
                             </p>}
@@ -120,8 +121,8 @@ export default class Settings extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    <FormSettings object={this.state.currentObject} funcClose={this.toggle} funcRefresh={this.refresh}
-                                  TYPE={this.state.currentType}/>
+                    <FormSettings object={currentObject} funcClose={this.toggle} funcRefresh={this.refresh}
+                                  TYPE={currentType}/>
                 </Modal>
             </div>
         )

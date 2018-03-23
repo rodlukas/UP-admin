@@ -15,7 +15,8 @@ export default class Login extends Component {
     }
 
     login = () => {
-        AuthService.authenticate(this.state.username, this.state.password, () => {
+        const {username, password} = this.state
+        AuthService.authenticate(username, password, () => {
             this.setState({redirectToReferrer: true})
         })
     }
@@ -34,9 +35,8 @@ export default class Login extends Component {
     render() {
         const {from} = this.props.location.state || {from: {pathname: "/"}}
         const {redirectToReferrer, username, password} = this.state
-        if (redirectToReferrer) {
+        if (redirectToReferrer)
             return <Redirect to={from}/>
-        }
         return (
             <Container>
                 <h1 className="text-center mb-4">{this.title}</h1>
@@ -45,14 +45,14 @@ export default class Login extends Component {
                         <Label for="username" sm={2}>Uživatelské jméno</Label>
                         <Col sm={10}>
                             <Input type="text" name="username" id="username" value={username} onChange={this.onChange}
-                                   required="true"/>
+                                   required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="password" sm={2}>Heslo</Label>
                         <Col sm={10}>
                             <Input type="password" name="password" id="password" value={password}
-                                   onChange={this.onChange} required="true"/>
+                                   onChange={this.onChange} required/>
                         </Col>
                     </FormGroup>
                     <Button color="primary" type="submit">Přihlásit</Button>

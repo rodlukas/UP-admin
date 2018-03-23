@@ -59,24 +59,21 @@ export default class ClientView extends Component {
             request = LectureService.getAllFromClientOrdered(this.id, false)
         else
             request = LectureService.getAllFromGroupOrdered(this.id, false)
-
-        request.then((response) => {
-            // groupby courses
+        request.then((response) => { // groupby courses
             let group_to_values = response.reduce(function (obj, item) {
                 obj[item.course.name] = obj[item.course.name] || []
                 obj[item.course.name].push(item)
-                return obj
-            }, {})
+                return obj}, {})
             let groups = Object.keys(group_to_values).map(function (key) {
                 return {course: key, values: group_to_values[key]}
             })
             groups.sort(function (a, b) { // serad podle abecedy
-                if (a.course < b.course) return -1;
-                if (a.course > b.course) return 1;
-                return 0;
+                if (a.course < b.course) return -1
+                if (a.course > b.course) return 1
+                return 0
             })
             this.setState({lectures: groups})
-            })
+        })
     }
 
     componentDidMount() {
@@ -104,7 +101,7 @@ export default class ClientView extends Component {
                                     return (
                                         <ListGroupItem key={lectureVal.id}>
                                             <ListGroupItemHeading>
-                                            {lectureVal.start!==null ?
+                                            {lectureVal.start !== null ?
                                                 (prettyDateWithYear(d) + " - " + prettyTime(d))
                                                 :
                                                 "Předplacená lekce"}{' '}
@@ -127,6 +124,10 @@ export default class ClientView extends Component {
                                 </ListGroup>
                             </div>
                         </Col>)}
+                        {!Boolean(lectures.length) &&
+                        <p className="text-muted text-center">
+                            Žádné lekce
+                        </p>}
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} size="xl">

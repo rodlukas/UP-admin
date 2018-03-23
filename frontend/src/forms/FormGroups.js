@@ -6,6 +6,8 @@ import CourseService from "../api/services/course"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 
+const UNDEF = "undef"
+
 export default class FormGroups extends Component {
     constructor(props) {
         super(props)
@@ -14,21 +16,19 @@ export default class FormGroups extends Component {
         this.state = {
             id: id || '',
             name: name || '',
-            course_id: this.isGroup ? course.id : "undef",
+            course_id: this.isGroup ? course.id : UNDEF,
             memberships: this.isGroup ? this.getMembersArray(memberships) : [],
             clients: [],
             courses: []
         }
     }
 
-    getMembersArray(memberships) {
-        // pripravi pole se cleny ve spravnem formatu, aby pak slo rovnou zaslat do API
+    getMembersArray(memberships) { // pripravi pole se cleny ve spravnem formatu, aby pak slo rovnou zaslat do API
         let arrayOfMembers = []
         memberships.map(membership => {
             return arrayOfMembers.push({
                 client_id: membership.client.id,
-                label: membership.client.name + " " + membership.client.surname
-            })
+                label: membership.client.name + " " + membership.client.surname})
         })
         return arrayOfMembers
     }
@@ -61,9 +61,9 @@ export default class FormGroups extends Component {
         else
             request = GroupService.create(data)
         request.then(() => {
-                this.close()
-                this.refresh()
-            })
+            this.close()
+            this.refresh()
+        })
     }
 
     close = () => {
@@ -91,8 +91,7 @@ export default class FormGroups extends Component {
                 response.map(client => {
                     return clients.push({
                         client_id: client.id,
-                        label: client.name + " " + client.surname
-                    })
+                        label: client.name + " " + client.surname})
                 })
                 this.setState({clients: clients})
             })
@@ -119,7 +118,7 @@ export default class FormGroups extends Component {
                         <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
                             <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required="true">
-                                <option disabled value="undef">Vyberte kurz...</option>
+                                <option disabled value={UNDEF}>Vyberte kurz...</option>
                                 {courses.map(course =>
                                     <option key={course.id} value={course.id}>{course.name}</option>)}
                             </Input>

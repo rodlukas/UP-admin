@@ -44,11 +44,9 @@ export default class Groups extends Component {
                             <ClientName key={membership.client.id} name={membership.client.name}
                                         surname={membership.client.surname}/>)
                             .reduce((accu, elem) => {
-                                return accu === null ? [elem] : [...accu, ', ', elem]
-                            }, null)
+                                return accu === null ? [elem] : [...accu, ', ', elem]}, null)
                         :
-                        <span className="text-muted">žádní členové</span>
-                    }
+                        <span className="text-muted">žádní členové</span>}
                 </div>)
         }
         return (
@@ -79,11 +77,10 @@ export default class Groups extends Component {
                                             <Link to={"/skupiny/" + group.id}>
                                                 <Button color="secondary">Karta</Button></Link>
                                         </td>
-                                    </tr>)
-                                }
+                                    </tr>)}
                                 </tbody>
                             </Table>
-                            {!Boolean(this.state.groups.length) &&
+                            {!Boolean(groups.length) &&
                             <p className="text-muted text-center">
                                 Žádné skupiny
                             </p>}

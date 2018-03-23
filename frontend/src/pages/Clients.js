@@ -36,6 +36,7 @@ export default class ClientList extends Component {
 
     render() {
         const ClientName = ({name, surname}) => <span>{surname} {name}</span>
+        const {clients, currentClient} = this.state
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>
@@ -54,7 +55,7 @@ export default class ClientList extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.state.clients.map(client =>
+                                {clients.map(client =>
                                     <tr key={client.id}>
                                         <td><ClientName name={client.name} surname={client.surname}/></td>
                                         <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
@@ -69,7 +70,7 @@ export default class ClientList extends Component {
                                     </tr>)}
                                 </tbody>
                             </Table>
-                            {!Boolean(this.state.clients.length) &&
+                            {!Boolean(clients.length) &&
                             <p className="text-muted text-center">
                                 Žádní klienti
                             </p>}
@@ -77,7 +78,7 @@ export default class ClientList extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    <FormClients client={this.state.currentClient} funcClose={this.toggle} funcRefresh={this.getClients}/>
+                    <FormClients client={currentClient} funcClose={this.toggle} funcRefresh={this.getClients}/>
                 </Modal>
             </div>
         )

@@ -5,19 +5,19 @@ const AUTH_REFRESH_THRESHOLD = 60
 const AUTH_STORAGE_KEY = "jwt"
 
 export default class AuthService {
-    static isAuthenticated(fastCheck = false) {// fastCheck=True pokud komponenta ma rychle zjistit platnost tokenu bez zadosti o refresh
+    static isAuthenticated(fastCheck = false) { // fastCheck=True pokud komponenta ma rychle zjistit platnost tokenu bez zadosti o refresh
         const token = this.getToken()
         return !!token && !this.isTokenExpired(token, fastCheck)
     }
 
-    static getCurrentDate() {
-        return (Date.now() / 1000) // prevod na sekundy (decoded.exp je v sekundach)
+    static getCurrentDate() { // prevod na sekundy (decoded.exp je v sekundach)
+        return (Date.now() / 1000)
     }
 
     static isTokenExpired(token, fastCheck) {
         try {
             const decoded = decode(token)
-            if (!fastCheck) {//popis fastCheck v metode isAuthenticated
+            if (!fastCheck) { //popis fastCheck v metode isAuthenticated
                 const dif = decoded.exp - AuthService.getCurrentDate()
                 console.log("--------\ntoken:\t" + token + '\naktual:\t' + new Date().toISOString() + "\nvyprsi:\t" + new Date(decoded.exp * 1000).toISOString() + "\ndif:\t" + dif)
                 if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
@@ -33,7 +33,8 @@ export default class AuthService {
     }
 
     static refreshToken(token) {
-        LoginService.refresh({token})
+        const data = {token}
+        LoginService.refresh(data)
             .then((response) => {
                 this.saveToken(response.token)
             })
@@ -43,7 +44,8 @@ export default class AuthService {
     }
 
     static authenticate(username, password, callback) {
-        LoginService.authenticate({username, password})
+        const data = {username, password}
+        LoginService.authenticate(data)
             .then((response) => {
                 this.saveToken(response.token)
                 callback()

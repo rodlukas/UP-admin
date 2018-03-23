@@ -3,9 +3,8 @@ import AuthService from "./authService"
 import {Route, Redirect} from "react-router-dom"
 
 const PrivateRoute = ({component: Component, ...rest}) => (
-    <Route
-        {...rest}
-        render={props =>
+    <Route {...rest}
+           render={props =>
             AuthService.isAuthenticated() ? (
                 <Component {...props}/>
             ) : (

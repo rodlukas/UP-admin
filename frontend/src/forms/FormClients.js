@@ -81,7 +81,7 @@ export default class FormClients extends Component {
                     <FormGroup row>
                         <Label for="phone" sm={2}>Telefon</Label>
                         <Col sm={10}>
-                            <Input type="tel" name="phone" id="phone" value={phone} onChange={this.onChange}/>
+                            <Input type="tel" name="phone" id="phone" value={phone} minLength="9" onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
