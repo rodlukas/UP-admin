@@ -4,6 +4,7 @@ import DashboardDay from '../components/DashboardDay'
 import {prettyDate} from "../global/funcDateTime"
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {faArrowCircleRight, faArrowCircleLeft} from "@fortawesome/fontawesome-pro-solid"
+import AttendanceStateService from "../api/services/attendancestate"
 
 const WORK_DAYS_COUNT = 5
 const DAYS_PER_WEEK = 7
@@ -14,6 +15,7 @@ export default class Diary extends Component {
         this.titlePart = "Týdenní přehled: "
         this.thisMonday = Diary.getMonday(new Date())
         this.state = this.getNewState(this.thisMonday)
+        this.state['attendancestates'] = []
     }
 
     getNewState(monday) {
@@ -24,6 +26,18 @@ export default class Diary extends Component {
             nextMonday: Diary.addDays(monday, DAYS_PER_WEEK),
             prevMonday: Diary.addDays(monday, -DAYS_PER_WEEK)
         }
+    }
+
+    getAttendanceStates = () => {
+        AttendanceStateService
+            .getAll()
+            .then((response) => {
+                this.setState({attendancestates: response})
+            })
+    }
+
+    componentDidMount() {
+        this.getAttendanceStates()
     }
 
     static getWeekArray(monday) { // priprav pole datumu pracovnich dnu v prislusnem tydnu
@@ -55,6 +69,7 @@ export default class Diary extends Component {
     }
 
     render() {
+        const {attendancestates, week} = this.state
         return (
             <div>
                 <h1 className="text-center mb-4">
@@ -67,9 +82,9 @@ export default class Diary extends Component {
                 </h1>
                 <Container fluid={true}>
                     <Row>
-                    {this.state.week.map(day =>
+                    {week.map(day =>
                         <Col key={day}>
-                            <DashboardDay date={day.toString()}/>
+                            <DashboardDay date={day.toString()} attendancestates={attendancestates}/>
                         </Col>)}
                     </Row>
                 </Container>

@@ -7,7 +7,6 @@ import SelectAttendanceState from "./SelectAttendanceState"
 import "./DashboardDay.css"
 import RemindPay from "./RemindPay"
 import LectureNumber from "./LectureNumber"
-import AttendanceStateService from "../api/services/attendancestate"
 import LectureService from "../api/services/lecture"
 
 export default class DashboardDay extends Component {
@@ -15,18 +14,10 @@ export default class DashboardDay extends Component {
         super(props)
         this.state = {
             lectures: [],
-            attendancestates: []
+            attendancestates: props.attendancestates
         }
         this.date = new Date(props.date)
         this.title = prettyDateWithDay(this.date)
-    }
-
-    getAttendanceStates = () => {
-        AttendanceStateService
-            .getAll()
-            .then((response) => {
-                this.setState({attendancestates: response})
-            })
     }
 
     getLectures = () => {
@@ -38,8 +29,13 @@ export default class DashboardDay extends Component {
     }
 
     componentDidMount() {
-        this.getAttendanceStates()
         this.getLectures()
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.state.attendancestates !== nextProps.attendancestates) {
+            this.setState({attendancestates: nextProps.attendancestates})
+        }
     }
 
     render() {
