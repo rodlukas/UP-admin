@@ -99,9 +99,13 @@ class AttendanceSerializer(serializers.ModelSerializer):
                                      attendances__lecture__start__isnull=False,
                                      attendances__attendancestate__name="OK",
                                      attendances__lecture__start__lt=date).count()+1 """
-        return Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
-                                         lecture__start__isnull=False, attendancestate__name="OK",
-                                         lecture__start__lt=obj.lecture.start).count()+1  # +1 aby prvni kurz nebyl jako 0.
+        # pokud se jedna o skupinu, zapocitavej pouze skupinove kurzy
+        cnt = Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
+                                        lecture__start__isnull=False, lecture__group=obj.lecture.group,
+                                        lecture__start__lt=obj.lecture.start)
+        if obj.lecture.group is None:
+            cnt = cnt.filter(attendancestate__name="OK")
+        return cnt.count()+1  # +1 aby prvni kurz nebyl jako 0.
 
     @staticmethod
     def get_remind_pay(obj):
