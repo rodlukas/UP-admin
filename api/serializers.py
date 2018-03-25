@@ -99,7 +99,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
                                      attendances__attendancestate__name="OK",
                                      attendances__lecture__start__lt=date).count()+1
                                      
-             funguje, ale spatne pracuje s group lekcemi (napr. ve stejny termin se muze kvuli serazeni podle prijmeni a uprave clenu skupiny cislovani dablovat
+             funguje, ale zbytecne slozite pracuje pro skupiny, takze nakonec vytvoreno jednoduseji:
              Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
                                         lecture__start__isnull=False, lecture__group=obj.lecture.group,
                                         lecture__start__lt=obj.lecture.start).count()+1"""
