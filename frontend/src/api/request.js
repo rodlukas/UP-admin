@@ -26,6 +26,8 @@ const request = function (options) {
             console.error('Status:', error.response.status)
             console.error('Data:', error.response.data)
             console.error('Headers:', error.response.headers)
+            console.warn('DALSI INFORMACE: ', error)
+            console.warn('API VALIDATION ERROR: ', error.request.response)
         } else { // stalo se neco jineho pri priprave requestu
             console.error('Error Message:', error.message)
         }
