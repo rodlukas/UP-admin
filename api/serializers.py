@@ -1,6 +1,5 @@
 from admin.models import *
 from rest_framework import serializers
-from django.utils import timezone
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -114,7 +113,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             return False
         # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu a zjisti, zda existuje datumove po teto lekci dalsi zaplacena lekce
         res = Attendance.objects.\
-            filter(client=obj.client.id, lecture__course=obj.lecture.course).\
+            filter(client=obj.client.id, lecture__course=obj.lecture.course, lecture__group=obj.lecture.group).\
             exclude(lecture__start__lte=obj.lecture.start).filter(paid=True).count()
         # pokud je pocet dalsich zaplacenych lekci 0, vrat True, jinak False
         return not bool(res)
