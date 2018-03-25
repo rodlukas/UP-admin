@@ -97,13 +97,18 @@ class AttendanceSerializer(serializers.ModelSerializer):
         return Client.objects.filter(pk=obj.client.id, attendances__lecture__course=obj.lecture.course,
                                      attendances__lecture__start__isnull=False,
                                      attendances__attendancestate__name="OK",
-                                     attendances__lecture__start__lt=date).count()+1 """
-        # pokud se jedna o skupinu, zapocitavej pouze skupinove kurzy
-        cnt = Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
+                                     attendances__lecture__start__lt=date).count()+1
+                                     
+             funguje, ale spatne pracuje s group lekcemi (napr. ve stejny termin se muze kvuli serazeni podle prijmeni a uprave clenu skupiny cislovani dablovat
+             Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
                                         lecture__start__isnull=False, lecture__group=obj.lecture.group,
-                                        lecture__start__lt=obj.lecture.start)
-        if obj.lecture.group is None:
-            cnt = cnt.filter(attendancestate__name="OK")
+                                        lecture__start__lt=obj.lecture.start).count()+1"""
+        if obj.lecture.group is not None:
+            cnt = Lecture.objects.filter(group=obj.lecture.group, start__isnull=False, start__lt=obj.lecture.start)
+        else:
+            cnt = Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
+                                            lecture__start__isnull=False, lecture__group__isnull=True,
+                                            lecture__start__lt=obj.lecture.start, attendancestate__name="OK")
         return cnt.count()+1  # +1 aby prvni kurz nebyl jako 0.
 
     @staticmethod
