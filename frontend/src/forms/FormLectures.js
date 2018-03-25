@@ -190,7 +190,7 @@ export default class FormLectures extends Component {
                         <Label for="date" sm={3}>Datum</Label>
                         <Col sm={9}>
                             <Input type="date" name="date" id="date" value={date} disabled={prepaid} onChange={this.onChange}
-                                   required={!prepaid}/>
+                                   required={!prepaid} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
