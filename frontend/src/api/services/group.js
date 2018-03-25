@@ -17,6 +17,14 @@ function getAll() {
     })
 }
 
+function getAllFromClient(client) {
+    const url = baseUrl + "?" + API_URLS.Groups.filters.client + "=" + client
+    return request({
+        url: url,
+        method: API_METHODS.get
+    })
+}
+
 function update(context) {
     return request({
         url: baseUrl + context.id + API_DELIM,
@@ -41,7 +49,7 @@ function create(context) {
 }
 
 const GroupService = {
-    getAll, get, create, update, remove
+    getAll, get, create, update, remove, getAllFromClient
 }
 
 export default GroupService

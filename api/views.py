@@ -29,7 +29,7 @@ class GroupViewSet(viewsets.ModelViewSet):
         queryset = Group.objects.order_by('name')
         id_client = self.request.query_params.get('client', None)
         if id_client is not None:
-            queryset = queryset.filter(memberof__client=id_client)
+            queryset = queryset.filter(memberships__client=id_client)
         return queryset
 
 

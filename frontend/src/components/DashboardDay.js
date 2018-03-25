@@ -43,7 +43,7 @@ export default class DashboardDay extends Component {
         const {attendancestates, lectures} = this.state
         return (
             <div>
-                <h2 className="text-center">{this.title}</h2>
+                <h4 className="text-center">{this.title}</h4>
                 <ListGroup>
                 {lectures.map(lecture => {
                     const cardUrl = (lecture.group ? ("skupiny/" + lecture.group.id) : ("klienti/" + lecture.attendances[0].client.id))

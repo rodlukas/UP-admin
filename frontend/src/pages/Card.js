@@ -1,10 +1,11 @@
 import React, {Component} from "react"
-import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading} from 'reactstrap'
+import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading, UncontrolledTooltip} from 'reactstrap'
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDateWithYear} from "../global/funcDateTime"
 import PaidButton from "../components/PaidButton"
 import SelectAttendanceState from "../components/SelectAttendanceState"
 import RemindPay from "../components/RemindPay"
+import {Link} from 'react-router-dom'
 import LectureNumber from "../components/LectureNumber"
 import AttendanceStateService from "../api/services/attendancestate"
 import GroupService from "../api/services/group"
@@ -15,15 +16,33 @@ import APP_URLS from "../urls"
 export default class ClientView extends Component {
     constructor(props) {
         super(props)
-        this.id = this.props.match.params.id
-        this.CLIENT = this.props.match.path.includes(APP_URLS.klienti)
-        this.title = "Karta " + (this.CLIENT ? "klienta" : "skupiny")
+        this.title = "Karta "
         this.state = {
+            id: props.match.params.id,
+            CLIENT: props.match.path.includes(APP_URLS.klienti),
             object: {},
             modal: false,
             currentLecture: {},
             lectures: [],
-            attendancestates: []
+            attendancestates: [],
+            memberships: []
+        }
+    }
+
+    componentWillReceiveProps(nextProps) { // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
+        const CLIENT = nextProps.match.path.includes(APP_URLS.klienti)
+        const id = nextProps.match.params.id
+        if(this.state.CLIENT !== CLIENT || this.state.id !== id)
+        {
+            this.setState({
+                id: id,
+                CLIENT: CLIENT,
+                memberships: []
+            })
+            this.getObject(CLIENT, id)
+            this.getLectures(CLIENT, id)
+            if (CLIENT)
+                this.getMemberships(id)
         }
     }
 
@@ -32,6 +51,14 @@ export default class ClientView extends Component {
             .getAll()
             .then((response) => {
                 this.setState({attendancestates: response})
+            })
+    }
+
+    getMemberships = () => {
+        GroupService
+            .getAllFromClient(this.state.id)
+            .then((response) => {
+                this.setState({memberships: response})
             })
     }
 
@@ -46,20 +73,20 @@ export default class ClientView extends Component {
         this.props.history.goBack()
     }
 
-    getObject = () => {
-        let service = (this.CLIENT ? ClientService : GroupService)
-        service.get(this.id)
+    getObject = (CLIENT = this.state.CLIENT, id = this.state.id) => {
+        let service = (CLIENT ? ClientService : GroupService)
+        service.get(id)
             .then((response) => {
                 this.setState({object: response})
             })
     }
 
-    getLectures = () => {
+    getLectures = (CLIENT = this.state.CLIENT, id = this.state.id) => {
         let request
-        if (this.CLIENT)
-            request = LectureService.getAllFromClientOrdered(this.id, false)
+        if (CLIENT)
+            request = LectureService.getAllFromClientOrdered(id, false)
         else
-            request = LectureService.getAllFromGroupOrdered(this.id, false)
+            request = LectureService.getAllFromGroupOrdered(id, false)
         request.then((response) => { // groupby courses
             let group_to_values = response.reduce(function (obj, item) {
                 obj[item.course.name] = obj[item.course.name] || []
@@ -81,15 +108,28 @@ export default class ClientView extends Component {
         this.getObject()
         this.getLectures()
         this.getAttendanceStates()
+        if (this.state.CLIENT)
+            this.getMemberships()
     }
 
     render() {
-        const {object, attendancestates, lectures, currentLecture} = this.state
+        const {object, attendancestates, lectures, currentLecture, memberships, CLIENT} = this.state
         return (
             <div>
-                <h1 className="text-center mb-4">{this.title}: {this.CLIENT ? (object.name + " " + object.surname) : object.name}</h1>
+                <h1 className="text-center mb-4">{this.title + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ? (object.name + " " + object.surname) : object.name}</h1>
                 <Button color="secondary" onClick={this.goBack}>Jít zpět</Button>{' '}
-                <Button color="info" onClick={() => this.toggle()}>Přidat lekci</Button>
+                <Button color="info" onClick={() => this.toggle()}>Přidat lekci</Button>{' '}
+                {Boolean(memberships.length) && "Členství ve skupinách: "}
+                {memberships.map(membership =>
+                    <span key={membership.id}>
+                        <Link to={"/skupiny/" + membership.id} id={"group" + membership.id}>
+                            <span>{membership.name}</span>
+                        </Link>
+                        <UncontrolledTooltip placement="right" target={"group" + membership.id}>
+                        otevřít kartu
+                        </UncontrolledTooltip>
+                    </span>).reduce((accu, elem) => {
+                    return accu === null ? [elem] : [...accu, ', ', elem]}, null)}
                 <Container fluid={true}>
                     <Row>
                     {lectures.map(lecture =>
@@ -110,7 +150,7 @@ export default class ClientView extends Component {
                                             </ListGroupItemHeading>{' '}
                                             {lectureVal.attendances.map(attendance =>
                                                 <div key={attendance.id}>
-                                                    <span>{(!this.CLIENT && (attendance.client.name + " " + attendance.client.surname))}</span>{' '}
+                                                    <span>{(!CLIENT && (attendance.client.name + " " + attendance.client.surname))}</span>{' '}
                                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
                                                                 funcRefresh={this.getLectures}/>{' '}
                                                     <Badge color="info" pill>{attendance.note}</Badge>{' '}
@@ -132,7 +172,7 @@ export default class ClientView extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} size="xl">
-                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} CLIENT={this.CLIENT}
+                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} CLIENT={CLIENT}
                                   funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>
             </div>
