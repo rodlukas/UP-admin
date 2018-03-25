@@ -47,8 +47,7 @@ export default class Groups extends Component {
                                 return accu === null ? [elem] : [...accu, ', ', elem]}, null)
                         :
                         <span className="text-muted">žádní členové</span>}
-                </div>)
-        }
+                </div>)}
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>

@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading, UncontrolledTooltip} from 'reactstrap'
+import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading, UncontrolledTooltip, Card} from 'reactstrap'
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDateWithYear} from "../global/funcDateTime"
 import PaidButton from "../components/PaidButton"
@@ -113,23 +113,59 @@ export default class ClientView extends Component {
     }
 
     render() {
+        const ClientName = ({name, surname}) => <span>{name} {surname}</span>
+        const ClientsList = ({clients = {}}) => {
+            return (
+                <span>
+                    {clients.length ?
+                        clients.map(membership =>
+                            <span key={membership.client.id}>
+                                <Link to={"/klienti/" + membership.client.id} id={"client" + membership.client.id}>
+                                    <ClientName name={membership.client.name}
+                                                surname={membership.client.surname}/>
+                                </Link>
+                                <UncontrolledTooltip placement="right" target={"client" + membership.client.id}>
+                                    otevřít kartu
+                                </UncontrolledTooltip>
+                            </span>).reduce((accu, elem) => {
+                                        return accu === null ? [elem] : [...accu, ', ', elem]}, null)
+                        :
+                        <span className="text-muted">žádní členové</span>}
+                </span>)}
         const {object, attendancestates, lectures, currentLecture, memberships, CLIENT} = this.state
         return (
             <div>
-                <h1 className="text-center mb-4">{this.title + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ? (object.name + " " + object.surname) : object.name}</h1>
+                <h1 className="text-center mb-4">{this.title + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ? <ClientName name={object.name} surname={object.surname}/> : object.name}</h1>
                 <Button color="secondary" onClick={this.goBack}>Jít zpět</Button>{' '}
-                <Button color="info" onClick={() => this.toggle()}>Přidat lekci</Button>{' '}
-                {Boolean(memberships.length) && "Členství ve skupinách: "}
-                {memberships.map(membership =>
-                    <span key={membership.id}>
-                        <Link to={"/skupiny/" + membership.id} id={"group" + membership.id}>
-                            <span>{membership.name}</span>
-                        </Link>
-                        <UncontrolledTooltip placement="right" target={"group" + membership.id}>
-                        otevřít kartu
-                        </UncontrolledTooltip>
-                    </span>).reduce((accu, elem) => {
-                    return accu === null ? [elem] : [...accu, ', ', elem]}, null)}
+                <Button color="info" onClick={() => this.toggle()}>Přidat lekci</Button>
+                <Card>
+                    {CLIENT &&
+                    <ul>
+                        <li>Telefon: <a href={'tel:' + object.phone}>{object.phone}</a></li>
+                        <li>E-mail: <a href={'mailto:' + object.email}>{object.email}</a></li>
+                        <li>
+                            {Boolean(memberships.length) && "Členství ve skupinách: "}
+                            {memberships.map(membership =>
+                                <span key={membership.id}>
+                                <Link to={"/skupiny/" + membership.id} id={"group" + membership.id}>
+                                    <span>{membership.name}</span>
+                                </Link>
+                                <UncontrolledTooltip placement="right" target={"group" + membership.id}>
+                                otevřít kartu
+                                </UncontrolledTooltip>
+                            </span>).reduce((accu, elem) => {
+                                        return accu === null ? [elem] : [...accu, ', ', elem]
+                                    }, null)}
+                        </li>
+                        <li>Poznámka: {object.note}</li>
+                    </ul>}
+                    {console.log(object)}
+                    {!CLIENT &&
+                    <div>
+                        Členové: <ClientsList clients={object.memberships}/>
+                    </div>}
+                </Card>
+
                 <Container fluid={true}>
                     <Row>
                     {lectures.map(lecture =>
