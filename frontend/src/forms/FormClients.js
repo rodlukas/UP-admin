@@ -87,7 +87,7 @@ export default class FormClients extends Component {
                     <FormGroup row>
                         <Label for="note" sm={2}>Poznámka</Label>
                         <Col sm={10}>
-                            <Input type="text" name="note" id="note" value={note} onChange={this.onChange}/>
+                            <Input type="textarea" name="note" id="note" value={note} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     {this.isClient &&

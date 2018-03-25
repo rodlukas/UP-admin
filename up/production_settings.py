@@ -14,7 +14,7 @@ WEBPACK_LOADER = {
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 # Heroku: Update database configuration from $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=CONST_DB_CON_AGE)
