@@ -3,6 +3,7 @@ import {Table, Button, Modal, Container, Row, Col} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import FormClients from '../forms/FormClients'
 import ClientService from "../api/services/client"
+import ClientName from "../components/ClientName"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -35,7 +36,6 @@ export default class ClientList extends Component {
     }
 
     render() {
-        const ClientName = ({name, surname}) => <span>{surname} {name}</span>
         const {clients, currentClient} = this.state
         return (
             <div>
@@ -57,7 +57,7 @@ export default class ClientList extends Component {
                                 <tbody>
                                 {clients.map(client =>
                                     <tr key={client.id}>
-                                        <td><ClientName name={client.name} surname={client.surname}/></td>
+                                        <td><ClientName name={client.surname} surname={client.name}/></td>
                                         <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
                                         <td><a href={'mailto:' + client.email}>{client.email}</a></td>
                                         <td>{client.note}</td>

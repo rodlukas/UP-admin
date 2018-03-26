@@ -1,6 +1,7 @@
 import React, {Component} from "react"
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import ClientService from "../api/services/client"
+import ClientName from "../components/ClientName"
 
 export default class FormClients extends Component {
     constructor(props) {
@@ -58,18 +59,18 @@ export default class FormClients extends Component {
         const {id, name, surname, email, phone, note} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
-                <ModalHeader toggle={this.close}>{this.isClient ? 'Úprava' : 'Přidání'} klienta: {name} {surname}</ModalHeader>
+                <ModalHeader toggle={this.close}>{this.isClient ? 'Úprava' : 'Přidání'} klienta: <ClientName name={name} surname={surname}/></ModalHeader>
                 <ModalBody>
                     <FormGroup row>
                         <Label for="name" sm={2}>Jméno</Label>
                         <Col sm={10}>
-                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required="true"/>
+                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="surname" sm={2}>Příjmení</Label>
                         <Col sm={10}>
-                            <Input type="text" name="surname" id="surname" value={surname} onChange={this.onChange} required="true"/>
+                            <Input type="text" name="surname" id="surname" value={surname} onChange={this.onChange} required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

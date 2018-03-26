@@ -4,6 +4,7 @@ import {toISODate, toISOTime, prettyDateWithDay} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
 import CourseService from "../api/services/course"
 import {ATTENDANCESTATE_OK} from "../global/constants"
+import ClientName from "../components/ClientName"
 
 const DEFAULT_DURATION = 30
 const UNDEF = "undef"
@@ -220,7 +221,7 @@ export default class FormLectures extends Component {
                     <hr/>
                     {this.members.map(member =>
                     <div key={member.id}>
-                        <h5>{!this.CLIENT && (member.name + " " + member.surname)}</h5>
+                        <h5>{!this.CLIENT && <ClientName name={member.name} surname={member.surname}/>}</h5>
                         <FormGroup row>
                             <Label for={"at_state" + member.id} sm={3}>Stav</Label>
                             <Col sm={9}>

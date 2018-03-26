@@ -5,13 +5,15 @@ import {prettyTime, prettyDateWithYear} from "../global/funcDateTime"
 import PaidButton from "../components/PaidButton"
 import SelectAttendanceState from "../components/SelectAttendanceState"
 import RemindPay from "../components/RemindPay"
-import {Link} from 'react-router-dom'
 import LectureNumber from "../components/LectureNumber"
 import AttendanceStateService from "../api/services/attendancestate"
 import GroupService from "../api/services/group"
 import ClientService from "../api/services/client"
 import LectureService from "../api/services/lecture"
 import APP_URLS from "../urls"
+import ClientsList from "../components/ClientsList"
+import ClientName from "../components/ClientName"
+import {Link} from 'react-router-dom'
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -113,25 +115,6 @@ export default class ClientView extends Component {
     }
 
     render() {
-        const ClientName = ({name, surname}) => <span>{name} {surname}</span>
-        const ClientsList = ({clients = {}}) => {
-            return (
-                <span>
-                    {clients.length ?
-                        clients.map(membership =>
-                            <span key={membership.client.id}>
-                                <Link to={"/klienti/" + membership.client.id} id={"client" + membership.client.id}>
-                                    <ClientName name={membership.client.name}
-                                                surname={membership.client.surname}/>
-                                </Link>
-                                <UncontrolledTooltip placement="right" target={"client" + membership.client.id}>
-                                    otevřít kartu
-                                </UncontrolledTooltip>
-                            </span>).reduce((accu, elem) => {
-                                        return accu === null ? [elem] : [...accu, ', ', elem]}, null)
-                        :
-                        <span className="text-muted">žádní členové</span>}
-                </span>)}
         const {object, attendancestates, lectures, currentLecture, memberships, CLIENT} = this.state
         return (
             <div>
@@ -159,7 +142,6 @@ export default class ClientView extends Component {
                         </li>
                         <li>Poznámka: {object.note}</li>
                     </ul>}
-                    {console.log(object)}
                     {!CLIENT &&
                     <div>
                         Členové: <ClientsList clients={object.memberships}/>
@@ -186,18 +168,19 @@ export default class ClientView extends Component {
                                             </ListGroupItemHeading>{' '}
                                             {lectureVal.attendances.map(attendance =>
                                                 <div key={attendance.id}>
-                                                    <span>{(!CLIENT && (attendance.client.name + " " + attendance.client.surname))}</span>{' '}
-                                                    <PaidButton paid={attendance.paid} attendanceId={attendance.id}
+                                                    {!CLIENT && <ClientName name={attendance.client.name} surname={attendance.client.surname}/>}{' '}
+                                                    <PaidButton paid={attendance.paid}
+                                                                attendanceId={attendance.id}
                                                                 funcRefresh={this.getLectures}/>{' '}
                                                     <Badge color="info" pill>{attendance.note}</Badge>{' '}
                                                     <RemindPay remind_pay={attendance.remind_pay}/>
-                                                    <SelectAttendanceState value={attendance.attendancestate.id} attendanceId={attendance.id}
-                                                                attendancestates={attendancestates}
-                                                                funcRefresh={this.getLectures}/>
+                                                    <SelectAttendanceState value={attendance.attendancestate.id}
+                                                                           attendanceId={attendance.id}
+                                                                           attendancestates={attendancestates}
+                                                                           funcRefresh={this.getLectures}/>
                                                 </div>)}
                                             <Button color="primary" onClick={() => this.toggle(lectureVal)}>Upravit</Button>
-                                        </ListGroupItem>)
-                                })}
+                                        </ListGroupItem>)})}
                                 </ListGroup>
                             </div>
                         </Col>)}

@@ -8,6 +8,7 @@ import "./DashboardDay.css"
 import RemindPay from "./RemindPay"
 import LectureNumber from "./LectureNumber"
 import LectureService from "../api/services/lecture"
+import ClientName from "../components/ClientName"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -39,7 +40,6 @@ export default class DashboardDay extends Component {
     }
 
     render() {
-        const ClientName = ({name, surname}) => <span>{name} {surname}</span>
         const {attendancestates, lectures} = this.state
         return (
             <div>

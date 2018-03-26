@@ -3,6 +3,7 @@ import {Table, Button, Modal, Badge, Container, Row, Col} from 'reactstrap'
 import {Link} from 'react-router-dom'
 import FormGroups from '../forms/FormGroups'
 import GroupService from "../api/services/group"
+import ClientsList from "../components/ClientsList"
 
 export default class Groups extends Component {
     constructor(props) {
@@ -35,19 +36,6 @@ export default class Groups extends Component {
 
     render() {
         const {groups, currentGroup} = this.state
-        const ClientName = ({name, surname}) => <span>{name} {surname}</span>
-        const ClientsList = ({clients}) => {
-            return (
-                <div>
-                    {clients.length ?
-                        clients.map(membership =>
-                            <ClientName key={membership.client.id} name={membership.client.name}
-                                        surname={membership.client.surname}/>)
-                            .reduce((accu, elem) => {
-                                return accu === null ? [elem] : [...accu, ', ', elem]}, null)
-                        :
-                        <span className="text-muted">žádní členové</span>}
-                </div>)}
         return (
             <div>
                 <h1 className="text-center mb-4">{this.title}</h1>
