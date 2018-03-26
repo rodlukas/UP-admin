@@ -43,8 +43,10 @@ export default class DashboardDay extends Component {
         const {attendancestates, lectures} = this.state
         return (
             <div>
-                <h4 className="text-center">{this.title}</h4>
                 <ListGroup>
+                    <ListGroupItem color={this.date.getDate() === new Date().getDate() ? "primary" : ''}>
+                        <h4 className="text-center">{this.title}</h4>
+                    </ListGroupItem>
                 {lectures.map(lecture => {
                     const cardUrl = (lecture.group ? ("skupiny/" + lecture.group.id) : ("klienti/" + lecture.attendances[0].client.id))
                     return (
