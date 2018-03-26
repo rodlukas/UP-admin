@@ -59,10 +59,12 @@ export default class Settings extends Component {
         const Visible = ({visible}) => (visible ? 'ANO' : 'NE')
         return (
             <div>
-                <h1 className="text-center mb-4">{this.title}</h1>
-                <Container fluid={true}>
-                    <Button color="info" onClick={() => this.toggle(EDIT_TYPE.STATE)}>Přidat stav</Button>{' '}
-                    <Button color="info" onClick={() => this.toggle(EDIT_TYPE.COURSE)}>Přidat kurz</Button>
+                <Container>
+                    <h1 className="text-center mb-4">
+                        {this.title}
+                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.COURSE)}>Přidat kurz</Button>
+                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.STATE)}>Přidat stav</Button>
+                    </h1>
                     <Row>
                         <Col>
                             <h2>Stavy účasti</h2>

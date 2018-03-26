@@ -56,9 +56,9 @@ export default class ClientView extends Component {
             })
     }
 
-    getMemberships = () => {
+    getMemberships = (id = this.state.id) => {
         GroupService
-            .getAllFromClient(this.state.id)
+            .getAllFromClient(id)
             .then((response) => {
                 this.setState({memberships: response})
             })
@@ -118,37 +118,47 @@ export default class ClientView extends Component {
         const {object, attendancestates, lectures, currentLecture, memberships, CLIENT} = this.state
         return (
             <div>
-                <h1 className="text-center mb-4">{this.title + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ? <ClientName name={object.name} surname={object.surname}/> : object.name}</h1>
-                <Button color="secondary" onClick={this.goBack}>Jít zpět</Button>{' '}
-                <Button color="info" onClick={() => this.toggle()}>Přidat lekci</Button>
-                <Card>
-                    {CLIENT &&
-                    <ul>
-                        <li>Telefon: <a href={'tel:' + object.phone}>{object.phone}</a></li>
-                        <li>E-mail: <a href={'mailto:' + object.email}>{object.email}</a></li>
-                        <li>
-                            {Boolean(memberships.length) && "Členství ve skupinách: "}
-                            {memberships.map(membership =>
-                                <span key={membership.id}>
-                                <Link to={"/skupiny/" + membership.id} id={"group" + membership.id}>
-                                    <span>{membership.name}</span>
-                                </Link>
-                                <UncontrolledTooltip placement="right" target={"group" + membership.id}>
-                                otevřít kartu
-                                </UncontrolledTooltip>
-                            </span>).reduce((accu, elem) => {
-                                        return accu === null ? [elem] : [...accu, ', ', elem]
-                                    }, null)}
-                        </li>
-                        <li>Poznámka: {object.note}</li>
-                    </ul>}
-                    {!CLIENT &&
-                    <div>
-                        Členové: <ClientsList clients={object.memberships}/>
-                    </div>}
-                </Card>
-
-                <Container fluid={true}>
+                <Container>
+                    <h1 className="text-center mb-4">
+                        <Button color="secondary" className="nextBtn" onClick={this.goBack}>Jít zpět</Button>{' '}
+                        {this.title + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ? <ClientName name={object.name} surname={object.surname}/> : object.name}
+                        <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat lekci</Button>
+                    </h1>
+                </Container>
+                <Container>
+                    <Row className="justify-content-center">
+                        <Col sm="6">
+                                <ListGroup>
+                                    {CLIENT &&
+                                    <div>
+                                        <ListGroupItem>Telefon: <a href={'tel:' + object.phone}>{object.phone}</a></ListGroupItem>
+                                        <ListGroupItem>E-mail: <a href={'mailto:' + object.email}>{object.email}</a></ListGroupItem>
+                                        <ListGroupItem>
+                                            {Boolean(memberships.length) && "Členství ve skupinách: "}
+                                            {memberships.map(membership =>
+                                                <span key={membership.id}>
+                                                <Link to={"/skupiny/" + membership.id} id={"group" + membership.id}>
+                                                    <span>{membership.name}</span>
+                                                </Link>
+                                                <UncontrolledTooltip placement="right" target={"group" + membership.id}>
+                                                otevřít kartu
+                                                </UncontrolledTooltip>
+                                            </span>).reduce((accu, elem) => {
+                                                        return accu === null ? [elem] : [...accu, ', ', elem]
+                                                    }, null)}
+                                        </ListGroupItem>
+                                        <ListGroupItem>Poznámka: {object.note}</ListGroupItem>
+                                    </div>}
+                                    {!CLIENT &&
+                                    <ListGroupItem>
+                                        Členové: <ClientsList clients={object.memberships}/>
+                                    </ListGroupItem>}
+                                </ListGroup>
+                        </Col>
+                    </Row>
+                </Container>
+                <br/>
+                <Container>
                     <Row>
                     {lectures.map(lecture =>
                         <Col key={lecture.course}>

@@ -18,3 +18,19 @@ html, body, .content, .root {
 .arrowBtn {
     cursor: pointer
 }
+
+h1 .addBtn, h1 .nextBtn {
+    margin-top: 0.6rem
+}
+
+h1 .addBtn {
+    float: right;
+}
+
+h1 .nextBtn {
+    float: left
+}
+
+h1 .addBtn + .addBtn {
+    margin-right: 0.3rem
+}
