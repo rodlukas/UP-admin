@@ -116,6 +116,25 @@ export default class ClientView extends Component {
 
     render() {
         const {object, attendancestates, lectures, currentLecture, memberships, CLIENT} = this.state
+        const NoInfo = () => <span className="text-muted">---</span>
+        const Phone = ({phone}) => {
+            if (phone !== "")
+                return <a href={'tel:' + phone}>{phone}</a>
+            else
+                return <NoInfo/>
+        }
+        const Email = ({email}) => {
+            if (email !== "")
+                return <a href={'mailto:' + email}>{email}</a>
+            else
+                return <NoInfo/>
+        }
+        const Note = ({note}) => {
+            if (note !== "")
+                return <span>{note}</span>
+            else
+                return <NoInfo/>
+        }
         return (
             <div>
                 <Container>
@@ -131,23 +150,23 @@ export default class ClientView extends Component {
                                 <ListGroup>
                                     {CLIENT &&
                                     <div>
-                                        <ListGroupItem>Telefon: <a href={'tel:' + object.phone}>{object.phone}</a></ListGroupItem>
-                                        <ListGroupItem>E-mail: <a href={'mailto:' + object.email}>{object.email}</a></ListGroupItem>
-                                        <ListGroupItem>
-                                            {Boolean(memberships.length) && "Členství ve skupinách: "}
-                                            {memberships.map(membership =>
-                                                <span key={membership.id}>
-                                                <Link to={"/skupiny/" + membership.id} id={"group" + membership.id}>
-                                                    <span>{membership.name}</span>
-                                                </Link>
-                                                <UncontrolledTooltip placement="right" target={"group" + membership.id}>
-                                                otevřít kartu
-                                                </UncontrolledTooltip>
-                                            </span>).reduce((accu, elem) => {
-                                                        return accu === null ? [elem] : [...accu, ', ', elem]
-                                                    }, null)}
-                                        </ListGroupItem>
-                                        <ListGroupItem>Poznámka: {object.note}</ListGroupItem>
+                                        <ListGroupItem>Telefon: <Phone phone={object.phone}/></ListGroupItem>
+                                        <ListGroupItem>E-mail: <Email email={object.email}/></ListGroupItem>
+                                            <ListGroupItem>Členství ve skupinách:{' '}
+                                                {!Boolean(memberships.length) && <NoInfo/>}
+                                                {memberships.map(membership =>
+                                                    <span key={membership.id}>
+                                                        <Link to={"/skupiny/" + membership.id} id={"group" + membership.id}>
+                                                            <span>{membership.name}</span>
+                                                        </Link>
+                                                        <UncontrolledTooltip placement="right" target={"group" + membership.id}>
+                                                        otevřít kartu
+                                                        </UncontrolledTooltip>
+                                                    </span>).reduce((accu, elem) => {
+                                                            return accu === null ? [elem] : [...accu, ', ', elem]
+                                                        }, null)}
+                                            </ListGroupItem>
+                                        <ListGroupItem>Poznámka: <Note note={object.note}/></ListGroupItem>
                                     </div>}
                                     {!CLIENT &&
                                     <ListGroupItem>
@@ -200,7 +219,7 @@ export default class ClientView extends Component {
                         </p>}
                     </Row>
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} size="xl">
+                <Modal isOpen={this.state.modal} toggle={this.toggle} size="xl" autoFocus={false}>
                     <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} CLIENT={CLIENT}
                                   funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>

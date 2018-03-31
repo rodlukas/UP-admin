@@ -72,7 +72,7 @@ export default class Groups extends Component {
                         Žádné skupiny
                     </p>}
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle}>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} autoFocus={false}>
                     <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}/>
                 </Modal>
             </div>

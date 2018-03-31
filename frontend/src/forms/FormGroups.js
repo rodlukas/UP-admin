@@ -111,13 +111,13 @@ export default class FormGroups extends Component {
                     <FormGroup row>
                         <Label for="name" sm={2}>Název</Label>
                         <Col sm={10}>
-                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange}/>
+                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
-                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required="true">
+                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required>
                                 <option disabled value={UNDEF}>Vyberte kurz...</option>
                                 {courses.map(course =>
                                     <option key={course.id} value={course.id}>{course.name}</option>)}

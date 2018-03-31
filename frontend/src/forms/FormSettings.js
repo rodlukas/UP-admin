@@ -68,9 +68,9 @@ export default class FormSettings extends Component {
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
-                        <Label for="name" sm={3}>Jméno</Label>
+                        <Label for="name" sm={3}>Název</Label>
                         <Col sm={9}>
-                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required/>
+                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

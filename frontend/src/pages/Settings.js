@@ -122,7 +122,7 @@ export default class Settings extends Component {
                         </Col>
                     </Row>
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle}>
+                <Modal isOpen={this.state.modal} toggle={this.toggle} autoFocus={false}>
                     <FormSettings object={currentObject} funcClose={this.toggle} funcRefresh={this.refresh}
                                   TYPE={currentType}/>
                 </Modal>

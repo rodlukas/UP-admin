@@ -64,7 +64,7 @@ export default class FormClients extends Component {
                     <FormGroup row>
                         <Label for="name" sm={2}>Jméno</Label>
                         <Col sm={10}>
-                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required/>
+                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
