@@ -117,10 +117,13 @@ export default class FormLectures extends Component {
     }
 
     onChangePrepaid = () => {
-        let paid = this.state.at_paid
-        this.members.map(member =>
-            paid[member.id] = true)
-        this.setState({date: '', time: '', at_paid: paid})
+        if (!this.state.prepaid)
+        {
+            let paid = this.state.at_paid
+            this.members.map(member =>
+                paid[member.id] = true)
+            this.setState({date: '', time: '', at_paid: paid})
+        }
     }
 
     onSubmit = (e) => {
@@ -184,7 +187,7 @@ export default class FormLectures extends Component {
                         <Col sm={3}>Naplánováno?</Col>
                         <Col sm={9} className="custom-control custom-checkbox">
                             <Input type="checkbox" className="custom-control-input" name="prepaid" id="prepaid"
-                                   checked={prepaid} onChange={(e) => {this.onChange(e);this.onChangePrepaid()}}/>
+                                   checked={prepaid} onChange={(e) => {this.onChangePrepaid();this.onChange(e);}}/>
                             <Label for="prepaid" className="custom-control-label">Nenaplánováno, ale předplaceno</Label>
                         </Col>
                     </FormGroup>

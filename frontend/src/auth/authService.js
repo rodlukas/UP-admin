@@ -1,7 +1,7 @@
 import decode from 'jwt-decode'
 import LoginService from "../api/services/login"
 
-const AUTH_REFRESH_THRESHOLD = 60*1 // sekundy
+const AUTH_REFRESH_THRESHOLD = 60*10 // sekundy
 const AUTH_STORAGE_KEY = "jwt"
 
 export default class AuthService {
