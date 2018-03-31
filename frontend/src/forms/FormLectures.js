@@ -7,6 +7,7 @@ import {ATTENDANCESTATE_OK} from "../global/constants"
 import ClientName from "../components/ClientName"
 
 const DEFAULT_DURATION = 30
+const GROUP_DURATION = 45
 const UNDEF = "undef"
 
 export default class FormLectures extends Component {
@@ -38,7 +39,7 @@ export default class FormLectures extends Component {
             course_id: (this.isLecture ?
                 course.id :
                 (this.CLIENT ? UNDEF : object.course.id)),
-            duration: duration || DEFAULT_DURATION,
+            duration: duration || (this.CLIENT ? DEFAULT_DURATION : GROUP_DURATION),
             attendancestates: attendancestates,
             courses: [],
             object: object

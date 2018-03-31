@@ -1,17 +1,11 @@
-import axios from 'axios'
+import axios from './_axios'
 import {NOTIFY_TEXT, NOTIFY_LEVEL} from '../global/constants'
 import {toast} from "react-toastify"
-import AuthService from "../auth/authService"
 import {API_METHODS, API_URLS} from "./urls"
-import {API_URL, JWT_HEADER_PREFIX} from "../global/constants"
 import APP_URLS from "../urls"
 
-axios.defaults.baseURL = API_URL
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
 const request = function (options) {
-    axios.defaults.headers.common['Authorization'] = JWT_HEADER_PREFIX + AuthService.getToken()
 
     const onSuccess = function (response) {
         console.log('Request on ' + response.request.responseURL + ' successfull', response)
@@ -45,6 +39,8 @@ const request = function (options) {
         }
         toast(message, options)
     }
+
+    console.log(options)
 
     return axios(options)
         .then(onSuccess)
