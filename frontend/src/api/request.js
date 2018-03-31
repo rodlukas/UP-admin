@@ -1,8 +1,9 @@
-import axios from './_axios'
+import axios, {setAuthHeader} from './_axios'
 import {NOTIFY_TEXT, NOTIFY_LEVEL} from '../global/constants'
 import {toast} from "react-toastify"
 import {API_METHODS, API_URLS} from "./urls"
 import APP_URLS from "../urls"
+import AuthService from "../auth/authService"
 
 
 const request = function (options) {
@@ -40,7 +41,7 @@ const request = function (options) {
         toast(message, options)
     }
 
-    console.log(options)
+    setAuthHeader(AuthService.getToken())
 
     return axios(options)
         .then(onSuccess)
