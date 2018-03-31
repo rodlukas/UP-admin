@@ -2,8 +2,8 @@
   "name": "frontend-root",
   "version": "0.1.0",
   "engines": {
-    "node": "8.10.x",
-    "npm": "5.7.x"
+    "node": "8.11.x",
+    "npm": "5.8.x"
   },
   "scripts": {
     "postinstall": "cd frontend && npm install"
