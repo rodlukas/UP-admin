@@ -14,6 +14,7 @@ import APP_URLS from "../urls"
 import ClientsList from "../components/ClientsList"
 import ClientName from "../components/ClientName"
 import {Link} from 'react-router-dom'
+import Loading from "../api/Loading"
 
 export default class ClientView extends Component {
     constructor(props) {
@@ -27,7 +28,8 @@ export default class ClientView extends Component {
             currentLecture: {},
             lectures: [],
             attendancestates: [],
-            memberships: []
+            memberships: [],
+            loadingTimes: 0
         }
     }
 
@@ -52,7 +54,7 @@ export default class ClientView extends Component {
         AttendanceStateService
             .getAll()
             .then((response) => {
-                this.setState({attendancestates: response})
+                this.setState({attendancestates: response, loadingTimes: this.state.loadingTimes + 1})
             })
     }
 
@@ -60,7 +62,7 @@ export default class ClientView extends Component {
         GroupService
             .getAllFromClient(id)
             .then((response) => {
-                this.setState({memberships: response})
+                this.setState({memberships: response, loadingTimes: this.state.loadingTimes + 1})
             })
     }
 
@@ -79,7 +81,7 @@ export default class ClientView extends Component {
         let service = (CLIENT ? ClientService : GroupService)
         service.get(id)
             .then((response) => {
-                this.setState({object: response})
+                this.setState({object: response, loadingTimes: this.state.loadingTimes + 1})
             })
     }
 
@@ -102,7 +104,7 @@ export default class ClientView extends Component {
                 if (a.course > b.course) return 1
                 return 0
             })
-            this.setState({lectures: groups})
+            this.setState({lectures: groups, loadingTimes: this.state.loadingTimes + 1})
         })
     }
 
@@ -135,87 +137,94 @@ export default class ClientView extends Component {
             else
                 return <NoInfo/>
         }
-        return (
+        const CardContent = () =>
             <div>
                 <Container>
                     <h1 className="text-center mb-4">
                         <Button color="secondary" className="nextBtn" onClick={this.goBack}>Jít zpět</Button>{' '}
-                        {this.title + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ? <ClientName name={object.name} surname={object.surname}/> : object.name}
+                        {this.title + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ?
+                        <ClientName name={object.name} surname={object.surname}/> : object.name}
                         <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat lekci</Button>
                     </h1>
                 </Container>
                 <Container>
                     <Row className="justify-content-center">
                         <Col sm="6">
-                                <ListGroup>
-                                    {CLIENT &&
-                                    <div>
-                                        <ListGroupItem>Telefon: <Phone phone={object.phone}/></ListGroupItem>
-                                        <ListGroupItem>E-mail: <Email email={object.email}/></ListGroupItem>
-                                            <ListGroupItem>Členství ve skupinách:{' '}
-                                                {!Boolean(memberships.length) && <NoInfo/>}
-                                                {memberships.map(membership =>
-                                                    <span key={membership.id}>
-                                                        <Link to={"/skupiny/" + membership.id} id={"group" + membership.id}>
+                            <ListGroup>
+                                {CLIENT &&
+                                <div>
+                                    <ListGroupItem>Telefon: <Phone phone={object.phone}/></ListGroupItem>
+                                    <ListGroupItem>E-mail: <Email email={object.email}/></ListGroupItem>
+                                    <ListGroupItem>Členství ve skupinách:{' '}
+                                        {!Boolean(memberships.length) && <NoInfo/>}
+                                        {memberships.map(membership =>
+                                            <span key={membership.id}>
+                                                        <Link to={"/skupiny/" + membership.id}
+                                                              id={"group" + membership.id}>
                                                             <span>{membership.name}</span>
                                                         </Link>
-                                                        <UncontrolledTooltip placement="right" target={"group" + membership.id}>
+                                                        <UncontrolledTooltip placement="right"
+                                                                             target={"group" + membership.id}>
                                                         otevřít kartu
                                                         </UncontrolledTooltip>
                                                     </span>).reduce((accu, elem) => {
-                                                            return accu === null ? [elem] : [...accu, ', ', elem]
-                                                        }, null)}
-                                            </ListGroupItem>
-                                        <ListGroupItem>Poznámka: <Note note={object.note}/></ListGroupItem>
-                                    </div>}
-                                    {!CLIENT &&
-                                    <ListGroupItem>
-                                        Členové: <ClientsList clients={object.memberships}/>
-                                    </ListGroupItem>}
-                                </ListGroup>
+                                            return accu === null ? [elem] : [...accu, ', ', elem]
+                                        }, null)}
+                                    </ListGroupItem>
+                                    <ListGroupItem>Poznámka: <Note note={object.note}/></ListGroupItem>
+                                </div>}
+                                {!CLIENT &&
+                                <ListGroupItem>
+                                    Členové: <ClientsList clients={object.memberships}/>
+                                </ListGroupItem>}
+                            </ListGroup>
                         </Col>
                     </Row>
                 </Container>
                 <br/>
                 <Container>
                     <Row className="justify-content-center">
-                    {lectures.map(lecture =>
-                        <Col key={lecture.course} md="6">
-                            <div>
-                                <h4 className="text-center">{lecture.course}</h4>
-                                <ListGroup>
-                                {lecture.values.map(lectureVal => {
-                                    const d = new Date(lectureVal.start)
-                                    return (
-                                        <ListGroupItem key={lectureVal.id} className={lectureVal.group && "list-bgGroup"}>
-                                            <h4>{lectureVal.start !== null ?
-                                                (prettyDateWithDayYear(d) + " - " + prettyTime(d))
-                                                :
-                                                "Předplacená lekce"}{' '}
-                                                <LectureNumber number={lectureVal.attendances[0].count}/>
-                                                <Button color="primary" className="float-right"
-                                                        onClick={() => this.toggle(lectureVal)}>Upravit</Button>
-                                            </h4>
+                        {lectures.map(lecture =>
+                            <Col key={lecture.course} md="6">
+                                <div>
+                                    <h4 className="text-center">{lecture.course}</h4>
+                                    <ListGroup>
+                                        {lecture.values.map(lectureVal => {
+                                            const d = new Date(lectureVal.start)
+                                            return (
+                                                <ListGroupItem key={lectureVal.id}
+                                                               className={lectureVal.group && "list-bgGroup"}>
+                                                    <h4>{lectureVal.start !== null ?
+                                                        (prettyDateWithDayYear(d) + " - " + prettyTime(d))
+                                                        :
+                                                        "Předplacená lekce"}{' '}
+                                                        <LectureNumber number={lectureVal.attendances[0].count}/>
+                                                        <Button color="primary" className="float-right"
+                                                                onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                                    </h4>
 
-                                            <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
-                                            {lectureVal.attendances.map(attendance =>
-                                                <li key={attendance.id}>
-                                                    {!CLIENT && <ClientName name={attendance.client.name} surname={attendance.client.surname}/>}{' '}
-                                                    <PaidButton paid={attendance.paid}
-                                                                attendanceId={attendance.id}
-                                                                funcRefresh={this.getLectures}/>{' '}
-                                                    <Badge color="info" pill>{attendance.note}</Badge>{' '}
-                                                    <RemindPay remind_pay={attendance.remind_pay}/>
-                                                    <SelectAttendanceState value={attendance.attendancestate.id}
-                                                                           attendanceId={attendance.id}
-                                                                           attendancestates={attendancestates}
-                                                                           funcRefresh={this.getLectures}/>
-                                                </li>)}
-                                            </ul>
-                                        </ListGroupItem>)})}
-                                </ListGroup>
-                            </div>
-                        </Col>)}
+                                                    <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
+                                                        {lectureVal.attendances.map(attendance =>
+                                                            <li key={attendance.id}>
+                                                                {!CLIENT && <ClientName name={attendance.client.name}
+                                                                                        surname={attendance.client.surname}/>}{' '}
+                                                                <PaidButton paid={attendance.paid}
+                                                                            attendanceId={attendance.id}
+                                                                            funcRefresh={this.getLectures}/>{' '}
+                                                                <Badge color="info" pill>{attendance.note}</Badge>{' '}
+                                                                <RemindPay remind_pay={attendance.remind_pay}/>
+                                                                <SelectAttendanceState
+                                                                    value={attendance.attendancestate.id}
+                                                                    attendanceId={attendance.id}
+                                                                    attendancestates={attendancestates}
+                                                                    funcRefresh={this.getLectures}/>
+                                                            </li>)}
+                                                    </ul>
+                                                </ListGroupItem>)
+                                        })}
+                                    </ListGroup>
+                                </div>
+                            </Col>)}
                         {!Boolean(lectures.length) &&
                         <p className="text-muted text-center">
                             Žádné lekce
@@ -226,6 +235,12 @@ export default class ClientView extends Component {
                     <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} CLIENT={CLIENT}
                                   funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>
+            </div>
+        return (
+            <div>
+                {(this.state.loadingTimes === 3 && !CLIENT) || (this.state.loadingTimes === 4 && CLIENT) ?
+                    <CardContent/> :
+                    <Loading/>}
             </div>
         )
     }

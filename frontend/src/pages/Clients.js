@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import FormClients from '../forms/FormClients'
 import ClientService from "../api/services/client"
 import ClientName from "../components/ClientName"
+import Loading from "../api/Loading"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -12,7 +13,8 @@ export default class ClientList extends Component {
         this.state = {
             clients: [],
             modal: false,
-            currentClient: {}
+            currentClient: {},
+            loading: true
         }
     }
 
@@ -27,7 +29,7 @@ export default class ClientList extends Component {
         ClientService
             .getAll()
             .then((response) => {
-                this.setState({clients: response})
+                this.setState({clients: response, loading: false})
             })
     }
 
@@ -37,6 +39,22 @@ export default class ClientList extends Component {
 
     render() {
         const {clients, currentClient} = this.state
+        const ClientTable = () =>
+            <tbody>
+            {clients.map(client =>
+                <tr key={client.id}>
+                    <td><ClientName name={client.surname} surname={client.name}/></td>
+                    <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
+                    <td><a href={'mailto:' + client.email}>{client.email}</a></td>
+                    <td>{client.note}</td>
+                    <td>
+                        <Button color="primary"
+                                onClick={() => this.toggle(client)}>Upravit</Button>{' '}
+                        <Link to={"/klienti/" + client.id}>
+                            <Button color="secondary">Karta</Button></Link>
+                    </td>
+                </tr>)}
+            </tbody>
         return (
             <div>
                 <Container>
@@ -54,23 +72,11 @@ export default class ClientList extends Component {
                             <th>Akce</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        {clients.map(client =>
-                            <tr key={client.id}>
-                                <td><ClientName name={client.surname} surname={client.name}/></td>
-                                <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
-                                <td><a href={'mailto:' + client.email}>{client.email}</a></td>
-                                <td>{client.note}</td>
-                                <td>
-                                    <Button color="primary"
-                                            onClick={() => this.toggle(client)}>Upravit</Button>{' '}
-                                    <Link to={"/klienti/" + client.id}>
-                                        <Button color="secondary">Karta</Button></Link>
-                                </td>
-                            </tr>)}
-                        </tbody>
+                        {this.state.loading ?
+                            <tbody><tr><td colSpan="5"><Loading/></td></tr></tbody> :
+                            <ClientTable/>}
                     </Table>
-                    {!Boolean(clients.length) &&
+                    {!Boolean(clients.length) && !this.state.loading &&
                     <p className="text-muted text-center">
                         Žádní klienti
                     </p>}

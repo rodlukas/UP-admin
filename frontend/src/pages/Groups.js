@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import FormGroups from '../forms/FormGroups'
 import GroupService from "../api/services/group"
 import ClientsList from "../components/ClientsList"
+import Loading from "../api/Loading"
 
 export default class Groups extends Component {
     constructor(props) {
@@ -12,7 +13,8 @@ export default class Groups extends Component {
         this.state = {
             groups: [],
             modal: false,
-            currentGroup: {}
+            currentGroup: {},
+            loading: true
         }
     }
 
@@ -26,7 +28,7 @@ export default class Groups extends Component {
     getGroups = () => {
         GroupService.getAll()
             .then((response) => {
-                this.setState({groups: response})
+                this.setState({groups: response, loading: false})
             })
     }
 
@@ -36,6 +38,21 @@ export default class Groups extends Component {
 
     render() {
         const {groups, currentGroup} = this.state
+        const GroupTable = () =>
+            <tbody>
+            {groups.map(group =>
+                <tr key={group.id}>
+                    <td>{group.name}</td>
+                    <td><Badge pill>{group.course.name}</Badge></td>
+                    <td><ClientsList clients={group.memberships}/></td>
+                    <td>
+                        <Button color="primary"
+                                onClick={() => this.toggle(group)}>Upravit</Button>{' '}
+                        <Link to={"/skupiny/" + group.id}>
+                            <Button color="secondary">Karta</Button></Link>
+                    </td>
+                </tr>)}
+            </tbody>
         return (
             <div>
                 <Container>
@@ -52,22 +69,11 @@ export default class Groups extends Component {
                             <th>Akce</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        {groups.map(group =>
-                            <tr key={group.id}>
-                                <td>{group.name}</td>
-                                <td><Badge pill>{group.course.name}</Badge></td>
-                                <td><ClientsList clients={group.memberships}/></td>
-                                <td>
-                                    <Button color="primary"
-                                            onClick={() => this.toggle(group)}>Upravit</Button>{' '}
-                                    <Link to={"/skupiny/" + group.id}>
-                                        <Button color="secondary">Karta</Button></Link>
-                                </td>
-                            </tr>)}
-                        </tbody>
+                        {this.state.loading ?
+                            <tbody><tr><td colSpan="4"><Loading/></td></tr></tbody> :
+                            <GroupTable/>}
                     </Table>
-                    {!Boolean(groups.length) &&
+                    {!Boolean(groups.length) && !this.state.loading &&
                     <p className="text-muted text-center">
                         Žádné skupiny
                     </p>}

@@ -9,12 +9,14 @@ import RemindPay from "./RemindPay"
 import LectureNumber from "./LectureNumber"
 import LectureService from "../api/services/lecture"
 import ClientName from "../components/ClientName"
+import Loading from "../api/Loading"
 
 export default class DashboardDay extends Component {
     constructor(props) {
         super(props)
         this.state = {
             lectures: [],
+            loading: true,
             attendancestates: props.attendancestates
         }
         this.date = new Date(props.date)
@@ -25,7 +27,7 @@ export default class DashboardDay extends Component {
         LectureService
             .getAllFromDayOrdered(toISODate(this.date), true)
             .then((response) => {
-                this.setState({lectures: response})
+                this.setState({lectures: response, loading: false})
             })
     }
 
@@ -41,12 +43,8 @@ export default class DashboardDay extends Component {
 
     render() {
         const {attendancestates, lectures} = this.state
-        return (
+        const Day = () =>
             <div>
-                <ListGroup>
-                    <ListGroupItem color={this.date.getDate() === new Date().getDate() ? "primary" : ''}>
-                        <h4 className="text-center">{this.title}</h4>
-                    </ListGroupItem>
                 {lectures.map(lecture => {
                     const cardUrl = (lecture.group ? ("skupiny/" + lecture.group.id) : ("klienti/" + lecture.attendances[0].client.id))
                     return (
@@ -55,10 +53,10 @@ export default class DashboardDay extends Component {
                                 <LectureNumber number={lecture.attendances[0].count}/></h4>
                             <ListGroupItemHeading>
                                 <Link to={cardUrl} id={"card" + lecture.id}>
-                                {lecture.group ?
-                                    <span>Skupina {lecture.group.name}</span> :
-                                    <ClientName name={lecture.attendances[0].client.name}
-                                                surname={lecture.attendances[0].client.surname}/>}
+                                    {lecture.group ?
+                                        <span>Skupina {lecture.group.name}</span> :
+                                        <ClientName name={lecture.attendances[0].client.name}
+                                                    surname={lecture.attendances[0].client.surname}/>}
                                 </Link>
                                 <UncontrolledTooltip placement="right" target={"card" + lecture.id}>
                                     otevřít kartu
@@ -81,11 +79,22 @@ export default class DashboardDay extends Component {
                                     </li>)}
                             </ul>
                         </ListGroupItem>)
-                    })}
-                    {!Boolean(lectures.length) &&
-                        <ListGroupItem>
-                            <ListGroupItemHeading className="text-muted text-center">Volno</ListGroupItemHeading>
-                        </ListGroupItem>}
+                })}
+                {!Boolean(lectures.length) &&
+                <ListGroupItem>
+                    <ListGroupItemHeading className="text-muted text-center">Volno</ListGroupItemHeading>
+                </ListGroupItem>}
+            </div>
+
+        return (
+            <div>
+                <ListGroup>
+                    <ListGroupItem color={this.date.getDate() === new Date().getDate() ? "primary" : ''}>
+                        <h4 className="text-center">{this.title}</h4>
+                    </ListGroupItem>
+                    {this.state.loading ?
+                        <ListGroupItem><Loading/></ListGroupItem> :
+                        <Day/>}
                 </ListGroup>
             </div>
         )
