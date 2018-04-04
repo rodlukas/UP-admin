@@ -3,7 +3,7 @@ import {Container, Row, Col, Button} from 'reactstrap'
 import DashboardDay from '../components/DashboardDay'
 import {prettyDate} from "../global/funcDateTime"
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import {faArrowCircleRight, faArrowCircleLeft} from "@fortawesome/fontawesome-pro-solid"
+import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/fontawesome-pro-solid"
 import AttendanceStateService from "../api/services/attendancestate"
 
 const WORK_DAYS_COUNT = 5
@@ -12,7 +12,7 @@ const DAYS_PER_WEEK = 7
 export default class Diary extends Component {
     constructor(props) {
         super(props)
-        this.titlePart = "Týdenní přehled: "
+        this.titlePart = "Týden: "
         this.thisMonday = Diary.getMonday(new Date())
         this.state = this.getNewState(this.thisMonday)
         this.state['attendancestates'] = []
@@ -73,10 +73,10 @@ export default class Diary extends Component {
         return (
             <div>
                 <h1 className="text-center mb-4">
-                    <FontAwesomeIcon icon={faArrowCircleLeft} className="arrowBtn text-muted"
+                    <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"
                                      onClick={() => this.changeDate(this.state.prevMonday)}/>
                     {" " + this.state.title + " "}
-                    <FontAwesomeIcon icon={faArrowCircleRight} className="arrowBtn text-muted"
+                    <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"
                                      onClick={() => this.changeDate(this.state.nextMonday)}/>{' '}
                     <Button color="secondary" onClick={() => this.changeDate(this.thisMonday)}>Dnes</Button>
                 </h1>

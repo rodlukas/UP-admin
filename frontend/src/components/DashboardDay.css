@@ -1,9 +1,11 @@
 .list-clients {
-    padding-left: .5rem
+    padding-left: .5rem;
+    vertical-align: top;
+    padding: 0
 }
 
 .list-clients li {
-    list-style-type: none
+    list-style-type: none;
 }
 
 .list-clients p {
@@ -11,7 +13,11 @@
 }
 
 .list-clientsGroup li {
-    list-style-type: "- ";
+}
+
+.list-clientsGroup .clientName {
+    position: relative;
+    top: -0.2rem
 }
 
 .list-bgGroup {

@@ -56,7 +56,7 @@ export default class DashboardDay extends Component {
                             <ListGroupItemHeading>
                                 <Link to={cardUrl} id={"card" + lecture.id}>
                                 {lecture.group ?
-                                    <span>{lecture.group.name}</span> :
+                                    <span>Skupina {lecture.group.name}</span> :
                                     <ClientName name={lecture.attendances[0].client.name}
                                                 surname={lecture.attendances[0].client.surname}/>}
                                 </Link>

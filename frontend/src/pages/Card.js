@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading, UncontrolledTooltip} from 'reactstrap'
 import FormLectures from "../forms/FormLectures"
-import {prettyTime, prettyDateWithYear} from "../global/funcDateTime"
+import {prettyTime, prettyDateWithDayYear} from "../global/funcDateTime"
 import PaidButton from "../components/PaidButton"
 import SelectAttendanceState from "../components/SelectAttendanceState"
 import RemindPay from "../components/RemindPay"
@@ -178,25 +178,28 @@ export default class ClientView extends Component {
                 </Container>
                 <br/>
                 <Container>
-                    <Row>
+                    <Row className="justify-content-center">
                     {lectures.map(lecture =>
-                        <Col key={lecture.course}>
+                        <Col key={lecture.course} md="6">
                             <div>
                                 <h4 className="text-center">{lecture.course}</h4>
                                 <ListGroup>
                                 {lecture.values.map(lectureVal => {
                                     const d = new Date(lectureVal.start)
                                     return (
-                                        <ListGroupItem key={lectureVal.id}>
-                                            <ListGroupItemHeading>
-                                            {lectureVal.start !== null ?
-                                                (prettyDateWithYear(d) + " - " + prettyTime(d))
+                                        <ListGroupItem key={lectureVal.id} className={lectureVal.group && "list-bgGroup"}>
+                                            <h4>{lectureVal.start !== null ?
+                                                (prettyDateWithDayYear(d) + " - " + prettyTime(d))
                                                 :
                                                 "Předplacená lekce"}{' '}
                                                 <LectureNumber number={lectureVal.attendances[0].count}/>
-                                            </ListGroupItemHeading>{' '}
+                                                <Button color="primary" className="float-right"
+                                                        onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                            </h4>
+
+                                            <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
                                             {lectureVal.attendances.map(attendance =>
-                                                <div key={attendance.id}>
+                                                <li key={attendance.id}>
                                                     {!CLIENT && <ClientName name={attendance.client.name} surname={attendance.client.surname}/>}{' '}
                                                     <PaidButton paid={attendance.paid}
                                                                 attendanceId={attendance.id}
@@ -207,8 +210,8 @@ export default class ClientView extends Component {
                                                                            attendanceId={attendance.id}
                                                                            attendancestates={attendancestates}
                                                                            funcRefresh={this.getLectures}/>
-                                                </div>)}
-                                            <Button color="primary" onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                                </li>)}
+                                            </ul>
                                         </ListGroupItem>)})}
                                 </ListGroup>
                             </div>

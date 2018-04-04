@@ -12,7 +12,9 @@ html, body, .content, .root {
 
 .badge {
     font-size: 1rem;
-    font-weight: 600
+    font-weight: 600;
+    vertical-align: top;
+    margin-top: 0.3rem;
 }
 
 .arrowBtn {

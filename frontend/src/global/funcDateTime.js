@@ -11,6 +11,11 @@ export function prettyDateWithDay(date) {
     return day + " " + prettyDate(date)
 }
 
+export function prettyDateWithDayYear(date) {
+    const day = date.toLocaleDateString('cs-CZ', {weekday: 'short'})
+    return day + " " + prettyDateWithYear(date)
+}
+
 export function toISODate(date) {
     return date.getFullYear() + "-" + ((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1) + "-" + (date.getDate() < 10 ? '0' : '') + date.getDate()
 }

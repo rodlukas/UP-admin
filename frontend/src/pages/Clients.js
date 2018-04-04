@@ -47,7 +47,7 @@ export default class ClientList extends Component {
                     <Table striped size="sm" responsive>
                         <thead className="thead-dark">
                         <tr>
-                            <th>Jméno</th>
+                            <th>Příjmení a jméno</th>
                             <th>Telefon</th>
                             <th>E-mail</th>
                             <th>Poznámka</th>

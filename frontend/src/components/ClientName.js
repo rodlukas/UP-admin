@@ -1,5 +1,5 @@
 import React from "react"
 
-const ClientName = ({name, surname}) => <span>{name} {surname}</span>
+const ClientName = ({name, surname}) => <span className="clientName">{name} {surname}</span>
 
 export default ClientName
