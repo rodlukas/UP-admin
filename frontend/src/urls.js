@@ -3,7 +3,9 @@ const APP_URLS = {
     skupiny: '/skupiny',
     diar: '/diar',
     klienti: '/klienti',
-    nastaveni: '/nastaveni'
+    nastaveni: '/nastaveni',
+    prehled: '/',
+    notfound: '/notfound' // smerovani ostatnich neznamych pozadavku, ktere zobrazi notfound
 }
 
 export default APP_URLS

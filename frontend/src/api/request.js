@@ -29,6 +29,8 @@ const request = function (options) {
         notify(NOTIFY_TEXT.ERROR, NOTIFY_LEVEL.ERROR)
         if (error.response.status === 401)
             window.location.href = APP_URLS.prihlasit //TODO
+        else if (error.response.status === 404)
+            window.location.href = APP_URLS.notfound //TODO
 
         return Promise.reject(error.response || error.message)
     }
