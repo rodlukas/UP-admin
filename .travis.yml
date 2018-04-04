@@ -8,9 +8,10 @@ install:
 - pip install -r requirements.txt
 - pip install codecov
 - npm --version
-- npm install --production
-- npm build --production
+- npm install
+- npm build
 script:
+- python manage.py runserver --settings=up.production_settings
 - python manage.py collectstatic --noinput --settings=up.production_settings
 - ls
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
