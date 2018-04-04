@@ -2,6 +2,8 @@ language: python
 python:
 - '3.6.5'
 node_js: 8
+services:
+  - postgresql
 before_install:
 - npm i -g npm
 install:
@@ -10,6 +12,8 @@ install:
 - npm --version
 - npm install
 - npm build
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
 script:
 - python manage.py runserver --settings=up.production_settings
 - python manage.py collectstatic --noinput --settings=up.production_settings
