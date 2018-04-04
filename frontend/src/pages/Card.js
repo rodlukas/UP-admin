@@ -86,6 +86,8 @@ export default class ClientView extends Component {
     }
 
     getLectures = (CLIENT = this.state.CLIENT, id = this.state.id) => {
+        if ((CLIENT && this.state.loadingTimes === 4) || (!CLIENT && this.state.loadingTimes))
+            this.setState({loadingTimes: this.state.loadingTimes - 1})
         let request
         if (CLIENT)
             request = LectureService.getAllFromClientOrdered(id, false)
