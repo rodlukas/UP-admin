@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import {prettyDateWithDay, toISODate, prettyTime} from "../global/funcDateTime"
 import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
-import "./DashboardDay.css"
+import "../global/lists.css"
 import RemindPay from "./RemindPay"
 import LectureNumber from "./LectureNumber"
 import LectureService from "../api/services/lecture"

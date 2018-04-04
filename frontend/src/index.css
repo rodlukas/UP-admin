@@ -36,3 +36,7 @@ h1 .nextBtn {
 h1 .addBtn + .addBtn {
     margin-right: 0.3rem
 }
+
+input {
+    min-height: 2.4rem /* fix pro iOS */
+}
