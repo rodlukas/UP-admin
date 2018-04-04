@@ -10,6 +10,7 @@ install:
 - cd frontend
 - npm --version
 - npm install
+- npm build
 - cd ..
 script:
 - python up/manage.py collectstatic --noinput --settings=up.production_settings
