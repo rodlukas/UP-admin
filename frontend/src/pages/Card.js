@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, ListGroupItemHeading, UncontrolledTooltip} from 'reactstrap'
+import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, UncontrolledTooltip} from 'reactstrap'
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDateWithDayYear} from "../global/funcDateTime"
 import PaidButton from "../components/PaidButton"
