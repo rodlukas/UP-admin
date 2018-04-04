@@ -11,7 +11,7 @@ install:
 - npm install
 - npm build
 script:
-- python manage.py collectstatic --noinput --settings=up.production_settings
+- python manage.py collectstatic --noinput
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
 - cd frontend
 #- npm test
