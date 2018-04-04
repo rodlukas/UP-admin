@@ -14,4 +14,4 @@ class ViewTest(SimpleTestCase):
 
     def test_index_page_contains_correct_html(self):
         response = self.client.get('/')
-        self.assertContains(response, '<h1>Načítání...</h1>')
+        self.assertContains(response, '<h2>Načítání...</h2>')
