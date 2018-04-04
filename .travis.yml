@@ -12,6 +12,7 @@ install:
 - npm build
 script:
 - python manage.py collectstatic --noinput
+- ls
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
 - cd frontend
 #- npm test
