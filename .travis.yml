@@ -2,9 +2,6 @@ language: python
 python:
 - '3.6.5'
 node_js: 8
-env:
-  global:
-    - NODE_ENV=development
 before_install:
 - npm i -g npm
 install:
