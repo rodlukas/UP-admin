@@ -8,8 +8,8 @@ install:
 - pip install -r requirements.txt
 - pip install codecov
 - npm --version
-- npm install
-- npm build
+- npm install --production
+- npm build --production
 script:
 - python manage.py collectstatic --noinput --settings=up.production_settings
 - ls
