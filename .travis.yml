@@ -6,6 +6,7 @@ services:
   - postgresql
 before_install:
 - npm i -g npm
+- export DJANGO_SETTINGS_MODULE=up.production_settings
 install:
 - pip install -r requirements.txt
 - pip install codecov
@@ -16,7 +17,6 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script:
 - python manage.py migrate
-- python manage.py runserver --settings=up.production_settings
 - python manage.py collectstatic --noinput --settings=up.production_settings
 - ls
 - coverage run --omit=*/migrations/* --source=admin,api manage.py test
