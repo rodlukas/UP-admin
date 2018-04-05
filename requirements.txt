@@ -5,7 +5,7 @@ dj-database-url==0.5.0
 Django==2.0.4
 django-filter==1.1.0
 django-webpack-loader==0.6.0
-djangorestframework==3.7.7
+djangorestframework==3.8.1
 djangorestframework-jwt==1.11.0
 docopt==0.6.2
 gunicorn==19.7.1
