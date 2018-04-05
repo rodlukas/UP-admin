@@ -2,7 +2,11 @@ from django.test import SimpleTestCase
 
 
 class ViewTest(SimpleTestCase):
-
+    """ Prubeh testu:
+        - zkontroluje, zda se podarilo nacist uvodni stranku
+        - zkontroluje, zda nactena stranka pouziva spravnou sablonu
+        - zkontroluje, zda nactena stranka obsahuje spravny obsah
+    """
     def test_index_page_status_code(self):
         response = self.client.get('/')
         self.assertEquals(response.status_code, 200)

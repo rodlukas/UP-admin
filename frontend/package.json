@@ -5,7 +5,7 @@
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.5",
     "@fortawesome/fontawesome-pro-solid": "^5.0.9",
-    "@fortawesome/react-fontawesome": "0.0.17",
+    "@fortawesome/react-fontawesome": "0.0.18",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
     "babel-core": "6.26.0",

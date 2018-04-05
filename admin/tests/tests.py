@@ -3,6 +3,11 @@ from admin.models import Client
 
 
 class ModelTestCase(TestCase):
+    """ Prubeh testu:
+        - vytvoreni klienta z modelu
+        - pridani klienta do databaze prostrednictvim ORM
+        - kontrola, ze byl klient pridan
+    """
     def setUp(self):
         self.clientlist_name = "Josef"
         self.clientlist_surname = "Voříšek"
