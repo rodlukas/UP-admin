@@ -2,7 +2,7 @@ import os
 import datetime
 
 # vlastni konstanty
-CONST_AUTH_EXPIRATION = 60  # minuty
+CONST_AUTH_EXPIRATION = 60*7  # minuty
 
 CONST_DB_CON_AGE = 60
 
