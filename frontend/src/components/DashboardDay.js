@@ -45,29 +45,29 @@ export default class DashboardDay extends Component {
         const {attendancestates, lectures} = this.state
         const Day = () =>
             <div>
-                {lectures.map(lecture => {
-                    const cardUrl = (lecture.group ? ("skupiny/" + lecture.group.id) : ("klienti/" + lecture.attendances[0].client.id))
-                    return (
+                {lectures.map(lecture =>
                         <ListGroupItem key={lecture.id} className={lecture.group && "list-bgGroup"}>
                             <h4>{prettyTime(new Date(lecture.start))} <Badge pill>{lecture.course.name}</Badge>{' '}
                                 <LectureNumber number={lecture.attendances[0].count}/></h4>
-                            <ListGroupItemHeading>
-                                <Link to={cardUrl} id={"card" + lecture.id}>
-                                    {lecture.group ?
-                                        <span>Skupina {lecture.group.name}</span> :
-                                        <ClientName name={lecture.attendances[0].client.name}
-                                                    surname={lecture.attendances[0].client.surname}/>}
+                            {lecture.group &&
+                            <div>
+                                <Link to={("skupiny/" + lecture.group.id)} id={"card" + lecture.id}>
+                                    <h5>Skupina {lecture.group.name}</h5>
                                 </Link>
-                                <UncontrolledTooltip placement="right" target={"card" + lecture.id}>
+                                <UncontrolledTooltip placement="left" target={"card" + lecture.id}>
                                     otevřít kartu
                                 </UncontrolledTooltip>
-                            </ListGroupItemHeading>
+                            </div>}
                             <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
                                 {lecture.attendances.map(attendance =>
                                     <li key={attendance.id}>
-                                        {lecture.group &&
-                                        <ClientName name={attendance.client.name}
-                                                    surname={attendance.client.surname}/>}{' '}
+                                        <Link to={("klienti/" + attendance.client.id)} id={"card" + attendance.id}>
+                                            <ClientName name={attendance.client.name}
+                                                        surname={attendance.client.surname}/>
+                                        </Link>{' '}
+                                        <UncontrolledTooltip placement="left" target={"card" + attendance.id}>
+                                            otevřít kartu
+                                        </UncontrolledTooltip>
                                         <PaidButton paid={attendance.paid} attendanceId={attendance.id}
                                                     funcRefresh={this.getLectures}/>{' '}
                                         <Badge color="info" pill>{attendance.note}</Badge>{' '}
@@ -78,8 +78,7 @@ export default class DashboardDay extends Component {
                                                                funcRefresh={this.getLectures}/>
                                     </li>)}
                             </ul>
-                        </ListGroupItem>)
-                })}
+                        </ListGroupItem>)}
                 {!Boolean(lectures.length) &&
                 <ListGroupItem>
                     <ListGroupItemHeading className="text-muted text-center">Volno</ListGroupItemHeading>

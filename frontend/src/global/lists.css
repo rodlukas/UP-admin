@@ -11,12 +11,19 @@
     margin: 0
 }
 
-.list-clientsGroup li {
+.list-clients .clientName {
+    position: relative;
+    top: -0.2rem
+}
+
+.list-clients .clientName {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-right: 0.2rem
 }
 
 .list-clientsGroup .clientName {
-    position: relative;
-    top: -0.2rem
+    font-size: 1.15rem;
 }
 
 .list-bgGroup {
