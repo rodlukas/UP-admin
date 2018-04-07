@@ -43,11 +43,11 @@ export default class ClientList extends Component {
             <tbody>
             {clients.map(client =>
                 <tr key={client.id}>
-                    <td className="col-2"><ClientName name={client.surname} surname={client.name}/></td>
+                    <td className="col-md-4 col-lg-2 col-xl-2"><ClientName name={client.surname} surname={client.name}/></td>
                     <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
                     <td><a href={'mailto:' + client.email}>{client.email}</a></td>
                     <td>{client.note}</td>
-                    <td className="col-2">
+                    <td className="col-md-4 col-lg-2 col-xl-2">
                         <Button color="primary"
                                 onClick={() => this.toggle(client)}>Upravit</Button>{' '}
                         <Link to={"/klienti/" + client.id}>

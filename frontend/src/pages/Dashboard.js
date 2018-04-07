@@ -25,16 +25,14 @@ export default class Dashboard extends Component {
 
     render() {
         return (
-            <div>
-                <h1 className="text-center mb-4">{this.title}</h1>
-                <Container>
-                    <Row>
-                        <Col sm="12" md={{size: 8, offset: 2}}>
-                            <DashboardDay date={this.date.toString()} attendancestates={this.state.attendancestates}/>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
+            <Container fluid>
+                <Row className="justify-content-center">
+                    <Col sm="11" md="8" lg="8" xl="5">
+                        <h1 className="text-center mb-4">{this.title}</h1>
+                        <DashboardDay date={this.date.toString()} attendancestates={this.state.attendancestates}/>
+                    </Col>
+                </Row>
+            </Container>
         )
     }
 }

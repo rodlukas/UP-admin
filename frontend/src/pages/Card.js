@@ -197,7 +197,8 @@ export default class ClientView extends Component {
                                     className += " lecture-prepaid"
                                 return (
                                     <ListGroupItem key={lectureVal.id} className={className}>
-                                        <h4>{lectureVal.start !== null ?
+                                        <h4>
+                                            {lectureVal.start !== null ?
                                             (prettyDateWithDayYear(d) + " - " + prettyTime(d))
                                             :
                                             "Předplacená lekce"}{' '}
@@ -205,7 +206,6 @@ export default class ClientView extends Component {
                                             <Button color="primary" className="float-right"
                                                     onClick={() => this.toggle(lectureVal)}>Upravit</Button>
                                         </h4>
-
                                         <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
                                         {lectureVal.attendances.map(attendance =>
                                             <li key={attendance.id}>

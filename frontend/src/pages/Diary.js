@@ -12,7 +12,7 @@ const DAYS_PER_WEEK = 7
 export default class Diary extends Component {
     constructor(props) {
         super(props)
-        this.titlePart = "Týden: "
+        this.titlePart = "Týden "
         this.thisMonday = Diary.getMonday(new Date())
         this.state = this.getNewState(this.thisMonday)
         this.state['attendancestates'] = []
@@ -80,7 +80,7 @@ export default class Diary extends Component {
                                      onClick={() => this.changeDate(this.state.nextMonday)}/>{' '}
                     <Button color="secondary" onClick={() => this.changeDate(this.thisMonday)}>Dnes</Button>
                 </h1>
-                <Container fluid={true}>
+                <Container fluid>
                     <Row>
                     {week.map(day =>
                         <Col key={day}>
