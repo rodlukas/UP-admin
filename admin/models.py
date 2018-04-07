@@ -39,7 +39,7 @@ class Attendance(models.Model):
     attendancestate = models.ForeignKey(AttendanceState, on_delete=models.PROTECT)
 
     class Meta:
-        ordering = ['client__surname']
+        ordering = ['client__surname', 'client__name']
 
 
 class Membership(models.Model):

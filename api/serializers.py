@@ -81,8 +81,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
     client_id = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), source='client', write_only=True)
     attendancestate = AttendanceStateSerializer(read_only=True)
     attendancestate_id = serializers.PrimaryKeyRelatedField(queryset=AttendanceState.objects.all(), source='attendancestate', write_only=True)
-    count = serializers.SerializerMethodField()
-    remind_pay = serializers.SerializerMethodField()
+    count = serializers.SerializerMethodField(read_only=True)
+    remind_pay = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Attendance
