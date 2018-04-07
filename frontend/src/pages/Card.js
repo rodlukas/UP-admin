@@ -147,9 +147,9 @@ export default class ClientView extends Component {
                         <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat lekci</Button>
                     </h1>
                 </Container>
-                <Container>
+                <Container fluid>
                     <Row className="justify-content-center">
-                        <Col sm="6">
+                        <Col sm="9" md="7" lg="5" xl="3">
                             <ListGroup>
                                 {CLIENT &&
                                 <div>
@@ -182,10 +182,10 @@ export default class ClientView extends Component {
                     </Row>
                 </Container>
                 <br/>
-                <Container>
+                <Container fluid>
                     <Row className="justify-content-center">
                     {lectures.map(lecture =>
-                        <Col key={lecture.course} md="6">
+                        <Col key={lecture.course} sm="9" md="7" lg="5" xl="3">
                             <h4 className="text-center">{lecture.course}</h4>
                             <ListGroup>
                             {lecture.values.map(lectureVal => {
