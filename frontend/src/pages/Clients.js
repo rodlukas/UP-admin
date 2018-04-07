@@ -47,7 +47,7 @@ export default class ClientList extends Component {
                     <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
                     <td><a href={'mailto:' + client.email}>{client.email}</a></td>
                     <td>{client.note}</td>
-                    <td>
+                    <td className="col-2">
                         <Button color="primary"
                                 onClick={() => this.toggle(client)}>Upravit</Button>{' '}
                         <Link to={"/klienti/" + client.id}>

@@ -45,7 +45,7 @@ export default class Groups extends Component {
                     <td>{group.name}</td>
                     <td><Badge pill>{group.course.name}</Badge></td>
                     <td><ClientsList clients={group.memberships}/></td>
-                    <td>
+                    <td className="col-2">
                         <Button color="primary"
                                 onClick={() => this.toggle(group)}>Upravit</Button>{' '}
                         <Link to={"/skupiny/" + group.id}>

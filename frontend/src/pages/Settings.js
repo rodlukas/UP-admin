@@ -29,6 +29,7 @@ export default class Settings extends Component {
     }
 
     refresh = (type) => {
+        this.setState({loadingTimes: this.state.loadingTimes - 1})
         if (type === EDIT_TYPE.COURSE)
             this.getCourses()
         else if (type === EDIT_TYPE.STATE)

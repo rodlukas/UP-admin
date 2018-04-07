@@ -29,7 +29,7 @@ export default class ClientView extends Component {
             lectures: [],
             attendancestates: [],
             memberships: [],
-            loadingTimes: 0
+            loading: true
         }
     }
 
@@ -54,7 +54,7 @@ export default class ClientView extends Component {
         AttendanceStateService
             .getAll()
             .then((response) => {
-                this.setState({attendancestates: response, loadingTimes: this.state.loadingTimes + 1})
+                this.setState({attendancestates: response})
             })
     }
 
@@ -62,7 +62,7 @@ export default class ClientView extends Component {
         GroupService
             .getAllFromClient(id)
             .then((response) => {
-                this.setState({memberships: response, loadingTimes: this.state.loadingTimes + 1})
+                this.setState({memberships: response})
             })
     }
 
@@ -81,13 +81,11 @@ export default class ClientView extends Component {
         let service = (CLIENT ? ClientService : GroupService)
         service.get(id)
             .then((response) => {
-                this.setState({object: response, loadingTimes: this.state.loadingTimes + 1})
+                this.setState({object: response})
             })
     }
 
     getLectures = (CLIENT = this.state.CLIENT, id = this.state.id) => {
-        if ((CLIENT && this.state.loadingTimes === 4) || (!CLIENT && this.state.loadingTimes === 3))
-            this.setState({loadingTimes: this.state.loadingTimes - 1})
         let request
         if (CLIENT)
             request = LectureService.getAllFromClientOrdered(id, false)
@@ -106,7 +104,7 @@ export default class ClientView extends Component {
                 if (a.course > b.course) return 1
                 return 0
             })
-            this.setState({lectures: groups, loadingTimes: this.state.loadingTimes + 1})
+            this.setState({lectures: groups, loading: false})
         })
     }
 
@@ -240,7 +238,7 @@ export default class ClientView extends Component {
             </div>
         return (
             <div>
-                {(this.state.loadingTimes === 3 && !CLIENT) || (this.state.loadingTimes === 4 && CLIENT) ?
+                {!this.state.loading ?
                     <CardContent/> :
                     <Loading/>}
             </div>
