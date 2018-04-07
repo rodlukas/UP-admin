@@ -99,7 +99,7 @@ export default class FormSettings extends Component {
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}
+                    <Button color="secondary" onClick={this.close}>Storno</Button>{' '}
                     <Button color="primary" type="submit">{this.isObject ? 'Uložit' : 'Přidat'}</Button>
                 </ModalFooter>
             </Form>

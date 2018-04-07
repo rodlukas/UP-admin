@@ -15,7 +15,7 @@ export default class FormLectures extends Component {
         super(props)
         this.isLecture = Boolean(Object.keys(props.lecture).length)
         this.CLIENT = props.CLIENT
-        const {id, start, course, duration, attendances} = props.lecture
+        const {id, start, course, duration, attendances, canceled} = props.lecture
         const {attendancestates, object} = props
         const isPrepaid = this.isLecture ? !Boolean(start) : false
         this.ATTENDANCESTATE_OK_INDEX = this.prepareStateIndex(attendancestates)
@@ -34,6 +34,7 @@ export default class FormLectures extends Component {
             at_paid: this.createPaidArray(),
             at_note: this.createNoteArray(),
             prepaid: isPrepaid,
+            canceled: canceled || false,
             date: (this.isLecture && !isPrepaid) ? toISODate(date) : '',
             time: (this.isLecture && !isPrepaid) ? toISOTime(date) : '',
             course_id: (this.isLecture ?
@@ -110,6 +111,7 @@ export default class FormLectures extends Component {
     }
 
     onChange = (e) => {
+        console.log(e.value)
         const target = e.target
         const state = this.state
         state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
@@ -128,7 +130,7 @@ export default class FormLectures extends Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        const {id, prepaid, course_id, time, date, duration, at_note, at_paid, at_state, object} = this.state
+        const {id, prepaid, canceled, course_id, time, date, duration, at_note, at_paid, at_state, object} = this.state
         let attendances = []
         const start = date + " " + time
         this.members.map(member =>
@@ -138,7 +140,7 @@ export default class FormLectures extends Component {
                 paid: at_paid[member.id],
                 note: at_note[member.id]
             }))
-        let data = {id, attendances, course_id, duration}
+        let data = {id, attendances, course_id, duration, canceled}
         if(!this.CLIENT)
             data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
         if(!prepaid)
@@ -176,7 +178,7 @@ export default class FormLectures extends Component {
     }
 
     render() {
-        const {id, prepaid, course_id, date, time, duration, at_state, at_note, at_paid, object, attendancestates, courses} = this.state
+        const {id, canceled, prepaid, course_id, date, time, duration, at_state, at_note, at_paid, object, attendancestates, courses} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
@@ -192,10 +194,18 @@ export default class FormLectures extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup row>
+                        <Col sm={3}>Příznaky</Col>
+                        <Col sm={9} className="custom-control custom-checkbox">
+                            <Input type="checkbox" className="custom-control-input" name="canceled" id="canceled"
+                                   checked={canceled} onChange={this.onChange}/>
+                            <Label for="canceled" className="custom-control-label">Zrušeno</Label>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
                         <Label for="date" sm={3}>Datum</Label>
                         <Col sm={9}>
                             <Input type="date" name="date" id="date" value={date} disabled={prepaid} onChange={this.onChange}
-                                   required={!prepaid} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2999-12-31" min="2013-01-01"/>
+                                   required={!prepaid} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2099-12-31" min="2013-01-01"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -227,7 +237,7 @@ export default class FormLectures extends Component {
                     <div key={member.id}>
                         <h5>{!this.CLIENT && <ClientName name={member.name} surname={member.surname}/>}</h5>
                         <FormGroup row>
-                            <Label for={"at_state" + member.id} sm={3}>Stav</Label>
+                            <Label for={"at_state" + member.id} sm={3}>Stav účasti</Label>
                             <Col sm={9}>
                                 <Input type="select" bsSize="sm" name="at_state" id={"at_state" + member.id} value={at_state[member.id]} onChange={this.onChangeMultiple} data-id={member.id} required="true">
                                     {attendancestates.map(attendancestate =>
@@ -267,7 +277,7 @@ export default class FormLectures extends Component {
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}
+                    <Button color="secondary" onClick={this.close}>Storno</Button>{' '}
                     <Button color="primary" type="submit">{this.isLecture ? 'Uložit' : 'Přidat'}</Button>
                 </ModalFooter>
             </Form>

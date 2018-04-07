@@ -107,7 +107,7 @@ export default class FormClients extends Component {
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>Zrušit</Button>{' '}
+                    <Button color="secondary" onClick={this.close}>Storno</Button>{' '}
                     <Button color="primary" type="submit">{this.isClient ? 'Uložit' : 'Přidat'}</Button>
                 </ModalFooter>
             </Form>

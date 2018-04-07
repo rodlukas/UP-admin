@@ -42,7 +42,7 @@ export default class Groups extends Component {
             <tbody>
             {groups.map(group =>
                 <tr key={group.id}>
-                    <td>{group.name}</td>
+                    <td className="col-2">{group.name}</td>
                     <td><Badge pill>{group.course.name}</Badge></td>
                     <td><ClientsList clients={group.memberships}/></td>
                     <td className="col-2">

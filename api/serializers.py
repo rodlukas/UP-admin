@@ -104,11 +104,13 @@ class AttendanceSerializer(serializers.ModelSerializer):
                                         lecture__start__isnull=False, lecture__group=obj.lecture.group,
                                         lecture__start__lt=obj.lecture.start).count()+1"""
         if obj.lecture.group is not None:
-            cnt = Lecture.objects.filter(group=obj.lecture.group, start__isnull=False, start__lt=obj.lecture.start)
+            cnt = Lecture.objects.filter(group=obj.lecture.group, start__isnull=False,
+                                         start__lt=obj.lecture.start, canceled=False)
         else:
             cnt = Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
                                             lecture__start__isnull=False, lecture__group__isnull=True,
-                                            lecture__start__lt=obj.lecture.start, attendancestate__name="OK")
+                                            lecture__start__lt=obj.lecture.start, attendancestate__name="OK",
+                                            lecture__canceled=False)
         return cnt.count()+1  # +1 aby prvni kurz nebyl jako 0.
 
     @staticmethod
@@ -117,9 +119,9 @@ class AttendanceSerializer(serializers.ModelSerializer):
         if obj.lecture.start is None or obj.paid is False:
             return False
         # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu a zjisti, zda existuje datumove po teto lekci dalsi zaplacena lekce
-        res = Attendance.objects.\
-            filter(client=obj.client.id, lecture__course=obj.lecture.course, lecture__group=obj.lecture.group).\
-            exclude(lecture__start__lte=obj.lecture.start).filter(paid=True).count()
+        res = Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
+                                        lecture__group=obj.lecture.group, lecture__start__gt=obj.lecture.start,
+                                        paid=True, lecture__canceled=False).count()
         # pokud je pocet dalsich zaplacenych lekci 0, vrat True, jinak False
         return not bool(res)
 
@@ -163,6 +165,7 @@ class LectureSerializer(serializers.ModelSerializer):
         instance.start = validated_data.get('start')  # druhy parametr je default hodnota
         print(instance.start)
         instance.duration = validated_data.get('duration', instance.duration)
+        instance.canceled = validated_data.get('canceled', instance.canceled)
         instance.course = course
         instance.group = group
         instance.save()

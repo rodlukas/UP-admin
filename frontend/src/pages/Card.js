@@ -184,48 +184,49 @@ export default class ClientView extends Component {
                 <br/>
                 <Container>
                     <Row className="justify-content-center">
-                        {lectures.map(lecture =>
-                            <Col key={lecture.course} md="6">
-                                <div>
-                                    <h4 className="text-center">{lecture.course}</h4>
-                                    <ListGroup>
-                                        {lecture.values.map(lectureVal => {
-                                            const d = new Date(lectureVal.start)
-                                            return (
-                                                <ListGroupItem key={lectureVal.id}
-                                                               className={lectureVal.group && "list-bgGroup"}>
-                                                    <h4>{lectureVal.start !== null ?
-                                                        (prettyDateWithDayYear(d) + " - " + prettyTime(d))
-                                                        :
-                                                        "Předplacená lekce"}{' '}
-                                                        <LectureNumber number={lectureVal.attendances[0].count}/>
-                                                        <Button color="primary" className="float-right"
-                                                                onClick={() => this.toggle(lectureVal)}>Upravit</Button>
-                                                    </h4>
+                    {lectures.map(lecture =>
+                        <Col key={lecture.course} md="6">
+                            <h4 className="text-center">{lecture.course}</h4>
+                            <ListGroup>
+                            {lecture.values.map(lectureVal => {
+                                const d = new Date(lectureVal.start)
+                                let className = lectureVal.canceled ? "lecture-canceled" : ""
+                                if (d > Date.now())
+                                    className += " lecture-future"
+                                if (lectureVal.start === null)
+                                    className += " lecture-prepaid"
+                                return (
+                                    <ListGroupItem key={lectureVal.id} className={className}>
+                                        <h4>{lectureVal.start !== null ?
+                                            (prettyDateWithDayYear(d) + " - " + prettyTime(d))
+                                            :
+                                            "Předplacená lekce"}{' '}
+                                            <LectureNumber number={lectureVal.attendances[0].count}/>
+                                            <Button color="primary" className="float-right"
+                                                    onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                        </h4>
 
-                                                    <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
-                                                        {lectureVal.attendances.map(attendance =>
-                                                            <li key={attendance.id}>
-                                                                {!CLIENT && <ClientName name={attendance.client.name}
-                                                                                        surname={attendance.client.surname}/>}{' '}
-                                                                <PaidButton paid={attendance.paid}
-                                                                            attendanceId={attendance.id}
-                                                                            funcRefresh={this.getLectures}/>{' '}
-                                                                <Badge color="info" pill>{attendance.note}</Badge>{' '}
-                                                                <RemindPay remind_pay={attendance.remind_pay}/>
-                                                                <SelectAttendanceState
-                                                                    value={attendance.attendancestate.id}
-                                                                    attendanceId={attendance.id}
-                                                                    attendancestates={attendancestates}
-                                                                    funcRefresh={this.getLectures}/>
-                                                            </li>)}
-                                                    </ul>
-                                                </ListGroupItem>)
-                                        })}
-                                    </ListGroup>
-                                </div>
-                            </Col>)}
-                        {!Boolean(lectures.length) &&
+                                        <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
+                                        {lectureVal.attendances.map(attendance =>
+                                            <li key={attendance.id}>
+                                                {!CLIENT && <ClientName name={attendance.client.name}
+                                                                        surname={attendance.client.surname}/>}{' '}
+                                                <PaidButton paid={attendance.paid}
+                                                            attendanceId={attendance.id}
+                                                            funcRefresh={this.getLectures}/>{' '}
+                                                <Badge color="info" pill>{attendance.note}</Badge>{' '}
+                                                <RemindPay remind_pay={attendance.remind_pay}/>
+                                                <SelectAttendanceState
+                                                    value={attendance.attendancestate.id}
+                                                    attendanceId={attendance.id}
+                                                    attendancestates={attendancestates}
+                                                    funcRefresh={this.getLectures}/>
+                                            </li>)}
+                                        </ul>
+                                    </ListGroupItem>)})}
+                            </ListGroup>
+                        </Col>)}
+                    {!Boolean(lectures.length) &&
                         <p className="text-muted text-center">
                             Žádné lekce
                         </p>}

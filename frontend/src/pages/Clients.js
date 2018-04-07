@@ -43,7 +43,7 @@ export default class ClientList extends Component {
             <tbody>
             {clients.map(client =>
                 <tr key={client.id}>
-                    <td><ClientName name={client.surname} surname={client.name}/></td>
+                    <td className="col-2"><ClientName name={client.surname} surname={client.name}/></td>
                     <td><a href={'tel:' + client.phone}>{client.phone}</a></td>
                     <td><a href={'mailto:' + client.email}>{client.email}</a></td>
                     <td>{client.note}</td>

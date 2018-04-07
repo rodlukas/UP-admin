@@ -26,6 +26,7 @@ class Group(models.Model):
 
 class Lecture(models.Model):
     start = models.DateTimeField(null=True)
+    canceled = models.BooleanField()
     duration = models.PositiveIntegerField(blank=True, null=True)
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
     group = models.ForeignKey(Group, related_name='lectures', on_delete=models.CASCADE, null=True)
