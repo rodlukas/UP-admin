@@ -5,7 +5,7 @@ import json
 from api import views
 
 
-class TestPoll(APITestCase):
+class TestApiClients(APITestCase):
     """ Prubeh testu:
         - vytvoreni testovaciho uzivatele, ziskani tokenu
         - pridani klienta pres API (s autentikaci)
