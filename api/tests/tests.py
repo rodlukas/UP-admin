@@ -29,7 +29,7 @@ class TestApiClients(APITestCase):
 
     @staticmethod
     def get_token(self):
-        response = self.client.post("/api/v1/jwt-auth/", {"username": "test", "password": "test"})
+        response = self.client.post("/api/v1/jwt-auth/", {"username": "test", "password": "test"}, secure=True)
         self.assertEqual(response.status_code, 200, "Token se nepovedlo ziskat")
         response_content = json.loads(response.content.decode('utf-8'))
         return response_content["token"]
