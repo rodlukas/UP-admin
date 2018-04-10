@@ -5,7 +5,8 @@ import {faSpinnerThird} from "@fortawesome/fontawesome-pro-solid"
 const Loading = () => (
     <div className="text-center">
         <FontAwesomeIcon icon={faSpinnerThird} spin size="3x"/>
-        <br/>Načítání...
+        <br/>
+        Načítání...
     </div>
 )
 
