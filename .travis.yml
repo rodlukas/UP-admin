@@ -10,10 +10,10 @@ install:
   - pip install -r requirements.txt
   - pip install codecov
   - npm install
-  - npm build
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script:
+  - npm build
   - python manage.py migrate
   - python manage.py collectstatic --noinput
   - ls
