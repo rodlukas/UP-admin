@@ -13,10 +13,9 @@
     * **pripojeni k heroku DB z externi aplikace**
         * je potreba do URI pridat na konec ```?sslmode=require```
 
-* **🔴 deployment checklist**
+* ** deployment checklist**
     * https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
     * https://wsvincent.com/django-best-practices/
-    * http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/
 
 * **API**
     * [custom serializer for nested resources](https://django.cowhite.com/blog/create-and-update-django-rest-framework-nested-serializers/)
