@@ -38,8 +38,9 @@ class TestApiClients(APITestCase):
         return 'JWT ' + self.token
 
     def test_list(self):
-        self.client.post(self.uri, {'name': 'josef', 'surname': 'novak'}, HTTP_AUTHORIZATION=self.get_header())
-        response = self.client.get(self.uri, {}, HTTP_AUTHORIZATION=self.get_header())
+        self.client.post(self.uri, {'name': 'josef', 'surname': 'novak'}, HTTP_AUTHORIZATION=self.get_header(),
+                         secure=True)
+        response = self.client.get(self.uri, {}, HTTP_AUTHORIZATION=self.get_header(), secure=True)
         response_content = json.loads(response.content.decode('utf-8'))
 
         self.assertEqual(len(response_content), 1, 'Klient nebyl pridan')
