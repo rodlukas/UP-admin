@@ -15,12 +15,13 @@
 * **deployment**
     * **checklist**
         * https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
-        * https://wsvincent.com/django-best-practices/
+        * + dalsi: https://wsvincent.com/django-best-practices/
     * **deployment settings**
         * http://whitenoise.evans.io/en/stable/
         * https://devcenter.heroku.com/articles/deploying-python
         * https://github.com/sundayguru/django-react-heroku
         * https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Deployment
+        * travis + heroku: https://docs.travis-ci.com/user/deployment/heroku/
         * + inspirace: https://tutorial-extensions.djangogirls.org/en/heroku/ a https://simpleisbetterthancomplex.com/tutorial/2016/08/09/how-to-deploy-django-applications-on-heroku.html
 
 * **API**
