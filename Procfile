@@ -1,2 +1,2 @@
-release: chmod u+x release-tasks.sh && ./release-tasks.sh
+release: ./release-tasks.sh
 web: gunicorn up.wsgi --log-file -
