@@ -34,8 +34,3 @@ deploy:
   app: uspesnyprvnacek
   on:
     all_branches: true
-  run:
-  - "export DJANGO_SETTINGS_MODULE=up.production_settings"
-  - "python up/manage.py collectstatic --noinput --settings=up.production_settings"
-  - "python up/manage.py makemigrations --settings=up.production_settings"
-  - "python up/manage.py migrate --settings=up.production_settings"
