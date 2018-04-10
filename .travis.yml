@@ -28,4 +28,14 @@ deploy:
   provider: heroku
   api_key:
     secure: sCX/VCpkv0qkrjSoHera9MRnuyfe3dIEqux+X1mufaU3h7NzFR4m3vI45y+Gab2BfQDFyyZ4x28bpVGsncIVYWsefRIrtK6QeVmSuvMLX5M2jfSgayK9NRUucCrUG/a+uqVT5oA41VC6K1jT47B7Z6v7RFZr1177/ugXiEUF/eGC2NWYBdOIBaTCIfXBibZC+qIs6Na+qLDYDsRkLxfFHSdmAucTCXMPGWcUNKk3gNYP3ClXWvNqH22szOeOeJI7i4qOX6s7eJVnyON6iozk17bDyTB/K0nq5x1vmMRzULnk+mCgaekdjHr0SidlSJvw/riBFJUv0FJZptRbVYRn6T4koIRl5XZov2OWOzItpag5Fkc9X2W6EEGagNZU09LZLbGvKW7MEplF3S+7UqGu3X0OzmZSjCH3XBr48eVtISM1K2LQEQmWddEkaLTZWKxx3rx/s1LJFLgyJMEE44C3PjAfj/r9weAogSFgqe+NVxjYuBr1LxNMnq0yY11NUZSY7rUhZIv4V2lS1jf3qe3nRTOc7REiUuPIMRFokCPhtNfAK+Mf8uUf/aRsiizzEpLZKLAHCfR6P5iYcJIhEKZ17/sPoJ0KAGfYaq/uC0FwTjsjZYDLO298x5CGP+8RNxaNuuvC1+3HgCYRadZ2iRB1mLKA8aW2cnBWHDNU3V6aEFM=
+  buildpack:
+  - node
+  - python
   app: uspesnyprvnacek
+  on:
+    all_branches: true
+  run:
+  - "export DJANGO_SETTINGS_MODULE=up.production_settings"
+  - "python up/manage.py collectstatic --noinput --settings=up.production_settings"
+  - "python up/manage.py makemigrations --settings=up.production_settings"
+  - "python up/manage.py migrate --settings=up.production_settings"
