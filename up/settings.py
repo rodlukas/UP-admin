@@ -3,16 +3,13 @@ import datetime
 
 # vlastni konstanty
 CONST_AUTH_EXPIRATION = 60*7  # minuty
-
 CONST_DB_CON_AGE = 60
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'u-y&tu264zgfp1pc$q(xki+y^+c6zm2#z++%$xqn=!tum8i6e!')
-
 DEBUG = True
-
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -125,13 +122,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
 LANGUAGE_CODE = 'cs'
-
 TIME_ZONE = 'Europe/Prague'
 
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
