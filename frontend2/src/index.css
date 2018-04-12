@@ -1,5 +1,62 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+html, body, .content, .root {
+    background-color: #ECF0F5;
+}
+
+.table {
+    background-color: white !important;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.badge {
+    font-size: 1rem;
+    font-weight: 600;
+    vertical-align: bottom;
+    margin-bottom: 0.3rem;
+}
+
+h4 .badge {
+    margin: 0 /* zobrazeni na stred v dashboardday */
+}
+
+.arrowBtn {
+    cursor: pointer
+}
+
+h1 .addBtn, h1 .nextBtn {
+    margin-top: 0.6rem
+}
+
+h1 .addBtn {
+    float: right;
+}
+
+h1 .nextBtn {
+    float: left
+}
+
+h1 .addBtn + .addBtn {
+    margin-right: 0.3rem
+}
+
+input {
+    min-height: 2.4rem /* fix pro iOS */
+}
+
+.lecture-canceled h4 {
+    text-decoration: line-through
+}
+
+.lecture-future {
+    background-color: #fff3cd !important
+}
+
+.lecture-prepaid {
+    background-color: #d4edda !important
+}
+
+.lecture-canceled {
+    background-color: #f8d7da !important
 }
