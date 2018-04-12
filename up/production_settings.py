@@ -5,6 +5,9 @@ ALLOWED_HOSTS = [
     'uspesnyprvnacek.herokuapp.com'
 ]
 
+# Static files
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
 ]
@@ -39,5 +42,3 @@ if 'TRAVIS' in os.environ:
             'PORT': '',
         }
     }
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
