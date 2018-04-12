@@ -6,6 +6,6 @@
     "npm": "5.8.x"
   },
   "scripts": {
-    "postinstall": "cd frontend2 && npm install"
+    "postinstall": "cd frontend && npm install"
   }
 }
