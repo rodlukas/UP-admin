@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     'webpack_loader',
     'rest_framework',
     'api',
-    'rest_framework.authtoken',
     'django_filters',
 ]
 
