@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "engines": {
     "node": "8.11.x",
-    "npm": "5.8.x"
+    "npm": "5.8.x",
+    "yarn": "1.x"
   },
   "scripts": {
-    "postinstall": "cd frontend && npm install && yarn build"
+    "postinstall": "cd frontend && yarn install && yarn build"
   }
 }

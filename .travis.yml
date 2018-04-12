@@ -5,11 +5,12 @@ services:
   - postgresql
 before_install:
   - npm i -g npm
+  - npm install -g yarn
   - export DJANGO_SETTINGS_MODULE=up.production_settings
 install:
   - pip install -r requirements.txt
   - pip install codecov
-  - npm install
+  - yarn install
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 script:
