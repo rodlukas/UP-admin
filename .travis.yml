@@ -1,11 +1,12 @@
 language: python
 python: '3.6.5'
-node_js: 8
+node_js: '8.11.1'
 services:
   - postgresql
 before_install:
   - npm i -g npm
   - npm install -g yarn
+  - node --version
   - export DJANGO_SETTINGS_MODULE=up.production_settings
 install:
   - pip install -r requirements.txt
