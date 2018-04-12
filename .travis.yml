@@ -1,7 +1,7 @@
 language: python
 python: '3.6.5'
 node_js:
-  - 'node'
+  - 'lts/8'
 services:
   - postgresql
 before_install:
