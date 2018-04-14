@@ -5,23 +5,35 @@ class AttendanceState(models.Model):
     name = models.TextField()
     visible = models.BooleanField()
 
+    class Meta:
+        ordering = ['name']
+
 
 class Client(models.Model):
     name = models.TextField()
     surname = models.TextField()
     phone = models.TextField(blank=True)
-    email = models.TextField(blank=True)
+    email = models.EmailField(blank=True)
     note = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ['surname', 'name']
 
 
 class Course(models.Model):
     name = models.TextField()
     visible = models.BooleanField()
 
+    class Meta:
+        ordering = ['name']
+
 
 class Group(models.Model):
     name = models.TextField(blank=True)
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
+
+    class Meta:
+        ordering = ['name']
 
 
 class Lecture(models.Model):
@@ -35,7 +47,7 @@ class Lecture(models.Model):
 class Attendance(models.Model):
     paid = models.BooleanField()
     note = models.TextField(blank=True)
-    client = models.ForeignKey(Client, related_name='attendances', on_delete=models.PROTECT) # tedy lze smazat pouze klienta co nema zadne attendances
+    client = models.ForeignKey(Client, related_name='attendances', on_delete=models.PROTECT)  # tedy lze smazat pouze klienta co nema zadne attendances
     lecture = models.ForeignKey(Lecture, related_name='attendances', on_delete=models.CASCADE)
     attendancestate = models.ForeignKey(AttendanceState, on_delete=models.PROTECT)
 

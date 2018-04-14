@@ -7,7 +7,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ClientViewSet(viewsets.ModelViewSet):
-    queryset = Client.objects.order_by('surname', 'name')
+    queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
 
@@ -17,7 +17,7 @@ class AttendanceViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
 
 
 class AttendanceStateViewSet(viewsets.ModelViewSet):
-    queryset = AttendanceState.objects.order_by('name')
+    queryset = AttendanceState.objects.all()
     serializer_class = AttendanceStateSerializer
 
 
@@ -25,7 +25,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        queryset = Group.objects.order_by('name')
+        queryset = Group.objects.all()
         id_client = self.request.query_params.get('client')
         if id_client is not None:
             queryset = queryset.filter(memberships__client=id_client)
@@ -33,7 +33,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.order_by('name')
+    queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
 
