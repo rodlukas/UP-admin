@@ -19,7 +19,7 @@ script:
   - python manage.py migrate
   - python manage.py collectstatic --noinput
   - ls
-  - coverage run --omit=*/migrations/* --source=admin,api manage.py test
+  - coverage run --source=admin,api --omit=*/migrations/* manage.py test
 #  - cd frontend && yarn test && cd ..
 after_success:
   - codecov --token=711f2ba1-59bf-4dbc-95da-9d25ef91c932

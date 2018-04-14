@@ -11,8 +11,7 @@ class ClientViewSet(viewsets.ModelViewSet):
     serializer_class = ClientSerializer
 
 
-class AttendanceViewSet(mixins.UpdateModelMixin,
-                        viewsets.GenericViewSet):
+class AttendanceViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
 

@@ -164,7 +164,7 @@ class LectureSerializer(serializers.ModelSerializer):
         attendances = list(attendances)
         instance.start = validated_data.get('start')  # druhy parametr je default hodnota
         print(instance.start)
-        instance.duration = validated_data.get('duration', instance.duration)
+        instance.duration = validated_data.get('duration')
         instance.canceled = validated_data.get('canceled', instance.canceled)
         instance.course = course
         instance.group = group
