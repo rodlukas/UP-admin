@@ -41,13 +41,13 @@ class GroupSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        memberships_data = validated_data.pop('memberships')
-        memberships = instance.memberships.all()
-        memberships = list(memberships)
-        course = Course.objects.get(pk=validated_data.pop('course').id)
+        # vytvoreni instance skupiny
         instance.name = validated_data.get('name', instance.name)
-        instance.course = course
+        instance.course = Course.objects.get(pk=validated_data.pop('course').id)
         instance.save()
+        # vytvoreni jednotlivych clenstvi
+        memberships_data = validated_data.pop('memberships')
+        memberships = list(instance.memberships.all())
         for membership_data in memberships_data:
             client = Client.objects.get(pk=membership_data.pop('client').id)
             # pokud jeste zbyvaji clenstvi, uprav je, jinak vytvor nove
@@ -93,16 +93,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
         # vrat null pokud se jedna o predplacenou lekci
         if obj.lecture.start is None:
             return None
-        """ funguje take, ale je zbytecne slozity:
-        return Client.objects.filter(pk=obj.client.id, attendances__lecture__course=obj.lecture.course,
-                                     attendances__lecture__start__isnull=False,
-                                     attendances__attendancestate__name="OK",
-                                     attendances__lecture__start__lt=date).count()+1
-                                     
-             funguje, ale zbytecne slozite pracuje pro skupiny, takze nakonec vytvoreno jednoduseji:
-             Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
-                                        lecture__start__isnull=False, lecture__group=obj.lecture.group,
-                                        lecture__start__lt=obj.lecture.start).count()+1"""
         if obj.lecture.group is not None:
             cnt = Lecture.objects.filter(group=obj.lecture.group, start__isnull=False,
                                          start__lt=obj.lecture.start, canceled=False)
@@ -138,45 +128,39 @@ class LectureSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
+        # vytvoreni instance lekce
         attendances_data = validated_data.pop('attendances')
         course = Course.objects.get(pk=validated_data.pop('course').id)
-        # for k, v in validated_data.items():
-        #    print(k, v)
         group = None
         if 'group' in validated_data:
             group = Group.objects.get(pk=validated_data.pop('group').id)
-
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
+        # vytvoreni jednotlivych ucasti
         for attendance_data in attendances_data:
             client = Client.objects.get(pk=attendance_data.pop('client').id)
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
+        # vypis: for k, v in validated_data.items(): print(k, v)
 
     def update(self, instance, validated_data):
-        print(validated_data)
-        attendances_data = validated_data.pop('attendances')
-        course = Course.objects.get(pk=validated_data.pop('course').id)
+        # uprava instance lekce
         group = None
         if 'group' in validated_data:
             group = Group.objects.get(pk=validated_data.pop('group').id)
-
-        attendances = instance.attendances.all()
-        attendances = list(attendances)
         instance.start = validated_data.get('start')  # druhy parametr je default hodnota
-        print(instance.start)
         instance.duration = validated_data.get('duration')
         instance.canceled = validated_data.get('canceled', instance.canceled)
-        instance.course = course
+        instance.course = Course.objects.get(pk=validated_data.pop('course').id)
         instance.group = group
         instance.save()
-
+        # upravy jednotlivych ucasti
+        attendances_data = validated_data.pop('attendances')
+        attendances = list(instance.attendances.all())
         for attendance_data in attendances_data:
             attendance = attendances.pop(0)
             attendance.paid = attendance_data.get('paid', attendance.paid)
-            client = Client.objects.get(pk=attendance_data.pop('client').id)
-            attendance.client = client
+            attendance.client = Client.objects.get(pk=attendance_data.pop('client').id)
             attendance.note = attendance_data.get('note', attendance.note)
-            attendancestate = AttendanceState.objects.get(pk=attendance_data.pop('attendancestate').id)
-            attendance.attendancestate = attendancestate
+            attendance.attendancestate = AttendanceState.objects.get(pk=attendance_data.pop('attendancestate').id)
             attendance.save()
         return instance

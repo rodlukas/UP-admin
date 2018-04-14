@@ -25,7 +25,7 @@
         * https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Deployment
         * travis + heroku: https://docs.travis-ci.com/user/deployment/heroku/
         * +inspirace: https://tutorial-extensions.djangogirls.org/en/heroku/ a https://simpleisbetterthancomplex.com/tutorial/2016/08/09/how-to-deploy-django-applications-on-heroku.html
-        * +inspirace pro nodejs:(https://medium.com/@nicholaskajoh/deploy-your-react-django-app-on-heroku-335af9dab8a3
+        * +inspirace pro nodejs: https://medium.com/@nicholaskajoh/deploy-your-react-django-app-on-heroku-335af9dab8a3
         
 * **API**
     * [custom serializer for nested resources](https://django.cowhite.com/blog/create-and-update-django-rest-framework-nested-serializers/)
