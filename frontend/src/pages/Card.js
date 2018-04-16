@@ -153,9 +153,9 @@ export default class ClientView extends Component {
                             <ListGroup>
                                 {CLIENT &&
                                 <div>
-                                    <ListGroupItem>Telefon: <Phone phone={object.phone}/></ListGroupItem>
-                                    <ListGroupItem>E-mail: <Email email={object.email}/></ListGroupItem>
-                                    <ListGroupItem>Členství ve skupinách:{' '}
+                                    <ListGroupItem><b>Telefon:</b> <Phone phone={object.phone}/></ListGroupItem>
+                                    <ListGroupItem><b>E-mail:</b> <Email email={object.email}/></ListGroupItem>
+                                    <ListGroupItem><b>Členství ve skupinách:</b>{' '}
                                         {!Boolean(memberships.length) && <NoInfo/>}
                                         {memberships.map(membership =>
                                             <span key={membership.id}>
@@ -171,7 +171,7 @@ export default class ClientView extends Component {
                                             return accu === null ? [elem] : [...accu, ', ', elem]
                                         }, null)}
                                     </ListGroupItem>
-                                    <ListGroupItem>Poznámka: <Note note={object.note}/></ListGroupItem>
+                                    <ListGroupItem><b>Poznámka:</b> <Note note={object.note}/></ListGroupItem>
                                 </div>}
                                 {!CLIENT &&
                                 <ListGroupItem>
