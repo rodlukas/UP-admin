@@ -9,8 +9,8 @@ export default class Login extends Component {
         this.title = "Přihlášení"
         this.state = {
             redirectToReferrer: false,
-            username: '',
-            password: ''
+            username: null,
+            password: null
         }
     }
 

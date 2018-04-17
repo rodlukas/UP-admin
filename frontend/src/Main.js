@@ -29,11 +29,10 @@ export default class Main extends Component {
     }
 
     render() {
-
         return (
             <BrowserRouter>
                 <div>
-                    <Navbar light className="border-bottom" expand="md">
+                    <Navbar light className="border-bottom" expand="sm">
                         <NavbarBrand tag={RouterNavLink} exact to="/">
                             ÚP<sub>admin</sub>
                         </NavbarBrand>
