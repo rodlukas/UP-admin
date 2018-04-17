@@ -8,7 +8,7 @@ import "../global/lists.css"
 import RemindPay from "./RemindPay"
 import LectureNumber from "./LectureNumber"
 import LectureService from "../api/services/lecture"
-import ClientName from ".//ClientName"
+import ClientName from "./ClientName"
 import Loading from "../api/Loading"
 
 export default class DashboardDay extends Component {
