@@ -9,8 +9,8 @@ export default class Login extends Component {
         this.title = "Přihlášení"
         this.state = {
             redirectToReferrer: false,
-            username: null,
-            password: null
+            username: '',
+            password: ''
         }
     }
 
@@ -48,8 +48,7 @@ export default class Login extends Component {
                                     <Label for="username" sm={4}>Uživatelské jméno</Label>
                                     <Col sm={8}>
                                         <Input type="text" name="username" id="username" value={username}
-                                               onChange={this.onChange}
-                                               required/>
+                                               onChange={this.onChange} required/>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
