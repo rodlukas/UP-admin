@@ -19,7 +19,7 @@ export default class AuthService {
             const decoded = decode(token)
             if (!fastCheck) { //popis fastCheck v metode isAuthenticated
                 const dif = decoded.exp - AuthService.getCurrentDate()
-                console.log("--------\ntoken:\t" + token + '\naktual:\t' + new Date().toISOString() + "\nvyprsi:\t" + new Date(decoded.exp * 1000).toISOString() + "\ndif:\t" + dif)
+                console.log("%c --------\ntoken:\t" + token + '\naktual:\t' + new Date().toISOString() + "\nvyprsi:\t" + new Date(decoded.exp * 1000).toISOString() + "\ndif:\t" + dif, 'color: olive')
                 if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
                     this.refreshToken(token)
                     return (decode(this.getToken()).exp < this.getCurrentDate()) // dekoduj novy token a porovnej
@@ -49,9 +49,6 @@ export default class AuthService {
             .then((response) => {
                 this.saveToken(response.token)
                 callback()
-            })
-            .catch(() => {
-                alert("Špatné jméno nebo heslo!")
             })
     }
 

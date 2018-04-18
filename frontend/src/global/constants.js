@@ -10,7 +10,7 @@ export const NOTIFY_LEVEL = {
 }
 export const NOTIFY_TEXT = {
     SUCCESS: "Úspěšně uloženo",
-    ERROR: "Chyba při ukládání",
+    ERROR: "Chyba při provádění požadavku",
     ERROR_LOADING: "Došlo k chybě při načítání dat"
 }
 export const ATTENDANCESTATE_OK = "OK"
