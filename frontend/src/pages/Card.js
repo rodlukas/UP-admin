@@ -41,7 +41,8 @@ export default class ClientView extends Component {
             this.setState({
                 id: id,
                 CLIENT: CLIENT,
-                memberships: []
+                memberships: [],
+                loading: true
             })
             this.getObject(CLIENT, id)
             this.getLectures(CLIENT, id)
