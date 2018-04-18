@@ -37,7 +37,7 @@
     * struktura v reactu podle [tohoto](https://sheharyar.me/blog/axios-with-react-for-making-requests/)
 
 * **prihlaseni**
-    * 🔴 problematika ukladani tokenu (localstorage vs cookie)
+    * problematika ukladani tokenu (localstorage vs cookie)
         * https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
         * https://www.youtube.com/watch?v=WzfJgCOMIsU&feature=youtu.be&t=22m10s
         * https://auth0.com/blog/ten-things-you-should-know-about-tokens-and-cookies/#xss-xsrf
@@ -46,7 +46,6 @@
         * https://auth0.com/docs/security/store-tokens
         * i s komentari s protinazory: https://medium.com/@rajaraodv/securing-react-redux-apps-with-jwt-tokens-fcfe81356ea0
         * https://spectrum.chat/thread/a051f64d-8103-48e4-92f8-99fc701a7ae9
-    * [zaklad od reactu](https://reacttraining.com/react-router/web/example/auth-workflow), [dokumentace djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
-    * inspirace: https://github.com/curtisgreene/message
-    * vetsi inspirace: https://hptechblogs.com/using-json-web-token-react/
+    * dokumentace: [zaklad od react-routeru](https://reacttraining.com/react-router/web/example/auth-workflow), [djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
+    * inspirace: https://github.com/curtisgreene/message, vetsi inspirace: https://hptechblogs.com/using-json-web-token-react/
     * hezky popis: https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
