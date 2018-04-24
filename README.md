@@ -10,12 +10,12 @@
     * pripojeni k heroku DB z externi aplikace - je potreba do URI pridat na konec `?sslmode=require`
 
 ---
-
 ## články
 ### statické soubory
 * nastaveni webpacku a djanga (staticke soubory): http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
     * super vysvetleni: https://www.techiediaries.com/django-react-rest/
     * popis autora nástrojů: http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/
+    
 ### nasazení
 * **checklist**
     * https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -35,7 +35,6 @@
 * [jednoducha prace s djangorestframework](https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/)
 * [test driven api v DRF](https://scotch.io/tutorials/build-a-rest-api-with-django-a-test-driven-approach-part-2)
 * [inspirace propojeni django, rest, react s reduxem](https://hackernoon.com/creating-websites-using-react-and-django-rest-framework-b14c066087c7)
-* [hezky popis django + api, proc je potreba, SPA...](https://wsvincent.com/django-rest-framework-tutorial/)
 * struktura v reactu podle [tohoto](https://sheharyar.me/blog/axios-with-react-for-making-requests/)
 
 ### prihlaseni
@@ -51,3 +50,6 @@
 * dokumentace: [zaklad od react-routeru](https://reacttraining.com/react-router/web/example/auth-workflow), [djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
 * inspirace: https://github.com/curtisgreene/message, vetsi inspirace: https://hptechblogs.com/using-json-web-token-react/
 * hezky popis: https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
+
+### dalsi
+* [blog o djangu+react+rest](https://wsvincent.com/)
