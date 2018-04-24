@@ -4,8 +4,8 @@
   "license": "UNLICENSED",
   "engines": {
     "node": "8.11.x",
-    "npm": "5.8.x",
-    "yarn": "1.x"
+    "npm": "6.0.x",
+    "yarn": "1.6.x"
   },
   "scripts": {
     "postinstall": "cd frontend && yarn install && yarn build"

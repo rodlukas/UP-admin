@@ -25,11 +25,11 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        queryset = Group.objects.all()
+        qs = Group.objects.all()    # qs znaci queryset
         id_client = self.request.query_params.get('client')
         if id_client is not None:
-            queryset = queryset.filter(memberships__client=id_client)
-        return queryset
+            qs = qs.filter(memberships__client=id_client)
+        return qs
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -44,12 +44,12 @@ class LectureViewSet(viewsets.ModelViewSet):
     filter_fields = 'group',
 
     def get_queryset(self):
-        queryset = Lecture.objects.order_by('-start')
+        qs = Lecture.objects.order_by('-start')  # qs znaci queryset
         date = self.request.query_params.get('date')
         client_id = self.request.query_params.get('client')
         if date is not None:
             date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
-            queryset = queryset.filter(start__contains=date, canceled=False)
+            qs = qs.filter(start__contains=date, canceled=False)
         elif client_id is not None:
-            queryset = queryset.filter(attendances__client=client_id, group__isnull=True)
-        return queryset
+            qs = qs.filter(attendances__client=client_id, group__isnull=True)
+        return qs
