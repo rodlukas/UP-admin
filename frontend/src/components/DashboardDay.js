@@ -70,8 +70,8 @@ export default class DashboardDay extends Component {
                                     </UncontrolledTooltip>
                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
                                                 funcRefresh={this.getLectures}/>{' '}
-                                    <Badge color="info" pill>{attendance.note}</Badge>{' '}
-                                    <RemindPay remind_pay={attendance.remind_pay}/>
+                                    <RemindPay remind_pay={attendance.remind_pay}/>{' '}
+                                    <Badge color="info" pill>{attendance.note}</Badge>
                                     <SelectAttendanceState value={attendance.attendancestate.id}
                                                            attendanceId={attendance.id}
                                                            attendancestates={attendancestates}
