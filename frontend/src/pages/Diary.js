@@ -84,7 +84,7 @@ export default class Diary extends Component {
                 <Container fluid>
                     <Row>
                     {week.map(day =>
-                        <Col key={day} sm="12" md="6" lg="">
+                        <Col key={day} sm="12" md="6" lg="" className="diary-day">
                             <DashboardDay date={day.toString()} attendancestates={attendancestates}/>
                         </Col>)}
                     </Row>

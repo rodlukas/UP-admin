@@ -6,9 +6,6 @@ b {
     font-weight: 600;
 }
 
-.badge {
-}
-
 .table {
     background-color: white !important;
 }
@@ -23,6 +20,12 @@ b {
     font-weight: 600;
     vertical-align: bottom;
     margin-bottom: 0.3rem;
+}
+
+@media (max-width: 768px) {
+    .diary-day + .diary-day {
+        padding-top: 15px
+    }
 }
 
 h4 .badge {

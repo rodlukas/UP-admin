@@ -71,7 +71,7 @@ export default class DashboardDay extends Component {
                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
                                                 funcRefresh={this.getLectures}/>{' '}
                                     <RemindPay remind_pay={attendance.remind_pay}/>{' '}
-                                    <Badge color="info" pill>{attendance.note}</Badge>
+                                    <Badge color="info">{attendance.note}</Badge>
                                     <SelectAttendanceState value={attendance.attendancestate.id}
                                                            attendanceId={attendance.id}
                                                            attendancestates={attendancestates}
