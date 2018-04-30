@@ -1,0 +1,15 @@
+@media (max-width: 768px) {
+    .diary-day + .diary-day {
+        padding-top: 15px
+    }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+    .diary-day:nth-of-type(n+3) {
+        padding-top: 15px
+    }
+}
+
+.arrowBtn {
+    cursor: pointer
+}

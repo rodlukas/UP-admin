@@ -6,6 +6,7 @@ b {
     font-weight: 600;
 }
 
+/* TABLE */
 .table {
     background-color: white !important;
 }
@@ -14,6 +15,7 @@ b {
     vertical-align: middle;
 }
 
+/* BADGE */
 .badge {
     white-space: normal; /* aby se text zalamoval a nepretekal */
     font-size: 1rem;
@@ -22,26 +24,11 @@ b {
     margin-bottom: 0.3rem;
 }
 
-@media (max-width: 768px) {
-    .diary-day + .diary-day {
-        padding-top: 15px
-    }
-}
-
-@media (min-width: 768px) and (max-width: 992px) {
-    .diary-day:nth-of-type(n+3) {
-        padding-top: 15px
-    }
-}
-
 h4 .badge {
     margin: 0 /* zobrazeni na stred v dashboardday */
 }
 
-.arrowBtn {
-    cursor: pointer
-}
-
+/* BUTTONS */
 h1 .addBtn, h1 .nextBtn {
     margin-top: 0.6rem
 }
@@ -58,22 +45,7 @@ h1 .addBtn + .addBtn {
     margin-right: 0.3rem
 }
 
+/* FORMS */
 input {
     min-height: 2.4rem /* fix pro iOS */
-}
-
-.lecture-canceled h4 {
-    text-decoration: line-through
-}
-
-.lecture-future {
-    background-color: #fff3cd !important
-}
-
-.lecture-prepaid {
-    background-color: #d4edda !important
-}
-
-.lecture-canceled {
-    background-color: #f8d7da !important
 }

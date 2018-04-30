@@ -256,7 +256,7 @@ export default class FormLectures extends Component {
                         <FormGroup row>
                             <Label for={"at_note" + member.id} sm={3}>Poznámka</Label>
                             <Col sm={9}>
-                                <Input type="text" name="at_note" id={"at_note" + member.id} value={at_note[member.id]} onChange={this.onChangeMultiple} data-id={member.id}/>
+                                <Input type="textarea" name="at_note" id={"at_note" + member.id} value={at_note[member.id]} onChange={this.onChangeMultiple} data-id={member.id}/>
                             </Col>
                         </FormGroup>
                     </div>)}

@@ -15,6 +15,7 @@ import ClientsList from "../components/ClientsList"
 import ClientName from "../components/ClientName"
 import {Link} from 'react-router-dom'
 import Loading from "../api/Loading"
+import "./Card.css"
 
 export default class ClientView extends Component {
     constructor(props) {

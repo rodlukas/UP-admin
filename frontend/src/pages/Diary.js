@@ -7,6 +7,7 @@ import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/fontawes
 import AttendanceStateService from "../api/services/attendancestate"
 import APP_URLS from "../urls"
 import {Link} from 'react-router-dom'
+import "./Diary.css"
 
 const WORK_DAYS_COUNT = 5
 const DAYS_PER_WEEK = 7
