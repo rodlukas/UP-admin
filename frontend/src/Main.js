@@ -47,7 +47,7 @@ export default class Main extends Component {
                             <PrivateRoute exact path="/" component={Dashboard}/>
                             <Route path={APP_URLS.prihlasit} component={Login}/>
                             <PrivateRoute exact path={APP_URLS.skupiny} component={Groups}/>
-                            <PrivateRoute path={APP_URLS.diar} component={Diary}/>
+                            <PrivateRoute path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
                             <PrivateRoute exact path={APP_URLS.klienti} component={Clients}/>
                             <PrivateRoute path={APP_URLS.klienti + "/:id"} component={Card}/>
                             <PrivateRoute path={APP_URLS.skupiny + "/:id"} component={Card}/>

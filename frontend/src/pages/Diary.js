@@ -5,6 +5,8 @@ import {prettyDate} from "../global/funcDateTime"
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/fontawesome-pro-solid"
 import AttendanceStateService from "../api/services/attendancestate"
+import APP_URLS from "../urls"
+import {Link} from 'react-router-dom'
 
 const WORK_DAYS_COUNT = 5
 const DAYS_PER_WEEK = 7
@@ -13,9 +15,19 @@ export default class Diary extends Component {
     constructor(props) {
         super(props)
         this.titlePart = "Týden "
-        this.thisMonday = Diary.getMonday(new Date())
+        this.thisMonday = Diary.getDate(props.match.params)
         this.state = this.getNewState(this.thisMonday)
         this.state['attendancestates'] = []
+    }
+
+    static getDate(params) {
+        if(params.month == null || params.year == null || params.day == null)
+            return Diary.getMonday(new Date())
+        let getDate = new Date()
+        getDate.setDate(params.day)
+        getDate.setMonth(params.month - 1)
+        getDate.setFullYear(params.year)
+        return Diary.getMonday(getDate)
     }
 
     getNewState(monday) {
@@ -34,10 +46,6 @@ export default class Diary extends Component {
             .then((response) => {
                 this.setState({attendancestates: response})
             })
-    }
-
-    componentDidMount() {
-        this.getAttendanceStates()
     }
 
     static getWeekArray(monday) { // priprav pole datumu pracovnich dnu v prislusnem tydnu
@@ -64,7 +72,16 @@ export default class Diary extends Component {
         return res
     }
 
-    changeDate = (monday) => {
+    static serializeDateUrl (date) {
+        return APP_URLS.diar + "/" + date.getFullYear() + "/" + (date.getMonth()+1) + "/" + date.getDate()
+    }
+
+    componentDidMount() {
+        this.getAttendanceStates()
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const monday = Diary.getDate(nextProps.match.params)
         this.setState(this.getNewState(monday))
     }
 
@@ -74,12 +91,16 @@ export default class Diary extends Component {
         return (
             <div>
                 <h1 className="text-center mb-4">
-                    <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"
-                                     onClick={() => this.changeDate(this.state.prevMonday)}/>
+                    <Link to={Diary.serializeDateUrl(this.state.prevMonday)}>
+                        <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"/>
+                    </Link>
                     {" " + this.state.title + " "}
-                    <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"
-                                     onClick={() => this.changeDate(this.state.nextMonday)}/>{' '}
-                    <Button color="secondary" onClick={() => this.changeDate(this.thisMonday)}>Dnes</Button>
+                    <Link to={Diary.serializeDateUrl(this.state.nextMonday)}>
+                        <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
+                    </Link>{' '}
+                    <Link to={Diary.serializeDateUrl(this.thisMonday)}>
+                        <Button color="secondary">Dnes</Button>
+                    </Link>
                 </h1>
                 <Container fluid>
                     <Row>
