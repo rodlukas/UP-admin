@@ -6,6 +6,9 @@ b {
     font-weight: 600;
 }
 
+.badge {
+}
+
 .table {
     background-color: white !important;
 }
@@ -15,6 +18,7 @@ b {
 }
 
 .badge {
+    white-space: normal; /* aby se text zalamoval a nepretekal */
     font-size: 1rem;
     font-weight: 600;
     vertical-align: bottom;
