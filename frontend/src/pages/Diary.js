@@ -70,6 +70,7 @@ export default class Diary extends Component {
 
     render() {
         const {attendancestates, week} = this.state
+        // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
         return (
             <div>
                 <h1 className="text-center mb-4">
@@ -83,7 +84,7 @@ export default class Diary extends Component {
                 <Container fluid>
                     <Row>
                     {week.map(day =>
-                        <Col key={day}>
+                        <Col key={day} sm="12" md="6" lg="">
                             <DashboardDay date={day.toString()} attendancestates={attendancestates}/>
                         </Col>)}
                     </Row>

@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, UncontrolledTooltip} from 'reactstrap'
 import {Link} from 'react-router-dom'
-import {prettyDateWithDay, toISODate, prettyTime} from "../global/funcDateTime"
+import {prettyDateWithDay, toISODate, prettyTime, isToday} from "../global/funcDateTime"
 import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
 import "../global/lists.css"
@@ -88,7 +88,7 @@ export default class DashboardDay extends Component {
         return (
             <div>
                 <ListGroup>
-                    <ListGroupItem color={this.date.getDate() === new Date().getDate() ? "primary" : ''}>
+                    <ListGroupItem color={isToday(this.date) ? "primary" : ''}>
                         <h4 className="text-center">{this.title}</h4>
                     </ListGroupItem>
                     {this.state.loading ?

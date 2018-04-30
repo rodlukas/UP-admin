@@ -27,3 +27,11 @@ export function prettyTime(datetime) {
 export function toISOTime(date) {
     return (date.getHours() < 10 ? '0' : '') + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
 }
+
+export function isToday(date) {
+    const currentDate = new Date()
+    return (
+        date.getDate()      === currentDate.getDate() &&
+        date.getFullYear()  === currentDate.getFullYear() &&
+        date.getMonth()     === currentDate.getMonth())
+}
