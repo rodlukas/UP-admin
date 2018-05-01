@@ -6,6 +6,10 @@ b {
     font-weight: 600;
 }
 
+h1 {
+    font-size: 2rem;
+}
+
 /* TABLE */
 .table {
     background-color: white !important;
@@ -30,7 +34,7 @@ h4 .badge {
 
 /* BUTTONS */
 h1 .addBtn, h1 .nextBtn {
-    margin-top: 0.6rem
+    margin-top: 0.3rem
 }
 
 h1 .addBtn {
