@@ -37,7 +37,7 @@
 * [inspirace propojeni django, rest, react s reduxem](https://hackernoon.com/creating-websites-using-react-and-django-rest-framework-b14c066087c7)
 * struktura v reactu podle [tohoto](https://sheharyar.me/blog/axios-with-react-for-making-requests/)
 
-### prihlaseni
+### přihlášení
 * problematika ukladani tokenu (localstorage vs cookie)
     * https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
     * https://www.youtube.com/watch?v=WzfJgCOMIsU&feature=youtu.be&t=22m10s
@@ -51,5 +51,5 @@
 * inspirace: https://github.com/curtisgreene/message, vetsi inspirace: https://hptechblogs.com/using-json-web-token-react/
 * hezky popis: https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
 
-### dalsi
+### další
 * [blog o djangu+react+rest](https://wsvincent.com/)
