@@ -35,7 +35,7 @@ export default class Diary extends Component {
         const week = Diary.getWeekArray(monday)
         return {
             week: week,
-            title: this.titlePart + prettyDate(monday) + " - " + prettyDate(week[4]),
+            title: this.titlePart + prettyDate(monday) + " – " + prettyDate(week[4]),
             nextMonday: Diary.addDays(monday, DAYS_PER_WEEK),
             prevMonday: Diary.addDays(monday, -DAYS_PER_WEEK)
         }

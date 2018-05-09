@@ -5,6 +5,7 @@ import FormGroups from '../forms/FormGroups'
 import GroupService from "../api/services/group"
 import ClientsList from "../components/ClientsList"
 import Loading from "../api/Loading"
+import APP_URLS from "../urls"
 
 export default class Groups extends Component {
     constructor(props) {
@@ -48,7 +49,7 @@ export default class Groups extends Component {
                     <td className="col-2">
                         <Button color="primary"
                                 onClick={() => this.toggle(group)}>Upravit</Button>{' '}
-                        <Link to={"/skupiny/" + group.id}>
+                        <Link to={APP_URLS.skupiny + "/" + group.id}>
                             <Button color="secondary">Karta</Button></Link>
                     </td>
                 </tr>)}

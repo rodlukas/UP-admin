@@ -10,6 +10,7 @@ import LectureNumber from "./LectureNumber"
 import LectureService from "../api/services/lecture"
 import ClientName from "./ClientName"
 import Loading from "../api/Loading"
+import APP_URLS from "../urls"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -51,7 +52,7 @@ export default class DashboardDay extends Component {
                             <LectureNumber number={lecture.attendances[0].count}/></h4>
                         {lecture.group &&
                         <div>
-                            <Link to={("skupiny/" + lecture.group.id)} id={"card" + lecture.id}>
+                            <Link to={(APP_URLS.skupiny + "/" + lecture.group.id)} id={"card" + lecture.id}>
                                 <h5>Skupina {lecture.group.name}</h5>
                             </Link>
                             <UncontrolledTooltip placement="left" target={"card" + lecture.id}>
@@ -61,7 +62,7 @@ export default class DashboardDay extends Component {
                         <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
                             {lecture.attendances.map(attendance =>
                                 <li key={attendance.id}>
-                                    <Link to={("klienti/" + attendance.client.id)} id={"card" + attendance.id}>
+                                    <Link to={(APP_URLS.klienti + "/" + attendance.client.id)} id={"card" + attendance.id}>
                                         <ClientName name={attendance.client.name}
                                                     surname={attendance.client.surname}/>
                                     </Link>{' '}

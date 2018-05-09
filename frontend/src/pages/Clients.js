@@ -5,6 +5,7 @@ import FormClients from '../forms/FormClients'
 import ClientService from "../api/services/client"
 import ClientName from "../components/ClientName"
 import Loading from "../api/Loading"
+import APP_URLS from "../urls"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -50,7 +51,7 @@ export default class ClientList extends Component {
                     <td className="col-md-4 col-lg-2 col-xl-2">
                         <Button color="primary"
                                 onClick={() => this.toggle(client)}>Upravit</Button>{' '}
-                        <Link to={"/klienti/" + client.id}>
+                        <Link to={APP_URLS.klienti + "/" + client.id}>
                             <Button color="secondary">Karta</Button></Link>
                     </td>
                 </tr>)}

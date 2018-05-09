@@ -161,7 +161,7 @@ export default class ClientView extends Component {
                                         {!Boolean(memberships.length) && <NoInfo/>}
                                         {memberships.map(membership =>
                                             <span key={membership.id}>
-                                                        <Link to={"/skupiny/" + membership.id}
+                                                        <Link to={APP_URLS.skupiny + "/" + membership.id}
                                                               id={"group" + membership.id}>
                                                             <span>{membership.name}</span>
                                                         </Link>
@@ -201,7 +201,7 @@ export default class ClientView extends Component {
                                     <ListGroupItem key={lectureVal.id} className={className}>
                                         <h4>
                                             {lectureVal.start !== null ?
-                                            (prettyDateWithDayYear(d) + " - " + prettyTime(d))
+                                            (prettyDateWithDayYear(d) + " – " + prettyTime(d))
                                             :
                                             "Předplacená lekce"}{' '}
                                             <LectureNumber number={lectureVal.attendances[0].count}/>

@@ -44,7 +44,7 @@ export default class Main extends Component {
                     <ToastContainer/>
                     <div className="content">
                         <Switch>
-                            <PrivateRoute exact path="/" component={Dashboard}/>
+                            <PrivateRoute exact path={APP_URLS.prehled} component={Dashboard}/>
                             <Route path={APP_URLS.prihlasit} component={Login}/>
                             <PrivateRoute exact path={APP_URLS.skupiny} component={Groups}/>
                             <PrivateRoute path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
