@@ -147,7 +147,7 @@ class LectureSerializer(serializers.ModelSerializer):
         group = None
         if 'group' in validated_data:
             group = Group.objects.get(pk=validated_data.pop('group').id)
-        instance.start = validated_data.get('start', instance.start)
+        instance.start = validated_data.get('start')
         instance.duration = validated_data.get('duration', instance.duration)
         instance.canceled = validated_data.get('canceled', instance.canceled)
         instance.course = Course.objects.get(pk=validated_data.pop('course').id)

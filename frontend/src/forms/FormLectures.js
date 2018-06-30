@@ -117,7 +117,6 @@ export default class FormLectures extends Component {
     }
 
     onChange = (e) => {
-        console.log(e.value)
         const target = e.target
         const state = this.state
         state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
