@@ -18,7 +18,6 @@ export default class FormLectures extends Component {
         const {id, start, course, duration, attendances, canceled} = props.lecture
         const {attendancestates, object} = props
         const isPrepaid = this.isLecture ? !Boolean(start) : false
-        this.ATTENDANCESTATE_OK_INDEX = this.prepareStateIndex(attendancestates)
         this.members = []
         if (this.CLIENT)
             this.members = [object]
@@ -29,6 +28,8 @@ export default class FormLectures extends Component {
 
         let date = new Date(start)
         this.state = {
+            ATTENDANCESTATE_OK_INDEX: FormLectures.prepareStateIndex(attendancestates),
+            lastAttendancestates: attendancestates,
             id: id || '',
             at_state: this.createAttendanceStateArray(),
             at_paid: this.createPaidArray(),
@@ -41,17 +42,18 @@ export default class FormLectures extends Component {
                 course.id :
                 (this.CLIENT ? UNDEF : object.course.id)),
             duration: duration || (this.CLIENT ? DEFAULT_DURATION : GROUP_DURATION),
-            attendancestates: attendancestates,
             courses: [],
             object: object
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.state.attendancestates !== nextProps.attendancestates) {
-            this.ATTENDANCESTATE_OK_INDEX = this.prepareStateIndex(nextProps.attendancestates)
-            this.setState({attendancestates: nextProps.attendancestates})
-        }
+    static getDerivedStateFromProps(props, state) {
+        if(state.lastAttendancestates !== props.attendancestates)
+            return {
+                ATTENDANCESTATE_OK_INDEX: FormLectures.prepareStateIndex(props.attendancestates),
+                lastAttendancestates: props.attendancestates
+            }
+        return null
     }
 
     getMembers(memberships) {
@@ -61,7 +63,7 @@ export default class FormLectures extends Component {
         return array
     }
 
-    prepareStateIndex(attendancestates) {
+    static prepareStateIndex(attendancestates) {
         if(attendancestates.length)
         {
             const res = attendancestates.find(elem => elem.name === ATTENDANCESTATE_OK)
@@ -73,10 +75,11 @@ export default class FormLectures extends Component {
         return UNDEF
     }
 
-    createAttendanceStateArray() { // najdi index stavu OK
+    // najdi index stavu OK
+    createAttendanceStateArray() {
         let array = []
         this.members.map((client, id) =>
-            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : this.ATTENDANCESTATE_OK_INDEX)
+            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : this.state.ATTENDANCESTATE_OK_INDEX)
         return array
     }
 
@@ -103,8 +106,7 @@ export default class FormLectures extends Component {
     }
 
     getCourses = () => {
-        CourseService
-            .getAll()
+        CourseService.getAll()
             .then((response) => {
                 this.setState({courses: response})
             })
@@ -165,8 +167,7 @@ export default class FormLectures extends Component {
     }
 
     delete = (id) => {
-        LectureService
-            .remove(id)
+        LectureService.remove(id)
             .then(() => {
                 this.close()
                 this.refresh()
@@ -178,7 +179,7 @@ export default class FormLectures extends Component {
     }
 
     render() {
-        const {id, canceled, prepaid, course_id, date, time, duration, at_state, at_note, at_paid, object, attendancestates, courses} = this.state
+        const {id, canceled, prepaid, course_id, date, time, duration, at_state, at_note, at_paid, object, lastAttendancestates, courses} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
@@ -240,7 +241,7 @@ export default class FormLectures extends Component {
                             <Label for={"at_state" + member.id} sm={3}>Stav účasti</Label>
                             <Col sm={9}>
                                 <Input type="select" bsSize="sm" name="at_state" id={"at_state" + member.id} value={at_state[member.id]} onChange={this.onChangeMultiple} data-id={member.id} required="true">
-                                    {attendancestates.map(attendancestate =>
+                                    {lastAttendancestates.map(attendancestate =>
                                         (attendancestate.visible || attendancestate.id === at_state[member.id]) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                         && <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
                                 </Input>

@@ -9,7 +9,6 @@ import Loading from "../api/Loading"
 export default class Settings extends Component {
     constructor(props) {
         super(props)
-        this.title = "Nastavení"
         this.state = {
             attendancestates: [],
             courses: [],
@@ -37,16 +36,14 @@ export default class Settings extends Component {
     }
 
     getAttendanceStates = () => {
-        AttendanceStateService
-            .getAll()
+        AttendanceStateService.getAll()
             .then((response) => {
                 this.setState({attendancestates: response, loadingTimes: this.state.loadingTimes + 1})
             })
     }
 
     getCourses = () => {
-        CourseService
-            .getAll()
+        CourseService.getAll()
             .then((response) => {
                 this.setState({courses: response, loadingTimes: this.state.loadingTimes + 1})
             })
@@ -123,7 +120,7 @@ export default class Settings extends Component {
             <div>
                 <Container>
                     <h1 className="text-center mb-4">
-                        {this.title}
+                        Nastavení
                         <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.COURSE)}>Přidat
                             kurz</Button>
                         <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.STATE)}>Přidat

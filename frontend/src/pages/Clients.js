@@ -10,7 +10,6 @@ import APP_URLS from "../urls"
 export default class ClientList extends Component {
     constructor(props) {
         super(props)
-        this.title = "Klienti"
         this.state = {
             clients: [],
             modal: false,
@@ -27,8 +26,7 @@ export default class ClientList extends Component {
     }
 
     getClients = () => {
-        ClientService
-            .getAll()
+        ClientService.getAll()
             .then((response) => {
                 this.setState({clients: response, loading: false})
             })
@@ -60,7 +58,7 @@ export default class ClientList extends Component {
             <div>
                 <Container>
                     <h1 className="text-center mb-4">
-                        {this.title}
+                        Klienti
                         <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat klienta</Button>
                     </h1>
                     <Table striped size="sm" responsive>

@@ -23,7 +23,8 @@ export default class FormGroups extends Component {
         }
     }
 
-    getMembersArray(memberships) { // pripravi pole se cleny ve spravnem formatu, aby pak slo rovnou zaslat do API
+    // pripravi pole se cleny ve spravnem formatu, aby pak slo rovnou zaslat do API
+    getMembersArray(memberships) {
         let arrayOfMembers = []
         memberships.map(membership => {
             return arrayOfMembers.push({
@@ -34,8 +35,7 @@ export default class FormGroups extends Component {
     }
 
     getDataCourses = () => {
-        CourseService
-            .getAll()
+        CourseService.getAll()
             .then((response) => {
                 this.setState({courses: response})
             })
@@ -75,8 +75,7 @@ export default class FormGroups extends Component {
     }
 
     delete = (id) => {
-        GroupService
-            .remove(id)
+        GroupService.remove(id)
             .then(() => {
                 this.close()
                 this.refresh()
@@ -84,8 +83,7 @@ export default class FormGroups extends Component {
     }
 
     getClients = () => {
-        ClientService
-            .getAll()
+        ClientService.getAll()
             .then((response) => {
                 let clients = []
                 response.map(client => {

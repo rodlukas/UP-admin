@@ -18,51 +18,61 @@ import Loading from "../api/Loading"
 import "./Card.css"
 
 export default class ClientView extends Component {
-    constructor(props) {
-        super(props)
-        this.title = "Karta "
-        this.state = {
-            id: props.match.params.id,
-            CLIENT: props.match.path.includes(APP_URLS.klienti),
-            object: {},
-            modal: false,
-            currentLecture: {},
-            lectures: [],
-            attendancestates: [],
-            memberships: [],
-            loading: true
+    state = {
+        id: props.match.params.id,
+        CLIENT: props.match.path.includes(APP_URLS.klienti),
+        object: {},
+        modal: false,
+        currentLecture: {},
+        lectures: [],
+        attendancestates: [],
+        memberships: [],
+        loading: true
+    }
+
+    componentDidMount() {
+        this.getObject()
+        this.getLectures()
+        this.getAttendanceStates()
+        if (this.state.CLIENT)
+            this.getMemberships()
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.id !== prevState.id || this.state.CLIENT !== prevState.CLIENT)
+        {
+            this.getObject()
+            this.getLectures()
+            if (this.state.CLIENT)
+                this.getMemberships()
         }
     }
 
-    componentWillReceiveProps(nextProps) { // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
-        const CLIENT = nextProps.match.path.includes(APP_URLS.klienti)
-        const id = nextProps.match.params.id
-        if(this.state.CLIENT !== CLIENT || this.state.id !== id)
+    // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
+    static getDerivedStateFromProps(props, state) {
+        const CLIENT = props.match.path.includes(APP_URLS.klienti)
+        const id = props.match.params.id
+        if(state.CLIENT !== CLIENT || state.id !== id)
         {
-            this.setState({
+            return {
                 id: id,
                 CLIENT: CLIENT,
                 memberships: [],
                 loading: true
-            })
-            this.getObject(CLIENT, id)
-            this.getLectures(CLIENT, id)
-            if (CLIENT)
-                this.getMemberships(id)
+            }
         }
+        return null
     }
 
     getAttendanceStates = () => {
-        AttendanceStateService
-            .getAll()
+        AttendanceStateService.getAll()
             .then((response) => {
                 this.setState({attendancestates: response})
             })
     }
 
     getMemberships = (id = this.state.id) => {
-        GroupService
-            .getAllFromClient(id)
+        GroupService.getAllFromClient(id)
             .then((response) => {
                 this.setState({memberships: response})
             })
@@ -110,14 +120,6 @@ export default class ClientView extends Component {
         })
     }
 
-    componentDidMount() {
-        this.getObject()
-        this.getLectures()
-        this.getAttendanceStates()
-        if (this.state.CLIENT)
-            this.getMemberships()
-    }
-
     render() {
         const {object, attendancestates, lectures, currentLecture, memberships, CLIENT} = this.state
         const NoInfo = () => <span className="text-muted">---</span>
@@ -144,7 +146,7 @@ export default class ClientView extends Component {
                 <Container>
                     <h1 className="text-center mb-4">
                         <Button color="secondary" className="nextBtn" onClick={this.goBack}>Jít zpět</Button>{' '}
-                        {this.title + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ?
+                        {"Karta " + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ?
                         <ClientName name={object.name} surname={object.surname}/> : object.name}
                         <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat lekci</Button>
                     </h1>

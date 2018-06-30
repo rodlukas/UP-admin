@@ -17,11 +17,9 @@ export default class DashboardDay extends Component {
         super(props)
         this.state = {
             lectures: [],
-            loading: true,
-            attendancestates: props.attendancestates
+            loading: true
         }
         this.date = new Date(props.date)
-        this.title = prettyDateWithDay(this.date)
     }
 
     getLectures = () => {
@@ -36,14 +34,9 @@ export default class DashboardDay extends Component {
         this.getLectures()
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.state.attendancestates !== nextProps.attendancestates) {
-            this.setState({attendancestates: nextProps.attendancestates})
-        }
-    }
-
     render() {
-        const {attendancestates, lectures} = this.state
+        const {lectures} = this.state
+        const title = prettyDateWithDay(this.date)
         const Day = () =>
             <div>
                 {lectures.map(lecture =>
@@ -75,7 +68,7 @@ export default class DashboardDay extends Component {
                                     <Badge color="info">{attendance.note}</Badge>
                                     <SelectAttendanceState value={attendance.attendancestate.id}
                                                            attendanceId={attendance.id}
-                                                           attendancestates={attendancestates}
+                                                           attendancestates={this.props.attendancestates}
                                                            funcRefresh={this.getLectures}/>
                                 </li>)}
                         </ul>
@@ -90,7 +83,7 @@ export default class DashboardDay extends Component {
             <div>
                 <ListGroup>
                     <ListGroupItem color={isToday(this.date) ? "primary" : ''}>
-                        <h4 className="text-center">{this.title}</h4>
+                        <h4 className="text-center">{title}</h4>
                     </ListGroupItem>
                     {this.state.loading ?
                         <ListGroupItem><Loading/></ListGroupItem> :

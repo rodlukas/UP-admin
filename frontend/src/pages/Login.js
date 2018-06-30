@@ -6,7 +6,6 @@ import AuthService from "../auth/authService"
 export default class Login extends Component {
     constructor(props) {
         super(props)
-        this.title = "Přihlášení"
         this.state = {
             redirectToReferrer: false,
             username: '',
@@ -39,7 +38,7 @@ export default class Login extends Component {
             return <Redirect to={from}/>
         return (
             <Container>
-                <h1 className="text-center mb-4">{this.title}</h1>
+                <h1 className="text-center mb-4">Přihlášení</h1>
                 <Row className="justify-content-center">
                     <Col md="9" lg="7">
                         <Card className="p-4">

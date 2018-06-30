@@ -10,7 +10,6 @@ import APP_URLS from "../urls"
 export default class Groups extends Component {
     constructor(props) {
         super(props)
-        this.title = "Skupiny"
         this.state = {
             groups: [],
             modal: false,
@@ -58,7 +57,7 @@ export default class Groups extends Component {
             <div>
                 <Container>
                     <h1 className="text-center mb-4">
-                        {this.title}
+                        Skupiny
                         <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat skupinu</Button>
                     </h1>
                     <Table striped size="sm" responsive>
