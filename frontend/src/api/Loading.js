@@ -1,6 +1,6 @@
 import React from 'react'
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import {faSpinnerThird} from "@fortawesome/fontawesome-pro-solid"
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faSpinnerThird} from "@fortawesome/pro-solid-svg-icons"
 
 const Loading = () => (
     <div className="text-center">

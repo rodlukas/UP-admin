@@ -19,8 +19,8 @@ import "./Card.css"
 
 export default class ClientView extends Component {
     state = {
-        id: props.match.params.id,
-        CLIENT: props.match.path.includes(APP_URLS.klienti),
+        id: this.props.match.params.id,
+        CLIENT: this.props.match.path.includes(APP_URLS.klienti),
         object: {},
         modal: false,
         currentLecture: {},

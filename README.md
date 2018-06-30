@@ -6,6 +6,10 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 
 ## užitečné příkazy
 * vytvoření souboru `requirements.txt`: `pip freeze > requirements.txt`
+* yarn
+    * zjištění aktualizací: `yarn outdated`
+    * přidání/smazání balíčku: `yarn upgrade/remove [package]`
+    * aktualizace konkrétního balíčku: `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
 * spuštění produkční verze: `python manage.py runserver --settings=up.production_settings`
 * **HEROKU**
     * vytvoření uživatele: `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`

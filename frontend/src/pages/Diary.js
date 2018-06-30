@@ -2,8 +2,8 @@ import React, {Component} from "react"
 import {Container, Row, Col, Button} from 'reactstrap'
 import DashboardDay from '../components/DashboardDay'
 import {prettyDate} from "../global/funcDateTime"
-import FontAwesomeIcon from '@fortawesome/react-fontawesome'
-import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/fontawesome-pro-solid"
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/pro-solid-svg-icons"
 import AttendanceStateService from "../api/services/attendancestate"
 import APP_URLS from "../urls"
 import {Link} from 'react-router-dom'
