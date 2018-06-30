@@ -30,8 +30,12 @@ export function toISOTime(date) {
 
 export function isToday(date) {
     const currentDate = new Date()
+    return isEqualDate(date, currentDate)
+}
+
+export function isEqualDate(date1, date2) {
     return (
-        date.getDate()      === currentDate.getDate() &&
-        date.getFullYear()  === currentDate.getFullYear() &&
-        date.getMonth()     === currentDate.getMonth())
+        date1.getDate()     === date2.getDate() &&
+        date1.getFullYear() === date2.getFullYear() &&
+        date1.getMonth()    === date2.getMonth())
 }

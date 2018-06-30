@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Container, Row, Col, Button} from 'reactstrap'
 import DashboardDay from '../components/DashboardDay'
-import {prettyDate} from "../global/funcDateTime"
+import {prettyDate, isEqualDate} from "../global/funcDateTime"
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/pro-solid-svg-icons"
 import AttendanceStateService from "../api/services/attendancestate"
@@ -106,7 +106,7 @@ export default class Diary extends Component {
                         <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
                     </Link>{' '}
                     <Link to={Diary.serializeDateUrl(this.currentMonday)}>
-                        <Button color="secondary" disabled={Diary.serializeDateUrl(this.currentMonday) === Diary.serializeDateUrl(this.state.week[0])}>Dnes</Button>
+                        <Button color="secondary" disabled={isEqualDate(this.currentMonday, this.state.week[0])}>Dnes</Button>
                     </Link>
                 </h1>
                 <Container fluid>
