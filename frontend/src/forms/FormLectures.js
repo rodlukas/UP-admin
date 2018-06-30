@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput} from 'reactstrap'
 import {toISODate, toISOTime, prettyDateWithDay} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
 import CourseService from "../api/services/course"
@@ -28,7 +28,7 @@ export default class FormLectures extends Component {
 
         let date = new Date(start)
         this.state = {
-            ATTENDANCESTATE_OK_INDEX: FormLectures.prepareStateIndex(attendancestates),
+            ATTENDANCESTATE_OK_INDEX: this.getOkIndex(),
             lastAttendancestates: attendancestates,
             id: id || '',
             at_state: this.createAttendanceStateArray(),
@@ -45,6 +45,10 @@ export default class FormLectures extends Component {
             courses: [],
             object: object
         }
+    }
+
+    getOkIndex() {
+        return FormLectures.prepareStateIndex(this.props.attendancestates)
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -79,7 +83,7 @@ export default class FormLectures extends Component {
     createAttendanceStateArray() {
         let array = []
         this.members.map((client, id) =>
-            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : this.state.ATTENDANCESTATE_OK_INDEX)
+            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : this.getOkIndex())
         return array
     }
 
@@ -188,18 +192,21 @@ export default class FormLectures extends Component {
                 <ModalBody>
                     <FormGroup row>
                         <Col sm={3}>Naplánováno?</Col>
-                        <Col sm={9} className="custom-control custom-checkbox">
-                            <Input type="checkbox" className="custom-control-input" name="prepaid" id="prepaid"
-                                   checked={prepaid} onChange={(e) => {this.onChangePrepaid();this.onChange(e);}}/>
-                            <Label for="prepaid" className="custom-control-label">Nenaplánováno, ale předplaceno</Label>
+                        <Col sm={9}>
+                            <CustomInput type="checkbox" id="prepaid" name="prepaid"
+                                         label="Nenaplánováno, ale předplaceno"
+                                         checked={prepaid} onChange={(e) => {
+                                this.onChangePrepaid();
+                                this.onChange(e);
+                            }}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
                         <Col sm={3}>Příznaky</Col>
-                        <Col sm={9} className="custom-control custom-checkbox">
-                            <Input type="checkbox" className="custom-control-input" name="canceled" id="canceled"
-                                   checked={canceled} onChange={this.onChange}/>
-                            <Label for="canceled" className="custom-control-label">Zrušeno</Label>
+                        <Col sm={9}>
+                            <CustomInput type="checkbox" id="canceled" name="canceled"
+                                         label="Zrušeno"
+                                         checked={canceled} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -225,12 +232,12 @@ export default class FormLectures extends Component {
                     <FormGroup row>
                         <Label for="course_id" sm={3}>Kurz</Label>
                         <Col sm={9}>
-                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.CLIENT && 'disabled'} required="true">
+                            <CustomInput type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.CLIENT && 'disabled'} required="true">
                                 <option disabled value={UNDEF}>Vyberte kurz...</option>
                                 {courses.map(course =>
                                     (course.visible || course.id === course_id) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                     && <option key={course.id} value={course.id}>{course.name}</option>)}
-                            </Input>
+                            </CustomInput>
                         </Col>
                     </FormGroup>
                     <hr/>
@@ -240,18 +247,19 @@ export default class FormLectures extends Component {
                         <FormGroup row>
                             <Label for={"at_state" + member.id} sm={3}>Stav účasti</Label>
                             <Col sm={9}>
-                                <Input type="select" bsSize="sm" name="at_state" id={"at_state" + member.id} value={at_state[member.id]} onChange={this.onChangeMultiple} data-id={member.id} required="true">
+                                <CustomInput type="select" bsSize="sm" name="at_state" id={"at_state" + member.id} value={at_state[member.id]} onChange={this.onChangeMultiple} data-id={member.id} required="true">
                                     {lastAttendancestates.map(attendancestate =>
                                         (attendancestate.visible || attendancestate.id === at_state[member.id]) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                         && <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
-                                </Input>
+                                </CustomInput>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
                             <Col sm={3}>Platba</Col>
-                            <Col sm={9} className="custom-control custom-checkbox">
-                                <Input type="checkbox" className="custom-control-input" name="at_paid" id={"at_paid" + member.id} checked={at_paid[member.id]} onChange={this.onChangeMultiple} data-id={member.id}/>
-                                <Label for={"at_paid" + member.id} className="custom-control-label">Placeno</Label>
+                            <Col sm={9}>
+                                <CustomInput type="checkbox" id={"at_paid" + member.id} name="at_paid"
+                                             label="Placeno" checked={at_paid[member.id]}
+                                             onChange={this.onChangeMultiple} data-id={member.id}/>
                             </Col>
                         </FormGroup>
                         <FormGroup row>

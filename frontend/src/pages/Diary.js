@@ -106,7 +106,7 @@ export default class Diary extends Component {
                         <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
                     </Link>{' '}
                     <Link to={Diary.serializeDateUrl(this.currentMonday)}>
-                        <Button color="secondary">Dnes</Button>
+                        <Button color="secondary" disabled={Diary.serializeDateUrl(this.currentMonday) === Diary.serializeDateUrl(this.state.week[0])}>Dnes</Button>
                     </Link>
                 </h1>
                 <Container fluid>

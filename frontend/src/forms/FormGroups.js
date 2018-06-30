@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from 'reactstrap'
 import CourseService from "../api/services/course"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
@@ -115,11 +115,11 @@ export default class FormGroups extends Component {
                     <FormGroup row>
                         <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
-                            <Input type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required>
+                            <CustomInput type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required>
                                 <option disabled value={UNDEF}>Vyberte kurz...</option>
                                 {courses.map(course =>
                                     <option key={course.id} value={course.id}>{course.name}</option>)}
-                            </Input>
+                            </CustomInput>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

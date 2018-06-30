@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Input} from 'reactstrap'
+import {CustomInput} from 'reactstrap'
 import AttendanceService from "../api/services/attendance"
 
 export default class SelectAttendanceState extends Component {
@@ -29,11 +29,11 @@ export default class SelectAttendanceState extends Component {
     render() {
         const {value} = this.state
         return (
-            <Input type="select" bsSize="sm" onChange={this.onChange} value={value}>
+            <CustomInput type="select" bsSize="sm" onChange={this.onChange} id={"select" + this.props.attendanceId} value={value}>
                 {this.props.attendancestates.map(attendancestate =>
                     (attendancestate.visible || attendancestate.id === value)   // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                     && <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
-            </Input>
+            </CustomInput>
         )
     }
 }

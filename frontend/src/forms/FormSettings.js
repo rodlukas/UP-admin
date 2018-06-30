@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from 'reactstrap'
 import {EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
@@ -75,10 +75,10 @@ export default class FormSettings extends Component {
                     </FormGroup>
                     <FormGroup row>
                         <Col sm={3}>Viditelnost</Col>
-                        <Col sm={9} className="custom-control custom-checkbox">
-                            <Input type="checkbox" className="custom-control-input" name="visible"
-                                   id="visible" checked={visible} onChange={this.onChange}/>
-                            <Label for="visible" className="custom-control-label">Bude zobrazováno</Label>
+                        <Col sm={9}>
+                            <CustomInput type="checkbox" id="visible" name="visible"
+                                         label="Bude zobrazováno"
+                                         checked={visible} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     {this.isObject &&
