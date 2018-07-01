@@ -13,15 +13,15 @@ const UNDEF = "undef"
 export default class FormLectures extends Component {
     constructor(props) {
         super(props)
-        this.isLecture = Boolean(Object.keys(props.lecture).length)
-        this.CLIENT = props.CLIENT
+        this.IS_LECTURE = Boolean(Object.keys(props.lecture).length)
+        this.IS_CLIENT = props.IS_CLIENT
         const {id, start, course, duration, attendances, canceled} = props.lecture
         const {attendancestates, object} = props
-        const isPrepaid = this.isLecture ? !Boolean(start) : false
+        const isPrepaid = this.IS_LECTURE ? !Boolean(start) : false
         this.members = []
-        if (this.CLIENT)
+        if (this.IS_CLIENT)
             this.members = [object]
-        else if (this.isLecture)
+        else if (this.IS_LECTURE)
             this.members = this.getMembers(attendances)
         else
             this.members = this.getMembers(object.memberships)
@@ -36,12 +36,12 @@ export default class FormLectures extends Component {
             at_note: this.createNoteArray(),
             prepaid: isPrepaid,
             canceled: canceled || false,
-            date: (this.isLecture && !isPrepaid) ? toISODate(date) : '',
-            time: (this.isLecture && !isPrepaid) ? toISOTime(date) : '',
-            course_id: (this.isLecture ?
+            date: (this.IS_LECTURE && !isPrepaid) ? toISODate(date) : '',
+            time: (this.IS_LECTURE && !isPrepaid) ? toISOTime(date) : '',
+            course_id: (this.IS_LECTURE ?
                 course.id :
-                (this.CLIENT ? UNDEF : object.course.id)),
-            duration: duration || (this.CLIENT ? DEFAULT_DURATION : GROUP_DURATION),
+                (this.IS_CLIENT ? UNDEF : object.course.id)),
+            duration: duration || (this.IS_CLIENT ? DEFAULT_DURATION : GROUP_DURATION),
             courses: [],
             object: object
         }
@@ -83,21 +83,21 @@ export default class FormLectures extends Component {
     createAttendanceStateArray() {
         let array = []
         this.members.map((client, id) =>
-            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].attendancestate.id : this.getOkIndex())
+            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate.id : this.getOkIndex())
         return array
     }
 
     createPaidArray() {
         let array = []
         this.members.map((client, id) =>
-            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].paid : false)
+            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].paid : false)
         return array
     }
 
     createNoteArray() {
         let array = []
         this.members.map((client, id) =>
-            array[client.id] = this.isLecture ? this.props.lecture.attendances[id].note : '')
+            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].note : '')
         return array
     }
 
@@ -146,12 +146,12 @@ export default class FormLectures extends Component {
                 note: at_note[member.id]
             }))
         let data = {id, attendances, course_id, duration, canceled}
-        if(!this.CLIENT)
+        if(!this.IS_CLIENT)
             data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
         if(!prepaid)
             data.start = start // stejny duvod viz. vyse
         let request
-        if (this.isLecture)
+        if (this.IS_LECTURE)
             request = LectureService.update(data)
         else
             request = LectureService.create(data)
@@ -186,7 +186,7 @@ export default class FormLectures extends Component {
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
-                    {this.isLecture ? 'Úprava' : 'Přidání'} lekce {(this.CLIENT ? "klienta" : "skupiny")}: {(this.CLIENT ? (object.name + " " + object.surname) : object.name)}
+                    {this.IS_LECTURE ? 'Úprava' : 'Přidání'} lekce {(this.IS_CLIENT ? "klienta" : "skupiny")}: {(this.IS_CLIENT ? (object.name + " " + object.surname) : object.name)}
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
@@ -231,7 +231,7 @@ export default class FormLectures extends Component {
                     <FormGroup row>
                         <Label for="course_id" sm={3}>Kurz</Label>
                         <Col sm={9}>
-                            <CustomInput type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.CLIENT && 'disabled'} required="true">
+                            <CustomInput type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} disabled={!this.IS_CLIENT && 'disabled'} required="true">
                                 <option disabled value={UNDEF}>Vyberte kurz...</option>
                                 {courses.map(course =>
                                     (course.visible || course.id === course_id) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
@@ -242,7 +242,7 @@ export default class FormLectures extends Component {
                     <hr/>
                     {this.members.map(member =>
                     <div key={member.id}>
-                        <h5>{!this.CLIENT && <ClientName name={member.name} surname={member.surname}/>}</h5>
+                        <h5>{!this.IS_CLIENT && <ClientName name={member.name} surname={member.surname}/>}</h5>
                         <FormGroup row>
                             <Label for={"at_state" + member.id} sm={3}>Stav účasti</Label>
                             <Col sm={9}>
@@ -268,15 +268,15 @@ export default class FormLectures extends Component {
                             </Col>
                         </FormGroup>
                     </div>)}
-                    {this.isLecture &&
+                    {this.IS_LECTURE &&
                     <FormGroup row className="border-top pt-3">
                         <Label for="note" sm={3} className="text-muted">Smazání</Label>
                         <Col sm={9}>
                             <Button color="danger"
                                     onClick={() => {
                                         let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
-                                            + (this.CLIENT ? "klienta" : "skupiny") + " "
-                                            + (this.CLIENT ? (object.name + " " + object.surname) : object.name)
+                                            + (this.IS_CLIENT ? "klienta" : "skupiny") + " "
+                                            + (this.IS_CLIENT ? (object.name + " " + object.surname) : object.name)
                                             + (!prepaid ? (" v " + prettyDateWithDay(new Date(date)) + " " + time) : '') + '?'
                                         if (window.confirm(msg))
                                             this.delete(id)}}>
@@ -286,7 +286,7 @@ export default class FormLectures extends Component {
                 </ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.close}>Storno</Button>{' '}
-                    <Button color="primary" type="submit">{this.isLecture ? 'Uložit' : 'Přidat'}</Button>
+                    <Button color="primary" type="submit">{this.IS_LECTURE ? 'Uložit' : 'Přidat'}</Button>
                 </ModalFooter>
             </Form>
         )

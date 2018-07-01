@@ -17,48 +17,48 @@ import {Link} from 'react-router-dom'
 import Loading from "../api/Loading"
 import "./Card.css"
 
-export default class ClientView extends Component {
+export default class Card extends Component {
     state = {
         id: this.props.match.params.id,
-        CLIENT: this.props.match.path.includes(APP_URLS.klienti),
+        IS_CLIENT: this.props.match.path.includes(APP_URLS.klienti),
         object: {},
-        modal: false,
+        IS_MODAL: false,
         currentLecture: {},
         lectures: [],
         attendancestates: [],
         memberships: [],
-        loading: true
+        IS_LOADING: true
     }
 
     componentDidMount() {
         this.getObject()
         this.getLectures()
         this.getAttendanceStates()
-        if (this.state.CLIENT)
+        if (this.state.IS_CLIENT)
             this.getMemberships()
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.state.id !== prevState.id || this.state.CLIENT !== prevState.CLIENT)
+        if(this.state.id !== prevState.id || this.state.IS_CLIENT !== prevState.IS_CLIENT)
         {
             this.getObject()
             this.getLectures()
-            if (this.state.CLIENT)
+            if (this.state.IS_CLIENT)
                 this.getMemberships()
         }
     }
 
     // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
     static getDerivedStateFromProps(props, state) {
-        const CLIENT = props.match.path.includes(APP_URLS.klienti)
+        const IS_CLIENT = props.match.path.includes(APP_URLS.klienti)
         const id = props.match.params.id
-        if(state.CLIENT !== CLIENT || state.id !== id)
+        if(state.IS_CLIENT !== IS_CLIENT || state.id !== id)
         {
             return {
                 id: id,
-                CLIENT: CLIENT,
+                IS_CLIENT: IS_CLIENT,
                 memberships: [],
-                loading: true
+                IS_LOADING: true
             }
         }
         return null
@@ -81,7 +81,7 @@ export default class ClientView extends Component {
     toggle = (lecture = {}) => {
         this.setState({
             currentLecture: lecture,
-            modal: !this.state.modal
+            IS_MODAL: !this.state.IS_MODAL
         })
     }
 
@@ -89,17 +89,17 @@ export default class ClientView extends Component {
         this.props.history.goBack()
     }
 
-    getObject = (CLIENT = this.state.CLIENT, id = this.state.id) => {
-        let service = (CLIENT ? ClientService : GroupService)
+    getObject = (IS_CLIENT = this.state.IS_CLIENT, id = this.state.id) => {
+        let service = (IS_CLIENT ? ClientService : GroupService)
         service.get(id)
             .then((response) => {
                 this.setState({object: response})
             })
     }
 
-    getLectures = (CLIENT = this.state.CLIENT, id = this.state.id) => {
+    getLectures = (IS_CLIENT = this.state.IS_CLIENT, id = this.state.id) => {
         let request
-        if (CLIENT)
+        if (IS_CLIENT)
             request = LectureService.getAllFromClientOrdered(id, false)
         else
             request = LectureService.getAllFromGroupOrdered(id, false)
@@ -109,44 +109,39 @@ export default class ClientView extends Component {
                 obj[item.course.name].push(item)
                 return obj}, {})
             let groups = Object.keys(group_to_values).map(function (key) {
-                return {course: key, values: group_to_values[key]}
-            })
+                return {course: key, values: group_to_values[key]}})
             groups.sort(function (a, b) { // serad podle abecedy
                 if (a.course < b.course) return -1
                 if (a.course > b.course) return 1
-                return 0
-            })
-            this.setState({lectures: groups, loading: false})
+                return 0})
+            this.setState({lectures: groups, IS_LOADING: false})
         })
     }
 
     render() {
-        const {object, attendancestates, lectures, currentLecture, memberships, CLIENT} = this.state
+        const {object, attendancestates, lectures, currentLecture, memberships, IS_CLIENT} = this.state
         const NoInfo = () => <span className="text-muted">---</span>
         const Phone = ({phone}) => {
             if (phone !== "")
                 return <a href={'tel:' + phone}>{phone}</a>
-            else
-                return <NoInfo/>
+            return <NoInfo/>
         }
         const Email = ({email}) => {
             if (email !== "")
                 return <a href={'mailto:' + email}>{email}</a>
-            else
-                return <NoInfo/>
+            return <NoInfo/>
         }
         const Note = ({note}) => {
             if (note !== "")
                 return <span>{note}</span>
-            else
-                return <NoInfo/>
+            return <NoInfo/>
         }
         const CardContent = () =>
             <div>
                 <Container>
                     <h1 className="text-center mb-4">
                         <Button color="secondary" className="nextBtn" onClick={this.goBack}>Jít zpět</Button>{' '}
-                        {"Karta " + (CLIENT ? "klienta" : "skupiny")}: {CLIENT ?
+                        {"Karta " + (IS_CLIENT ? "klienta" : "skupiny")}: {IS_CLIENT ?
                         <ClientName name={object.name} surname={object.surname}/> : object.name}
                         <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat lekci</Button>
                     </h1>
@@ -155,7 +150,7 @@ export default class ClientView extends Component {
                     <Row className="justify-content-center">
                         <Col sm="9" md="7" lg="5" xl="3">
                             <ListGroup>
-                                {CLIENT &&
+                                {IS_CLIENT &&
                                 <div>
                                     <ListGroupItem><b>Telefon:</b> <Phone phone={object.phone}/></ListGroupItem>
                                     <ListGroupItem><b>E-mail:</b> <Email email={object.email}/></ListGroupItem>
@@ -177,7 +172,7 @@ export default class ClientView extends Component {
                                     </ListGroupItem>
                                     <ListGroupItem><b>Poznámka:</b> <Note note={object.note}/></ListGroupItem>
                                 </div>}
-                                {!CLIENT &&
+                                {!IS_CLIENT &&
                                 <ListGroupItem>
                                     Členové: <ClientsList clients={object.memberships}/>
                                 </ListGroupItem>}
@@ -213,8 +208,8 @@ export default class ClientView extends Component {
                                         <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
                                         {lectureVal.attendances.map(attendance =>
                                             <li key={attendance.id}>
-                                                {!CLIENT && <ClientName name={attendance.client.name}
-                                                                        surname={attendance.client.surname}/>}{' '}
+                                                {!IS_CLIENT && <ClientName name={attendance.client.name}
+                                                                           surname={attendance.client.surname}/>}{' '}
                                                 <PaidButton paid={attendance.paid}
                                                             attendanceId={attendance.id}
                                                             funcRefresh={this.getLectures}/>{' '}
@@ -236,14 +231,14 @@ export default class ClientView extends Component {
                         </p>}
                     </Row>
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} size="xl" autoFocus={false}>
-                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} CLIENT={CLIENT}
+                <Modal isOpen={this.state.IS_MODAL} toggle={this.toggle} size="xl" autoFocus={false}>
+                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} IS_CLIENT={IS_CLIENT}
                                   funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>
             </div>
         return (
             <div>
-                {!this.state.loading ?
+                {!this.state.IS_LOADING ?
                     <CardContent/> :
                     <Loading/>}
             </div>

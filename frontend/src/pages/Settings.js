@@ -12,10 +12,10 @@ export default class Settings extends Component {
         this.state = {
             attendancestates: [],
             courses: [],
-            modal: false,
+            IS_MODAL: false,
             currentObject: {},
             currentType: EDIT_TYPE.STATE,
-            loadingTimes: 0
+            LOADING_CNT: 0
         }
     }
 
@@ -23,12 +23,12 @@ export default class Settings extends Component {
         this.setState({
             currentObject: object,
             currentType: type,
-            modal: !this.state.modal
+            IS_MODAL: !this.state.IS_MODAL
         })
     }
 
     refresh = (type) => {
-        this.setState({loadingTimes: this.state.loadingTimes - 1})
+        this.setState({LOADING_CNT: this.state.LOADING_CNT - 1})
         if (type === EDIT_TYPE.COURSE)
             this.getCourses()
         else if (type === EDIT_TYPE.STATE)
@@ -38,14 +38,14 @@ export default class Settings extends Component {
     getAttendanceStates = () => {
         AttendanceStateService.getAll()
             .then((response) => {
-                this.setState({attendancestates: response, loadingTimes: this.state.loadingTimes + 1})
+                this.setState({attendancestates: response, LOADING_CNT: this.state.LOADING_CNT + 1})
             })
     }
 
     getCourses = () => {
         CourseService.getAll()
             .then((response) => {
-                this.setState({courses: response, loadingTimes: this.state.loadingTimes + 1})
+                this.setState({courses: response, LOADING_CNT: this.state.LOADING_CNT + 1})
             })
     }
 
@@ -121,16 +121,14 @@ export default class Settings extends Component {
                 <Container>
                     <h1 className="text-center mb-4">
                         Nastavení
-                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.COURSE)}>Přidat
-                            kurz</Button>
-                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.STATE)}>Přidat
-                            stav</Button>
+                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.COURSE)}>Přidat kurz</Button>
+                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.STATE)}>Přidat stav</Button>
                     </h1>
-                    {this.state.loadingTimes !== 2 ?
+                    {this.state.LOADING_CNT !== 2 ?
                         <Loading/> :
                         <SettingsContent/>}
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} autoFocus={false}>
+                <Modal isOpen={this.state.IS_MODAL} toggle={this.toggle} autoFocus={false}>
                     <FormSettings object={currentObject} funcClose={this.toggle} funcRefresh={this.refresh}
                                   TYPE={currentType}/>
                 </Modal>

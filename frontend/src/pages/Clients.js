@@ -12,23 +12,23 @@ export default class ClientList extends Component {
         super(props)
         this.state = {
             clients: [],
-            modal: false,
+            IS_MODAL: false,
             currentClient: {},
-            loading: true
+            IS_LOADING: true
         }
     }
 
     toggle = (client = {}) => {
         this.setState({
             currentClient: client,
-            modal: !this.state.modal
+            IS_MODAL: !this.state.IS_MODAL
         })
     }
 
     getClients = () => {
         ClientService.getAll()
             .then((response) => {
-                this.setState({clients: response, loading: false})
+                this.setState({clients: response, IS_LOADING: false})
             })
     }
 
@@ -71,16 +71,16 @@ export default class ClientList extends Component {
                             <th>Akce</th>
                         </tr>
                         </thead>
-                        {this.state.loading ?
+                        {this.state.IS_LOADING ?
                             <tbody><tr><td colSpan="5"><Loading/></td></tr></tbody> :
                             <ClientTable/>}
                     </Table>
-                    {!Boolean(clients.length) && !this.state.loading &&
+                    {!Boolean(clients.length) && !this.state.IS_LOADING &&
                     <p className="text-muted text-center">
                         Žádní klienti
                     </p>}
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} autoFocus={false}>
+                <Modal isOpen={this.state.IS_MODAL} toggle={this.toggle} autoFocus={false}>
                     <FormClients client={currentClient} funcClose={this.toggle} funcRefresh={this.getClients}/>
                 </Modal>
             </div>

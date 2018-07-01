@@ -12,23 +12,23 @@ export default class Groups extends Component {
         super(props)
         this.state = {
             groups: [],
-            modal: false,
+            IS_MODAL: false,
             currentGroup: {},
-            loading: true
+            IS_LOADING: true
         }
     }
 
     toggle = (group = {}) => {
         this.setState({
             currentGroup: group,
-            modal: !this.state.modal
+            IS_MODAL: !this.state.IS_MODAL
         })
     }
 
     getGroups = () => {
         GroupService.getAll()
             .then((response) => {
-                this.setState({groups: response, loading: false})
+                this.setState({groups: response, IS_LOADING: false})
             })
     }
 
@@ -69,16 +69,16 @@ export default class Groups extends Component {
                             <th>Akce</th>
                         </tr>
                         </thead>
-                        {this.state.loading ?
+                        {this.state.IS_LOADING ?
                             <tbody><tr><td colSpan="4"><Loading/></td></tr></tbody> :
                             <GroupTable/>}
                     </Table>
-                    {!Boolean(groups.length) && !this.state.loading &&
+                    {!Boolean(groups.length) && !this.state.IS_LOADING &&
                     <p className="text-muted text-center">
                         Žádné skupiny
                     </p>}
                 </Container>
-                <Modal isOpen={this.state.modal} toggle={this.toggle} autoFocus={false}>
+                <Modal isOpen={this.state.IS_MODAL} toggle={this.toggle} autoFocus={false}>
                     <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}/>
                 </Modal>
             </div>

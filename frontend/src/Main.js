@@ -19,13 +19,13 @@ export default class Main extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            isOpen: false
+            IS_MENU_OPEN: false
         }
     }
 
     toggle = () => {
         this.setState({
-            isOpen: !this.state.isOpen
+            IS_MENU_OPEN: !this.state.IS_MENU_OPEN
         })
     }
 
@@ -38,7 +38,7 @@ export default class Main extends Component {
                             ÚP<sub>admin</sub>
                         </NavbarBrand>
                         <NavbarToggler onClick={this.toggle}/>
-                        <Collapse isOpen={this.state.isOpen} navbar>
+                        <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>
                             <Menu/>
                         </Collapse>
                     </Navbar>

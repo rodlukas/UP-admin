@@ -17,7 +17,7 @@ export default class DashboardDay extends Component {
         super(props)
         this.state = {
             lectures: [],
-            loading: true
+            IS_LOADING: true
         }
         this.date = new Date(props.date)
     }
@@ -26,7 +26,7 @@ export default class DashboardDay extends Component {
         LectureService
             .getAllFromDayOrdered(toISODate(this.date), true)
             .then((response) => {
-                this.setState({lectures: response, loading: false})
+                this.setState({lectures: response, IS_LOADING: false})
             })
     }
 
@@ -85,7 +85,7 @@ export default class DashboardDay extends Component {
                     <ListGroupItem color={isToday(this.date) ? "primary" : ''}>
                         <h4 className="text-center">{title}</h4>
                     </ListGroupItem>
-                    {this.state.loading ?
+                    {this.state.IS_LOADING ?
                         <ListGroupItem><Loading/></ListGroupItem> :
                         <Day/>}
                 </ListGroup>
