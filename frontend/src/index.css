@@ -51,5 +51,5 @@ h1 .addBtn + .addBtn {
 
 /* FORMS */
 input {
-    min-height: 2.4rem /* fix pro iOS */
+    min-height: 2.38rem /* fix pro iOS */
 }

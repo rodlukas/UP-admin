@@ -13,3 +13,9 @@
 .lecture-canceled {
     background-color: #f8d7da !important
 }
+
+@media (min-width: 576px) and (max-width: 992px) {
+    .ModalFormLecture {
+        max-width: 800px !important;
+    }
+}

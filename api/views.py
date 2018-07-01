@@ -53,3 +53,9 @@ class LectureViewSet(viewsets.ModelViewSet):
         elif client_id is not None:
             qs = qs.filter(attendances__client=client_id, group__isnull=True)
         return qs
+
+    def get_serializer(self, *args, **kwargs):
+        """ pokud prislo pole, nastav serializer na many=True """
+        if isinstance(kwargs.get('data', {}), list):
+            kwargs['many'] = True
+        return super(LectureViewSet, self).get_serializer(*args, **kwargs)

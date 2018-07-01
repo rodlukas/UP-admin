@@ -115,7 +115,7 @@ export default class FormGroups extends Component {
                     <FormGroup row>
                         <Label for="course_id" sm={2}>Kurz</Label>
                         <Col sm={10}>
-                            <CustomInput type="select" bsSize="sm" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required>
+                            <CustomInput type="select" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required>
                                 <option disabled value={UNDEF}>Vyberte kurz...</option>
                                 {courses.map(course =>
                                     <option key={course.id} value={course.id}>{course.name}</option>)}
@@ -142,7 +142,7 @@ export default class FormGroups extends Component {
                         <Label for="note" sm={2} className="text-muted">Smazání</Label>
                         <Col sm={10}>
                             <Alert color="warning">
-                                <p>Nevratně smaže skupinu i s jejími lekcemi</p>
+                                <p>Nenávratně smaže skupinu i s jejími lekcemi</p>
                                 <Button color="danger"
                                         onClick={() => {
                                             if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?'))

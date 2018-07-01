@@ -86,7 +86,7 @@ export default class FormSettings extends Component {
                         <Label for="note" sm={3} className="text-muted">Smazání</Label>
                         <Col sm={9}>
                             <Alert color="warning">
-                                <p>Lze smazat pouze když žádný klient nemá příšlušný {type} přiřazen</p>
+                                <p>Lze smazat pouze pokud není příslušný {type} použit u žádné lekce</p>
                                 <Button color="danger"
                                         onClick={() => {
                                             let msg = "Opravdu chcete smazat "
