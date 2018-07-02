@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Table, Button, Modal, Container, Row, Col, CustomInput, Alert} from 'reactstrap'
+import {Table, Button, Modal, Container, Row, Col, CustomInput, Alert} from "reactstrap"
 import FormSettings from "../forms/FormSettings"
 import {EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
@@ -35,7 +35,7 @@ export default class Settings extends Component {
         const state = this.state
         state[target.name] = target.value
         this.setState(state)
-
+        // odesli na API patch pozadavek
         const data = {id: this.state.default_id, default: true}
         AttendanceStateService.patch(data)
     }
@@ -91,7 +91,9 @@ export default class Settings extends Component {
             <div>
                 <Row>
                     <Col>
-                        <h2>Stavy účasti</h2>
+                        <h2>
+                            Stavy účasti
+                        </h2>
                         <Table striped size="sm">
                             <thead className="thead-dark">
                             <tr>
@@ -103,29 +105,42 @@ export default class Settings extends Component {
                             <tbody>
                             {attendancestates.map(attendancestate =>
                                 <tr key={attendancestate.id}>
-                                    <td>{attendancestate.name}</td>
-                                    <td><Visible visible={attendancestate.visible}/></td>
+                                    <td>
+                                        {attendancestate.name}
+                                    </td>
+                                    <td>
+                                        <Visible visible={attendancestate.visible}/>
+                                    </td>
                                     <td>
                                         <Button color="primary"
-                                                onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}>Upravit</Button>
+                                                onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}>
+                                            Upravit
+                                        </Button>
                                     </td>
                                 </tr>)}
                             </tbody>
                         </Table>
                         <hr/>
-                        <h3>Výchozí stav účasti</h3>
+                        <h3>
+                            Výchozí stav účasti
+                        </h3>
                         {default_id === UNDEF &&
                             <Alert color="danger">
                                 Není vybraný výchozí stav, aplikace nemůže správně fungovat!
                             </Alert>}
-                        <p>Pro správné fungování aplikace je třeba zvolit výchozí stav účasti, ten zároveň
-                            <span className="font-weight-bold"> musí reprezentovat stav "klient se zúčastní/zúčastnil"</span>.
+                        <p>
+                            Pro správné fungování aplikace je třeba zvolit výchozí stav účasti, ten zároveň
+                            <span className="font-weight-bold"> musí reprezentovat stav „klient se zúčastní/zúčastnil“</span>.
                         </p>
                         <CustomInput type="select" name="default_id" id="default_id" value={default_id}
                                      onChange={this.onChange}>
-                            <option disabled value={UNDEF}>Vyberte stav...</option>
+                            <option disabled value={UNDEF}>
+                                Vyberte stav...
+                            </option>
                             {attendancestates.map(attendancestate =>
-                                <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
+                                <option key={attendancestate.id} value={attendancestate.id}>
+                                    {attendancestate.name}
+                                </option>)}
                         </CustomInput>
                         {!Boolean(attendancestates.length) &&
                         <p className="text-muted text-center">
@@ -133,7 +148,9 @@ export default class Settings extends Component {
                         </p>}
                     </Col>
                     <Col>
-                        <h2>Kurzy</h2>
+                        <h2>
+                            Kurzy
+                        </h2>
                         <Table striped size="sm">
                             <thead className="thead-dark">
                             <tr>
@@ -145,8 +162,12 @@ export default class Settings extends Component {
                             <tbody>
                             {courses.map(course =>
                                 <tr key={course.id}>
-                                    <td>{course.name}</td>
-                                    <td><Visible visible={course.visible}/></td>
+                                    <td>
+                                        {course.name}
+                                    </td>
+                                    <td>
+                                        <Visible visible={course.visible}/>
+                                    </td>
                                     <td>
                                         <Button color="primary"
                                                 onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}>Upravit</Button>
@@ -166,8 +187,12 @@ export default class Settings extends Component {
                 <Container>
                     <h1 className="text-center mb-4">
                         Nastavení
-                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.COURSE)}>Přidat kurz</Button>
-                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.STATE)}>Přidat stav</Button>
+                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.COURSE)}>
+                            Přidat kurz
+                        </Button>
+                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.STATE)}>
+                            Přidat stav
+                        </Button>
                     </h1>
                     {this.state.LOADING_CNT !== 2 ?
                         <Loading/> :

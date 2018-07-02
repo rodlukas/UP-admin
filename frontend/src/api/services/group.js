@@ -1,4 +1,4 @@
-import request from '../request'
+import request from "../request"
 import {API_DELIM, API_METHODS, API_URLS} from "../urls"
 
 const baseUrl = API_URLS.Groups.url

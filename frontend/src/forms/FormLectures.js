@@ -1,12 +1,12 @@
 import React, {Component} from "react"
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput, InputGroup,
-    InputGroupAddon, InputGroupText} from 'reactstrap'
+    InputGroupAddon, InputGroupText} from "reactstrap"
 import {toISODate, toISOTime, prettyDateWithDay} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
 import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
 import "./FormLectures.css"
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faCalendarAlt, faClock, faHourglass, faClipboardList} from "@fortawesome/pro-solid-svg-icons"
 
 const DEFAULT_DURATION = 30
@@ -205,7 +205,9 @@ export default class FormLectures extends Component {
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
-                    {this.IS_LECTURE ? 'Úprava' : 'Přidání'} lekce {(this.IS_CLIENT ? "klienta" : "skupiny")}: {(this.IS_CLIENT ? (object.name + " " + object.surname) : object.name)}
+                    {this.IS_LECTURE ? 'Úprava' : 'Přidání'} lekce {(this.IS_CLIENT ? "klienta" : "skupiny")}:
+                    {' '}
+                    {(this.IS_CLIENT ? (object.name + " " + object.surname) : object.name)}
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row className="align-items-center">
@@ -256,10 +258,15 @@ export default class FormLectures extends Component {
                                 <CustomInput type="select" name="course_id" id="course_id" value={course_id}
                                              onChange={this.onChange} disabled={!this.IS_CLIENT && 'disabled'}
                                              required="true">
-                                    <option disabled value={UNDEF}>Vyberte kurz...</option>
+                                    <option disabled value={UNDEF}>
+                                        Vyberte kurz...
+                                    </option>
                                     {courses.map(course =>
-                                        (course.visible || course.id === course_id) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
-                                        && <option key={course.id} value={course.id}>{course.name}</option>)}
+                                        // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
+                                        (course.visible || course.id === course_id) &&
+                                        <option key={course.id} value={course.id}>
+                                            {course.name}
+                                        </option>)}
                                 </CustomInput>
                             </InputGroup>
                         </Col>
@@ -278,7 +285,10 @@ export default class FormLectures extends Component {
                     <hr/>
                     {this.members.map(member =>
                     <div key={member.id}>
-                        <h5>{!this.IS_CLIENT && <ClientName name={member.name} surname={member.surname}/>}</h5>
+                        <h5>
+                            {!this.IS_CLIENT &&
+                            <ClientName name={member.name} surname={member.surname}/>}
+                        </h5>
                         <FormGroup row className="align-items-center">
                             <Col sm={4}>
                                 <InputGroup>
@@ -287,9 +297,11 @@ export default class FormLectures extends Component {
                                                  value={at_state[member.id]} onChange={this.onChangeMultiple}
                                                  data-id={member.id} required="true">
                                         {lastAttendancestates.map(attendancestate =>
-                                            (attendancestate.visible || attendancestate.id === at_state[member.id]) // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
-                                            && <option key={attendancestate.id}
-                                                       value={attendancestate.id}>{attendancestate.name}</option>)}
+                                            // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
+                                            (attendancestate.visible || attendancestate.id === at_state[member.id]) &&
+                                            <option key={attendancestate.id} value={attendancestate.id}>
+                                                {attendancestate.name}
+                                            </option>)}
                                     </CustomInput>
                                 </InputGroup>
                             </Col>
@@ -303,7 +315,7 @@ export default class FormLectures extends Component {
                                 <InputGroup>
                                     <InputGroupAddon addonType="prepend">
                                         <InputGroupText>
-                                            <FontAwesomeIcon icon={faClipboardList} fixedWidth title="poznámka"/>
+                                            <FontAwesomeIcon icon={faClipboardList} fixedWidth/>
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input type="text" name="at_note" id={"at_note" + member.id}
@@ -315,7 +327,9 @@ export default class FormLectures extends Component {
                     </div>)}
                     {this.IS_LECTURE &&
                     <FormGroup row className="border-top pt-3 align-items-center">
-                        <Label sm={3} className="text-muted">Smazání</Label>
+                        <Label sm={3} className="text-muted">
+                            Smazání
+                        </Label>
                         <Col sm={9}>
                             <Button color="danger"
                                     onClick={() => {
@@ -325,13 +339,19 @@ export default class FormLectures extends Component {
                                             + (!prepaid ? (" v " + prettyDateWithDay(new Date(date)) + " " + time) : '') + '?'
                                         if (window.confirm(msg))
                                             this.delete(id)}}>
-                                Smazat lekci</Button>
+                                Smazat lekci
+                            </Button>
                         </Col>
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>Storno</Button>{' '}
-                    <Button color="primary" type="submit">{this.IS_LECTURE ? 'Uložit' : 'Přidat'}</Button>
+                    <Button color="secondary" onClick={this.close}>
+                        Storno
+                    </Button>
+                    {' '}
+                    <Button color="primary" type="submit">
+                        {this.IS_LECTURE ? 'Uložit' : 'Přidat'}
+                    </Button>
                 </ModalFooter>
             </Form>
         )

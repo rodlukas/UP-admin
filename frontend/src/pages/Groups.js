@@ -1,21 +1,18 @@
 import React, {Component} from "react"
-import {Table, Button, Modal, Badge, Container} from 'reactstrap'
-import {Link} from 'react-router-dom'
-import FormGroups from '../forms/FormGroups'
+import {Table, Button, Modal, Badge, Container} from "reactstrap"
+import {Link} from "react-router-dom"
+import FormGroups from "../forms/FormGroups"
 import GroupService from "../api/services/group"
 import ClientsList from "../components/ClientsList"
 import Loading from "../api/Loading"
 import APP_URLS from "../urls"
 
 export default class Groups extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            groups: [],
-            IS_MODAL: false,
-            currentGroup: {},
-            IS_LOADING: true
-        }
+    state = {
+        groups: [],
+        IS_MODAL: false,
+        currentGroup: {},
+        IS_LOADING: true
     }
 
     toggle = (group = {}) => {
@@ -37,7 +34,7 @@ export default class Groups extends Component {
     }
 
     render() {
-        const {groups, currentGroup} = this.state
+        const {groups, currentGroup, IS_MODAL, IS_LOADING} = this.state
         const GroupTable = () =>
             <tbody>
             {groups.map(group =>
@@ -69,16 +66,22 @@ export default class Groups extends Component {
                             <th>Akce</th>
                         </tr>
                         </thead>
-                        {this.state.IS_LOADING ?
-                            <tbody><tr><td colSpan="4"><Loading/></td></tr></tbody> :
+                        {IS_LOADING ?
+                            <tbody>
+                                <tr>
+                                    <td colSpan="4">
+                                        <Loading/>
+                                    </td>
+                                </tr>
+                            </tbody> :
                             <GroupTable/>}
                     </Table>
-                    {!Boolean(groups.length) && !this.state.IS_LOADING &&
+                    {!Boolean(groups.length) && !IS_LOADING &&
                     <p className="text-muted text-center">
                         Žádné skupiny
                     </p>}
                 </Container>
-                <Modal isOpen={this.state.IS_MODAL} toggle={this.toggle} autoFocus={false}>
+                <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
                     <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}/>
                 </Modal>
             </div>

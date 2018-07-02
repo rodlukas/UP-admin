@@ -1,6 +1,6 @@
-import React, {Component} from "react"
-import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, UncontrolledTooltip} from 'reactstrap'
-import {Link} from 'react-router-dom'
+import React, {Component, Fragment} from "react"
+import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, UncontrolledTooltip} from "reactstrap"
+import {Link} from "react-router-dom"
 import {prettyDateWithDay, toISODate, prettyTime, isToday} from "../global/funcDateTime"
 import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
@@ -23,8 +23,7 @@ export default class DashboardDay extends Component {
     }
 
     getLectures = () => {
-        LectureService
-            .getAllFromDayOrdered(toISODate(this.date), true)
+        LectureService.getAllFromDayOrdered(toISODate(this.date), true)
             .then((response) => {
                 this.setState({lectures: response, IS_LOADING: false})
             })
@@ -35,18 +34,27 @@ export default class DashboardDay extends Component {
     }
 
     render() {
-        const {lectures} = this.state
+        const {lectures, IS_LOADING} = this.state
         const title = prettyDateWithDay(this.date)
-        const Day = () =>
-            <div>
+        const Lectures = () => (
+            <Fragment>
                 {lectures.map(lecture =>
                     <ListGroupItem key={lecture.id} className={lecture.group && "list-bgGroup"}>
-                        <h4>{prettyTime(new Date(lecture.start))} <Badge pill>{lecture.course.name}</Badge>{' '}
-                            <LectureNumber number={lecture.attendances[0].count}/></h4>
+                        <h4>
+                            {prettyTime(new Date(lecture.start))}
+                            {' '}
+                            <Badge pill>
+                                {lecture.course.name}
+                            </Badge>
+                            {' '}
+                            <LectureNumber number={lecture.attendances[0].count}/>
+                        </h4>
                         {lecture.group &&
                         <div>
                             <Link to={(APP_URLS.skupiny + "/" + lecture.group.id)} id={"card" + lecture.id}>
-                                <h5>Skupina {lecture.group.name}</h5>
+                                <h5>
+                                    Skupina {lecture.group.name}
+                                </h5>
                             </Link>
                             <UncontrolledTooltip placement="left" target={"card" + lecture.id}>
                                 otevřít kartu
@@ -55,17 +63,23 @@ export default class DashboardDay extends Component {
                         <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
                             {lecture.attendances.map(attendance =>
                                 <li key={attendance.id}>
-                                    <Link to={(APP_URLS.klienti + "/" + attendance.client.id)} id={"card" + attendance.id}>
+                                    <Link to={(APP_URLS.klienti + "/" + attendance.client.id)}
+                                          id={"card" + attendance.id}>
                                         <ClientName name={attendance.client.name}
                                                     surname={attendance.client.surname}/>
-                                    </Link>{' '}
+                                    </Link>
+                                    {' '}
                                     <UncontrolledTooltip placement="left" target={"card" + attendance.id}>
                                         otevřít kartu
                                     </UncontrolledTooltip>
                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
-                                                funcRefresh={this.getLectures}/>{' '}
-                                    <RemindPay remind_pay={attendance.remind_pay}/>{' '}
-                                    <Badge color="info">{attendance.note}</Badge>
+                                                funcRefresh={this.getLectures}/>
+                                    {' '}
+                                    <RemindPay remind_pay={attendance.remind_pay}/>
+                                    {' '}
+                                    <Badge color="info">
+                                        {attendance.note}
+                                    </Badge>
                                     <SelectAttendanceState value={attendance.attendancestate.id}
                                                            attendanceId={attendance.id}
                                                            attendancestates={this.props.attendancestates}
@@ -75,21 +89,21 @@ export default class DashboardDay extends Component {
                     </ListGroupItem>)}
                 {!Boolean(lectures.length) &&
                 <ListGroupItem>
-                    <ListGroupItemHeading className="text-muted text-center">Volno</ListGroupItemHeading>
+                    <ListGroupItemHeading className="text-muted text-center">
+                        Volno
+                    </ListGroupItemHeading>
                 </ListGroupItem>}
-            </div>
+            </Fragment>)
 
         return (
-            <div>
-                <ListGroup>
-                    <ListGroupItem color={isToday(this.date) ? "primary" : ''}>
-                        <h4 className="text-center">{title}</h4>
-                    </ListGroupItem>
-                    {this.state.IS_LOADING ?
-                        <ListGroupItem><Loading/></ListGroupItem> :
-                        <Day/>}
-                </ListGroup>
-            </div>
+            <ListGroup>
+                <ListGroupItem color={isToday(this.date) ? "primary" : ''}>
+                    <h4 className="text-center">{title}</h4>
+                </ListGroupItem>
+                {IS_LOADING ?
+                    <ListGroupItem><Loading/></ListGroupItem> :
+                    <Lectures/>}
+            </ListGroup>
         )
     }
 }

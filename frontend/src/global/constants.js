@@ -1,4 +1,4 @@
-import {toast} from 'react-toastify'
+import {toast} from "react-toastify"
 
 export const API_URL = "/api/v1/"
 export const NOTIFY_LEVEL = {

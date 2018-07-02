@@ -1,4 +1,4 @@
-import decode from 'jwt-decode'
+import decode from "jwt-decode"
 import LoginService from "../api/services/login"
 
 const AUTH_REFRESH_THRESHOLD = 60*60 // sekundy

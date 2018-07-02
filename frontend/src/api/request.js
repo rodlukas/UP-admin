@@ -1,5 +1,5 @@
-import axios, {setAuthHeader} from './_axios'
-import {NOTIFY_TEXT, NOTIFY_LEVEL} from '../global/constants'
+import axios, {setAuthHeader} from "./_axios"
+import {NOTIFY_TEXT, NOTIFY_LEVEL} from "../global/constants"
 import {toast} from "react-toastify"
 import {API_METHODS, API_URLS} from "./urls"
 import APP_URLS from "../urls"

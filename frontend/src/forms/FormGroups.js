@@ -1,7 +1,7 @@
 import React, {Component} from "react"
-import Select from 'react-select'
-import 'react-select/dist/react-select.css'
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from 'reactstrap'
+import Select from "react-select"
+import "react-select/dist/react-select.css"
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
 import CourseService from "../api/services/course"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
@@ -107,23 +107,33 @@ export default class FormGroups extends Component {
                 <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny: {name}</ModalHeader>
                 <ModalBody>
                     <FormGroup row>
-                        <Label for="name" sm={2}>Název</Label>
+                        <Label for="name" sm={2}>
+                            Název
+                        </Label>
                         <Col sm={10}>
                             <Input type="text" name="name" id="name" value={name} onChange={this.onChange} autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="course_id" sm={2}>Kurz</Label>
+                        <Label for="course_id" sm={2}>
+                            Kurz
+                        </Label>
                         <Col sm={10}>
                             <CustomInput type="select" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required>
-                                <option disabled value={UNDEF}>Vyberte kurz...</option>
+                                <option disabled value={UNDEF}>
+                                    Vyberte kurz...
+                                </option>
                                 {courses.map(course =>
-                                    <option key={course.id} value={course.id}>{course.name}</option>)}
+                                    <option key={course.id} value={course.id}>
+                                        {course.name}
+                                    </option>)}
                             </CustomInput>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="surname" sm={2}>Členové</Label>
+                        <Label for="surname" sm={2}>
+                            Členové
+                        </Label>
                         <Col sm={10}>
                             <Select
                                 name="form-field-name"
@@ -139,7 +149,9 @@ export default class FormGroups extends Component {
                     </FormGroup>
                     {this.isGroup &&
                     <FormGroup row className="border-top pt-3">
-                        <Label for="note" sm={2} className="text-muted">Smazání</Label>
+                        <Label for="note" sm={2} className="text-muted">
+                            Smazání
+                        </Label>
                         <Col sm={10}>
                             <Alert color="warning">
                                 <p>Nenávratně smaže skupinu i s jejími lekcemi</p>
@@ -153,8 +165,13 @@ export default class FormGroups extends Component {
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>Storno</Button>{' '}
-                    <Button color="primary" type="submit">{this.isGroup ? 'Uložit' : 'Přidat'}</Button>
+                    <Button color="secondary" onClick={this.close}>
+                        Storno
+                    </Button>
+                    {' '}
+                    <Button color="primary" type="submit">
+                        {this.isGroup ? 'Uložit' : 'Přidat'}
+                    </Button>
                 </ModalFooter>
             </Form>
         )

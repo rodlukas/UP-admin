@@ -1,5 +1,5 @@
-import React from 'react'
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import React from "react"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSpinnerThird} from "@fortawesome/pro-solid-svg-icons"
 
 const Loading = () => (

@@ -1,5 +1,5 @@
-import React, {Component} from "react"
-import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, UncontrolledTooltip} from 'reactstrap'
+import React, {Component, Fragment} from "react"
+import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, UncontrolledTooltip} from "reactstrap"
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDateWithDayYear} from "../global/funcDateTime"
 import PaidButton from "../components/PaidButton"
@@ -13,7 +13,7 @@ import LectureService from "../api/services/lecture"
 import APP_URLS from "../urls"
 import ClientsList from "../components/ClientsList"
 import ClientName from "../components/ClientName"
-import {Link} from 'react-router-dom'
+import {Link} from "react-router-dom"
 import Loading from "../api/Loading"
 import "./Card.css"
 
@@ -39,8 +39,7 @@ export default class Card extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.state.id !== prevState.id || this.state.IS_CLIENT !== prevState.IS_CLIENT)
-        {
+        if (this.state.id !== prevState.id || this.state.IS_CLIENT !== prevState.IS_CLIENT) {
             this.getObject()
             this.getLectures()
             if (this.state.IS_CLIENT)
@@ -52,8 +51,7 @@ export default class Card extends Component {
     static getDerivedStateFromProps(props, state) {
         const IS_CLIENT = props.match.path.includes(APP_URLS.klienti)
         const id = props.match.params.id
-        if(state.IS_CLIENT !== IS_CLIENT || state.id !== id)
-        {
+        if (state.IS_CLIENT !== IS_CLIENT || state.id !== id) {
             return {
                 id: id,
                 IS_CLIENT: IS_CLIENT,
@@ -107,19 +105,22 @@ export default class Card extends Component {
             let group_to_values = response.reduce(function (obj, item) {
                 obj[item.course.name] = obj[item.course.name] || []
                 obj[item.course.name].push(item)
-                return obj}, {})
+                return obj
+            }, {})
             let groups = Object.keys(group_to_values).map(function (key) {
-                return {course: key, values: group_to_values[key]}})
+                return {course: key, values: group_to_values[key]}
+            })
             groups.sort(function (a, b) { // serad podle abecedy
                 if (a.course < b.course) return -1
                 if (a.course > b.course) return 1
-                return 0})
+                return 0
+            })
             this.setState({lectures: groups, IS_LOADING: false})
         })
     }
 
     render() {
-        const {object, attendancestates, lectures, currentLecture, memberships, IS_CLIENT} = this.state
+        const {object, attendancestates, lectures, currentLecture, memberships, IS_CLIENT, IS_LOADING, IS_MODAL} = this.state
         const NoInfo = () => <span className="text-muted">---</span>
         const Phone = ({phone}) => {
             if (phone !== "")
@@ -137,13 +138,22 @@ export default class Card extends Component {
             return <NoInfo/>
         }
         const CardContent = () =>
-            <div>
+            <Fragment>
                 <Container>
                     <h1 className="text-center mb-4">
-                        <Button color="secondary" className="nextBtn" onClick={this.goBack}>Jít zpět</Button>{' '}
-                        {"Karta " + (IS_CLIENT ? "klienta" : "skupiny")}: {IS_CLIENT ?
-                        <ClientName name={object.name} surname={object.surname}/> : object.name}
-                        <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat lekci</Button>
+                        <Button color="secondary" className="nextBtn" onClick={this.goBack}>
+                            Jít zpět
+                        </Button>
+                        {' '}
+                        {"Karta " + (IS_CLIENT ? "klienta" : "skupiny")}:
+                        {' '}
+                        {IS_CLIENT ?
+                            <ClientName name={object.name} surname={object.surname}/>
+                            :
+                            object.name}
+                        <Button color="info" className="addBtn" onClick={() => this.toggle()}>
+                            Přidat lekci
+                        </Button>
                     </h1>
                 </Container>
                 <Container fluid>
@@ -152,25 +162,41 @@ export default class Card extends Component {
                             <ListGroup>
                                 {IS_CLIENT &&
                                 <div>
-                                    <ListGroupItem><b>Telefon:</b> <Phone phone={object.phone}/></ListGroupItem>
-                                    <ListGroupItem><b>E-mail:</b> <Email email={object.email}/></ListGroupItem>
-                                    <ListGroupItem><b>Členství ve skupinách:</b>{' '}
-                                        {!Boolean(memberships.length) && <NoInfo/>}
+                                    <ListGroupItem>
+                                        <b>Telefon:</b>
+                                        {' '}
+                                        <Phone phone={object.phone}/>
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>E-mail:</b>
+                                        {' '}
+                                        <Email email={object.email}/>
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>Členství ve skupinách:</b>
+                                        {' '}
+                                        {!Boolean(memberships.length) &&
+                                        <NoInfo/>}
                                         {memberships.map(membership =>
                                             <span key={membership.id}>
-                                                        <Link to={APP_URLS.skupiny + "/" + membership.id}
-                                                              id={"group" + membership.id}>
-                                                            <span>{membership.name}</span>
-                                                        </Link>
-                                                        <UncontrolledTooltip placement="right"
-                                                                             target={"group" + membership.id}>
-                                                        otevřít kartu
-                                                        </UncontrolledTooltip>
-                                                    </span>).reduce((accu, elem) => {
+                                                <Link to={APP_URLS.skupiny + "/" + membership.id}
+                                                      id={"group" + membership.id}>
+                                                    <span>{membership.name}</span>
+                                                </Link>
+                                                <UncontrolledTooltip placement="right"
+                                                                     target={"group" + membership.id}>
+                                                otevřít kartu
+                                                </UncontrolledTooltip>
+                                            </span>
+                                        ).reduce((accu, elem) => {
                                             return accu === null ? [elem] : [...accu, ', ', elem]
                                         }, null)}
                                     </ListGroupItem>
-                                    <ListGroupItem><b>Poznámka:</b> <Note note={object.note}/></ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>Poznámka:</b>
+                                        {' '}
+                                        <Note note={object.note}/>
+                                    </ListGroupItem>
                                 </div>}
                                 {!IS_CLIENT &&
                                 <ListGroupItem>
@@ -183,65 +209,69 @@ export default class Card extends Component {
                 <br/>
                 <Container fluid>
                     <Row className="justify-content-center">
-                    {lectures.map(lecture =>
-                        <Col key={lecture.course} sm="9" md="7" lg="5" xl="3">
-                            <h4 className="text-center">{lecture.course}</h4>
-                            <ListGroup>
-                            {lecture.values.map(lectureVal => {
-                                const d = new Date(lectureVal.start)
-                                let className = lectureVal.canceled ? "lecture-canceled" : ""
-                                if (d > Date.now())
-                                    className += " lecture-future"
-                                if (lectureVal.start === null)
-                                    className += " lecture-prepaid"
-                                return (
-                                    <ListGroupItem key={lectureVal.id} className={className}>
-                                        <h4>
-                                            {lectureVal.start !== null ?
-                                            (prettyDateWithDayYear(d) + " – " + prettyTime(d))
-                                            :
-                                            "Předplacená lekce"}{' '}
-                                            <LectureNumber number={lectureVal.attendances[0].count}/>
-                                            <Button color="primary" className="float-right"
-                                                    onClick={() => this.toggle(lectureVal)}>Upravit</Button>
-                                        </h4>
-                                        <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
-                                        {lectureVal.attendances.map(attendance =>
-                                            <li key={attendance.id}>
-                                                {!IS_CLIENT && <ClientName name={attendance.client.name}
-                                                                           surname={attendance.client.surname}/>}{' '}
-                                                <PaidButton paid={attendance.paid}
-                                                            attendanceId={attendance.id}
-                                                            funcRefresh={this.getLectures}/>{' '}
-                                                <RemindPay remind_pay={attendance.remind_pay}/>{' '}
-                                                <Badge color="info">{attendance.note}</Badge>
-                                                <SelectAttendanceState
-                                                    value={attendance.attendancestate.id}
-                                                    attendanceId={attendance.id}
-                                                    attendancestates={attendancestates}
-                                                    funcRefresh={this.getLectures}/>
-                                            </li>)}
-                                        </ul>
-                                    </ListGroupItem>)})}
-                            </ListGroup>
-                        </Col>)}
-                    {!Boolean(lectures.length) &&
+                        {lectures.map(lecture =>
+                            <Col key={lecture.course} sm="9" md="7" lg="5" xl="3">
+                                <h4 className="text-center">
+                                    {lecture.course}
+                                </h4>
+                                <ListGroup>
+                                    {lecture.values.map(lectureVal => {
+                                        const d = new Date(lectureVal.start)
+                                        let className = lectureVal.canceled ? "lecture-canceled" : ""
+                                        if (d > Date.now())
+                                            className += " lecture-future"
+                                        if (lectureVal.start === null)
+                                            className += " lecture-prepaid"
+                                        return (
+                                            <ListGroupItem key={lectureVal.id} className={className}>
+                                                <h4>
+                                                    {lectureVal.start !== null ?
+                                                        (prettyDateWithDayYear(d) + " – " + prettyTime(d))
+                                                        :
+                                                        "Předplacená lekce"}{' '}
+                                                    <LectureNumber number={lectureVal.attendances[0].count}/>
+                                                    <Button color="primary" className="float-right"
+                                                            onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                                </h4>
+                                                <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
+                                                    {lectureVal.attendances.map(attendance =>
+                                                        <li key={attendance.id}>
+                                                            {!IS_CLIENT &&
+                                                            <ClientName name={attendance.client.name}
+                                                                       surname={attendance.client.surname}/>}{' '}
+                                                            <PaidButton paid={attendance.paid}
+                                                                        attendanceId={attendance.id}
+                                                                        funcRefresh={this.getLectures}/>{' '}
+                                                            <RemindPay remind_pay={attendance.remind_pay}/>{' '}
+                                                            <Badge color="info">{attendance.note}</Badge>
+                                                            <SelectAttendanceState
+                                                                value={attendance.attendancestate.id}
+                                                                attendanceId={attendance.id}
+                                                                attendancestates={attendancestates}
+                                                                funcRefresh={this.getLectures}/>
+                                                        </li>)}
+                                                </ul>
+                                            </ListGroupItem>)
+                                    })}
+                                </ListGroup>
+                            </Col>)}
+                        {!Boolean(lectures.length) &&
                         <p className="text-muted text-center">
                             Žádné lekce
                         </p>}
                     </Row>
                 </Container>
-                <Modal isOpen={this.state.IS_MODAL} toggle={this.toggle} size="lg" autoFocus={false} className="ModalFormLecture">
+                <Modal isOpen={IS_MODAL} toggle={this.toggle} size="lg" autoFocus={false} className="ModalFormLecture">
                     <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} IS_CLIENT={IS_CLIENT}
                                   funcRefresh={this.getLectures} attendancestates={attendancestates}/>
                 </Modal>
-            </div>
+            </Fragment>
         return (
-            <div>
-                {!this.state.IS_LOADING ?
+            <Fragment>
+                {!IS_LOADING ?
                     <CardContent/> :
                     <Loading/>}
-            </div>
+            </Fragment>
         )
     }
 }

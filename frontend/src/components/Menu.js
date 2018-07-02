@@ -1,6 +1,6 @@
 import React from "react"
 import {NavLink as RouterNavLink, withRouter} from "react-router-dom"
-import {Nav, NavItem, NavLink, Button} from 'reactstrap'
+import {Nav, NavItem, NavLink, Button} from "reactstrap"
 import AuthService from "../auth/authService"
 import "./Menu.css"
 import APP_URLS from "../urls"

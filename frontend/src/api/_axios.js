@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from "axios"
 import {API_URL, JWT_HEADER_PREFIX} from "../global/constants"
 
 axios.defaults.baseURL = API_URL

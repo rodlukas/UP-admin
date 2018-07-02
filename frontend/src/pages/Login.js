@@ -1,16 +1,13 @@
 import React, {Component} from "react"
 import {Redirect} from "react-router-dom"
-import {Col, Form, FormGroup, Label, Button, Input, Container, Row, Card} from 'reactstrap'
+import {Col, Form, FormGroup, Label, Button, Input, Container, Row, Card} from "reactstrap"
 import AuthService from "../auth/authService"
 
 export default class Login extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            redirectToReferrer: false,
-            username: '',
-            password: ''
-        }
+    state = {
+        redirectToReferrer: false,
+        username: '',
+        password: ''
     }
 
     login = () => {
@@ -38,26 +35,34 @@ export default class Login extends Component {
             return <Redirect to={from}/>
         return (
             <Container>
-                <h1 className="text-center mb-4">Přihlášení</h1>
+                <h1 className="text-center mb-4">
+                    Přihlášení
+                </h1>
                 <Row className="justify-content-center">
                     <Col md="9" lg="7">
                         <Card className="p-4">
                             <Form onSubmit={this.onSubmit}>
                                 <FormGroup row>
-                                    <Label for="username" sm={4}>Uživatelské jméno</Label>
+                                    <Label for="username" sm={4}>
+                                        Uživatelské jméno
+                                    </Label>
                                     <Col sm={8}>
                                         <Input type="text" name="username" id="username" value={username}
                                                onChange={this.onChange} required/>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
-                                    <Label for="password" sm={4}>Heslo</Label>
+                                    <Label for="password" sm={4}>
+                                        Heslo
+                                    </Label>
                                     <Col sm={8}>
                                         <Input type="password" name="password" id="password" value={password}
                                                onChange={this.onChange} required/>
                                     </Col>
                                 </FormGroup>
-                                <Button color="primary" className="float-right" type="submit">Přihlásit</Button>
+                                <Button color="primary" className="float-right" type="submit">
+                                    Přihlásit
+                                </Button>
                             </Form>
                         </Card>
                     </Col>

@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from "reactstrap"
 import ClientService from "../api/services/client"
 import ClientName from "../components/ClientName"
 
@@ -59,34 +59,48 @@ export default class FormClients extends Component {
         const {id, name, surname, email, phone, note} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
-                <ModalHeader toggle={this.close}>{this.isClient ? 'Úprava' : 'Přidání'} klienta: <ClientName name={name} surname={surname}/></ModalHeader>
+                <ModalHeader toggle={this.close}>
+                    {this.isClient ? 'Úprava' : 'Přidání'} klienta:
+                    {' '}
+                    <ClientName name={name} surname={surname}/>
+                </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
-                        <Label for="name" sm={2}>Jméno</Label>
+                        <Label for="name" sm={2}>
+                            Jméno
+                        </Label>
                         <Col sm={10}>
                             <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="surname" sm={2}>Příjmení</Label>
+                        <Label for="surname" sm={2}>
+                            Příjmení
+                        </Label>
                         <Col sm={10}>
                             <Input type="text" name="surname" id="surname" value={surname} onChange={this.onChange} required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="email" sm={2}>Email</Label>
+                        <Label for="email" sm={2}>
+                            Email
+                        </Label>
                         <Col sm={10}>
                             <Input type="email" name="email" id="email" value={email} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="phone" sm={2}>Telefon</Label>
+                        <Label for="phone" sm={2}>
+                            Telefon
+                        </Label>
                         <Col sm={10}>
                             <Input type="tel" name="phone" id="phone" value={phone} minLength="9" onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="note" sm={2}>Poznámka</Label>
+                        <Label for="note" sm={2}>
+                            Poznámka
+                        </Label>
                         <Col sm={10}>
                             <Input type="textarea" name="note" id="note" value={note} onChange={this.onChange}/>
                         </Col>
@@ -101,14 +115,21 @@ export default class FormClients extends Component {
                                         onClick={() => {
                                             if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))
                                                 this.delete(id)
-                                        }}>Smazat klienta</Button>
+                                        }}>
+                                    Smazat klienta
+                                </Button>
                             </Alert>
                         </Col>
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>Storno</Button>{' '}
-                    <Button color="primary" type="submit">{this.isClient ? 'Uložit' : 'Přidat'}</Button>
+                    <Button color="secondary" onClick={this.close}>
+                        Storno
+                    </Button>
+                    {' '}
+                    <Button color="primary" type="submit">
+                        {this.isClient ? 'Uložit' : 'Přidat'}
+                    </Button>
                 </ModalFooter>
             </Form>
         )

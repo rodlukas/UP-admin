@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from 'reactstrap'
+import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
 import {EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
@@ -68,13 +68,17 @@ export default class FormSettings extends Component {
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
-                        <Label for="name" sm={3}>Název</Label>
+                        <Label for="name" sm={3}>
+                            Název
+                        </Label>
                         <Col sm={9}>
                             <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Col sm={3}>Viditelnost</Col>
+                        <Col sm={3}>
+                            Viditelnost
+                        </Col>
                         <Col sm={9}>
                             <CustomInput type="checkbox" id="visible" name="visible"
                                          label="Bude zobrazováno"
@@ -83,7 +87,9 @@ export default class FormSettings extends Component {
                     </FormGroup>
                     {this.isObject &&
                     <FormGroup row className="border-top pt-3">
-                        <Label for="note" sm={3} className="text-muted">Smazání</Label>
+                        <Label for="note" sm={3} className="text-muted">
+                            Smazání
+                        </Label>
                         <Col sm={9}>
                             <Alert color="warning">
                                 <p>Lze smazat pouze pokud není příslušný {type} použit u žádné lekce</p>
@@ -93,14 +99,21 @@ export default class FormSettings extends Component {
                                                 + type + " " + name + '?'
                                             if (window.confirm(msg))
                                                 this.delete(id)
-                                        }}>Smazat {type}</Button>
+                                        }}>
+                                    Smazat {type}
+                                </Button>
                             </Alert>
                         </Col>
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>Storno</Button>{' '}
-                    <Button color="primary" type="submit">{this.isObject ? 'Uložit' : 'Přidat'}</Button>
+                    <Button color="secondary" onClick={this.close}>
+                        Storno
+                    </Button>
+                    {' '}
+                    <Button color="primary" type="submit">
+                        {this.isObject ? 'Uložit' : 'Přidat'}
+                    </Button>
                 </ModalFooter>
             </Form>
         )
