@@ -18,6 +18,14 @@ function update(context) {
     })
 }
 
+function patch(context) {
+    return request({
+        url: baseUrl + context.id + API_DELIM,
+        method: API_METHODS.patch,
+        data: context
+    })
+}
+
 function remove(id) {
     return request({
         url: baseUrl + id + API_DELIM,
@@ -34,7 +42,7 @@ function create(context) {
 }
 
 const AttendanceStateService = {
-    getAll, create, update, remove
+    getAll, create, update, remove, patch
 }
 
 export default AttendanceStateService

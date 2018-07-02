@@ -4,9 +4,22 @@ from django.db import models
 class AttendanceState(models.Model):
     name = models.TextField()
     visible = models.BooleanField()
+    default = models.BooleanField(default=False)    # metoda save() osetruje, aby bylo jen jedno True v DB
 
     class Meta:
         ordering = ['name']
+
+    # pokud je default False, nastav ho na None, vsechny zaznamy budou tedy NULL nebo True (True diky unique jen jeden)
+    def save(self, *args, **kwargs):
+        if self.default:
+            # vyber ostatni polozky s default=True
+            qs = AttendanceState.objects.filter(default=True)
+            # krome self (pokud self existuje)
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+            # a nastav jim default=False
+            qs.update(default=False)
+        super(AttendanceState, self).save(*args, **kwargs)
 
 
 class Client(models.Model):

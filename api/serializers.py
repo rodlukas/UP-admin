@@ -1,5 +1,6 @@
 from admin.models import *
 from rest_framework import serializers
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -97,10 +98,15 @@ class AttendanceSerializer(serializers.ModelSerializer):
             cnt = Lecture.objects.filter(group=obj.lecture.group, start__isnull=False,
                                          start__lt=obj.lecture.start, canceled=False)
         else:
+            try:
+                default_state_id = AttendanceState.objects.get(default=True)
+            except ObjectDoesNotExist:  # pokud neni zvoleny vychozi stav, vrat "??"
+                return "?? - je potřeba nastavit výchozí stav účasti"
+            default_state_id = default_state_id.id  # pamatuj si pouze id vychoziho stavu
             cnt = Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
                                             lecture__start__isnull=False, lecture__group__isnull=True,
-                                            lecture__start__lt=obj.lecture.start, attendancestate__name="OK",
-                                            lecture__canceled=False)
+                                            lecture__start__lt=obj.lecture.start,
+                                            attendancestate_id=default_state_id, lecture__canceled=False)
         return cnt.count()+1  # +1 aby prvni kurz nebyl jako 0.
 
     @staticmethod

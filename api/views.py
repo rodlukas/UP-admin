@@ -55,7 +55,7 @@ class LectureViewSet(viewsets.ModelViewSet):
         return qs
 
     def get_serializer(self, *args, **kwargs):
-        """ pokud prislo pole, nastav serializer na many=True """
+        # pokud prislo pole, nastav serializer na many=True
         if isinstance(kwargs.get('data', {}), list):
             kwargs['many'] = True
         return super(LectureViewSet, self).get_serializer(*args, **kwargs)

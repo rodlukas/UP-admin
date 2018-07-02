@@ -1,10 +1,12 @@
 import React, {Component} from "react"
-import {Table, Button, Modal, Container, Row, Col} from 'reactstrap'
+import {Table, Button, Modal, Container, Row, Col, CustomInput, Alert} from 'reactstrap'
 import FormSettings from "../forms/FormSettings"
 import {EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 import Loading from "../api/Loading"
+
+const UNDEF = "undef"
 
 export default class Settings extends Component {
     constructor(props) {
@@ -15,7 +17,8 @@ export default class Settings extends Component {
             IS_MODAL: false,
             currentObject: {},
             currentType: EDIT_TYPE.STATE,
-            LOADING_CNT: 0
+            LOADING_CNT: 0,
+            default_id: this.findDefaultId()
         }
     }
 
@@ -25,6 +28,16 @@ export default class Settings extends Component {
             currentType: type,
             IS_MODAL: !this.state.IS_MODAL
         })
+    }
+
+    onChange = (e) => {
+        const target = e.target
+        const state = this.state
+        state[target.name] = target.value
+        this.setState(state)
+
+        const data = {id: this.state.default_id, default: true}
+        AttendanceStateService.patch(data)
     }
 
     refresh = (type) => {
@@ -38,14 +51,19 @@ export default class Settings extends Component {
     getAttendanceStates = () => {
         AttendanceStateService.getAll()
             .then((response) => {
-                this.setState({attendancestates: response, LOADING_CNT: this.state.LOADING_CNT + 1})
+                this.setState({
+                    attendancestates: response,
+                    LOADING_CNT: this.state.LOADING_CNT + 1,
+                    default_id: this.findDefaultId(response)})
             })
     }
 
     getCourses = () => {
         CourseService.getAll()
             .then((response) => {
-                this.setState({courses: response, LOADING_CNT: this.state.LOADING_CNT + 1})
+                this.setState({
+                    courses: response,
+                    LOADING_CNT: this.state.LOADING_CNT + 1})
             })
     }
 
@@ -54,8 +72,20 @@ export default class Settings extends Component {
         this.getCourses()
     }
 
+    findDefaultId = (attendancestates = null) => {
+        let default_elem
+        if(attendancestates !== null) {
+            default_elem = attendancestates.find(function (element) {
+                return element.default === true
+            })
+            if (default_elem !== undefined)
+                return default_elem.id
+        }
+        return UNDEF
+    }
+
     render() {
-        const {attendancestates, courses, currentType, currentObject} = this.state
+        const {attendancestates, courses, currentType, currentObject, default_id} = this.state
         const Visible = ({visible}) => (visible ? 'ANO' : 'NE')
         const SettingsContent = () =>
             <div>
@@ -82,6 +112,21 @@ export default class Settings extends Component {
                                 </tr>)}
                             </tbody>
                         </Table>
+                        <hr/>
+                        <h3>Výchozí stav účasti</h3>
+                        {default_id === UNDEF &&
+                            <Alert color="danger">
+                                Není vybraný výchozí stav, aplikace nemůže správně fungovat!
+                            </Alert>}
+                        <p>Pro správné fungování aplikace je třeba zvolit výchozí stav účasti, ten zároveň
+                            <span className="font-weight-bold"> musí reprezentovat stav "klient se zúčastní/zúčastnil"</span>.
+                        </p>
+                        <CustomInput type="select" name="default_id" id="default_id" value={default_id}
+                                     onChange={this.onChange}>
+                            <option disabled value={UNDEF}>Vyberte stav...</option>
+                            {attendancestates.map(attendancestate =>
+                                <option key={attendancestate.id} value={attendancestate.id}>{attendancestate.name}</option>)}
+                        </CustomInput>
                         {!Boolean(attendancestates.length) &&
                         <p className="text-muted text-center">
                             Žádné stavy účasti

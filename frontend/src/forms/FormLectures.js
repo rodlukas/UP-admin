@@ -4,7 +4,6 @@ import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, Moda
 import {toISODate, toISOTime, prettyDateWithDay} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
 import CourseService from "../api/services/course"
-import {ATTENDANCESTATE_OK} from "../global/constants"
 import ClientName from "../components/ClientName"
 import "./FormLectures.css"
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -32,7 +31,7 @@ export default class FormLectures extends Component {
 
         let date = new Date(start)
         this.state = {
-            ATTENDANCESTATE_OK_INDEX: this.getOkIndex(),
+            STATE_DEFAULT_INDEX: this.getDefaultStateIndex(),
             lastAttendancestates: attendancestates,
             id: id || '',
             at_state: this.createAttendanceStateArray(),
@@ -52,14 +51,14 @@ export default class FormLectures extends Component {
         }
     }
 
-    getOkIndex() {
+    getDefaultStateIndex() {
         return FormLectures.prepareStateIndex(this.props.attendancestates)
     }
 
     static getDerivedStateFromProps(props, state) {
         if(state.lastAttendancestates !== props.attendancestates)
             return {
-                ATTENDANCESTATE_OK_INDEX: FormLectures.prepareStateIndex(props.attendancestates),
+                STATE_DEFAULT_INDEX: FormLectures.prepareStateIndex(props.attendancestates),
                 lastAttendancestates: props.attendancestates
             }
         return null
@@ -75,20 +74,19 @@ export default class FormLectures extends Component {
     static prepareStateIndex(attendancestates) {
         if(attendancestates.length)
         {
-            const res = attendancestates.find(elem => elem.name === ATTENDANCESTATE_OK)
-            if(typeof res !== 'undefined')
+            const res = attendancestates.find(elem => elem.default === true)
+            if(res !== undefined)
                 return res.id
             else
-                return attendancestates[0].id // pokud pole neni prazdne, ale neni v nem stav OK, vem prvni prvek
+                return attendancestates[0].id // pokud pole neni prazdne, ale zadny stav neni vychozi, vrat prvni prvek
         }
         return UNDEF
     }
 
-    // najdi index stavu OK
     createAttendanceStateArray() {
         let array = []
         this.members.map((client, id) =>
-            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate.id : this.getOkIndex())
+            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate.id : this.getDefaultStateIndex())
         return array
     }
 
