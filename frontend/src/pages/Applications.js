@@ -5,6 +5,7 @@ import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
 import Loading from "../api/Loading"
 import FormApplications from "../forms/FormApplications"
+import "./Applications.css"
 
 export default class Applications extends Component {
     constructor(props) {
@@ -27,7 +28,7 @@ export default class Applications extends Component {
 
     refresh = () => {
         this.setState({LOADING_CNT: this.state.LOADING_CNT - 1})
-            this.getApplications()
+        this.getApplications()
     }
 
     getApplications = () => {
@@ -66,7 +67,6 @@ export default class Applications extends Component {
     delete = (id) => {
         ApplicationService.remove(id)
             .then(() => {
-                this.close()
                 this.refresh()
             })
     }
@@ -78,16 +78,19 @@ export default class Applications extends Component {
 
     render() {
         const {applications, courses, currentApplication, IS_MODAL, LOADING_CNT} = this.state
+        const ApplicantsCount = ({cnt}) =>
+            <Badge pill>
+                {cnt}
+                {' '}zájemc{cnt === 1 ? "e" : ((cnt > 1 && cnt < 5) ? "i" : "ů")}
+            </Badge>
         const ApplicationsContent = () =>
             <div>
                 {applications.map(application =>
                     <ListGroup key={application.course}>
-                        <h4>
+                        <h4 className="Applications-h4">
                             {application.course}
                             {' '}
-                            <Badge pill>
-                                {application.values.length} zájemců
-                            </Badge>
+                            <ApplicantsCount cnt={application.values.length}/>
                         </h4>
                         {application.values.map(applicationVal =>
                             <ListGroupItem key={applicationVal.id}>
@@ -121,6 +124,10 @@ export default class Applications extends Component {
                             </ListGroupItem>)}
                     </ListGroup>
                 )}
+                {!Boolean(applications.length) &&
+                <p className="text-muted text-center">
+                    Žádní zájemci
+                </p>}
             </div>
         return (
             <div>

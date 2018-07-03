@@ -1,7 +1,8 @@
 import React, {Component} from "react"
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from "reactstrap"
 import ApplicationService from "../api/services/application"
-import ClientName from "../components/ClientName"
+import Select from "react-select"
+import ClientService from "../api/services/client"
 
 export default class FormApplications extends Component {
     constructor(props) {
@@ -11,12 +12,36 @@ export default class FormApplications extends Component {
         console.log(props.application)
         this.state = {
             id: id || '',
-            course: course || {},
-            client: client || {},
+            course_id: this.isObject ? course.id : null,
+            client_id: this.isObject ? client.id : null,
             note: note || '',
-            courses: [],
             clients: []
         }
+        this.courses = this.getCoursesArray(props.courses)
+    }
+
+    // pripravi pole s kurzy ve spravnem formatu, aby pak slo rovnou zaslat do API
+    getCoursesArray(courses) {
+        let arrayOfCourses = []
+        courses.map(course => {
+            return arrayOfCourses.push({
+                course_id: course.id,
+                label: course.name
+            })
+        })
+        return arrayOfCourses
+    }
+
+    // pripravi pole s klienty ve spravnem formatu, aby pak slo rovnou zaslat do API
+    getClientsArray(clients) {
+        let arrayOfClients = []
+        clients.map(client => {
+            return arrayOfClients.push({
+                client_id: client.id,
+                label: client.surname + " " + client.name
+            })
+        })
+        return arrayOfClients
     }
 
     onChange = (e) => {
@@ -26,10 +51,18 @@ export default class FormApplications extends Component {
         this.setState(state)
     }
 
+    handleChange = (obj) => {
+        const state = this.state
+        // first_key je client_id/course_id
+        const first_key = Object.keys(obj)[0]
+        state[first_key] = obj[first_key]
+        this.setState(state)
+    }
+
     onSubmit = (e) => {
         e.preventDefault()
-        const {id, name, visible} = this.state
-        const data = {id, name, visible}
+        const {id, course_id, client_id, note} = this.state
+        const data = {id, course_id, client_id, note}
         let request
         if (this.isObject)
             request = ApplicationService.update(data)
@@ -49,15 +82,23 @@ export default class FormApplications extends Component {
         this.props.funcRefresh()
     }
 
+    getClients = () => {
+        ClientService.getAll()
+            .then((response) => {
+                this.setState({clients: this.getClientsArray(response)})
+            })
+    }
+
+    componentDidMount() {
+        this.getClients()
+    }
+
     render() {
-        const {client, course, note} = this.state
+        const {client_id, clients, course_id, note} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
-                    {this.isObject ? 'Úprava' : 'Přidání'} zájemce:
-                    {' '}
-                    <ClientName client={client}/>
-                    {' '}({course.name})
+                    {this.isObject ? 'Úprava' : 'Přidání'} zájemce o kurz
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
@@ -65,7 +106,13 @@ export default class FormApplications extends Component {
                             Klient
                         </Label>
                         <Col sm={9}>
-
+                            <Select
+                                valueKey={'client_id'}
+                                value={client_id}
+                                onChange={this.handleChange}
+                                options={clients}
+                                placeholder={"Vyberte klienta..."}
+                                noResultsText={"Nic nenalezeno"}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -73,7 +120,13 @@ export default class FormApplications extends Component {
                             Kurz
                         </Col>
                         <Col sm={9}>
-
+                            <Select
+                                valueKey={'course_id'}
+                                value={course_id}
+                                onChange={this.handleChange}
+                                options={this.courses}
+                                placeholder={"Vyberte kurz..."}
+                                noResultsText={"Nic nenalezeno"}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

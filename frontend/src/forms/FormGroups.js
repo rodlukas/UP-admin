@@ -136,15 +136,13 @@ export default class FormGroups extends Component {
                         </Label>
                         <Col sm={10}>
                             <Select
-                                name="form-field-name"
                                 valueKey={'client_id'}
                                 value={memberships}
                                 multi={true}
                                 onChange={this.handleChange}
                                 options={clients}
                                 placeholder={"Vyberte členy skupiny..."}
-                                noResultsText={"Nic nenalezeno"}
-                            />
+                                noResultsText={"Nic nenalezeno"}/>
                         </Col>
                     </FormGroup>
                     {this.isGroup &&
