@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from "react"
-import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem, UncontrolledTooltip} from "reactstrap"
+import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem} from "reactstrap"
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDateWithDayYear} from "../global/funcDateTime"
 import PaidButton from "../components/PaidButton"
@@ -13,7 +13,6 @@ import LectureService from "../api/services/lecture"
 import APP_URLS from "../urls"
 import ClientsList from "../components/ClientsList"
 import ClientName from "../components/ClientName"
-import {Link} from "react-router-dom"
 import Loading from "../api/Loading"
 import "./Card.css"
 import GroupName from "../components/GroupName"
@@ -182,16 +181,7 @@ export default class Card extends Component {
                                         {!Boolean(memberships.length) &&
                                         <NoInfo/>}
                                         {memberships.map(membership =>
-                                            <span key={membership.id}>
-                                                <Link to={APP_URLS.skupiny + "/" + membership.id}
-                                                      id={"group" + membership.id}>
-                                                    <span>{membership.name}</span>
-                                                </Link>
-                                                <UncontrolledTooltip placement="right"
-                                                                     target={"group" + membership.id}>
-                                                otevřít kartu
-                                                </UncontrolledTooltip>
-                                            </span>
+                                            <GroupName group={membership} key={membership.id}/>
                                         ).reduce((accu, elem) => {
                                             return accu === null ? [elem] : [...accu, ', ', elem]
                                         }, null)}

@@ -25,10 +25,13 @@ const request = function (options) {
             console.error('DALSI INFORMACE: ', error)
             console.error('API VALIDATION ERROR: ', error.request.response)
             const json = JSON.parse(error.request.response)
+            console.log(json)
             if(json['non_field_errors'])
                 errMsg = json['non_field_errors'][0]
             else if(json['detail'])
                 errMsg = json['detail'][0]
+            else if(json[0][Object.keys(json[0])][0]) // pro chyby primo z validace modelu
+                errMsg = json[0][Object.keys(json[0])][0]
         } else { // stalo se neco jineho pri priprave requestu
             console.error('Error Message: ', error.message)
             errMsg = error.message

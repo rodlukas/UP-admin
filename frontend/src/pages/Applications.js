@@ -112,7 +112,7 @@ export default class Applications extends Component {
                                             <Button color="danger"
                                                     onClick={() => {
                                                         let msg = "Opravdu chcete smazat zájemce "
-                                                            + applicationVal.client.name + " " + applicationVal.client.surname + " o " + applicationVal.course.name + '?'
+                                                            + applicationVal.client.surname + " " + applicationVal.client.name + " o " + applicationVal.course.name + '?'
                                                         if (window.confirm(msg))
                                                             this.delete(applicationVal.id)
                                                     }}>

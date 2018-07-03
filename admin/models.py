@@ -1,4 +1,7 @@
 from django.db import models
+from datetime import timedelta
+from django.core.exceptions import ValidationError
+from django.db.models import F, ExpressionWrapper
 
 
 class AttendanceState(models.Model):
@@ -61,6 +64,22 @@ class Lecture(models.Model):
     duration = models.PositiveIntegerField()
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
     group = models.ForeignKey(Group, related_name='lectures', on_delete=models.CASCADE, null=True)
+
+    @property
+    def end(self):
+        # vrati datetime konce lekce
+        return self.start + timedelta(minutes=self.duration)
+
+    def save(self, *args, **kwargs):
+        expression = F('start') + (timedelta(minutes=1) * F('duration'))
+        end_db = ExpressionWrapper(expression, output_field=models.DateTimeField())
+        qs = Lecture.objects \
+            .annotate(end_db=end_db) \
+            .exclude(id=self.id) \
+            .filter(start__lte=self.end, end_db__gte=self.start)
+        if qs.exists():
+            raise ValidationError("Časový konflikt s jinou lekcí")
+        return super(Lecture, self).save(*args, **kwargs)
 
 
 class Attendance(models.Model):

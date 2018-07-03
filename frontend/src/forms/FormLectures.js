@@ -8,6 +8,7 @@ import ClientName from "../components/ClientName"
 import "./FormLectures.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faCalendarAlt, faClock, faHourglass, faClipboardList} from "@fortawesome/pro-solid-svg-icons"
+import GroupName from "../components/GroupName"
 
 const DEFAULT_DURATION = 30
 const GROUP_DURATION = 45
@@ -207,7 +208,7 @@ export default class FormLectures extends Component {
                 <ModalHeader toggle={this.close}>
                     {this.IS_LECTURE ? 'Úprava' : 'Přidání'} lekce {(this.IS_CLIENT ? "klienta" : "skupiny")}:
                     {' '}
-                    {(this.IS_CLIENT ? (object.name + " " + object.surname) : object.name)}
+                    {(this.IS_CLIENT ? <ClientName client={object}/> : <GroupName group={object}/>)}
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row className="align-items-center">
@@ -278,7 +279,7 @@ export default class FormLectures extends Component {
                                     </InputGroupText>
                                 </InputGroupAddon>
                                 <Input type="number" name="duration" id="duration" value={duration}
-                                       onChange={this.onChange} required="true"/>
+                                       onChange={this.onChange} required min="1"/>
                             </InputGroup>
                         </Col>
                     </FormGroup>
@@ -335,7 +336,7 @@ export default class FormLectures extends Component {
                                     onClick={() => {
                                         let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
                                             + (this.IS_CLIENT ? "klienta" : "skupiny") + " "
-                                            + (this.IS_CLIENT ? (object.name + " " + object.surname) : object.name)
+                                            + (this.IS_CLIENT ? (object.surname + " " + object.name) : object.name)
                                             + (!prepaid ? (" v " + prettyDateWithDay(new Date(date)) + " " + time) : '') + '?'
                                         if (window.confirm(msg))
                                             this.delete(id)}}>
