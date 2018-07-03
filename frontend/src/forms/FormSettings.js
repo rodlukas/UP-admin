@@ -13,8 +13,7 @@ export default class FormSettings extends Component {
         this.state = {
             id: id || '',
             name: name || '',
-            visible: this.isObject ? visible : true,
-            object: props.object
+            visible: this.isObject ? visible : true
         }
     }
 
@@ -92,7 +91,10 @@ export default class FormSettings extends Component {
                         </Label>
                         <Col sm={9}>
                             <Alert color="warning">
-                                <p>Lze smazat pouze pokud není příslušný {type} použit u žádné lekce</p>
+                                <p>
+                                    Lze smazat pouze pokud není příslušný {type} použit u žádné lekce
+                                    {this.TYPE === EDIT_TYPE.COURSE && ", smažou se také všichni zájemci o tento kurz"}
+                                </p>
                                 <Button color="danger"
                                         onClick={() => {
                                             let msg = "Opravdu chcete smazat "

@@ -1,8 +1,20 @@
 import React from "react"
+import {Link} from "react-router-dom"
+import APP_URLS from "../urls"
 
-const ClientName = ({name, surname}) =>
+const PlainName = ({client}) =>
+    <span>
+        {client.surname} {client.name}
+    </span>
+
+const ClientName = ({client, link = false}) =>
     <span className="clientName">
-        {name} {surname}
+        {link ?
+            <Link to={(APP_URLS.klienti + "/" + client.id)}>
+                <PlainName client={client}/>
+            </Link>
+            :
+            <PlainName client={client}/>}
     </span>
 
 export default ClientName

@@ -2,6 +2,9 @@ export const API_DELIM = '/'
 export const API_ORDERING = 'ordering'
 
 export const API_URLS = {
+    Applications: {
+        url: 'applications' + API_DELIM
+    },
     AttendanceStates: {
         url: 'attendancestates' + API_DELIM
     },

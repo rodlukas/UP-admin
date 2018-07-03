@@ -22,6 +22,9 @@ const Menu = withRouter(
                 <NavLink tag={RouterNavLink} to={APP_URLS.skupiny}>Skupiny</NavLink>
             </NavItem>
             <NavItem>
+                <NavLink tag={RouterNavLink} to={APP_URLS.zajemci}>Zájemci</NavLink>
+            </NavItem>
+            <NavItem>
                 <NavLink tag={RouterNavLink} to={APP_URLS.nastaveni}>Nastavení</NavLink>
             </NavItem>
             <Button color="secondary" onClick={() => AuthService.signout(() => history.push(APP_URLS.prehled))}>Odhlásit</Button>

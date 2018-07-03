@@ -29,7 +29,7 @@ export default class FormGroups extends Component {
         memberships.map(membership => {
             return arrayOfMembers.push({
                 client_id: membership.client.id,
-                label: membership.client.name + " " + membership.client.surname})
+                label: membership.client.surname + " " + membership.client.name})
         })
         return arrayOfMembers
     }
@@ -89,7 +89,7 @@ export default class FormGroups extends Component {
                 response.map(client => {
                     return clients.push({
                         client_id: client.id,
-                        label: client.name + " " + client.surname})
+                        label: client.surname + " " + client.name})
                 })
                 this.setState({clients: clients})
             })

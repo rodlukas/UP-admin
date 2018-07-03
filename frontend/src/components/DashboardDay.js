@@ -1,6 +1,5 @@
 import React, {Component, Fragment} from "react"
-import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge, UncontrolledTooltip} from "reactstrap"
-import {Link} from "react-router-dom"
+import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge} from "reactstrap"
 import {prettyDateWithDay, toISODate, prettyTime, isToday} from "../global/funcDateTime"
 import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
@@ -10,7 +9,7 @@ import LectureNumber from "./LectureNumber"
 import LectureService from "../api/services/lecture"
 import ClientName from "./ClientName"
 import Loading from "../api/Loading"
-import APP_URLS from "../urls"
+import GroupName from "./GroupName"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -50,28 +49,14 @@ export default class DashboardDay extends Component {
                             <LectureNumber number={lecture.attendances[0].count}/>
                         </h4>
                         {lecture.group &&
-                        <div>
-                            <Link to={(APP_URLS.skupiny + "/" + lecture.group.id)} id={"card" + lecture.id}>
-                                <h5>
-                                    Skupina {lecture.group.name}
-                                </h5>
-                            </Link>
-                            <UncontrolledTooltip placement="left" target={"card" + lecture.id}>
-                                otevřít kartu
-                            </UncontrolledTooltip>
-                        </div>}
+                        <h5>
+                            <GroupName group={lecture.group} title link/>
+                        </h5>}
                         <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
                             {lecture.attendances.map(attendance =>
                                 <li key={attendance.id}>
-                                    <Link to={(APP_URLS.klienti + "/" + attendance.client.id)}
-                                          id={"card" + attendance.id}>
-                                        <ClientName name={attendance.client.name}
-                                                    surname={attendance.client.surname}/>
-                                    </Link>
+                                    <ClientName client={attendance.client} link/>
                                     {' '}
-                                    <UncontrolledTooltip placement="left" target={"card" + attendance.id}>
-                                        otevřít kartu
-                                    </UncontrolledTooltip>
                                     <PaidButton paid={attendance.paid} attendanceId={attendance.id}
                                                 funcRefresh={this.getLectures}/>
                                     {' '}

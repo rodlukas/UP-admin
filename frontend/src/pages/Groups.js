@@ -6,6 +6,7 @@ import GroupService from "../api/services/group"
 import ClientsList from "../components/ClientsList"
 import Loading from "../api/Loading"
 import APP_URLS from "../urls"
+import GroupName from "../components/GroupName"
 
 export default class Groups extends Component {
     state = {
@@ -39,14 +40,27 @@ export default class Groups extends Component {
             <tbody>
             {groups.map(group =>
                 <tr key={group.id}>
-                    <td className="col-2">{group.name}</td>
-                    <td><Badge pill>{group.course.name}</Badge></td>
-                    <td><ClientsList clients={group.memberships}/></td>
                     <td className="col-2">
-                        <Button color="primary"
-                                onClick={() => this.toggle(group)}>Upravit</Button>{' '}
+                        <GroupName group={group} link/>
+                    </td>
+                    <td>
+                        <Badge pill>
+                            {group.course.name}
+                        </Badge>
+                    </td>
+                    <td>
+                        <ClientsList clients={group.memberships}/>
+                    </td>
+                    <td className="col-2">
+                        <Button color="primary" onClick={() => this.toggle(group)}>
+                            Upravit
+                        </Button>
+                        {' '}
                         <Link to={APP_URLS.skupiny + "/" + group.id}>
-                            <Button color="secondary">Karta</Button></Link>
+                            <Button color="secondary">
+                                Karta
+                            </Button>
+                        </Link>
                     </td>
                 </tr>)}
             </tbody>

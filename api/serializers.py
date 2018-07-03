@@ -70,6 +70,17 @@ class AttendanceStateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ApplicationSerializer(serializers.ModelSerializer):
+    client = ClientSerializer(read_only=True)
+    client_id = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), source='client', write_only=True)
+    course = CourseSerializer(read_only=True)
+    course_id = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), source='course', write_only=True)
+
+    class Meta:
+        model = Application
+        fields = '__all__'
+
+
 class AttendanceSerializer(serializers.ModelSerializer):
     """ client - pro GET, vypise vsechny informace o klientovi
      client_id - pro PUT/POST

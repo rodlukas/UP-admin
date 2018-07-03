@@ -7,6 +7,7 @@ import Groups from "./pages/Groups"
 import Dashboard from "./pages/Dashboard"
 import NotFound from "./pages/NotFound"
 import Settings from "./pages/Settings"
+import Applications from "./pages/Applications"
 import {Collapse, Navbar, NavbarToggler, NavbarBrand} from "reactstrap"
 import Login from "./pages/Login"
 import PrivateRoute from "./auth/PrivateRoute"
@@ -52,6 +53,7 @@ export default class Main extends Component {
                             <PrivateRoute exact path={APP_URLS.klienti} component={Clients}/>
                             <PrivateRoute path={APP_URLS.klienti + "/:id"} component={Card}/>
                             <PrivateRoute path={APP_URLS.skupiny + "/:id"} component={Card}/>
+                            <PrivateRoute path={APP_URLS.zajemci} component={Applications}/>
                             <PrivateRoute path={APP_URLS.nastaveni} component={Settings}/>
                             <Route component={NotFound}/>
                         </Switch>

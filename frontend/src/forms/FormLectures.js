@@ -287,7 +287,7 @@ export default class FormLectures extends Component {
                     <div key={member.id}>
                         <h5>
                             {!this.IS_CLIENT &&
-                            <ClientName name={member.name} surname={member.surname}/>}
+                            <ClientName client={member}/>}
                         </h5>
                         <FormGroup row className="align-items-center">
                             <Col sm={4}>

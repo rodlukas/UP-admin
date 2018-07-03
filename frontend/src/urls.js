@@ -4,6 +4,7 @@ const APP_URLS = {
     diar: '/diar',
     klienti: '/klienti',
     nastaveni: '/nastaveni',
+    zajemci: '/zajemci',
     prehled: '/',
     notfound: '/notfound' // smerovani ostatnich neznamych pozadavku, ktere zobrazi notfound
 }

@@ -16,6 +16,7 @@ import ClientName from "../components/ClientName"
 import {Link} from "react-router-dom"
 import Loading from "../api/Loading"
 import "./Card.css"
+import GroupName from "../components/GroupName"
 
 export default class Card extends Component {
     state = {
@@ -115,7 +116,10 @@ export default class Card extends Component {
                 if (a.course > b.course) return 1
                 return 0
             })
-            this.setState({lectures: groups, IS_LOADING: false})
+            this.setState({
+                lectures: groups,
+                IS_LOADING: false
+            })
         })
     }
 
@@ -148,9 +152,9 @@ export default class Card extends Component {
                         {"Karta " + (IS_CLIENT ? "klienta" : "skupiny")}:
                         {' '}
                         {IS_CLIENT ?
-                            <ClientName name={object.name} surname={object.surname}/>
+                            <ClientName client={object}/>
                             :
-                            object.name}
+                            <GroupName group={object}/>}
                         <Button color="info" className="addBtn" onClick={() => this.toggle()}>
                             Přidat lekci
                         </Button>
@@ -231,19 +235,25 @@ export default class Card extends Component {
                                                         "Předplacená lekce"}{' '}
                                                     <LectureNumber number={lectureVal.attendances[0].count}/>
                                                     <Button color="primary" className="float-right"
-                                                            onClick={() => this.toggle(lectureVal)}>Upravit</Button>
+                                                            onClick={() => this.toggle(lectureVal)}>
+                                                        Upravit
+                                                    </Button>
                                                 </h4>
                                                 <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
                                                     {lectureVal.attendances.map(attendance =>
                                                         <li key={attendance.id}>
                                                             {!IS_CLIENT &&
-                                                            <ClientName name={attendance.client.name}
-                                                                       surname={attendance.client.surname}/>}{' '}
+                                                            <ClientName client={attendance.client}/>}
+                                                            {' '}
                                                             <PaidButton paid={attendance.paid}
                                                                         attendanceId={attendance.id}
-                                                                        funcRefresh={this.getLectures}/>{' '}
-                                                            <RemindPay remind_pay={attendance.remind_pay}/>{' '}
-                                                            <Badge color="info">{attendance.note}</Badge>
+                                                                        funcRefresh={this.getLectures}/>
+                                                            {' '}
+                                                            <RemindPay remind_pay={attendance.remind_pay}/>
+                                                            {' '}
+                                                            <Badge color="info">
+                                                                {attendance.note}
+                                                                </Badge>
                                                             <SelectAttendanceState
                                                                 value={attendance.attendancestate.id}
                                                                 attendanceId={attendance.id}

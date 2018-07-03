@@ -85,7 +85,7 @@ export default class Settings extends Component {
     }
 
     render() {
-        const {attendancestates, courses, currentType, currentObject, default_id} = this.state
+        const {attendancestates, courses, currentType, currentObject, default_id, IS_MODAL, LOADING_CNT} = this.state
         const Visible = ({visible}) => (visible ? 'ANO' : 'NE')
         const SettingsContent = () =>
             <div>
@@ -169,8 +169,9 @@ export default class Settings extends Component {
                                         <Visible visible={course.visible}/>
                                     </td>
                                     <td>
-                                        <Button color="primary"
-                                                onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}>Upravit</Button>
+                                        <Button color="primary" onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}>
+                                            Upravit
+                                        </Button>
                                     </td>
                                 </tr>)}
                             </tbody>
@@ -194,11 +195,11 @@ export default class Settings extends Component {
                             Přidat stav
                         </Button>
                     </h1>
-                    {this.state.LOADING_CNT !== 2 ?
+                    {LOADING_CNT !== 2 ?
                         <Loading/> :
                         <SettingsContent/>}
                 </Container>
-                <Modal isOpen={this.state.IS_MODAL} toggle={this.toggle} autoFocus={false}>
+                <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
                     <FormSettings object={currentObject} funcClose={this.toggle} funcRefresh={this.refresh}
                                   TYPE={currentType}/>
                 </Modal>

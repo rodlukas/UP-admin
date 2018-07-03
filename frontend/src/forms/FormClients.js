@@ -62,7 +62,7 @@ export default class FormClients extends Component {
                 <ModalHeader toggle={this.close}>
                     {this.isClient ? 'Úprava' : 'Přidání'} klienta:
                     {' '}
-                    <ClientName name={name} surname={surname}/>
+                    <ClientName client={{name, surname}}/>
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
@@ -110,7 +110,7 @@ export default class FormClients extends Component {
                         <Label for="note" sm={2} className="text-muted">Smazání</Label>
                         <Col sm={10}>
                             <Alert color="warning">
-                                <p>Klienta lze smazat pouze pokud nemá žádné lekce</p>
+                                <p>Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také všechny jeho zájmy o kurzy</p>
                                 <Button color="danger"
                                         onClick={() => {
                                             if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))

@@ -37,6 +37,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
 
 
+class ApplicationViewSet(viewsets.ModelViewSet):
+    queryset = Application.objects.all()
+    serializer_class = ApplicationSerializer
+
+
 class LectureViewSet(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
     filter_backends = OrderingFilter, DjangoFilterBackend,
