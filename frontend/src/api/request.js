@@ -19,19 +19,22 @@ const request = function (options) {
         let errMsg = NOTIFY_TEXT.ERROR
         console.error('Request Failed:', error.config)
         if (error.response) { // request proveden, ale neprislo 2xx
+            const errObj = error.request.response
             console.error('Status: ', error.response.status)
             console.error('Data: ', error.response.data)
             console.error('Headers: ', error.response.headers)
             console.error('DALSI INFORMACE: ', error)
-            console.error('API VALIDATION ERROR: ', error.request.response)
-            const json = JSON.parse(error.request.response)
-            console.log(json)
-            if(json['non_field_errors'])
+            console.error('API VALIDATION ERROR: ', errObj)
+            // uloz do errMsg neco konkretnejsiho
+            let json = JSON.parse(errObj) // rozparsuj JSON objekt
+            if (Array.isArray(json)) // pokud se pridava (neupdatuje) a chyba se vztahuje ke konkretnimu field, vraci se pole, vezmi z nej prvni chybu
+                json = json[0]
+            if (json['non_field_errors']) // obecna chyba nevztazena ke konkretnimu field
                 errMsg = json['non_field_errors'][0]
-            else if(json['detail'])
+            else if (json['detail']) // chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
                 errMsg = json['detail'][0]
-            else if(json[0][Object.keys(json[0])][0]) // pro chyby primo z validace modelu
-                errMsg = json[0][Object.keys(json[0])][0]
+            else if (json[Object.keys(json)[0]]) // chyba vztazena ke konkretnimu field
+                errMsg = json[Object.keys(json)[0]][0]
         } else { // stalo se neco jineho pri priprave requestu
             console.error('Error Message: ', error.message)
             errMsg = error.message

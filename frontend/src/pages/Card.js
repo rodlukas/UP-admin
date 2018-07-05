@@ -181,7 +181,7 @@ export default class Card extends Component {
                                         {!Boolean(memberships.length) &&
                                         <NoInfo/>}
                                         {memberships.map(membership =>
-                                            <GroupName group={membership} key={membership.id}/>
+                                            <GroupName group={membership} key={membership.id} link/>
                                         ).reduce((accu, elem) => {
                                             return accu === null ? [elem] : [...accu, ', ', elem]
                                         }, null)}

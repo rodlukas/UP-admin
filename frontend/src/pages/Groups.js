@@ -55,12 +55,6 @@ export default class Groups extends Component {
                         <Button color="primary" onClick={() => this.toggle(group)}>
                             Upravit
                         </Button>
-                        {' '}
-                        <Link to={APP_URLS.skupiny + "/" + group.id}>
-                            <Button color="secondary">
-                                Karta
-                            </Button>
-                        </Link>
                     </td>
                 </tr>)}
             </tbody>

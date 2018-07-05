@@ -1,6 +1,10 @@
 from admin.models import *
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F, ExpressionWrapper
+from rest_framework.settings import api_settings
+from datetime import timedelta
+from django.utils import timezone
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -37,20 +41,20 @@ class GroupSerializer(serializers.ModelSerializer):
         memberships_data = validated_data.pop('memberships')
         instance = Group.objects.create(**validated_data)
         for membership_data in memberships_data:
-            client = Client.objects.get(pk=membership_data.pop('client').id)
+            client = Client.objects.get(pk=membership_data.pop('client').pk)
             Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
     def update(self, instance, validated_data):
         # vytvoreni instance skupiny
         instance.name = validated_data.get('name', instance.name)
-        instance.course = Course.objects.get(pk=validated_data.pop('course').id)
+        instance.course = Course.objects.get(pk=validated_data.pop('course').pk)
         instance.save()
         # vytvoreni jednotlivych clenstvi
         memberships_data = validated_data.pop('memberships')
         memberships = list(instance.memberships.all())
         for membership_data in memberships_data:
-            client = Client.objects.get(pk=membership_data.pop('client').id)
+            client = Client.objects.get(pk=membership_data.pop('client').pk)
             # pokud jeste zbyvaji clenstvi, uprav je, jinak vytvor nove
             if len(list(memberships)):
                 membership = memberships.pop(0)
@@ -113,11 +117,11 @@ class AttendanceSerializer(serializers.ModelSerializer):
                 default_state_id = AttendanceState.objects.get(default=True)
             except ObjectDoesNotExist:  # pokud neni zvoleny vychozi stav, vrat "??"
                 return "?? - je potřeba nastavit výchozí stav účasti"
-            default_state_id = default_state_id.id  # pamatuj si pouze id vychoziho stavu
-            cnt = Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
+            default_state_id = default_state_id.pk  # pamatuj si pouze id vychoziho stavu
+            cnt = Attendance.objects.filter(client=obj.client.pk, lecture__course=obj.lecture.course,
                                             lecture__start__isnull=False, lecture__group__isnull=True,
                                             lecture__start__lt=obj.lecture.start,
-                                            attendancestate_id=default_state_id, lecture__canceled=False)
+                                            attendancestate__pk=default_state_id, lecture__canceled=False)
         return cnt.count()+1  # +1 aby prvni kurz nebyl jako 0.
 
     @staticmethod
@@ -126,7 +130,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         if obj.lecture.start is None or obj.paid is False:
             return False
         # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu a zjisti, zda existuje datumove po teto lekci dalsi zaplacena lekce
-        res = Attendance.objects.filter(client=obj.client.id, lecture__course=obj.lecture.course,
+        res = Attendance.objects.filter(client=obj.client.pk, lecture__course=obj.lecture.course,
                                         lecture__group=obj.lecture.group, lecture__start__gt=obj.lecture.start,
                                         paid=True, lecture__canceled=False).count()
         # pokud je pocet dalsich zaplacenych lekci 0, vrat True, jinak False
@@ -147,14 +151,14 @@ class LectureSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # vytvoreni instance lekce
         attendances_data = validated_data.pop('attendances')
-        course = Course.objects.get(pk=validated_data.pop('course').id)
+        course = Course.objects.get(pk=validated_data.pop('course').pk)
         group = None
         if 'group' in validated_data:
-            group = Group.objects.get(pk=validated_data.pop('group').id)
+            group = Group.objects.get(pk=validated_data.pop('group').pk)
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
         # vytvoreni jednotlivych ucasti
         for attendance_data in attendances_data:
-            client = Client.objects.get(pk=attendance_data.pop('client').id)
+            client = Client.objects.get(pk=attendance_data.pop('client').pk)
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
         # vypis: for k, v in validated_data.items(): print(k, v)
@@ -163,11 +167,11 @@ class LectureSerializer(serializers.ModelSerializer):
         # uprava instance lekce
         group = None
         if 'group' in validated_data:
-            group = Group.objects.get(pk=validated_data.pop('group').id)
+            group = Group.objects.get(pk=validated_data.pop('group').pk)
         instance.start = validated_data.get('start')
         instance.duration = validated_data.get('duration', instance.duration)
         instance.canceled = validated_data.get('canceled', instance.canceled)
-        instance.course = Course.objects.get(pk=validated_data.pop('course').id)
+        instance.course = Course.objects.get(pk=validated_data.pop('course').pk)
         instance.group = group
         instance.save()
         # upravy jednotlivych ucasti
@@ -176,8 +180,35 @@ class LectureSerializer(serializers.ModelSerializer):
         for attendance_data in attendances_data:
             attendance = attendances.pop(0)
             attendance.paid = attendance_data.get('paid', attendance.paid)
-            attendance.client = Client.objects.get(pk=attendance_data.pop('client').id)
+            attendance.client = Client.objects.get(pk=attendance_data.pop('client').pk)
             attendance.note = attendance_data.get('note', attendance.note)
-            attendance.attendancestate = AttendanceState.objects.get(pk=attendance_data.pop('attendancestate').id)
+            attendance.attendancestate = AttendanceState.objects.get(pk=attendance_data.pop('attendancestate').pk)
             attendance.save()
         return instance
+
+    def validate(self, data):
+        # pro predplacene lekce nic nekontroluj
+        if 'start' not in data:
+            return data
+        end = data['start'] + timedelta(minutes=data['duration'])
+        # z atributu vytvor dotaz na end, pro funkcni operaci potreba pronasobit timedelta
+        expression = F('start') + (timedelta(minutes=1) * F('duration'))
+        # proved dotaz, vrat datetime
+        end_db = ExpressionWrapper(expression, output_field=models.DateTimeField())
+        # ke kazdemu zaznamu prirad hodnotu end_db ziskanou diky vyrazum vyse,
+        #   zjisti, zda existuji lekce v konfliktu
+        qs = Lecture.objects \
+            .annotate(end_db=end_db) \
+            .filter(start__lt=end, end_db__gt=data['start'])
+        if self.instance:  # pokud updatuju, proveruji pouze ostatni lekce
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            elem = list(qs).pop(0)
+            # prevod na spravnou TZ
+            local_dt = timezone.localtime(elem.start)
+            # tvorba errormsg
+            err_datetime = local_dt.strftime("%d. %m. %Y - %H:%M")
+            err_duration = str(elem.duration)
+            err = 'Časový konflikt s jinou lekcí (' + err_datetime + ', trvání ' + err_duration + ' min.)'
+            raise serializers.ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [err]})
+        return data
