@@ -1,11 +1,9 @@
 import React, {Component} from "react"
 import {Table, Button, Modal, Badge, Container} from "reactstrap"
-import {Link} from "react-router-dom"
 import FormGroups from "../forms/FormGroups"
 import GroupService from "../api/services/group"
 import ClientsList from "../components/ClientsList"
 import Loading from "../api/Loading"
-import APP_URLS from "../urls"
 import GroupName from "../components/GroupName"
 
 export default class Groups extends Component {

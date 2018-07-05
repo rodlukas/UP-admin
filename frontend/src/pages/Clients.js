@@ -1,11 +1,9 @@
 import React, {Component} from "react"
 import {Table, Button, Modal, Container} from "reactstrap"
-import {Link} from "react-router-dom"
 import FormClients from "../forms/FormClients"
 import ClientService from "../api/services/client"
 import ClientName from "../components/ClientName"
 import Loading from "../api/Loading"
-import APP_URLS from "../urls"
 
 export default class ClientList extends Component {
     constructor(props) {
