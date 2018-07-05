@@ -48,3 +48,8 @@ h1 .nextBtn {
 h1 .addBtn + .addBtn {
     margin-right: 0.3rem
 }
+
+/* MENU */
+.development .navbar {
+    background-color: #FAFAC5;
+}

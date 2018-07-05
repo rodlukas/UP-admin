@@ -8,7 +8,7 @@ import Dashboard from "./pages/Dashboard"
 import NotFound from "./pages/NotFound"
 import Settings from "./pages/Settings"
 import Applications from "./pages/Applications"
-import {Collapse, Navbar, NavbarToggler, NavbarBrand} from "reactstrap"
+import {Collapse, Navbar, NavbarToggler, NavbarBrand, Badge} from "reactstrap"
 import Login from "./pages/Login"
 import PrivateRoute from "./auth/PrivateRoute"
 import Menu from "./components/Menu"
@@ -35,11 +35,15 @@ export default class Main extends Component {
         console.log(process.env.NODE_ENV)
         return (
             <BrowserRouter>
-                <div>
+                <div className={process.env.NODE_ENV}>
                     <Navbar light className="border-bottom" expand="sm">
                         <NavbarBrand tag={RouterNavLink} exact to="/">
                             ÚP<sub>admin</sub>
                         </NavbarBrand>
+                        {process.env.NODE_ENV === 'development' &&
+                        <Badge color="dark">
+                            Vývojová verze
+                        </Badge>}
                         <NavbarToggler onClick={this.toggle}/>
                         <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>
                             <Menu/>
