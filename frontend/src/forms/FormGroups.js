@@ -1,6 +1,5 @@
 import React, {Component} from "react"
 import Select from "react-select"
-import "react-select/dist/react-select.css"
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
 import CourseService from "../api/services/course"
 import ClientService from "../api/services/client"

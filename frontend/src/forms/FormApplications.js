@@ -51,11 +51,10 @@ export default class FormApplications extends Component {
         this.setState(state)
     }
 
-    handleChange = (obj) => {
+    handleChange = (obj, name) => {
         const state = this.state
-        // first_key je client_id/course_id
-        const first_key = Object.keys(obj)[0]
-        state[first_key] = obj[first_key]
+        // obj muze byt null
+        state[name] = obj ? obj[name] : null
         this.setState(state)
     }
 
@@ -109,10 +108,11 @@ export default class FormApplications extends Component {
                             <Select
                                 valueKey={'client_id'}
                                 value={client_id}
-                                onChange={this.handleChange}
+                                onChange={(newValue, name = "client_id") => this.handleChange(newValue, name)}
                                 options={clients}
                                 placeholder={"Vyberte klienta..."}
-                                noResultsText={"Nic nenalezeno"}/>
+                                noResultsText={"Nic nenalezeno"}
+                                required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -123,10 +123,11 @@ export default class FormApplications extends Component {
                             <Select
                                 valueKey={'course_id'}
                                 value={course_id}
-                                onChange={this.handleChange}
+                                onChange={(newValue, name = "course_id") => this.handleChange(newValue, name)}
                                 options={this.courses}
                                 placeholder={"Vyberte kurz..."}
-                                noResultsText={"Nic nenalezeno"}/>
+                                noResultsText={"Nic nenalezeno"}
+                                required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
