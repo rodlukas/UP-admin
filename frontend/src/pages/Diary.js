@@ -28,6 +28,19 @@ export default class Diary extends Component {
 
     componentDidMount() {
         this.getAttendanceStates()
+        document.addEventListener('keydown', this.onKeyDown)
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.onKeyDown)
+    }
+
+    onKeyDown = (e) => {
+        const key = e.key
+        if (key === "ArrowLeft")
+            this.props.history.push(Diary.serializeDateUrl(this.state.prevMonday))
+        else if (key === "ArrowRight")
+            this.props.history.push(Diary.serializeDateUrl(this.state.nextMonday))
     }
 
     static getDerivedStateFromProps(props, state) {

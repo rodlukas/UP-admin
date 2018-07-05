@@ -32,7 +32,6 @@ export default class Main extends Component {
     }
 
     render() {
-        console.log(process.env.NODE_ENV)
         return (
             <BrowserRouter>
                 <div className={process.env.NODE_ENV}>
