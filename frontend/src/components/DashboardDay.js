@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading, Badge} from "reactstrap"
-import {prettyDateWithDay, toISODate, prettyTime, isToday} from "../global/funcDateTime"
+import {prettyDateWithLongDayYearIfDiff, toISODate, prettyTime, isToday} from "../global/funcDateTime"
 import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
 import "../global/lists.css"
@@ -34,7 +34,7 @@ export default class DashboardDay extends Component {
 
     render() {
         const {lectures, IS_LOADING} = this.state
-        const title = prettyDateWithDay(this.date)
+        const title = prettyDateWithLongDayYearIfDiff(this.date)
         const Lectures = () => (
             <Fragment>
                 {lectures.map(lecture =>

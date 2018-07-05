@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Container, Row, Col, Button} from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
-import {prettyDate, isEqualDate} from "../global/funcDateTime"
+import {prettyDateWithYearIfDiff, isEqualDate} from "../global/funcDateTime"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/pro-solid-svg-icons"
 import AttendanceStateService from "../api/services/attendancestate"
@@ -50,7 +50,7 @@ export default class Diary extends Component {
             const week = Diary.getWeekArray(newMonday)
             return {
                 week: week,
-                title: "Týden " + prettyDate(newMonday) + " – " + prettyDate(week[4]),
+                title: "Týden " + prettyDateWithYearIfDiff(newMonday) + " – " + prettyDateWithYearIfDiff(week[4]),
                 nextMonday: Diary.addDays(newMonday, DAYS_PER_WEEK),
                 prevMonday: Diary.addDays(newMonday, -DAYS_PER_WEEK),
                 lastParams: props.match.params

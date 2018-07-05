@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput, InputGroup,
     InputGroupAddon, InputGroupText} from "reactstrap"
-import {toISODate, toISOTime, prettyDateWithDay} from "../global/funcDateTime"
+import {toISODate, toISOTime, prettyDateWithLongDayYear} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
 import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
@@ -337,7 +337,7 @@ export default class FormLectures extends Component {
                                         let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
                                             + (this.IS_CLIENT ? "klienta" : "skupiny") + " "
                                             + (this.IS_CLIENT ? (object.surname + " " + object.name) : object.name)
-                                            + (!prepaid ? (" v " + prettyDateWithDay(new Date(date)) + " " + time) : '') + '?'
+                                            + (!prepaid ? (" v " + prettyDateWithLongDayYear(new Date(date)) + " " + time) : '') + '?'
                                         if (window.confirm(msg))
                                             this.delete(id)}}>
                                 Smazat lekci

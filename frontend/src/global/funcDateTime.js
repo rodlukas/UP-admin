@@ -6,9 +6,21 @@ export function prettyDateWithYear(date) {
     return prettyDate(date) + " " + (date.getFullYear())
 }
 
-export function prettyDateWithDay(date) {
+// vrati uzivatelsky privetivy datum, pokud je rok odlisny od aktualniho tak jej pripoji
+export function prettyDateWithYearIfDiff(date) {
+    if(date.getFullYear() === new Date().getFullYear())
+        return prettyDate(date)
+    return prettyDateWithYear(date)
+}
+
+export function prettyDateWithLongDayYear(date) {
     const day = date.toLocaleDateString('cs-CZ', {weekday: 'long'})
-    return day + " " + prettyDate(date)
+    return day + " " + prettyDateWithYear(date)
+}
+
+export function prettyDateWithLongDayYearIfDiff(date) {
+    const day = date.toLocaleDateString('cs-CZ', {weekday: 'long'})
+    return day + " " + prettyDateWithYearIfDiff(date)
 }
 
 export function prettyDateWithDayYear(date) {
