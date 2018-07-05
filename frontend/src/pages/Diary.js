@@ -37,6 +37,7 @@ export default class Diary extends Component {
 
     onKeyDown = (e) => {
         const key = e.key
+        console.log(e)
         if (key === "ArrowLeft")
             this.props.history.push(Diary.serializeDateUrl(this.state.prevMonday))
         else if (key === "ArrowRight")
@@ -106,6 +107,11 @@ export default class Diary extends Component {
         return APP_URLS.diar + "/" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()
     }
 
+    // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)
+    removeFocusAfterClick = (e) => {
+        e.target.blur()
+    }
+
     render() {
         // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
         return (
@@ -119,7 +125,8 @@ export default class Diary extends Component {
                         <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
                     </Link>{' '}
                     <Link to={Diary.serializeDateUrl(this.currentMonday)}>
-                        <Button color="secondary" disabled={isEqualDate(this.currentMonday, this.state.week[0])}>
+                        <Button color="secondary" disabled={isEqualDate(this.currentMonday, this.state.week[0])}
+                                onClick={(e) => this.removeFocusAfterClick(e)}>
                             Dnes
                         </Button>
                     </Link>
