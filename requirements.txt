@@ -5,7 +5,7 @@ django-filter==1.1.0
 django-webpack-loader==0.6.0
 djangorestframework==3.8.2
 djangorestframework-jwt==1.11.0
-gunicorn==19.8.1
+gunicorn==19.9.0
 psycopg2==2.7.5
 PyJWT==1.6.4
 pytz==2018.5
