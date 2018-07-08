@@ -19,7 +19,7 @@ WEBPACK_LOADER = {
     }
 }
 
-DEBUG = True
+DEBUG = False
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
@@ -34,7 +34,7 @@ DATABASES['default'].update(db_from_env)
 if 'TRAVIS' in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'travis_ci_test',
             'USER': 'postgres',
             'PASSWORD': '',
