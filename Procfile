@@ -1,2 +1,2 @@
-release: bash scripts/release-tasks.sh
+release: bash release-tasks.sh
 web: gunicorn up.wsgi --log-file -
