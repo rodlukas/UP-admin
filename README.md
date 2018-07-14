@@ -5,12 +5,12 @@
 Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis)
 
 ## užitečné příkazy
-* vytvoření souboru `requirements.txt`: `pip freeze > requirements.txt`
-* yarn
+* **vytvoření souboru `requirements.txt`**: `pip freeze > requirements.txt`
+* **yarn:**
     * zjištění aktualizací: `yarn outdated`
     * přidání/smazání balíčku: `yarn upgrade/remove [package]`
     * aktualizace konkrétního balíčku: `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
-* MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:
+* **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
     1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
     2. přes `manage.py` spustit:
         * `runserver --settings=up.production_settings`
