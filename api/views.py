@@ -46,7 +46,7 @@ class LectureViewSet(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
     filter_backends = OrderingFilter, DjangoFilterBackend,
     ordering_fields = 'start',
-    filter_fields = 'group',
+    filterset_fields = 'group',
 
     def get_queryset(self):
         qs = Lecture.objects.order_by('-start')  # qs znaci queryset
