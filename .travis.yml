@@ -16,7 +16,7 @@ install:
 before_script:
 - psql -c 'create database travis_ci_test;' -U postgres
 script:
-- bash release-tasks.sh
+- source release-tasks.sh
 - ls
 - coverage run --source=admin,api --omit=*/migrations/* manage.py test
 after_success:
