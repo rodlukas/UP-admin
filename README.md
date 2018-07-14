@@ -1,6 +1,6 @@
 # Webová aplikace pro projekt „Úspěšný prvňáček“
-[![Build Status](https://travis-ci.com/rodlukas/cvut-fit-bibap-uspesnyprvnacek-code.svg?token=g1rDdptQG4SVzcH6FMo5&branch=master)](https://travis-ci.com/rodlukas/cvut-fit-bibap-uspesnyprvnacek-code)
-[![codecov](https://codecov.io/gh/rodlukas/cvut-fit-bibap-uspesnyprvnacek-code/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/cvut-fit-bibap-uspesnyprvnacek-code)
+[![Build Status](https://travis-ci.com/rodlukas/UP-admin.svg?token=g1rDdptQG4SVzcH6FMo5&branch=master)](https://travis-ci.com/rodlukas/UP-admin)
+[![codecov](https://codecov.io/gh/rodlukas/UP-admin/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/UP-admin)
 
 Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis)
 
@@ -10,7 +10,12 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
     * zjištění aktualizací: `yarn outdated`
     * přidání/smazání balíčku: `yarn upgrade/remove [package]`
     * aktualizace konkrétního balíčku: `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
-* spuštění produkční verze: `python manage.py runserver --settings=up.production_settings`
+* MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:
+    1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
+    2. přes `manage.py` spustit:
+        * `runserver --settings=up.production_settings`
+        * `yarn install`
+        * `collectstatic --settings=up.production_settings`
 * **HEROKU**
     * vytvoření uživatele: `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * připojení k DB z externí aplikace - je potřeba přidat do URI na konec `?sslmode=require`

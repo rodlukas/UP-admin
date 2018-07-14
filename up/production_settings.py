@@ -1,6 +1,9 @@
 from .settings import *
 import dj_database_url
 
+# pro rucni spusteni produkcni verze nastavit True
+MANUAL_PRODUCTION = False
+
 ALLOWED_HOSTS = [
     'uspesnyprvnacek.herokuapp.com'
 ]
@@ -42,3 +45,7 @@ if 'TRAVIS' in os.environ:
             'PORT': '',
         }
     }
+
+if MANUAL_PRODUCTION:
+    ALLOWED_HOSTS += 'localhost'
+    SECURE_SSL_REDIRECT = False
