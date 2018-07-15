@@ -79,7 +79,7 @@ export default class Applications extends Component {
     render() {
         const {applications, courses, currentApplication, IS_MODAL, LOADING_CNT} = this.state
         const ApplicantsCount = ({cnt}) =>
-            <Badge pill>
+            <Badge color="secondary" pill>
                 {cnt}
                 {' '}zájemc{cnt === 1 ? "e" : ((cnt > 1 && cnt < 5) ? "i" : "ů")}
             </Badge>

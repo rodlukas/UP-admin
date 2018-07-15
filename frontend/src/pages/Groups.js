@@ -42,7 +42,7 @@ export default class Groups extends Component {
                         <GroupName group={group} link/>
                     </td>
                     <td>
-                        <Badge pill>
+                        <Badge color="secondary" pill>
                             {group.course.name}
                         </Badge>
                     </td>

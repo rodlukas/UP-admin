@@ -42,7 +42,7 @@ export default class DashboardDay extends Component {
                         <h4>
                             {prettyTime(new Date(lecture.start))}
                             {' '}
-                            <Badge pill>
+                            <Badge color="secondary" pill>
                                 {lecture.course.name}
                             </Badge>
                             {' '}
