@@ -1,0 +1,22 @@
+.Attendances {
+    vertical-align: top;
+    padding: 0
+}
+
+.Attendances li {
+    list-style-type: none;
+}
+
+.Attendances p {
+    margin: 0
+}
+
+.Attendances .clientName {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-right: 0.2rem
+}
+
+.AttendancesGroup .clientName {
+    font-size: 1.15rem;
+}

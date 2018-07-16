@@ -4,6 +4,7 @@ import PaidButton from "./PaidButton"
 import SelectAttendanceState from "./SelectAttendanceState"
 import ClientName from "./ClientName"
 import RemindPay from "./RemindPay"
+import "./Attendances.css"
 
 const Attendance = ({attendance, showClient = false, funcRefresh, attendancestates}) =>
     <li>
@@ -21,11 +22,15 @@ const Attendance = ({attendance, showClient = false, funcRefresh, attendancestat
                                attendancestates={attendancestates}
                                funcRefresh={funcRefresh}/>
     </li>
-const Attendances = ({lecture, showClient = false, funcRefresh, attendancestates}) =>
-    <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
+const Attendances = ({lecture, showClient = false, funcRefresh, attendancestates}) => {
+    const className = "Attendances" + (lecture.group ? " AttendancesGroup" : "")
+    return (
+    <ul className={className}>
         {lecture.attendances.map(attendance =>
             <Attendance attendance={attendance} attendancestates={attendancestates} key={attendance.id}
                         showClient={showClient} funcRefresh={funcRefresh}/>)}
-    </ul>
+    </ul>)
+}
+
 
 export default Attendances

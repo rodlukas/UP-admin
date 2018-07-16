@@ -1,13 +1,13 @@
 import React, {Component, Fragment} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading} from "reactstrap"
 import {prettyDateWithLongDayYearIfDiff, toISODate, prettyTime, isToday} from "../global/funcDateTime"
-import "../global/lists.css"
 import LectureNumber from "./LectureNumber"
 import LectureService from "../api/services/lecture"
 import Loading from "../api/Loading"
 import GroupName from "./GroupName"
 import CourseName from "./CourseName"
 import Attendances from "./Attendances"
+import "./DashboardDay.css"
 
 export default class DashboardDay extends Component {
     constructor(props) {
@@ -35,7 +35,7 @@ export default class DashboardDay extends Component {
         const {lectures, IS_LOADING} = this.state
         const title = prettyDateWithLongDayYearIfDiff(this.date)
         const Lecture = ({lecture}) =>
-            <ListGroupItem className={lecture.group && "list-bgGroup"}>
+            <ListGroupItem className={lecture.group && "LectureGroup"}>
                 <h4>
                     {prettyTime(new Date(lecture.start))}
                     {' '}
