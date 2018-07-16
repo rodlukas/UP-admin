@@ -1,10 +1,13 @@
 import React, {Component} from "react"
-import {Table, Button, Modal, Badge, Container} from "reactstrap"
+import {Table, Modal, Container} from "reactstrap"
 import FormGroups from "../forms/FormGroups"
 import GroupService from "../api/services/group"
 import ClientsList from "../components/ClientsList"
 import Loading from "../api/Loading"
 import GroupName from "../components/GroupName"
+import CourseName from "../components/CourseName"
+import EditButton from "../components/buttons/EditButton"
+import AddButton from "../components/buttons/AddButton"
 
 export default class Groups extends Component {
     state = {
@@ -23,9 +26,7 @@ export default class Groups extends Component {
 
     getGroups = () => {
         GroupService.getAll()
-            .then((response) => {
-                this.setState({groups: response, IS_LOADING: false})
-            })
+            .then(groups => this.setState({groups, IS_LOADING: false}))
     }
 
     componentDidMount() {
@@ -42,17 +43,13 @@ export default class Groups extends Component {
                         <GroupName group={group} link/>
                     </td>
                     <td>
-                        <Badge color="secondary" pill>
-                            {group.course.name}
-                        </Badge>
+                        <CourseName course={group.course}/>
                     </td>
                     <td>
                         <ClientsList clients={group.memberships}/>
                     </td>
                     <td className="col-2">
-                        <Button color="primary" onClick={() => this.toggle(group)}>
-                            Upravit
-                        </Button>
+                        <EditButton onClick={() => this.toggle(group)}/>
                     </td>
                 </tr>)}
             </tbody>
@@ -61,7 +58,7 @@ export default class Groups extends Component {
                 <Container>
                     <h1 className="text-center mb-4">
                         Skupiny
-                        <Button color="info" className="addBtn" onClick={() => this.toggle()}>Přidat skupinu</Button>
+                        <AddButton title="Přidat skupinu" onClick={() => this.toggle()}/>
                     </h1>
                     <Table striped size="sm" responsive>
                         <thead className="thead-dark">

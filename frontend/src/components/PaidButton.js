@@ -10,15 +10,14 @@ export default class PaidButton extends Component {
         const id = this.props.attendanceId
         const data = {id, paid: newPaid}
         AttendanceService.patch(data)
-            .then(() => {
-                this.props.funcRefresh()
-            })
+            .then(() => this.props.funcRefresh())
     }
 
-    render() {
+    render = () => {
+        const className = "PaidButton " + (this.props.paid ? "text-success" : "text-danger")
         return (
             <FontAwesomeIcon icon={faUsdCircle} size="2x"
-                             className={"PaidButton " + (this.props.paid ? "text-success" : "text-danger")}
+                             className={className}
                              onClick={this.onClick}/>
         )
     }

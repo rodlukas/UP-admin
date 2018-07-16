@@ -12,9 +12,7 @@ export default class Dashboard extends Component {
 
     getAttendanceStates = () => {
         AttendanceStateService.getAll()
-            .then((response) => {
-                this.setState({attendancestates: response})
-            })
+            .then(attendancestates => this.setState({attendancestates}))
     }
 
     componentDidMount() {

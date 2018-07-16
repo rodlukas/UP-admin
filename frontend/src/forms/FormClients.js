@@ -1,7 +1,10 @@
 import React, {Component} from "react"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from "reactstrap"
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from "reactstrap"
 import ClientService from "../api/services/client"
 import ClientName from "../components/ClientName"
+import DeleteButton from "../components/buttons/DeleteButton"
+import CancelButton from "../components/buttons/CancelButton"
+import SubmitButton from "../components/buttons/SubmitButton"
 
 export default class FormClients extends Component {
     constructor(props) {
@@ -107,29 +110,26 @@ export default class FormClients extends Component {
                     </FormGroup>
                     {this.isClient &&
                     <FormGroup row className="border-top pt-3">
-                        <Label for="note" sm={2} className="text-muted">Smazání</Label>
+                        <Label for="note" sm={2} className="text-muted">
+                            Smazání
+                        </Label>
                         <Col sm={10}>
                             <Alert color="warning">
                                 <p>Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také všechny jeho zájmy o kurzy</p>
-                                <Button color="danger"
-                                        onClick={() => {
-                                            if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))
-                                                this.delete(id)
-                                        }}>
-                                    Smazat klienta
-                                </Button>
+                                <DeleteButton
+                                    title="klienta"
+                                    onClick={() => {
+                                    if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))
+                                        this.delete(id)}}
+                                />
                             </Alert>
                         </Col>
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>
-                        Storno
-                    </Button>
+                    <CancelButton onClick={this.close}/>
                     {' '}
-                    <Button color="primary" type="submit">
-                        {this.isClient ? 'Uložit' : 'Přidat'}
-                    </Button>
+                    <SubmitButton title={this.isClient ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

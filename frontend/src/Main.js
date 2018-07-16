@@ -13,22 +13,17 @@ import Login from "./pages/Login"
 import PrivateRoute from "./auth/PrivateRoute"
 import Menu from "./components/Menu"
 import {ToastContainer} from "react-toastify"
-import 'react-toastify/dist/ReactToastify.min.css'
+import "react-toastify/dist/ReactToastify.min.css"
 import "react-select/dist/react-select.css"
 import APP_URLS from "./urls"
 
 export default class Main extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            IS_MENU_OPEN: false
-        }
+    state = {
+        IS_MENU_OPEN: false
     }
 
     toggle = () => {
-        this.setState({
-            IS_MENU_OPEN: !this.state.IS_MENU_OPEN
-        })
+        this.setState({IS_MENU_OPEN: !this.state.IS_MENU_OPEN})
     }
 
     render() {
@@ -51,15 +46,24 @@ export default class Main extends Component {
                     <ToastContainer/>
                     <div className="content">
                         <Switch>
-                            <PrivateRoute exact path={APP_URLS.prehled} component={Dashboard}/>
-                            <Route path={APP_URLS.prihlasit} component={Login}/>
-                            <PrivateRoute exact path={APP_URLS.skupiny} component={Groups}/>
-                            <PrivateRoute path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
-                            <PrivateRoute exact path={APP_URLS.klienti} component={Clients}/>
-                            <PrivateRoute path={APP_URLS.klienti + "/:id"} component={Card}/>
-                            <PrivateRoute path={APP_URLS.skupiny + "/:id"} component={Card}/>
-                            <PrivateRoute path={APP_URLS.zajemci} component={Applications}/>
-                            <PrivateRoute path={APP_URLS.nastaveni} component={Settings}/>
+                            <PrivateRoute
+                                path={APP_URLS.prehled} component={Dashboard} exact/>
+                            <Route
+                                path={APP_URLS.prihlasit} component={Login}/>
+                            <PrivateRoute
+                                path={APP_URLS.skupiny} component={Groups} exact/>
+                            <PrivateRoute
+                                path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
+                            <PrivateRoute
+                                path={APP_URLS.klienti} component={Clients} exact/>
+                            <PrivateRoute
+                                path={APP_URLS.klienti + "/:id"} component={Card}/>
+                            <PrivateRoute
+                                path={APP_URLS.skupiny + "/:id"} component={Card}/>
+                            <PrivateRoute
+                                path={APP_URLS.zajemci} component={Applications}/>
+                            <PrivateRoute
+                                path={APP_URLS.nastaveni} component={Settings}/>
                             <Route component={NotFound}/>
                         </Switch>
                     </div>

@@ -1,8 +1,11 @@
 import React, {Component} from "react"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
 import {EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
+import DeleteButton from "../components/buttons/DeleteButton"
+import CancelButton from "../components/buttons/CancelButton"
+import SubmitButton from "../components/buttons/SubmitButton"
 
 export default class FormSettings extends Component {
     constructor(props) {
@@ -95,27 +98,22 @@ export default class FormSettings extends Component {
                                     Lze smazat pouze pokud není příslušný {type} použit u žádné lekce
                                     {this.TYPE === EDIT_TYPE.COURSE && ", smažou se také všichni zájemci o tento kurz"}
                                 </p>
-                                <Button color="danger"
-                                        onClick={() => {
-                                            let msg = "Opravdu chcete smazat "
-                                                + type + " " + name + '?'
-                                            if (window.confirm(msg))
-                                                this.delete(id)
-                                        }}>
-                                    Smazat {type}
-                                </Button>
+                                <DeleteButton
+                                    title={type}
+                                    onClick={() => {
+                                        let msg = "Opravdu chcete smazat "
+                                            + type + " " + name + '?'
+                                        if (window.confirm(msg))
+                                            this.delete(id)}}
+                                />
                             </Alert>
                         </Col>
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>
-                        Storno
-                    </Button>
+                    <CancelButton onClick={this.close}/>
                     {' '}
-                    <Button color="primary" type="submit">
-                        {this.isObject ? 'Uložit' : 'Přidat'}
-                    </Button>
+                    <SubmitButton title={this.isObject ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

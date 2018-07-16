@@ -1,15 +1,16 @@
 import React, {Component} from "react"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from "reactstrap"
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from "reactstrap"
 import ApplicationService from "../api/services/application"
 import Select from "react-select"
 import ClientService from "../api/services/client"
+import SubmitButton from "../components/buttons/SubmitButton"
+import CancelButton from "../components/buttons/CancelButton"
 
 export default class FormApplications extends Component {
     constructor(props) {
         super(props)
         this.isObject = Boolean(Object.keys(props.application).length)
         const {id, course, client, note} = props.application
-        console.log(props.application)
         this.state = {
             id: id || '',
             course_id: this.isObject ? course.id : null,
@@ -26,9 +27,7 @@ export default class FormApplications extends Component {
         courses.map(course => {
             return arrayOfCourses.push({
                 course_id: course.id,
-                label: course.name
-            })
-        })
+                label: course.name})})
         return arrayOfCourses
     }
 
@@ -38,9 +37,7 @@ export default class FormApplications extends Component {
         clients.map(client => {
             return arrayOfClients.push({
                 client_id: client.id,
-                label: client.surname + " " + client.name
-            })
-        })
+                label: client.surname + " " + client.name})})
         return arrayOfClients
     }
 
@@ -83,9 +80,7 @@ export default class FormApplications extends Component {
 
     getClients = () => {
         ClientService.getAll()
-            .then((response) => {
-                this.setState({clients: this.getClientsArray(response)})
-            })
+            .then(clients => this.setState({clients: this.getClientsArray(clients)}))
     }
 
     componentDidMount() {
@@ -140,13 +135,9 @@ export default class FormApplications extends Component {
                     </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>
-                        Storno
-                    </Button>
+                    <CancelButton onClick={this.close}/>
                     {' '}
-                    <Button color="primary" type="submit">
-                        {this.isObject ? 'Uložit' : 'Přidat'}
-                    </Button>
+                    <SubmitButton title={this.isObject ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

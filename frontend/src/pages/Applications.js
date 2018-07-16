@@ -1,11 +1,14 @@
-import React, {Component} from "react"
-import {Button, Modal, Container, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Badge, Col, Row} from "reactstrap"
+import React, {Component, Fragment} from "react"
+import {Modal, Container, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Badge, Col, Row} from "reactstrap"
 import ApplicationService from "../api/services/application"
 import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
 import Loading from "../api/Loading"
 import FormApplications from "../forms/FormApplications"
 import "./Applications.css"
+import AddButton from "../components/buttons/AddButton"
+import EditButton from "../components/buttons/EditButton"
+import DeleteButton from "../components/buttons/DeleteButton"
 
 export default class Applications extends Component {
     constructor(props) {
@@ -83,67 +86,70 @@ export default class Applications extends Component {
                 {cnt}
                 {' '}zájemc{cnt === 1 ? "e" : ((cnt > 1 && cnt < 5) ? "i" : "ů")}
             </Badge>
-        const ApplicationsContent = () =>
-            <div>
+        const Application = ({application}) =>
+            <Fragment>
+                <Col>
+                    <ListGroupItemHeading>
+                        <ClientName client={application.client} link/>
+                    </ListGroupItemHeading>
+                    <ListGroupItemText>
+                        {application.note}
+                    </ListGroupItemText>
+                </Col>
+                <Col>
+                    <EditButton onClick={() => this.toggle(application)}/>
+                    {' '}
+                    <DeleteButton
+                        onClick={() => {
+                            let msg = "Opravdu chcete smazat zájemce "
+                                + application.client.surname + " " + application.client.name
+                                + " o " + application.course.name + '?'
+                            if (window.confirm(msg))
+                                this.delete(application.id)
+                    }}/>
+                </Col>
+            </Fragment>
+        const CourseApplications = ({applications}) =>
+            <Fragment>
                 {applications.map(application =>
-                    <ListGroup key={application.course}>
+                    <ListGroupItem key={application.id}>
+                        <Container>
+                            <Row>
+                                <Application application={application}/>
+                            </Row>
+                        </Container>
+                    </ListGroupItem>)}
+            </Fragment>
+        const AllApplications = () =>
+            <Fragment>
+                {applications.map(courseApplications =>
+                    <ListGroup key={courseApplications.course}>
                         <h4 className="Applications-h4">
-                            {application.course}
+                            {courseApplications.course}
                             {' '}
-                            <ApplicantsCount cnt={application.values.length}/>
+                            <ApplicantsCount cnt={courseApplications.values.length}/>
                         </h4>
-                        {application.values.map(applicationVal =>
-                            <ListGroupItem key={applicationVal.id}>
-                                <Container>
-                                    <Row>
-                                        <Col>
-                                            <ListGroupItemHeading>
-                                                <ClientName client={applicationVal.client} link/>
-                                            </ListGroupItemHeading>
-                                            <ListGroupItemText>
-                                                {applicationVal.note}
-                                            </ListGroupItemText>
-                                        </Col>
-                                        <Col>
-                                            <Button color="primary" onClick={() => this.toggle(applicationVal)}>
-                                                Upravit
-                                            </Button>
-                                            {' '}
-                                            <Button color="danger"
-                                                    onClick={() => {
-                                                        let msg = "Opravdu chcete smazat zájemce "
-                                                            + applicationVal.client.surname + " " + applicationVal.client.name + " o " + applicationVal.course.name + '?'
-                                                        if (window.confirm(msg))
-                                                            this.delete(applicationVal.id)
-                                                    }}>
-                                                Smazat
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                </Container>
-                            </ListGroupItem>)}
-                    </ListGroup>
-                )}
+                        <CourseApplications applications={courseApplications.values}/>
+                    </ListGroup>)}
                 {!Boolean(applications.length) &&
                 <p className="text-muted text-center">
                     Žádní zájemci
                 </p>}
-            </div>
+            </Fragment>
         return (
             <div>
                 <Container>
                     <h1 className="text-center mb-4">
                         Zájemci o kurzy
-                        <Button color="info" className="addBtn" onClick={() => this.toggle()}>
-                            Přidat zájemce
-                        </Button>
+                        <AddButton title="Přidat zájemce" onClick={() => this.toggle()}/>
                     </h1>
                     {LOADING_CNT !== 2 ?
                         <Loading/> :
-                        <ApplicationsContent/>}
+                        <AllApplications/>}
                 </Container>
                 <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
-                    <FormApplications application={currentApplication} courses={courses} funcClose={this.toggle} funcRefresh={this.refresh}/>
+                    <FormApplications application={currentApplication} courses={courses} funcClose={this.toggle}
+                                      funcRefresh={this.refresh}/>
                 </Modal>
             </div>
         )

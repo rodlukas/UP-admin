@@ -1,10 +1,7 @@
 import React, {Component, Fragment} from "react"
-import {Container, Row, Col, Badge, Button, Modal, ListGroup, ListGroupItem} from "reactstrap"
+import {Container, Row, Col, Modal, ListGroup, ListGroupItem} from "reactstrap"
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDateWithDayYear} from "../global/funcDateTime"
-import PaidButton from "../components/PaidButton"
-import SelectAttendanceState from "../components/SelectAttendanceState"
-import RemindPay from "../components/RemindPay"
 import LectureNumber from "../components/LectureNumber"
 import AttendanceStateService from "../api/services/attendancestate"
 import GroupService from "../api/services/group"
@@ -16,6 +13,14 @@ import ClientName from "../components/ClientName"
 import Loading from "../api/Loading"
 import "./Card.css"
 import GroupName from "../components/GroupName"
+import Attendances from "../components/Attendances"
+import BackButton from "../components/buttons/BackButton"
+import AddButton from "../components/buttons/AddButton"
+import EditButton from "../components/buttons/EditButton"
+import GroupsList from "../components/GroupsList"
+import Email from "../components/Email"
+import Phone from "../components/Phone"
+import Note from "../components/Note"
 
 export default class Card extends Component {
     state = {
@@ -64,16 +69,12 @@ export default class Card extends Component {
 
     getAttendanceStates = () => {
         AttendanceStateService.getAll()
-            .then((response) => {
-                this.setState({attendancestates: response})
-            })
+            .then(attendancestates => this.setState({attendancestates}))
     }
 
     getMemberships = (id = this.state.id) => {
         GroupService.getAllFromClient(id)
-            .then((response) => {
-                this.setState({memberships: response})
-            })
+            .then(memberships => this.setState({memberships}))
     }
 
     toggle = (lecture = {}) => {
@@ -90,9 +91,7 @@ export default class Card extends Component {
     getObject = (IS_CLIENT = this.state.IS_CLIENT, id = this.state.id) => {
         let service = (IS_CLIENT ? ClientService : GroupService)
         service.get(id)
-            .then((response) => {
-                this.setState({object: response})
-            })
+            .then(object => this.setState({object}))
     }
 
     getLectures = (IS_CLIENT = this.state.IS_CLIENT, id = this.state.id) => {
@@ -101,22 +100,22 @@ export default class Card extends Component {
             request = LectureService.getAllFromClientOrdered(id, false)
         else
             request = LectureService.getAllFromGroupOrdered(id, false)
-        request.then((response) => { // groupby courses
+        request.then(response => { // groupby courses
             let group_to_values = response.reduce(function (obj, item) {
                 obj[item.course.name] = obj[item.course.name] || []
                 obj[item.course.name].push(item)
                 return obj
             }, {})
-            let groups = Object.keys(group_to_values).map(function (key) {
+            let groupedLectures = Object.keys(group_to_values).map(function (key) {
                 return {course: key, values: group_to_values[key]}
             })
-            groups.sort(function (a, b) { // serad podle abecedy
+            groupedLectures.sort(function (a, b) { // serad podle abecedy
                 if (a.course < b.course) return -1
                 if (a.course > b.course) return 1
                 return 0
             })
             this.setState({
-                lectures: groups,
+                lectures: groupedLectures,
                 IS_LOADING: false
             })
         })
@@ -124,29 +123,75 @@ export default class Card extends Component {
 
     render() {
         const {object, attendancestates, lectures, currentLecture, memberships, IS_CLIENT, IS_LOADING, IS_MODAL} = this.state
-        const NoInfo = () => <span className="text-muted">---</span>
-        const Phone = ({phone}) => {
-            if (phone !== "")
-                return <a href={'tel:' + phone}>{phone}</a>
-            return <NoInfo/>
-        }
-        const Email = ({email}) => {
-            if (email !== "")
-                return <a href={'mailto:' + email}>{email}</a>
-            return <NoInfo/>
-        }
-        const Note = ({note}) => {
-            if (note !== "")
-                return <span>{note}</span>
-            return <NoInfo/>
-        }
+        const ClientInfo = () =>
+            <ListGroup>
+                {IS_CLIENT ?
+                    <Fragment>
+                        <ListGroupItem>
+                            <b>Telefon:</b> <Phone phone={object.phone}/>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <b>E-mail:</b> <Email email={object.email}/>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <b>Členství ve skupinách:</b> <GroupsList groups={memberships}/>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <b>Poznámka:</b> <Note note={object.note}/>
+                        </ListGroupItem>
+                    </Fragment>
+                :
+                    <ListGroupItem>
+                        <b>Členové:</b> <ClientsList clients={object.memberships}/>
+                    </ListGroupItem>}
+            </ListGroup>
+        const CourseLectures = ({courseLectures}) =>
+            <Fragment>
+                {courseLectures.map(lecture => {
+                    const d = new Date(lecture.start)
+                    let className = lecture.canceled ? "lecture-canceled" : ""
+                    if (d > Date.now())
+                        className += " lecture-future"
+                    if (lecture.start === null)
+                        className += " lecture-prepaid"
+                    return (
+                        <ListGroupItem key={lecture.id} className={className}>
+                            <h4>
+                                {lecture.start !== null ?
+                                    (prettyDateWithDayYear(d) + " – " + prettyTime(d))
+                                    :
+                                    "Předplacená lekce"}
+                                {' '}
+                                <LectureNumber number={lecture.attendances[0].count}/>
+                                <div className="float-right">
+                                    <EditButton onClick={() => this.toggle(lecture)}/>
+                                </div>
+                            </h4>
+                            <Attendances attendancestates={attendancestates} lecture={lecture}
+                                         funcRefresh={this.getLectures} showClient={!IS_CLIENT}/>
+                        </ListGroupItem>)})}
+            </Fragment>
+        const AllLectures = () =>
+            <Fragment>
+                {lectures.map(courseLectures =>
+                    <Col key={courseLectures.course} sm="9" md="7" lg="5" xl="3">
+                        <h4 className="text-center">
+                            {courseLectures.course}
+                        </h4>
+                        <ListGroup>
+                            <CourseLectures courseLectures={courseLectures.values}/>
+                        </ListGroup>
+                    </Col>)}
+                {!Boolean(lectures.length) &&
+                <p className="text-muted text-center">
+                    Žádné lekce
+                </p>}
+            </Fragment>
         const CardContent = () =>
             <Fragment>
                 <Container>
                     <h1 className="text-center mb-4">
-                        <Button color="secondary" className="nextBtn" onClick={this.goBack}>
-                            Jít zpět
-                        </Button>
+                        <BackButton onClick={this.goBack}/>
                         {' '}
                         {"Karta " + (IS_CLIENT ? "klienta" : "skupiny")}:
                         {' '}
@@ -154,111 +199,20 @@ export default class Card extends Component {
                             <ClientName client={object}/>
                             :
                             <GroupName group={object}/>}
-                        <Button color="info" className="addBtn" onClick={() => this.toggle()}>
-                            Přidat lekci
-                        </Button>
+                        <AddButton title="Přidat lekci" onClick={() => this.toggle()}/>
                     </h1>
                 </Container>
                 <Container fluid>
                     <Row className="justify-content-center">
                         <Col sm="9" md="7" lg="5" xl="3">
-                            <ListGroup>
-                                {IS_CLIENT &&
-                                <div>
-                                    <ListGroupItem>
-                                        <b>Telefon:</b>
-                                        {' '}
-                                        <Phone phone={object.phone}/>
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>E-mail:</b>
-                                        {' '}
-                                        <Email email={object.email}/>
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>Členství ve skupinách:</b>
-                                        {' '}
-                                        {!Boolean(memberships.length) &&
-                                        <NoInfo/>}
-                                        {memberships.map(membership =>
-                                            <GroupName group={membership} key={membership.id} link/>
-                                        ).reduce((accu, elem) => {
-                                            return accu === null ? [elem] : [...accu, ', ', elem]
-                                        }, null)}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>Poznámka:</b>
-                                        {' '}
-                                        <Note note={object.note}/>
-                                    </ListGroupItem>
-                                </div>}
-                                {!IS_CLIENT &&
-                                <ListGroupItem>
-                                    Členové: <ClientsList clients={object.memberships}/>
-                                </ListGroupItem>}
-                            </ListGroup>
+                            <ClientInfo/>
                         </Col>
                     </Row>
                 </Container>
                 <br/>
                 <Container fluid>
                     <Row className="justify-content-center">
-                        {lectures.map(lecture =>
-                            <Col key={lecture.course} sm="9" md="7" lg="5" xl="3">
-                                <h4 className="text-center">
-                                    {lecture.course}
-                                </h4>
-                                <ListGroup>
-                                    {lecture.values.map(lectureVal => {
-                                        const d = new Date(lectureVal.start)
-                                        let className = lectureVal.canceled ? "lecture-canceled" : ""
-                                        if (d > Date.now())
-                                            className += " lecture-future"
-                                        if (lectureVal.start === null)
-                                            className += " lecture-prepaid"
-                                        return (
-                                            <ListGroupItem key={lectureVal.id} className={className}>
-                                                <h4>
-                                                    {lectureVal.start !== null ?
-                                                        (prettyDateWithDayYear(d) + " – " + prettyTime(d))
-                                                        :
-                                                        "Předplacená lekce"}{' '}
-                                                    <LectureNumber number={lectureVal.attendances[0].count}/>
-                                                    <Button color="primary" className="float-right"
-                                                            onClick={() => this.toggle(lectureVal)}>
-                                                        Upravit
-                                                    </Button>
-                                                </h4>
-                                                <ul className={"list-clients " + (lecture.group && "list-clientsGroup")}>
-                                                    {lectureVal.attendances.map(attendance =>
-                                                        <li key={attendance.id}>
-                                                            {!IS_CLIENT &&
-                                                            <ClientName client={attendance.client}/>}
-                                                            {' '}
-                                                            <PaidButton paid={attendance.paid}
-                                                                        attendanceId={attendance.id}
-                                                                        funcRefresh={this.getLectures}/>
-                                                            {' '}
-                                                            <RemindPay remind_pay={attendance.remind_pay}/>
-                                                            {' '}
-                                                            <Badge color="info">
-                                                                {attendance.note}
-                                                                </Badge>
-                                                            <SelectAttendanceState
-                                                                value={attendance.attendancestate.id}
-                                                                attendanceId={attendance.id}
-                                                                attendancestates={attendancestates}
-                                                                funcRefresh={this.getLectures}/>
-                                                        </li>)}
-                                                </ul>
-                                            </ListGroupItem>)
-                                    })}
-                                </ListGroup>
-                            </Col>)}
-                        {!Boolean(lectures.length) &&
-                        <p className="text-muted text-center">
-                            Žádné lekce
-                        </p>}
+                        <AllLectures/>
                     </Row>
                 </Container>
                 <Modal isOpen={IS_MODAL} toggle={this.toggle} size="lg" autoFocus={false} className="ModalFormLecture">

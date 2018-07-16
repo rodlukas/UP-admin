@@ -1,10 +1,12 @@
-import React, {Component} from "react"
-import {Table, Button, Modal, Container, Row, Col, CustomInput, Alert} from "reactstrap"
+import React, {Component, Fragment} from "react"
+import {Table, Modal, Container, Row, Col, CustomInput, Alert} from "reactstrap"
 import FormSettings from "../forms/FormSettings"
 import {EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 import Loading from "../api/Loading"
+import AddButton from "../components/buttons/AddButton"
+import EditButton from "../components/buttons/EditButton"
 
 const UNDEF = "undef"
 
@@ -50,21 +52,19 @@ export default class Settings extends Component {
 
     getAttendanceStates = () => {
         AttendanceStateService.getAll()
-            .then((response) => {
+            .then(attendancestates =>
                 this.setState({
-                    attendancestates: response,
+                    attendancestates,
                     LOADING_CNT: this.state.LOADING_CNT + 1,
-                    default_id: this.findDefaultId(response)})
-            })
+                    default_id: this.findDefaultId(attendancestates)}))
     }
 
     getCourses = () => {
         CourseService.getAll()
-            .then((response) => {
+            .then(courses =>
                 this.setState({
-                    courses: response,
-                    LOADING_CNT: this.state.LOADING_CNT + 1})
-            })
+                    courses,
+                    LOADING_CNT: this.state.LOADING_CNT + 1}))
     }
 
     componentDidMount() {
@@ -87,113 +87,116 @@ export default class Settings extends Component {
     render() {
         const {attendancestates, courses, currentType, currentObject, default_id, IS_MODAL, LOADING_CNT} = this.state
         const Visible = ({visible}) => (visible ? 'ANO' : 'NE')
+        const AttendanceStates = () =>
+            <Fragment>
+                <h2>
+                    Stavy účasti
+                </h2>
+                <Table striped size="sm">
+                    <thead className="thead-dark">
+                    <tr>
+                        <th>Název</th>
+                        <th>Viditelnost</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {attendancestates.map(attendancestate =>
+                        <tr key={attendancestate.id}>
+                            <td>
+                                {attendancestate.name}
+                            </td>
+                            <td>
+                                <Visible visible={attendancestate.visible}/>
+                            </td>
+                            <td>
+                                <EditButton onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}/>
+                            </td>
+                        </tr>)}
+                    </tbody>
+                </Table>
+                {!Boolean(attendancestates.length) &&
+                <p className="text-muted text-center">
+                    Žádné stavy účasti
+                </p>}
+            </Fragment>
+        const DefaultAttendanceState = () =>
+            <Fragment>
+                <h3>
+                    Výchozí stav účasti
+                </h3>
+                {default_id === UNDEF &&
+                <Alert color="danger">
+                    Není vybraný výchozí stav, aplikace nemůže správně fungovat!
+                </Alert>}
+                <p>
+                    Pro správné fungování aplikace je třeba zvolit výchozí stav účasti, ten zároveň
+                    <span className="font-weight-bold"> musí reprezentovat stav „klient se zúčastní/zúčastnil“</span>.
+                </p>
+                <CustomInput type="select" name="default_id" id="default_id" value={default_id}
+                             onChange={this.onChange}>
+                    <option disabled value={UNDEF}>
+                        Vyberte stav...
+                    </option>
+                    {attendancestates.map(attendancestate =>
+                        <option key={attendancestate.id} value={attendancestate.id}>
+                            {attendancestate.name}
+                        </option>)}
+                </CustomInput>
+            </Fragment>
+        const Courses = () =>
+            <Fragment>
+                <h2>
+                    Kurzy
+                </h2>
+                <Table striped size="sm">
+                    <thead className="thead-dark">
+                    <tr>
+                        <th>Název</th>
+                        <th>Viditelnost</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {courses.map(course =>
+                        <tr key={course.id}>
+                            <td>
+                                {course.name}
+                            </td>
+                            <td>
+                                <Visible visible={course.visible}/>
+                            </td>
+                            <td>
+                                <EditButton onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}/>
+                            </td>
+                        </tr>)}
+                    </tbody>
+                </Table>
+                {!Boolean(courses.length) &&
+                <p className="text-muted text-center">
+                    Žádné kurzy
+                </p>}
+            </Fragment>
         const SettingsContent = () =>
-            <div>
+            <Fragment>
                 <Row>
                     <Col>
-                        <h2>
-                            Stavy účasti
-                        </h2>
-                        <Table striped size="sm">
-                            <thead className="thead-dark">
-                            <tr>
-                                <th>Název</th>
-                                <th>Viditelnost</th>
-                                <th>Akce</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {attendancestates.map(attendancestate =>
-                                <tr key={attendancestate.id}>
-                                    <td>
-                                        {attendancestate.name}
-                                    </td>
-                                    <td>
-                                        <Visible visible={attendancestate.visible}/>
-                                    </td>
-                                    <td>
-                                        <Button color="primary"
-                                                onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}>
-                                            Upravit
-                                        </Button>
-                                    </td>
-                                </tr>)}
-                            </tbody>
-                        </Table>
+                        <AttendanceStates/>
                         <hr/>
-                        <h3>
-                            Výchozí stav účasti
-                        </h3>
-                        {default_id === UNDEF &&
-                            <Alert color="danger">
-                                Není vybraný výchozí stav, aplikace nemůže správně fungovat!
-                            </Alert>}
-                        <p>
-                            Pro správné fungování aplikace je třeba zvolit výchozí stav účasti, ten zároveň
-                            <span className="font-weight-bold"> musí reprezentovat stav „klient se zúčastní/zúčastnil“</span>.
-                        </p>
-                        <CustomInput type="select" name="default_id" id="default_id" value={default_id}
-                                     onChange={this.onChange}>
-                            <option disabled value={UNDEF}>
-                                Vyberte stav...
-                            </option>
-                            {attendancestates.map(attendancestate =>
-                                <option key={attendancestate.id} value={attendancestate.id}>
-                                    {attendancestate.name}
-                                </option>)}
-                        </CustomInput>
-                        {!Boolean(attendancestates.length) &&
-                        <p className="text-muted text-center">
-                            Žádné stavy účasti
-                        </p>}
+                        <DefaultAttendanceState/>
                     </Col>
                     <Col>
-                        <h2>
-                            Kurzy
-                        </h2>
-                        <Table striped size="sm">
-                            <thead className="thead-dark">
-                            <tr>
-                                <th>Název</th>
-                                <th>Viditelnost</th>
-                                <th>Akce</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {courses.map(course =>
-                                <tr key={course.id}>
-                                    <td>
-                                        {course.name}
-                                    </td>
-                                    <td>
-                                        <Visible visible={course.visible}/>
-                                    </td>
-                                    <td>
-                                        <Button color="primary" onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}>
-                                            Upravit
-                                        </Button>
-                                    </td>
-                                </tr>)}
-                            </tbody>
-                        </Table>
-                        {!Boolean(courses.length) &&
-                        <p className="text-muted text-center">
-                            Žádné kurzy
-                        </p>}
+                        <Courses/>
                     </Col>
                 </Row>
-            </div>
+            </Fragment>
         return (
-            <div>
+            <Fragment>
                 <Container>
                     <h1 className="text-center mb-4">
                         Nastavení
-                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.COURSE)}>
-                            Přidat kurz
-                        </Button>
-                        <Button color="info" className="addBtn" onClick={() => this.toggle(EDIT_TYPE.STATE)}>
-                            Přidat stav
-                        </Button>
+                        <AddButton title="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}/>
+                        <AddButton title="Přidat stav" onClick={() => this.toggle(EDIT_TYPE.STATE)}/>
                     </h1>
                     {LOADING_CNT !== 2 ?
                         <Loading/> :
@@ -203,7 +206,7 @@ export default class Settings extends Component {
                     <FormSettings object={currentObject} funcClose={this.toggle} funcRefresh={this.refresh}
                                   TYPE={currentType}/>
                 </Modal>
-            </div>
+            </Fragment>
         )
     }
 }

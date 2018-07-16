@@ -12,9 +12,7 @@ export default class SelectAttendanceState extends Component {
         const id = this.props.attendanceId
         const data = {id, attendancestate_id: newValue}
         AttendanceService.patch(data)
-            .then(() => {
-                this.props.funcRefresh()
-            })
+            .then(() => this.props.funcRefresh())
     }
 
     render() {
@@ -25,10 +23,9 @@ export default class SelectAttendanceState extends Component {
                 {this.props.attendancestates.map(attendancestate =>
                     // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                     (attendancestate.visible || attendancestate.id === value) &&
-                    <option key={attendancestate.id} value={attendancestate.id}>
-                        {attendancestate.name}
-                    </option>
-                )}
+                        <option key={attendancestate.id} value={attendancestate.id}>
+                            {attendancestate.name}
+                        </option>)}
             </CustomInput>
         )
     }

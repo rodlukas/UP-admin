@@ -123,7 +123,8 @@ export default class Diary extends Component {
                     {" " + this.state.title + " "}
                     <Link to={Diary.serializeDateUrl(this.state.nextMonday)}>
                         <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
-                    </Link>{' '}
+                    </Link>
+                    {' '}
                     <Link to={Diary.serializeDateUrl(this.currentMonday)}>
                         <Button color="secondary" disabled={isEqualDate(this.currentMonday, this.state.week[0])}
                                 onClick={(e) => this.removeFocusAfterClick(e)}>

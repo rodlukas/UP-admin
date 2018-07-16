@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput, InputGroup,
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput, InputGroup,
     InputGroupAddon, InputGroupText} from "reactstrap"
 import {toISODate, toISOTime, prettyDateWithLongDayYear} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
@@ -9,6 +9,9 @@ import "./FormLectures.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faCalendarAlt, faClock, faHourglass, faClipboardList} from "@fortawesome/pro-solid-svg-icons"
 import GroupName from "../components/GroupName"
+import DeleteButton from "../components/buttons/DeleteButton"
+import CancelButton from "../components/buttons/CancelButton"
+import SubmitButton from "../components/buttons/SubmitButton"
 
 const DEFAULT_DURATION = 30
 const GROUP_DURATION = 45
@@ -115,8 +118,8 @@ export default class FormLectures extends Component {
 
     getCourses = () => {
         CourseService.getAll()
-            .then((response) => {
-                this.setState({courses: response})
+            .then(courses => {
+                this.setState({courses})
             })
     }
 
@@ -208,21 +211,23 @@ export default class FormLectures extends Component {
                 <ModalHeader toggle={this.close}>
                     {this.IS_LECTURE ? 'Úprava' : 'Přidání'} lekce {(this.IS_CLIENT ? "klienta" : "skupiny")}:
                     {' '}
-                    {(this.IS_CLIENT ? <ClientName client={object}/> : <GroupName group={object}/>)}
+                    {(this.IS_CLIENT ?
+                        <ClientName client={object}/>
+                        :
+                        <GroupName group={object}/>)}
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row className="align-items-center">
                         <Col sm={4}>
                             <CustomInput type="checkbox" id="prepaid" name="prepaid" label="Předplaceno"
                                          checked={prepaid} onChange={(e) => {
-                                this.onChangePrepaid();
-                                this.onChange(e);
-                            }}/>
+                                this.onChangePrepaid()
+                                this.onChange(e)}}
+                            />
                             {!this.IS_LECTURE &&
                                 <Input type="number" className="FormLectures_prepaidLectureCnt" disabled={!prepaid}
                                        name="prepaid_cnt" value={prepaid_cnt} required={prepaid}
                                        onChange={this.onChange}/>}
-
                         </Col>
                         <Col sm={4}>
                             <InputGroup>
@@ -332,27 +337,23 @@ export default class FormLectures extends Component {
                             Smazání
                         </Label>
                         <Col sm={9}>
-                            <Button color="danger"
-                                    onClick={() => {
-                                        let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
-                                            + (this.IS_CLIENT ? "klienta" : "skupiny") + " "
-                                            + (this.IS_CLIENT ? (object.surname + " " + object.name) : object.name)
-                                            + (!prepaid ? (" v " + prettyDateWithLongDayYear(new Date(date)) + " " + time) : '') + '?'
-                                        if (window.confirm(msg))
-                                            this.delete(id)}}>
-                                Smazat lekci
-                            </Button>
+                            <DeleteButton
+                                title="lekci"
+                                onClick={() => {
+                                    let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
+                                        + (this.IS_CLIENT ? "klienta" : "skupiny") + " "
+                                        + (this.IS_CLIENT ? (object.surname + " " + object.name) : object.name)
+                                        + (!prepaid ? (" v " + prettyDateWithLongDayYear(new Date(date)) + " " + time) : '') + '?'
+                                    if (window.confirm(msg))
+                                        this.delete(id)}}
+                            />
                         </Col>
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>
-                        Storno
-                    </Button>
+                    <CancelButton onClick={this.close}/>
                     {' '}
-                    <Button color="primary" type="submit">
-                        {this.IS_LECTURE ? 'Uložit' : 'Přidat'}
-                    </Button>
+                    <SubmitButton title={this.IS_LECTURE ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

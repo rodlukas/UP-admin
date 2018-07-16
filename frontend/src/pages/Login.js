@@ -1,7 +1,8 @@
 import React, {Component} from "react"
 import {Redirect} from "react-router-dom"
-import {Col, Form, FormGroup, Label, Button, Input, Container, Row, Card} from "reactstrap"
+import {Col, Form, FormGroup, Label, Input, Container, Row, Card} from "reactstrap"
 import AuthService from "../auth/authService"
+import SubmitButton from "../components/buttons/SubmitButton"
 
 export default class Login extends Component {
     state = {
@@ -60,9 +61,7 @@ export default class Login extends Component {
                                                onChange={this.onChange} required/>
                                     </Col>
                                 </FormGroup>
-                                <Button color="primary" className="float-right" type="submit">
-                                    Přihlásit
-                                </Button>
+                                <SubmitButton title="Přihlásit"/>
                             </Form>
                         </Card>
                     </Col>

@@ -1,9 +1,14 @@
 import React, {Component} from "react"
-import {Table, Button, Modal, Container} from "reactstrap"
+import {Table, Modal, Container} from "reactstrap"
 import FormClients from "../forms/FormClients"
 import ClientService from "../api/services/client"
 import ClientName from "../components/ClientName"
 import Loading from "../api/Loading"
+import Email from "../components/Email"
+import Phone from "../components/Phone"
+import Note from "../components/Note"
+import EditButton from "../components/buttons/EditButton"
+import AddButton from "../components/buttons/AddButton"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -25,9 +30,7 @@ export default class ClientList extends Component {
 
     getClients = () => {
         ClientService.getAll()
-            .then((response) => {
-                this.setState({clients: response, IS_LOADING: false})
-            })
+            .then(clients => this.setState({clients, IS_LOADING: false}))
     }
 
     componentDidMount() {
@@ -44,22 +47,16 @@ export default class ClientList extends Component {
                         <ClientName client={client} link/>
                     </td>
                     <td>
-                        <a href={'tel:' + client.phone}>
-                            {client.phone}
-                        </a>
+                        <Phone phone={client.phone}/>
                     </td>
                     <td>
-                        <a href={'mailto:' + client.email}>
-                            {client.email}
-                        </a>
+                        <Email email={client.email}/>
                     </td>
                     <td>
-                        {client.note}
+                        <Note note={client.note}/>
                     </td>
                     <td className="col-md-4 col-lg-2 col-xl-2">
-                        <Button color="primary" onClick={() => this.toggle(client)}>
-                            Upravit
-                        </Button>
+                        <EditButton onClick={() => this.toggle(client)}/>
                     </td>
                 </tr>)}
             </tbody>
@@ -68,9 +65,7 @@ export default class ClientList extends Component {
                 <Container>
                     <h1 className="text-center mb-4">
                         Klienti
-                        <Button color="info" className="addBtn" onClick={() => this.toggle()}>
-                            Přidat klienta
-                        </Button>
+                        <AddButton title="Přidat klienta" onClick={() => this.toggle()}/>
                     </h1>
                     <Table striped size="sm" responsive>
                         <thead className="thead-dark">

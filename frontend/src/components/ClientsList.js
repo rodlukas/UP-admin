@@ -1,19 +1,16 @@
-import React, {Fragment} from "react"
+import React from "react"
 import ClientName from "./ClientName"
+import ComponentsList from "../global/ComponentsList"
 
-const ClientsList = ({clients = {}}) =>
-    <Fragment>
-        {clients.length ?
-            clients.map(membership =>
-                <ClientName client={membership.client} link key={membership.client.id}/>
-            ).reduce((accu, elem) => {
-                return accu === null ? [elem] : [...accu, ', ', elem]
-            }, null)
-        :
+const ClientsList = ({clients = {}}) => {
+    const clientComponents = clients.map(membership =>
+        <ClientName client={membership.client} link key={membership.client.id}/>)
+    if(clients.length)
+        return <ComponentsList components={clientComponents}/>
+    return (
         <span className="text-muted">
             žádní členové
-        </span>}
-    </Fragment>
-
+        </span>)
+}
 
 export default ClientsList

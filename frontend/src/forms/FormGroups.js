@@ -1,9 +1,12 @@
 import React, {Component} from "react"
 import Select from "react-select"
-import {Col, Button, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
 import CourseService from "../api/services/course"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
+import DeleteButton from "../components/buttons/DeleteButton"
+import CancelButton from "../components/buttons/CancelButton"
+import SubmitButton from "../components/buttons/SubmitButton"
 
 const UNDEF = "undef"
 
@@ -28,16 +31,13 @@ export default class FormGroups extends Component {
         memberships.map(membership => {
             return arrayOfMembers.push({
                 client_id: membership.client.id,
-                label: membership.client.surname + " " + membership.client.name})
-        })
+                label: membership.client.surname + " " + membership.client.name})})
         return arrayOfMembers
     }
 
     getDataCourses = () => {
         CourseService.getAll()
-            .then((response) => {
-                this.setState({courses: response})
-            })
+            .then(courses => this.setState({courses}))
     }
 
     handleChange = (memberships) => {
@@ -83,15 +83,13 @@ export default class FormGroups extends Component {
 
     getClients = () => {
         ClientService.getAll()
-            .then((response) => {
-                let clients = []
-                response.map(client => {
-                    return clients.push({
+            .then(clients => {
+                let arrayOfClients = []
+                clients.map(client => {
+                    return arrayOfClients.push({
                         client_id: client.id,
-                        label: client.surname + " " + client.name})
-                })
-                this.setState({clients: clients})
-            })
+                        label: client.surname + " " + client.name})})
+                this.setState({clients: arrayOfClients})})
     }
 
     componentDidMount() {
@@ -152,23 +150,20 @@ export default class FormGroups extends Component {
                         <Col sm={10}>
                             <Alert color="warning">
                                 <p>Nenávratně smaže skupinu i s jejími lekcemi</p>
-                                <Button color="danger"
-                                        onClick={() => {
-                                            if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?'))
-                                                this.delete(id)
-                                        }}>Smazat skupinu</Button>
+                                <DeleteButton
+                                    title="skupinu"
+                                    onClick={() => {
+                                        if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?'))
+                                            this.delete(id)}}
+                                />
                             </Alert>
                         </Col>
                     </FormGroup>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={this.close}>
-                        Storno
-                    </Button>
+                    <CancelButton onClick={this.close}/>
                     {' '}
-                    <Button color="primary" type="submit">
-                        {this.isGroup ? 'Uložit' : 'Přidat'}
-                    </Button>
+                    <SubmitButton title={this.isGroup ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )
