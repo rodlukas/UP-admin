@@ -1,3 +1,5 @@
 .PaidButton {
-    cursor: pointer
+    cursor: pointer;
+    position: relative;
+    top: -.08rem;
 }

@@ -26,27 +26,11 @@ h1 {
     font-weight: 600;
     vertical-align: bottom;
     margin-bottom: 0.3rem;
+    text-align: left;
 }
 
 h4 .badge {
-    margin: 0 /* zobrazeni na stred v dashboardday */
-}
-
-/* BUTTONS */
-h1 .addBtn, h1 .nextBtn {
-    margin-top: 0.3rem
-}
-
-h1 .addBtn {
-    float: right;
-}
-
-h1 .nextBtn {
-    float: left
-}
-
-h1 .addBtn + .addBtn {
-    margin-right: 0.3rem
+    margin: 0;
 }
 
 /* MENU */
