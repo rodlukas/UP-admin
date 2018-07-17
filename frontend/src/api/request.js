@@ -24,17 +24,24 @@ const request = function (options) {
             console.error('Data: ', error.response.data)
             console.error('Headers: ', error.response.headers)
             console.error('DALSI INFORMACE: ', error)
-            console.error('API VALIDATION ERROR: ', errObj)
+            console.error('DJANGO/DRF ERROR: ', errObj)
             // uloz do errMsg neco konkretnejsiho
-            let json = JSON.parse(errObj) // rozparsuj JSON objekt
-            if (Array.isArray(json)) // pokud se pridava (neupdatuje) a chyba se vztahuje ke konkretnimu field, vraci se pole, vezmi z nej prvni chybu
-                json = json[0]
-            if (json['non_field_errors']) // obecna chyba nevztazena ke konkretnimu field
-                errMsg = json['non_field_errors'][0]
-            else if (json['detail']) // chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
-                errMsg = json['detail'][0]
-            else if (json[Object.keys(json)[0]]) // chyba vztazena ke konkretnimu field
-                errMsg = json[Object.keys(json)[0]][0]
+            let json
+            try {
+                json = JSON.parse(errObj) // rozparsuj JSON objekt
+                if (Array.isArray(json)) // pokud se pridava (neupdatuje) a chyba se vztahuje ke konkretnimu field, vraci se pole, vezmi z nej prvni chybu
+                    json = json[0]
+                if (json['non_field_errors']) // obecna chyba nevztazena ke konkretnimu field
+                    errMsg = json['non_field_errors'][0]
+                else if (json['detail']) // chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
+                    errMsg = json['detail'][0]
+                else if (json[Object.keys(json)[0]]) // chyba vztazena ke konkretnimu field
+                    errMsg = json[Object.keys(json)[0]][0]
+            }
+            catch (error) {
+                console.error(error)
+            }
+
         } else { // stalo se neco jineho pri priprave requestu
             console.error('Error Message: ', error.message)
             errMsg = error.message
@@ -44,7 +51,6 @@ const request = function (options) {
             window.location.href = APP_URLS.prihlasit //TODO
         else if (error.response.status === 404)
             window.location.href = APP_URLS.notfound //TODO
-
         return Promise.reject(error.response || error.message)
     }
 
