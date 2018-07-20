@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import {Container, Row, Col, Button} from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
 import {prettyDateWithYearIfDiff, isEqualDate} from "../global/funcDateTime"
@@ -8,6 +8,7 @@ import AttendanceStateService from "../api/services/attendancestate"
 import APP_URLS from "../urls"
 import {Link} from "react-router-dom"
 import "./Diary.css"
+import Heading from "../components/Heading"
 
 const WORK_DAYS_COUNT = 5
 const DAYS_PER_WEEK = 7
@@ -113,25 +114,27 @@ export default class Diary extends Component {
     }
 
     render() {
+        const HeadingContent = () =>
+            <Fragment>
+                <Link to={Diary.serializeDateUrl(this.state.prevMonday)}>
+                    <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"/>
+                </Link>
+                {" " + this.state.title + " "}
+                <Link to={Diary.serializeDateUrl(this.state.nextMonday)}>
+                    <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
+                </Link>
+                {' '}
+                <Link to={Diary.serializeDateUrl(this.currentMonday)}>
+                    <Button color="secondary" disabled={isEqualDate(this.currentMonday, this.state.week[0])}
+                            onClick={(e) => this.removeFocusAfterClick(e)}>
+                        Dnes
+                    </Button>
+                </Link>
+            </Fragment>
         // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
         return (
             <div>
-                <h1 className="text-center mb-4">
-                    <Link to={Diary.serializeDateUrl(this.state.prevMonday)}>
-                        <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"/>
-                    </Link>
-                    {" " + this.state.title + " "}
-                    <Link to={Diary.serializeDateUrl(this.state.nextMonday)}>
-                        <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
-                    </Link>
-                    {' '}
-                    <Link to={Diary.serializeDateUrl(this.currentMonday)}>
-                        <Button color="secondary" disabled={isEqualDate(this.currentMonday, this.state.week[0])}
-                                onClick={(e) => this.removeFocusAfterClick(e)}>
-                            Dnes
-                        </Button>
-                    </Link>
-                </h1>
+                <Heading content={<HeadingContent/>}/>
                 <Container fluid>
                     <Row>
                     {this.state.week.map(day =>

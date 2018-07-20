@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import {Table, Modal, Container} from "reactstrap"
 import FormGroups from "../forms/FormGroups"
 import GroupService from "../api/services/group"
@@ -8,6 +8,7 @@ import GroupName from "../components/GroupName"
 import CourseName from "../components/CourseName"
 import EditButton from "../components/buttons/EditButton"
 import AddButton from "../components/buttons/AddButton"
+import Heading from "../components/Heading"
 
 export default class Groups extends Component {
     state = {
@@ -53,13 +54,15 @@ export default class Groups extends Component {
                     </td>
                 </tr>)}
             </tbody>
+        const HeadingContent = () =>
+            <Fragment>
+                Skupiny
+                <AddButton title="Přidat skupinu" onClick={() => this.toggle()}/>
+            </Fragment>
         return (
             <div>
                 <Container>
-                    <h1 className="text-center mb-4">
-                        Skupiny
-                        <AddButton title="Přidat skupinu" onClick={() => this.toggle()}/>
-                    </h1>
+                    <Heading content={<HeadingContent/>}/>
                     <Table striped size="sm" responsive>
                         <thead className="thead-dark">
                         <tr>

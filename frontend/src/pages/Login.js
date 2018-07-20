@@ -1,8 +1,9 @@
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import {Redirect} from "react-router-dom"
 import {Col, Form, FormGroup, Label, Input, Container, Row, Card} from "reactstrap"
 import AuthService from "../auth/authService"
 import SubmitButton from "../components/buttons/SubmitButton"
+import Heading from "../components/Heading"
 
 export default class Login extends Component {
     state = {
@@ -34,11 +35,13 @@ export default class Login extends Component {
         const {redirectToReferrer, username, password} = this.state
         if (redirectToReferrer)
             return <Redirect to={from}/>
+        const HeadingContent = () =>
+            <Fragment>
+                Přihlášení
+            </Fragment>
         return (
             <Container>
-                <h1 className="text-center mb-4">
-                    Přihlášení
-                </h1>
+                <Heading content={<HeadingContent/>}/>
                 <Row className="justify-content-center">
                     <Col md="9" lg="7">
                         <Card className="p-4">

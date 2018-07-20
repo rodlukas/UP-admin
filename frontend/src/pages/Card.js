@@ -21,6 +21,7 @@ import GroupsList from "../components/GroupsList"
 import Email from "../components/Email"
 import Phone from "../components/Phone"
 import Note from "../components/Note"
+import Heading from "../components/Heading"
 
 export default class Card extends Component {
     state = {
@@ -187,20 +188,22 @@ export default class Card extends Component {
                     Žádné lekce
                 </p>}
             </Fragment>
+        const HeadingContent = () =>
+            <Fragment>
+                <BackButton onClick={this.goBack}/>
+                {' '}
+                {"Karta " + (IS_CLIENT ? "klienta" : "skupiny")}:
+                {' '}
+                {IS_CLIENT ?
+                    <ClientName client={object}/>
+                    :
+                    <GroupName group={object}/>}
+                <AddButton title="Přidat lekci" onClick={() => this.toggle()}/>
+            </Fragment>
         const CardContent = () =>
             <Fragment>
                 <Container>
-                    <h1 className="text-center mb-4">
-                        <BackButton onClick={this.goBack}/>
-                        {' '}
-                        {"Karta " + (IS_CLIENT ? "klienta" : "skupiny")}:
-                        {' '}
-                        {IS_CLIENT ?
-                            <ClientName client={object}/>
-                            :
-                            <GroupName group={object}/>}
-                        <AddButton title="Přidat lekci" onClick={() => this.toggle()}/>
-                    </h1>
+                    <Heading content={<HeadingContent/>}/>
                 </Container>
                 <Container fluid>
                     <Row className="justify-content-center">

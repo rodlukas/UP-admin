@@ -9,6 +9,7 @@ import "./Applications.css"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import DeleteButton from "../components/buttons/DeleteButton"
+import Heading from "../components/Heading"
 
 export default class Applications extends Component {
     constructor(props) {
@@ -136,13 +137,15 @@ export default class Applications extends Component {
                     Žádní zájemci
                 </p>}
             </Fragment>
+        const HeadingContent = () =>
+            <Fragment>
+                Zájemci o kurzy
+                <AddButton title="Přidat zájemce" onClick={() => this.toggle()}/>
+            </Fragment>
         return (
             <div>
                 <Container>
-                    <h1 className="text-center mb-4">
-                        Zájemci o kurzy
-                        <AddButton title="Přidat zájemce" onClick={() => this.toggle()}/>
-                    </h1>
+                    <Heading content={<HeadingContent/>}/>
                     {LOADING_CNT !== 2 ?
                         <Loading/> :
                         <AllApplications/>}

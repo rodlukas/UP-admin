@@ -7,6 +7,7 @@ import CourseService from "../api/services/course"
 import Loading from "../api/Loading"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
+import Heading from "../components/Heading"
 
 const UNDEF = "undef"
 
@@ -190,14 +191,16 @@ export default class Settings extends Component {
                     </Col>
                 </Row>
             </Fragment>
+        const HeadingContent = () =>
+            <Fragment>
+                Nastavení
+                <AddButton title="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}/>
+                <AddButton title="Přidat stav" onClick={() => this.toggle(EDIT_TYPE.STATE)}/>
+            </Fragment>
         return (
             <Fragment>
                 <Container>
-                    <h1 className="text-center mb-4">
-                        Nastavení
-                        <AddButton title="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}/>
-                        <AddButton title="Přidat stav" onClick={() => this.toggle(EDIT_TYPE.STATE)}/>
-                    </h1>
+                    <Heading content={<HeadingContent/>}/>
                     {LOADING_CNT !== 2 ?
                         <Loading/> :
                         <SettingsContent/>}

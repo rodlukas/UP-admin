@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import {Table, Modal, Container} from "reactstrap"
 import FormClients from "../forms/FormClients"
 import ClientService from "../api/services/client"
@@ -9,6 +9,7 @@ import Phone from "../components/Phone"
 import Note from "../components/Note"
 import EditButton from "../components/buttons/EditButton"
 import AddButton from "../components/buttons/AddButton"
+import Heading from "../components/Heading"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -60,13 +61,15 @@ export default class ClientList extends Component {
                     </td>
                 </tr>)}
             </tbody>
+        const HeadingContent = () =>
+            <Fragment>
+                Klienti
+                <AddButton title="Přidat klienta" onClick={() => this.toggle()}/>
+            </Fragment>
         return (
             <div>
                 <Container>
-                    <h1 className="text-center mb-4">
-                        Klienti
-                        <AddButton title="Přidat klienta" onClick={() => this.toggle()}/>
-                    </h1>
+                    <Heading content={<HeadingContent/>}/>
                     <Table striped size="sm" responsive>
                         <thead className="thead-dark">
                         <tr>

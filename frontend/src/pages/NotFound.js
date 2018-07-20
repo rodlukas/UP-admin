@@ -1,11 +1,15 @@
-import React from "react"
+import React, {Fragment} from "react"
+import Heading from "../components/Heading"
+
+const HeadingContent = () =>
+    <Fragment>
+        Nenalezeno
+    </Fragment>
 
 const NotFound = () => {
     return (
         <div className="text-center">
-            <h1 className="text-center mb-4">
-                Nenalezeno
-            </h1>
+            <Heading content={<HeadingContent/>}/>
             <p>
                 Stránka nebo hledaný objekt neexistuje!
             </p>
