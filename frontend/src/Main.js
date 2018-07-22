@@ -14,7 +14,6 @@ import PrivateRoute from "./auth/PrivateRoute"
 import Menu from "./components/Menu"
 import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.min.css"
-import "react-select/dist/react-select.css"
 import APP_URLS from "./urls"
 
 export default class Main extends Component {

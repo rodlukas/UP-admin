@@ -25,6 +25,8 @@ const request = function (options) {
             console.error('Headers: ', error.response.headers)
             console.error('DALSI INFORMACE: ', error)
             console.error('DJANGO/DRF ERROR: ', errObj)
+            if("x-sentry-id" in error.response.headers)
+                console.info('SENTRY ID: ', error.response.headers["x-sentry-id"])
             // uloz do errMsg neco konkretnejsiho
             let json
             try {
