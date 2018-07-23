@@ -2,6 +2,8 @@
 [![Build Status](https://travis-ci.com/rodlukas/UP-admin.svg?token=g1rDdptQG4SVzcH6FMo5&branch=master)](https://travis-ci.com/rodlukas/UP-admin)
 [![codecov](https://codecov.io/gh/rodlukas/UP-admin/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/UP-admin)
 
+[Slack](https://uspesnyprvnacek.slack.com/messages) | [Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | [Travis CI](https://travis-ci.com/rodlukas/UP-admin) | [Heroku](https://dashboard.heroku.com/apps/uspesnyprvnacek)
+
 Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis)
 
 ## užitečné příkazy
