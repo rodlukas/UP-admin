@@ -14,7 +14,9 @@
     Javascript ve Vašem prohlížeči.
 </div>
 <script src="https://cdn.ravenjs.com/3.26.4/raven.min.js" crossorigin="anonymous"></script>
-<script>Raven.config('{% sentry_public_dsn %}').install()</script>
+<script>
+Raven.config('{% sentry_public_dsn %}').install()
+</script>
 {% render_bundle 'main' %}
 </body>
 </html>
