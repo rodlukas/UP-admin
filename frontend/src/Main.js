@@ -26,9 +26,17 @@ export default class Main extends Component {
     }
 
     render() {
+        const appUrl = window.location.hostname.split(".")[0]
+        let mainClass = process.env.NODE_ENV
+        let IS_STAGING = false
+        if (appUrl === "uspesnyprvnacek-staging")
+        {
+            IS_STAGING = true
+            mainClass += " " + "staging"
+        }
         return (
             <BrowserRouter>
-                <div className={process.env.NODE_ENV}>
+                <div className={mainClass}>
                     <Navbar light className="border-bottom" expand="sm">
                         <NavbarBrand tag={RouterNavLink} exact to="/">
                             ÚP<sub>admin</sub>
@@ -36,6 +44,10 @@ export default class Main extends Component {
                         {process.env.NODE_ENV === 'development' &&
                         <Badge color="dark">
                             Vývojová verze
+                        </Badge>}
+                        {IS_STAGING &&
+                        <Badge color="success">
+                            Staging verze
                         </Badge>}
                         <NavbarToggler onClick={this.toggle}/>
                         <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>
