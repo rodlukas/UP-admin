@@ -3,11 +3,10 @@ import dj_database_url
 
 # pro rucni spusteni produkcni verze nastavit True
 MANUAL_PRODUCTION = False
-# ve staging prostredi je promenna True
-STAGING_ENV = os.environ.get('STAGING_ENV', False)
 
 ALLOWED_HOSTS = [
-    'uspesnyprvnacek.herokuapp.com'
+    'uspesnyprvnacek.herokuapp.com',
+    'uspesnyprvnacek-staging.herokuapp.com'
 ]
 
 RAVEN_CONFIG = {
@@ -99,6 +98,3 @@ if 'TRAVIS' in os.environ:
 if MANUAL_PRODUCTION:
     ALLOWED_HOSTS += 'localhost'
     SECURE_SSL_REDIRECT = False
-
-if STAGING_ENV:
-    ALLOWED_HOSTS += 'uspesnyprvnacek-staging.herokuapp.com'
