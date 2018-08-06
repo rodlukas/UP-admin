@@ -43,11 +43,11 @@ export default class Main extends Component {
                         </NavbarBrand>
                         {process.env.NODE_ENV === 'development' &&
                         <Badge color="dark">
-                            Vývojová verze
+                            Vývojová verze GIT_VERSION
                         </Badge>}
                         {IS_STAGING &&
                         <Badge color="success">
-                            Staging verze
+                            Staging verze GIT_VERSION
                         </Badge>}
                         <NavbarToggler onClick={this.toggle}/>
                         <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>

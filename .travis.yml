@@ -20,7 +20,7 @@ before_script:
 script:
 - source release-tasks.sh
 - ls
-- git rev-parse --short HEAD
+- source bump-version.sh
 - coverage run --source=admin,api --omit=*/migrations/* manage.py test
 after_success:
 - codecov --token=$CODECOV_TOKEN
