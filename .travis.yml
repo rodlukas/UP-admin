@@ -5,8 +5,8 @@ services:
 - postgresql
 before_install:
 - nvm install 8.11.3
-- npm i -g npm
-- npm install -g yarn
+- npm i -g npm@^6.3.0
+- npm install -g yarn@^1.9.0
 - node --version && npm --version && yarn --version && python --version
 - printf "//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}\n" >> .npmrc
 install:
