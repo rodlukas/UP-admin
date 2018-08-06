@@ -32,7 +32,7 @@ export default class Main extends Component {
         if (appUrl === "uspesnyprvnacek-staging")
         {
             IS_STAGING = true
-            mainClass += " " + "staging"
+            mainClass += " staging"
         }
         return (
             <BrowserRouter>
