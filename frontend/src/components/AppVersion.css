@@ -1,3 +1,4 @@
 .AppVersion {
-    color: white
+    color: inherit;
+    text-decoration: underline;
 }
