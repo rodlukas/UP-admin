@@ -2,7 +2,7 @@ language: python
 python: 3.6.6
 node_js: '8'
 addons:
-  postgresql: "10.4"
+  postgresql: "9.6"
 services:
 - postgresql
 before_install:
