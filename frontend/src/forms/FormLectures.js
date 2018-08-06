@@ -314,6 +314,7 @@ export default class FormLectures extends Component {
                             <Col sm={2} className="text-center">
                                 <CustomInput type="checkbox" id={"at_paid" + member.id} name="at_paid"
                                              label="Platba" checked={at_paid[member.id]}
+                                             disabled={prepaid}
                                              className={at_paid[member.id] ? "text-success" : "text-danger"}
                                              onChange={this.onChangeMultiple} data-id={member.id}/>
                             </Col>
