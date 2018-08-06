@@ -23,7 +23,8 @@ export default class Diary extends Component {
             nextMonday: null,
             prevMonday: null,
             lastParams: null,
-            attendancestates: []
+            attendancestates: [],
+            shouldRefresh: false
         }
     }
 
@@ -38,7 +39,6 @@ export default class Diary extends Component {
 
     onKeyDown = (e) => {
         const key = e.key
-        console.log(e)
         if (key === "ArrowLeft")
             this.props.history.push(Diary.serializeDateUrl(this.state.prevMonday))
         else if (key === "ArrowRight")
@@ -113,6 +113,11 @@ export default class Diary extends Component {
         e.target.blur()
     }
 
+    setRefreshState = () => {
+        this.setState({shouldRefresh: true})
+        this.setState({shouldRefresh: false})
+    }
+
     render() {
         const HeadingContent = () =>
             <Fragment>
@@ -139,7 +144,12 @@ export default class Diary extends Component {
                     <Row>
                     {this.state.week.map(day =>
                         <Col key={day} sm="12" md="6" lg="" className="diary-day">
-                            <DashboardDay date={day.toString()} attendancestates={this.state.attendancestates}/>
+                            <DashboardDay
+                                date={day.toString()}
+                                attendancestates={this.state.attendancestates}
+                                setRefreshState={this.setRefreshState}
+                                shouldRefresh={this.state.shouldRefresh}
+                            />
                         </Col>)}
                     </Row>
                 </Container>

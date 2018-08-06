@@ -31,6 +31,11 @@ export default class DashboardDay extends Component {
         this.getLectures()
     }
 
+    componentDidUpdate() {
+        if (this.props.shouldRefresh)
+            this.getLectures()
+    }
+
     render() {
         const {lectures, IS_LOADING} = this.state
         const title = prettyDateWithLongDayYearIfDiff(this.date)
@@ -48,7 +53,7 @@ export default class DashboardDay extends Component {
                     <GroupName group={lecture.group} title link/>
                 </h5>}
                 <Attendances attendancestates={this.props.attendancestates} lecture={lecture}
-                             funcRefresh={this.getLectures} showClient/>
+                             funcRefresh={this.props.setRefreshState} showClient/>
             </ListGroupItem>
         const EmptyLecture = () =>
             <ListGroupItem>
