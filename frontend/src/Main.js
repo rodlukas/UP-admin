@@ -15,6 +15,7 @@ import Menu from "./components/Menu"
 import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.min.css"
 import APP_URLS from "./urls"
+import AppVersion from "./components/AppVersion"
 
 export default class Main extends Component {
     state = {
@@ -43,11 +44,11 @@ export default class Main extends Component {
                         </NavbarBrand>
                         {process.env.NODE_ENV === 'development' &&
                         <Badge color="dark">
-                            Vývojová verze GIT_COMMIT_VERSION
+                            Vývojová verze
                         </Badge>}
                         {IS_STAGING &&
                         <Badge color="success">
-                            Staging verze GIT_COMMIT_VERSION
+                            Staging verze <AppVersion/>
                         </Badge>}
                         <NavbarToggler onClick={this.toggle}/>
                         <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>

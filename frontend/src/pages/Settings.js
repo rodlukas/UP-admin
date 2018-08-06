@@ -8,6 +8,7 @@ import Loading from "../api/Loading"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import Heading from "../components/Heading"
+import AppVersion from "../components/AppVersion"
 
 const UNDEF = "undef"
 
@@ -190,6 +191,10 @@ export default class Settings extends Component {
                         <Courses/>
                     </Col>
                 </Row>
+                <hr/>
+                <p>
+                    Verze aplikace: <AppVersion/>, GIT_DATETIME
+                </p>
             </Fragment>
         const HeadingContent = () =>
             <Fragment>
