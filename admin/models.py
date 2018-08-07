@@ -19,6 +19,9 @@ class AttendanceState(models.Model):
                 qs = qs.exclude(pk=self.pk)
             # a nastav jim default=False
             qs.update(default=False)
+            # pokud se stav nastavuje na neviditelny, vyresetuj volbu vychoziho stavu
+            if self.visible is False:
+                self.default = False
         super(AttendanceState, self).save(*args, **kwargs)
 
 
