@@ -1,14 +1,14 @@
 import React, {Component} from "react"
 import Select from "react-select"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from "reactstrap"
 import CourseService from "../api/services/course"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-
-const UNDEF = "undef"
+import ClientName from "../components/ClientName"
+import {TEXTS} from "../global/constants"
 
 export default class FormGroups extends Component {
     constructor(props) {
@@ -18,21 +18,27 @@ export default class FormGroups extends Component {
         this.state = {
             id: id || '',
             name: name || '',
-            course_id: this.isGroup ? course.id : UNDEF,
-            memberships: this.isGroup ? this.getMembersArray(memberships) : [],
+            course: this.isGroup ? course : null,
+            memberships: this.isGroup ? this.getMembers(memberships) : [],
             clients: [],
             courses: []
         }
     }
 
-    // pripravi pole se cleny ve spravnem formatu, aby pak slo rovnou zaslat do API
-    getMembersArray(memberships) {
-        let arrayOfMembers = []
-        memberships.map(membership => {
-            return arrayOfMembers.push({
-                client_id: membership.client.id,
-                label: membership.client.surname + " " + membership.client.name})})
-        return arrayOfMembers
+    // pripravi pole se cleny ve spravnem formatu, aby fungoval react-select
+    getMembers(memberships) {
+        let members = []
+        memberships.map(membership =>
+            members.push(membership.client))
+        return members
+    }
+
+    // pripravi pole se cleny ve spravnem formatu, aby slo poslat do API
+    prepareMembersForSubmit(memberships) {
+        let members = []
+        memberships.map(membership =>
+            members.push({client_id: membership.id}))
+        return members
     }
 
     getDataCourses = () => {
@@ -40,20 +46,22 @@ export default class FormGroups extends Component {
             .then(courses => this.setState({courses}))
     }
 
-    handleChange = (memberships) => {
-        this.setState({memberships})
+    onSelectChange = (obj, name) => {
+        const state = this.state
+        state[name] = obj
+        this.setState(state)
     }
 
     onChange = (e) => {
         const state = this.state
-        state[e.target.name] = e.target.value
+        state[e.target.id] = e.target.value
         this.setState(state)
     }
 
     onSubmit = (e) => {
         e.preventDefault()
-        const {id, name, memberships, course_id} = this.state
-        const data = {id, name, memberships, course_id}
+        const {id, name, memberships, course} = this.state
+        const data = {id, name, memberships: this.prepareMembersForSubmit(memberships), course_id: course.id}
         let request
         if (this.isGroup)
             request = GroupService.update(data)
@@ -83,13 +91,7 @@ export default class FormGroups extends Component {
 
     getClients = () => {
         ClientService.getAll()
-            .then(clients => {
-                let arrayOfClients = []
-                clients.map(client => {
-                    return arrayOfClients.push({
-                        client_id: client.id,
-                        label: client.surname + " " + client.name})})
-                this.setState({clients: arrayOfClients})})
+            .then(clients => this.setState({clients}))
     }
 
     componentDidMount() {
@@ -98,7 +100,7 @@ export default class FormGroups extends Component {
     }
 
     render() {
-        const {id, name, clients, memberships, courses, course_id} = this.state
+        const {id, name, clients, memberships, courses, course} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny: {name}</ModalHeader>
@@ -112,39 +114,42 @@ export default class FormGroups extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="course_id" sm={2}>
+                        <Label for="course" sm={2}>
                             Kurz
                         </Label>
                         <Col sm={10}>
-                            <CustomInput type="select" name="course_id" id="course_id" value={course_id} onChange={this.onChange} required>
-                                <option disabled value={UNDEF}>
-                                    Vyberte kurz...
-                                </option>
-                                {courses.map(course =>
-                                    <option key={course.id} value={course.id}>
-                                        {course.name}
-                                    </option>)}
-                            </CustomInput>
+                            <Select
+                                inputId="course"
+                                value={course}
+                                getOptionLabel={(option) => option.name}
+                                getOptionValue={(option) => option.id}
+                                onChange={newValue => this.onSelectChange(newValue, "course")}
+                                options={courses}
+                                placeholder={"Vyberte kurz..."}
+                                noOptionsMessage={() => TEXTS.NO_RESULTS}
+                                required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="surname" sm={2}>
+                        <Label for="memberships" sm={2}>
                             Členové
                         </Label>
                         <Col sm={10}>
                             <Select
-                                valueKey={'client_id'}
+                                inputId="memberships"
                                 value={memberships}
-                                multi={true}
-                                onChange={this.handleChange}
+                                getOptionLabel={option => <ClientName client={option}/>}
+                                getOptionValue={option => option.id}
+                                isMulti={true}
+                                onChange={newValue => this.onSelectChange(newValue, "memberships")}
                                 options={clients}
                                 placeholder={"Vyberte členy skupiny..."}
-                                noResultsText={"Nic nenalezeno"}/>
+                                noOptionsMessage={() => TEXTS.NO_RESULTS}/>
                         </Col>
                     </FormGroup>
                     {this.isGroup &&
                     <FormGroup row className="border-top pt-3">
-                        <Label for="note" sm={2} className="text-muted">
+                        <Label sm={2} className="text-muted">
                             Smazání
                         </Label>
                         <Col sm={10}>

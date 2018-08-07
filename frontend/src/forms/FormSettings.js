@@ -23,7 +23,7 @@ export default class FormSettings extends Component {
     onChange = (e) => {
         const target = e.target
         const state = this.state
-        state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
+        state[target.id] = (target.type === 'checkbox') ? target.checked : target.value
         this.setState(state)
     }
 
@@ -74,22 +74,21 @@ export default class FormSettings extends Component {
                             Název
                         </Label>
                         <Col sm={9}>
-                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required autoFocus/>
+                            <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Col sm={3}>
+                        <Label for="visible" sm={3}>
                             Viditelnost
-                        </Col>
+                        </Label>
                         <Col sm={9}>
-                            <CustomInput type="checkbox" id="visible" name="visible"
-                                         label="Bude zobrazováno"
-                                         checked={visible} onChange={this.onChange}/>
+                            <CustomInput type="checkbox" id="visible" label="Bude zobrazováno" checked={visible}
+                                         onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     {this.isObject &&
                     <FormGroup row className="border-top pt-3">
-                        <Label for="note" sm={3} className="text-muted">
+                        <Label sm={3} className="text-muted">
                             Smazání
                         </Label>
                         <Col sm={9}>

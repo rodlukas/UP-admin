@@ -21,7 +21,7 @@ export default class Login extends Component {
 
     onChange = (e) => {
         const state = this.state
-        state[e.target.name] = e.target.value
+        state[e.target.id] = e.target.value
         this.setState(state)
     }
 
@@ -51,8 +51,8 @@ export default class Login extends Component {
                                         Uživatelské jméno
                                     </Label>
                                     <Col sm={8}>
-                                        <Input type="text" name="username" id="username" value={username}
-                                               onChange={this.onChange} required/>
+                                        <Input type="text" id="username" value={username} onChange={this.onChange}
+                                               required/>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -60,8 +60,8 @@ export default class Login extends Component {
                                         Heslo
                                     </Label>
                                     <Col sm={8}>
-                                        <Input type="password" name="password" id="password" value={password}
-                                               onChange={this.onChange} required/>
+                                        <Input type="password" id="password" value={password} onChange={this.onChange}
+                                               required/>
                                     </Col>
                                 </FormGroup>
                                 <SubmitButton title="Přihlásit"/>

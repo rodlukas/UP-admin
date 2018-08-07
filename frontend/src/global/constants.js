@@ -18,3 +18,7 @@ export const EDIT_TYPE = {
     COURSE: 1
 }
 export const JWT_HEADER_PREFIX = 'JWT '
+
+export const TEXTS = {
+    NO_RESULTS: "Nic nenalezeno"
+}

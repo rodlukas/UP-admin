@@ -23,7 +23,7 @@ export default class FormClients extends Component {
 
     onChange = (e) => {
         const state = this.state
-        state[e.target.name] = e.target.value
+        state[e.target.id] = e.target.value
         this.setState(state)
     }
 
@@ -73,7 +73,7 @@ export default class FormClients extends Component {
                             Jméno
                         </Label>
                         <Col sm={10}>
-                            <Input type="text" name="name" id="name" value={name} onChange={this.onChange} required autoFocus/>
+                            <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -81,7 +81,7 @@ export default class FormClients extends Component {
                             Příjmení
                         </Label>
                         <Col sm={10}>
-                            <Input type="text" name="surname" id="surname" value={surname} onChange={this.onChange} required/>
+                            <Input type="text" id="surname" value={surname} onChange={this.onChange} required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -89,7 +89,7 @@ export default class FormClients extends Component {
                             Email
                         </Label>
                         <Col sm={10}>
-                            <Input type="email" name="email" id="email" value={email} onChange={this.onChange}/>
+                            <Input type="email" id="email" value={email} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -97,7 +97,7 @@ export default class FormClients extends Component {
                             Telefon
                         </Label>
                         <Col sm={10}>
-                            <Input type="tel" name="phone" id="phone" value={phone} minLength="9" onChange={this.onChange}/>
+                            <Input type="tel" id="phone" value={phone} minLength="9" onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -105,12 +105,12 @@ export default class FormClients extends Component {
                             Poznámka
                         </Label>
                         <Col sm={10}>
-                            <Input type="textarea" name="note" id="note" value={note} onChange={this.onChange}/>
+                            <Input type="textarea" id="note" value={note} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                     {this.isClient &&
                     <FormGroup row className="border-top pt-3">
-                        <Label for="note" sm={2} className="text-muted">
+                        <Label sm={2} className="text-muted">
                             Smazání
                         </Label>
                         <Col sm={10}>

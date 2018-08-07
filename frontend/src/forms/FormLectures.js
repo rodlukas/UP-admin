@@ -12,6 +12,8 @@ import GroupName from "../components/GroupName"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
+import Select from "react-select"
+import {TEXTS} from "../global/constants"
 
 const DEFAULT_DURATION = 30
 const GROUP_DURATION = 45
@@ -45,9 +47,9 @@ export default class FormLectures extends Component {
             canceled: canceled || false,
             date: (this.IS_LECTURE && !isPrepaid) ? toISODate(date) : '',
             time: (this.IS_LECTURE && !isPrepaid) ? toISOTime(date) : '',
-            course_id: (this.IS_LECTURE ?
-                course.id :
-                (this.IS_CLIENT ? UNDEF : object.course.id)),
+            course: (this.IS_LECTURE ?
+                course :
+                (this.IS_CLIENT ? null : object.course)),
             duration: duration || (this.IS_CLIENT ? DEFAULT_DURATION : GROUP_DURATION),
             courses: [],
             object: object,
@@ -69,10 +71,10 @@ export default class FormLectures extends Component {
     }
 
     getMembers(memberships) {
-        let array = []
+        let members = []
         memberships.map(member =>
-            array.push(member.client))
-        return array
+            members.push(member.client))
+        return members
     }
 
     static prepareStateIndex(attendancestates) {
@@ -126,7 +128,13 @@ export default class FormLectures extends Component {
     onChange = (e) => {
         const target = e.target
         const state = this.state
-        state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
+        state[target.id] = (target.type === 'checkbox') ? target.checked : target.value
+        this.setState(state)
+    }
+
+    onSelectChange = (obj, name) => {
+        const state = this.state
+        state[name] = obj
         this.setState(state)
     }
 
@@ -142,7 +150,7 @@ export default class FormLectures extends Component {
 
     onSubmit = (e) => {
         e.preventDefault()
-        const {id, prepaid, canceled, course_id, time, date, duration, at_note, at_paid, at_state, object, prepaid_cnt} = this.state
+        const {id, prepaid, canceled, course, time, date, duration, at_note, at_paid, at_state, object, prepaid_cnt} = this.state
         let attendances = []
         const start = date + " " + time
         this.members.map(member =>
@@ -152,7 +160,7 @@ export default class FormLectures extends Component {
                 paid: at_paid[member.id],
                 note: at_note[member.id]
             }))
-        let data = {id, attendances, course_id, duration, canceled}
+        let data = {id, attendances, course_id: course.id, duration, canceled}
         if(!this.IS_CLIENT)
             data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
         if(!prepaid)
@@ -205,7 +213,7 @@ export default class FormLectures extends Component {
     }
 
     render() {
-        const {id, canceled, prepaid, course_id, date, time, duration, at_state, at_note, at_paid, object, lastAttendancestates, courses, prepaid_cnt} = this.state
+        const {id, canceled, prepaid, course, date, time, duration, at_state, at_note, at_paid, object, lastAttendancestates, courses, prepaid_cnt} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
@@ -219,14 +227,14 @@ export default class FormLectures extends Component {
                 <ModalBody>
                     <FormGroup row className="align-items-center">
                         <Col sm={4}>
-                            <CustomInput type="checkbox" id="prepaid" name="prepaid" label="Předplaceno"
-                                         checked={prepaid} onChange={(e) => {
+                            <CustomInput type="checkbox" id="prepaid" label="Předplaceno" checked={prepaid}
+                                         onChange={(e) => {
                                 this.onChangePrepaid()
                                 this.onChange(e)}}
                             />
                             {!this.IS_LECTURE &&
                                 <Input type="number" className="FormLectures_prepaidLectureCnt" disabled={!prepaid}
-                                       name="prepaid_cnt" value={prepaid_cnt} required={prepaid}
+                                       id="prepaid_cnt" value={prepaid_cnt} required={prepaid}
                                        onChange={this.onChange}/>}
                         </Col>
                         <Col sm={4}>
@@ -236,9 +244,9 @@ export default class FormLectures extends Component {
                                         <FontAwesomeIcon icon={faCalendarAlt} fixedWidth/>
                                     </InputGroupText>
                                 </InputGroupAddon>
-                                <Input type="date" name="date" id="date" value={date} disabled={prepaid}
-                                       onChange={this.onChange} required={!prepaid}
-                                       pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2099-12-31" min="2013-01-01"/>
+                                <Input type="date" id="date" value={date} disabled={prepaid} onChange={this.onChange}
+                                       required={!prepaid} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2099-12-31"
+                                       min="2013-01-01"/>
                             </InputGroup>
                         </Col>
                         <Col sm={4}>
@@ -248,33 +256,27 @@ export default class FormLectures extends Component {
                                         <FontAwesomeIcon icon={faClock} fixedWidth/>
                                     </InputGroupText>
                                 </InputGroupAddon>
-                                <Input type="time" name="time" id="time" value={time} disabled={prepaid}
-                                       onChange={this.onChange} required={!prepaid}/>
+                                <Input type="time" id="time" value={time} disabled={prepaid} onChange={this.onChange}
+                                       required={!prepaid}/>
                             </InputGroup>
                         </Col>
                     </FormGroup>
                     <FormGroup row className="align-items-center">
                         <Col sm={4}>
-                            <CustomInput type="checkbox" id="canceled" name="canceled"
-                                         label="Zrušeno" checked={canceled} onChange={this.onChange}/>
+                            <CustomInput type="checkbox" id="canceled" label="Zrušeno" checked={canceled}
+                                         onChange={this.onChange}/>
                         </Col>
                         <Col sm={4}>
-                            <InputGroup>
-                                <InputGroupAddon addonType="prepend">kurz</InputGroupAddon>
-                                <CustomInput type="select" name="course_id" id="course_id" value={course_id}
-                                             onChange={this.onChange} disabled={!this.IS_CLIENT && 'disabled'}
-                                             required="true">
-                                    <option disabled value={UNDEF}>
-                                        Vyberte kurz...
-                                    </option>
-                                    {courses.map(course =>
-                                        // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
-                                        (course.visible || course.id === course_id) &&
-                                        <option key={course.id} value={course.id}>
-                                            {course.name}
-                                        </option>)}
-                                </CustomInput>
-                            </InputGroup>
+                            <Select
+                                value={course}
+                                getOptionLabel={(option) => option.name}
+                                getOptionValue={(option) => option.id}
+                                onChange={newValue => this.onSelectChange(newValue, "course")}
+                                options={courses}
+                                placeholder={"Vyberte kurz..."}
+                                noOptionsMessage={() => TEXTS.NO_RESULTS}
+                                isDisabled={!this.IS_CLIENT}
+                                required/>
                         </Col>
                         <Col sm={4}>
                             <InputGroup>
@@ -283,8 +285,8 @@ export default class FormLectures extends Component {
                                         <FontAwesomeIcon icon={faHourglass} fixedWidth/>
                                     </InputGroupText>
                                 </InputGroupAddon>
-                                <Input type="number" name="duration" id="duration" value={duration}
-                                       onChange={this.onChange} required min="1"/>
+                                <Input type="number" id="duration" value={duration} onChange={this.onChange} required
+                                       min="1"/>
                             </InputGroup>
                         </Col>
                     </FormGroup>
@@ -301,7 +303,7 @@ export default class FormLectures extends Component {
                                     <InputGroupAddon addonType="prepend">účast</InputGroupAddon>
                                     <CustomInput type="select" name="at_state" id={"at_state" + member.id}
                                                  value={at_state[member.id]} onChange={this.onChangeMultiple}
-                                                 data-id={member.id} required="true">
+                                                 data-id={member.id} required>
                                         {lastAttendancestates.map(attendancestate =>
                                             // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                             (attendancestate.visible || attendancestate.id === at_state[member.id]) &&

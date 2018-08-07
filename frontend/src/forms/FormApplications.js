@@ -5,6 +5,8 @@ import Select from "react-select"
 import ClientService from "../api/services/client"
 import SubmitButton from "../components/buttons/SubmitButton"
 import CancelButton from "../components/buttons/CancelButton"
+import ClientName from "../components/ClientName"
+import {TEXTS} from "../global/constants"
 
 export default class FormApplications extends Component {
     constructor(props) {
@@ -13,52 +15,30 @@ export default class FormApplications extends Component {
         const {id, course, client, note} = props.application
         this.state = {
             id: id || '',
-            course_id: this.isObject ? course.id : null,
-            client_id: this.isObject ? client.id : null,
+            course: this.isObject ? course : null,
+            client: this.isObject ? client : null,
             note: note || '',
             clients: []
         }
-        this.courses = this.getCoursesArray(props.courses)
-    }
-
-    // pripravi pole s kurzy ve spravnem formatu, aby pak slo rovnou zaslat do API
-    getCoursesArray(courses) {
-        let arrayOfCourses = []
-        courses.map(course => {
-            return arrayOfCourses.push({
-                course_id: course.id,
-                label: course.name})})
-        return arrayOfCourses
-    }
-
-    // pripravi pole s klienty ve spravnem formatu, aby pak slo rovnou zaslat do API
-    getClientsArray(clients) {
-        let arrayOfClients = []
-        clients.map(client => {
-            return arrayOfClients.push({
-                client_id: client.id,
-                label: client.surname + " " + client.name})})
-        return arrayOfClients
     }
 
     onChange = (e) => {
         const target = e.target
         const state = this.state
-        state[target.name] = (target.type === 'checkbox') ? target.checked : target.value
+        state[target.id] = (target.type === 'checkbox') ? target.checked : target.value
         this.setState(state)
     }
 
-    handleChange = (obj, name) => {
+    onSelectChange = (obj, name) => {
         const state = this.state
-        // obj muze byt null
-        state[name] = obj ? obj[name] : null
+        state[name] = obj
         this.setState(state)
     }
 
     onSubmit = (e) => {
         e.preventDefault()
-        const {id, course_id, client_id, note} = this.state
-        const data = {id, course_id, client_id, note}
+        const {id, course, client, note} = this.state
+        const data = {id, course_id: course.id, client_id: client.id, note}
         let request
         if (this.isObject)
             request = ApplicationService.update(data)
@@ -80,7 +60,7 @@ export default class FormApplications extends Component {
 
     getClients = () => {
         ClientService.getAll()
-            .then(clients => this.setState({clients: this.getClientsArray(clients)}))
+            .then(clients => this.setState({clients}))
     }
 
     componentDidMount() {
@@ -88,7 +68,7 @@ export default class FormApplications extends Component {
     }
 
     render() {
-        const {client_id, clients, course_id, note} = this.state
+        const {client, clients, course, note} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
@@ -96,32 +76,36 @@ export default class FormApplications extends Component {
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
-                        <Label for="name" sm={3}>
+                        <Label for="client" sm={3}>
                             Klient
                         </Label>
                         <Col sm={9}>
                             <Select
-                                valueKey={'client_id'}
-                                value={client_id}
-                                onChange={(newValue, name = "client_id") => this.handleChange(newValue, name)}
+                                inputId="client"
+                                value={client}
+                                getOptionLabel={option => <ClientName client={option}/>}
+                                getOptionValue={option => option.id}
+                                onChange={newValue => this.onSelectChange(newValue, "client")}
                                 options={clients}
                                 placeholder={"Vyberte klienta..."}
-                                noResultsText={"Nic nenalezeno"}
+                                noOptionsMessage={() => TEXTS.NO_RESULTS}
                                 required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Col sm={3}>
+                        <Col id="course" sm={3}>
                             Kurz
                         </Col>
                         <Col sm={9}>
                             <Select
-                                valueKey={'course_id'}
-                                value={course_id}
-                                onChange={(newValue, name = "course_id") => this.handleChange(newValue, name)}
-                                options={this.courses}
+                                inputId="course"
+                                value={course}
+                                getOptionLabel={(option) => option.name}
+                                getOptionValue={(option) => option.id}
+                                onChange={newValue => this.onSelectChange(newValue, "course")}
+                                options={this.props.courses}
                                 placeholder={"Vyberte kurz..."}
-                                noResultsText={"Nic nenalezeno"}
+                                noOptionsMessage={() => TEXTS.NO_RESULTS}
                                 required/>
                         </Col>
                     </FormGroup>
@@ -130,7 +114,7 @@ export default class FormApplications extends Component {
                             Poznámka
                         </Label>
                         <Col sm={9}>
-                            <Input type="textarea" name="note" id="note" value={note} onChange={this.onChange}/>
+                            <Input type="textarea" id="note" value={note} onChange={this.onChange}/>
                         </Col>
                     </FormGroup>
                 </ModalBody>
