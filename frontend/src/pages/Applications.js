@@ -59,7 +59,7 @@ export default class Applications extends Component {
     }
 
     getCourses = () => {
-        CourseService.getAll()
+        CourseService.getVisible()
             .then((response) => {
                 this.setState({
                     courses: response,

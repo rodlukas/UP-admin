@@ -23,7 +23,10 @@ export const API_URLS = {
         }
     },
     Courses: {
-        url: 'courses' + API_DELIM
+        url: 'courses' + API_DELIM,
+        filters: {
+            visible: 'visible'
+        }
     },
     Groups: {
         url: 'groups' + API_DELIM,

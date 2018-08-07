@@ -17,7 +17,6 @@ import {TEXTS} from "../global/constants"
 
 const DEFAULT_DURATION = 30
 const GROUP_DURATION = 45
-const UNDEF = "undef"
 
 export default class FormLectures extends Component {
     constructor(props) {
@@ -86,7 +85,7 @@ export default class FormLectures extends Component {
             else
                 return attendancestates[0].id // pokud pole neni prazdne, ale zadny stav neni vychozi, vrat prvni prvek
         }
-        return UNDEF
+        return undefined
     }
 
     createAttendanceStateArray() {
@@ -119,7 +118,7 @@ export default class FormLectures extends Component {
     }
 
     getCourses = () => {
-        CourseService.getAll()
+        CourseService.getVisible()
             .then(courses => {
                 this.setState({courses})
             })

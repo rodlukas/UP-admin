@@ -10,6 +10,13 @@ function getAll() {
     })
 }
 
+function getVisible() {
+    return request({
+        url: baseUrl + "?" + API_URLS.Courses.filters.visible + "=true",
+        method: API_METHODS.get
+    })
+}
+
 function update(context) {
     return request({
         url: baseUrl + context.id + API_DELIM,
@@ -34,7 +41,7 @@ function create(context) {
 }
 
 const CourseService = {
-    getAll, create, update, remove
+    getAll, create, update, remove, getVisible
 }
 
 export default CourseService

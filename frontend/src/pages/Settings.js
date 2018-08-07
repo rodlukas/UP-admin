@@ -10,8 +10,6 @@ import EditButton from "../components/buttons/EditButton"
 import Heading from "../components/Heading"
 import AppVersion from "../components/AppVersion"
 
-const UNDEF = "undef"
-
 export default class Settings extends Component {
     constructor(props) {
         super(props)
@@ -37,7 +35,7 @@ export default class Settings extends Component {
     onChange = (e) => {
         const target = e.target
         const state = this.state
-        state[target.name] = target.value
+        state[target.id] = target.value
         this.setState(state)
         // odesli na API patch pozadavek
         const data = {id: this.state.default_id, default: true}
@@ -83,7 +81,7 @@ export default class Settings extends Component {
             if (default_elem !== undefined)
                 return default_elem.id
         }
-        return UNDEF
+        return undefined
     }
 
     render() {
@@ -127,7 +125,7 @@ export default class Settings extends Component {
                 <h3>
                     Výchozí stav účasti
                 </h3>
-                {default_id === UNDEF &&
+                {default_id === undefined &&
                 <Alert color="danger">
                     Není vybraný výchozí stav, aplikace nemůže správně fungovat!
                 </Alert>}
@@ -135,9 +133,8 @@ export default class Settings extends Component {
                     Pro správné fungování aplikace je třeba zvolit výchozí stav účasti, ten zároveň
                     <span className="font-weight-bold"> musí reprezentovat stav „klient se zúčastní/zúčastnil“</span>.
                 </p>
-                <CustomInput type="select" name="default_id" id="default_id" value={default_id}
-                             onChange={this.onChange}>
-                    <option disabled value={UNDEF}>
+                <CustomInput type="select" id="default_id" value={default_id || "default"} onChange={this.onChange}>
+                    <option disabled value="default">
                         Vyberte stav...
                     </option>
                     {attendancestates.map(attendancestate =>

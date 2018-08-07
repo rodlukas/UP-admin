@@ -35,6 +35,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    filterset_fields = 'visible',
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
