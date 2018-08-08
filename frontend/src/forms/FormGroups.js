@@ -140,7 +140,8 @@ export default class FormGroups extends Component {
                                 value={memberships}
                                 getOptionLabel={option => <ClientName client={option}/>}
                                 getOptionValue={option => option.id}
-                                isMulti={true}
+                                isMulti
+                                closeMenuOnSelect={false}
                                 onChange={newValue => this.onSelectChange(newValue, "memberships")}
                                 options={clients}
                                 placeholder={"Vyberte členy skupiny..."}
