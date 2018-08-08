@@ -22,8 +22,12 @@ export default class Main extends Component {
         IS_MENU_OPEN: false
     }
 
-    toggle = () => {
+    toggleNavbar = () => {
         this.setState({IS_MENU_OPEN: !this.state.IS_MENU_OPEN})
+    }
+
+    closeNavbar = () => {
+        this.setState({IS_MENU_OPEN: false})
     }
 
     render() {
@@ -50,9 +54,9 @@ export default class Main extends Component {
                         <Badge color="success">
                             Staging verze <AppVersion/>
                         </Badge>}
-                        <NavbarToggler onClick={this.toggle}/>
+                        <NavbarToggler onClick={this.toggleNavbar}/>
                         <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>
-                            <Menu/>
+                            <Menu closeNavbar={this.closeNavbar}/>
                         </Collapse>
                     </Navbar>
                     <ToastContainer/>
