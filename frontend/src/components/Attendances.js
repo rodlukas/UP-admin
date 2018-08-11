@@ -6,7 +6,7 @@ import ClientName from "./ClientName"
 import RemindPay from "./RemindPay"
 import "./Attendances.css"
 
-const Attendance = ({attendance, showClient = false, funcRefresh, attendancestates}) =>
+const Attendance = ({attendance, showClient = false, funcRefresh}) =>
     <li>
         {showClient &&
         <ClientName client={attendance.client} link/>}
@@ -19,16 +19,15 @@ const Attendance = ({attendance, showClient = false, funcRefresh, attendancestat
         <LectureNote attendance={attendance}/>
         <SelectAttendanceState value={attendance.attendancestate.id}
                                attendanceId={attendance.id}
-                               attendancestates={attendancestates}
                                funcRefresh={funcRefresh}/>
     </li>
-const Attendances = ({lecture, showClient = false, funcRefresh, attendancestates}) => {
+const Attendances = ({lecture, showClient = false, funcRefresh}) => {
     const className = "Attendances" + (lecture.group ? " AttendancesGroup" : "")
     return (
     <ul className={className}>
         {lecture.attendances.map(attendance =>
-            <Attendance attendance={attendance} attendancestates={attendancestates} key={attendance.id}
-                        showClient={showClient} funcRefresh={funcRefresh}/>)}
+            <Attendance attendance={attendance} key={attendance.id} showClient={showClient}
+                        funcRefresh={funcRefresh}/>)}
     </ul>)
 }
 

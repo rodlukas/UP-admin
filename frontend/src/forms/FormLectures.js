@@ -14,17 +14,18 @@ import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Select from "react-select"
 import {TEXTS} from "../global/constants"
+import WithContext from "../WithContext"
 
 const DEFAULT_DURATION = 30
 const GROUP_DURATION = 45
 
-export default class FormLectures extends Component {
+class FormLectures extends Component {
     constructor(props) {
         super(props)
         this.IS_LECTURE = Boolean(Object.keys(props.lecture).length)
         this.IS_CLIENT = props.IS_CLIENT
         const {id, start, course, duration, attendances, canceled} = props.lecture
-        const {attendancestates, object} = props
+        const {object} = props
         const isPrepaid = this.IS_LECTURE ? !Boolean(start) : false
         this.members = []
         if (this.IS_CLIENT)
@@ -37,7 +38,7 @@ export default class FormLectures extends Component {
         let date = new Date(start)
         this.state = {
             STATE_DEFAULT_INDEX: this.getDefaultStateIndex(),
-            lastAttendancestates: attendancestates,
+            lastAttendancestates: props.context.attendancestates.data,
             id: id || '',
             at_state: this.createAttendanceStateArray(),
             at_paid: this.createPaidArray(),
@@ -57,14 +58,14 @@ export default class FormLectures extends Component {
     }
 
     getDefaultStateIndex() {
-        return FormLectures.prepareStateIndex(this.props.attendancestates)
+        return FormLectures.prepareStateIndex(this.props.context.attendancestates.data)
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(state.lastAttendancestates !== props.attendancestates)
+        if(state.lastAttendancestates !== props.context.attendancestates.data)
             return {
-                STATE_DEFAULT_INDEX: FormLectures.prepareStateIndex(props.attendancestates),
-                lastAttendancestates: props.attendancestates
+                STATE_DEFAULT_INDEX: FormLectures.prepareStateIndex(props.context.attendancestates.data),
+                lastAttendancestates: props.context.attendancestates.data
             }
         return null
     }
@@ -361,3 +362,5 @@ export default class FormLectures extends Component {
         )
     }
 }
+
+export default WithContext(FormLectures)

@@ -3,7 +3,6 @@ import {Container, Row, Col, Modal, ListGroup, ListGroupItem} from "reactstrap"
 import FormLectures from "../forms/FormLectures"
 import {prettyTime, prettyDateWithDayYear} from "../global/funcDateTime"
 import LectureNumber from "../components/LectureNumber"
-import AttendanceStateService from "../api/services/attendancestate"
 import GroupService from "../api/services/group"
 import ClientService from "../api/services/client"
 import LectureService from "../api/services/lecture"
@@ -31,7 +30,6 @@ export default class Card extends Component {
         IS_MODAL: false,
         currentLecture: {},
         lectures: [],
-        attendancestates: [],
         memberships: [],
         IS_LOADING: true
     }
@@ -39,7 +37,6 @@ export default class Card extends Component {
     componentDidMount() {
         this.getObject()
         this.getLectures()
-        this.getAttendanceStates()
         if (this.state.IS_CLIENT)
             this.getMemberships()
     }
@@ -66,11 +63,6 @@ export default class Card extends Component {
             }
         }
         return null
-    }
-
-    getAttendanceStates = () => {
-        AttendanceStateService.getAll()
-            .then(attendancestates => this.setState({attendancestates}))
     }
 
     getMemberships = (id = this.state.id) => {
@@ -123,7 +115,7 @@ export default class Card extends Component {
     }
 
     render() {
-        const {object, attendancestates, lectures, currentLecture, memberships, IS_CLIENT, IS_LOADING, IS_MODAL} = this.state
+        const {object, lectures, currentLecture, memberships, IS_CLIENT, IS_LOADING, IS_MODAL} = this.state
         const ClientInfo = () =>
             <ListGroup>
                 {IS_CLIENT ?
@@ -168,8 +160,7 @@ export default class Card extends Component {
                                     <EditButton onClick={() => this.toggle(lecture)}/>
                                 </div>
                             </h4>
-                            <Attendances attendancestates={attendancestates} lecture={lecture}
-                                         funcRefresh={this.getLectures} showClient={!IS_CLIENT}/>
+                            <Attendances lecture={lecture} funcRefresh={this.getLectures} showClient={!IS_CLIENT}/>
                         </ListGroupItem>)})}
             </Fragment>
         const AllLectures = () =>
@@ -219,8 +210,8 @@ export default class Card extends Component {
                     </Row>
                 </Container>
                 <Modal isOpen={IS_MODAL} toggle={this.toggle} size="lg" autoFocus={false} className="ModalFormLecture">
-                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle} IS_CLIENT={IS_CLIENT}
-                                  funcRefresh={this.getLectures} attendancestates={attendancestates}/>
+                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle}
+                                  IS_CLIENT={IS_CLIENT} funcRefresh={this.getLectures}/>}
                 </Modal>
             </Fragment>
         return (

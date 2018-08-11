@@ -28,12 +28,3 @@ b {
 h4 .badge {
     margin: 0;
 }
-
-/* MENU */
-.development .navbar {
-    background-color: #FAFAC5;
-}
-
-.staging .navbar {
-    background-color: #a9dbb4;
-}

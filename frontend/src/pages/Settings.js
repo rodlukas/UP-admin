@@ -9,20 +9,23 @@ import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import Heading from "../components/Heading"
 import AppVersion from "../components/AppVersion"
+import WithContext from "../WithContext"
 
-export default class Settings extends Component {
+class Settings extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            attendancestates: [],
             courses: [],
             IS_MODAL: false,
             currentObject: {},
             currentType: EDIT_TYPE.STATE,
-            LOADING_CNT: 0,
+            IS_LOADING: true,
             default_id: this.findDefaultId()
         }
     }
+
+    getAttendanceStatesData = () => this.props.context.attendancestates.data
+    callAttendanceStatesFuncRefresh = () => this.props.context.attendancestates.funcRefresh()
 
     toggle = (type, object = {}) => {
         this.setState({
@@ -43,20 +46,16 @@ export default class Settings extends Component {
     }
 
     refresh = (type) => {
-        this.setState({LOADING_CNT: this.state.LOADING_CNT - 1})
         if (type === EDIT_TYPE.COURSE)
+        {
+            this.setState({IS_LOADING: true})
             this.getCourses()
+        }
         else if (type === EDIT_TYPE.STATE)
-            this.getAttendanceStates()
-    }
-
-    getAttendanceStates = () => {
-        AttendanceStateService.getAll()
-            .then(attendancestates =>
-                this.setState({
-                    attendancestates,
-                    LOADING_CNT: this.state.LOADING_CNT + 1,
-                    default_id: this.findDefaultId(attendancestates)}))
+        {
+            this.callAttendanceStatesFuncRefresh()
+            this.setState({default_id: this.findDefaultId(this.getAttendanceStatesData())})
+        }
     }
 
     getCourses = () => {
@@ -64,18 +63,17 @@ export default class Settings extends Component {
             .then(courses =>
                 this.setState({
                     courses,
-                    LOADING_CNT: this.state.LOADING_CNT + 1}))
+                    IS_LOADING: false}))
     }
 
     componentDidMount() {
-        this.getAttendanceStates()
         this.getCourses()
     }
 
-    findDefaultId = (attendancestates = null) => {
+    findDefaultId = () => {
         let default_elem
-        if(attendancestates !== null) {
-            default_elem = attendancestates.find(function (element) {
+        if(this.getAttendanceStatesData() !== null) {
+            default_elem = this.getAttendanceStatesData().find(function (element) {
                 return element.default === true
             })
             if (default_elem !== undefined)
@@ -85,7 +83,7 @@ export default class Settings extends Component {
     }
 
     render() {
-        const {attendancestates, courses, currentType, currentObject, default_id, IS_MODAL, LOADING_CNT} = this.state
+        const {courses, currentType, currentObject, default_id, IS_MODAL, IS_LOADING} = this.state
         const Visible = ({visible}) => (visible ? 'ANO' : 'NE')
         const AttendanceStates = () =>
             <Fragment>
@@ -101,7 +99,7 @@ export default class Settings extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {attendancestates.map(attendancestate =>
+                    {this.getAttendanceStatesData().map(attendancestate =>
                         <tr key={attendancestate.id}>
                             <td>
                                 {attendancestate.name}
@@ -115,7 +113,7 @@ export default class Settings extends Component {
                         </tr>)}
                     </tbody>
                 </Table>
-                {!Boolean(attendancestates.length) &&
+                {!Boolean(this.getAttendanceStatesData().length) &&
                 <p className="text-muted text-center">
                     Žádné stavy účasti
                 </p>}
@@ -137,7 +135,7 @@ export default class Settings extends Component {
                     <option disabled value="default">
                         Vyberte stav...
                     </option>
-                    {attendancestates.map(attendancestate =>
+                    {this.getAttendanceStatesData().map(attendancestate =>
                         <option key={attendancestate.id} value={attendancestate.id}>
                             {attendancestate.name}
                         </option>)}
@@ -203,7 +201,7 @@ export default class Settings extends Component {
             <Fragment>
                 <Container>
                     <Heading content={<HeadingContent/>}/>
-                    {LOADING_CNT !== 2 ?
+                    {IS_LOADING ?
                         <Loading/> :
                         <SettingsContent/>}
                 </Container>
@@ -215,3 +213,5 @@ export default class Settings extends Component {
         )
     }
 }
+
+export default WithContext(Settings)

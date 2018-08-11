@@ -16,8 +16,16 @@ import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.min.css"
 import APP_URLS from "./urls"
 import AppVersion from "./components/AppVersion"
+import {MyProvider} from "./Context"
+import {getEnvName, isEnvDevelopment, isEnvProduction, isEnvStaging} from "./global/funcEnvironments"
+import "./Main.css"
 
 export default class Main extends Component {
+    constructor(props) {
+        super(props)
+        this.editTitle()
+    }
+
     state = {
         IS_MENU_OPEN: false
     }
@@ -30,61 +38,60 @@ export default class Main extends Component {
         this.setState({IS_MENU_OPEN: false})
     }
 
+    editTitle = () => {
+        if(!isEnvProduction())
+            document.title += " - " + getEnvName()
+    }
+
     render() {
-        const appUrl = window.location.hostname.split(".")[0]
-        let mainClass = process.env.NODE_ENV
-        let IS_STAGING = false
-        if (appUrl === "uspesnyprvnacek-staging")
-        {
-            IS_STAGING = true
-            mainClass += " staging"
-        }
         return (
-            <BrowserRouter>
-                <div className={mainClass}>
-                    <Navbar light className="border-bottom" expand="sm">
-                        <NavbarBrand tag={RouterNavLink} exact to="/">
-                            ÚP<sub>admin</sub>
-                        </NavbarBrand>
-                        {process.env.NODE_ENV === 'development' &&
-                        <Badge color="dark">
-                            Vývojová verze
-                        </Badge>}
-                        {IS_STAGING &&
-                        <Badge color="success">
-                            Staging verze <AppVersion/>
-                        </Badge>}
-                        <NavbarToggler onClick={this.toggleNavbar}/>
-                        <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>
-                            <Menu closeNavbar={this.closeNavbar}/>
-                        </Collapse>
-                    </Navbar>
-                    <ToastContainer/>
-                    <div className="content">
-                        <Switch>
-                            <PrivateRoute
-                                path={APP_URLS.prehled} component={Dashboard} exact/>
-                            <Route
-                                path={APP_URLS.prihlasit} component={Login}/>
-                            <PrivateRoute
-                                path={APP_URLS.skupiny} component={Groups} exact/>
-                            <PrivateRoute
-                                path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
-                            <PrivateRoute
-                                path={APP_URLS.klienti} component={Clients} exact/>
-                            <PrivateRoute
-                                path={APP_URLS.klienti + "/:id"} component={Card}/>
-                            <PrivateRoute
-                                path={APP_URLS.skupiny + "/:id"} component={Card}/>
-                            <PrivateRoute
-                                path={APP_URLS.zajemci} component={Applications}/>
-                            <PrivateRoute
-                                path={APP_URLS.nastaveni} component={Settings}/>
-                            <Route component={NotFound}/>
-                        </Switch>
+            <MyProvider>
+                <BrowserRouter>
+                    <div className={getEnvName()}>
+                        <Navbar light className="border-bottom" expand="sm">
+                            <NavbarBrand tag={RouterNavLink} exact to="/">
+                                ÚP<sub>admin</sub>
+                            </NavbarBrand>
+                            {isEnvDevelopment() &&
+                            <Badge color="dark">
+                                Vývojová verze
+                            </Badge>}
+                            {isEnvStaging() &&
+                            <Badge color="success">
+                                Staging verze <AppVersion/>
+                            </Badge>}
+                            <NavbarToggler onClick={this.toggleNavbar}/>
+                            <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>
+                                <Menu closeNavbar={this.closeNavbar}/>
+                            </Collapse>
+                        </Navbar>
+                        <ToastContainer/>
+                        <div className="content">
+                            <Switch>
+                                <PrivateRoute
+                                    path={APP_URLS.prehled} component={Dashboard} exact/>
+                                <Route
+                                    path={APP_URLS.prihlasit} component={Login}/>
+                                <PrivateRoute
+                                    path={APP_URLS.skupiny} component={Groups} exact/>
+                                <PrivateRoute
+                                    path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
+                                <PrivateRoute
+                                    path={APP_URLS.klienti} component={Clients} exact/>
+                                <PrivateRoute
+                                    path={APP_URLS.klienti + "/:id"} component={Card}/>
+                                <PrivateRoute
+                                    path={APP_URLS.skupiny + "/:id"} component={Card}/>
+                                <PrivateRoute
+                                    path={APP_URLS.zajemci} component={Applications}/>
+                                <PrivateRoute
+                                    path={APP_URLS.nastaveni} component={Settings}/>
+                                <Route component={NotFound}/>
+                            </Switch>
+                        </div>
                     </div>
-                </div>
-            </BrowserRouter>
+                </BrowserRouter>
+            </MyProvider>
         )
     }
 }

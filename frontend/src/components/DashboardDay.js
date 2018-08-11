@@ -50,8 +50,7 @@ export default class DashboardDay extends Component {
                 <h5>
                     <GroupName group={lecture.group} title link/>
                 </h5>}
-                <Attendances attendancestates={this.props.attendancestates} lecture={lecture}
-                             funcRefresh={this.props.setRefreshState || this.getLectures} showClient/>
+                <Attendances lecture={lecture} funcRefresh={this.props.setRefreshState || this.getLectures} showClient/>
             </ListGroupItem>
         const EmptyLecture = () =>
             <ListGroupItem>

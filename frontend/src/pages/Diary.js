@@ -4,7 +4,6 @@ import DashboardDay from "../components/DashboardDay"
 import {prettyDateWithYearIfDiff, isEqualDate, getMonday, addDays, DAYS_IN_WEEK, getWeekSerializedFromMonday} from "../global/funcDateTime"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/pro-solid-svg-icons"
-import AttendanceStateService from "../api/services/attendancestate"
 import APP_URLS from "../urls"
 import {Link} from "react-router-dom"
 import "./Diary.css"
@@ -12,7 +11,6 @@ import Heading from "../components/Heading"
 
 export default class Diary extends Component {
     state = {
-        attendancestates: [],
         shouldRefresh: false
     }
 
@@ -25,17 +23,11 @@ export default class Diary extends Component {
     getRequiredMonday = () => getMonday(Diary.parseDateFromParams(this.props.match.params))
 
     componentDidMount() {
-        this.getAttendanceStates()
         document.addEventListener('keydown', this.onKeyDown)
     }
 
     componentWillUnmount() {
         document.removeEventListener('keydown', this.onKeyDown)
-    }
-
-    getAttendanceStates = () => {
-        AttendanceStateService.getAll()
-            .then(attendancestates => this.setState({attendancestates}))
     }
 
     onKeyDown = (e) => {
@@ -100,7 +92,6 @@ export default class Diary extends Component {
                         <Col key={day} sm="12" md="6" lg="" className="diary-day">
                             <DashboardDay
                                 date={day}
-                                attendancestates={this.state.attendancestates}
                                 setRefreshState={this.setRefreshState}
                                 shouldRefresh={this.state.shouldRefresh}
                             />
