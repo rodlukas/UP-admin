@@ -9,7 +9,7 @@ import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import Heading from "../components/Heading"
 import AppVersion from "../components/AppVersion"
-import WithContext from "../WithContext"
+import {WithContext} from "../Context"
 
 class Settings extends Component {
     constructor(props) {

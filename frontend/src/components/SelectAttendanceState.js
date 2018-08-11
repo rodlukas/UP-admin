@@ -22,8 +22,8 @@ export default class SelectAttendanceState extends Component {
             <CustomInput type="select" bsSize="sm" onChange={this.onChange} id={"select" + this.props.attendanceId}
                          value={value}>
                 <Consumer>
-                    {context =>
-                        context.attendancestates.data.map(attendancestate =>
+                    {({attendancestates}) =>
+                        attendancestates.data.map(attendancestate =>
                         // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                         (attendancestate.visible || attendancestate.id === value) &&
                         <option key={attendancestate.id} value={attendancestate.id}>

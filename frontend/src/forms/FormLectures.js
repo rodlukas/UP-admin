@@ -14,7 +14,7 @@ import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Select from "react-select"
 import {TEXTS} from "../global/constants"
-import WithContext from "../WithContext"
+import {WithContext} from "../Context"
 
 const DEFAULT_DURATION = 30
 const GROUP_DURATION = 45

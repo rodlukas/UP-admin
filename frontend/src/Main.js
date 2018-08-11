@@ -18,6 +18,7 @@ import APP_URLS from "./urls"
 import AppVersion from "./components/AppVersion"
 import {getEnvName, isEnvDevelopment, isEnvProduction, isEnvStaging} from "./global/funcEnvironments"
 import "./Main.css"
+import ErrorBoundary from "./components/ErrorBoundary"
 
 export default class Main extends Component {
     constructor(props) {
@@ -64,29 +65,31 @@ export default class Main extends Component {
                         </Collapse>
                     </Navbar>
                     <ToastContainer/>
-                    <div className="content">
-                        <Switch>
-                            <PrivateRoute
-                                path={APP_URLS.prehled} component={Dashboard} exact/>
-                            <Route
-                                path={APP_URLS.prihlasit} component={Login}/>
-                            <PrivateRoute
-                                path={APP_URLS.skupiny} component={Groups} exact/>
-                            <PrivateRoute
-                                path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
-                            <PrivateRoute
-                                path={APP_URLS.klienti} component={Clients} exact/>
-                            <PrivateRoute
-                                path={APP_URLS.klienti + "/:id"} component={Card}/>
-                            <PrivateRoute
-                                path={APP_URLS.skupiny + "/:id"} component={Card}/>
-                            <PrivateRoute
-                                path={APP_URLS.zajemci} component={Applications}/>
-                            <PrivateRoute
-                                path={APP_URLS.nastaveni} component={Settings}/>
-                            <Route component={NotFound}/>
-                        </Switch>
-                    </div>
+                    <ErrorBoundary>
+                        <div className="content">
+                            <Switch>
+                                <PrivateRoute
+                                    path={APP_URLS.prehled} component={Dashboard} exact/>
+                                <Route
+                                    path={APP_URLS.prihlasit} component={Login}/>
+                                <PrivateRoute
+                                    path={APP_URLS.skupiny} component={Groups} exact/>
+                                <PrivateRoute
+                                    path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
+                                <PrivateRoute
+                                    path={APP_URLS.klienti} component={Clients} exact/>
+                                <PrivateRoute
+                                    path={APP_URLS.klienti + "/:id"} component={Card}/>
+                                <PrivateRoute
+                                    path={APP_URLS.skupiny + "/:id"} component={Card}/>
+                                <PrivateRoute
+                                    path={APP_URLS.zajemci} component={Applications}/>
+                                <PrivateRoute
+                                    path={APP_URLS.nastaveni} component={Settings}/>
+                                <Route component={NotFound}/>
+                            </Switch>
+                        </div>
+                    </ErrorBoundary>
                 </div>
             </BrowserRouter>
         )
