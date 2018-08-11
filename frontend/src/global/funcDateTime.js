@@ -1,3 +1,6 @@
+export const WORK_DAYS_COUNT = 5
+export const DAYS_IN_WEEK = 7
+
 export function prettyDate(date) {
     return date.getDate() + ". " + (date.getMonth() + 1) + "."
 }
@@ -50,4 +53,26 @@ export function isEqualDate(date1, date2) {
         date1.getDate()     === date2.getDate() &&
         date1.getFullYear() === date2.getFullYear() &&
         date1.getMonth()    === date2.getMonth())
+}
+
+// zjisti datum nejblizsiho pondeli predchazejici datumu (pripadne tentyz datum pokud uz pondeli je)
+export function getMonday(date) {
+    date.setDate(date.getDate() + 1 - (date.getDay() || 7))
+    return date
+}
+
+// prida k zadanemu datumu prislusny pocet dni a vrati takto navyseny datum
+export function addDays(date, days) {
+    date.setDate(date.getDate() + days)
+    return date
+}
+
+// priprav pole datumu pracovnich dnu v prislusnem tydnu
+export function getWeekSerializedFromMonday(monday) {
+    let week = [], dayToProcess = monday
+    while (week.length < WORK_DAYS_COUNT) {
+        week.push(toISODate(dayToProcess))
+        dayToProcess = addDays(dayToProcess, 1)
+    }
+    return week
 }

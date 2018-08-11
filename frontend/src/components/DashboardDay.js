@@ -10,17 +10,15 @@ import Attendances from "./Attendances"
 import "./DashboardDay.css"
 
 export default class DashboardDay extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            lectures: [],
-            IS_LOADING: true
-        }
-        this.date = new Date(props.date)
+    state = {
+        lectures: [],
+        IS_LOADING: true
     }
 
+    getDate = () => new Date(this.props.date)
+
     getLectures = () => {
-        LectureService.getAllFromDayOrdered(toISODate(this.date), true)
+        LectureService.getAllFromDayOrdered(toISODate(this.getDate()), true)
             .then(lectures => this.setState({
                 lectures,
                 IS_LOADING: false
@@ -31,14 +29,14 @@ export default class DashboardDay extends Component {
         this.getLectures()
     }
 
-    componentDidUpdate() {
-        if (this.props.shouldRefresh)
+    componentDidUpdate(prevProps) {
+        if (this.props.shouldRefresh && !prevProps.shouldRefresh)
             this.getLectures()
     }
 
     render() {
         const {lectures, IS_LOADING} = this.state
-        const title = prettyDateWithLongDayYearIfDiff(this.date)
+        const title = prettyDateWithLongDayYearIfDiff(this.getDate())
         const Lecture = ({lecture}) =>
             <ListGroupItem className={lecture.group && "LectureGroup"}>
                 <h4>
@@ -74,7 +72,7 @@ export default class DashboardDay extends Component {
             </ListGroupItem>
         return (
             <ListGroup>
-                <ListGroupItem color={isToday(this.date) ? "primary" : ''}>
+                <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''}>
                     <h4 className="text-center">{title}</h4>
                 </ListGroupItem>
                 {IS_LOADING ?
