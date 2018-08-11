@@ -4,7 +4,7 @@ import {Route, Redirect} from "react-router-dom"
 import APP_URLS from "../urls"
 import {MyProvider} from "../Context"
 
-const PrivateRoute = ({Component, ...rest}) => (
+const PrivateRoute = ({component: Component, ...rest}) => (
     <Route {...rest} render={props =>
         AuthService.isAuthenticated()
             ?
