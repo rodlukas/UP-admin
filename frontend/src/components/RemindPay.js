@@ -1,10 +1,11 @@
 import React from "react"
-import {Badge} from "reactstrap"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faExclamationCircle} from "@fortawesome/pro-solid-svg-icons"
 
 const RemindPay = ({remind_pay}) =>
     remind_pay &&
-        <Badge color="warning" pill>
-            Příště platit
-        </Badge>
+    <span title="Příště platit">
+        <FontAwesomeIcon icon={faExclamationCircle} size="lg" color="#ff9800" transform="up-4"/>
+    </span>
 
 export default RemindPay
