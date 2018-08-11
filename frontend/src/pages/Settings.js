@@ -54,7 +54,7 @@ class Settings extends Component {
         else if (type === EDIT_TYPE.STATE)
         {
             this.callAttendanceStatesFuncRefresh()
-            this.setState({default_id: this.findDefaultId(this.getAttendanceStatesData())})
+            this.setState({default_id: this.findDefaultId()})
         }
     }
 
@@ -70,8 +70,14 @@ class Settings extends Component {
         this.getCourses()
     }
 
+    componentDidUpdate(prevProps) {
+        if(this.getAttendanceStatesData() !== prevProps.context.attendancestates.data)
+            this.setState({default_id: this.findDefaultId()})
+    }
+
     findDefaultId = () => {
         let default_elem
+        console.log(this.getAttendanceStatesData())
         if(this.getAttendanceStatesData() !== null) {
             default_elem = this.getAttendanceStatesData().find(function (element) {
                 return element.default === true
@@ -187,8 +193,8 @@ class Settings extends Component {
                     </Col>
                 </Row>
                 <hr/>
-                <p>
-                    Verze aplikace: <AppVersion/>, GIT_DATETIME
+                <p className="text-center">
+                    <span className="font-weight-bold">Verze aplikace:</span> <AppVersion/> - GIT_DATETIME
                 </p>
             </Fragment>
         const HeadingContent = () =>
