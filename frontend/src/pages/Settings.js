@@ -77,7 +77,6 @@ class Settings extends Component {
 
     findDefaultId = () => {
         let default_elem
-        console.log(this.getAttendanceStatesData())
         if(this.getAttendanceStatesData() !== null) {
             default_elem = this.getAttendanceStatesData().find(function (element) {
                 return element.default === true
