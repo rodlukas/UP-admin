@@ -36,9 +36,7 @@ export default class Login extends Component {
         if (redirectToReferrer)
             return <Redirect to={from}/>
         const HeadingContent = () =>
-            <Fragment>
-                Přihlášení
-            </Fragment>
+            "Přihlášení"
         return (
             <Container>
                 <Heading content={<HeadingContent/>}/>

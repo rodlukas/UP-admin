@@ -2,9 +2,7 @@ import React, {Fragment} from "react"
 import Heading from "../components/Heading"
 
 const HeadingContent = () =>
-    <Fragment>
-        Nenalezeno
-    </Fragment>
+    "Nenalezeno"
 
 const NotFound = () => {
     return (

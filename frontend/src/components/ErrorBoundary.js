@@ -18,9 +18,7 @@ export default class ErrorBoundary extends Component {
 
     render() {
         const HeadingContent = () =>
-            <Fragment>
-                Chyba aplikace
-            </Fragment>
+            "Chyba aplikace"
         if (this.state.hasError) {
             return (
                 <div className="text-center">

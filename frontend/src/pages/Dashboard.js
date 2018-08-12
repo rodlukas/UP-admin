@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react"
+import React, {Component} from "react"
 import {Container, Row, Col} from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
@@ -9,9 +9,7 @@ export default class Dashboard extends Component {
 
     render() {
         const HeadingContent = () =>
-            <Fragment>
-                Dnešní přehled
-            </Fragment>
+            "Dnešní přehled"
         return (
             <Container fluid>
                 <Row className="justify-content-center">
