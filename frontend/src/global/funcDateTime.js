@@ -9,6 +9,10 @@ export function prettyDateWithYear(date) {
     return prettyDate(date) + " " + (date.getFullYear())
 }
 
+export function prettyDateTime(date) {
+    return prettyDateWithDayYear(date) + " " + prettyTime(date)
+}
+
 // vrati uzivatelsky privetivy datum, pokud je rok odlisny od aktualniho tak jej pripoji
 export function prettyDateWithYearIfDiff(date) {
     if(date.getFullYear() === new Date().getFullYear())

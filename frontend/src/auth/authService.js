@@ -1,5 +1,6 @@
 import decode from "jwt-decode"
 import LoginService from "../api/services/login"
+import {prettyDateTime} from "../global/funcDateTime"
 
 const AUTH_REFRESH_THRESHOLD = 60*60 // sekundy
 const AUTH_STORAGE_KEY = "jwt"
@@ -19,7 +20,12 @@ export default class AuthService {
             const decoded = decode(token)
             if (!fastCheck) { //popis fastCheck v metode isAuthenticated
                 const dif = decoded.exp - AuthService.getCurrentDate()
-                console.log("%c --------\ntoken:\t" + token + '\naktual:\t' + new Date().toISOString() + "\nvyprsi:\t" + new Date(decoded.exp * 1000).toISOString() + "\ndif:\t" + dif, 'color: olive')
+                console.log("%c" +
+                    "token:\t" + token +
+                    "\ncas:\t" + prettyDateTime(new Date()) +
+                    "\nvyprsi:\t" + prettyDateTime(new Date(decoded.exp * 1000)) +
+                    "\ndif:\t" + dif + " s (~" + Math.round(dif/60) + " min; ~" + Math.round(dif/3600) + " h)",
+                    'color: olive')
                 if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
                     this.refreshToken(token)
                     return (decode(this.getToken()).exp < this.getCurrentDate()) // dekoduj novy token a porovnej
