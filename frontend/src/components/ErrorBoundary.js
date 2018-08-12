@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react"
+import React, {Component} from "react"
 import Heading from "./Heading"
 import {Alert, Container, Row, Col} from "reactstrap"
 

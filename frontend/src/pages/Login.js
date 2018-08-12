@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react"
+import React, {Component} from "react"
 import {Redirect} from "react-router-dom"
 import {Col, Form, FormGroup, Label, Input, Container, Row, Card} from "reactstrap"
 import AuthService from "../auth/authService"
