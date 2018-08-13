@@ -14,7 +14,7 @@ import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Select from "react-select"
 import {TEXTS} from "../global/constants"
-import {WithContext} from "../Context"
+import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
 
 const DEFAULT_DURATION = 30
 const GROUP_DURATION = 45
@@ -37,8 +37,6 @@ class FormLectures extends Component {
 
         let date = new Date(start)
         this.state = {
-            STATE_DEFAULT_INDEX: this.getDefaultStateIndex(),
-            lastAttendancestates: props.context.attendancestates.data,
             id: id || '',
             at_state: this.createAttendanceStateArray(),
             at_paid: this.createPaidArray(),
@@ -57,17 +55,22 @@ class FormLectures extends Component {
         }
     }
 
+    getAttendanceStatesData = () => this.props.attendanceStatesContext.attendancestates
+
     getDefaultStateIndex() {
-        return FormLectures.prepareStateIndex(this.props.context.attendancestates.data)
+        if (this.getAttendanceStatesData().length) {
+            const res = this.getAttendanceStatesData().find(elem => elem.default === true)
+            if (res !== undefined)
+                return res.id
+            else
+                return this.getAttendanceStatesData()[0].id // pokud pole neni prazdne, ale zadny stav neni vychozi, vrat prvni prvek
+        }
+        return undefined
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if(state.lastAttendancestates !== props.context.attendancestates.data)
-            return {
-                STATE_DEFAULT_INDEX: FormLectures.prepareStateIndex(props.context.attendancestates.data),
-                lastAttendancestates: props.context.attendancestates.data
-            }
-        return null
+    componentDidUpdate(prevProps) {
+        if (this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
+            this.setState({at_state: this.createAttendanceStateArray()})
     }
 
     getMembers(memberships) {
@@ -77,22 +80,11 @@ class FormLectures extends Component {
         return members
     }
 
-    static prepareStateIndex(attendancestates) {
-        if(attendancestates.length)
-        {
-            const res = attendancestates.find(elem => elem.default === true)
-            if(res !== undefined)
-                return res.id
-            else
-                return attendancestates[0].id // pokud pole neni prazdne, ale zadny stav neni vychozi, vrat prvni prvek
-        }
-        return undefined
-    }
-
     createAttendanceStateArray() {
         let array = []
+        const defaultStateIndex = this.getDefaultStateIndex()
         this.members.map((client, id) =>
-            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate.id : this.getDefaultStateIndex())
+            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate.id : defaultStateIndex)
         return array
     }
 
@@ -213,7 +205,7 @@ class FormLectures extends Component {
     }
 
     render() {
-        const {id, canceled, prepaid, course, date, time, duration, at_state, at_note, at_paid, object, lastAttendancestates, courses, prepaid_cnt} = this.state
+        const {id, canceled, prepaid, course, date, time, duration, at_state, at_note, at_paid, object, courses, prepaid_cnt} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
@@ -304,7 +296,7 @@ class FormLectures extends Component {
                                     <CustomInput type="select" name="at_state" id={"at_state" + member.id}
                                                  value={at_state[member.id]} onChange={this.onChangeMultiple}
                                                  data-id={member.id} required>
-                                        {lastAttendancestates.map(attendancestate =>
+                                        {this.getAttendanceStatesData().map(attendancestate =>
                                             // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                             (attendancestate.visible || attendancestate.id === at_state[member.id]) &&
                                             <option key={attendancestate.id} value={attendancestate.id}>
@@ -363,4 +355,4 @@ class FormLectures extends Component {
     }
 }
 
-export default WithContext(FormLectures)
+export default WithAttendanceStatesContext(FormLectures)

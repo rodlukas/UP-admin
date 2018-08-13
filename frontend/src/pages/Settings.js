@@ -9,7 +9,7 @@ import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import Heading from "../components/Heading"
 import AppVersion from "../components/AppVersion"
-import {WithContext} from "../Context"
+import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
 
 class Settings extends Component {
     constructor(props) {
@@ -24,8 +24,8 @@ class Settings extends Component {
         }
     }
 
-    getAttendanceStatesData = () => this.props.context.attendancestates.data
-    callAttendanceStatesFuncRefresh = () => this.props.context.attendancestates.funcRefresh()
+    getAttendanceStatesData = () => this.props.attendanceStatesContext.attendancestates
+    callAttendanceStatesFuncRefresh = () => this.props.attendanceStatesContext.funcRefresh()
 
     toggle = (type, object = {}) => {
         this.setState({
@@ -71,7 +71,7 @@ class Settings extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if(this.getAttendanceStatesData() !== prevProps.context.attendancestates.data)
+        if(this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
             this.setState({default_id: this.findDefaultId()})
     }
 
@@ -219,4 +219,4 @@ class Settings extends Component {
     }
 }
 
-export default WithContext(Settings)
+export default WithAttendanceStatesContext(Settings)
