@@ -17,7 +17,7 @@ export const EDIT_TYPE = {
     STATE: 0,
     COURSE: 1
 }
-export const JWT_HEADER_PREFIX = 'JWT '
+export const JWT_HEADER_PREFIX = 'Bearer '
 
 export const TEXTS = {
     NO_RESULTS: "Nic nenalezeno"
