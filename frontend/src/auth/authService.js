@@ -2,72 +2,87 @@ import decode from "jwt-decode"
 import LoginService from "../api/services/login"
 import {prettyDateTime} from "../global/funcDateTime"
 
-const AUTH_REFRESH_THRESHOLD = 60*60 // sekundy
+const AUTH_REFRESH_THRESHOLD = 60 * 65 // sekundy -> 65 minut (60*65)
 const AUTH_STORAGE_KEY = "jwt"
 
 export default class AuthService {
-    static isAuthenticated(fastCheck = false) { // fastCheck=True pokud komponenta ma rychle zjistit platnost tokenu bez zadosti o refresh
-        const token = this.getToken()
-        return !!token && !this.isTokenExpired(token, fastCheck)
+    static isAuthenticated(refreshExpiringToken = true) {
+        const token = Token.get()
+        return !!token && !AuthService.isTokenExpired(token, refreshExpiringToken)
     }
 
-    static getCurrentDate() { // prevod na sekundy (decoded.exp je v sekundach)
+    // prevod na sekundy (decoded.exp je v sekundach)
+    static getCurrentDate() {
         return (Date.now() / 1000)
     }
 
-    static isTokenExpired(token, fastCheck) {
+    static isTokenExpired(token, refreshExpiringToken) {
         try {
-            const decoded = decode(token)
-            if (!fastCheck) { //popis fastCheck v metode isAuthenticated
-                const dif = decoded.exp - AuthService.getCurrentDate()
-                console.log("%c" +
-                    "token:\t" + token +
-                    "\ncas:\t" + prettyDateTime(new Date()) +
-                    "\nvyprsi:\t" + prettyDateTime(new Date(decoded.exp * 1000)) +
-                    "\ndif:\t" + dif + " s (~" + Math.round(dif/60) + " min; ~" + Math.round(dif/3600) + " h)",
-                    'color: olive')
+            let decodedToken = decode(token)
+            if (refreshExpiringToken) {
+                const dif = decodedToken.exp - AuthService.getCurrentDate()
+                Token.logToConsole(token, decodedToken, dif)
                 if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
-                    this.refreshToken(token)
-                    return (decode(this.getToken()).exp < this.getCurrentDate()) // dekoduj novy token a porovnej
+                    Token.refresh(token)
+                    // TODO return kontroly expirace fresh tokenu
+                    console.log("token se obnovuje")
+                    //decodedToken = decode(newToken)
+                    //Token.logToConsole(newToken, decodedToken, decodedToken.exp - AuthService.getCurrentDate(), "pink")
                 }
             }
-            return decoded.exp < this.getCurrentDate()
+            return decodedToken.exp < AuthService.getCurrentDate()
         }
         catch (err) {
-            return false
+            console.error(err)
+            return true
         }
     }
 
-    static refreshToken(token) {
-        const data = {token}
-        LoginService.refresh(data)
-            .then((response) => {
-                this.saveToken(response.token)
-            })
-            .catch(() => {
-                alert("CHYBA - neúspěšný pokus o obnovení vašeho přihlášení. Přihlašte se, prosím, znovu!")
-            })
-    }
-
-    static authenticate(username, password, callback) {
+    static login(username, password, callback) {
         const data = {username, password}
         LoginService.authenticate(data)
-            .then((response) => {
-                this.saveToken(response.token)
+            .then(({token}) => {
+                Token.save(token)
                 callback()
             })
     }
 
-    static signout(callback) {
-        localStorage.clear()
+    static logout(callback) {
+        Token.remove()
         callback()
     }
 
-    static saveToken(token) {
+    static getToken() {
+        return Token.get()
+    }
+}
+
+class Token {
+    static refresh(token) {
+        const data = {token}
+        LoginService.refresh(data)
+            .then(({token}) => Token.save(token))
+            .catch(() => alert("CHYBA - neúspěšný pokus o obnovení vašeho přihlášení. Přihlašte se, prosím, znovu!"))
+    }
+
+    static remove() {
+        localStorage.clear()
+    }
+
+    static save(token) {
         localStorage.setItem(AUTH_STORAGE_KEY, token)
     }
 
-    static getToken() {
+    static get() {
         return localStorage.getItem(AUTH_STORAGE_KEY)
+    }
+
+    static logToConsole(token, decoded, dif, color = "olive") {
+        console.log("%c" +
+            "token:\t" + token +
+            "\ncas:\t" + prettyDateTime(new Date()) +
+            "\nvyprsi:\t" + prettyDateTime(new Date(decoded.exp * 1000)) +
+            "\ndif:\t" + dif + " s (~" + Math.round(dif / 60) + " min; ~" + Math.round(dif / 3600) + " h)",
+            "color: " + color)
     }
 }

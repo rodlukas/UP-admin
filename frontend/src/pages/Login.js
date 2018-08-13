@@ -4,19 +4,22 @@ import {Col, Form, FormGroup, Label, Input, Container, Row, Card} from "reactstr
 import AuthService from "../auth/authService"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Heading from "../components/Heading"
+import {WithAuthContext} from "../auth/AuthContext"
+import Loading from "../components/Loading"
 
-export default class Login extends Component {
+class Login extends Component {
     state = {
-        redirectToReferrer: false,
         username: '',
         password: ''
     }
 
     login = () => {
         const {username, password} = this.state
-        AuthService.authenticate(username, password, () => {
-            this.setState({redirectToReferrer: true})
-        })
+        this.props.authContext.setAuthLoading(true)
+        AuthService.login(
+            username,
+            password,
+            () => this.props.authContext.setAuthLoading(false))
     }
 
     onChange = (e) => {
@@ -32,11 +35,13 @@ export default class Login extends Component {
 
     render() {
         const {from} = this.props.location.state || {from: {pathname: "/"}}
-        const {redirectToReferrer, username, password} = this.state
-        if (redirectToReferrer)
+        const {username, password} = this.state
+        if (this.props.authContext.IS_AUTH)
             return <Redirect to={from}/>
         const HeadingContent = () =>
             "Přihlášení"
+        if (this.props.authContext.IS_LOADING)
+            return <Loading text="Probíhá přihlašování"/>
         return (
             <Container>
                 <Heading content={<HeadingContent/>}/>
@@ -71,3 +76,5 @@ export default class Login extends Component {
         )
     }
 }
+
+export default WithAuthContext(Login)

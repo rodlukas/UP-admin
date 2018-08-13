@@ -3,7 +3,7 @@ import datetime
 import raven
 
 # vlastni konstanty
-CONST_AUTH_EXPIRATION = 60*7  # minuty
+CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 60
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -43,7 +43,8 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(minutes=CONST_AUTH_EXPIRATION),
-    'JWT_ALLOW_REFRESH': True
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=2)
 }
 
 MIDDLEWARE = [

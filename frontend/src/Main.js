@@ -19,6 +19,7 @@ import AppVersion from "./components/AppVersion"
 import {getEnvName, isEnvDevelopment, isEnvProduction, isEnvStaging} from "./global/funcEnvironments"
 import "./Main.css"
 import ErrorBoundary from "./components/ErrorBoundary"
+import {AuthConsumer} from "./auth/AuthContext"
 
 export default class Main extends Component {
     constructor(props) {
@@ -59,7 +60,10 @@ export default class Main extends Component {
                         <Badge color="success">
                             Staging verze <AppVersion/>
                         </Badge>}
-                        <NavbarToggler onClick={this.toggleNavbar}/>
+                        <AuthConsumer>
+                            {authContext => authContext.IS_AUTH &&
+                                <NavbarToggler onClick={this.toggleNavbar}/>}
+                        </AuthConsumer>
                         <Collapse isOpen={this.state.IS_MENU_OPEN} navbar>
                             <Menu closeNavbar={this.closeNavbar}/>
                         </Collapse>

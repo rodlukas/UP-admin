@@ -5,7 +5,6 @@ import {API_METHODS, API_URLS} from "./urls"
 import APP_URLS from "../urls"
 import AuthService from "../auth/authService"
 
-
 const request = function (options) {
 
     const onSuccess = function (response) {

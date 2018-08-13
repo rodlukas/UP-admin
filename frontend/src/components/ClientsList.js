@@ -1,6 +1,6 @@
 import React from "react"
 import ClientName from "./ClientName"
-import ComponentsList from "../global/ComponentsList"
+import ComponentsList from "./ComponentsList"
 
 const ClientsList = ({clients = []}) => {
     if (!clients.length)

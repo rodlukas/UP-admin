@@ -9,8 +9,8 @@ export function prettyDateWithYear(date) {
     return prettyDate(date) + " " + (date.getFullYear())
 }
 
-export function prettyDateTime(date) {
-    return prettyDateWithDayYear(date) + " " + prettyTime(date)
+export function prettyDateTime(datetime) {
+    return prettyDateWithDayYear(datetime) + " " + prettyTimeWithSeconds(datetime)
 }
 
 // vrati uzivatelsky privetivy datum, pokud je rok odlisny od aktualniho tak jej pripoji
@@ -41,6 +41,10 @@ export function toISODate(date) {
 
 export function prettyTime(datetime) {
     return datetime.getHours() + ":" + (datetime.getMinutes() < 10 ? '0' : '') + datetime.getMinutes()
+}
+
+export function prettyTimeWithSeconds(datetime) {
+    return prettyTime(datetime) + ":" + (datetime.getSeconds() < 10 ? '0' : '') + datetime.getSeconds()
 }
 
 export function toISOTime(date) {

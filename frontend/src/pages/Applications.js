@@ -3,7 +3,7 @@ import {Modal, Container, ListGroup, ListGroupItem, ListGroupItemHeading, ListGr
 import ApplicationService from "../api/services/application"
 import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
-import Loading from "../api/Loading"
+import Loading from "../components/Loading"
 import FormApplications from "../forms/FormApplications"
 import "./Applications.css"
 import AddButton from "../components/buttons/AddButton"
