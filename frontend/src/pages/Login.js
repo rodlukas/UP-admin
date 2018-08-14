@@ -22,13 +22,13 @@ class Login extends Component {
             () => this.props.authContext.setAuthLoading(false))
     }
 
-    onChange = (e) => {
+    onChange = e => {
         const state = this.state
         state[e.target.id] = e.target.value
         this.setState(state)
     }
 
-    onSubmit = (e) => {
+    onSubmit = e => {
         e.preventDefault()
         this.login()
     }

@@ -4,14 +4,14 @@ import APP_URLS from "../urls"
 import {AttendanceStatesProvider} from "../contexts/AttendanceStateContext"
 import {AuthConsumer} from "./AuthContext"
 
-const PrivateRoute = ({component: Component, ...rest}) =>
+const PrivateRoute = ({component: WrappedComponent, ...rest}) =>
     <AuthConsumer>
         {authContext =>
         <Route {...rest} render={props =>
             authContext.IS_AUTH
                 ?
                 <AttendanceStatesProvider>
-                    <Component {...props}/>
+                    <WrappedComponent {...props}/>
                 </AttendanceStatesProvider>
                 :
                 <Redirect to={{

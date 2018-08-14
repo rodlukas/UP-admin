@@ -10,6 +10,7 @@ import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import Heading from "../components/Heading"
+import {groupByCourses} from "../global/utils"
 
 export default class Applications extends Component {
     constructor(props) {
@@ -23,57 +24,37 @@ export default class Applications extends Component {
         }
     }
 
-    toggle = (application = {}) => {
+    toggle = (application = {}) =>
         this.setState({
             currentApplication: application,
             IS_MODAL: !this.state.IS_MODAL
         })
-    }
 
     refresh = () => {
         this.setState({LOADING_CNT: this.state.LOADING_CNT - 1})
         this.getApplications()
     }
 
-    getApplications = () => {
+    getApplications = () =>
         ApplicationService.getAll()
-            .then((response) => { // groupby courses
-                let group_to_values = response.reduce(function (obj, item) {
-                    obj[item.course.name] = obj[item.course.name] || []
-                    obj[item.course.name].push(item)
-                    return obj
-                }, {})
-                let groups = Object.keys(group_to_values).map(function (key) {
-                    return {course: key, values: group_to_values[key]}
-                })
-                groups.sort(function (a, b) { // serad podle abecedy
-                    if (a.course < b.course) return -1
-                    if (a.course > b.course) return 1
-                    return 0
-                })
+            .then(applications => {
+                const grouppedByCourses = groupByCourses(applications)
                 this.setState({
-                    applications: groups,
+                    applications: grouppedByCourses,
                     LOADING_CNT: this.state.LOADING_CNT + 1
                 })
             })
-    }
 
-    getCourses = () => {
+    getCourses = () =>
         CourseService.getVisible()
-            .then((response) => {
-                this.setState({
-                    courses: response,
-                    LOADING_CNT: this.state.LOADING_CNT + 1
-                })
-            })
-    }
+            .then(courses => this.setState({
+                courses,
+                LOADING_CNT: this.state.LOADING_CNT + 1
+            }))
 
-    delete = (id) => {
+    delete = id =>
         ApplicationService.remove(id)
-            .then(() => {
-                this.refresh()
-            })
-    }
+            .then(() => this.refresh())
 
     componentDidMount() {
         this.getApplications()

@@ -7,8 +7,8 @@ import APP_URLS from "../urls"
 import {AuthConsumer} from "../auth/AuthContext"
 import AuthChecking from "../auth/AuthChecking"
 
-const Menu = (props) => {
-    const MyNavLink = (otherProps) =>
+const Menu = props => {
+    const MyNavLink = otherProps =>
         <NavLink onClick={props.closeNavbar} tag={RouterNavLink} {...otherProps}/>
     return (
         <AuthConsumer>

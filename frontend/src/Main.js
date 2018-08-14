@@ -31,13 +31,11 @@ export default class Main extends Component {
         IS_MENU_OPEN: false
     }
 
-    toggleNavbar = () => {
+    toggleNavbar = () =>
         this.setState({IS_MENU_OPEN: !this.state.IS_MENU_OPEN})
-    }
 
-    closeNavbar = () => {
+    closeNavbar = () =>
         this.setState({IS_MENU_OPEN: false})
-    }
 
     editTitle = () => {
         if(!isEnvProduction())

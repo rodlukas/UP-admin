@@ -8,7 +8,7 @@ export default class SelectAttendanceState extends Component {
         value: this.props.value
     }
 
-    onChange = (e) => {
+    onChange = e => {
         const newValue = e.target.value
         const id = this.props.attendanceId
         const data = {id, attendancestate_id: newValue}

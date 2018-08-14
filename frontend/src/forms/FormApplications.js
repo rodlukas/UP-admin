@@ -22,7 +22,7 @@ export default class FormApplications extends Component {
         }
     }
 
-    onChange = (e) => {
+    onChange = e => {
         const target = e.target
         const state = this.state
         state[target.id] = (target.type === 'checkbox') ? target.checked : target.value
@@ -35,7 +35,7 @@ export default class FormApplications extends Component {
         this.setState(state)
     }
 
-    onSubmit = (e) => {
+    onSubmit = e => {
         e.preventDefault()
         const {id, course, client, note} = this.state
         const data = {id, course_id: course.id, client_id: client.id, note}
@@ -50,18 +50,15 @@ export default class FormApplications extends Component {
         })
     }
 
-    close = () => {
+    close = () =>
         this.props.funcClose()
-    }
 
-    refresh = () => {
+    refresh = () =>
         this.props.funcRefresh()
-    }
 
-    getClients = () => {
+    getClients = () =>
         ClientService.getAll()
             .then(clients => this.setState({clients}))
-    }
 
     componentDidMount() {
         this.getClients()
@@ -100,8 +97,8 @@ export default class FormApplications extends Component {
                             <Select
                                 inputId="course"
                                 value={course}
-                                getOptionLabel={(option) => option.name}
-                                getOptionValue={(option) => option.id}
+                                getOptionLabel={option => option.name}
+                                getOptionValue={option => option.id}
                                 onChange={newValue => this.onSelectChange(newValue, "course")}
                                 options={this.props.courses}
                                 placeholder={"Vyberte kurz..."}

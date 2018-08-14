@@ -24,18 +24,19 @@ class Settings extends Component {
         }
     }
 
-    getAttendanceStatesData = () => this.props.attendanceStatesContext.attendancestates
-    callAttendanceStatesFuncRefresh = () => this.props.attendanceStatesContext.funcRefresh()
+    getAttendanceStatesData = () =>
+        this.props.attendanceStatesContext.attendancestates
+    callAttendanceStatesFuncRefresh = () =>
+        this.props.attendanceStatesContext.funcRefresh()
 
-    toggle = (type, object = {}) => {
+    toggle = (type, object = {}) =>
         this.setState({
             currentObject: object,
             currentType: type,
             IS_MODAL: !this.state.IS_MODAL
         })
-    }
 
-    onChange = (e) => {
+    onChange = e => {
         const target = e.target
         const state = this.state
         state[target.id] = target.value
@@ -45,7 +46,7 @@ class Settings extends Component {
         AttendanceStateService.patch(data)
     }
 
-    refresh = (type) => {
+    refresh = type => {
         if (type === EDIT_TYPE.COURSE)
         {
             this.setState({IS_LOADING: true})
@@ -58,13 +59,12 @@ class Settings extends Component {
         }
     }
 
-    getCourses = () => {
+    getCourses = () =>
         CourseService.getAll()
             .then(courses =>
                 this.setState({
                     courses,
                     IS_LOADING: false}))
-    }
 
     componentDidMount() {
         this.getCourses()
@@ -76,11 +76,8 @@ class Settings extends Component {
     }
 
     findDefaultId = () => {
-        let default_elem
         if(this.getAttendanceStatesData() !== null) {
-            default_elem = this.getAttendanceStatesData().find(function (element) {
-                return element.default === true
-            })
+            let default_elem = this.getAttendanceStatesData().find(elem => elem.default === true)
             if (default_elem !== undefined)
                 return default_elem.id
         }
@@ -89,7 +86,8 @@ class Settings extends Component {
 
     render() {
         const {courses, currentType, currentObject, default_id, IS_MODAL, IS_LOADING} = this.state
-        const Visible = ({visible}) => (visible ? 'ANO' : 'NE')
+        const Visible = ({visible}) =>
+            visible ? 'ANO' : 'NE'
         const AttendanceStates = () =>
             <Fragment>
                 <h2>

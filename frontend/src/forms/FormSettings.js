@@ -20,14 +20,14 @@ export default class FormSettings extends Component {
         }
     }
 
-    onChange = (e) => {
+    onChange = e => {
         const target = e.target
         const state = this.state
         state[target.id] = (target.type === 'checkbox') ? target.checked : target.value
         this.setState(state)
     }
 
-    onSubmit = (e) => {
+    onSubmit = e => {
         e.preventDefault()
         const {id, name, visible} = this.state
         const data = {id, name, visible}
@@ -43,15 +43,13 @@ export default class FormSettings extends Component {
         })
     }
 
-    close = () => {
+    close = () =>
         this.props.funcClose()
-    }
 
-    refresh = (type) => {
+    refresh = type =>
         this.props.funcRefresh(type)
-    }
 
-    delete = (id) => {
+    delete = id => {
         let service = (this.TYPE === EDIT_TYPE.COURSE ? CourseService : AttendanceStateService)
         service.remove(id)
             .then(() => {

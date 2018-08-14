@@ -2,7 +2,8 @@ import request from "../request"
 import {API_DELIM, API_METHODS, API_URLS, API_ORDERING} from "../urls"
 
 const baseUrl = API_URLS.Lectures.url
-const ordering = (asc) => "&" + API_ORDERING + "=" + (!asc ? '-' : '') + API_URLS.Lectures.ordering.start
+const ordering = asc =>
+    "&" + API_ORDERING + "=" + (!asc ? '-' : '') + API_URLS.Lectures.ordering.start
 
 function get(id) {
     return request({

@@ -21,6 +21,7 @@ import Email from "../components/Email"
 import Phone from "../components/Phone"
 import Note from "../components/Note"
 import Heading from "../components/Heading"
+import {groupByCourses} from "../global/utils"
 
 export default class Card extends Component {
     state = {
@@ -31,7 +32,35 @@ export default class Card extends Component {
         currentLecture: {},
         lectures: [],
         memberships: [],
-        IS_LOADING: true
+        IS_LOADING: true,
+        defaultCourse: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz pri pridavani lekce
+    }
+
+    // zvolit optimalni kurz, jehoz lekce bude s nejvyssi pravdepodobnosti pridavana ve formulari
+    getDefaultCourseSingle = lectures => {
+        if(this.state.IS_CLIENT)
+        {
+            if(lectures.length === 0)
+                this.setState({defaultCourse: null})
+            else if(lectures.length === 1)
+            {
+                // chodi na jeden jediny kurz, vyber ho
+                const firstLectureOfCourse = lectures[0].values[0]
+                this.setState({defaultCourse: firstLectureOfCourse.course})
+            }
+            else if(lectures.length > 1)
+            {
+                // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
+                let latestLecturesOfEachCourse = []
+                lectures.forEach(
+                    elem => latestLecturesOfEachCourse.push(elem.values[0]))
+                const latestLecture = latestLecturesOfEachCourse.reduce(
+                    (prev, current) => (prev.start > current.start) ? prev : current)
+                this.setState({defaultCourse: latestLecture.course})
+            }
+        }
+        else
+            this.setState({defaultCourse: null})
     }
 
     componentDidMount() {
@@ -65,21 +94,18 @@ export default class Card extends Component {
         return null
     }
 
-    getMemberships = (id = this.state.id) => {
+    getMemberships = (id = this.state.id) =>
         GroupService.getAllFromClient(id)
             .then(memberships => this.setState({memberships}))
-    }
 
-    toggle = (lecture = {}) => {
+    toggle = (lecture = {}) =>
         this.setState({
             currentLecture: lecture,
             IS_MODAL: !this.state.IS_MODAL
         })
-    }
 
-    goBack = () => {
+    goBack = () =>
         this.props.history.goBack()
-    }
 
     getObject = (IS_CLIENT = this.state.IS_CLIENT, id = this.state.id) => {
         let service = (IS_CLIENT ? ClientService : GroupService)
@@ -93,22 +119,11 @@ export default class Card extends Component {
             request = LectureService.getAllFromClientOrdered(id, false)
         else
             request = LectureService.getAllFromGroupOrdered(id, false)
-        request.then(response => { // groupby courses
-            let group_to_values = response.reduce(function (obj, item) {
-                obj[item.course.name] = obj[item.course.name] || []
-                obj[item.course.name].push(item)
-                return obj
-            }, {})
-            let groupedLectures = Object.keys(group_to_values).map(function (key) {
-                return {course: key, values: group_to_values[key]}
-            })
-            groupedLectures.sort(function (a, b) { // serad podle abecedy
-                if (a.course < b.course) return -1
-                if (a.course > b.course) return 1
-                return 0
-            })
+        request.then(lectures => {
+            const grouppedByCourses = groupByCourses(lectures)
+            this.getDefaultCourseSingle(grouppedByCourses)
             this.setState({
-                lectures: groupedLectures,
+                lectures: grouppedByCourses,
                 IS_LOADING: false
             })
         })
@@ -211,7 +226,8 @@ export default class Card extends Component {
                 </Container>
                 <Modal isOpen={IS_MODAL} toggle={this.toggle} size="lg" autoFocus={false} className="ModalFormLecture">
                     <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle}
-                                  IS_CLIENT={IS_CLIENT} funcRefresh={this.getLectures}/>
+                                  IS_CLIENT={IS_CLIENT} funcRefresh={this.getLectures}
+                                  defaultCourse={this.state.defaultCourse}/>
                 </Modal>
             </Fragment>
         return (

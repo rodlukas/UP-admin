@@ -52,13 +52,13 @@ export default class FormGroups extends Component {
         this.setState(state)
     }
 
-    onChange = (e) => {
+    onChange = e => {
         const state = this.state
         state[e.target.id] = e.target.value
         this.setState(state)
     }
 
-    onSubmit = (e) => {
+    onSubmit = e => {
         e.preventDefault()
         const {id, name, memberships, course} = this.state
         const data = {id, name, memberships: this.prepareMembersForSubmit(memberships), course_id: course.id}
@@ -81,7 +81,7 @@ export default class FormGroups extends Component {
         this.props.funcRefresh()
     }
 
-    delete = (id) => {
+    delete = id => {
         GroupService.remove(id)
             .then(() => {
                 this.close()
@@ -121,8 +121,8 @@ export default class FormGroups extends Component {
                             <Select
                                 inputId="course"
                                 value={course}
-                                getOptionLabel={(option) => option.name}
-                                getOptionValue={(option) => option.id}
+                                getOptionLabel={option => option.name}
+                                getOptionValue={option => option.id}
                                 onChange={newValue => this.onSelectChange(newValue, "course")}
                                 options={courses}
                                 placeholder={"Vyberte kurz..."}

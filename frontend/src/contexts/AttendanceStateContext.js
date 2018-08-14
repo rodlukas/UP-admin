@@ -15,10 +15,9 @@ export class AttendanceStatesProvider extends Component {
         this.getAttendanceStates()
     }
 
-    getAttendanceStates = () => {
+    getAttendanceStates = () =>
         AttendanceStateService.getAll()
             .then(attendancestates => this.setState({attendancestates}))
-    }
 
     render = () =>
         <AttendanceStatesContext.Provider
@@ -30,13 +29,10 @@ export class AttendanceStatesProvider extends Component {
         </AttendanceStatesContext.Provider>
 }
 
-const WithAttendanceStatesContext = (Component) => {
-    return (props) => (
-        <AttendanceStatesContext.Consumer>
-            {attendanceStatesContext => <Component {...props} attendanceStatesContext={attendanceStatesContext}/>}
-        </AttendanceStatesContext.Consumer>
-    )
-}
+const WithAttendanceStatesContext = WrappedComponent => props =>
+    <AttendanceStatesContext.Consumer>
+        {attendanceStatesContext => <WrappedComponent {...props} attendanceStatesContext={attendanceStatesContext}/>}
+    </AttendanceStatesContext.Consumer>
 
 const AttendanceStateConsumer = AttendanceStatesContext.Consumer
 

@@ -14,13 +14,11 @@ class AuthProvider extends Component {
         IS_LOADING: false
     }
 
-    logout = () => {
+    logout = () =>
         this.setState({IS_AUTH: AuthService.isAuthenticated(false)})
-    }
 
-    setAuthLoading = (newLoading) => {
+    setAuthLoading = newLoading =>
         this.setState({IS_LOADING: newLoading})
-    }
 
     componentDidUpdate(prevProps, prevState) {
         if(prevState.IS_LOADING && !this.state.IS_LOADING)
@@ -32,20 +30,17 @@ class AuthProvider extends Component {
             value={{
                 IS_AUTH: this.state.IS_AUTH,
                 IS_LOADING: this.state.IS_LOADING,
-                setAuthLoading: (newLoading) => this.setAuthLoading(newLoading),
+                setAuthLoading: newLoading => this.setAuthLoading(newLoading),
                 logout: this.logout
             }}>
             {this.props.children}
         </AuthContext.Provider>
 }
 
-const WithAuthContext = (Component) => {
-    return (props) => (
-        <AuthContext.Consumer>
-            {authContext => <Component {...props} authContext={authContext}/>}
-        </AuthContext.Consumer>
-    )
-}
+const WithAuthContext = WrappedComponent => props =>
+    <AuthContext.Consumer>
+        {authContext => <WrappedComponent {...props} authContext={authContext}/>}
+    </AuthContext.Consumer>
 
 const AuthConsumer = AuthContext.Consumer
 

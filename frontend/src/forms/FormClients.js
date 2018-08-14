@@ -21,13 +21,13 @@ export default class FormClients extends Component {
         }
     }
 
-    onChange = (e) => {
+    onChange = e => {
         const state = this.state
         state[e.target.id] = e.target.value
         this.setState(state)
     }
 
-    onSubmit = (e) => {
+    onSubmit = e => {
         e.preventDefault()
         const {id, name, surname, email, phone, note} = this.state
         const data = {id, name, surname, email, phone, note}
@@ -42,15 +42,13 @@ export default class FormClients extends Component {
         })
     }
 
-    close = () => {
+    close = () =>
         this.props.funcClose()
-    }
 
-    refresh = () => {
+    refresh = () =>
         this.props.funcRefresh()
-    }
 
-    delete = (id) => {
+    delete = id => {
         ClientService.remove(id)
             .then(() => {
                 this.close()

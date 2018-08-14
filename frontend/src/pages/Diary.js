@@ -30,7 +30,7 @@ export default class Diary extends Component {
         document.removeEventListener('keydown', this.onKeyDown)
     }
 
-    onKeyDown = (e) => {
+    onKeyDown = e => {
         const key = e.key
         if (key === "ArrowLeft")
             this.props.history.push(this.getPrevMondaySerialized())
@@ -54,7 +54,7 @@ export default class Diary extends Component {
     }
 
     // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)
-    removeFocusAfterClick = (e) => {
+    removeFocusAfterClick = e => {
         e.target.blur()
     }
 
@@ -77,7 +77,7 @@ export default class Diary extends Component {
                 {' '}
                 <Link to={this.getCurrentMondaySerialized()}>
                     <Button color="secondary" disabled={isEqualDate(this.getCurrentMonday(), this.getRequiredMonday())}
-                            onClick={(e) => this.removeFocusAfterClick(e)}>
+                            onClick={e => this.removeFocusAfterClick(e)}>
                         Dnes
                     </Button>
                 </Link>

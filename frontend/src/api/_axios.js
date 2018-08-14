@@ -7,8 +7,7 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
 const axiosApi = axios.create({})
 
-export const setAuthHeader = (token) => {
+export const setAuthHeader = token =>
     axiosApi.defaults.headers.common['Authorization'] = JWT_HEADER_PREFIX + token
-}
 
 export default axios

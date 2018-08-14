@@ -22,17 +22,15 @@ export default class ClientList extends Component {
         }
     }
 
-    toggle = (client = {}) => {
+    toggle = (client = {}) =>
         this.setState({
             currentClient: client,
             IS_MODAL: !this.state.IS_MODAL
         })
-    }
 
-    getClients = () => {
+    getClients = () =>
         ClientService.getAll()
             .then(clients => this.setState({clients, IS_LOADING: false}))
-    }
 
     componentDidMount() {
         this.getClients()

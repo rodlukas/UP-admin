@@ -45,9 +45,12 @@ class FormLectures extends Component {
             canceled: canceled || false,
             date: (this.IS_LECTURE && !isPrepaid) ? toISODate(date) : '',
             time: (this.IS_LECTURE && !isPrepaid) ? toISOTime(date) : '',
-            course: (this.IS_LECTURE ?
-                course :
-                (this.IS_CLIENT ? null : object.course)),
+            course:
+                (this.IS_LECTURE ?
+                    course :
+                    (this.IS_CLIENT ?
+                        this.props.defaultCourse :
+                        object.course)),
             duration: duration || (this.IS_CLIENT ? DEFAULT_DURATION : GROUP_DURATION),
             courses: [],
             object: object,
@@ -55,7 +58,8 @@ class FormLectures extends Component {
         }
     }
 
-    getAttendanceStatesData = () => this.props.attendanceStatesContext.attendancestates
+    getAttendanceStatesData = () =>
+        this.props.attendanceStatesContext.attendancestates
 
     getDefaultStateIndex() {
         if (this.getAttendanceStatesData().length) {
@@ -102,7 +106,7 @@ class FormLectures extends Component {
         return array
     }
 
-    onChangeMultiple = (e) => {
+    onChangeMultiple = e => {
         const target = e.target
         const id = target.dataset.id
         const state = this.state
@@ -112,12 +116,10 @@ class FormLectures extends Component {
 
     getCourses = () => {
         CourseService.getVisible()
-            .then(courses => {
-                this.setState({courses})
-            })
+            .then(courses => this.setState({courses}))
     }
 
-    onChange = (e) => {
+    onChange = e => {
         const target = e.target
         const state = this.state
         state[target.id] = (target.type === 'checkbox') ? target.checked : target.value
@@ -140,7 +142,7 @@ class FormLectures extends Component {
         }
     }
 
-    onSubmit = (e) => {
+    onSubmit = e => {
         e.preventDefault()
         const {id, prepaid, canceled, course, time, date, duration, at_note, at_paid, at_state, object, prepaid_cnt} = this.state
         let attendances = []
@@ -192,7 +194,7 @@ class FormLectures extends Component {
         this.props.funcRefresh()
     }
 
-    delete = (id) => {
+    delete = id => {
         LectureService.remove(id)
             .then(() => {
                 this.close()
@@ -220,9 +222,9 @@ class FormLectures extends Component {
                     <FormGroup row className="align-items-center">
                         <Col sm={4}>
                             <CustomInput type="checkbox" id="prepaid" label="Předplaceno" checked={prepaid}
-                                         onChange={(e) => {
-                                this.onChangePrepaid()
-                                this.onChange(e)}}
+                                         onChange={e => {
+                                             this.onChangePrepaid()
+                                             this.onChange(e)}}
                             />
                             {!this.IS_LECTURE &&
                                 <Input type="number" className="FormLectures_prepaidLectureCnt" disabled={!prepaid}
@@ -261,8 +263,8 @@ class FormLectures extends Component {
                         <Col sm={4}>
                             <Select
                                 value={course}
-                                getOptionLabel={(option) => option.name}
-                                getOptionValue={(option) => option.id}
+                                getOptionLabel={option => option.name}
+                                getOptionValue={option => option.id}
                                 onChange={newValue => this.onSelectChange(newValue, "course")}
                                 options={courses}
                                 placeholder={"Vyberte kurz..."}
