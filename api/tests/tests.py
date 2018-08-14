@@ -2,6 +2,7 @@ from rest_framework.test import APITestCase, APIRequestFactory
 from django.contrib.auth import get_user_model
 import json
 from api import views
+from up.settings import JWT_AUTH
 
 
 class TestApiClients(APITestCase):
@@ -34,7 +35,7 @@ class TestApiClients(APITestCase):
         return response_content["token"]
 
     def get_header(self):
-        return 'JWT ' + self.token
+        return JWT_AUTH['JWT_AUTH_HEADER_PREFIX'] + " " + self.token
 
     def test_list(self):
         self.client.post(self.uri, {'name': 'Josef', 'surname': 'Novák'}, HTTP_AUTHORIZATION=self.get_header(),
