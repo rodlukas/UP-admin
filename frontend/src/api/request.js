@@ -3,7 +3,7 @@ import {NOTIFY_TEXT, NOTIFY_LEVEL} from "../global/constants"
 import {toast} from "react-toastify"
 import {API_METHODS, API_URLS} from "./urls"
 import APP_URLS from "../urls"
-import AuthService from "../auth/authService"
+import {Token} from "../auth/AuthContext"
 
 const request = function (options) {
 
@@ -19,7 +19,7 @@ const request = function (options) {
         console.error('Request Failed:', error.config)
         if (error.response) { // request proveden, ale neprislo 2xx
             const errObj = error.request.response
-            console.error('Status: ', error.response.status)
+            console.error('Status: ', error.response.status, error.response.statusText)
             console.error('Data: ', error.response.data)
             console.error('Headers: ', error.response.headers)
             console.error('DALSI INFORMACE: ', error)
@@ -63,7 +63,7 @@ const request = function (options) {
         toast(message, options)
     }
 
-    setAuthHeader(AuthService.getToken())
+    setAuthHeader(Token.get())
     return axios(options)
         .then(onSuccess)
         .catch(onError)

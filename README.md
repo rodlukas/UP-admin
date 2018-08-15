@@ -21,6 +21,9 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 * **HEROKU**
     * vytvoření uživatele: `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * připojení k DB z externí aplikace - je potřeba přidat do URI na konec `?sslmode=require`
+* **spuštění na jiném zařízení v síti**:
+    * **spuštění dev-serveru Djanga na lokálu (aby fungovalo spouštění po síti z jiných zařízení)**: `python manage.py runserver 0.0.0.0:8000`
+    * *je potřeba povolit python i node ve firewallu (např. na chvíli zapnout učící režim ESETu), na dotyčném zařízení pak stačí zadat URL adresu zařízení, která se například zobrazí při spouštění webpack-dev-serveru (privátní IP adresa zařízení)*
 
 ---
 ## články
@@ -63,6 +66,7 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 * dokumentace: [zaklad od react-routeru](https://reacttraining.com/react-router/web/example/auth-workflow), [djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
 * inspirace: https://github.com/curtisgreene/message, vetsi inspirace: https://hptechblogs.com/using-json-web-token-react/
 * hezky popis: https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
+* přihlášení na podobný princip jako: https://stackoverflow.com/questions/49819183/react-what-is-the-best-way-to-handle-authenticated-logged-in-state
 
 ### další
 * [blog o djangu+react+rest](https://wsvincent.com/)

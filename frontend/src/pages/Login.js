@@ -1,7 +1,6 @@
 import React, {Component} from "react"
 import {Redirect} from "react-router-dom"
 import {Col, Form, FormGroup, Label, Input, Container, Row, Card} from "reactstrap"
-import AuthService from "../auth/authService"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Heading from "../components/Heading"
 import {WithAuthContext} from "../auth/AuthContext"
@@ -15,11 +14,10 @@ class Login extends Component {
 
     login = () => {
         const {username, password} = this.state
-        this.props.authContext.setAuthLoading(true)
-        AuthService.login(
+        this.props.authContext.login(
             username,
-            password,
-            () => this.props.authContext.setAuthLoading(false))
+            password
+        )
     }
 
     onChange = e => {

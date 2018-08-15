@@ -1,7 +1,6 @@
 import React, {Fragment} from "react"
 import {NavLink as RouterNavLink} from "react-router-dom"
 import {Nav, NavItem, NavLink, Button} from "reactstrap"
-import AuthService from "../auth/authService"
 import "./Menu.css"
 import APP_URLS from "../urls"
 import {AuthConsumer} from "../auth/AuthContext"
@@ -36,7 +35,7 @@ const Menu = props => {
                         </NavItem>
                     </Nav>
                     <Button color="secondary"
-                            onClick={() => AuthService.logout(authContext.logout)}>
+                            onClick={authContext.logout}>
                         Odhlásit
                     </Button>
                     <AuthChecking/>
