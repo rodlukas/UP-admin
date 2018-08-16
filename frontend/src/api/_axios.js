@@ -1,13 +1,19 @@
 import axios from "axios"
 import {API_URL, JWT_HEADER_PREFIX} from "../global/constants"
+import {Token} from "../auth/AuthContext"
 
-axios.defaults.baseURL = API_URL
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+const axiosInstance = axios.create({
+    baseURL: API_URL,
+    xsrfCookieName: 'csrftoken',
+    xsrfHeaderName: 'X-CSRFToken'
+})
 
-const axiosApi = axios.create({})
+const setAuthHeader = () =>
+    axiosInstance.defaults.headers.common['Authorization'] = JWT_HEADER_PREFIX + Token.get()
 
-export const setAuthHeader = token =>
-    axiosApi.defaults.headers.common['Authorization'] = JWT_HEADER_PREFIX + token
+const axiosRequest = options => {
+    setAuthHeader()
+    return axiosInstance(options)
+}
 
-export default axios
+export default axiosRequest

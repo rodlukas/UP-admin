@@ -1,31 +1,33 @@
-import axios, {setAuthHeader} from "./_axios"
-import {NOTIFY_TEXT, NOTIFY_LEVEL} from "../global/constants"
+import axiosRequest from "./_axios"
+import {NOTIFY_TEXT} from "../global/constants"
 import {toast} from "react-toastify"
 import {API_METHODS, API_URLS} from "./urls"
 import APP_URLS from "../urls"
-import {Token} from "../auth/AuthContext"
 
 const request = function (options) {
-
-    const onSuccess = function (response) {
-        console.info('%c Success: ' + response.request.responseURL, 'color: green', response)
-        if (options.method !== API_METHODS.get && !response.request.responseURL.match(API_URLS.Login.url))
-            notify(NOTIFY_TEXT.SUCCESS, NOTIFY_LEVEL.SUCCESS)
+    const onSuccess = response => {
+        const responseUrl = response.request.responseURL
+        console.info('%cÚspěch: ' + responseUrl, 'color: green', response)
+        if (options.method !== API_METHODS.get)
+            if((responseUrl && !responseUrl.match(API_URLS.Login.url))
+                || responseUrl === undefined) // responseURL neni definovana v IE, tedy v IE se zobrazi vice notifikaci, ale aspon bude appka fungovat
+                notify(NOTIFY_TEXT.SUCCESS, toast.TYPE.SUCCESS)
         return response.data
     }
 
-    const onError = function (error) {
+    const onError = error => {
         let errMsg = NOTIFY_TEXT.ERROR
-        console.error('Request Failed:', error.config)
+        console.error('Požadavek byl NEÚSPĚŠNÝ: ', error.config)
         if (error.response) { // request proveden, ale neprislo 2xx
             const errObj = error.request.response
-            console.error('Status: ', error.response.status, error.response.statusText)
-            console.error('Data: ', error.response.data)
-            console.error('Headers: ', error.response.headers)
-            console.error('DALSI INFORMACE: ', error)
-            console.error('DJANGO/DRF ERROR: ', errObj)
-            if("x-sentry-id" in error.response.headers)
-                console.info('SENTRY ID: ', error.response.headers["x-sentry-id"])
+            const errorResponse = error.response
+            console.error('Status: ',           errorResponse.status, errorResponse.statusText)
+            console.error('Data: ',             errorResponse.data)
+            console.error('Headers: ',          errorResponse.headers)
+            console.error('DJANGO/DRF CHYBA: ', errObj)
+            console.error('DALŠÍ INFORMACE: ',  error)
+            if("x-sentry-id" in errorResponse.headers)
+                console.info('SENTRY ID: ',     errorResponse.headers["x-sentry-id"])
             // uloz do errMsg neco konkretnejsiho
             let json
             try {
@@ -47,7 +49,7 @@ const request = function (options) {
             console.error('Error Message: ', error.message)
             errMsg = error.message
         }
-        notify(errMsg, NOTIFY_LEVEL.ERROR)
+        notify(errMsg.toString(), toast.TYPE.ERROR) // toString, kdyz by nahodou prisel objekt
         if (error.response.status === 401)
             window.location.href = APP_URLS.prihlasit //TODO
         else if (error.response.status === 404)
@@ -55,7 +57,7 @@ const request = function (options) {
         return Promise.reject(error.response || error.message)
     }
 
-    let notify = (message, level) => {
+    const notify = (message, level) => {
         const options = {
             type: level,
             position: toast.POSITION.TOP_CENTER
@@ -63,8 +65,7 @@ const request = function (options) {
         toast(message, options)
     }
 
-    setAuthHeader(Token.get())
-    return axios(options)
+    return axiosRequest(options)
         .then(onSuccess)
         .catch(onError)
 }
