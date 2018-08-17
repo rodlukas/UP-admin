@@ -128,6 +128,14 @@ class AttendanceSerializer(serializers.ModelSerializer):
             instance.lecture.save()
         return instance
 
+    def validate(self, data):
+        # u predplacene lekce nelze menit parametry platby
+        if self.instance and self.instance.lecture.start is None:
+            if data['paid'] is False:
+                raise serializers.ValidationError(
+                    {api_settings.NON_FIELD_ERRORS_KEY: "U předplacené lekce nelze měnit parametry platby"})
+        return data
+
     @staticmethod
     def get_count(obj):
         # vrat null pokud se jedna o predplacenou lekci
@@ -228,9 +236,14 @@ class LectureSerializer(serializers.ModelSerializer):
         return instance
 
     def validate(self, data):
-        # pro predplacene lekce nic nekontroluj
-        if 'start' not in data:
+        # pro predplacene lekce proved jednoduchou kontrolu (nelze menit parametry platby)
+        if 'start' not in data or self.instance.start is None:
+            for elem in data['attendances']:
+                if elem['paid'] is False:
+                    raise serializers.ValidationError(
+                        {api_settings.NON_FIELD_ERRORS_KEY: "U předplacené lekce nelze měnit parametry platby"})
             return data
+        # kontrola casoveho konfliktu
         end = data['start'] + timedelta(minutes=data['duration'])
         # z atributu vytvor dotaz na end, pro funkcni operaci potreba pronasobit timedelta
         expression = F('start') + (timedelta(minutes=1) * F('duration'))
