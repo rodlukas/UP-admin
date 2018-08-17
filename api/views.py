@@ -55,7 +55,7 @@ class LectureViewSet(viewsets.ModelViewSet):
         client_id = self.request.query_params.get('client')
         if date is not None:
             date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
-            qs = qs.filter(start__contains=date, canceled=False)
+            qs = qs.filter(start__contains=date)
         elif client_id is not None:
             qs = qs.filter(attendances__client=client_id, group__isnull=True)
         return qs

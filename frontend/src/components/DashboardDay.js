@@ -38,20 +38,28 @@ export default class DashboardDay extends Component {
         const {lectures, IS_LOADING} = this.state
         const title = prettyDateWithLongDayYearIfDiff(this.getDate())
         const Lecture = ({lecture}) =>
-            <ListGroupItem className={lecture.group && "LectureGroup"}>
-                <h4>
-                    {prettyTime(new Date(lecture.start))}
-                    {' '}
-                    <CourseName course={lecture.course}/>
-                    {' '}
-                    <LectureNumber number={lecture.attendances[0].count}/>
-                </h4>
-                {lecture.group &&
-                <h5>
-                    <GroupName group={lecture.group} title link/>
-                </h5>}
-                <Attendances lecture={lecture} funcRefresh={this.props.setRefreshState || this.getLectures} showClient/>
-            </ListGroupItem>
+        {
+            let className = lecture.group ? "LectureGroup" : ""
+            if (lecture.canceled)
+                className = "lecture-canceled"
+            return (
+                <ListGroupItem className={className}>
+                    <h4>
+                        {prettyTime(new Date(lecture.start))}
+                        {' '}
+                        <CourseName course={lecture.course}/>
+                        {' '}
+                        <LectureNumber number={lecture.attendances[0].count}/>
+                    </h4>
+                    {lecture.group &&
+                    <h5>
+                        <GroupName group={lecture.group} title link/>
+                    </h5>}
+                    <Attendances lecture={lecture} funcRefresh={this.props.setRefreshState || this.getLectures}
+                                 showClient/>
+                </ListGroupItem>
+            )
+        }
         const EmptyLecture = () =>
             <ListGroupItem>
                 <ListGroupItemHeading className="text-muted text-center">

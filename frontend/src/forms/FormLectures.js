@@ -1,13 +1,13 @@
-import React, {Component} from "react"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput, InputGroup,
-    InputGroupAddon, InputGroupText} from "reactstrap"
+import React, {Component, Fragment} from "react"
+import {UncontrolledTooltip, Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput,
+    InputGroup, InputGroupAddon, InputGroupText} from "reactstrap"
 import {toISODate, toISOTime, prettyDateWithLongDayYear} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
 import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
 import "./FormLectures.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faCalendarAlt, faClock, faHourglass, faClipboardList} from "@fortawesome/pro-solid-svg-icons"
+import {faCalendarAlt, faClock, faHourglass, faClipboardList, faInfoCircle} from "@fortawesome/pro-solid-svg-icons"
 import GroupName from "../components/GroupName"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
@@ -38,11 +38,12 @@ class FormLectures extends Component {
         let date = new Date(start)
         this.state = {
             id: id || '',
-            at_state: this.createAttendanceStateArray(),
-            at_paid: this.createPaidArray(),
-            at_note: this.createNoteArray(),
+            at_state: this.createAttendanceStateObjects(),
+            at_paid: this.createPaidObjects(),
+            at_note: this.createNoteObjects(),
             prepaid: isPrepaid,
             canceled: canceled || false,
+            canceled_previous: undefined,
             date: (this.IS_LECTURE && !isPrepaid) ? toISODate(date) : '',
             time: (this.IS_LECTURE && !isPrepaid) ? toISOTime(date) : '',
             course:
@@ -54,7 +55,8 @@ class FormLectures extends Component {
             duration: duration || (this.IS_CLIENT ? DEFAULT_DURATION : GROUP_DURATION),
             courses: [],
             object: object,
-            prepaid_cnt: 1
+            prepaid_cnt: 1,
+            canceled_disabled: false
         }
     }
 
@@ -72,9 +74,44 @@ class FormLectures extends Component {
         return undefined
     }
 
+    getExcusedStateIndex() {
+        if (this.getAttendanceStatesData().length) {
+            const res = this.getAttendanceStatesData().find(elem => elem.excused === true)
+            if (res !== undefined)
+                return res.id
+        }
+        return undefined
+    }
+
     componentDidUpdate(prevProps) {
         if (this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
-            this.setState({at_state: this.createAttendanceStateArray()})
+            this.setState({at_state: this.createAttendanceStateObjects()})
+    }
+
+    // zaridi, ze se nastavi disabled checkbox Zruseno pokud jsou vsichni omluveni a pripadne zpet vrati puvodni hodnotu
+    checkDisabledCanceled = () => {
+        const client_cnt = Object.keys(this.state.at_state).length
+        let excused_cnt = 0
+        const excused_id = this.getExcusedStateIndex()
+        Object.keys(this.state.at_state).forEach(elem => {
+            if(Number(this.state.at_state[elem]) === excused_id) // ve state je String
+                excused_cnt++
+        })
+        if(client_cnt === excused_cnt) // vsichni jsou omluveni, lekce nejde zrusit
+            this.setState({
+                canceled_previous: this.state.canceled,
+                canceled: true,
+                canceled_disabled: true})
+        else
+        {
+            if (this.state.canceled_disabled) // vsichni uz nejsou omluveni (ale byli), hodnotu checkboxu vrat na puvodni
+                this.setState({
+                    canceled: this.state.canceled_previous,
+                    canceled_previous: undefined
+                })
+            this.setState({canceled_disabled: false}) // uz neni potreba aby byl checkbox Zruseno disabled
+        }
+
     }
 
     getMembers(memberships) {
@@ -84,26 +121,26 @@ class FormLectures extends Component {
         return members
     }
 
-    createAttendanceStateArray() {
-        let array = []
+    createAttendanceStateObjects() {
+        let objects = {}
         const defaultStateIndex = this.getDefaultStateIndex()
         this.members.map((client, id) =>
-            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate.id : defaultStateIndex)
-        return array
+            objects[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate.id : defaultStateIndex)
+        return objects
     }
 
-    createPaidArray() {
-        let array = []
+    createPaidObjects() {
+        let objects = {}
         this.members.map((client, id) =>
-            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].paid : false)
-        return array
+            objects[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].paid : false)
+        return objects
     }
 
-    createNoteArray() {
-        let array = []
+    createNoteObjects() {
+        let objects = {}
         this.members.map((client, id) =>
-            array[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].note : '')
-        return array
+            objects[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].note : '')
+        return objects
     }
 
     onChangeMultiple = e => {
@@ -112,6 +149,8 @@ class FormLectures extends Component {
         const state = this.state
         state[target.name][id] = (target.type === 'checkbox') ? target.checked : target.value
         this.setState(state)
+        if(target.name === "at_state")
+            this.checkDisabledCanceled()
     }
 
     getCourses = () => {
@@ -204,10 +243,11 @@ class FormLectures extends Component {
 
     componentDidMount() {
         this.getCourses()
+        this.checkDisabledCanceled()
     }
 
     render() {
-        const {id, canceled, prepaid, course, date, time, duration, at_state, at_note, at_paid, object, courses, prepaid_cnt} = this.state
+        const {id, canceled, prepaid, canceled_disabled, course, date, time, duration, at_state, at_note, at_paid, object, courses, prepaid_cnt} = this.state
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
@@ -258,7 +298,17 @@ class FormLectures extends Component {
                     <FormGroup row className="align-items-center">
                         <Col sm={4}>
                             <CustomInput type="checkbox" id="canceled" label="Zrušeno" checked={canceled}
-                                         onChange={this.onChange}/>
+                                         onChange={this.onChange} disabled={canceled_disabled}/>
+                            {' '}
+                            {canceled_disabled &&
+                            <Fragment>
+                                <UncontrolledTooltip placement="bottom" target="tooltip_canceled">
+                                    Na tuto lekci nikdo nemá přijít, proto je evidována jako zrušená.
+                                    Parametr zrušení lze upravit jen když má alespoň jeden klient přijít.
+                                </UncontrolledTooltip>
+                                <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg"
+                                                 id="tooltip_canceled"/>
+                            </Fragment>}
                         </Col>
                         <Col sm={4}>
                             <Select
@@ -301,7 +351,7 @@ class FormLectures extends Component {
                                         {this.getAttendanceStatesData().map(attendancestate =>
                                             // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                             (attendancestate.visible || attendancestate.id === at_state[member.id]) &&
-                                            <option key={attendancestate.id} value={attendancestate.id}>
+                                            <option key={attendancestate.id} value={attendancestate.id.toString()}>
                                                 {attendancestate.name}
                                             </option>)}
                                     </CustomInput>
@@ -313,6 +363,15 @@ class FormLectures extends Component {
                                              disabled={prepaid}
                                              className={at_paid[member.id] ? "text-success" : "text-danger"}
                                              onChange={this.onChangeMultiple} data-id={member.id}/>
+                                {' '}
+                                {prepaid &&
+                                <Fragment>
+                                    <UncontrolledTooltip placement="bottom" target="tooltip_prepaid">
+                                        Předplacená lekce je automaticky zaplacená.
+                                    </UncontrolledTooltip>
+                                    <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg"
+                                                     id="tooltip_prepaid"/>
+                                </Fragment>}
                             </Col>
                             <Col sm={6}>
                                 <InputGroup>

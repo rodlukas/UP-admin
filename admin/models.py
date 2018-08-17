@@ -5,6 +5,7 @@ class AttendanceState(models.Model):
     name = models.TextField()
     visible = models.BooleanField()
     default = models.BooleanField(default=False)    # metoda save() osetruje, aby bylo jen jedno True v DB
+    excused = models.BooleanField(default=False)    # metoda save() osetruje, aby bylo jen jedno True v DB
 
     class Meta:
         ordering = ['name']
@@ -22,6 +23,14 @@ class AttendanceState(models.Model):
             # pokud se stav nastavuje na neviditelny, vyresetuj volbu vychoziho stavu
             if self.visible is False:
                 self.default = False
+        if self.excused:
+            # vyber ostatni polozky s excused=True
+            qs = AttendanceState.objects.filter(excused=True)
+            # krome self (pokud self existuje)
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+            # a nastav jim excused=False
+            qs.update(excused=False)
         super(AttendanceState, self).save(*args, **kwargs)
 
 

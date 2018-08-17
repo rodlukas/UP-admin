@@ -20,7 +20,8 @@ class Settings extends Component {
             currentObject: {},
             currentType: EDIT_TYPE.STATE,
             IS_LOADING: true,
-            default_id: this.findDefaultId()
+            state_default_id: undefined,
+            state_excused_id: undefined
         }
     }
 
@@ -42,7 +43,7 @@ class Settings extends Component {
         state[target.id] = target.value
         this.setState(state)
         // odesli na API patch pozadavek
-        const data = {id: this.state.default_id, default: true}
+        const data = {id: this.state[target.id], [target.dataset.attribute]: true}
         AttendanceStateService.patch(data)
     }
 
@@ -55,7 +56,7 @@ class Settings extends Component {
         else if (type === EDIT_TYPE.STATE)
         {
             this.callAttendanceStatesFuncRefresh()
-            this.setState({default_id: this.findDefaultId()})
+            this.findStateIndexes()
         }
     }
 
@@ -68,24 +69,32 @@ class Settings extends Component {
 
     componentDidMount() {
         this.getCourses()
+        this.findStateIndexes()
     }
 
     componentDidUpdate(prevProps) {
         if(this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
-            this.setState({default_id: this.findDefaultId()})
+            this.findStateIndexes()
     }
 
-    findDefaultId = () => {
+    findStateIndexes = () => {
+        let default_elem = undefined, excused_elem = undefined
         if(this.getAttendanceStatesData() !== null) {
-            let default_elem = this.getAttendanceStatesData().find(elem => elem.default === true)
+            default_elem = this.getAttendanceStatesData().find(elem => elem.default === true)
             if (default_elem !== undefined)
-                return default_elem.id
+                default_elem = default_elem.id
+            excused_elem = this.getAttendanceStatesData().find(elem => elem.excused === true)
+            if (excused_elem !== undefined)
+                excused_elem = excused_elem.id
         }
-        return undefined
+        this.setState({
+            state_default_id: default_elem,
+            state_excused_id: excused_elem
+        })
     }
 
     render() {
-        const {courses, currentType, currentObject, default_id, IS_MODAL, IS_LOADING} = this.state
+        const {courses, currentType, currentObject, state_excused_id, state_default_id, IS_MODAL, IS_LOADING} = this.state
         const Visible = ({visible}) =>
             visible ? 'ANO' : 'NE'
         const AttendanceStates = () =>
@@ -124,17 +133,36 @@ class Settings extends Component {
         const DefaultAttendanceState = () =>
             <Fragment>
                 <h3>
-                    Výchozí stav účasti
+                    Konfigurace stavů účasti
                 </h3>
-                {default_id === undefined &&
+                {state_default_id === undefined &&
                 <Alert color="danger">
                     Není vybraný výchozí stav, aplikace nemůže správně fungovat!
+                </Alert>}
+                {state_excused_id === undefined &&
+                <Alert color="danger">
+                    Není vybraný stav „omluven“, aplikace nemůže správně fungovat!
                 </Alert>}
                 <p>
                     Pro správné fungování aplikace je třeba zvolit výchozí stav účasti, ten zároveň
                     <span className="font-weight-bold"> musí reprezentovat stav „klient se zúčastní/zúčastnil“</span>.
                 </p>
-                <CustomInput type="select" id="default_id" value={default_id || "default"} onChange={this.onChange}>
+                <CustomInput type="select" id="state_default_id" value={state_default_id || "default"}
+                             onChange={this.onChange} data-attribute="default">
+                    <option disabled value="default">
+                        Vyberte stav...
+                    </option>
+                    {this.getAttendanceStatesData().map(attendancestate =>
+                        <option key={attendancestate.id} value={attendancestate.id}>
+                            {attendancestate.name}
+                        </option>)}
+                </CustomInput>
+                <p>
+                    Pro správné fungování omluvených a zrušených lekcí je třeba zvolit stav účasti, který
+                    <span className="font-weight-bold"> reprezentuje stav „klient je omluven“</span>.
+                </p>
+                <CustomInput type="select" id="state_excused_id" value={state_excused_id || "default"}
+                             onChange={this.onChange} data-attribute="excused">
                     <option disabled value="default">
                         Vyberte stav...
                     </option>

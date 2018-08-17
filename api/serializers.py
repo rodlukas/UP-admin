@@ -104,6 +104,29 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         exclude = 'lecture',  # ochrana proti cykleni
 
+    # zaridi, ze lekce bude zrusena pokud jsou vsichni omluveni
+    @staticmethod
+    def should_be_canceled(attendances):
+        client_cnt = len(attendances)
+        excused_cnt = 0
+        for attendance in attendances:
+            if attendance.attendancestate.excused:
+                excused_cnt += 1
+        return client_cnt == excused_cnt
+
+    def update(self, instance, validated_data):
+        instance.client = Client.objects.get(pk=validated_data.get('client', instance.client).pk)
+        instance.lecture = Lecture.objects.get(pk=validated_data.get('lecture', instance.lecture).pk)
+        instance.attendancestate = AttendanceState.objects.get(pk=validated_data.get('attendancestate', instance.attendancestate).pk)
+        instance.paid = validated_data.get('paid', instance.paid)
+        instance.note = validated_data.get('note', instance.note)
+        instance.save()
+        # nastav lekci jako zrusenou pokud nikdo nema prijit
+        if not instance.lecture.canceled:
+            instance.lecture.canceled = self.should_be_canceled(instance.lecture.attendances.all())
+            instance.lecture.save()
+        return instance
+
     @staticmethod
     def get_count(obj):
         # vrat null pokud se jedna o predplacenou lekci
@@ -114,14 +137,13 @@ class AttendanceSerializer(serializers.ModelSerializer):
                                          start__lt=obj.lecture.start, canceled=False)
         else:
             try:
-                default_state_id = AttendanceState.objects.get(default=True)
-            except ObjectDoesNotExist:  # pokud neni zvoleny vychozi stav, vrat "??"
+                AttendanceState.objects.get(default=True)
+            except ObjectDoesNotExist:  # pokud neni zvoleny vychozi stav, vrat "??..."
                 return "?? - je potřeba nastavit výchozí stav účasti"
-            default_state_id = default_state_id.pk  # pamatuj si pouze id vychoziho stavu
             cnt = Attendance.objects.filter(client=obj.client.pk, lecture__course=obj.lecture.course,
                                             lecture__start__isnull=False, lecture__group__isnull=True,
                                             lecture__start__lt=obj.lecture.start,
-                                            attendancestate__pk=default_state_id, lecture__canceled=False)
+                                            attendancestate__default=True, lecture__canceled=False)
         return cnt.count()+1  # +1 aby prvni kurz nebyl jako 0.
 
     @staticmethod
@@ -148,6 +170,17 @@ class LectureSerializer(serializers.ModelSerializer):
         model = Lecture
         fields = '__all__'
 
+    # zaridi, ze lekce bude zrusena pokud jsou vsichni omluveni
+    # (z frontendu by jiz melo prijit pripravene, ale pro konzistenci je kontrola radeji i zde)
+    @staticmethod
+    def should_be_canceled(attendances_data):
+        client_cnt = len(attendances_data)
+        excused_cnt = 0
+        for attendance in attendances_data:
+            if attendance.get('attendancestate').excused:
+                excused_cnt += 1
+        return client_cnt == excused_cnt
+
     def create(self, validated_data):
         # vytvoreni instance lekce
         attendances_data = validated_data.pop('attendances')
@@ -155,6 +188,9 @@ class LectureSerializer(serializers.ModelSerializer):
         group = None
         if 'group' in validated_data:
             group = Group.objects.get(pk=validated_data.pop('group').pk)
+        # nastav lekci jako zrusenou pokud nikdo nema prijit
+        if 'canceled' in validated_data and not validated_data['canceled']:
+            validated_data['canceled'] = self.should_be_canceled(attendances_data)
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
         # vytvoreni jednotlivych ucasti
         for attendance_data in attendances_data:
@@ -164,10 +200,14 @@ class LectureSerializer(serializers.ModelSerializer):
         # vypis: for k, v in validated_data.items(): print(k, v)
 
     def update(self, instance, validated_data):
+        attendances_data = validated_data.pop('attendances')
         # uprava instance lekce
         group = None
         if 'group' in validated_data:
             group = Group.objects.get(pk=validated_data.pop('group').pk)
+        # nastav lekci jako zrusenou pokud nikdo nema prijit
+        if 'canceled' in validated_data and not validated_data['canceled']:
+            validated_data['canceled'] = self.should_be_canceled(attendances_data)
         instance.start = validated_data.get('start')
         instance.duration = validated_data.get('duration', instance.duration)
         instance.canceled = validated_data.get('canceled', instance.canceled)
@@ -175,7 +215,6 @@ class LectureSerializer(serializers.ModelSerializer):
         instance.group = group
         instance.save()
         # upravy jednotlivych ucasti
-        attendances_data = validated_data.pop('attendances')
         attendances = list(instance.attendances.all())
         for attendance_data in attendances_data:
             attendance = attendances.pop(0)
@@ -203,17 +242,20 @@ class LectureSerializer(serializers.ModelSerializer):
         if self.instance:  # pokud updatuju, proveruji pouze ostatni lekce
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
-            elem = list(qs).pop(0)
-            # prevod na spravnou TZ
-            local_dt = timezone.localtime(elem.start)
-            # tvorba errormsg
-            err_datetime = local_dt.strftime("%d. %m. %Y - %H:%M")
-            err_duration = str(elem.duration)
-            err = 'Časový konflikt s jinou lekcí (' + err_datetime + ', trvání ' + err_duration + ' min.), '
-            if elem.group is not None:
-                err += 'skupina ' + elem.group.name
-            else:
-                client = elem.attendances.get().client
-                err += 'klient ' + client.surname + ' ' + client.name
-            raise serializers.ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [err]})
+            for elem in list(qs):
+                # do konfliktu nezapocitavej zrusene lekce
+                if elem.canceled:
+                    continue
+                # prevod na spravnou TZ
+                local_dt = timezone.localtime(elem.start)
+                # tvorba errormsg
+                err_datetime = local_dt.strftime("%d. %m. %Y - %H:%M")
+                err_duration = str(elem.duration)
+                err = 'Časový konflikt s jinou lekcí (' + err_datetime + ', trvání ' + err_duration + ' min.), '
+                if elem.group is not None:
+                    err += 'skupina ' + elem.group.name
+                else:
+                    client = elem.attendances.get().client
+                    err += 'klient ' + client.surname + ' ' + client.name
+                raise serializers.ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [err]})
         return data
