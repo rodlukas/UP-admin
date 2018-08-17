@@ -5,6 +5,7 @@ from django.db.models import F, ExpressionWrapper
 from rest_framework.settings import api_settings
 from datetime import timedelta
 from django.utils import timezone
+from django.db.models import Q
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -153,8 +154,9 @@ class AttendanceSerializer(serializers.ModelSerializer):
             return False
         # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu a zjisti, zda existuje datumove po teto lekci dalsi zaplacena lekce
         res = Attendance.objects.filter(client=obj.client.pk, lecture__course=obj.lecture.course,
-                                        lecture__group=obj.lecture.group, lecture__start__gt=obj.lecture.start,
-                                        paid=True, lecture__canceled=False).count()
+                                        lecture__group=obj.lecture.group, paid=True, lecture__canceled=False)
+        # ber v uvahu nejen budouci lekce ale take predplacene lekce
+        res = res.filter(Q(lecture__start__gt=obj.lecture.start) | Q(lecture__start__isnull=True)).count()
         # pokud je pocet dalsich zaplacenych lekci 0, vrat True, jinak False
         return not bool(res)
 
