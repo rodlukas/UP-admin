@@ -1,12 +1,21 @@
 import React, {Component} from "react"
 import Heading from "./Heading"
 import {Alert, Container, Row, Col} from "reactstrap"
+import {withRouter} from "react-router-dom"
 
-export default class ErrorBoundary extends Component {
-    state = {
-        hasError: false,
-        error: null,
-        info: null
+class ErrorBoundary extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            hasError: false,
+            error: null,
+            info: null
+        }
+        // aby fungoval react-router pri nejake chybe
+        this.props.history.listen(() => {
+            if (this.state.hasError)
+                this.setState({hasError: false})
+        })
     }
 
     componentDidCatch(error, info) {
@@ -44,3 +53,5 @@ export default class ErrorBoundary extends Component {
         return this.props.children
     }
 }
+
+export default withRouter(ErrorBoundary)
