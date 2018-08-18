@@ -111,7 +111,6 @@ class FormLectures extends Component {
                 })
             this.setState({canceled_disabled: false}) // uz neni potreba aby byl checkbox Zruseno disabled
         }
-
     }
 
     getMembers(memberships) {
@@ -153,10 +152,9 @@ class FormLectures extends Component {
             this.checkDisabledCanceled()
     }
 
-    getCourses = () => {
+    getCourses = () =>
         CourseService.getVisible()
             .then(courses => this.setState({courses}))
-    }
 
     onChange = e => {
         const target = e.target
@@ -225,21 +223,18 @@ class FormLectures extends Component {
         })
     }
 
-    close = () => {
+    close = () =>
         this.props.funcClose()
-    }
 
-    refresh = () => {
+    refresh = () =>
         this.props.funcRefresh()
-    }
 
-    delete = id => {
+    delete = id =>
         LectureService.remove(id)
             .then(() => {
                 this.close()
                 this.refresh()
             })
-    }
 
     componentDidMount() {
         this.getCourses()

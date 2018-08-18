@@ -41,10 +41,9 @@ export default class FormGroups extends Component {
         return members
     }
 
-    getDataCourses = () => {
+    getDataCourses = () =>
         CourseService.getAll()
             .then(courses => this.setState({courses}))
-    }
 
     onSelectChange = (obj, name) => {
         const state = this.state
@@ -73,26 +72,22 @@ export default class FormGroups extends Component {
         })
     }
 
-    close = () => {
+    close = () =>
         this.props.funcClose()
-    }
 
-    refresh = () => {
+    refresh = () =>
         this.props.funcRefresh()
-    }
 
-    delete = id => {
+    delete = id =>
         GroupService.remove(id)
             .then(() => {
                 this.close()
                 this.refresh()
             })
-    }
 
-    getClients = () => {
+    getClients = () =>
         ClientService.getAll()
             .then(clients => this.setState({clients}))
-    }
 
     componentDidMount() {
         this.getClients()

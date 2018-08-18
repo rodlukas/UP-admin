@@ -48,13 +48,12 @@ export default class FormClients extends Component {
     refresh = () =>
         this.props.funcRefresh()
 
-    delete = id => {
+    delete = id =>
         ClientService.remove(id)
             .then(() => {
                 this.close()
                 this.refresh()
             })
-    }
 
     render() {
         const {id, name, surname, email, phone, note} = this.state
