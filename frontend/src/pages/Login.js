@@ -7,9 +7,14 @@ import {WithAuthContext} from "../auth/AuthContext"
 import Loading from "../components/Loading"
 
 class Login extends Component {
-    state = {
-        username: '',
-        password: ''
+    constructor(props) {
+        super(props)
+        this.state = {
+            username: '',
+            password: ''
+        }
+        // pokud dojde k přesměrování po neúspěšném požadavku (401), je potřeba okamžitě zjistit, zda je potřeba upravit stav AuthContext (jinak cyklení)
+        this.props.authContext.isAuthenticated()
     }
 
     login = () => {

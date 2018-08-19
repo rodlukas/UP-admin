@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import {Route, NavLink as RouterNavLink, BrowserRouter, Switch} from "react-router-dom"
+import {Route, NavLink as RouterNavLink, Router, Switch} from "react-router-dom"
 import Clients from "./pages/Clients"
 import Card from "./pages/Card"
 import Diary from "./pages/Diary"
@@ -20,6 +20,7 @@ import {getEnvName, isEnvDevelopment, isEnvProduction, isEnvStaging} from "./glo
 import "./Main.css"
 import ErrorBoundary from "./components/ErrorBoundary"
 import {AuthConsumer} from "./auth/AuthContext"
+import history from "./global/history"
 
 export default class Main extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ export default class Main extends Component {
 
     render() {
         return (
-            <BrowserRouter>
+            <Router history={history}>
                 <div className={getEnvName()}>
                     <Navbar light className="border-bottom" expand="sm">
                         <NavbarBrand tag={RouterNavLink} exact to="/">
@@ -93,7 +94,7 @@ export default class Main extends Component {
                         </div>
                     </ErrorBoundary>
                 </div>
-            </BrowserRouter>
+            </Router>
         )
     }
 }

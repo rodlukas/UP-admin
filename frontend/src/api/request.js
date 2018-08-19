@@ -3,6 +3,7 @@ import {NOTIFY_TEXT} from "../global/constants"
 import {toast} from "react-toastify"
 import {API_METHODS, API_URLS} from "./urls"
 import APP_URLS from "../urls"
+import history from "../global/history"
 
 const request = function (options) {
     const onSuccess = response => {
@@ -35,11 +36,11 @@ const request = function (options) {
                 if (Array.isArray(json)) // pokud se pridava (neupdatuje) a chyba se vztahuje ke konkretnimu field, vraci se pole, vezmi z nej prvni chybu
                     json = json[0]
                 if (json['non_field_errors']) // obecna chyba nevztazena ke konkretnimu field
-                    errMsg = json['non_field_errors'][0]
+                    errMsg = json['non_field_errors']
                 else if (json['detail']) // chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
-                    errMsg = json['detail'][0]
+                    errMsg = json['detail']
                 else if (json[Object.keys(json)[0]]) // chyba vztazena ke konkretnimu field
-                    errMsg = json[Object.keys(json)[0]][0]
+                    errMsg = json
             }
             catch (error) {
                 console.error(error)
@@ -49,9 +50,12 @@ const request = function (options) {
             console.error('Error Message: ', error.message)
             errMsg = error.message
         }
-        notify(errMsg.toString(), toast.TYPE.ERROR) // toString, kdyz by nahodou prisel objekt
+        // stringify, kdyz prijde objekt
+        if(typeof errMsg === 'object')
+            errMsg = JSON.stringify(errMsg)
+        notify(errMsg, toast.TYPE.ERROR)
         if (error.response.status === 401)
-            window.location.href = APP_URLS.prihlasit //TODO
+            history.push(APP_URLS.prihlasit)
         else if (error.response.status === 404)
             window.location.href = APP_URLS.notfound //TODO
         return Promise.reject(error.response || error.message)
