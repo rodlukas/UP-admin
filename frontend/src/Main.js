@@ -18,7 +18,7 @@ import APP_URLS from "./urls"
 import AppVersion from "./components/AppVersion"
 import {getEnvName, isEnvDevelopment, isEnvProduction, isEnvStaging} from "./global/funcEnvironments"
 import "./Main.css"
-import ErrorBoundary from "./components/ErrorBoundary"
+import ErrorBoundary from "./pages/ErrorBoundary"
 import {AuthConsumer} from "./auth/AuthContext"
 import history from "./global/history"
 

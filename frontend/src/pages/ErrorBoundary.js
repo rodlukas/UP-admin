@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import Heading from "./Heading"
+import Heading from "../components/Heading"
 import {Alert, Container, Row, Col} from "reactstrap"
 import {withRouter} from "react-router-dom"
 
