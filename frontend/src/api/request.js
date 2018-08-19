@@ -57,7 +57,7 @@ const request = function (options) {
         if (error.response.status === 401)
             history.push(APP_URLS.prihlasit)
         else if (error.response.status === 404)
-            window.location.href = APP_URLS.notfound //TODO
+            history.push(APP_URLS.notfound)
         return Promise.reject(error.response || error.message)
     }
 
