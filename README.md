@@ -70,3 +70,5 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 
 ### další
 * [blog o djangu+react+rest](https://wsvincent.com/)
+* [8 no-Flux strategies for React component communication](https://www.javascriptstuff.com/component-communication/)
+* [Habits of Successful React components](https://javascriptplayground.com/habits-of-successful-react-components/)
