@@ -237,7 +237,7 @@ class LectureSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         # pro predplacene lekce proved jednoduchou kontrolu (nelze menit parametry platby)
-        if 'start' not in data or self.instance.start is None:
+        if 'start' not in data:
             for elem in data['attendances']:
                 if elem['paid'] is False:
                     raise serializers.ValidationError(
