@@ -6,7 +6,7 @@ MANUAL_PRODUCTION = False
 
 ALLOWED_HOSTS = [
     'uspesnyprvnacek.herokuapp.com',
-    'uspesnyprvnacek-staging.herokuapp.com'
+    'uspesnyprvnacek-staging.herokuapp.com',
 ]
 
 RAVEN_CONFIG = {
@@ -96,5 +96,5 @@ if 'TRAVIS' in os.environ:
     }
 
 if MANUAL_PRODUCTION:
-    ALLOWED_HOSTS += 'localhost'
+    ALLOWED_HOSTS += ['localhost']
     SECURE_SSL_REDIRECT = False

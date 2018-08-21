@@ -15,9 +15,9 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 * **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
     1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
     2. přes `manage.py` spustit:
-        * `runserver --settings=up.production_settings`
-        * `yarn install`
-        * `collectstatic --settings=up.production_settings`
+        1. `yarn install`
+        2. `collectstatic --settings=up.production_settings --noinput`
+        3. `runserver --settings=up.production_settings 0.0.0.0:8000`
 * **HEROKU**
     * vytvoření uživatele: `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * připojení k DB z externí aplikace - je potřeba přidat do URI na konec `?sslmode=require`

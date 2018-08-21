@@ -5,7 +5,9 @@ webpack-stats.prod.json
 /assets
 /staticfiles/bundles
 /staticfiles/rest_framework
+/staticfiles/admin
 /staticfiles/staticfiles.json
+/node_modules/*
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
