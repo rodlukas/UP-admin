@@ -37,6 +37,9 @@ export const API_URLS = {
     Attendances: {
         url: 'attendances' + API_DELIM
     },
+    Memberships: {
+        url: 'memberships' + API_DELIM
+    },
     Login: {
         url: 'jwt-',
         action: {

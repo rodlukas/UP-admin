@@ -39,7 +39,7 @@ class FormLectures extends Component {
         this.state = {
             id: id || '',
             at_state: this.createAttendanceStateObjects(),
-            at_paid: this.createPaidObjects(),
+            at_paid: this.createPaidObjects(object),
             at_note: this.createNoteObjects(),
             prepaid: isPrepaid,
             canceled: canceled || false,
@@ -128,10 +128,21 @@ class FormLectures extends Component {
         return objects
     }
 
-    createPaidObjects() {
+    createPaidObjects(object) {
         let objects = {}
-        this.members.map((client, id) =>
-            objects[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].paid : false)
+        this.members.forEach((client, id) => {
+            if(this.IS_LECTURE)
+                objects[client.id] = this.props.lecture.attendances[id].paid
+            else
+            {
+                objects[client.id] = false
+                if (!this.IS_CLIENT) {
+                    const membership = object.memberships.find(elem => elem.client.id === client.id)
+                    if (membership !== undefined && membership.prepaid_cnt > 0)
+                        objects[client.id] = true
+                }
+            }
+        })
         return objects
     }
 
@@ -184,13 +195,18 @@ class FormLectures extends Component {
         const {id, prepaid, canceled, course, time, date, duration, at_note, at_paid, at_state, object, prepaid_cnt} = this.state
         let attendances = []
         const start = date + " " + time
-        this.members.map(member =>
-            attendances.push({
+        this.members.forEach(member =>
+        {
+            let attendances_data = {
                 client_id: member.id,
                 attendancestate_id: at_state[member.id],
                 paid: at_paid[member.id],
                 note: at_note[member.id]
-            }))
+            }
+            if(this.IS_LECTURE)
+                attendances_data.id = this.props.lecture.attendances.find(elem => elem.client.id === member.id).id
+            attendances.push(attendances_data)
+        })
         let data = {id, attendances, course_id: course.id, duration, canceled}
         if(!this.IS_CLIENT)
             data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
@@ -256,15 +272,19 @@ class FormLectures extends Component {
                 <ModalBody>
                     <FormGroup row className="align-items-center">
                         <Col sm={4}>
-                            <CustomInput type="checkbox" id="prepaid" label="Předplaceno" checked={prepaid}
-                                         onChange={e => {
-                                             this.onChangePrepaid()
-                                             this.onChange(e)}}
-                            />
-                            {!this.IS_LECTURE &&
+                            {this.IS_CLIENT &&
+                            <Fragment>
+                                <CustomInput type="checkbox" id="prepaid" label="Předplaceno" checked={prepaid}
+                                             onChange={e => {
+                                                 this.onChangePrepaid()
+                                                 this.onChange(e)
+                                             }}
+                                />
+                                {!this.IS_LECTURE &&
                                 <Input type="number" className="FormLectures_prepaidLectureCnt" disabled={!prepaid}
                                        id="prepaid_cnt" value={prepaid_cnt} required={prepaid}
                                        onChange={this.onChange}/>}
+                            </Fragment>}
                         </Col>
                         <Col sm={4}>
                             <InputGroup>

@@ -87,7 +87,9 @@ class Attendance(models.Model):
 
 
 class Membership(models.Model):
-    # start = models.DateTimeField(auto_now_add=True)
-    # end = models.DateTimeField(null=True)
+    prepaid_cnt = models.PositiveIntegerField(default=0)
     client = models.ForeignKey(Client, related_name='memberships', on_delete=models.CASCADE)
     group = models.ForeignKey(Group, related_name='memberships', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['client__surname', 'client__name']

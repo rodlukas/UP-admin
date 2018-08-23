@@ -16,6 +16,11 @@ class AttendanceViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = AttendanceSerializer
 
 
+class MembershipViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    queryset = Membership.objects.all()
+    serializer_class = MembershipSerializer
+
+
 class AttendanceStateViewSet(viewsets.ModelViewSet):
     queryset = AttendanceState.objects.all()
     serializer_class = AttendanceStateSerializer

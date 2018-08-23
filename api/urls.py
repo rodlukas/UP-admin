@@ -9,6 +9,7 @@ router.register('groups', views.GroupViewSet, 'groups')  # base_name musi byt uv
 router.register('courses', views.CourseViewSet)
 router.register('lectures', views.LectureViewSet, 'lectures')
 router.register('attendances', views.AttendanceViewSet)
+router.register('memberships', views.MembershipViewSet)
 router.register('attendancestates', views.AttendanceStateViewSet)
 router.register('applications', views.ApplicationViewSet)
 
