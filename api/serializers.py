@@ -128,16 +128,22 @@ class AttendanceSerializer(serializers.ModelSerializer):
         instance.paid = validated_data.get('paid', instance.paid)
         instance.note = validated_data.get('note', instance.note)
         instance.save()
-        # pokud se jedna o skupinu, proved korekce poctu predplacenych lekci
-        if instance.lecture.group is not None:
-            membership = instance.lecture.group.memberships.get(client__pk=instance.client.pk)
-            # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
-            # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
-            if (instance.attendancestate.excused and not prev_attendancestate.excused and instance.paid) \
+        # proved korekce poctu predplacenych lekci
+        # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
+        # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
+        if (instance.attendancestate.excused and not prev_attendancestate.excused and instance.paid) \
                 or (not prev_canceled and instance.lecture.canceled
                     and instance.attendancestate.default and instance.paid):
+            if instance.lecture.group is not None:
+                membership = instance.lecture.group.memberships.get(client__pk=instance.client.pk)
                 membership.prepaid_cnt = membership.prepaid_cnt + 1
                 membership.save()
+            else:
+                prepaid_lecture = Lecture.objects.create(course=instance.lecture.course,
+                                                         duration="30", canceled=False)
+                Attendance.objects.create(paid=True, client=instance.client, lecture=prepaid_lecture,
+                                          attendancestate=AttendanceState.objects.get(default=True),
+                                          note="Náhrada lekce")
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not instance.lecture.canceled:
             instance.lecture.canceled = self.should_be_canceled(instance.lecture.attendances.all())
@@ -265,17 +271,23 @@ class LectureSerializer(serializers.ModelSerializer):
             attendance.note = attendance_data.get('note', attendance.note)
             attendance.attendancestate = AttendanceState.objects.get(pk=attendance_data['attendancestate'].pk)
             attendance.save()
-            # pokud se jedna o skupinu, proved korekce poctu predplacenych lekci
-            if group is not None:
-                # najdi clenstvi nalezici klientovi v teto skupine
-                membership = group.memberships.get(client__pk=attendance.client.pk)
-                # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
-                # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
-                if (attendance.attendancestate.excused and not prev_attendancestate.excused and attendance.paid) \
+            # proved korekce poctu predplacenych lekci
+            # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
+            # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
+            if (attendance.attendancestate.excused and not prev_attendancestate.excused and attendance.paid) \
                     or (not prev_canceled and instance.canceled
                         and attendance.attendancestate.default and attendance.paid):
-                    membership.prepaid_cnt = membership.prepaid_cnt + 1
-                    membership.save()
+                    if group is not None:
+                        # najdi clenstvi nalezici klientovi v teto skupine
+                        membership = group.memberships.get(client__pk=attendance.client.pk)
+                        membership.prepaid_cnt = membership.prepaid_cnt + 1
+                        membership.save()
+                    else:
+                        prepaid_lecture = Lecture.objects.create(course=instance.course,
+                                                                 duration="30", canceled=False)
+                        Attendance.objects.create(paid=True, client=attendance.client, lecture=prepaid_lecture,
+                                                  attendancestate=AttendanceState.objects.get(default=True),
+                                                  note="Náhrada lekce")
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not instance.canceled:
             instance.canceled = self.should_be_canceled(attendances_data)
@@ -283,6 +295,9 @@ class LectureSerializer(serializers.ModelSerializer):
         return instance
 
     def validate(self, data):
+        # pro zrusene lekce nic nekontroluj
+        if data['canceled']:
+            return data
         # pro predplacene lekce proved jednoduchou kontrolu (nelze menit parametry platby)
         if 'start' not in data:
             for elem in data['attendances']:

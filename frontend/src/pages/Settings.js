@@ -42,7 +42,7 @@ class Settings extends Component {
         const value = target.type === 'checkbox' ? target.checked : target.value
         this.setState({[target.id]: value})
         // odesli na API patch pozadavek
-        const data = {id: this.state[target.id], [target.dataset.attribute]: true}
+        const data = {id: value, [target.dataset.attribute]: true}
         AttendanceStateService.patch(data)
     }
 
