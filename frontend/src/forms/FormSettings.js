@@ -22,9 +22,8 @@ export default class FormSettings extends Component {
 
     onChange = e => {
         const target = e.target
-        const state = this.state
-        state[target.id] = (target.type === 'checkbox') ? target.checked : target.value
-        this.setState(state)
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        this.setState({[target.id]: value})
     }
 
     onSubmit = e => {

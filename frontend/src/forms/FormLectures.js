@@ -156,9 +156,10 @@ class FormLectures extends Component {
     onChangeMultiple = e => {
         const target = e.target
         const id = target.dataset.id
-        const state = this.state
-        state[target.name][id] = (target.type === 'checkbox') ? target.checked : target.value
-        this.setState(state)
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        const stateVal = this.state[target.name]
+        stateVal[id] = value
+        this.setState({[target.name]: stateVal})
         if(target.name === "at_state")
             this.checkDisabledCanceled()
     }
@@ -169,16 +170,12 @@ class FormLectures extends Component {
 
     onChange = e => {
         const target = e.target
-        const state = this.state
-        state[target.id] = (target.type === 'checkbox') ? target.checked : target.value
-        this.setState(state)
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        this.setState({[target.id]: value})
     }
 
-    onSelectChange = (obj, name) => {
-        const state = this.state
-        state[name] = obj
-        this.setState(state)
-    }
+    onSelectChange = (obj, name) =>
+        this.setState({[name]: obj})
 
     onChangePrepaid = () => {
         if (!this.state.prepaid)

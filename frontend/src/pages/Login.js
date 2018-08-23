@@ -26,9 +26,9 @@ class Login extends Component {
     }
 
     onChange = e => {
-        const state = this.state
-        state[e.target.id] = e.target.value
-        this.setState(state)
+        const target = e.target
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        this.setState({[target.id]: value})
     }
 
     onSubmit = e => {

@@ -45,16 +45,13 @@ export default class FormGroups extends Component {
         CourseService.getAll()
             .then(courses => this.setState({courses}))
 
-    onSelectChange = (obj, name) => {
-        const state = this.state
-        state[name] = obj
-        this.setState(state)
-    }
+    onSelectChange = (obj, name) =>
+        this.setState({[name]: obj})
 
     onChange = e => {
-        const state = this.state
-        state[e.target.id] = e.target.value
-        this.setState(state)
+        const target = e.target
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        this.setState({[target.id]: value})
     }
 
     onSubmit = e => {

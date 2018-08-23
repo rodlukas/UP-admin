@@ -130,14 +130,14 @@ export default class Card extends Component {
 
     // uprava nadrazeneho objektu po uprave prepaid_cnt
     funcRefreshPrepaidCnt = (id, prepaid_cnt) => {
-        const state = this.state
+        const object = this.state.object
         // najdi membership s danym id
-        const elemId = state.object.memberships.findIndex(elem => elem.id === Number(id))
+        const elemId = object.memberships.findIndex(elem => elem.id === Number(id))
         if(elemId !== -1)
-            state.object.memberships[elemId].prepaid_cnt = Number(prepaid_cnt)
+            object.memberships[elemId].prepaid_cnt = Number(prepaid_cnt)
         else
             throw new Error("Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě")
-        this.setState(state)
+        this.setState({object})
         this.getLectures()
     }
 

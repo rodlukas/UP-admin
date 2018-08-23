@@ -13,13 +13,14 @@ export default class PrepaidCounters extends Component {
 
     onChange = e => {
         const target = e.target
-        const state = this.state
+        const prepaid_cnts = this.state.prepaid_cnts
+        const value = target.value
         const id = target.dataset.id
-        state.prepaid_cnts[id] = target.value
-        this.setState(state)
-        const data = {id, prepaid_cnt: target.value}
+        prepaid_cnts[id] = value
+        this.setState({prepaid_cnts})
+        const data = {id, prepaid_cnt: value}
         MembershipService.patch(data)
-            .then(this.props.funcRefreshPrepaidCnt(id, target.value))
+            .then(this.props.funcRefreshPrepaidCnt(id, value))
     }
 
     createPrepaidCntObjects() {

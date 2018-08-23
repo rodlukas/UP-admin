@@ -39,9 +39,8 @@ class Settings extends Component {
 
     onChange = e => {
         const target = e.target
-        const state = this.state
-        state[target.id] = target.value
-        this.setState(state)
+        const value = target.type === 'checkbox' ? target.checked : target.value
+        this.setState({[target.id]: value})
         // odesli na API patch pozadavek
         const data = {id: this.state[target.id], [target.dataset.attribute]: true}
         AttendanceStateService.patch(data)
