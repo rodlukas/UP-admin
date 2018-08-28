@@ -1,6 +1,17 @@
 export const WORK_DAYS_COUNT = 5
 export const DAYS_IN_WEEK = 7
 
+function convertDayToWords(date, callback) {
+    if(isToday(date))
+        return "dnes"
+    else if(isToday(addDays(date, 1)))
+        return "zítra"
+    else if (isToday(addDays(date, -1)))
+        return "včera"
+    else
+        return callback(date)
+}
+
 export function prettyDate(date) {
     return date.getDate() + ". " + (date.getMonth() + 1) + "."
 }
@@ -30,8 +41,10 @@ export function prettyDateWithLongDayYearIfDiff(date) {
     return day + " " + prettyDateWithYearIfDiff(date)
 }
 
-export function prettyDateWithDayYearIfDiff(date) {
+export function prettyDateWithDayYearIfDiff(date, convertToWords = false) {
     const day = date.toLocaleDateString('cs-CZ', {weekday: 'short'})
+    if(convertToWords)
+        return convertDayToWords(date, prettyDateWithDayYearIfDiff)
     return day + " " + prettyDateWithYearIfDiff(date)
 }
 

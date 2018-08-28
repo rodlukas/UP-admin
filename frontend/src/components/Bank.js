@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from "react"
 import BankService from "../api/services/bank"
 import {ListGroup, ListGroupItem, Table, UncontrolledTooltip} from "reactstrap"
-import {prettyDateWithDayYearIfDiff, prettyTimeWithSeconds} from "../global/funcDateTime"
+import {prettyDateWithDayYearIfDiff, prettyTimeWithSeconds, isToday} from "../global/funcDateTime"
 import NoInfo from "./NoInfo"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSyncAlt, faExternalLinkAlt, faArrowAltUp, faExclamationCircle} from "@fortawesome/pro-solid-svg-icons"
@@ -46,47 +46,55 @@ export default class Bank extends Component {
 
     render() {
         const Transactions = () =>
-            this.state.bankData.transactions.map(transaction =>
-                <tr key={transaction.column22.value}>
-                    <td>
-                        {transaction.column25 ?
-                            transaction.column25.value
-                        :
-                            transaction.column10 ?
-                                "Vlastník protiúčtu: " + transaction.column10.value
+            this.state.bankData.transactions.map(transaction => {
+                const date = new Date(transaction.column0.value.split("+")[0])
+                const amount = transaction.column1.value
+                const message_obj = transaction.column16
+                const id = transaction.column22.value
+                const comment_obj = transaction.column25
+                const target_account_owner_obj = transaction.column10
+                return (
+                    <tr key={id} className={isToday(date) && "table-warning"}>
+                        <td>
+                            {comment_obj ?
+                                comment_obj.value
+                            :
+                                target_account_owner_obj ?
+                                    "Vlastník protiúčtu: " + target_account_owner_obj.value
+                                    :
+                                    <NoInfo/>}
+                        </td>
+                        <td>
+                            {message_obj ?
+                                message_obj.value
                                 :
                                 <NoInfo/>}
-                    </td>
-                    <td>
-                        {transaction.column16 ?
-                            transaction.column16.value
-                            :
-                            <NoInfo/>}
-                    </td>
-                    <td>{prettyDateWithDayYearIfDiff(new Date(transaction.column0.value.split("+")[0]))}</td>
-                    <td className="font-weight-bold">
-                        <FontAwesomeIcon icon={faArrowAltUp}
-                                         transform={transaction.column1.value < 0 ? "rotate-45" : "rotate-225"}
-                                         className={transaction.column1.value < 0 ? "text-danger" : "text-success"}/>
-                        {' '}
-                        {transaction.column1.value.toLocaleString()} Kč
-                    </td>
-                </tr>)
-
+                        </td>
+                        <td>{prettyDateWithDayYearIfDiff(date, true)}</td>
+                        <td className="font-weight-bold">
+                            <FontAwesomeIcon icon={faArrowAltUp}
+                                             transform={amount < 0 ? "rotate-45" : "rotate-225"}
+                                             className={amount < 0 ? "text-danger" : "text-success"}/>
+                            {' '}
+                            {amount.toLocaleString()} Kč
+                        </td>
+                    </tr>)
+            })
+        const balance = this.state.bankData.info.closingBalance
         return (
             <ListGroup>
-                <ListGroupItem color={this.state.bankData.info.closingBalance < RENT ? "danger" : "success"}>
+                <ListGroupItem color={balance < RENT ? "danger" : "success"}>
                     <h4 className="text-center">
                         Aktuální stav:
                         {' '}
-                        {this.state.bankData.info.closingBalance ?
+                        {balance ?
                             <span className="font-weight-bold">
-                                {this.state.bankData.info.closingBalance.toLocaleString() + " Kč"}
+                                {balance.toLocaleString() + " Kč"}
                             </span>
                             :
                             "načítání"}
                         {' '}
-                        {this.state.bankData.info.closingBalance < RENT &&
+                        {balance < RENT &&
                         <Fragment>
                             <UncontrolledTooltip placement="bottom" target="tooltip_rent">
                                 Na účtu není dostatek peněz pro zaplacení nájmu!
