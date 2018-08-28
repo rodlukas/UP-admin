@@ -54,7 +54,7 @@ export default class Bank extends Component {
                 const comment_obj = transaction.column25
                 const target_account_owner_obj = transaction.column10
                 return (
-                    <tr key={id} className={isToday(date) && "table-warning"}>
+                    <tr key={id} className={isToday(date) ? "table-warning" : undefined}>
                         <td>
                             {comment_obj ?
                                 comment_obj.value
