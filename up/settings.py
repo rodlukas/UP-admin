@@ -1,14 +1,26 @@
 import os
 import datetime
 import raven
+import environ
+
+# env promenne
+env = environ.Env(
+    # nastaveni typu a pripadne vychozi hodnoty
+    DATABASE_URL=str,
+    SECRET_KEY=str,
+    FIO_API_KEY=str
+)
+# cteni z .env souboru
+environ.Env.read_env()
 
 # vlastni konstanty
 CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 60
+FIO_API_KEY = env('FIO_API_KEY')
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SECRET_KEY = os.environ.get('SECRET_KEY', 'u-y&tu264zgfp1pc$q(xki+y^+c6zm2#z++%$xqn=!tum8i6e!')
+SECRET_KEY = env('SECRET_KEY')
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 
@@ -37,7 +49,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    )
+    ),
 }
 
 JWT_AUTH = {
@@ -83,16 +95,9 @@ WSGI_APPLICATION = 'up.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'up',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'CONN_MAX_AGE': CONST_DB_CON_AGE,
-        'PORT': '5432',
-    }
+    'default': env.db()
 }
+DATABASES['default']['CONN_MAX_AGE'] = CONST_DB_CON_AGE
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -127,5 +132,12 @@ WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     }
 }

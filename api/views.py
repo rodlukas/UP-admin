@@ -4,6 +4,11 @@ from admin.models import *
 from datetime import datetime
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from .services import Bank
+from rest_framework.views import APIView
+from django.http import JsonResponse
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -60,7 +65,7 @@ class LectureViewSet(viewsets.ModelViewSet):
         client_id = self.request.query_params.get('client')
         if date is not None:
             date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
-            qs = qs.filter(start__contains=date)
+            qs = qs.filter(start__date=date)
         elif client_id is not None:
             qs = qs.filter(attendances__client=client_id, group__isnull=True)
         return qs
@@ -70,3 +75,10 @@ class LectureViewSet(viewsets.ModelViewSet):
         if isinstance(kwargs.get('data', {}), list):
             kwargs['many'] = True
         return super(LectureViewSet, self).get_serializer(*args, **kwargs)
+
+
+class BankView(APIView):
+    @method_decorator(cache_page(60))
+    def get(self, request, format=None):
+        json = Bank.get_bank_data()
+        return JsonResponse(json)

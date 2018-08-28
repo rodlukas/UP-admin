@@ -30,6 +30,11 @@ export function prettyDateWithLongDayYearIfDiff(date) {
     return day + " " + prettyDateWithYearIfDiff(date)
 }
 
+export function prettyDateWithDayYearIfDiff(date) {
+    const day = date.toLocaleDateString('cs-CZ', {weekday: 'short'})
+    return day + " " + prettyDateWithYearIfDiff(date)
+}
+
 export function prettyDateWithDayYear(date) {
     const day = date.toLocaleDateString('cs-CZ', {weekday: 'short'})
     return day + " " + prettyDateWithYear(date)

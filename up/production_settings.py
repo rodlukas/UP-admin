@@ -1,5 +1,4 @@
 from .settings import *
-import dj_database_url
 
 # pro rucni spusteni produkcni verze nastavit True
 MANUAL_PRODUCTION = False
@@ -78,22 +77,6 @@ SESSION_COOKIE_SECURE = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 CSRF_COOKIE_SECURE = True
 X_FRAME_OPTIONS = 'DENY'
-
-# Heroku: Update database configuration from $DATABASE_URL.
-db_from_env = dj_database_url.config(conn_max_age=CONST_DB_CON_AGE)
-DATABASES['default'].update(db_from_env)
-
-if 'TRAVIS' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'travis_ci_test',
-            'USER': 'postgres',
-            'PASSWORD': '',
-            'HOST': 'localhost',
-            'PORT': '',
-        }
-    }
 
 if MANUAL_PRODUCTION:
     ALLOWED_HOSTS += ['localhost']

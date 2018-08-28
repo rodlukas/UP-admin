@@ -224,8 +224,8 @@ class Settings extends Component {
         const HeadingContent = () =>
             <Fragment>
                 Nastavení
-                <AddButton title="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}/>
-                <AddButton title="Přidat stav" onClick={() => this.toggle(EDIT_TYPE.STATE)}/>
+                <AddButton content="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}/>
+                <AddButton content="Přidat stav" onClick={() => this.toggle(EDIT_TYPE.STATE)}/>
             </Fragment>
         return (
             <Fragment>

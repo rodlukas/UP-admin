@@ -114,7 +114,7 @@ export default class FormClients extends Component {
                             <Alert color="warning">
                                 <p>Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také všechny jeho zájmy o kurzy</p>
                                 <DeleteButton
-                                    title="klienta"
+                                    content="klienta"
                                     onClick={() => {
                                     if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))
                                         this.delete(id)}}
@@ -126,7 +126,7 @@ export default class FormClients extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton title={this.isClient ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton content={this.isClient ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

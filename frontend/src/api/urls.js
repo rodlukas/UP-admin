@@ -46,6 +46,9 @@ export const API_URLS = {
             refresh: 'refresh',
             authenticate: 'auth'
         }
+    },
+    Bank: {
+        url: 'bank' + API_DELIM
     }
 }
 

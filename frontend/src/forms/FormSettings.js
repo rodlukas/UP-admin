@@ -95,7 +95,7 @@ export default class FormSettings extends Component {
                                     {this.TYPE === EDIT_TYPE.COURSE && ", smažou se také všichni zájemci o tento kurz"}
                                 </p>
                                 <DeleteButton
-                                    title={type}
+                                    content={type}
                                     onClick={() => {
                                         let msg = "Opravdu chcete smazat "
                                             + type + " " + name + '?'
@@ -109,7 +109,7 @@ export default class FormSettings extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton title={this.isObject ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton content={this.isObject ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

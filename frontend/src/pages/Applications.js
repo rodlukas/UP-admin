@@ -121,7 +121,7 @@ export default class Applications extends Component {
         const HeadingContent = () =>
             <Fragment>
                 Zájemci o kurzy
-                <AddButton title="Přidat zájemce" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat zájemce" onClick={() => this.toggle()}/>
             </Fragment>
         return (
             <div>

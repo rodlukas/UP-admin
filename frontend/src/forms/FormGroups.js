@@ -149,7 +149,7 @@ export default class FormGroups extends Component {
                             <Alert color="warning">
                                 <p>Nenávratně smaže skupinu i s jejími lekcemi</p>
                                 <DeleteButton
-                                    title="skupinu"
+                                    content="skupinu"
                                     onClick={() => {
                                         if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?'))
                                             this.delete(id)}}
@@ -161,7 +161,7 @@ export default class FormGroups extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton title={this.isGroup ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton content={this.isGroup ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

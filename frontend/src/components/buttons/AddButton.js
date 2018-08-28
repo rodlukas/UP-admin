@@ -3,9 +3,9 @@ import {Button} from "reactstrap"
 import "./AddButton.css"
 import "./buttons.css"
 
-const AddButton = ({title, onClick}) =>
+const AddButton = ({content, onClick}) =>
     <Button color="info" className="AddButton" onClick={onClick}>
-        {title}
+        {content}
     </Button>
 
 export default AddButton

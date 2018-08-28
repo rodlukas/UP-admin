@@ -114,7 +114,7 @@ export default class FormApplications extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton title={this.isObject ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton content={this.isObject ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

@@ -212,7 +212,7 @@ export default class Card extends Component {
                     <ClientName client={object}/>
                     :
                     <GroupName group={object}/>}
-                <AddButton title="Přidat lekci" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat lekci" onClick={() => this.toggle()}/>
             </Fragment>
         const CardContent = () =>
             <Fragment>

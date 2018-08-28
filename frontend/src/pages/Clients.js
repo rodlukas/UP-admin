@@ -62,7 +62,7 @@ export default class ClientList extends Component {
         const HeadingContent = () =>
             <Fragment>
                 Klienti
-                <AddButton title="Přidat klienta" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat klienta" onClick={() => this.toggle()}/>
             </Fragment>
         return (
             <div>

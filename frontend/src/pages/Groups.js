@@ -57,7 +57,7 @@ export default class Groups extends Component {
         const HeadingContent = () =>
             <Fragment>
                 Skupiny
-                <AddButton title="Přidat skupinu" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat skupinu" onClick={() => this.toggle()}/>
             </Fragment>
         return (
             <div>

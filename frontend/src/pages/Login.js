@@ -70,7 +70,7 @@ class Login extends Component {
                                                required/>
                                     </Col>
                                 </FormGroup>
-                                <SubmitButton title="Přihlásit"/>
+                                <SubmitButton content="Přihlásit"/>
                             </Form>
                         </Card>
                     </Col>

@@ -15,6 +15,7 @@ router.register('applications', views.ApplicationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('bank/', views.BankView.as_view()),
     path('jwt-auth/', obtain_jwt_token),
     path('jwt-refresh/', refresh_jwt_token),
 ]

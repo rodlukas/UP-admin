@@ -1,10 +1,10 @@
 import React from "react"
 import {Button} from "reactstrap"
 
-const DeleteButton = ({onClick, title = ''}) =>
+const DeleteButton = ({onClick, content = ''}) =>
     <Button color="danger"
             onClick={onClick}>
-        Smazat {title}
+        Smazat {content}
     </Button>
 
 export default DeleteButton

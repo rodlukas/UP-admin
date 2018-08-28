@@ -406,7 +406,7 @@ class FormLectures extends Component {
                         </Label>
                         <Col sm={9}>
                             <DeleteButton
-                                title="lekci"
+                                content="lekci"
                                 onClick={() => {
                                     let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
                                         + (this.IS_CLIENT ? "klienta" : "skupiny") + " "
@@ -421,7 +421,7 @@ class FormLectures extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton title={this.IS_LECTURE ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton content={this.IS_LECTURE ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )
