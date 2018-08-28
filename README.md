@@ -14,10 +14,10 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
     * aktualizace konkrétního balíčku: `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
 * **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
     1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
-    2. přes `manage.py` spustit:
-        1. `yarn install`
-        2. `collectstatic --settings=up.production_settings --noinput`
-        3. `runserver --settings=up.production_settings 0.0.0.0:8000`
+    2. `yarn install`
+    3. přes `manage.py` spustit:
+        1. `collectstatic --settings=up.production_settings --noinput`
+        2. `runserver --settings=up.production_settings 0.0.0.0:8000`
 * **HEROKU**
     * vytvoření uživatele: `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * připojení k DB z externí aplikace - je potřeba přidat do URI na konec `?sslmode=require`
@@ -44,6 +44,7 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
     * travis + heroku: https://docs.travis-ci.com/user/deployment/heroku/
     * +inspirace: https://tutorial-extensions.djangogirls.org/en/heroku/ a https://simpleisbetterthancomplex.com/tutorial/2016/08/09/how-to-deploy-django-applications-on-heroku.html
     * +inspirace pro nodejs: https://medium.com/@nicholaskajoh/deploy-your-react-django-app-on-heroku-335af9dab8a3
+    * inspirace pro proměnné prostředí: https://mitchel.me/2016/settings-management-in-django/
         
 ### API
 * [custom serializer for nested resources](https://django.cowhite.com/blog/create-and-update-django-rest-framework-nested-serializers/)

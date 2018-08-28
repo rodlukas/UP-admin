@@ -3,6 +3,11 @@ import datetime
 import raven
 import environ
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+DEBUG = True
+
 # env promenne
 env = environ.Env(
     # nastaveni typu a pripadne vychozi hodnoty
@@ -11,17 +16,16 @@ env = environ.Env(
     FIO_API_KEY=str
 )
 # cteni z .env souboru
-environ.Env.read_env()
+if DEBUG:
+    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # vlastni konstanty
 CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 60
 FIO_API_KEY = env('FIO_API_KEY')
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Django konstanty
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Application definition
