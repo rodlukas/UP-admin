@@ -32,11 +32,15 @@ export default class Bank extends Component {
                     REFRESH_DISABLED: true
                 })
                 // po 60 s povol tlacitko refresh
-                setTimeout(() => this.setState({REFRESH_DISABLED: false}), 60*1000)
+                this.timeoutId = setTimeout(() => this.setState({REFRESH_DISABLED: false}), 60 * 1000)
             })
 
     componentDidMount() {
         this.getBankData()
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeoutId)
     }
 
     onClick = () => {
