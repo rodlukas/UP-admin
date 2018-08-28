@@ -6,8 +6,6 @@ import environ
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = True
-
 # env promenne
 env = environ.Env(
     # nastaveni typu a pripadne vychozi hodnoty
@@ -16,8 +14,7 @@ env = environ.Env(
     FIO_API_KEY=str
 )
 # cteni z .env souboru
-if DEBUG:
-    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # vlastni konstanty
 CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
@@ -25,6 +22,7 @@ CONST_DB_CON_AGE = 60
 FIO_API_KEY = env('FIO_API_KEY')
 
 # Django konstanty
+DEBUG = True
 SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = ['*']
 
@@ -44,6 +42,7 @@ INSTALLED_APPS = [
     'raven.contrib.django.raven_compat',
 ]
 
+# API
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -55,7 +54,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
-
 JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(minutes=CONST_AUTH_EXPIRATION),
@@ -97,6 +95,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'up.wsgi.application'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 # Database
 DATABASES = {
     'default': env.db()
@@ -104,7 +108,6 @@ DATABASES = {
 DATABASES['default']['CONN_MAX_AGE'] = CONST_DB_CON_AGE
 
 # Password validation
-# https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -131,17 +134,9 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
-    }
-}
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
     }
 }

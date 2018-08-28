@@ -61,7 +61,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets'),
 ]
-
 WEBPACK_LOADER = {
     'DEFAULT': {
         'BUNDLE_DIR_NAME': 'bundles/',
@@ -69,6 +68,7 @@ WEBPACK_LOADER = {
     }
 }
 
+# Django konstanty
 DEBUG = False
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = True
