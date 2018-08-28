@@ -19,7 +19,8 @@ const request = function (options) {
     const onError = error => {
         let errMsg = NOTIFY_TEXT.ERROR
         console.error('Požadavek byl NEÚSPĚŠNÝ: ', error.config)
-        if (error.response) { // request proveden, ale neprislo 2xx
+        if (error.response) {
+            // request proveden, ale neprislo 2xx
             const errObj = error.request.response
             const errorResponse = error.response
             console.error('Status: ',           errorResponse.status, errorResponse.statusText)
@@ -42,13 +43,12 @@ const request = function (options) {
                 else if (json[Object.keys(json)[0]]) // chyba vztazena ke konkretnimu field
                     errMsg = json
             }
-            catch (error) {
-                console.error(error)
-            }
+            catch (error) {}
             if (error.response.status === 503)
                 errMsg = NOTIFY_TEXT.ERROR_TIMEOUT
-        } else { // stalo se neco jineho pri priprave requestu
-            console.error('Error Message: ', error.message)
+        } else {
+            // stalo se neco jineho pri priprave requestu
+            console.error('Při přípravě requestu nastala chyba: ', error.message)
             errMsg = error.message
         }
         // stringify, kdyz prijde objekt
