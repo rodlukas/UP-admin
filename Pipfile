@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "== 2.1"
+django-environ = "== 0.4.5"
+django-filter = "== 2.0.0"
+django-webpack-loader = "== 0.6.0"
+djangorestframework = "== 3.8.2"
+djangorestframework-jwt = "== 1.11.0"
+gunicorn = "== 19.9.0"
+"psycopg2" = "== 2.7.5"
+pyjwt = "== 1.6.4"
+raven = "== 6.9.0"
+requests = "== 2.19.1"
+whitenoise = "== 4.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"

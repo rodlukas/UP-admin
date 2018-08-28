@@ -45,7 +45,8 @@ const request = function (options) {
             catch (error) {
                 console.error(error)
             }
-
+            if (error.response.status === 503)
+                errMsg = NOTIFY_TEXT.ERROR_TIMEOUT
         } else { // stalo se neco jineho pri priprave requestu
             console.error('Error Message: ', error.message)
             errMsg = error.message
@@ -53,6 +54,7 @@ const request = function (options) {
         // stringify, kdyz prijde objekt
         if(typeof errMsg === 'object')
             errMsg = JSON.stringify(errMsg)
+        console.error("Notifikace s chybou: ", errMsg)
         notify(errMsg, toast.TYPE.ERROR)
         if (error.response.status === 401)
             history.push(APP_URLS.prihlasit)

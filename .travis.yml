@@ -9,12 +9,13 @@ before_install:
 - nvm install 8.11.4
 - npm i -g npm@^6.4.0
 - npm install -g yarn@^1.9.0
-- node --version && npm --version && yarn --version && python --version
+- pip install pipenv
+- node --version && npm --version && yarn --version && python --version && pipenv --version
 - printf "//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}\n" >> .npmrc
 - source string_substitution.sh
 install:
-- pip install -r requirements.txt
-- pip install codecov
+- pipenv install
+- pipenv install codecov
 - yarn install
 before_script:
 - psql -c 'create database travis_ci_test;' -U postgres

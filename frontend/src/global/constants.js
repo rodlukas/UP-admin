@@ -2,7 +2,7 @@ export const API_URL = "/api/v1/"
 export const NOTIFY_TEXT = {
     SUCCESS: "Úspěšně uloženo",
     ERROR: "Chyba při provádění požadavku",
-    ERROR_LOADING: "Došlo k chybě při načítání dat"
+    ERROR_TIMEOUT: "Aplikace je přetížena (požadavek trval moc dlouho), pokračujte za chvíli"
 }
 export const EDIT_TYPE = {
     STATE: 0,
