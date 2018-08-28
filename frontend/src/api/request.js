@@ -18,11 +18,11 @@ const request = function (options) {
 
     const onError = error => {
         let errMsg = NOTIFY_TEXT.ERROR
+        const errorResponse = error.response
         console.error('Požadavek byl NEÚSPĚŠNÝ: ', error.config)
-        if (error.response) {
+        if (errorResponse) {
             // request proveden, ale neprislo 2xx
             const errObj = error.request.response
-            const errorResponse = error.response
             console.error('Status: ',           errorResponse.status, errorResponse.statusText)
             console.error('Data: ',             errorResponse.data)
             console.error('Headers: ',          errorResponse.headers)
@@ -44,7 +44,7 @@ const request = function (options) {
                     errMsg = json
             }
             catch (error) {}
-            if (error.response.status === 503)
+            if (errorResponse.status === 503)
                 errMsg = NOTIFY_TEXT.ERROR_TIMEOUT
         } else {
             // stalo se neco jineho pri priprave requestu
@@ -56,11 +56,11 @@ const request = function (options) {
             errMsg = JSON.stringify(errMsg)
         console.error("Notifikace s chybou: ", errMsg)
         notify(errMsg, toast.TYPE.ERROR)
-        if (error.response.status === 401)
+        if (errorResponse && errorResponse.status === 401)
             history.push(APP_URLS.prihlasit)
-        else if (error.response.status === 404)
+        else if (errorResponse && errorResponse.status === 404)
             history.push(APP_URLS.notfound)
-        return Promise.reject(error.response || error.message)
+        return Promise.reject(errorResponse || error.message)
     }
 
     const notify = (message, level) => {
