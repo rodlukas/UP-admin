@@ -16,7 +16,7 @@ import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.min.css"
 import APP_URLS from "./urls"
 import AppVersion from "./components/AppVersion"
-import {getEnvName, isEnvDevelopment, isEnvProduction, isEnvStaging} from "./global/funcEnvironments"
+import {getEnvName, isEnvDevelopment, isEnvProduction, isEnvStage} from "./global/funcEnvironments"
 import "./Main.css"
 import ErrorBoundary from "./pages/ErrorBoundary"
 import {AuthConsumer} from "./auth/AuthContext"
@@ -55,9 +55,9 @@ export default class Main extends Component {
                         <Badge color="dark">
                             Vývojová verze
                         </Badge>}
-                        {isEnvStaging() &&
+                        {isEnvStage() &&
                         <Badge color="success">
-                            Staging verze <AppVersion/>
+                            Stage <AppVersion/>
                         </Badge>}
                         <AuthConsumer>
                             {authContext => authContext.IS_AUTH &&

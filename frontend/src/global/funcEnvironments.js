@@ -2,7 +2,7 @@ export function getAppUrl() {
     return window.location.hostname.split(".")[0]
 }
 
-export function isEnvStaging() {
+export function isEnvStage() {
     return getAppUrl() === "uspesnyprvnacek-staging"
 }
 
@@ -11,9 +11,9 @@ export function isEnvDevelopment() {
 }
 
 export function isEnvProduction() {
-    return !isEnvStaging() && getEnvName() === "production"
+    return !isEnvStage() && getEnvName() === "production"
 }
 
 export function getEnvName() {
-    return isEnvStaging() ? "staging" : process.env.NODE_ENV
+    return isEnvStage() ? "staging" : process.env.NODE_ENV
 }
