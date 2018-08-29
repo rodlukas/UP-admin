@@ -6,6 +6,7 @@ MANUAL_PRODUCTION = False
 ALLOWED_HOSTS = [
     'uspesnyprvnacek.herokuapp.com',
     'uspesnyprvnacek-staging.herokuapp.com',
+    'uspesnyprvnacek-testing.herokuapp.com',
 ]
 
 RAVEN_CONFIG = {
