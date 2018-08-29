@@ -49,7 +49,7 @@ export default class DashboardDay extends Component {
                         {' '}
                         <CourseName course={lecture.course}/>
                         {' '}
-                        <LectureNumber number={lecture.attendances[0].count}/>
+                        <LectureNumber lecture={lecture}/>
                     </h4>
                     {lecture.group &&
                     <h5>

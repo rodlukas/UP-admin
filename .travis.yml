@@ -33,11 +33,20 @@ deploy:
 - provider: heroku
   api_key: $HEROKU_API_KEY
   app:
+    master: uspesnyprvnacek-testing
+  skip_cleanup: true
+- provider: heroku
+  api_key: $HEROKU_API_KEY
+  app:
     master: uspesnyprvnacek-staging
   skip_cleanup: true
+  on:
+    tags: true
 - provider: heroku
   api_key:
     secure: $HEROKU_API_KEY
   app:
     master: uspesnyprvnacek
   skip_cleanup: true
+  on:
+    tags: true

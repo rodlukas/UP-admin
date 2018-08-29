@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'api',
     'django_filters',
     'raven.contrib.django.raven_compat',
+    'debug_toolbar',
 ]
 
 # API
@@ -64,6 +65,7 @@ JWT_AUTH = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',  # odeslani Sentry ID v HTTP header
     'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',  # logovani 404 do Sentry
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -140,3 +142,22 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
     }
 }
+
+# debug toolbar
+if DEBUG:
+    INTERNAL_IPS = ['127.0.0.1', 'localhost']
+    DEBUG_TOOLBAR_PANELS = [
+        'ddt_request_history.panels.request_history.RequestHistoryPanel',
+        'debug_toolbar.panels.versions.VersionsPanel',
+        'debug_toolbar.panels.timer.TimerPanel',
+        'debug_toolbar.panels.settings.SettingsPanel',
+        'debug_toolbar.panels.headers.HeadersPanel',
+        'debug_toolbar.panels.request.RequestPanel',
+        'debug_toolbar.panels.sql.SQLPanel',
+        'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+        'debug_toolbar.panels.templates.TemplatesPanel',
+        'debug_toolbar.panels.cache.CachePanel',
+        'debug_toolbar.panels.signals.SignalsPanel',
+        'debug_toolbar.panels.logging.LoggingPanel',
+        'debug_toolbar.panels.redirects.RedirectsPanel',
+    ]

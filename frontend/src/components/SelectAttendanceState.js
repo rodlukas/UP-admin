@@ -11,7 +11,7 @@ export default class SelectAttendanceState extends Component {
     onChange = e => {
         const newValue = e.target.value
         const id = this.props.attendanceId
-        const data = {id, attendancestate_id: newValue}
+        const data = {id, attendancestate: newValue}
         AttendanceService.patch(data)
             .then(() => this.props.funcRefresh())
     }

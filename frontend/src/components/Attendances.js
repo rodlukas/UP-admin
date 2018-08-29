@@ -17,7 +17,7 @@ const Attendance = ({attendance, showClient = false, funcRefresh}) =>
         <RemindPay remind_pay={attendance.remind_pay}/>
         {' '}
         <LectureNote attendance={attendance}/>
-        <SelectAttendanceState value={attendance.attendancestate.id}
+        <SelectAttendanceState value={attendance.attendancestate}
                                attendanceId={attendance.id}
                                funcRefresh={funcRefresh}/>
     </li>

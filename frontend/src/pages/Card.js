@@ -178,7 +178,7 @@ export default class Card extends Component {
                                     :
                                     "Předplacená lekce"}
                                 {' '}
-                                <LectureNumber number={lecture.attendances[0].count}/>
+                                <LectureNumber lecture={lecture}/>
                                 <div className="float-right">
                                     <EditButton onClick={() => this.toggle(lecture)}/>
                                 </div>

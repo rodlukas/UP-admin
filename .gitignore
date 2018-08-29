@@ -6,6 +6,7 @@ webpack-stats.prod.json
 /staticfiles/bundles
 /staticfiles/rest_framework
 /staticfiles/admin
+/staticfiles/debug_toolbar
 /staticfiles/staticfiles.json
 /node_modules/*
 

@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from django.http import JsonResponse
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from django.db.models import Prefetch
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -35,10 +36,11 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
     def get_queryset(self):
-        qs = Group.objects.all()    # qs znaci queryset
+        qs = Group.objects.select_related('course')\
+            .prefetch_related(Prefetch('memberships', queryset=Membership.objects.select_related('client')))
         id_client = self.request.query_params.get('client')
         if id_client is not None:
-            qs = qs.filter(memberships__client=id_client)
+            qs = qs.filter(memberships__client__pk=id_client)
         return qs
 
 
@@ -49,7 +51,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.all()
+    queryset = Application.objects.select_related('course', 'client')
     serializer_class = ApplicationSerializer
 
 
@@ -60,7 +62,10 @@ class LectureViewSet(viewsets.ModelViewSet):
     filterset_fields = 'group',
 
     def get_queryset(self):
-        qs = Lecture.objects.order_by('-start')  # qs znaci queryset
+        qs = Lecture.objects.order_by('-start')\
+            .select_related('group__course', 'course')\
+            .prefetch_related(Prefetch('attendances', queryset=Attendance.objects.select_related('client')),
+                              Prefetch('group__memberships', queryset=Membership.objects.select_related('client')))
         date = self.request.query_params.get('date')
         client_id = self.request.query_params.get('client')
         if date is not None:

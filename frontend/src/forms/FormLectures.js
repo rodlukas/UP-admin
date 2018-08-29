@@ -124,7 +124,7 @@ class FormLectures extends Component {
         let objects = {}
         const defaultStateIndex = this.getDefaultStateIndex()
         this.members.map((client, id) =>
-            objects[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate.id : defaultStateIndex)
+            objects[client.id] = this.IS_LECTURE ? this.props.lecture.attendances[id].attendancestate : defaultStateIndex)
         return objects
     }
 
@@ -196,7 +196,7 @@ class FormLectures extends Component {
         {
             let attendances_data = {
                 client_id: member.id,
-                attendancestate_id: at_state[member.id],
+                attendancestate: at_state[member.id],
                 paid: at_paid[member.id],
                 note: at_note[member.id]
             }
