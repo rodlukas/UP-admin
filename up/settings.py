@@ -18,7 +18,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # vlastni konstanty
 CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
-CONST_DB_CON_AGE = 60
+CONST_DB_CON_AGE = 600
 FIO_API_KEY = env('FIO_API_KEY')
 
 # Django konstanty
