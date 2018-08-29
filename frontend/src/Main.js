@@ -57,11 +57,11 @@ export default class Main extends Component {
                         </Badge>}
                         {isEnvStaging() &&
                         <Badge color="success">
-                            Stage <AppVersion/>
+                            Staging <AppVersion/>
                         </Badge>}
                         {isEnvTesting() &&
                         <Badge color="primary">
-                            Stage <AppVersion/>
+                            Testing <AppVersion/>
                         </Badge>}
                         <AuthConsumer>
                             {authContext => authContext.IS_AUTH &&
