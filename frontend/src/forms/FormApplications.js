@@ -82,7 +82,8 @@ export default class FormApplications extends Component {
                                 options={clients}
                                 placeholder={"Vyberte klienta..."}
                                 noOptionsMessage={() => TEXTS.NO_RESULTS}
-                                required/>
+                                required
+                                autoFocus/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

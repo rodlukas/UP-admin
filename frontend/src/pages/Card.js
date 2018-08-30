@@ -231,7 +231,7 @@ export default class Card extends Component {
                         <AllLectures/>
                     </Row>
                 </Container>
-                <Modal isOpen={IS_MODAL} toggle={this.toggle} size="lg" autoFocus={false} className="ModalFormLecture">
+                <Modal isOpen={IS_MODAL} toggle={this.toggle} size="lg" className="ModalFormLecture">
                     <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle}
                                   IS_CLIENT={this.isClient()} funcRefresh={this.refreshAfterLectureChanges}
                                   defaultCourse={defaultCourse}/>
