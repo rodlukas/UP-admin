@@ -11,8 +11,10 @@ before_install:
 - npm install -g yarn@^1.9.0
 - pip install pipenv
 - node --version && npm --version && yarn --version && python --version && pipenv --version
-- bash scripts/create_npmrc.sh
-- bash scripts/string_substitution.sh
+# nastaveni prav je potreba pro jednoduche spousteni vsech skriptu
+- chmod +x -R scripts
+- ./scripts/create_npmrc.sh
+- ./scripts/string_substitution.sh
 install:
 - pipenv install
 - pip install codecov
@@ -20,8 +22,8 @@ install:
 before_script:
 - psql -c 'create database travis_ci_test;' -U postgres
 script:
-- bash scripts/release_tasks.sh
-- ls
+- ./scripts/release_tasks.sh
+- ls -a
 - coverage run --source=admin,api --omit=*/migrations/* manage.py test
 after_success:
 - codecov --token=$CODECOV_TOKEN
