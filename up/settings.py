@@ -148,7 +148,7 @@ WEBPACK_LOADER = {
 INTERNAL_IPS = [
     '127.0.0.1',
     'localhost',
-    'uspesnyprvnacek-testing.herokuapp.com',
+    '185.59.120.175',
 ]
 DEBUG_TOOLBAR_PANELS = [
     'ddt_request_history.panels.request_history.RequestHistoryPanel',
