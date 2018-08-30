@@ -11,8 +11,8 @@ before_install:
 - npm install -g yarn@^1.9.0
 - pip install pipenv
 - node --version && npm --version && yarn --version && python --version && pipenv --version
-- printf "//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}\n" >> .npmrc
-- source string_substitution.sh
+- source scripts/create_npmrc.sh
+- source scripts/string_substitution.sh
 install:
 - pipenv install
 - pip install codecov
@@ -20,7 +20,7 @@ install:
 before_script:
 - psql -c 'create database travis_ci_test;' -U postgres
 script:
-- source release-tasks.sh
+- source scripts/release_tasks.sh
 - ls
 - coverage run --source=admin,api --omit=*/migrations/* manage.py test
 after_success:
