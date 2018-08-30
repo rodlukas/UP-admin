@@ -57,21 +57,21 @@
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@emotion/utils/-/utils-0.8.1.tgz#f3a81587ad8d0ef33cdad6f3b4310774fcc1053e"
 
-"@fortawesome/fontawesome-common-types@^0.2.2":
-  version "0.2.2"
-  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.2.tgz#7fd64eacf7f64e4d7619d21b0b2f2467f5a70611"
+"@fortawesome/fontawesome-common-types@^0.2.4":
+  version "0.2.4"
+  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.4.tgz#7c560ff732c6c7c7c179ae25227ce5449e6f6d65"
 
 "@fortawesome/fontawesome-svg-core@^1.2.0-14":
-  version "1.2.2"
-  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.2.tgz#b431e7efb3e3a1887e596daa6ed0d241d2d1aea5"
+  version "1.2.4"
+  resolved "https://npm.fontawesome.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.4.tgz#2e40c65e66c7ad5aabc179a2d7c5827b1599905c"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.2"
+    "@fortawesome/fontawesome-common-types" "^0.2.4"
 
 "@fortawesome/pro-solid-svg-icons@^5.1.0-11":
-  version "5.2.0"
-  resolved "https://npm.fontawesome.com/@fortawesome/pro-solid-svg-icons/-/pro-solid-svg-icons-5.2.0.tgz#8ccca8eda13b0242e9d3c6a0698699ab86881a70"
+  version "5.3.1"
+  resolved "https://npm.fontawesome.com/@fortawesome/pro-solid-svg-icons/-/pro-solid-svg-icons-5.3.1.tgz#b09c2cce921e8a2295ab8ac73499975b124eb953"
   dependencies:
-    "@fortawesome/fontawesome-common-types" "^0.2.2"
+    "@fortawesome/fontawesome-common-types" "^0.2.4"
 
 "@fortawesome/react-fontawesome@^0.1.0-11":
   version "0.1.2"
@@ -5838,8 +5838,8 @@ react-select@2.0.0:
     react-transition-group "^2.2.1"
 
 react-toastify@^4.1.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-4.2.0.tgz#90221a49853eef6b8cb8dd9f2d95e4203b4e293a"
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-4.2.3.tgz#943e405ccdf76397dbc76d520dbf4825e4775cd5"
   dependencies:
     classnames "^2.2.6"
     prop-types "^15.6.0"
