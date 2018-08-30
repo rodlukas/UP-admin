@@ -5,9 +5,9 @@ function convertDayToWords(date, callback) {
     if(isToday(date))
         return "dnes"
     else if(isToday(addDays(date, 1)))
-        return "zítra"
-    else if (isToday(addDays(date, -1)))
         return "včera"
+    else if (isToday(addDays(date, -1)))
+        return "zítra"
     else
         return callback(date)
 }

@@ -8,31 +8,44 @@ import {faSyncAlt, faExternalLinkAlt, faArrowAltUp, faExclamationCircle} from "@
 import CustomButton from "./buttons/CustomButton"
 
 const RENT = 3530
+const REFRESH_TIMEOUT = 60 // sekundy
 
 export default class Bank extends Component {
+    bankDataInit = {
+        info: {},
+        transactions: [],
+        fetch_timestamp: ''
+    }
+
     state = {
-        bankData: {
-            info: {},
-            transactions: []
-        },
+        bankData: this.bankDataInit,
         IS_LOADING: true,
-        REFRESH_DISABLED: true
+        REFRESH_DISABLED: true,
+        DATA_PROBLEM: false
     }
 
     getBankData = () =>
         BankService.get()
             .then(bankData => {
-                this.setState({
-                    bankData: {
-                        info: bankData.accountStatement.info,
-                        transactions: bankData.accountStatement.transactionList.transaction,
-                        fetch_timestamp: bankData.fetch_timestamp
-                    },
-                    IS_LOADING: false,
-                    REFRESH_DISABLED: true
-                })
-                // po 60 s povol tlacitko refresh
-                this.timeoutId = setTimeout(() => this.setState({REFRESH_DISABLED: false}), 60 * 1000)
+                if (bankData.status_code)
+                    this.setState({
+                        bankData: this.bankDataInit,
+                        DATA_PROBLEM: true,
+                        IS_LOADING: false
+                    })
+                else
+                    this.setState({
+                        bankData: {
+                            info: bankData.accountStatement.info,
+                            transactions: bankData.accountStatement.transactionList.transaction,
+                            fetch_timestamp: bankData.fetch_timestamp
+                        },
+                        IS_LOADING: false,
+                        REFRESH_DISABLED: true,
+                        DATA_PROBLEM: false
+                    })
+                // po zadanem poctu sekund povol tlacitko refresh
+                this.timeoutId = setTimeout(() => this.setState({REFRESH_DISABLED: false}), REFRESH_TIMEOUT * 1000)
             })
 
     componentDidMount() {
@@ -49,6 +62,12 @@ export default class Bank extends Component {
     }
 
     render() {
+        const TableInfo = ({text}) =>
+            <Fragment>
+                <tr className="text-muted text-center">
+                    <td colSpan="4">{text}</td>
+                </tr>
+            </Fragment>
         const Transactions = () =>
             this.state.bankData.transactions.map(transaction => {
                 const date = new Date(transaction.column0.value.split("+")[0])
@@ -62,7 +81,7 @@ export default class Bank extends Component {
                         <td>
                             {comment_obj ?
                                 comment_obj.value
-                            :
+                                :
                                 target_account_owner_obj ?
                                     "Vlastník protiúčtu: " + target_account_owner_obj.value
                                     :
@@ -96,9 +115,12 @@ export default class Bank extends Component {
                                 {balance.toLocaleString() + " Kč"}
                             </span>
                             :
-                            "načítání"}
+                            this.state.DATA_PROBLEM ?
+                                "neznámý"
+                                :
+                                "načítání"}
                         {' '}
-                        {balance < RENT &&
+                        {balance && balance < RENT &&
                         <Fragment>
                             <UncontrolledTooltip placement="bottom" target="tooltip_rent">
                                 Na účtu není dostatek peněz pro zaplacení nájmu!
@@ -114,7 +136,8 @@ export default class Bank extends Component {
                         </span>}
                         {' '}
                         <CustomButton onClick={this.onClick} disabled={this.state.REFRESH_DISABLED}
-                                      title={this.state.REFRESH_DISABLED ? "Výpis lze obnovit jednou za minutu" : "Obnovit výpis"}
+                                      title={
+                                          this.state.REFRESH_DISABLED ? "Výpis lze obnovit jednou za minutu" : "Obnovit výpis"}
                                       content={
                                           <FontAwesomeIcon icon={faSyncAlt} size="lg" spin={this.state.IS_LOADING}/>}/>
                         {' '}
@@ -129,20 +152,22 @@ export default class Bank extends Component {
                 <ListGroupItem>
                     <Table responsive>
                         <thead>
-                            <tr>
-                                <th>Poznámka</th>
-                                <th>Zpráva pro příjemce</th>
-                                <th>Datum</th>
-                                <th>Suma</th>
-                            </tr>
+                        <tr>
+                            <th>Poznámka</th>
+                            <th>Zpráva pro příjemce</th>
+                            <th>Datum</th>
+                            <th>Suma</th>
+                        </tr>
                         </thead>
                         <tbody>
-                        {!Boolean(this.state.bankData.transactions.length) && !this.state.IS_LOADING ?
-                            <tr className="text-muted text-center">
-                                <td colSpan="4">Žádné nedávné transakce</td>
-                            </tr>
+                        {!this.state.DATA_PROBLEM ?
+                            !Boolean(this.state.bankData.transactions.length) && !this.state.IS_LOADING ?
+                                <TableInfo text="Žádné nedávné transakce"/>
+                                :
+                                <Transactions/>
                             :
-                            <Transactions/>}
+                            <TableInfo text="Data se nepodařilo stáhnout"/>
+                        }
                         </tbody>
                     </Table>
                     <div className="text-center text-muted font-italic">

@@ -7,25 +7,32 @@
 Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis)
 
 ## užitečné příkazy
-* **vytvoření souboru `requirements.txt`**: `pip freeze > requirements.txt`
-* **yarn:**
-    * zjištění aktualizací: `yarn outdated`
-    * přidání/smazání balíčku: `yarn upgrade/remove [package]`
-    * aktualizace konkrétního balíčku: `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
 * **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
     1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
     2. `yarn install`
     3. přes `manage.py` spustit:
         1. `collectstatic --settings=up.production_settings --noinput`
         2. `runserver --settings=up.production_settings 0.0.0.0:8000`
+            > **spuštění na jiném zařízení v síti:**
+            > * povolit python+node ve firewallu (např. na chvíli interaktivní režim ESETu)
+            > * na mobilním zařízení zadat privátní IP adresu počítače se serverem (zobrazí se např. při spouštění webpack-dev-serveru
+            > * při změně privátní adresy restart webpack-dev-serveru
+* **yarn:**
+    * `yarn outdated`
+    * `yarn add/remove [package]`
+    * `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
 * **HEROKU**
     * vytvoření uživatele: `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * připojení k DB z externí aplikace - je potřeba přidat do URI na konec `?sslmode=require`
-* **spuštění na jiném zařízení v síti**:
-    * **spuštění dev-serveru Djanga na lokálu (aby fungovalo spouštění po síti z jiných zařízení)**: `python manage.py runserver 0.0.0.0:8000`
-    * *je potřeba povolit python i node ve firewallu (např. na chvíli zapnout učící režim ESETu), na dotyčném zařízení pak stačí zadat URL adresu zařízení, která se například zobrazí při spouštění webpack-dev-serveru (privátní IP adresa zařízení)*
+    * kopírování DB mezi aplikacemi: 
+        * **staging** → **testing**: `heroku pg:copy uspesnyprvnacek-staging::DATABASE_URL DATABASE_URL --confirm uspesnyprvnacek-testing -a uspesnyprvnacek-testing`
+    * naplánování pravidelné zálohy DB: `heroku pg:backups:schedule DATABASE_URL --at "03:00 Europe/Prague" -a uspesnyprvnacek`
+
+## další údaje
+* každý den ve 3:00 se provádí automatická záloha databáze (viz. https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)    
 
 ---
+
 ## články
 ### statické soubory
 * nastaveni webpacku a djanga (staticke soubory): http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/

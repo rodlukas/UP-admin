@@ -58,7 +58,7 @@ class Login extends Component {
                                     </Label>
                                     <Col sm={8}>
                                         <Input type="text" id="username" value={username} onChange={this.onChange}
-                                               required autocapitalize="none"/>
+                                               required autoCapitalize="none"/>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>

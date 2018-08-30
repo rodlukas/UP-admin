@@ -205,11 +205,10 @@ class LectureSerializer(serializers.ModelSerializer):
                 attendancestate_default_pk = AttendanceState.objects.values('pk').get(default=True)['pk']
             except ObjectDoesNotExist:  # pokud neni zvoleny vychozi stav, vrat "??..."
                 return "?? - je potřeba nastavit výchozí stav účasti"
-            else:
-                cnt = Attendance.objects.filter(client=obj.attendances.get().client.pk, lecture__course=obj.course,
-                                                lecture__start__isnull=False, lecture__group__isnull=True,
-                                                lecture__start__lt=obj.start,
-                                                attendancestate=attendancestate_default_pk, lecture__canceled=False)
+            cnt = Attendance.objects.filter(client=obj.attendances.get().client.pk, lecture__course=obj.course,
+                                            lecture__start__isnull=False, lecture__group__isnull=True,
+                                            lecture__start__lt=obj.start,
+                                            attendancestate=attendancestate_default_pk, lecture__canceled=False)
         return cnt.count() + 1  # +1 aby prvni kurz nebyl jako 0.
 
     # zaridi, ze lekce bude zrusena pokud jsou vsichni omluveni
