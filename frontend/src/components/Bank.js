@@ -28,7 +28,7 @@ export default class Bank extends Component {
     getApiError = () =>
     {
         const general_err_msg = "Data se nepodařilo stáhnout"
-        let detail_err_msg = ""
+        let detail_err_msg
         switch (this.state.STATUS_CODE){
             case 404:
                 detail_err_msg = "špatně zaslaný dotaz"
@@ -38,6 +38,9 @@ export default class Bank extends Component {
                 break
             case 500:
                 detail_err_msg = "neexistující/neplatný token"
+                break
+            default:
+                detail_err_msg = "neznámá chyba"
                 break
         }
         return general_err_msg + " (" + detail_err_msg + " - chyba " + this.state.STATUS_CODE + ")"
