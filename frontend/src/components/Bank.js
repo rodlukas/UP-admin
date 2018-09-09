@@ -21,7 +21,26 @@ export default class Bank extends Component {
         bankData: this.bankDataInit,
         IS_LOADING: true,
         REFRESH_DISABLED: true,
-        DATA_PROBLEM: false
+        DATA_PROBLEM: false,
+        STATUS_CODE: undefined
+    }
+
+    getApiError = () =>
+    {
+        const general_err_msg = "Data se nepodařilo stáhnout"
+        let detail_err_msg = ""
+        switch (this.state.STATUS_CODE){
+            case 404:
+                detail_err_msg = "špatně zaslaný dotaz"
+                break
+            case 409:
+                detail_err_msg = "překročení intervalu pro dotazování"
+                break
+            case 500:
+                detail_err_msg = "neexistující/neplatný token"
+                break
+        }
+        return general_err_msg + " (" + detail_err_msg + " - chyba " + this.state.STATUS_CODE + ")"
     }
 
     getBankData = () =>
@@ -31,7 +50,8 @@ export default class Bank extends Component {
                     this.setState({
                         bankData: this.bankDataInit,
                         DATA_PROBLEM: true,
-                        IS_LOADING: false
+                        IS_LOADING: false,
+                        STATUS_CODE: bankData.status_code
                     })
                 else
                     this.setState({
@@ -42,7 +62,8 @@ export default class Bank extends Component {
                         },
                         IS_LOADING: false,
                         REFRESH_DISABLED: true,
-                        DATA_PROBLEM: false
+                        DATA_PROBLEM: false,
+                        STATUS_CODE: undefined
                     })
                 // po zadanem poctu sekund povol tlacitko refresh
                 this.timeoutId = setTimeout(() => this.setState({REFRESH_DISABLED: false}), REFRESH_TIMEOUT * 1000)
@@ -166,7 +187,7 @@ export default class Bank extends Component {
                                 :
                                 <Transactions/>
                             :
-                            <TableInfo text="Data se nepodařilo stáhnout"/>
+                            <TableInfo text={this.getApiError()}/>
                         }
                         </tbody>
                     </Table>
