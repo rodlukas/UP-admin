@@ -81,3 +81,4 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 * [blog o djangu+react+rest](https://wsvincent.com/)
 * [8 no-Flux strategies for React component communication](https://www.javascriptstuff.com/component-communication/)
 * [Habits of Successful React components](https://javascriptplayground.com/habits-of-successful-react-components/)
+* [Využité tipy k optimalizaci Djanga](https://www.revsys.com/tidbits/django-performance-simple-things/) + [další podobný článek](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)
