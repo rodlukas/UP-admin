@@ -27,6 +27,7 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
     * kopírování DB mezi aplikacemi: 
         * **staging** → **testing**: `heroku pg:copy uspesnyprvnacek-staging::DATABASE_URL DATABASE_URL --confirm uspesnyprvnacek-testing -a uspesnyprvnacek-testing`
     * naplánování pravidelné zálohy DB: `heroku pg:backups:schedule DATABASE_URL --at "03:00 Europe/Prague" -a uspesnyprvnacek`
+        * výpis záloh: `heroku pg:backups -a uspesnyprvnacek`
 
 ## další údaje
 * každý den ve 3:00 se provádí automatická záloha databáze (viz. https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)    
