@@ -41,6 +41,7 @@ deploy:
     master: uspesnyprvnacek-staging
   skip_cleanup: true
   on:
+    branch: master
     tags: true
 - provider: heroku
   api_key: $HEROKU_API_KEY
@@ -48,4 +49,5 @@ deploy:
     master: uspesnyprvnacek
   skip_cleanup: true
   on:
+    branch: master
     tags: true
