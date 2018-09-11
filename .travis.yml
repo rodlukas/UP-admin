@@ -32,22 +32,17 @@ notifications:
 deploy:
 - provider: heroku
   api_key: $HEROKU_API_KEY
-  app:
-    master: uspesnyprvnacek-testing
+  app: uspesnyprvnacek-testing
   skip_cleanup: true
 - provider: heroku
   api_key: $HEROKU_API_KEY
-  app:
-    master: uspesnyprvnacek-staging
+  app: uspesnyprvnacek-staging
   skip_cleanup: true
   on:
-    repo: rodlukas/UP-admin
     tags: true
 - provider: heroku
   api_key: $HEROKU_API_KEY
-  app:
-    master: uspesnyprvnacek
+  app: uspesnyprvnacek
   skip_cleanup: true
   on:
-    repo: rodlukas/UP-admin
     tags: true
