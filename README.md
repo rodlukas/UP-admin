@@ -37,7 +37,7 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 
 ### statické soubory
 * **nastavení Webpacku a Djanga:** http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
-    * **super vysvetleni:** https://www.techiediaries.com/django-react-rest/
+    * **super vysvětlení:** https://www.techiediaries.com/django-react-rest/
     * **popis autora nástrojů:** http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/
     
 ### nasazení
@@ -57,13 +57,13 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 ### API
 * [custom serializer for nested resources](https://django.cowhite.com/blog/create-and-update-django-rest-framework-nested-serializers/)
 * [best practises](https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api)
-* [jednoducha prace s djangorestframework](https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/)
+* [jednoduchá práce s DRF](https://www.andreagrandi.it/2016/10/01/creating-a-production-ready-api-with-python-and-django-rest-framework-part-2/)
 * [test driven api v DRF](https://scotch.io/tutorials/build-a-rest-api-with-django-a-test-driven-approach-part-2)
 * [inspirace propojeni django, rest, react s reduxem](https://hackernoon.com/creating-websites-using-react-and-django-rest-framework-b14c066087c7)
 * struktura v reactu podle [tohoto](https://sheharyar.me/blog/axios-with-react-for-making-requests/)
 
 ### přihlášení
-* problematika ukladani tokenu (localstorage vs cookie)
+* problematika ukládání tokenu (localstorage vs cookie)
     * https://stormpath.com/blog/where-to-store-your-jwts-cookies-vs-html5-web-storage
     * https://www.youtube.com/watch?v=WzfJgCOMIsU&feature=youtu.be&t=22m10s
     * https://auth0.com/blog/ten-things-you-should-know-about-tokens-and-cookies/#xss-xsrf
@@ -72,9 +72,9 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
     * https://auth0.com/docs/security/store-tokens
     * i s komentari s protinazory: https://medium.com/@rajaraodv/securing-react-redux-apps-with-jwt-tokens-fcfe81356ea0
     * https://spectrum.chat/thread/a051f64d-8103-48e4-92f8-99fc701a7ae9
-* dokumentace: [zaklad od react-routeru](https://reacttraining.com/react-router/web/example/auth-workflow), [djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
+* dokumentace: [základ od react-routeru](https://reacttraining.com/react-router/web/example/auth-workflow), [djangorestframework-jwt](http://getblimp.github.io/django-rest-framework-jwt/)
 * inspirace: https://github.com/curtisgreene/message, vetsi inspirace: https://hptechblogs.com/using-json-web-token-react/
-* hezky popis: https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
+* hezký popis: https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
 * přihlášení na podobný princip jako: https://stackoverflow.com/questions/49819183/react-what-is-the-best-way-to-handle-authenticated-logged-in-state
 
 ### další
