@@ -8,6 +8,7 @@
     "yarn": "1.9.x"
   },
   "scripts": {
-    "postinstall": "cd frontend && yarn install && yarn build"
+    "postinstall": "cd frontend && yarn install && yarn build",
+    "test": "cd frontend && yarn test"
   }
 }
