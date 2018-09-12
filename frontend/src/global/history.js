@@ -1,3 +1,6 @@
-import {createBrowserHistory} from "history"
+import {createMemoryHistory, createBrowserHistory} from "history"
 
-export default createBrowserHistory()
+// createMemoryHistory se pouzije, pokud aplikace nebezi v prohlizeci (server/test...)
+let history = typeof(window) !== 'undefined' ? createBrowserHistory() : createMemoryHistory()
+
+export default history
