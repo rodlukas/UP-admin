@@ -21,6 +21,7 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
     * `yarn outdated`
     * `yarn add/remove [package]`
     * `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
+    * `yarn test/install`
 * **HEROKU**
     * **vytvoření uživatele:** `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * **připojení k DB z externí aplikace** - je potřeba přidat do URI na konec `?sslmode=require`
@@ -35,7 +36,7 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 * **respektování standardů** (tam, kde to má smysl): https://12factor.net/, https://roca-style.org/    
 
 ### statické soubory
-* **nastaveni webpacku a djanga:** http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
+* **nastavení Webpacku a Djanga:** http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
     * **super vysvetleni:** https://www.techiediaries.com/django-react-rest/
     * **popis autora nástrojů:** http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/
     
