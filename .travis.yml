@@ -11,6 +11,10 @@ addons:
 services:
   - postgresql
 install:
+  # spust skripty pro upravu souboru
+  - source scripts/create_npmrc.sh
+  - source scripts/string_substitution.sh
+
   # nainstaluj JS zavislosti
   - nvm install 8.11.4
   - npm i -g npm@^6.4.0
@@ -24,10 +28,6 @@ install:
 
   # vypis konfigurace prostredi
   - node --version && npm --version && yarn --version && python --version && pipenv --version
-
-  # spust dalsi skripty
-  - source scripts/create_npmrc.sh
-  - source scripts/string_substitution.sh
 script:
   # vytvor DB
   - psql -c 'create database travis_ci_test;' -U postgres
