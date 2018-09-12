@@ -1,6 +1,10 @@
 language: python
 python: 3.6.6
 node_js: '8'
+cache:
+  - pip
+  directories:
+  - node_modules
 addons:
   postgresql: "9.6"
 services:
