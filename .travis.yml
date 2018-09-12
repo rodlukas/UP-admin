@@ -23,7 +23,7 @@ script:
 - source scripts/release_tasks.sh
 - ls -a
 - coverage run --source=admin,api --omit=*/migrations/* manage.py test
-- yarn test
+- yarn test --coverage
 after_success:
 - codecov --token=$CODECOV_TOKEN
 notifications:
