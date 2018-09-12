@@ -22,23 +22,22 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
     * `yarn add/remove [package]`
     * `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
 * **HEROKU**
-    * vytvoření uživatele: `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
-    * připojení k DB z externí aplikace - je potřeba přidat do URI na konec `?sslmode=require`
-    * kopírování DB mezi aplikacemi: 
+    * **vytvoření uživatele:** `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
+    * **připojení k DB z externí aplikace** - je potřeba přidat do URI na konec `?sslmode=require`
+    * **kopírování DB mezi aplikacemi:** 
         * **staging** → **testing**: `heroku pg:copy uspesnyprvnacek-staging::DATABASE_URL DATABASE_URL --confirm uspesnyprvnacek-testing -a uspesnyprvnacek-testing`
-    * naplánování pravidelné zálohy DB: `heroku pg:backups:schedule DATABASE_URL --at "03:00 Europe/Prague" -a uspesnyprvnacek`
-        * výpis záloh: `heroku pg:backups -a uspesnyprvnacek`
+    * **naplánování pravidelné zálohy DB:** `heroku pg:backups:schedule DATABASE_URL --at "03:00 Europe/Prague" -a uspesnyprvnacek`
+        * **výpis záloh:** `heroku pg:backups -a uspesnyprvnacek`
 
-## další údaje
-* každý den ve 3:00 se provádí automatická záloha databáze (viz. https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)    
+## další informace
+* každý den ve 3:00 se provádí automatická záloha databáze (viz. https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
+* [využité tipy k optimalizaci Djanga](https://www.revsys.com/tidbits/django-performance-simple-things/) + [další podobný článek](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)
+* **respektování standardů** (tam, kde to má smysl): https://12factor.net/, https://roca-style.org/    
 
----
-
-## články
 ### statické soubory
-* nastaveni webpacku a djanga (staticke soubory): http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
-    * super vysvetleni: https://www.techiediaries.com/django-react-rest/
-    * popis autora nástrojů: http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/
+* **nastaveni webpacku a djanga:** http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
+    * **super vysvetleni:** https://www.techiediaries.com/django-react-rest/
+    * **popis autora nástrojů:** http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/
     
 ### nasazení
 * **checklist**
@@ -81,4 +80,3 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 * [blog o djangu+react+rest](https://wsvincent.com/)
 * [8 no-Flux strategies for React component communication](https://www.javascriptstuff.com/component-communication/)
 * [Habits of Successful React components](https://javascriptplayground.com/habits-of-successful-react-components/)
-* [Využité tipy k optimalizaci Djanga](https://www.revsys.com/tidbits/django-performance-simple-things/) + [další podobný článek](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)
