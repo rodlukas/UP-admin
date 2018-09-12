@@ -8,28 +8,38 @@ cache:
 addons:
   postgresql: "9.6"
 services:
-- postgresql
-before_install:
-- nvm install 8.11.4
-- npm i -g npm@^6.4.0
-- npm install -g yarn@^1.9.0
-- pip install pipenv
-- node --version && npm --version && yarn --version && python --version && pipenv --version
-- source scripts/create_npmrc.sh
-- source scripts/string_substitution.sh
+  - postgresql
 install:
-- pipenv install
-- pip install codecov
-- yarn install
-before_script:
-- psql -c 'create database travis_ci_test;' -U postgres
+  # nainstaluj JS zavislosti
+  - nvm install 8.11.4
+  - npm i -g npm@^6.4.0
+  - npm install -g yarn@^1.9.0
+  - yarn install
+
+  # nainstaluj Python zavislosti
+  - pip install codecov
+  - pip install pipenv
+  - pipenv install
+
+  # vypis konfigurace prostredi
+  - node --version && npm --version && yarn --version && python --version && pipenv --version
+
+  # spust dalsi skripty
+  - source scripts/create_npmrc.sh
+  - source scripts/string_substitution.sh
 script:
-- source scripts/release_tasks.sh
-- ls -a
-- coverage run --source=admin,api --omit=*/migrations/* manage.py test
-- yarn test --coverage
+  # vytvor DB
+  - psql -c 'create database travis_ci_test;' -U postgres
+
+  # priprav Django aplikaci
+  - source scripts/release_tasks.sh
+
+  # spocitej pokryti kodu
+  - coverage run --source=admin,api --omit=*/migrations/* manage.py test
+  - yarn test --coverage
 after_success:
-- codecov --token=$CODECOV_TOKEN
+  # posli pokryti kodu do codecov
+  - codecov --token=$CODECOV_TOKEN
 notifications:
   email: false
   slack:
