@@ -37,13 +37,13 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 
 ### statické soubory
 * **nastavení Webpacku a Djanga:** http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
-    * **super vysvětlení:** https://www.techiediaries.com/django-react-rest/
-    * **popis autora nástrojů:** http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/
+    * super vysvětlení - https://www.techiediaries.com/django-react-rest/
+    * popis autora nástrojů - http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/
     
 ### nasazení
 * **checklist**
     * https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
-    * +dalsi: https://wsvincent.com/django-best-practices/
+    * +další: https://wsvincent.com/django-best-practices/
 * **deployment settings**
     * http://whitenoise.evans.io/en/stable/
     * https://devcenter.heroku.com/articles/deploying-python
