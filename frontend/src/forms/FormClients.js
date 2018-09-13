@@ -5,6 +5,7 @@ import ClientName from "../components/ClientName"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
+import {removeAllSpaces} from "../global/utils"
 
 export default class FormClients extends Component {
     constructor(props) {
@@ -27,10 +28,12 @@ export default class FormClients extends Component {
         this.setState({[target.id]: value})
     }
 
+
+
     onSubmit = e => {
         e.preventDefault()
         const {id, name, surname, email, phone, note} = this.state
-        const data = {id, name, surname, email, phone, note}
+        const data = {id, name, surname, email, phone: removeAllSpaces(phone), note}
         let request
         if (this.isClient)
             request = ClientService.update(data)

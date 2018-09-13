@@ -17,3 +17,7 @@ export function groupByCourses(data) {
     })
     return arrayOfObjects
 }
+
+export function removeAllSpaces(str) {
+    return str.replace(/\s/g, '')
+}
