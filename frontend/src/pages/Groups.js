@@ -49,7 +49,7 @@ export default class Groups extends Component {
                     <td>
                         <ClientsList clients={group.memberships}/>
                     </td>
-                    <td className="col-2">
+                    <td>
                         <EditButton onClick={() => this.toggle(group)}/>
                     </td>
                 </tr>)}

@@ -10,6 +10,8 @@ import EditButton from "../components/buttons/EditButton"
 import Heading from "../components/Heading"
 import AppVersion from "../components/AppVersion"
 import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
+import {faCheck, faTimes} from "@fortawesome/pro-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 
 class Settings extends Component {
     constructor(props) {
@@ -95,7 +97,7 @@ class Settings extends Component {
     render() {
         const {courses, currentType, currentObject, state_excused_id, state_default_id, IS_MODAL, IS_LOADING} = this.state
         const Visible = ({visible}) =>
-            visible ? 'ANO' : 'NE'
+            <FontAwesomeIcon icon={visible ? faCheck : faTimes} size="lg"/>
         const AttendanceStates = () =>
             <Fragment>
                 <h2>
@@ -105,7 +107,7 @@ class Settings extends Component {
                     <thead className="thead-dark">
                     <tr>
                         <th>Název</th>
-                        <th>Viditelnost</th>
+                        <th>Viditelný</th>
                         <th>Akce</th>
                     </tr>
                     </thead>
@@ -180,7 +182,7 @@ class Settings extends Component {
                     <thead className="thead-dark">
                     <tr>
                         <th>Název</th>
-                        <th>Viditelnost</th>
+                        <th>Viditelný</th>
                         <th>Akce</th>
                     </tr>
                     </thead>

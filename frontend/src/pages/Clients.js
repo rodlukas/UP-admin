@@ -45,7 +45,7 @@ export default class ClientList extends Component {
                     <td className="col-md-4 col-lg-2 col-xl-2">
                         <ClientName client={client} link/>
                     </td>
-                    <td>
+                    <td className="col-sm-4 col-md-4 col-lg-2 col-xl-2">
                         <Phone phone={client.phone}/>
                     </td>
                     <td>
@@ -54,7 +54,7 @@ export default class ClientList extends Component {
                     <td>
                         <Note note={client.note}/>
                     </td>
-                    <td className="col-md-4 col-lg-2 col-xl-2">
+                    <td>
                         <EditButton onClick={() => this.toggle(client)}/>
                     </td>
                 </tr>)}
