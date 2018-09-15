@@ -100,7 +100,7 @@ class Settings extends Component {
             <FontAwesomeIcon icon={visible ? faCheck : faTimes} size="lg"/>
         const AttendanceStates = () =>
             <Fragment>
-                <h2>
+                <h2 className="text-center">
                     Stavy účasti
                 </h2>
                 <Table striped size="sm">
@@ -133,7 +133,7 @@ class Settings extends Component {
             </Fragment>
         const DefaultAttendanceState = () =>
             <Fragment>
-                <h3>
+                <h3 className="text-center">
                     Konfigurace stavů účasti
                 </h3>
                 {state_default_id === undefined &&
@@ -175,7 +175,7 @@ class Settings extends Component {
             </Fragment>
         const Courses = () =>
             <Fragment>
-                <h2>
+                <h2 className="text-center">
                     Kurzy
                 </h2>
                 <Table striped size="sm">
