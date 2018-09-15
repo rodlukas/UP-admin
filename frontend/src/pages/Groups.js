@@ -40,7 +40,7 @@ export default class Groups extends Component {
             <tbody>
             {groups.map(group =>
                 <tr key={group.id}>
-                    <td className="col-2">
+                    <td>
                         <GroupName group={group} link/>
                     </td>
                     <td>

@@ -117,8 +117,8 @@ export default class Bank extends Component {
                                 :
                                 <NoInfo/>}
                         </td>
-                        <td>{prettyDateWithDayYearIfDiff(date, true)}</td>
-                        <td className="font-weight-bold">
+                        <td style={{minWidth: '6em'}}>{prettyDateWithDayYearIfDiff(date, true)}</td>
+                        <td className="font-weight-bold" style={{minWidth: '8em'}}>
                             <FontAwesomeIcon icon={faArrowAltUp}
                                              transform={amount < 0 ? "rotate-45" : "rotate-225"}
                                              className={amount < 0 ? "text-danger" : "text-success"}/>

@@ -42,10 +42,10 @@ export default class ClientList extends Component {
             <tbody>
             {clients.map(client =>
                 <tr key={client.id}>
-                    <td className="col-md-4 col-lg-2 col-xl-2">
+                    <td style={{minWidth: '13em'}}>
                         <ClientName client={client} link/>
                     </td>
-                    <td className="col-sm-4 col-md-4 col-lg-2 col-xl-2">
+                    <td style={{minWidth: '6.5em'}}>
                         <Phone phone={client.phone}/>
                     </td>
                     <td>
