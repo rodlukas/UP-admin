@@ -7,7 +7,7 @@ const HeadingContent = () =>
 const NotFound = () =>
     <div className="text-center">
         <Heading content={<HeadingContent/>}/>
-        <p>
+        <p className="pageContent">
             Stránka nebo hledaný objekt neexistuje!
         </p>
     </div>

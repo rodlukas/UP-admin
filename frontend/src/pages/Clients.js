@@ -68,7 +68,7 @@ export default class ClientList extends Component {
             <div>
                 <Container>
                     <Heading content={<HeadingContent/>}/>
-                    <Table striped size="sm" responsive>
+                    <Table striped size="sm" responsive className="pageContent">
                         <thead className="thead-dark">
                         <tr>
                             <th>Příjmení a jméno</th>

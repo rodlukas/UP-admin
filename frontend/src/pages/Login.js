@@ -48,7 +48,7 @@ class Login extends Component {
         return (
             <Container>
                 <Heading content={<HeadingContent/>}/>
-                <Row className="justify-content-center">
+                <Row className="justify-content-center pageContent">
                     <Col md="9" lg="7">
                         <Card className="p-4">
                             <Form onSubmit={this.onSubmit}>

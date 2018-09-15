@@ -207,7 +207,7 @@ class Settings extends Component {
                 </p>}
             </Fragment>
         const SettingsContent = () =>
-            <Fragment>
+            <div className="pageContent">
                 <Row>
                     <Col>
                         <AttendanceStates/>
@@ -222,7 +222,7 @@ class Settings extends Component {
                 <p className="text-center">
                     <span className="font-weight-bold">Verze aplikace:</span> <AppVersion/> - GIT_DATETIME
                 </p>
-            </Fragment>
+            </div>
         const HeadingContent = () =>
             <Fragment>
                 Nastavení

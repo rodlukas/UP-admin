@@ -129,7 +129,7 @@ export default class Bank extends Component {
             })
         const balance = this.state.bankData.info.closingBalance
         return (
-            <ListGroup>
+            <ListGroup className="pageContent">
                 <ListGroupItem color={balance < RENT ? "danger" : "success"}>
                     <h4 className="text-center">
                         Aktuální stav:

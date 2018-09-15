@@ -215,7 +215,7 @@ export default class Card extends Component {
                 <AddButton content="Přidat lekci" onClick={() => this.toggle()}/>
             </Fragment>
         const CardContent = () =>
-            <Fragment>
+            <div className="pageContent">
                 <Container fluid>
                     <Row className="justify-content-center">
                         <Col sm="9" md="7" lg="5" xl="3">
@@ -236,7 +236,7 @@ export default class Card extends Component {
                                   IS_CLIENT={this.isClient()} funcRefresh={this.refreshAfterLectureChanges}
                                   defaultCourse={defaultCourse}/>
                 </Modal>
-            </Fragment>
+            </div>
         return (
             <Fragment>
                 <Container>

@@ -63,7 +63,7 @@ export default class Groups extends Component {
             <div>
                 <Container>
                     <Heading content={<HeadingContent/>}/>
-                    <Table striped size="sm" responsive>
+                    <Table striped size="sm" responsive className="pageContent">
                         <thead className="thead-dark">
                         <tr>
                             <th>Název</th>

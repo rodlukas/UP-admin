@@ -86,7 +86,7 @@ export default class Diary extends Component {
         return (
             <div>
                 <Heading content={<HeadingContent/>}/>
-                <Container fluid>
+                <Container fluid className="pageContent">
                     <Row>
                     {this.getWeek().map(day =>
                         <Col key={day} sm="12" md="6" lg="" className="diary-day">

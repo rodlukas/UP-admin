@@ -103,7 +103,7 @@ export default class Applications extends Component {
                     </ListGroupItem>)}
             </Fragment>
         const AllApplications = () =>
-            <Fragment>
+            <div className="pageContent">
                 {applications.map(courseApplications =>
                     <ListGroup key={courseApplications.course}>
                         <h4 className="Applications-h4">
@@ -117,14 +117,14 @@ export default class Applications extends Component {
                 <p className="text-muted text-center">
                     Žádní zájemci
                 </p>}
-            </Fragment>
+            </div>
         const HeadingContent = () =>
             <Fragment>
                 Zájemci o kurzy
                 <AddButton content="Přidat zájemce" onClick={() => this.toggle()}/>
             </Fragment>
         return (
-            <div>
+            <Fragment>
                 <Container>
                     <Heading content={<HeadingContent/>}/>
                     {LOADING_CNT !== 2 ?
@@ -135,7 +135,7 @@ export default class Applications extends Component {
                     <FormApplications application={currentApplication} courses={courses} funcClose={this.toggle}
                                       funcRefresh={this.refresh}/>
                 </Modal>
-            </div>
+            </Fragment>
         )
     }
 }
