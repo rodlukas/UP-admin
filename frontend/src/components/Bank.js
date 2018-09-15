@@ -6,6 +6,7 @@ import NoInfo from "./NoInfo"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSyncAlt, faExternalLinkAlt, faArrowAltUp, faExclamationCircle} from "@fortawesome/pro-solid-svg-icons"
 import CustomButton from "./buttons/CustomButton"
+import {prettyAmount} from "../global/utils"
 
 const RENT = 3530
 const REFRESH_TIMEOUT = 60 // sekundy
@@ -123,7 +124,7 @@ export default class Bank extends Component {
                                              transform={amount < 0 ? "rotate-45" : "rotate-225"}
                                              className={amount < 0 ? "text-danger" : "text-success"}/>
                             {' '}
-                            {amount.toLocaleString()} Kč
+                            {prettyAmount(amount)} Kč
                         </td>
                     </tr>)
             })
@@ -136,7 +137,7 @@ export default class Bank extends Component {
                         {' '}
                         {balance ?
                             <span className="font-weight-bold">
-                                {balance.toLocaleString() + " Kč"}
+                                {prettyAmount(balance) + " Kč"}
                             </span>
                             :
                             this.state.DATA_PROBLEM ?

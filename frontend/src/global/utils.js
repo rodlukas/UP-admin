@@ -21,3 +21,7 @@ export function groupByCourses(data) {
 export function removeAllSpaces(str) {
     return str.replace(/\s/g, '')
 }
+
+export function prettyAmount(amount) {
+    return amount.toLocaleString('cs-CZ')
+}
