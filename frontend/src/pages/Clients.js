@@ -73,7 +73,7 @@ export default class ClientList extends Component {
                         <tr>
                             <th>Příjmení a jméno</th>
                             <th>Telefon</th>
-                            <th style={{wordBreak: 'break-all'}}>E-mail</th>
+                            <th style={{wordBreak: 'keep-all'}}>E-mail</th>
                             <th>Poznámka</th>
                             <th>Akce</th>
                         </tr>
