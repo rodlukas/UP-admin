@@ -28,8 +28,6 @@ export default class FormClients extends Component {
         this.setState({[target.id]: value})
     }
 
-
-
     onSubmit = e => {
         e.preventDefault()
         const {id, name, surname, email, phone, note} = this.state
