@@ -292,7 +292,7 @@ class FormLectures extends Component {
                                 </InputGroupAddon>
                                 <Input type="date" id="date" value={date} disabled={prepaid} onChange={this.onChange}
                                        required={!prepaid} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2099-12-31"
-                                       min="2013-01-01"/>
+                                       min="2013-01-01" placeholder="yyyy-mm-dd"/>
                             </InputGroup>
                         </Col>
                         <Col sm={4}>
@@ -303,7 +303,7 @@ class FormLectures extends Component {
                                     </InputGroupText>
                                 </InputGroupAddon>
                                 <Input type="time" id="time" value={time} disabled={prepaid} onChange={this.onChange}
-                                       required={!prepaid}/>
+                                       required={!prepaid} placeholder="hh:mm"/>
                             </InputGroup>
                         </Col>
                     </FormGroup>
