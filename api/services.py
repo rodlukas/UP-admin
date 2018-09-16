@@ -10,9 +10,9 @@ class Bank:
     def get_bank_data():
         current_date_str = datetime.now().strftime("%Y-%m-%d")
         history_date_str = (datetime.now() - timedelta(days=14)).strftime("%Y-%m-%d")
-        url = Bank.FIO_API_URL + "periods/" + FIO_API_KEY + "/" + history_date_str \
+        url_secret = Bank.FIO_API_URL + "periods/" + FIO_API_KEY + "/" + history_date_str \
               + "/" + current_date_str + "/transactions.json"
-        data = requests.get(url)
+        data = requests.get(url_secret)
         try:
             json_data = data.json()
             # serad od nejnovejsich transakci
