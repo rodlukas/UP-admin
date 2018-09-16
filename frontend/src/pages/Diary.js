@@ -64,13 +64,20 @@ export default class Diary extends Component {
     }
 
     render() {
-        const title = "Týden " + prettyDateWithYearIfDiff(this.getRequiredMonday()) + " – " + prettyDateWithYearIfDiff(this.getFridayDate())
+        const TitleDate = ({date}) =>
+            <span className="TitleDate">
+                {prettyDateWithYearIfDiff(date)}
+            </span>
+        const Title = () =>
+            <Fragment>
+                {' '}Týden <TitleDate date={this.getRequiredMonday()}/> – <TitleDate date={this.getFridayDate()}/>{' '}
+            </Fragment>
         const HeadingContent = () =>
             <Fragment>
                 <Link to={this.getPrevMondaySerialized()}>
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"/>
                 </Link>
-                {" " + title + " "}
+                <Title/>
                 <Link to={this.getNextMondaySerialized()}>
                     <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
                 </Link>
