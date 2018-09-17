@@ -208,10 +208,12 @@ export default class Card extends Component {
                 {' '}
                 {"Karta " + (this.isClient() ? "klienta" : "skupiny")}:
                 {' '}
-                {this.isClient() ?
-                    <ClientName client={object}/>
-                    :
-                    <GroupName group={object}/>}
+                <span className="font-weight-bold">
+                    {this.isClient() ?
+                        <ClientName client={object}/>
+                        :
+                        <GroupName group={object}/>}
+                </span>
                 <AddButton content="Přidat lekci" onClick={() => this.toggle()}/>
             </Fragment>
         const CardContent = () =>
