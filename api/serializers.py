@@ -330,11 +330,12 @@ class LectureSerializer(serializers.ModelSerializer):
                 # tvorba errormsg
                 err_datetime = local_dt.strftime("%d. %m. %Y - %H:%M")
                 err_duration = str(elem.duration)
-                err = 'Časový konflikt s jinou lekcí (' + err_datetime + ', trvání ' + err_duration + ' min.), '
+                err = 'Časový konflikt s jinou lekcí: '
                 if elem.group is not None:
                     err += 'skupina ' + elem.group.name
                 else:
                     client = elem.attendances.get().client
                     err += 'klient ' + client.surname + ' ' + client.name
+                err += ' (' + err_datetime + ', trvání ' + err_duration + ' min.)'
                 raise serializers.ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [err]})
         return data
