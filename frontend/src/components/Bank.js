@@ -4,7 +4,7 @@ import {ListGroup, ListGroupItem, Table, UncontrolledTooltip} from "reactstrap"
 import {prettyDateWithDayYearIfDiff, prettyTimeWithSeconds, isToday} from "../global/funcDateTime"
 import NoInfo from "./NoInfo"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faSyncAlt, faExternalLinkAlt, faArrowAltUp, faExclamationCircle} from "@fortawesome/pro-solid-svg-icons"
+import {faSyncAlt, faExternalLinkAlt, faExclamationCircle} from "@fortawesome/pro-solid-svg-icons"
 import CustomButton from "./buttons/CustomButton"
 import {prettyAmount} from "../global/utils"
 
@@ -101,6 +101,7 @@ export default class Bank extends Component {
                 const id = transaction.column22.value
                 const comment_obj = transaction.column25
                 const target_account_owner_obj = transaction.column10
+                const amount_className = "font-weight-bold text-right" + (amount < 0 ? " text-danger" : "")
                 return (
                     <tr key={id} className={isToday(date) ? "table-warning" : undefined}>
                         <td>
@@ -118,12 +119,8 @@ export default class Bank extends Component {
                                 :
                                 <NoInfo/>}
                         </td>
-                        <td style={{minWidth: '6em'}}>{prettyDateWithDayYearIfDiff(date, true)}</td>
-                        <td className="font-weight-bold" style={{minWidth: '8em'}}>
-                            <FontAwesomeIcon icon={faArrowAltUp}
-                                             transform={amount < 0 ? "rotate-45" : "rotate-225"}
-                                             className={amount < 0 ? "text-danger" : "text-success"}/>
-                            {' '}
+                        <td className="text-right" style={{minWidth: '6em'}}>{prettyDateWithDayYearIfDiff(date, true)}</td>
+                        <td className={amount_className} style={{minWidth: '7em'}}>
                             {prettyAmount(amount)} Kč
                         </td>
                     </tr>)
@@ -180,8 +177,8 @@ export default class Bank extends Component {
                         <tr>
                             <th>Poznámka</th>
                             <th>Zpráva pro příjemce</th>
-                            <th>Datum</th>
-                            <th>Suma</th>
+                            <th className="text-right">Datum</th>
+                            <th className="text-right">Suma</th>
                         </tr>
                         </thead>
                         <tbody>
