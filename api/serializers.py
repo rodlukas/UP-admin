@@ -134,9 +134,14 @@ class AttendanceSerializer(serializers.ModelSerializer):
                 or (not prev_canceled and instance.lecture.canceled
                     and instance.attendancestate.default and instance.paid):
             if instance.lecture.group is not None:
-                membership = instance.lecture.group.memberships.get(client=instance.client)
-                membership.prepaid_cnt = membership.prepaid_cnt + 1
-                membership.save()
+                # najdi clenstvi nalezici klientovi v teto skupine
+                try:
+                    membership = instance.lecture.group.memberships.get(client=instance.client)
+                    membership.prepaid_cnt = membership.prepaid_cnt + 1
+                    membership.save()
+                except ObjectDoesNotExist:
+                    # pokud uz klient neni clenem skupiny, nic nedelej
+                    pass
             else:
                 prepaid_lecture = Lecture.objects.create(course=instance.lecture.course,
                                                          duration="30", canceled=False)
@@ -239,13 +244,17 @@ class LectureSerializer(serializers.ModelSerializer):
             # pokud se jedna o skupinu, proved korekce poctu predplacenych lekci
             if group is not None:
                 # najdi clenstvi nalezici klientovi v teto skupine
-                membership = group.memberships.get(client=client)
-                # kdyz ma dorazit, lekce neni zrusena a ma nejake predplacene lekce, odecti jednu
-                if not instance.canceled and attendance_data['attendancestate'].default:
-                    if membership.prepaid_cnt > 0:
-                        attendance_data.paid = True
-                        membership.prepaid_cnt = membership.prepaid_cnt - 1
-                        membership.save()
+                try:
+                    membership = group.memberships.get(client=client)
+                    # kdyz ma dorazit, lekce neni zrusena a ma nejake predplacene lekce, odecti jednu
+                    if not instance.canceled and attendance_data['attendancestate'].default:
+                        if membership.prepaid_cnt > 0:
+                            attendance_data.paid = True
+                            membership.prepaid_cnt = membership.prepaid_cnt - 1
+                            membership.save()
+                except ObjectDoesNotExist:
+                    # pokud uz klient neni clenem skupiny, nic nedelej
+                    pass
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
         # vypis: for k, v in validated_data.items(): print(k, v)
@@ -281,9 +290,13 @@ class LectureSerializer(serializers.ModelSerializer):
                         and attendance.attendancestate.default and attendance.paid):
                 if group is not None:
                     # najdi clenstvi nalezici klientovi v teto skupine
-                    membership = group.memberships.get(client=attendance.client)
-                    membership.prepaid_cnt = membership.prepaid_cnt + 1
-                    membership.save()
+                    try:
+                        membership = group.memberships.get(client=attendance.client)
+                        membership.prepaid_cnt = membership.prepaid_cnt + 1
+                        membership.save()
+                    except ObjectDoesNotExist:
+                        # pokud uz klient neni clenem skupiny, nic nedelej
+                        pass
                 else:
                     prepaid_lecture = Lecture.objects.create(course=instance.course,
                                                              duration="30", canceled=False)
