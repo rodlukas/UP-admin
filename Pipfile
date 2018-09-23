@@ -16,8 +16,8 @@ pyjwt = "==1.6.4"
 raven = "==6.9.0"
 requests = "==2.19.1"
 whitenoise = "==4.1"
-django-debug-toolbar = "==1.9.1"
-django-debug-toolbar-request-history = "==0.0.7"
+django-debug-toolbar = "==1.10.1"
+django-debug-toolbar-request-history = "==0.0.9"
 
 [dev-packages]
 
