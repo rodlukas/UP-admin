@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.com/rodlukas/UP-admin.svg?token=g1rDdptQG4SVzcH6FMo5&branch=master)](https://travis-ci.com/rodlukas/UP-admin)
 [![codecov](https://codecov.io/gh/rodlukas/UP-admin/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/UP-admin)
 
-[Slack](https://uspesnyprvnacek.slack.com/messages) | [Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | [Travis CI](https://travis-ci.com/rodlukas/UP-admin) | [Heroku](https://dashboard.heroku.com/apps/uspesnyprvnacek)
+[Slack](https://uspesnyprvnacek.slack.com/messages) | [Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | [Travis CI](https://travis-ci.com/rodlukas/UP-admin) | [Heroku](https://dashboard.heroku.com/apps) | Logentries
 
 Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis)
 
@@ -33,7 +33,13 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 ## další informace
 * každý den ve 3:00 se provádí automatická záloha databáze (viz. https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
 * [využité tipy k optimalizaci Djanga](https://www.revsys.com/tidbits/django-performance-simple-things/) + [další podobný článek](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)
-* **respektování standardů** (tam, kde to má smysl): https://12factor.net/, https://roca-style.org/    
+* **respektování standardů** (tam, kde to má smysl): https://12factor.net/, https://roca-style.org/
+* 4 prostředí:
+    * **vývojové (lokální)** - žlutá lišta,
+    * **testing** - umožňuje zapnout debugování, deploy každého commitu, modrá lišta
+    * **staging** - stejná verze aplikace jako na produkci, deploy při release, zelená lišta
+    * **produkce** - používá klient, deploy při release (jako staging)
+* logování do *Logentries* (logy se uchovávají po 7 dnů)
 
 ### statické soubory
 * **nastavení Webpacku a Djanga:** http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
