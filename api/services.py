@@ -13,14 +13,17 @@ class Bank:
         url_secret = Bank.FIO_API_URL + "periods/" + FIO_API_KEY + "/" + history_date_str \
               + "/" + current_date_str + "/transactions.json"
         data = requests.get(url_secret)
+        # dekoduj JSON
         try:
             json_data = data.json()
+        except ValueError:  # kdyz se nepovede dekodovat JSON
+            json_data = {'status_code': data.status_code}
+        else:
             # serad od nejnovejsich transakci
             transactions = list(json_data['accountStatement']['transactionList']['transaction'])
             transactions.reverse()
             # uloz nove hodnoty do puvodniho JSONu
             json_data['accountStatement']['transactionList']['transaction'] = transactions
-            json_data['fetch_timestamp'] = int(datetime.now().timestamp() * 1000)  # prevod na milisekundy
-        except ValueError:  # kdyz se nepovede dekodovat json
-            json_data = {'status_code': data.status_code}
+            # timestamp dotazu (s prevodem na milisekundy)
+            json_data['fetch_timestamp'] = int(datetime.now().timestamp() * 1000)
         return json_data

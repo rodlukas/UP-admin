@@ -137,11 +137,12 @@ class AttendanceSerializer(serializers.ModelSerializer):
                 # najdi clenstvi nalezici klientovi v teto skupine
                 try:
                     membership = instance.lecture.group.memberships.get(client=instance.client)
-                    membership.prepaid_cnt = membership.prepaid_cnt + 1
-                    membership.save()
                 except ObjectDoesNotExist:
                     # pokud uz klient neni clenem skupiny, nic nedelej
                     pass
+                else:
+                    membership.prepaid_cnt = membership.prepaid_cnt + 1
+                    membership.save()
             else:
                 prepaid_lecture = Lecture.objects.create(course=instance.lecture.course,
                                                          duration="30", canceled=False)
@@ -246,15 +247,16 @@ class LectureSerializer(serializers.ModelSerializer):
                 # najdi clenstvi nalezici klientovi v teto skupine
                 try:
                     membership = group.memberships.get(client=client)
+                except ObjectDoesNotExist:
+                    # pokud uz klient neni clenem skupiny, nic nedelej
+                    pass
+                else:
                     # kdyz ma dorazit, lekce neni zrusena a ma nejake predplacene lekce, odecti jednu
                     if not instance.canceled and attendance_data['attendancestate'].default:
                         if membership.prepaid_cnt > 0:
                             attendance_data.paid = True
                             membership.prepaid_cnt = membership.prepaid_cnt - 1
                             membership.save()
-                except ObjectDoesNotExist:
-                    # pokud uz klient neni clenem skupiny, nic nedelej
-                    pass
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
         # vypis: for k, v in validated_data.items(): print(k, v)
@@ -292,11 +294,12 @@ class LectureSerializer(serializers.ModelSerializer):
                     # najdi clenstvi nalezici klientovi v teto skupine
                     try:
                         membership = group.memberships.get(client=attendance.client)
-                        membership.prepaid_cnt = membership.prepaid_cnt + 1
-                        membership.save()
                     except ObjectDoesNotExist:
                         # pokud uz klient neni clenem skupiny, nic nedelej
                         pass
+                    else:
+                        membership.prepaid_cnt = membership.prepaid_cnt + 1
+                        membership.save()
                 else:
                     prepaid_lecture = Lecture.objects.create(course=instance.course,
                                                              duration="30", canceled=False)
