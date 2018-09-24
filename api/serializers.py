@@ -55,19 +55,13 @@ class GroupSerializer(serializers.ModelSerializer):
         memberships_data = validated_data.pop('memberships')
         memberships = instance.memberships.all()
         # smaz z DB ty co tam nemaj byt
-        current_clients = []
-        for membership in memberships:
-            current_clients.append(membership.client.id)
-        new_clients = []
-        for membership_data in memberships_data:
-            new_clients.append(membership_data['client'].pk)
-        memberships.exclude(client__pk__in=new_clients).delete()
+        current_members_ids = [membership.client.id for membership in memberships]
+        new_members_ids = [membership_data['client'].pk for membership_data in memberships_data]
+        memberships.exclude(client__pk__in=new_members_ids).delete()
         # dopln do DB zbyle
         for membership_data in memberships_data:
             client = Client.objects.get(pk=membership_data.pop('client').pk)
-            try:
-                memberships.get(client=client)
-            except ObjectDoesNotExist:
+            if client.id not in current_members_ids:
                 Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
