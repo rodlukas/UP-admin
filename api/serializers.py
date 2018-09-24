@@ -60,7 +60,7 @@ class GroupSerializer(serializers.ModelSerializer):
             current_clients.append(membership.client.id)
         new_clients = []
         for membership_data in memberships_data:
-            new_clients.append(membership_data.get('client').pk)
+            new_clients.append(membership_data['client'].pk)
         memberships.exclude(client__pk__in=new_clients).delete()
         # dopln do DB zbyle
         for membership_data in memberships_data:
