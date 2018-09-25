@@ -226,8 +226,9 @@ class LectureSerializer(serializers.ModelSerializer):
         # vytvoreni instance lekce
         attendances_data = validated_data.pop('attendances')
         course = Course.objects.get(pk=validated_data.pop('course').pk)
-        if validated_data['group'] is not None:
-            group = Group.objects.get(pk=validated_data.pop('group').pk)
+        group_data = validated_data.pop('group')
+        if group_data is not None:
+            group = Group.objects.get(pk=group_data.pk)
         else:
             group = None
         # nastav lekci jako zrusenou pokud nikdo nema prijit
