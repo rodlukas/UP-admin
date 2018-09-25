@@ -83,6 +83,9 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 * hezký popis: https://medium.com/vandium-software/5-easy-steps-to-understanding-json-web-tokens-jwt-1164c0adfcec
 * přihlášení na podobný princip jako: https://stackoverflow.com/questions/49819183/react-what-is-the-best-way-to-handle-authenticated-logged-in-state
 
+### React
+* [inspirace pro protected router v Context API](https://medium.freecodecamp.org/how-to-protect-your-routes-with-react-context-717670c4713a)
+
 ### další
 * [blog o djangu+react+rest](https://wsvincent.com/)
 * [8 no-Flux strategies for React component communication](https://www.javascriptstuff.com/component-communication/)
