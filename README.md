@@ -33,7 +33,7 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 ## další informace
 * každý den ve 3:00 se provádí automatická záloha databáze (viz. https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
 * [využité tipy k optimalizaci Djanga](https://www.revsys.com/tidbits/django-performance-simple-things/) + [další podobný článek](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)
-* **respektování standardů** (tam, kde to má smysl): https://12factor.net/, https://roca-style.org/
+* **respektování standardů** (tam, kde to má smysl): https://12factor.net/, https://roca-style.org/, https://pep8.org
 * 4 prostředí:
     * **vývojové (lokální)** - žlutá lišta,
     * **testing** - umožňuje zapnout debugování, deploy každého commitu, modrá lišta
