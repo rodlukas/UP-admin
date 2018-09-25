@@ -60,7 +60,7 @@ class Application(models.Model):
 
 
 class Group(models.Model):
-    name = models.TextField(blank=True)
+    name = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
 
     class Meta:

@@ -104,7 +104,7 @@ export default class FormGroups extends Component {
                             Název
                         </Label>
                         <Col sm={10}>
-                            <Input type="text" id="name" value={name} onChange={this.onChange} autoFocus/>
+                            <Input type="text" id="name" value={name} onChange={this.onChange} autoFocus required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
