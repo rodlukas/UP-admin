@@ -25,3 +25,9 @@ export function removeAllSpaces(str) {
 export function prettyAmount(amount) {
     return amount.toLocaleString('cs-CZ')
 }
+
+// workaround dokud nebude fungovat required v react-selectu - TODO
+export function alertRequired(object, ...inputVals) {
+    if(inputVals.some(e => e === null))
+        alert("Není zvolen žádný " + object + "!")
+}

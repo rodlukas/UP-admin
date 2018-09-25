@@ -7,6 +7,7 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import CancelButton from "../components/buttons/CancelButton"
 import ClientName from "../components/ClientName"
 import {TEXTS} from "../global/constants"
+import {alertRequired} from "../global/utils"
 
 export default class FormApplications extends Component {
     constructor(props) {
@@ -34,6 +35,7 @@ export default class FormApplications extends Component {
     onSubmit = e => {
         e.preventDefault()
         const {id, course, client, note} = this.state
+        alertRequired("kurz nebo klient", course, client)
         const data = {id, course_id: course.id, client_id: client.id, note}
         let request
         if (this.isObject)

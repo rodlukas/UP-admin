@@ -9,6 +9,7 @@ import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import {TEXTS} from "../global/constants"
+import {alertRequired} from "../global/utils"
 
 export default class FormGroups extends Component {
     constructor(props) {
@@ -57,6 +58,7 @@ export default class FormGroups extends Component {
     onSubmit = e => {
         e.preventDefault()
         const {id, name, memberships, course} = this.state
+        alertRequired("kurz", course)
         const data = {id, name, memberships: this.prepareMembersForSubmit(memberships), course_id: course.id}
         let request
         if (this.isGroup)
@@ -137,6 +139,7 @@ export default class FormGroups extends Component {
                                 onChange={newValue => this.onSelectChange(newValue, "memberships")}
                                 options={clients}
                                 placeholder={"Vyberte členy skupiny..."}
+                                isClearable={false}
                                 noOptionsMessage={() => TEXTS.NO_RESULTS}/>
                         </Col>
                     </FormGroup>
