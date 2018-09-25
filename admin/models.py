@@ -78,7 +78,8 @@ class Lecture(models.Model):
 class Attendance(models.Model):
     paid = models.BooleanField()
     note = models.TextField(blank=True)
-    client = models.ForeignKey(Client, related_name='attendances', on_delete=models.PROTECT)  # tedy lze smazat pouze klienta co nema zadne attendances
+    # on_delete: tedy lze smazat pouze klienta co nema zadne attendances
+    client = models.ForeignKey(Client, related_name='attendances', on_delete=models.PROTECT)
     lecture = models.ForeignKey(Lecture, related_name='attendances', on_delete=models.CASCADE)
     attendancestate = models.ForeignKey(AttendanceState, on_delete=models.PROTECT)
 

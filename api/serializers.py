@@ -84,13 +84,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    """ client - pro GET, vypise vsechny informace o klientovi
-     client_id - pro PUT/POST
-               - source='client' spolu s queryset zarizuje, ze staci zaslat v pozadavku "client_id" : <id> a
-                 serializer se bude k tomuto udaji chovat jako k objektu client (jako o radek vyse) bez nutnosti
-                 jakkoliv prepisovat serializer a upravovat client na client_id apod.
-               - podle https://stackoverflow.com/a/33048798
-                       https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ"""
+    # client - pro GET, vypise vsechny informace o klientovi
+    # client_id - pro PUT/POST
+    #   -   source='client' spolu s queryset zarizuje, ze staci zaslat v pozadavku "client_id" : <id> a
+    #       serializer se bude k tomuto udaji chovat jako k objektu client (jako o radek vyse) bez nutnosti
+    #       jakkoliv prepisovat serializer a upravovat client na client_id apod.
+    #   -   podle:  https://stackoverflow.com/a/33048798,
+    #               https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
     id = serializers.IntegerField(required=False)  # aby slo poslat pri updatu i ID attendance
     client = ClientSerializer(read_only=True)
     client_id = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), source='client', write_only=True)
@@ -138,8 +138,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
                     membership.prepaid_cnt = membership.prepaid_cnt + 1
                     membership.save()
             else:
-                prepaid_lecture = Lecture.objects.create(course=instance.lecture.course,
-                                                         duration="30", canceled=False)
+                prepaid_lecture = Lecture.objects.create(course=instance.lecture.course, duration="30", canceled=False)
                 Attendance.objects.create(paid=True, client=instance.client, lecture=prepaid_lecture,
                                           attendancestate=AttendanceState.objects.get(default=True),
                                           note="Náhrada lekce")
@@ -170,9 +169,10 @@ class AttendanceSerializer(serializers.ModelSerializer):
             else:
                 if prepaid_cnt > 0:
                     return False
-        # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu a zjisti, zda existuje datumove po teto lekci dalsi zaplacena lekce
-        res = Attendance.objects.filter(client=obj.client, lecture__course=obj.lecture.course,
-                                        lecture__group=obj.lecture.group, paid=True, lecture__canceled=False)
+        # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu
+        # a zjisti, zda existuje datumove po teto lekci dalsi zaplacena lekce
+        res = Attendance.objects.filter(client=obj.client, lecture__course=obj.lecture.course, paid=True,
+                                        lecture__group=obj.lecture.group, lecture__canceled=False)
         # ber v uvahu nejen budouci lekce ale take predplacene lekce
         res = res.filter(Q(lecture__start__gt=obj.lecture.start) | Q(lecture__start__isnull=True)).count()
         # pokud je pocet dalsich zaplacenych lekci 0, vrat True, jinak False
@@ -198,8 +198,7 @@ class LectureSerializer(serializers.ModelSerializer):
         if obj.start is None:
             return None
         if obj.group is not None:
-            cnt = Lecture.objects.filter(group=obj.group, start__isnull=False,
-                                         start__lt=obj.start, canceled=False)
+            cnt = Lecture.objects.filter(group=obj.group, start__isnull=False, start__lt=obj.start, canceled=False)
         else:
             try:
                 attendancestate_default_pk = AttendanceState.objects.values('pk').get(default=True)['pk']
@@ -207,8 +206,8 @@ class LectureSerializer(serializers.ModelSerializer):
                 return "?? - je potřeba nastavit výchozí stav účasti"
             cnt = Attendance.objects.filter(client=obj.attendances.get().client.pk, lecture__course=obj.course,
                                             lecture__start__isnull=False, lecture__group__isnull=True,
-                                            lecture__start__lt=obj.start,
-                                            attendancestate=attendancestate_default_pk, lecture__canceled=False)
+                                            lecture__start__lt=obj.start, lecture__canceled=False,
+                                            attendancestate=attendancestate_default_pk)
         return cnt.count() + 1  # +1 aby prvni kurz nebyl jako 0.
 
     # zaridi, ze lekce bude zrusena pokud jsou vsichni omluveni
@@ -253,7 +252,6 @@ class LectureSerializer(serializers.ModelSerializer):
                             membership.save()
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
-        # vypis: for k, v in validated_data.items(): print(k, v)
 
     def update(self, instance, validated_data):
         attendances_data = validated_data.pop('attendances')
@@ -295,8 +293,7 @@ class LectureSerializer(serializers.ModelSerializer):
                         membership.prepaid_cnt = membership.prepaid_cnt + 1
                         membership.save()
                 else:
-                    prepaid_lecture = Lecture.objects.create(course=instance.course,
-                                                             duration="30", canceled=False)
+                    prepaid_lecture = Lecture.objects.create(course=instance.course, duration="30", canceled=False)
                     Attendance.objects.create(paid=True, client=attendance.client, lecture=prepaid_lecture,
                                               attendancestate=AttendanceState.objects.get(default=True),
                                               note="Náhrada lekce")
@@ -323,11 +320,8 @@ class LectureSerializer(serializers.ModelSerializer):
         expression = F('start') + (timedelta(minutes=1) * F('duration'))
         # proved dotaz, vrat datetime
         end_db = ExpressionWrapper(expression, output_field=models.DateTimeField())
-        # ke kazdemu zaznamu prirad hodnotu end_db ziskanou diky vyrazum vyse,
-        #   zjisti, zda existuji lekce v konfliktu
-        qs = Lecture.objects \
-            .annotate(end_db=end_db) \
-            .filter(start__lt=end, end_db__gt=data['start'])
+        # ke kazdemu zaznamu prirad hodnotu end_db ziskanou diky vyrazum vyse a zjisti, zda existuji lekce v konfliktu
+        qs = Lecture.objects.annotate(end_db=end_db).filter(start__lt=end, end_db__gt=data['start'])
         if self.instance:  # pokud updatuju, proveruji pouze ostatni lekce
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
