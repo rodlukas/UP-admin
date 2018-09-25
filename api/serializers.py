@@ -49,20 +49,21 @@ class GroupSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # vytvoreni instance skupiny
         instance.name = validated_data.get('name', instance.name)
-        instance.course = Course.objects.get(pk=validated_data.pop('course').pk)
+        instance.course = Course.objects.get(pk=validated_data.get('course', instance.course).pk)
         instance.save()
         # upravy clenstvi
-        memberships_data = validated_data.pop('memberships')
-        memberships = instance.memberships.all()
-        # smaz z DB ty co tam nemaj byt
-        current_members_ids = [membership.client.id for membership in memberships]
-        new_members_ids = [membership_data['client'].pk for membership_data in memberships_data]
-        memberships.exclude(client__pk__in=new_members_ids).delete()
-        # dopln do DB zbyle
-        for membership_data in memberships_data:
-            client = Client.objects.get(pk=membership_data.pop('client').pk)
-            if client.id not in current_members_ids:
-                Membership.objects.create(client=client, group=instance, **membership_data)
+        if 'memberships' in validated_data:
+            memberships_data = validated_data.get('memberships')
+            memberships = instance.memberships.all()
+            # smaz z DB ty co tam nemaj byt
+            current_members_ids = [membership.client.id for membership in memberships]
+            new_members_ids = [membership_data['client'].pk for membership_data in memberships_data]
+            memberships.exclude(client__pk__in=new_members_ids).delete()
+            # dopln do DB zbyle
+            for membership_data in memberships_data:
+                client = Client.objects.get(pk=membership_data.pop('client').pk)
+                if client.id not in current_members_ids:
+                    Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
 
