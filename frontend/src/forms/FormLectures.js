@@ -206,11 +206,14 @@ class FormLectures extends Component {
                 attendances_data.id = this.props.lecture.attendances.find(elem => elem.client.id === member.id).id
             attendances.push(attendances_data)
         })
-        let data = {id, attendances, course_id: course.id, duration, canceled}
-        if(!this.IS_CLIENT)
-            data.group_id = object.id // API nechce pro klienta hodnotu null, doda ji samo ale pouze pokud je klic group_id nedefinovany
-        if(!prepaid)
-            data.start = start // stejny duvod viz. vyse
+        let data = {
+            id,
+            attendances,
+            course_id: course.id,
+            duration,
+            canceled,
+            group_id: !this.IS_CLIENT ? object.id : null,
+            start: prepaid ? null : start}
 
         let request
         if (this.IS_LECTURE)

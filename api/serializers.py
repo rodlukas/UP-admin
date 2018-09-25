@@ -53,7 +53,7 @@ class GroupSerializer(serializers.ModelSerializer):
         instance.save()
         # upravy clenstvi
         if 'memberships' in validated_data:
-            memberships_data = validated_data.get('memberships')
+            memberships_data = validated_data['memberships']
             memberships = instance.memberships.all()
             # smaz z DB ty co tam nemaj byt
             current_members_ids = [membership.client.id for membership in memberships]
@@ -186,7 +186,7 @@ class LectureSerializer(serializers.ModelSerializer):
     course_id = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), source='course', write_only=True)
     group = GroupSerializer(read_only=True)
     group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), source='group', write_only=True,
-                                                  required=False)
+                                                  required=False, allow_null=True)
     count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -226,9 +226,10 @@ class LectureSerializer(serializers.ModelSerializer):
         # vytvoreni instance lekce
         attendances_data = validated_data.pop('attendances')
         course = Course.objects.get(pk=validated_data.pop('course').pk)
-        group = None
-        if 'group' in validated_data:
+        if validated_data['group'] is not None:
             group = Group.objects.get(pk=validated_data.pop('group').pk)
+        else:
+            group = None
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not validated_data['canceled']:
             validated_data['canceled'] = self.should_be_canceled(attendances_data)
@@ -255,91 +256,107 @@ class LectureSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        attendances_data = validated_data.pop('attendances')
-        # uprava instance lekce
-        group = None
-        if 'group' in validated_data:
-            group = Group.objects.get(pk=validated_data.pop('group').pk)
         prev_canceled = instance.canceled
-        instance.start = validated_data.get('start')
+        # uprava instance lekce
+        instance.start = validated_data.get('start', instance.start)
         instance.duration = validated_data.get('duration', instance.duration)
         instance.canceled = validated_data.get('canceled', instance.canceled)
-        instance.course = Course.objects.get(pk=validated_data.pop('course').pk)
-        instance.group = group
+        instance.course = Course.objects.get(pk=validated_data.get('course', instance.course).pk)
+        group_data = validated_data.get('group', instance.group)
+        if group_data is not None:
+            instance.group = Group.objects.get(pk=group_data.pk)
+        else:
+            instance.group = None
         instance.save()
-        # upravy jednotlivych ucasti
-        attendances = instance.attendances.all()
-        for attendance_data in attendances_data:
-            attendance = attendances.get(pk=attendance_data['id'])
-            prev_attendancestate = attendance.attendancestate
-            attendance.paid = attendance_data.get('paid', attendance.paid)
-            attendance.client = Client.objects.get(pk=attendance_data['client'].pk)
-            attendance.note = attendance_data.get('note', attendance.note)
-            attendance.attendancestate = AttendanceState.objects.get(pk=attendance_data['attendancestate'].pk)
-            attendance.save()
-            # proved korekce poctu predplacenych lekci
-            # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
-            # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
-            if (attendance.attendancestate.excused and not prev_attendancestate.excused and attendance.paid) \
-                    or (not prev_canceled and instance.canceled
-                        and attendance.attendancestate.default and attendance.paid):
-                if group is not None:
-                    # najdi clenstvi nalezici klientovi v teto skupine
-                    try:
-                        membership = group.memberships.get(client=attendance.client)
-                    except ObjectDoesNotExist:
-                        # pokud uz klient neni clenem skupiny, nic nedelej
-                        pass
+        if 'attendances' in validated_data:
+            # upravy jednotlivych ucasti
+            attendances_data = validated_data['attendances']
+            attendances = instance.attendances.all()
+            for attendance_data in attendances_data:
+                attendance = attendances.get(pk=attendance_data['id'])
+                prev_attendancestate = attendance.attendancestate
+                # uprava ucasti
+                attendance.paid = attendance_data['paid']
+                attendance.client = Client.objects.get(pk=attendance_data['client'].pk)
+                attendance.note = attendance_data['note']
+                attendance.attendancestate = AttendanceState.objects.get(pk=attendance_data['attendancestate'].pk)
+                attendance.save()
+                # proved korekce poctu predplacenych lekci
+                # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
+                # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
+                if (attendance.attendancestate.excused and not prev_attendancestate.excused and attendance.paid) \
+                        or (not prev_canceled and instance.canceled
+                            and attendance.attendancestate.default and attendance.paid):
+                    if instance.group is not None:
+                        # najdi clenstvi nalezici klientovi v teto skupine
+                        try:
+                            membership = instance.group.memberships.get(client=attendance.client)
+                        except ObjectDoesNotExist:
+                            # pokud uz klient neni clenem skupiny, nic nedelej
+                            pass
+                        else:
+                            membership.prepaid_cnt = membership.prepaid_cnt + 1
+                            membership.save()
                     else:
-                        membership.prepaid_cnt = membership.prepaid_cnt + 1
-                        membership.save()
-                else:
-                    prepaid_lecture = Lecture.objects.create(course=instance.course, duration="30", canceled=False)
-                    Attendance.objects.create(paid=True, client=attendance.client, lecture=prepaid_lecture,
-                                              attendancestate=AttendanceState.objects.get(default=True),
-                                              note="Náhrada lekce")
-        # nastav lekci jako zrusenou pokud nikdo nema prijit
-        if not instance.canceled:
-            instance.canceled = self.should_be_canceled(attendances_data)
-            instance.save()
+                        prepaid_lecture = Lecture.objects.create(course=instance.course, duration="30", canceled=False)
+                        Attendance.objects.create(paid=True, client=attendance.client, lecture=prepaid_lecture,
+                                                  attendancestate=AttendanceState.objects.get(default=True),
+                                                  note="Náhrada lekce")
+            # nastav lekci jako zrusenou pokud nikdo nema prijit
+            if not instance.canceled:
+                instance.canceled = self.should_be_canceled(attendances_data)
+                instance.save()
         return instance
 
     def validate(self, data):
         # pro zrusene lekce nic nekontroluj
-        if data['canceled']:
+        # tedy pokud je zaslana nova hodnota canceled a je True
+        # NEBO pokud neni zaslana nova hodnota a aktualni je True
+        if ('canceled' in data and data['canceled']) or ('canceled' not in data and self.instance.canceled):
             return data
-        # pro predplacene lekce proved jednoduchou kontrolu (nelze menit parametry platby)
-        if 'start' not in data:
-            for elem in data['attendances']:
-                if elem['paid'] is False:
+        # pro nove predplacene lekce proved jednoduchou kontrolu (nelze menit parametry platby)
+        if 'start' in data and data['start'] is None:
+            attendances = data['attendances'] if ('attendances' in data) else self.instance.attendances
+            for elem in attendances:
+                if not elem['paid']:
                     raise serializers.ValidationError(
                         {api_settings.NON_FIELD_ERRORS_KEY: "U předplacené lekce nelze měnit parametry platby"})
             return data
+        # pokud se meni duration/start, je potreba znat obe hodnoty, aby sel spocitat casovy konflikt
+        if ('start' in data and 'duration' not in data) or ('start' not in data and 'duration' in data):
+            raise serializers.ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: "Změnu počátku lekce a trvání je potřeba provádět naráz"})
+        # pokud se meni canceled, je potreba znat i attendances pro dopocteni should_be_canceled (metoda update)
+        if 'canceled' in data and 'attendances' not in data:
+            raise serializers.ValidationError(
+                {api_settings.NON_FIELD_ERRORS_KEY: "Pro změnu zrušení lekce je potřeba zaslat zároveň i účasti"})
         # kontrola casoveho konfliktu
-        end = data['start'] + timedelta(minutes=data['duration'])
-        # z atributu vytvor dotaz na end, pro funkcni operaci potreba pronasobit timedelta
-        expression = F('start') + (timedelta(minutes=1) * F('duration'))
-        # proved dotaz, vrat datetime
-        end_db = ExpressionWrapper(expression, output_field=models.DateTimeField())
-        # ke kazdemu zaznamu prirad hodnotu end_db ziskanou diky vyrazum vyse a zjisti, zda existuji lekce v konfliktu
-        qs = Lecture.objects.annotate(end_db=end_db).filter(start__lt=end, end_db__gt=data['start'])
-        if self.instance:  # pokud updatuju, proveruji pouze ostatni lekce
-            qs = qs.exclude(pk=self.instance.pk)
-        if qs.exists():
-            for elem in list(qs):
-                # do konfliktu nezapocitavej zrusene lekce
-                if elem.canceled:
-                    continue
-                # prevod na spravnou TZ
-                local_dt = timezone.localtime(elem.start)
-                # tvorba errormsg
-                err_datetime = local_dt.strftime("%d. %m. %Y - %H:%M")
-                err_duration = str(elem.duration)
-                if elem.group is not None:
-                    err_obj = f"skupina {elem.group.name}"
-                else:
-                    client = elem.attendances.get().client
-                    err_obj = f"klient {client.surname} {client.name}"
-                error_msg = f"Časový konflikt s jinou lekcí: {err_obj} ({err_datetime}, trvání {err_duration} min.)"
-                raise serializers.ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [error_msg]})
+        elif 'start' in data and 'duration' in data:
+            end = data['start'] + timedelta(minutes=data['duration'])
+            # z atributu vytvor dotaz na end, pro funkcni operaci potreba pronasobit timedelta
+            expression = F('start') + (timedelta(minutes=1) * F('duration'))
+            # proved dotaz, vrat datetime
+            end_db = ExpressionWrapper(expression, output_field=models.DateTimeField())
+            # ke kazdemu zaznamu prirad hodnotu end_db ziskanou z vyrazu vyse a zjisti, zda existuji lekce v konfliktu
+            qs = Lecture.objects.annotate(end_db=end_db).filter(start__lt=end, end_db__gt=data['start'])
+            # pokud updatuju, proveruji pouze ostatni lekce
+            if self.instance:
+                qs = qs.exclude(pk=self.instance.pk)
+            if qs.exists():
+                for elem in list(qs):
+                    # do konfliktu nezapocitavej zrusene lekce
+                    if elem.canceled:
+                        continue
+                    # prevod na spravnou TZ
+                    local_dt = timezone.localtime(elem.start)
+                    # tvorba errormsg
+                    err_datetime = local_dt.strftime("%d. %m. %Y - %H:%M")
+                    err_duration = str(elem.duration)
+                    if elem.group is not None:
+                        err_obj = f"skupina {elem.group.name}"
+                    else:
+                        client = elem.attendances.get().client
+                        err_obj = f"klient {client.surname} {client.name}"
+                    error_msg = f"Časový konflikt s jinou lekcí: {err_obj} ({err_datetime}, trvání {err_duration} min.)"
+                    raise serializers.ValidationError({api_settings.NON_FIELD_ERRORS_KEY: [error_msg]})
         return data
