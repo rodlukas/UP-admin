@@ -35,7 +35,8 @@ export default class FormApplications extends Component {
     onSubmit = e => {
         e.preventDefault()
         const {id, course, client, note} = this.state
-        alertRequired("kurz nebo klient", course, client)
+        if(alertRequired("kurz nebo klient", course, client))
+            return
         const data = {id, course_id: course.id, client_id: client.id, note}
         let request
         if (this.isObject)

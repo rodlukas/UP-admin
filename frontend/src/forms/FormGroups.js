@@ -58,7 +58,8 @@ export default class FormGroups extends Component {
     onSubmit = e => {
         e.preventDefault()
         const {id, name, memberships, course} = this.state
-        alertRequired("kurz", course)
+        if(alertRequired("kurz", course))
+            return
         const data = {id, name, memberships: this.prepareMembersForSubmit(memberships), course_id: course.id}
         let request
         if (this.isGroup)

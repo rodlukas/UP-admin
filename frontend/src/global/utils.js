@@ -28,6 +28,9 @@ export function prettyAmount(amount) {
 
 // workaround dokud nebude fungovat required v react-selectu - TODO
 export function alertRequired(object, ...inputVals) {
-    if(inputVals.some(e => e === null))
+    if(inputVals.some(e => e === null)) {
         alert("Není zvolen žádný " + object + "!")
+        return true
+    }
+    return false
 }

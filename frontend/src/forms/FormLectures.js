@@ -191,7 +191,8 @@ class FormLectures extends Component {
     onSubmit = e => {
         e.preventDefault()
         const {id, prepaid, canceled, course, time, date, duration, at_note, at_paid, at_state, object, prepaid_cnt} = this.state
-        alertRequired("kurz", course)
+        if(alertRequired("kurz", course))
+            return
         let attendances = []
         const start = date + " " + time
         this.members.forEach(member =>
