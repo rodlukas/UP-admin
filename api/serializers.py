@@ -152,7 +152,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     def validate(self, data):
         # u predplacene lekce nelze menit parametry platby
         if self.instance and self.instance.lecture.start is None:
-            if data['paid'] is False:
+            if 'paid' in data and not data['paid']:
                 raise serializers.ValidationError(
                     {api_settings.NON_FIELD_ERRORS_KEY: "U předplacené lekce nelze měnit parametry platby"})
         return data
