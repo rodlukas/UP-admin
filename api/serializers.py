@@ -6,12 +6,18 @@ from rest_framework.settings import api_settings
 from datetime import timedelta
 from django.utils import timezone
 from django.db.models import Q
+import re
 
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__'
+
+    def validate_phone(self, value):
+        if not re.match(r"[0-9\s]+$", value) or sum(c.isdigit() for c in value) is not 9:
+            raise serializers.ValidationError("Telefonní číslo musí obsahovat 9 číslic")
+        return value
 
 
 class CourseSerializer(serializers.ModelSerializer):

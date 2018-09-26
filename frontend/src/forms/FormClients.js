@@ -24,7 +24,10 @@ export default class FormClients extends Component {
 
     onChange = e => {
         const target = e.target
-        const value = target.type === 'checkbox' ? target.checked : target.value
+        let value = target.type === 'checkbox' ? target.checked : target.value
+        // pri psani rozdeluj cislo na trojice
+        if(target.id === 'phone')
+            value = value.replace(/([0-9]{3})([^\s])/, "$1 $2")
         this.setState({[target.id]: value})
     }
 
@@ -99,7 +102,8 @@ export default class FormClients extends Component {
                                 <InputGroupAddon addonType="prepend">
                                     +420
                                 </InputGroupAddon>
-                                <Input type="tel" id="phone" value={phone} minLength="9" onChange={this.onChange}/>
+                                <Input type="tel" id="phone" value={phone} maxLength="11" onChange={this.onChange}
+                                       pattern="[0-9]{3} [0-9]{3} [0-9]{3}"/>
                             </InputGroup>
                         </Col>
                     </FormGroup>

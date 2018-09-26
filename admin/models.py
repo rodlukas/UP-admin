@@ -38,7 +38,7 @@ class AttendanceState(models.Model):
 class Client(models.Model):
     name = models.TextField()
     surname = models.TextField()
-    phone = models.TextField(blank=True, validators=[MinLengthValidator(9)])
+    phone = models.TextField(blank=True)
     email = models.EmailField(blank=True)
     note = models.TextField(blank=True)
 
