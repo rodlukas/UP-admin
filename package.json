@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "license": "UNLICENSED",
   "engines": {
-    "node": "8.11.x",
+    "node": "8.12.x",
     "npm": "6.4.x",
-    "yarn": "1.9.x"
+    "yarn": "1.10.x"
   },
   "scripts": {
     "postinstall": "cd frontend && yarn install && yarn build",
