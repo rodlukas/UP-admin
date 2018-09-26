@@ -2,7 +2,7 @@ import React, {Fragment} from "react"
 import "./AppVersion.css"
 
 const AppRelease = () => {
-    const version = "GIT_VERSION"
+    const version = "GIT_RELEASE"
     return (
         (version !== "") &&
             <Fragment>
