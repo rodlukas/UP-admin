@@ -27,7 +27,7 @@ export default class FormClients extends Component {
         let value = target.type === 'checkbox' ? target.checked : target.value
         // pri psani rozdeluj cislo na trojice
         if(target.id === 'phone')
-            value = value.replace(/([0-9]{3})([^\s])/, "$1 $2")
+            value = value.replace(/([0-9]{3})([^\s])/, "$1 $2").replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
         this.setState({[target.id]: value})
     }
 
