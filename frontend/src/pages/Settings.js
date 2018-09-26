@@ -98,6 +98,8 @@ class Settings extends Component {
         const {courses, currentType, currentObject, state_excused_id, state_default_id, IS_MODAL, IS_LOADING} = this.state
         const Visible = ({visible}) =>
             <FontAwesomeIcon icon={visible ? faCheck : faTimes} size="lg"/>
+        const AppReleaseVersion = ({version}) =>
+            version !== '' ? (" (" + version + ")") : ""
         const AttendanceStates = () =>
             <Fragment>
                 <h2 className="text-center">
@@ -220,7 +222,7 @@ class Settings extends Component {
                 </Row>
                 <hr/>
                 <p className="text-center">
-                    <span className="font-weight-bold">Verze aplikace:</span> <AppVersion/> - GIT_DATETIME
+                    <span className="font-weight-bold">Verze aplikace:</span> <AppVersion/><AppReleaseVersion version="GIT_RELEASE"/> - GIT_DATETIME
                 </p>
             </div>
         const HeadingContent = () =>
