@@ -1,11 +1,11 @@
 import React, {Component} from "react"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from "reactstrap"
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, InputGroupAddon, InputGroup} from "reactstrap"
 import ClientService from "../api/services/client"
 import ClientName from "../components/ClientName"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import {removeAllSpaces} from "../global/utils"
+import {prettyPhone} from "../global/utils"
 
 export default class FormClients extends Component {
     constructor(props) {
@@ -17,7 +17,7 @@ export default class FormClients extends Component {
             name: name || '',
             surname: surname || '',
             email: email || '',
-            phone: phone || '',
+            phone: prettyPhone(phone) || '',
             note: note || ''
         }
     }
@@ -31,7 +31,7 @@ export default class FormClients extends Component {
     onSubmit = e => {
         e.preventDefault()
         const {id, name, surname, email, phone, note} = this.state
-        const data = {id, name, surname, email, phone: removeAllSpaces(phone), note}
+        const data = {id, name, surname, email, phone, note}
         let request
         if (this.isClient)
             request = ClientService.update(data)
@@ -95,7 +95,12 @@ export default class FormClients extends Component {
                             Telefon
                         </Label>
                         <Col sm={10}>
-                            <Input type="tel" id="phone" value={phone} minLength="9" onChange={this.onChange}/>
+                            <InputGroup>
+                                <InputGroupAddon addonType="prepend">
+                                    +420
+                                </InputGroupAddon>
+                                <Input type="tel" id="phone" value={phone} minLength="9" onChange={this.onChange}/>
+                            </InputGroup>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

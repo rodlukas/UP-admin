@@ -1,9 +1,6 @@
 import React from "react"
 import NoInfo from "./NoInfo"
-
-function prettyPhone(phone) {
-    return phone.match(/.{3}/g).join(' ')
-}
+import {prettyPhone} from "../global/utils"
 
 const Phone = ({phone}) => {
     if (phone && phone !== "")

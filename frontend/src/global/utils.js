@@ -18,10 +18,6 @@ export function groupByCourses(data) {
     return arrayOfObjects
 }
 
-export function removeAllSpaces(str) {
-    return str.replace(/\s/g, '')
-}
-
 export function prettyAmount(amount) {
     return amount.toLocaleString('cs-CZ')
 }
@@ -33,4 +29,8 @@ export function alertRequired(object, ...inputVals) {
         return true
     }
     return false
+}
+
+export function prettyPhone(phone) {
+    return phone.match(/.{3}/g).join(' ')
 }
