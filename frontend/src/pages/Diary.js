@@ -47,14 +47,10 @@ export default class Diary extends Component {
     }
 
     static parseDateFromParams(params) {
-        let date = new Date()
         if (params.month != null && params.year != null && params.day != null)
-        {
-            date.setDate(params.day)
-            date.setMonth(params.month - 1)
-            date.setFullYear(params.year)
-        }
-        return date
+            return new Date(params.year, params.month - 1, params.day)
+        else
+            return new Date()
     }
 
     static serializeDateUrl (date) {
