@@ -1,7 +1,15 @@
 import React, {Component, Fragment} from "react"
 import {Container, Row, Col, Button} from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
-import {prettyDateWithYearIfDiff, isEqualDate, getMonday, addDays, DAYS_IN_WEEK, getWeekSerializedFromMonday} from "../global/funcDateTime"
+import {
+    prettyDateWithYearIfDiff,
+    isEqualDate,
+    getMonday,
+    addDays,
+    DAYS_IN_WEEK,
+    getWeekSerializedFromMonday,
+    yearDiffs
+} from "../global/funcDateTime"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/pro-solid-svg-icons"
 import APP_URLS from "../urls"
@@ -65,7 +73,7 @@ export default class Diary extends Component {
 
     render() {
         const TitleDate = ({date}) =>
-            <span className="TitleDate">
+            <span className={"TitleDate font-weight-bold " + (yearDiffs(date) ? "TitleDate-long" : "")}>
                 {prettyDateWithYearIfDiff(date)}
             </span>
         const Title = () =>

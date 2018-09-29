@@ -24,9 +24,14 @@ export function prettyDateTime(datetime) {
     return prettyDateWithDayYear(datetime) + " " + prettyTimeWithSeconds(datetime)
 }
 
+// vrati, zda se rok zadaneho datumu lisi od aktualniho
+export function yearDiffs(date) {
+    return date.getFullYear() !== new Date().getFullYear()
+}
+
 // vrati uzivatelsky privetivy datum, pokud je rok odlisny od aktualniho tak jej pripoji
 export function prettyDateWithYearIfDiff(date) {
-    if(date.getFullYear() === new Date().getFullYear())
+    if(!yearDiffs(date))
         return prettyDate(date)
     return prettyDateWithYear(date)
 }

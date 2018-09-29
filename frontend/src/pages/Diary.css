@@ -18,3 +18,7 @@
     width: 6ch; /* aby mely dny v tydennim prehledu vzdy stejnou sirku */
     display: inline-block;
 }
+
+.TitleDate-long {
+    width: 10ch
+}
