@@ -7,7 +7,7 @@ node_js: '8'
 services:
 - postgresql
 addons:
-  postgresql: "10"
+  postgresql: '10'
 install:
   # spust skripty pro upravu souboru
   - source scripts/create_npmrc.sh
@@ -25,7 +25,7 @@ install:
   - pipenv install
 
   # vypis konfigurace prostredi
-  - node --version && npm --version && yarn --version && python --version && pipenv --version
+  - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version
 script:
   # vytvor DB
   - psql -c 'create database travis_ci_test;' -U postgres
