@@ -5,9 +5,9 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 router = routers.DefaultRouter()
 router.register('clients', views.ClientViewSet)
-router.register('groups', views.GroupViewSet, 'groups')  # base_name musi byt uvedeno, protoze neni default queryset
+router.register('groups', views.GroupViewSet, basename='groups')  # basename musi byt uvedeno, protoze neni default queryset
 router.register('courses', views.CourseViewSet)
-router.register('lectures', views.LectureViewSet, 'lectures')
+router.register('lectures', views.LectureViewSet, basename='lectures')
 router.register('attendances', views.AttendanceViewSet)
 router.register('memberships', views.MembershipViewSet)
 router.register('attendancestates', views.AttendanceStateViewSet)
