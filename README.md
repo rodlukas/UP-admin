@@ -63,7 +63,16 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
 * odchytávání chyb přes *[Sentry](https://sentry.io/)*, propojení se *[Slackem](https://slack.com/)*
 * **CI a CD** má na starost [Travis](https://travis-ci.com/) - automatizovaný build, testování i nasazení na různá prostředí
 * kompletní vývoj v IDE *Pycharm (Professional Edition)*
-
+* **Struktura repozitáře:**
+    ```bash
+    ├── .idea ........ nastavení pro IDE (Pycharm od Jetbrains)      
+    ├── admin ........ Django aplikace pro samotnou webovou aplikaci        
+    ├── api .......... Django aplikace pro API     
+    ├── frontend ..... klientská část webové aplikace   
+    ├── scripts ...... skripty pro CI/CD
+    ├── staticfiles .. složka pro statické soubory (prázdná, přesun až na CI)
+    └── up ........... celý Django projekt
+    ```
 ---
 
 ## Články pro inspiraci
