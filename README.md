@@ -13,10 +13,10 @@ Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github
     3. přes `manage.py` spustit:
         1. `collectstatic --settings=up.production_settings --noinput`
         2. `runserver --settings=up.production_settings 0.0.0.0:8000`
-            > **spuštění na jiném zařízení v síti:**
-            > * povolit python+node ve firewallu (např. na chvíli interaktivní režim ESETu)
-            > * na mobilním zařízení zadat privátní IP adresu počítače se serverem (zobrazí se např. při spouštění webpack-dev-serveru
-            > * při změně privátní adresy restart webpack-dev-serveru
+* **spuštění na jiném zařízení v síti:**
+    1. povolit python+node ve firewallu (např. na chvíli interaktivní režim ESETu)
+    2. na mobilním zařízení zadat privátní IP adresu počítače se serverem (zobrazí se např. při spouštění webpack-dev-serveru
+    3. při změně privátní adresy restart webpack-dev-serveru
 * **yarn:**
     * `yarn outdated`
     * `yarn add/remove [package]`
