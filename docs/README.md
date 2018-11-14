@@ -1,4 +1,5 @@
 ## Základní informace o aplikaci
+* Aplikace vytvořena v roce 2018 v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis)
 * **Klíčové funkce aplikace:**
     * evidence klientů a skupin klientů docházejících na lekce kurzů
     * evidence lekcí klientů a skupin včetně předplacených - stav účasti, platba, datum, čas, zrušení, poznámky

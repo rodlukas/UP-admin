@@ -4,8 +4,6 @@
 
 [Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | [Travis CI](https://travis-ci.com/rodlukas/UP-admin) | [Heroku](https://dashboard.heroku.com/apps) | [Slack](https://uspesnyprvnacek.slack.com/messages) | Logentries - [produkční](https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836)/[staging](https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803)/[testing](https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3)
 
-Aplikace vytvořena v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis)
-
 ## Užitečné příkazy
 * **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
     1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
