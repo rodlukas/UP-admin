@@ -13,7 +13,7 @@
     * automatický odhad kurzu pro nově přidávané lekce
     * *... (výčet není konečný)*
 * Backend v [Djangu](https://www.djangoproject.com/) (Python), frontend v [Reactu](https://reactjs.org/) (JS), databáze PostgreSQL
-* Frontend jako SPA (Single-Page-App), použitý Bootstrap ([reactstrap](https://reactstrap.github.io/)) a mnoho dalších knihoven, responzivní aplikace
+* Frontend jako SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)), použitý Bootstrap ([reactstrap](https://reactstrap.github.io/)) a mnoho dalších knihoven, responzivní aplikace
 * Nasazeno na [Heroku](https://www.heroku.com/)
 * REST API přes [Django REST Framework](http://www.django-rest-framework.org/)
 * [JWT](https://jwt.io/) autentizace
@@ -23,7 +23,7 @@
 * **respektování standardů**
     * https://pep8.org a také (tam, kde to dává smysl) https://12factor.net/ a https://roca-style.org/
 * 4 prostředí:
-    * **vývojové (lokální)** - žlutá lišta,
+    * **vývojové (lokální)** - pro lokální vývoj, žlutá lišta,
     * **testing** - umožňuje zapnout debugování, deploy každého commitu, modrá lišta
     * **staging** - stejná verze aplikace jako na produkci, deploy při release, zelená lišta
     * **produkce** - používá klient, deploy při release (jako staging)
