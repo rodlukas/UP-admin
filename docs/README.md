@@ -1,5 +1,5 @@
 ## Základní informace o aplikaci
-* Aplikace vytvořena v roce 2018 v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis)
+* Aplikaci jsem vytvořil v roce 2018 v rámci BP na FIT ČVUT - [Repozitář s BP](https://github.com/rodlukas/bachelors-thesis), od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) úspěšně denně používána a nadále na ni pracuji a rozšiřuji ji
 * **Klíčové funkce aplikace:**
     * evidence klientů a skupin klientů docházejících na lekce kurzů
     * evidence lekcí klientů a skupin včetně předplacených - stav účasti, platba, datum, čas, zrušení, poznámky
