@@ -1,6 +1,6 @@
 # Semestrální práce MI-PYT
 * Cílem je rozšířit stávající a v současné době používanou webovou aplikaci pro projekt [Úspěšný prvňáček](https://uspesnyprvnacek.cz/).
-* **Veškeré info o aplikaci je dostupné v [docs/README.md](README.md).** Tam je také konci popsána struktura celého repozitáře.
+* **Veškeré info o aplikaci je dostupné v [docs/README.md](README.md).** Tam je také na konci popsána struktura celého repozitáře.
 * Kódy řešení budou opět v tomto repozitáři.
 
 ## Úkol
