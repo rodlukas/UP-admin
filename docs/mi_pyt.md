@@ -12,7 +12,7 @@
     navíc se počítá s dalším rozšiřováním a refaktoringem a je tedy potřeba mít k dispozici berličku, 
     která bude hlídat funkčnost aplikace během dalšího vývoje
 * testovat se bude **REST API a frontend**
-* vysoké pokrytí kódu je nutné, **nikoliv ale postačující** - 
-lze ho dosáhnout poměrně snadno, cílem testů je ale skutečně otestovat, že se aplikace ve všech případech (**včetně** hraničních!) chová správně
+* cílem testů je otestovat, že se aplikace skutečně ve všech případech (**včetně** hraničních!) chová správně dle požadavků
     * z toho důvodu budou vytvořeny scénáře, které pokrývají všechny funkce aplikace a k nim budou vytvořeny odpovídající testy,
      které otestují, zda aplikace funguje dle scénáře (knihovna [behave](https://github.com/behave/behave))
+    * pro testování frontendu bude použito [selenium](https://github.com/SeleniumHQ/selenium)
