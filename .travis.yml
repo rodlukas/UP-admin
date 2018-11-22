@@ -28,7 +28,7 @@ install:
   # nainstaluj Python zavislosti
   - pip install codecov
   - pip install pipenv
-  - pipenv install
+  - pipenv install --dev
 
   # vypis konfigurace prostredi
   - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version
