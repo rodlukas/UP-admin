@@ -2,6 +2,9 @@ from .settings import *
 
 # pro rucni spusteni produkcni verze nastavit True
 MANUAL_PRODUCTION = False
+# pro funkcni testy na Travisu
+if os.getenv('TRAVIS'):
+    MANUAL_PRODUCTION = True
 
 ALLOWED_HOSTS = [
     'uspesnyprvnacek.herokuapp.com',
