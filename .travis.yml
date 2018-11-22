@@ -40,8 +40,8 @@ script:
   - source scripts/release_tasks.sh
 
   # proved testy a spocitej pokryti kodu
-  - python manage.py behave
-  - coverage run --source=admin,api --omit=*/migrations/* manage.py test
+  - python manage.py test
+  - coverage run --source=admin,api --omit=*/migrations/* manage.py behave
   - yarn test
 after_success:
   # posli pokryti kodu do codecov
