@@ -1,4 +1,4 @@
-from behave import given, when, step
+from behave import *
 from admin.models import Client
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
@@ -10,8 +10,7 @@ from tests.common_steps import clients
 @when('user adds new client')
 def step_impl(context):
     context.name = "Josef"
-    context.surname = "Voříšek2"
-    assert Client.objects.filter(name=context.name, surname=context.surname).count() == 0
+    context.surname = "Voříšek"
     context.browser.implicitly_wait(5)
     context.browser.find_element_by_xpath("/html/body/div[1]/div/nav/div/ul/li[3]/a").click()
     context.browser.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/div/h1/button").click()
@@ -20,7 +19,7 @@ def step_impl(context):
     context.browser.find_element_by_id('surname').submit()
 
 
-@step("the user is logged")
+@given("the user is logged")
 def step_impl(context):
     context.browser.get(context.base_url)
     user = helpers.add_user()
@@ -33,12 +32,11 @@ def step_impl(context):
     assert len(dashboard) == 1
 
 
-@step("the client is added")
+@then("the client is added")
 def step_impl(context):
     search_name = context.surname + " " + context.name
     # wait for new client addition
-    wait = WebDriverWait(context.browser, 5)
-    wait.until(expected_conditions.presence_of_element_located((
+    WebDriverWait(context.browser, 5).until(expected_conditions.presence_of_element_located((
         By.XPATH, f"//table[@id='clients']/tbody/tr[{context.old_cnt + 1}]/td[1]/span/a/span")))
     clients = context.browser.find_elements_by_xpath(".//table[@id='clients']/tbody/tr")
     same_client_cnt = 0
