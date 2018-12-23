@@ -1,16 +1,10 @@
 from behave import given, when, step
 from admin.models import Client
-from django.contrib.auth import get_user_model
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
 from tests import helpers
-
-
-@given("the database with some clients")
-def step_impl(context):
-    helpers.add_two_clients()
-    assert Client.objects.count() > 0
+from tests.common_steps import clients
 
 
 @when('user adds new client')

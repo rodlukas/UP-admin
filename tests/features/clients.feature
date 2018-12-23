@@ -1,7 +1,9 @@
 Feature: Operations with clients
 
-  Scenario: Add client
-    Given the database with some clients
+  Background: Filled database with clients
+    Given the database with two clients
     And the user is logged
+
+  Scenario: Add client
     When user adds new client
     Then the client is added

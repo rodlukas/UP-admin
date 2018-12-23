@@ -3,18 +3,13 @@ from admin.models import Client
 from up.settings import JWT_AUTH
 import json
 from tests import helpers
+from tests.common_steps import clients
 
 
 @then('the client is added')
 def step_impl(context):
     qs = Client.objects.filter(name=context.name, surname=context.surname)
     assert len(qs) == 1
-
-
-@given("the database with some clients")
-def step_impl(context):
-    helpers.add_two_clients()
-    assert Client.objects.count() >= 2
 
 
 @when('user adds new client')
