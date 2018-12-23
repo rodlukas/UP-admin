@@ -41,7 +41,8 @@ script:
 
   # proved testy a spocitej pokryti kodu
   - python manage.py test
-  - coverage run --source=admin,api --omit=*/migrations/* manage.py behave
+  - coverage run -a manage.py behave --stage=ui
+  - coverage run -a manage.py behave --stage=api
   - yarn test
 after_success:
   # posli pokryti kodu do codecov
