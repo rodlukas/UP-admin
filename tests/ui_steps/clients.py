@@ -1,17 +1,9 @@
-from behave import given, when, then, step
+from behave import given, when, step
 from admin.models import Client
-from up.settings import JWT_AUTH
-import json
 from django.contrib.auth import get_user_model
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
-
-
-@then('the client is in our database')
-def step_impl(context):
-    qs = Client.objects.filter(name=context.name, surname=context.surname)
-    assert len(qs) == 1
 
 
 @given("the database with some clients")
@@ -21,15 +13,7 @@ def step_impl(context):
     assert Client.objects.count() > 0
 
 
-@when('user adds new client through API')
-def step_impl(context):
-    context.name = "Josef"
-    context.surname = "Voříšek"
-    assert Client.objects.filter(name=context.name, surname=context.surname).count() == 0
-    context.client.post('/api/v1/clients/', {'name': context.name, 'surname': context.surname}, format='json')
-
-
-@when('user adds new client through frontend')
+@when('user adds new client')
 def step_impl(context):
     context.name = "Josef"
     context.surname = "Voříšek2"
@@ -43,21 +27,6 @@ def step_impl(context):
 
 
 @step("the user is logged")
-def step_impl(context):
-    user = get_user_model()
-    user.objects.create_user(
-        username='test',
-        email='testuser@test.cz',
-        password='test'
-    )
-    response = context.client.post("/api/v1/jwt-auth/", {"username": "test", "password": "test"})
-    token = json.loads(response.content)['token']
-    assert response.status_code == 200
-    jwt_token = JWT_AUTH['JWT_AUTH_HEADER_PREFIX'] + " " + token
-    context.client.credentials(HTTP_AUTHORIZATION=jwt_token)
-
-
-@step("the user is logged on frontend")
 def step_impl(context):
     context.browser.get(context.base_url)
     user = get_user_model()
@@ -75,11 +44,7 @@ def step_impl(context):
     assert len(dashboard) == 1
 
 
-def number_of_elements_to_be(loc, number):
-    return len(loc) == number + 1
-
-
-@step("the client is visible on frontend")
+@step("the client is added")
 def step_impl(context):
     search_name = context.surname + " " + context.name
     # wait for new client addition

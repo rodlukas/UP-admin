@@ -1,9 +1,7 @@
 from selenium import webdriver
-from rest_framework.test import APIClient
 
 
 def before_all(context):
-    context.client = APIClient()
     context.browser = webdriver.Firefox()
 
 
