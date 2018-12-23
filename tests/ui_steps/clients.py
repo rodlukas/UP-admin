@@ -4,12 +4,12 @@ from django.contrib.auth import get_user_model
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
+from tests import helpers
 
 
 @given("the database with some clients")
 def step_impl(context):
-    Client(name="Lukas", surname="Rod").save()
-    Client(name="Aneta", surname="Jiruskova").save()
+    helpers.add_two_clients()
     assert Client.objects.count() > 0
 
 
@@ -29,15 +29,10 @@ def step_impl(context):
 @step("the user is logged")
 def step_impl(context):
     context.browser.get(context.base_url)
-    user = get_user_model()
-    user.objects.create_user(
-        username='test',
-        email='testuser@test.cz',
-        password='test'
-    )
+    user = helpers.add_user()
     context.old_cnt = Client.objects.all().count()
-    context.browser.find_element_by_id('username').send_keys('test')
-    context.browser.find_element_by_id('password').send_keys('test')
+    context.browser.find_element_by_id('username').send_keys(user['username'])
+    context.browser.find_element_by_id('password').send_keys(user['password'])
     context.browser.find_element_by_id('password').submit()
     context.browser.implicitly_wait(5)
     dashboard = context.browser.find_elements_by_xpath("//*[text()='Dnešní přehled']")
