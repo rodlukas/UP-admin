@@ -15,3 +15,10 @@ UI i API dané části
 * soubor `helpers.py` obsahuje pomocné funkce, které jsou používány napříč všemi testy
 * soubory `api_environment.py` a `ui_environment.py` obsahují obecné nastavení prostředí pro dané testy, tedy pro
  API a UI - např. nastavení prohlížeče, klienta...
+
+## Další informace k testům
+* pro testy se používá BDD framework [behave](https://github.com/behave/behave), 
+pro pokročilejší integraci *behave* s Djangem je použité [behave-django](https://github.com/behave/behave-django)
+* pro testování UI se používá [selenium](https://github.com/SeleniumHQ/selenium), 
+konkrétně [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html)
+    * pro jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa` 
