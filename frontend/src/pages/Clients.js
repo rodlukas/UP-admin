@@ -41,7 +41,7 @@ export default class ClientList extends Component {
         const ClientTable = () =>
             <tbody>
             {clients.map(client =>
-                <tr key={client.id}>
+                <tr key={client.id} data-qa="client">
                     <td style={{minWidth: '13em', width: '13em'}}>
                         <ClientName client={client} link/>
                     </td>
@@ -62,13 +62,13 @@ export default class ClientList extends Component {
         const HeadingContent = () =>
             <Fragment>
                 Klienti
-                <AddButton content="Přidat klienta" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat klienta" onClick={() => this.toggle()} data-qa="button_add_client"/>
             </Fragment>
         return (
             <div>
                 <Container>
                     <Heading content={<HeadingContent/>}/>
-                    <Table striped size="sm" responsive className="pageContent" id="clients">
+                    <Table striped size="sm" responsive className="pageContent">
                         <thead className="thead-dark">
                         <tr>
                             <th>Příjmení a jméno</th>

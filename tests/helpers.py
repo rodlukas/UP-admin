@@ -1,6 +1,8 @@
 from admin.models import Client
 from django.contrib.auth import get_user_model
 
+WAIT_TIME = 10
+
 
 def add_two_clients():
     Client(name="Lukáš", surname="Rod").save()
@@ -21,3 +23,7 @@ def add_user():
         password=password
     )
     return {'username': username, 'password': password}
+
+
+def frontend_empty_str(text):
+    return "---" if text == "" else text

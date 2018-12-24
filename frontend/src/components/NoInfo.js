@@ -1,6 +1,6 @@
 import React from "react"
 
-const NoInfo = () =>
-    <span className="text-muted">---</span>
+const NoInfo = (props) =>
+    <span className="text-muted" {...props}>---</span>
 
 export default NoInfo

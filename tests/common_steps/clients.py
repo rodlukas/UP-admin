@@ -1,4 +1,4 @@
-from behave import given, when, then, step
+from behave import *
 from admin.models import Client
 from tests import helpers
 

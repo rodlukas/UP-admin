@@ -1,4 +1,5 @@
 from selenium import webdriver
+from tests import helpers
 
 
 def before_all(context):
@@ -9,6 +10,5 @@ def after_all(context):
     context.browser.quit()
 
 
-def before_feature(context, feature):
-    # Code to be executed each time a feature is going to be tested
-    pass
+def before_scenario(context, scenario):
+    context.user = helpers.add_user()

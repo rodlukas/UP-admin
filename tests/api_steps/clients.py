@@ -1,32 +1,44 @@
 from behave import *
-from admin.models import Client
-from up.settings import JWT_AUTH
 import json
 from tests import helpers
+from rest_framework import status
 from tests.common_steps import clients
+from tests.api_steps import common
 
 
 @then('the client is added')
 def step_impl(context):
-    qs = Client.objects.filter(name=context.name, surname=context.surname)
-    assert len(qs) == 1
+    # vlozeni bylo uspesne
+    assert context.resp.status_code == status.HTTP_201_CREATED
+    # nacti udaje vlozeneho klienta
+    new_client_id = json.loads(context.resp.content)['id']
+    new_client_resp = context.client.get(helpers.api_url(f"/clients/{new_client_id}/"))
+    assert new_client_resp.status_code == status.HTTP_200_OK
+    new_client_data_json = json.loads(new_client_resp.content)
+    # porovnej ziskana data se zaslanymi udaji
+    assert new_client_data_json['name'] == context.name
+    assert new_client_data_json['surname'] == context.surname
+    assert new_client_data_json['phone'] == context.phone
+    assert new_client_data_json['email'] == context.email
+    assert new_client_data_json['note'] == context.note
 
 
-@when('user adds new client')
-def step_impl(context):
-    context.name = "Josef"
-    context.surname = "Voříšek"
-    context.client.post(helpers.api_url("/clients/"), {'name': context.name, 'surname': context.surname})
+use_step_matcher("re")
 
 
-@given("the user is logged")
-def step_impl(context):
-    user = helpers.add_user()
-    response = context.client.post(helpers.api_url("/jwt-auth/"),
-                                   {"username": user['username'], "password": user['password']})
-    response_json = json.loads(response.content)
-    assert response.status_code == 200
-    assert 'token' in response_json
-    token = response_json['token']
-    jwt_token = JWT_AUTH['JWT_AUTH_HEADER_PREFIX'] + " " + token
-    context.client.credentials(HTTP_AUTHORIZATION=jwt_token)
+@when(
+    'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)" and note "(?P<note>.*)"')
+def step_impl(context, name, surname, phone, email, note):
+    # nacteni dat klienta do kontextu
+    context.name = name
+    context.surname = surname
+    context.phone = phone
+    context.email = email
+    context.note = note
+    # vlozeni klienta
+    context.resp = context.client.post(helpers.api_url("/clients/"),
+                                       {'name': context.name,
+                                        'surname': context.surname,
+                                        'phone': context.phone,
+                                        'email': context.email,
+                                        'note': context.note})

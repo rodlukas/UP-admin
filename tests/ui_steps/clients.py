@@ -1,47 +1,75 @@
 from behave import *
-from admin.models import Client
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from tests import helpers
 from tests.common_steps import clients
+from tests.ui_steps import common
 
 
-@when('user adds new client')
-def step_impl(context):
-    context.name = "Josef"
-    context.surname = "Voříšek"
-    context.browser.implicitly_wait(5)
-    context.browser.find_element_by_xpath("/html/body/div[1]/div/nav/div/ul/li[3]/a").click()
-    context.browser.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/div/h1/button").click()
-    context.browser.find_element_by_id('name').send_keys(context.name)
-    context.browser.find_element_by_id('surname').send_keys(context.surname)
-    context.browser.find_element_by_id('surname').submit()
+def phone_shrink_str(phone):
+    return phone.replace(" ", "")
 
 
-@given("the user is logged")
-def step_impl(context):
-    context.browser.get(context.base_url)
-    user = helpers.add_user()
-    context.old_cnt = Client.objects.all().count()
-    context.browser.find_element_by_id('username').send_keys(user['username'])
-    context.browser.find_element_by_id('password').send_keys(user['password'])
-    context.browser.find_element_by_id('password').submit()
-    context.browser.implicitly_wait(5)
-    dashboard = context.browser.find_elements_by_xpath("//*[text()='Dnešní přehled']")
-    assert len(dashboard) == 1
+def get_clients(driver):
+    return driver.find_elements_by_css_selector('[data-qa=client]')
+
+
+def clients_cnt(driver):
+    return len(get_clients(driver))
 
 
 @then("the client is added")
 def step_impl(context):
-    search_name = context.surname + " " + context.name
-    # wait for new client addition
-    WebDriverWait(context.browser, 5).until(expected_conditions.presence_of_element_located((
-        By.XPATH, f"//table[@id='clients']/tbody/tr[{context.old_cnt + 1}]/td[1]/span/a/span")))
-    clients = context.browser.find_elements_by_xpath(".//table[@id='clients']/tbody/tr")
-    same_client_cnt = 0
-    for client in clients:
-        name = client.find_element_by_xpath("td[1]/span/a/span").text
-        if name == search_name:
-            same_client_cnt += 1
-    assert same_client_cnt == 1
+    old_cnt = clients_cnt(context.browser)
+    full_name = context.surname + " " + context.name
+    # pockej na pridani klienta
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: clients_cnt(driver) > old_cnt)
+    all_clients = get_clients(context.browser)
+    # zkontroluj udaje pridaneho klienta
+    new_client_found = False
+    for client in all_clients:
+        name = client.find_element_by_css_selector('[data-qa=client_name]').text
+        phone = phone_shrink_str(client.find_element_by_css_selector('[data-qa=client_phone]').text)
+        email = client.find_element_by_css_selector('[data-qa=client_email]').text
+        note = client.find_element_by_css_selector('[data-qa=client_note]').text
+        if name == full_name and phone == helpers.frontend_empty_str(
+                context.phone) and email == helpers.frontend_empty_str(
+            context.email) and note == helpers.frontend_empty_str(context.note):
+            new_client_found = True
+    assert new_client_found
+
+
+use_step_matcher("re")
+
+
+@when(
+    'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)" and note "(?P<note>.*)"')
+def step_impl(context, name, surname, phone, email, note):
+    # nacteni dat klienta do kontextu
+    context.name = name
+    context.surname = surname
+    context.phone = phone
+    context.email = email
+    context.note = note
+    # klikni v menu na klienty
+    context.browser.find_element_by_css_selector('[data-qa=menu_clients]').click()
+    # pockej na nacteni a klikni na Pridat klienta
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        EC.invisibility_of_element((By.CSS_SELECTOR, '[data-qa=loading]')))
+    button_add_client = context.browser.find_element_by_css_selector('[data-qa=button_add_client]')
+    button_add_client.click()
+    # vloz vsechny udaje do formulare
+    name_field = context.browser.find_element_by_css_selector('[data-qa=client_field_name]')
+    surname_field = context.browser.find_element_by_css_selector('[data-qa=client_field_surname]')
+    phone_field = context.browser.find_element_by_css_selector('[data-qa=client_field_phone]')
+    email_field = context.browser.find_element_by_css_selector('[data-qa=client_field_email]')
+    note_field = context.browser.find_element_by_css_selector('[data-qa=client_field_note]')
+    name_field.send_keys(context.name)
+    surname_field.send_keys(context.surname)
+    phone_field.send_keys(context.phone)
+    email_field.send_keys(context.email)
+    note_field.send_keys(context.note)
+    # odesli formular
+    note_field.submit()

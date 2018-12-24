@@ -22,7 +22,7 @@ const Menu = props => {
                             <MyNavLink to={APP_URLS.diar}>Diář</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.klienti}>Klienti</MyNavLink>
+                            <MyNavLink to={APP_URLS.klienti} data-qa="menu_clients">Klienti</MyNavLink>
                         </NavItem>
                         <NavItem>
                             <MyNavLink to={APP_URLS.skupiny}>Skupiny</MyNavLink>
@@ -35,7 +35,7 @@ const Menu = props => {
                         </NavItem>
                     </Nav>
                     <Button color="secondary"
-                            onClick={authContext.logout}>
+                            onClick={authContext.logout} data-qa="button_logout">
                         Odhlásit
                     </Button>
                     <AuthChecking/>

@@ -74,7 +74,8 @@ export default class FormClients extends Component {
                             Jméno
                         </Label>
                         <Col sm={10}>
-                            <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus/>
+                            <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus
+                                   data-qa="client_field_name"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -82,7 +83,8 @@ export default class FormClients extends Component {
                             Příjmení
                         </Label>
                         <Col sm={10}>
-                            <Input type="text" id="surname" value={surname} onChange={this.onChange} required/>
+                            <Input type="text" id="surname" value={surname} onChange={this.onChange} required
+                                   data-qa="client_field_surname"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -90,7 +92,8 @@ export default class FormClients extends Component {
                             Email
                         </Label>
                         <Col sm={10}>
-                            <Input type="email" id="email" value={email} onChange={this.onChange}/>
+                            <Input type="email" id="email" value={email} onChange={this.onChange}
+                                   data-qa="client_field_email"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -103,7 +106,7 @@ export default class FormClients extends Component {
                                     +420
                                 </InputGroupAddon>
                                 <Input type="tel" id="phone" value={phone} maxLength="11" onChange={this.onChange}
-                                       pattern="[0-9]{3} [0-9]{3} [0-9]{3}"/>
+                                       pattern="[0-9]{3} [0-9]{3} [0-9]{3}" data-qa="client_field_phone"/>
                             </InputGroup>
                         </Col>
                     </FormGroup>
@@ -112,7 +115,8 @@ export default class FormClients extends Component {
                             Poznámka
                         </Label>
                         <Col sm={10}>
-                            <Input type="textarea" id="note" value={note} onChange={this.onChange}/>
+                            <Input type="textarea" id="note" value={note} onChange={this.onChange}
+                                   data-qa="client_field_note"/>
                         </Col>
                     </FormGroup>
                     {this.isClient &&

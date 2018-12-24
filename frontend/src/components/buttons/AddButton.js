@@ -3,8 +3,8 @@ import {Button} from "reactstrap"
 import "./AddButton.css"
 import "./buttons.css"
 
-const AddButton = ({content, onClick}) =>
-    <Button color="info" className="AddButton" onClick={onClick}>
+const AddButton = ({content, onClick, ...props}) =>
+    <Button color="info" className="AddButton" onClick={onClick} {...props}>
         {content}
     </Button>
 
