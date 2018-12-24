@@ -56,6 +56,8 @@ deploy:
   api_key: $HEROKU_API_KEY
   app: uspesnyprvnacek-testing
   skip_cleanup: true
+  on:
+    all_branches: true
 - provider: heroku
   api_key: $HEROKU_API_KEY
   app: uspesnyprvnacek-staging
