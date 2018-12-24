@@ -62,7 +62,7 @@ export default class FormClients extends Component {
     render() {
         const {id, name, surname, email, phone, note} = this.state
         return (
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} data-qa="form_client">
                 <ModalHeader toggle={this.close}>
                     {this.isClient ? 'Úprava' : 'Přidání'} klienta:
                     {' '}

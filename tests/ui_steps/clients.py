@@ -21,11 +21,10 @@ def clients_cnt(driver):
 
 @then("the client is added")
 def step_impl(context):
-    old_cnt = clients_cnt(context.browser)
     full_name = context.surname + " " + context.name
     # pockej na pridani klienta
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: clients_cnt(driver) > old_cnt)
+        lambda driver: clients_cnt(driver) > context.old_clients_cnt)
     all_clients = get_clients(context.browser)
     # zkontroluj udaje pridaneho klienta
     new_client_found = False
@@ -34,10 +33,12 @@ def step_impl(context):
         phone = phone_shrink_str(client.find_element_by_css_selector('[data-qa=client_phone]').text)
         email = client.find_element_by_css_selector('[data-qa=client_email]').text
         note = client.find_element_by_css_selector('[data-qa=client_note]').text
-        if name == full_name and phone == helpers.frontend_empty_str(
-                context.phone) and email == helpers.frontend_empty_str(
-            context.email) and note == helpers.frontend_empty_str(context.note):
+        if (name == full_name and
+                phone == helpers.frontend_empty_str(context.phone) and
+                email == helpers.frontend_empty_str(context.email) and
+                note == helpers.frontend_empty_str(context.note)):
             new_client_found = True
+            break
     assert new_client_found
 
 
@@ -71,5 +72,15 @@ def step_impl(context, name, surname, phone, email, note):
     phone_field.send_keys(context.phone)
     email_field.send_keys(context.email)
     note_field.send_keys(context.note)
+    # uloz puvodni pocet klientu
+    context.old_clients_cnt = clients_cnt(context.browser)
     # odesli formular
     note_field.submit()
+
+
+@then("the client is not added")
+def step_impl(context):
+    # zjisti, zda stale sviti formular a zadny klient nepribyl
+    form_client = context.browser.find_element_by_css_selector('[data-qa=form_client]')
+    assert form_client.is_displayed()
+    assert clients_cnt(context.browser) == context.old_clients_cnt

@@ -42,3 +42,26 @@ def step_impl(context, name, surname, phone, email, note):
                                         'phone': context.phone,
                                         'email': context.email,
                                         'note': context.note})
+
+
+@then('the client is not added')
+def step_impl(context):
+    # vlozeni bylo neuspesne
+    assert context.resp.status_code == status.HTTP_400_BAD_REQUEST
+    # over, ze v odpovedi skutecne neni id klienta
+    new_client = json.loads(context.resp.content)
+    assert 'id' not in new_client
+    # ziskej seznam vsech klientu a over, ze se skutecne nepridal
+    all_clients = context.client.get(helpers.api_url("/clients/"))
+    assert all_clients.status_code == status.HTTP_200_OK
+    all_clients_json = json.loads(all_clients.content)
+    new_client_found = False
+    for client in all_clients_json:
+        if (client['name'] == context.name and
+                client['surname'] == context.surname and
+                client['phone'] == context.phone and
+                client['email'] == context.email and
+                client['note'] == context.note):
+            new_client_found = True
+            break
+    assert not new_client_found
