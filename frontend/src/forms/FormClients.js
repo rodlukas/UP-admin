@@ -132,6 +132,7 @@ export default class FormClients extends Component {
                                     onClick={() => {
                                     if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))
                                         this.delete(id)}}
+                                    data-qa="button_delete_client"
                                 />
                             </Alert>
                         </Col>
