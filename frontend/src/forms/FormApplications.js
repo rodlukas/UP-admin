@@ -5,9 +5,8 @@ import Select from "react-select"
 import ClientService from "../api/services/client"
 import SubmitButton from "../components/buttons/SubmitButton"
 import CancelButton from "../components/buttons/CancelButton"
-import ClientName from "../components/ClientName"
 import {TEXTS} from "../global/constants"
-import {alertRequired} from "../global/utils"
+import {alertRequired, clientName} from "../global/utils"
 
 export default class FormApplications extends Component {
     constructor(props) {
@@ -79,7 +78,7 @@ export default class FormApplications extends Component {
                             <Select
                                 inputId="client"
                                 value={client}
-                                getOptionLabel={option => <ClientName client={option}/>}
+                                getOptionLabel={option => clientName(option)}
                                 getOptionValue={option => option.id}
                                 onChange={newValue => this.onSelectChange(newValue, "client")}
                                 options={clients}

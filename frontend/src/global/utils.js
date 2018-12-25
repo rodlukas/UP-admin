@@ -34,3 +34,7 @@ export function alertRequired(object, ...inputVals) {
 export function prettyPhone(phone) {
     return phone ? phone.match(/.{3}/g).join(' ') : ""
 }
+
+export function clientName(client) {
+    return client.surname + " " + client.name
+}
