@@ -13,7 +13,8 @@ env = environ.Env(
     DATABASE_URL=str,
     SECRET_KEY=str,
     FIO_API_KEY=str,
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    HEROKU=(bool, False)
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -27,6 +28,7 @@ TESTING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
 # Django konstanty
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
+HEROKU = env('HEROKU')
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -44,8 +46,9 @@ INSTALLED_APPS = [
     'django_filters',
     'raven.contrib.django.raven_compat',
     'debug_toolbar',
-    'behave_django',
 ]
+if not HEROKU:
+    INSTALLED_APPS.append('behave_django')
 
 # API
 REST_FRAMEWORK = {

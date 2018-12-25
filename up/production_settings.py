@@ -82,5 +82,5 @@ X_FRAME_OPTIONS = 'DENY'
 
 if MANUAL_PRODUCTION:
     DEBUG = False
-    ALLOWED_HOSTS += ['localhost']
+    ALLOWED_HOSTS.append('localhost')
     SECURE_SSL_REDIRECT = False
