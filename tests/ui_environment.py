@@ -16,9 +16,3 @@ def after_all(context):
 
 def before_scenario(context, scenario):
     context.user = helpers.add_user()
-
-
-def after_scenario(context, scenario):
-    ...
-    # smazani cookies (dojde znovu k prihlaseni)
-    #context.browser.delete_all_cookies()
