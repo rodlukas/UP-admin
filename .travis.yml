@@ -15,8 +15,19 @@ install:
   # nainstaluj geckodriver pro selenium testovani
   - source scripts/install_geckodriver.sh
 
-  # instalace vsech zavislosti samotne aplikace
-  - source scripts/production_scripts.sh
+  # spust skripty pro upravu souboru
+  - source scripts/create_npmrc.sh
+  - source scripts/string_substitution.sh
+
+  # nainstaluj JS zavislosti
+  - nvm install 8.12.0
+  - npm i -g npm@~6.4.1
+  - npm install -g yarn@~1.10.0
+  - yarn install
+
+  # nainstaluj Python zavislosti
+  - pip install pipenv
+  - pipenv install --dev
 
   # vypis konfigurace prostredi
   - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version
