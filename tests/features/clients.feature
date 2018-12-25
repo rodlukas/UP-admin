@@ -12,7 +12,7 @@ Feature: Operations with clients
       | name        | surname     | phone       | email                 | note      |
       | Lukáš       | Rod         | 123456789   | bla.bla@centrum22.cz  | test      |
       | Drahomíra   | Novotná     |             |                       |           |
-      | Lukáš       | Rod         | 123456789   | bla.bla@centrum22.cz  |           |
+      | Lukáš       | Rod         | 123 456 789 | bla.bla@centrum22.cz  |           |
 
 
   Scenario Outline: Add invalid clients

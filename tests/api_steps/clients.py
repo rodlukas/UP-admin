@@ -18,7 +18,7 @@ def step_impl(context):
     # porovnej ziskana data se zaslanymi udaji
     assert new_client_data_json['name'] == context.name
     assert new_client_data_json['surname'] == context.surname
-    assert new_client_data_json['phone'] == context.phone
+    assert new_client_data_json['phone'] == helpers.shrink_str(context.phone)
     assert new_client_data_json['email'] == context.email
     assert new_client_data_json['note'] == context.note
 
@@ -59,7 +59,7 @@ def step_impl(context):
     for client in all_clients_json:
         if (client['name'] == context.name and
                 client['surname'] == context.surname and
-                client['phone'] == context.phone and
+                client['phone'] == helpers.shrink_str(context.phone) and
                 client['email'] == context.email and
                 client['note'] == context.note):
             new_client_found = True

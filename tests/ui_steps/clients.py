@@ -8,8 +8,6 @@ from tests.common_steps import clients
 from tests.ui_steps import common
 
 
-def phone_shrink_str(phone):
-    return phone.replace(" ", "")
 
 
 def get_clients(driver):
@@ -31,11 +29,11 @@ def step_impl(context):
     new_client_found = False
     for client in all_clients:
         name = client.find_element_by_css_selector('[data-qa=client_name]').text
-        phone = phone_shrink_str(client.find_element_by_css_selector('[data-qa=client_phone]').text)
+        phone = client.find_element_by_css_selector('[data-qa=client_phone]').text
         email = client.find_element_by_css_selector('[data-qa=client_email]').text
         note = client.find_element_by_css_selector('[data-qa=client_note]').text
         if (name == full_name and
-                phone == helpers.frontend_empty_str(context.phone) and
+                helpers.shrink_str(phone) == helpers.frontend_empty_str(helpers.shrink_str(context.phone)) and
                 email == helpers.frontend_empty_str(context.email) and
                 note == helpers.frontend_empty_str(context.note)):
             new_client_found = True

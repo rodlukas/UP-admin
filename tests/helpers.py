@@ -28,3 +28,7 @@ def add_user():
 
 def frontend_empty_str(text):
     return "---" if text == "" else text
+
+
+def shrink_str(phone):
+    return phone.replace(" ", "")
