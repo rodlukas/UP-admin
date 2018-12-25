@@ -48,8 +48,7 @@ after_success:
   - codecov --token=$CODECOV_TOKEN
 
   # vycisteni od testovacich dat a zavislosti
-  - codecov erase
-  - rm -r geckodriver
+  - rm -rf geckodriver geckodriver.log coverage.xml
 notifications:
   email: false
   slack:
