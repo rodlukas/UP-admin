@@ -1,7 +1,7 @@
 Feature: Operations with clients
 
-  Background: Filled database with clients
-    Given the database with two clients
+  Background: Prepared database and logged user
+    Given the database with some clients
     And the user is logged
 
   Scenario Outline: Add valid clients
@@ -9,10 +9,10 @@ Feature: Operations with clients
     Then the client is added
 
     Examples: Clients
-      | name        | surname     | phone       | email                 | note      |
-      | Lukáš       | Rod         | 123456789   | bla.bla@centrum22.cz  | test      |
-      | Drahomíra   | Novotná     |             |                       |           |
-      | Lukáš       | Rod         | 123 456 789 | bla.bla@centrum22.cz  |           |
+      | name      | surname | phone       | email                | note |
+      | Lukáš     | Rod     | 123456789   | bla.bla@centrum22.cz | test |
+      | Drahomíra | Novotná |             |                      |      |
+      | Lukáš     | Rod     | 123 456 789 | bla.bla@centrum22.cz |      |
 
 
   Scenario Outline: Add invalid clients
@@ -20,21 +20,46 @@ Feature: Operations with clients
     Then the client is not added
 
     Examples: Clients
-      | name      | surname | phone     | email                | note |
+      | name  | surname | phone     | email | note |
       # nevalidni telefonni cislo
-      | Lukáš     | Rod     | 12345678  |                      |      |
-      | Lukáš     | Rod     | 12345678s |                      |      |
-      | Lukáš     | Rod     | sssssssss |                      |      |
-      | Lukáš     | Rod     | 1         |                      |      |
-      | Lukáš     | Rod     | ---       |                      |      |
+      | Lukáš | Rod     | 12345678  |       |      |
+      | Lukáš | Rod     | 12345678s |       |      |
+      | Lukáš | Rod     | sssssssss |       |      |
+      | Lukáš | Rod     | 1         |       |      |
+      | Lukáš | Rod     | ---       |       |      |
       # nevalidni e-mail
-      | Lukáš     | Rod     |           | b@b                  |      |
-      | Lukáš     | Rod     |           | b                    |      |
-      | Lukáš     | Rod     |           | @b.cz                |      |
-      | Lukáš     | Rod     |           | @b                   |      |
-      | Lukáš     | Rod     |           | s@b.2                |      |
-      | Lukáš     | Rod     |           | @                    |      |
+      | Lukáš | Rod     |           | b@b   |      |
+      | Lukáš | Rod     |           | b     |      |
+      | Lukáš | Rod     |           | @b.cz |      |
+      | Lukáš | Rod     |           | @b    |      |
+      | Lukáš | Rod     |           | s@b.2 |      |
+      | Lukáš | Rod     |           | @     |      |
       # chybejici jmeno/prijmeni
-      | Lukáš     |         |           |                      |      |
-      |           | Rod     |           |                      |      |
-      |           |         |           |                      |      |
+      | Lukáš |         |           |       |      |
+      |       | Rod     |           |       |      |
+      |       |         |           |       |      |
+
+
+  Scenario Outline: Edit client
+    When user updates the data of client "<full_name>" to name "<new_name>", surname "<new_surname>", phone "<new_phone>", email "<new_email>" and note "<new_note>"
+    Then the client is updated
+
+    Examples: Clients
+      | full_name | new_name | new_surname | new_phone | new_email | new_note |
+      # zadna zmena
+      | Rod Lukáš | Lukáš    | Rod         | 555555555 | r@r.cz    | test     |
+      # zmena telefonu
+      | Rod Lukáš | Lukáš    | Rod         | 123456789 | r@r.cz    | test     |
+      # zmena e-mailu
+      | Rod Lukáš | Lukáš    | Rod         | 555555555 | e@e.cz    | test     |
+      # zmena poznamky
+      | Rod Lukáš | Lukáš    | Rod         | 555555555 | r@r.cz    | xxxx     |
+      # zmena krestniho jmena
+      | Rod Lukáš | Pavel    | Rod         | 555555555 | r@r.cz    | test     |
+      # zmena prijmeni
+      | Rod Lukáš | Lukáš    | Rodd        | 555555555 | r@r.cz    | test     |
+
+
+  Scenario: Delete client
+    When user deletes the client "Rod Lukáš"
+    Then the client is deleted

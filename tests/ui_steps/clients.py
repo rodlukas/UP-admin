@@ -8,8 +8,6 @@ from tests.common_steps import clients
 from tests.ui_steps import common
 
 
-
-
 def get_clients(driver):
     return driver.find_elements_by_css_selector('[data-qa=client]')
 
@@ -39,6 +37,18 @@ def step_impl(context):
             new_client_found = True
             break
     assert new_client_found
+
+
+@then("the client is updated")
+def step_impl(context):
+    #TODO
+    ...
+
+
+@then("the client is deleted")
+def step_impl(context):
+    # TODO
+    ...
 
 
 use_step_matcher("re")
@@ -75,6 +85,20 @@ def step_impl(context, name, surname, phone, email, note):
     context.old_clients_cnt = clients_cnt(context.browser)
     # odesli formular
     note_field.submit()
+
+
+@when(
+    'user updates the data of client "(?P<full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)" and note "(?P<new_note>.*)"')
+def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, new_note):
+    #TODO
+    ...
+
+
+@when(
+    'user deletes the client "(?P<full_name>.*)"')
+def step_impl(context, full_name):
+    # TODO
+    ...
 
 
 @then("the client is not added")

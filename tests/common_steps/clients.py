@@ -1,9 +1,9 @@
 from behave import *
 from admin.models import Client
-from tests import helpers
+from .. import fixtures
 
 
-@given("the database with two clients")
+@given("the database with some clients")
 def step_impl(context):
-    helpers.add_two_clients()
-    assert Client.objects.count() == 2
+    fixtures.clients()
+    assert Client.objects.count() > 0
