@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from tests import helpers
+from selenium.common.exceptions import TimeoutException
 from tests.common_steps import clients
 from tests.ui_steps import common
 
@@ -81,6 +82,11 @@ def step_impl(context, name, surname, phone, email, note):
 @then("the client is not added")
 def step_impl(context):
     # zjisti, zda stale sviti formular a zadny klient nepribyl
-    form_client = context.browser.find_element_by_css_selector('[data-qa=form_client]')
-    assert form_client.is_displayed()
+    try:
+        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until(EC.staleness_of(
+            context.browser.find_element_by_css_selector('[data-qa=form_client]')))
+        form_client_visible = False
+    except TimeoutException:
+        form_client_visible = True
+    assert form_client_visible
     assert clients_cnt(context.browser) == context.old_clients_cnt

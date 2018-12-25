@@ -2,6 +2,7 @@ from admin.models import Client
 from django.contrib.auth import get_user_model
 
 WAIT_TIME = 10
+WAIT_TIME_SHORT = 3
 
 
 def add_two_clients():
