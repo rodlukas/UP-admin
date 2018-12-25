@@ -23,25 +23,22 @@ def step_impl(context):
     assert new_client_data_json['note'] == context.note
 
 
-use_step_matcher("re")
+@then('the client is updated')
+def step_impl(context):
+    # TODO
+    ...
 
 
-@when(
-    'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)" and note "(?P<note>.*)"')
-def step_impl(context, name, surname, phone, email, note):
-    # nacteni dat klienta do kontextu
-    context.name = name
-    context.surname = surname
-    context.phone = phone
-    context.email = email
-    context.note = note
-    # vlozeni klienta
-    context.resp = context.client.post(helpers.api_url("/clients/"),
-                                       {'name': context.name,
-                                        'surname': context.surname,
-                                        'phone': context.phone,
-                                        'email': context.email,
-                                        'note': context.note})
+@then('the client is deleted')
+def step_impl(context):
+    # TODO
+    ...
+
+
+@when('user deletes the client "{full_name}"')
+def step_impl(context, full_name):
+    # TODO
+    ...
 
 
 @then('the client is not added')
@@ -65,3 +62,31 @@ def step_impl(context):
             new_client_found = True
             break
     assert not new_client_found
+
+
+use_step_matcher("re")
+
+
+@when(
+    'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)" and note "(?P<note>.*)"')
+def step_impl(context, name, surname, phone, email, note):
+    # nacteni dat klienta do kontextu
+    context.name = name
+    context.surname = surname
+    context.phone = phone
+    context.email = email
+    context.note = note
+    # vlozeni klienta
+    context.resp = context.client.post(helpers.api_url("/clients/"),
+                                       {'name': context.name,
+                                        'surname': context.surname,
+                                        'phone': context.phone,
+                                        'email': context.email,
+                                        'note': context.note})
+
+
+@when(
+    'user updates the data of client "(?P<full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)" and note "(?P<new_note>.*)"')
+def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, new_note):
+    # TODO
+    ...
