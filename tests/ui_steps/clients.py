@@ -114,6 +114,7 @@ def step_impl(context):
     # ma klient opravdu nove udaje?
     client_found = find_client(context)
     assert client_found
+    assert clients_cnt(context.browser) == context.old_clients_cnt
 
 
 @then("the client is deleted")

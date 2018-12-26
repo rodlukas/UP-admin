@@ -18,5 +18,5 @@ def step_impl(context):
     password_field.submit()
     # pokud je viditelne tlacitko pro odhlaseni, doslo k uspesnemu prihlaseni
     logout_button_visible = WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=button_logout]')))
+        EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-qa=button_logout]')))
     assert logout_button_visible

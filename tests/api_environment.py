@@ -3,7 +3,7 @@ from tests import fixtures
 
 
 def before_all(context):
-    context.client = APIClient()
+    context.api_client = APIClient()
 
 
 def before_scenario(context, scenario):
