@@ -1,5 +1,5 @@
 from rest_framework.test import APIClient
-from tests import helpers
+from tests import fixtures
 
 
 def before_all(context):
@@ -7,4 +7,4 @@ def before_all(context):
 
 
 def before_scenario(context, scenario):
-    context.user = helpers.add_user()
+    context.user = fixtures.user()

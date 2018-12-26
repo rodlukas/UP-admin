@@ -1,4 +1,5 @@
 from admin.models import Client, Course, Group, Membership
+from django.contrib.auth import get_user_model
 
 
 def clients():
@@ -38,3 +39,15 @@ def groups(courses_list, clients_list):
     for membership in memberships_list:
         membership.save()
     return groups_list
+
+
+def user():
+    user = get_user_model()
+    username = 'test-username'
+    password = 'test-password'
+    user.objects.create_user(
+        username=username,
+        email='testuser@test.cz',
+        password=password
+    )
+    return {'username': username, 'password': password}

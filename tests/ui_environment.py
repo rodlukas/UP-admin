@@ -1,5 +1,5 @@
 from selenium import webdriver
-from tests import helpers
+from tests import fixtures
 from selenium.webdriver.firefox.options import Options
 
 
@@ -15,4 +15,4 @@ def after_all(context):
 
 
 def before_scenario(context, scenario):
-    context.user = helpers.add_user()
+    context.user = fixtures.user()
