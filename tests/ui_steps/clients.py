@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from tests import helpers
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from tests.common_steps import clients
 from tests.ui_steps import common
 
@@ -93,8 +93,8 @@ def wait_loading_cycle(driver):
 
 
 def wait_loading_ends(driver):
-    WebDriverWait(driver, helpers.WAIT_TIME).until(
-        EC.invisibility_of_element_located((By.CSS_SELECTOR, '[data-qa=loading]')))
+    WebDriverWait(driver, helpers.WAIT_TIME).until_not(
+        EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=loading]')))
 
 
 @then("the client is added")
@@ -156,8 +156,8 @@ def step_impl(context, full_name):
 def step_impl(context):
     # zjisti, zda stale sviti formular a zadny klient nepribyl
     try:
-        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until(EC.staleness_of(
-            context.browser.find_element_by_css_selector('[data-qa=form_client]')))
+        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=form_client]')))
         form_client_visible = False
     except TimeoutException:
         form_client_visible = True
