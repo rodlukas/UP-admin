@@ -85,7 +85,7 @@ def insert_to_form(context):
 
 
 
-@then("the client is added")
+@then('the client is added')
 def step_impl(context):
     # pockej na pridani klienta
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
@@ -95,7 +95,7 @@ def step_impl(context):
     assert client_found
 
 
-@then("the client is updated")
+@then('the client is updated')
 def step_impl(context):
     # pockej na update klientu
     helpers.wait_loading_cycle(context.browser)
@@ -105,7 +105,7 @@ def step_impl(context):
     assert clients_cnt(context.browser) == context.old_clients_cnt
 
 
-@then("the client is deleted")
+@then('the client is deleted')
 def step_impl(context):
     # pockej na pridani klienta
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
@@ -141,7 +141,7 @@ def step_impl(context, full_name):
     alert.accept()
 
 
-@then("the client is not added")
+@then('the client is not added')
 def step_impl(context):
     # zjisti, zda stale sviti formular a zadny klient nepribyl
     try:
