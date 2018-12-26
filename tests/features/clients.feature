@@ -4,6 +4,7 @@ Feature: Operations with clients
     Given the database with some clients
     And the user is logged
 
+  @add
   Scenario Outline: Add valid clients
     When user adds new client "<name>" "<surname>" with phone "<phone>", email "<email>" and note "<note>"
     Then the client is added
@@ -15,6 +16,7 @@ Feature: Operations with clients
       | Lukáš     | Rod     | 123 456 789 | bla.bla@centrum22.cz |      |
 
 
+  @add
   Scenario Outline: Add invalid clients
     When user adds new client "<name>" "<surname>" with phone "<phone>", email "<email>" and note "<note>"
     Then the client is not added
@@ -39,7 +41,7 @@ Feature: Operations with clients
       |       | Rod     |           |       |      |
       |       |         |           |       |      |
 
-
+  @edit
   Scenario Outline: Edit client
     When user updates the data of client "<full_name>" to name "<new_name>", surname "<new_surname>", phone "<new_phone>", email "<new_email>" and note "<new_note>"
     Then the client is updated
@@ -60,6 +62,7 @@ Feature: Operations with clients
       | Rod Lukáš | Lukáš    | Rodd        | 555555555 | r@r.cz    | test     |
 
 
+  @delete
   Scenario: Delete client
     When user deletes the client "Rod Lukáš"
     Then the client is deleted
