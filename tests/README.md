@@ -1,4 +1,5 @@
 # Testy
+* **TODO - bude ještě upraveno v průběhu tvorby testů**
 * **Struktura adresářů:**
     ```bash
     ├── api_steps ........ testovací kroky pro API      

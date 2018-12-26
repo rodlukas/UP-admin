@@ -42,10 +42,10 @@ def groups(courses_list, clients_list):
 
 
 def user():
-    user = get_user_model()
+    user_model = get_user_model()
     username = 'test-username'
     password = 'test-password'
-    user.objects.create_user(
+    user_model.objects.create_user(
         username=username,
         email='testuser@test.cz',
         password=password

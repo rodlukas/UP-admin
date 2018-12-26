@@ -51,7 +51,7 @@ class Login extends Component {
                 <Row className="justify-content-center pageContent">
                     <Col md="9" lg="7">
                         <Card className="p-4">
-                            <Form onSubmit={this.onSubmit}>
+                            <Form onSubmit={this.onSubmit} data-qa="form_login">
                                 <FormGroup row>
                                     <Label for="username" sm={4}>
                                         Uživatelské jméno

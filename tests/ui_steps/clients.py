@@ -2,10 +2,11 @@ from behave import *
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from tests import helpers
+from tests import common_helpers
 from selenium.common.exceptions import TimeoutException
+from tests.ui_steps import helpers
 from tests.common_steps import clients
-from tests.ui_steps import common
+from tests.ui_steps import login_logout
 
 
 def get_clients(driver):
@@ -34,7 +35,7 @@ def find_client(context):
         email = client.find_element_by_css_selector('[data-qa=client_email]').text
         note = client.find_element_by_css_selector('[data-qa=client_note]').text
         if (name == full_name and
-                helpers.shrink_str(phone) == helpers.frontend_empty_str(helpers.shrink_str(context.phone)) and
+                common_helpers.shrink_str(phone) == helpers.frontend_empty_str(common_helpers.shrink_str(context.phone)) and
                 email == helpers.frontend_empty_str(context.email) and
                 note == helpers.frontend_empty_str(context.note)):
             return True
@@ -81,20 +82,7 @@ def insert_to_form(context):
     return note_field
 
 
-def wait_loading_cycle(driver):
-    # pockej na loading, pokud se ukaze, pockej az skonci
-    try:
-        WebDriverWait(driver, helpers.WAIT_TIME).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=loading]')))
-    except TimeoutException:
-        pass
-    else:
-        wait_loading_ends(driver)
 
-
-def wait_loading_ends(driver):
-    WebDriverWait(driver, helpers.WAIT_TIME).until_not(
-        EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=loading]')))
 
 
 @then("the client is added")
@@ -110,7 +98,7 @@ def step_impl(context):
 @then("the client is updated")
 def step_impl(context):
     # pockej na update klientu
-    wait_loading_cycle(context.browser)
+    helpers.wait_loading_cycle(context.browser)
     # ma klient opravdu nove udaje?
     client_found = find_client(context)
     assert client_found
@@ -134,7 +122,7 @@ def step_impl(context, full_name):
     # klikni v menu na klienty
     open_clients(context.browser)
     # pockej na nacteni
-    wait_loading_ends(context.browser)
+    helpers.wait_loading_ends(context.browser)
     # najdi klienta a klikni u nej na Upravit
     client_to_update = find_client_with_full_name(context.browser, full_name)
     assert client_to_update
@@ -181,7 +169,7 @@ def step_impl(context, name, surname, phone, email, note):
     # klikni v menu na klienty
     open_clients(context.browser)
     # pockej na nacteni a pak klikni na Pridat klienta
-    wait_loading_ends(context.browser)
+    helpers.wait_loading_ends(context.browser)
     button_add_client = context.browser.find_element_by_css_selector('[data-qa=button_add_client]')
     button_add_client.click()
     # uloz puvodni pocet klientu
@@ -204,7 +192,7 @@ def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, n
     # klikni v menu na klienty
     open_clients(context.browser)
     # pockej na nacteni
-    wait_loading_ends(context.browser)
+    helpers.wait_loading_ends(context.browser)
     # najdi klienta a klikni u nej na Upravit
     client_to_update = find_client_with_full_name(context.browser, full_name)
     assert client_to_update

@@ -2,7 +2,7 @@ Feature: Operations with clients
 
   Background: Prepared database and logged user
     Given the database with some clients
-    And the user is logged
+    And the logged user
 
   @add
   Scenario Outline: Add valid clients
