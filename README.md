@@ -1,8 +1,10 @@
 # Webová aplikace pro projekt „Úspěšný prvňáček“
 [![Build Status](https://travis-ci.com/rodlukas/UP-admin.svg?token=g1rDdptQG4SVzcH6FMo5&branch=master)](https://travis-ci.com/rodlukas/UP-admin)
 [![codecov](https://codecov.io/gh/rodlukas/UP-admin/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/UP-admin)
+| *mi-pyt:*
+[![codecov](https://codecov.io/gh/rodlukas/UP-admin/branch/mi-pyt/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/UP-admin)
 
-[Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | [Travis CI](https://travis-ci.com/rodlukas/UP-admin) | [Heroku](https://dashboard.heroku.com/apps) | [Slack](https://uspesnyprvnacek.slack.com/messages) | Logentries - [produkční](https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836)/[staging](https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803)/[testing](https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3)
+[Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | [Travis CI](https://travis-ci.com/rodlukas/UP-admin) | [Heroku](https://dashboard.heroku.com/apps) | [Slack](https://uspesnyprvnacek.slack.com/messages) | Logentries - [produkční](https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836) / [staging](https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803) / [testing](https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3)
 
 ## Užitečné příkazy
 * **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
@@ -82,3 +84,10 @@
 * **knihy:**
     * [*React design patterns and best practices*](https://vufind.techlib.cz/Record/000975861) (ISBN: 978-1-78646-453-8)
     * [*Don't make me think, revisited*](https://vufind.techlib.cz/Record/001839977) (ISBN: 978-0-321-96551-6)
+
+### testování
+* základy a příklady BDD/behave
+    * https://www.obeythetestinggoat.com/book/appendix_bdd.html
+    * https://semaphoreci.com/community/tutorials/setting-up-a-bdd-stack-on-a-django-application
+    * https://help.crossbrowsertesting.com/selenium-testing/frameworks/behave/
+* [super tutoriál s příklady na behave](https://jenisys.github.io/behave.example/index.html)
