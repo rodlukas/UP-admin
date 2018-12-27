@@ -107,7 +107,6 @@
     "extends": "react-app"
   },
   "devDependencies": {
-    "ip": "^1.1.5",
     "react-test-renderer": "^16.5.0"
   }
 }
