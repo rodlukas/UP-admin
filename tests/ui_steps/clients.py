@@ -84,8 +84,11 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) > context.old_clients_cnt)
     # je klient opravdu pridany?
-    client_found = find_client(context)
-    assert client_found
+    assert find_client(context)
+
+
+def save_old_clients_cnt_to_context(context):
+    context.old_clients_cnt = clients_cnt(context.browser)
 
 
 @then('the client is updated')
@@ -93,8 +96,7 @@ def step_impl(context):
     # pockej na update klientu
     helpers.wait_loading_cycle(context.browser)
     # ma klient opravdu nove udaje?
-    client_found = find_client(context)
-    assert client_found
+    assert find_client(context)
     assert clients_cnt(context.browser) == context.old_clients_cnt
 
 
@@ -104,8 +106,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) < context.old_clients_cnt)
     # je klient opravdu pridany?
-    client_found = find_client_with_full_name(context.browser, context.full_name)
-    assert not client_found
+    assert not find_client_with_full_name(context.browser, context.full_name)
 
 
 @when('user deletes the client "{full_name}"')
@@ -122,7 +123,7 @@ def step_impl(context, full_name):
     button_edit_client = client_to_delete.find_element_by_css_selector('[data-qa=button_edit_client]')
     button_edit_client.click()
     # uloz puvodni pocet klientu
-    context.old_clients_cnt = clients_cnt(context.browser)
+    save_old_clients_cnt_to_context(context)
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
     # klikni na smazat
@@ -166,7 +167,7 @@ def step_impl(context, name, surname, phone, email, note):
     button_add_client = context.browser.find_element_by_css_selector('[data-qa=button_add_client]')
     button_add_client.click()
     # uloz puvodni pocet klientu
-    context.old_clients_cnt = clients_cnt(context.browser)
+    save_old_clients_cnt_to_context(context)
     # vloz vsechny udaje do formulare
     last_field = insert_to_form(context)
     # odesli formular
@@ -192,7 +193,7 @@ def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, n
     button_edit_client = client_to_update.find_element_by_css_selector('[data-qa=button_edit_client]')
     button_edit_client.click()
     # uloz puvodni pocet klientu
-    context.old_clients_cnt = clients_cnt(context.browser)
+    save_old_clients_cnt_to_context(context)
     # vloz vsechny udaje do formulare
     last_field = insert_to_form(context)
     # odesli formular

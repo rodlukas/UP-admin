@@ -71,14 +71,17 @@ def insert_to_form(context):
     return memberships_field
 
 
+def save_old_groups_cnt_to_context(context):
+    context.old_groups_cnt = groups_cnt(context.browser)
+
+
 @then('the group is added')
 def step_impl(context):
     # pockej na pridani skupiny
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) > context.old_groups_cnt)
     # je skupina opravdu pridana?
-    group_found = find_group(context)
-    assert group_found
+    assert find_group(context)
 
 
 @then('the group is updated')
@@ -86,8 +89,7 @@ def step_impl(context):
     # pockej na update skupin
     helpers.wait_loading_cycle(context.browser)
     # ma skupina opravdu nove udaje?
-    group_found = find_group(context)
-    assert group_found
+    assert find_group(context)
     assert groups_cnt(context.browser) == context.old_groups_cnt
 
 
@@ -97,8 +99,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) < context.old_groups_cnt)
     # je skupina opravdu pridana?
-    group_found = find_group_with_name(context.browser, context.name)
-    assert not group_found
+    assert not find_group_with_name(context.browser, context.name)
 
 
 @when('user deletes the group "{name}"')
@@ -115,7 +116,7 @@ def step_impl(context, name):
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
     # uloz puvodni pocet skupin
-    context.old_groups_cnt = groups_cnt(context.browser)
+    save_old_groups_cnt_to_context(context)
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
     # klikni na smazat
@@ -168,7 +169,7 @@ def step_impl(context, name, new_name, course, member_full_name1, member_full_na
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
     # uloz puvodni pocet skupin
-    context.old_groups_cnt = groups_cnt(context.browser)
+    save_old_groups_cnt_to_context(context)
     # vloz vsechny udaje do formulare
     last_field = insert_to_form(context)
     # odesli formular
@@ -196,7 +197,7 @@ def step_impl(context, name, course, member_full_name1, member_full_name2):
     button_add_group = context.browser.find_element_by_css_selector('[data-qa=button_add_group]')
     button_add_group.click()
     # uloz puvodni pocet skupin
-    context.old_groups_cnt = groups_cnt(context.browser)
+    save_old_groups_cnt_to_context(context)
     # vloz vsechny udaje do formulare
     last_field = insert_to_form(context)
     # odesli formular
