@@ -18,7 +18,6 @@ UI i API dané části
  API a UI - např. nastavení prohlížeče, klienta...
 
 ## Spouštění testů
-* spuštění všech testů: `python manage.py behave`
 * spuštění pouze UI testů: `python manage.py behave --stage=ui`
 * spuštění pouze API testů: `python manage.py behave --stage=api`
 * spuštění testů s tagem `xyz`: `python manage.py behave --tags=xyz`
@@ -29,3 +28,4 @@ pro pokročilejší integraci *behave* s Djangem je použité [behave-django](ht
 * pro testování UI se používá [selenium](https://github.com/SeleniumHQ/selenium), 
 konkrétně [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html)
     * pro jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa` 
+    (ve výjimečných případech toto nelze a používá se přímo `id` elementu - např. komponenty *react-select*)
