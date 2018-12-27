@@ -26,23 +26,23 @@ def find_group(context):
     all_groups = get_groups(context.browser)
     # najdi skupinu s udaji v kontextu
     for group in all_groups:
-        name = group.find_element_by_css_selector('[data-qa=group_name]').text
-        course = group.find_element_by_css_selector('[data-qa=course_name]').text
-        memberships_elements = group.find_elements_by_css_selector('[data-qa=client_name]')
-        memberships = [element.text for element in memberships_elements]
-        if (name == context.name and
-                set(memberships) == set(context.memberships) and
-                course == context.course):
+        found_name = group.find_element_by_css_selector('[data-qa=group_name]').text
+        found_course = group.find_element_by_css_selector('[data-qa=course_name]').text
+        found_memberships_elements = group.find_elements_by_css_selector('[data-qa=client_name]')
+        found_memberships = [element.text for element in found_memberships_elements]
+        if (found_name == context.name and
+                set(found_memberships) == set(context.memberships) and
+                found_course == context.course):
             return True
     return False
 
 
-def find_group_with_name(driver, group_name):
+def find_group_with_name(driver, name):
     all_groups = get_groups(driver)
     # najdi skupinu s udaji v kontextu
     for group in all_groups:
-        name = group.find_element_by_css_selector('[data-qa=group_name]').text
-        if name == group_name:
+        found_name = group.find_element_by_css_selector('[data-qa=group_name]').text
+        if found_name == name:
             return group
     return False
 
@@ -73,10 +73,14 @@ def insert_to_form(context):
 
 
 def load_data_to_context(context, name, course, *memberships):
-    context.name = name
+    load_id_data_to_context(context, name)
     context.course = course
     # z memberships vyfiltruj prazdne stringy
     context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
+
+
+def load_id_data_to_context(context, name):
+    context.name = name
 
 
 def save_old_groups_cnt_to_context(context):
@@ -113,13 +117,13 @@ def step_impl(context):
 @when('user deletes the group "{name}"')
 def step_impl(context, name):
     # nacti jmeno skupiny do kontextu
-    context.name = name
+    load_id_data_to_context(context, name)
     # klikni v menu na skupiny
     open_groups(context.browser)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu a klikni u ni na Upravit
-    group_to_update = find_group_with_name(context.browser, name)
+    group_to_update = find_group_with_name(context.browser, context.name)
     assert group_to_update
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
@@ -158,16 +162,18 @@ def step_impl(context):
 
 
 @when(
-    'user updates the data of group "{name}" to name "{new_name}", course "{course}" and clients to "{member_full_name1}", "{member_full_name2}" and "{member_full_name3}"')
-def step_impl(context, name, new_name, course, member_full_name1, member_full_name2, member_full_name3):
+    'user updates the data of group "{cur_name}" to name "{new_name}", course "{new_course}" and clients to "{new_member_full_name1}", "{new_member_full_name2}" and "{new_member_full_name3}"')
+def step_impl(context, cur_name, new_name, new_course, new_member_full_name1, new_member_full_name2,
+              new_member_full_name3):
     # nacti data skupiny do kontextu
-    load_data_to_context(context, new_name, course, member_full_name1, member_full_name2, member_full_name3)
+    load_data_to_context(context, new_name, new_course, new_member_full_name1, new_member_full_name2,
+                         new_member_full_name3)
     # klikni v menu na skupiny
     open_groups(context.browser)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu a klikni u ni na Upravit
-    group_to_update = find_group_with_name(context.browser, name)
+    group_to_update = find_group_with_name(context.browser, cur_name)
     assert group_to_update
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()

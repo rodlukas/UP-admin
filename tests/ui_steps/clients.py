@@ -26,14 +26,14 @@ def find_client(context):
     all_clients = get_clients(context.browser)
     # najdi klienta s udaji v kontextu
     for client in all_clients:
-        name = client.find_element_by_css_selector('[data-qa=client_name]').text
-        phone = client.find_element_by_css_selector('[data-qa=client_phone]').text
-        email = client.find_element_by_css_selector('[data-qa=client_email]').text
-        note = client.find_element_by_css_selector('[data-qa=client_note]').text
-        if (name == full_name and
-                common_helpers.shrink_str(phone) == helpers.frontend_empty_str(common_helpers.shrink_str(context.phone)) and
-                email == helpers.frontend_empty_str(context.email) and
-                note == helpers.frontend_empty_str(context.note)):
+        found_name = client.find_element_by_css_selector('[data-qa=client_name]').text
+        found_phone = client.find_element_by_css_selector('[data-qa=client_phone]').text
+        found_email = client.find_element_by_css_selector('[data-qa=client_email]').text
+        found_note = client.find_element_by_css_selector('[data-qa=client_note]').text
+        if (found_name == full_name and
+                common_helpers.shrink_str(found_phone) == helpers.frontend_empty_str(common_helpers.shrink_str(context.phone)) and
+                found_email == helpers.frontend_empty_str(context.email) and
+                found_note == helpers.frontend_empty_str(context.note)):
             return True
     return False
 
@@ -42,8 +42,8 @@ def find_client_with_full_name(driver, full_name):
     all_clients = get_clients(driver)
     # najdi klienta s udaji v kontextu
     for client in all_clients:
-        name = client.find_element_by_css_selector('[data-qa=client_name]').text
-        if name == full_name:
+        found_name = client.find_element_by_css_selector('[data-qa=client_name]').text
+        if found_name == full_name:
             return client
     return False
 
@@ -177,8 +177,8 @@ def step_impl(context, name, surname, phone, email, note):
 
 
 @when(
-    'user updates the data of client "(?P<full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)" and note "(?P<new_note>.*)"')
-def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, new_note):
+    'user updates the data of client "(?P<cur_full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)" and note "(?P<new_note>.*)"')
+def step_impl(context, cur_full_name, new_name, new_surname, new_phone, new_email, new_note):
     # nacti data klienta do kontextu
     load_data_to_context(context, new_name, new_surname, new_phone, new_email, new_note)
     # klikni v menu na klienty
@@ -186,7 +186,7 @@ def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, n
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi klienta a klikni u nej na Upravit
-    client_to_update = find_client_with_full_name(context.browser, full_name)
+    client_to_update = find_client_with_full_name(context.browser, cur_full_name)
     assert client_to_update
     button_edit_client = client_to_update.find_element_by_css_selector('[data-qa=button_edit_client]')
     button_edit_client.click()
