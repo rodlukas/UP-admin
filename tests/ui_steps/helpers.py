@@ -25,3 +25,8 @@ def wait_loading_ends(driver):
 
 def frontend_empty_str(text):
     return "---" if text == "" else text
+
+
+def wait_for_alert_and_accept(driver):
+    WebDriverWait(driver, WAIT_TIME_SHORT).until(EC.alert_is_present())
+    driver.switch_to.alert.accept()

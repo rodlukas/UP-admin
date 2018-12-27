@@ -78,6 +78,18 @@ def insert_to_form(context):
     return note_field
 
 
+def load_data_to_context(context, name, surname, phone, email, note):
+    context.name = name
+    context.surname = surname
+    context.phone = phone
+    context.email = email
+    context.note = note
+
+
+def save_old_clients_cnt_to_context(context):
+    context.old_clients_cnt = clients_cnt(context.browser)
+
+
 @then('the client is added')
 def step_impl(context):
     # pockej na pridani klienta
@@ -85,10 +97,6 @@ def step_impl(context):
         lambda driver: clients_cnt(driver) > context.old_clients_cnt)
     # je klient opravdu pridany?
     assert find_client(context)
-
-
-def save_old_clients_cnt_to_context(context):
-    context.old_clients_cnt = clients_cnt(context.browser)
 
 
 @then('the client is updated')
@@ -130,9 +138,7 @@ def step_impl(context, full_name):
     button_delete_client = context.browser.find_element_by_css_selector('[data-qa=button_delete_client]')
     button_delete_client.click()
     # a potvrd smazani
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(EC.alert_is_present())
-    alert = context.browser.switch_to.alert
-    alert.accept()
+    helpers.wait_for_alert_and_accept(context.browser)
 
 
 @then('the client is not added')
@@ -155,11 +161,7 @@ use_step_matcher("re")
     'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)" and note "(?P<note>.*)"')
 def step_impl(context, name, surname, phone, email, note):
     # nacti data klienta do kontextu
-    context.name = name
-    context.surname = surname
-    context.phone = phone
-    context.email = email
-    context.note = note
+    load_data_to_context(context, name, surname, phone, email, note)
     # klikni v menu na klienty
     open_clients(context.browser)
     # pockej na nacteni a pak klikni na Pridat klienta
@@ -178,11 +180,7 @@ def step_impl(context, name, surname, phone, email, note):
     'user updates the data of client "(?P<full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)" and note "(?P<new_note>.*)"')
 def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, new_note):
     # nacti data klienta do kontextu
-    context.name = new_name
-    context.surname = new_surname
-    context.phone = new_phone
-    context.email = new_email
-    context.note = new_note
+    load_data_to_context(context, new_name, new_surname, new_phone, new_email, new_note)
     # klikni v menu na klienty
     open_clients(context.browser)
     # pockej na nacteni

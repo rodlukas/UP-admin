@@ -55,7 +55,7 @@ def load_data_to_context(context, name, course, *memberships):
     context.name = name
     context.course = helpers.find_course_with_name(context.api_client, course)
     # z memberships vyfiltruj prazdne stringy
-    context.memberships = list(filter(None, memberships))
+    context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
 
 
 def save_old_groups_cnt_to_context(context):

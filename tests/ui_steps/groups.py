@@ -4,6 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from tests.ui_steps import helpers
+from tests import common_helpers
 from selenium.webdriver.common.keys import Keys
 from tests.common_steps import groups
 from tests.ui_steps import login_logout
@@ -71,6 +72,13 @@ def insert_to_form(context):
     return memberships_field
 
 
+def load_data_to_context(context, name, course, *memberships):
+    context.name = name
+    context.course = course
+    # z memberships vyfiltruj prazdne stringy
+    context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
+
+
 def save_old_groups_cnt_to_context(context):
     context.old_groups_cnt = groups_cnt(context.browser)
 
@@ -123,17 +131,14 @@ def step_impl(context, name):
     button_delete_group = context.browser.find_element_by_css_selector('[data-qa=button_delete_group]')
     button_delete_group.click()
     # a potvrd smazani
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(EC.alert_is_present())
-    alert = context.browser.switch_to.alert
-    alert.accept()
+    helpers.wait_for_alert_and_accept(context.browser)
 
 
 @then('the group is not added')
 def step_impl(context):
     # zjisti, zda se objevi alert (skupina se nepridala)
     try:
-        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until(EC.alert_is_present())
-        context.browser.switch_to.alert.accept()
+        helpers.wait_for_alert_and_accept(context.browser)
     except TimeoutException:
         # alert se neobjevil, zmizel formular?
         try:
@@ -156,9 +161,7 @@ def step_impl(context):
     'user updates the data of group "{name}" to name "{new_name}", course "{course}" and clients to "{member_full_name1}", "{member_full_name2}" and "{member_full_name3}"')
 def step_impl(context, name, new_name, course, member_full_name1, member_full_name2, member_full_name3):
     # nacti data skupiny do kontextu
-    context.name = new_name
-    context.course = course
-    context.memberships = [member_full_name1, member_full_name2, member_full_name3]
+    load_data_to_context(context, new_name, course, member_full_name1, member_full_name2, member_full_name3)
     # klikni v menu na skupiny
     open_groups(context.browser)
     # pockej na nacteni
@@ -183,13 +186,7 @@ use_step_matcher("re")
     'user adds new group "(?P<name>.*)" for course "(?P<course>.*)" with clients "(?P<member_full_name1>.*)" and "(?P<member_full_name2>.*)"')
 def step_impl(context, name, course, member_full_name1, member_full_name2):
     # nacti data skupiny do kontextu
-    context.name = name
-    context.course = course
-    context.memberships = []
-    if member_full_name1 != '':
-        context.memberships.append(member_full_name1)
-    if member_full_name2 != '':
-        context.memberships.append(member_full_name2)
+    load_data_to_context(context, name, course, member_full_name1, member_full_name2)
     # klikni v menu na skupiny
     open_groups(context.browser)
     # pockej na nacteni a pak klikni na Pridat skupinu
