@@ -22,29 +22,28 @@ def open_groups(driver):
     driver.find_element_by_css_selector('[data-qa=menu_groups]').click()
 
 
-def find_group(context):
-    all_groups = get_groups(context.browser)
-    # najdi skupinu s udaji v kontextu
-    for group in all_groups:
-        found_name = group.find_element_by_css_selector('[data-qa=group_name]').text
-        found_course = group.find_element_by_css_selector('[data-qa=course_name]').text
-        found_memberships_elements = group.find_elements_by_css_selector('[data-qa=client_name]')
-        found_memberships = [element.text for element in found_memberships_elements]
-        if (found_name == context.name and
-                set(found_memberships) == set(context.memberships) and
-                found_course == context.course):
-            return True
-    return False
-
-
-def find_group_with_name(driver, name):
+def find_group(driver, name, **data):
     all_groups = get_groups(driver)
-    # najdi skupinu s udaji v kontextu
+    # najdi skupinu s udaji v parametrech
     for group in all_groups:
         found_name = group.find_element_by_css_selector('[data-qa=group_name]').text
+        # srovnej identifikatory
         if found_name == name:
-            return group
+            # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
+            if data:
+                found_course = group.find_element_by_css_selector('[data-qa=course_name]').text
+                found_memberships_elements = group.find_elements_by_css_selector('[data-qa=client_name]')
+                found_memberships = [element.text for element in found_memberships_elements]
+                if (set(found_memberships) == set(data['memberships']) and
+                        found_course == data['course']):
+                    return group
+            else:
+                return group
     return False
+
+
+def find_group_with_context(context):
+    return find_group(context.browser, context.name, course=context.course, memberships=context.memberships)
 
 
 def wait_form_visible(driver):
@@ -93,7 +92,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) > context.old_groups_cnt)
     # je skupina opravdu pridana?
-    assert find_group(context)
+    assert find_group_with_context(context)
 
 
 @then('the group is updated')
@@ -101,7 +100,7 @@ def step_impl(context):
     # pockej na update skupin
     helpers.wait_loading_cycle(context.browser)
     # ma skupina opravdu nove udaje?
-    assert find_group(context)
+    assert find_group_with_context(context)
     assert groups_cnt(context.browser) == context.old_groups_cnt
 
 
@@ -110,8 +109,8 @@ def step_impl(context):
     # pockej na smazani skupiny
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) < context.old_groups_cnt)
-    # je skupina opravdu pridana?
-    assert not find_group_with_name(context.browser, context.name)
+    # je skupina opravdu smazana?
+    assert not find_group(context.browser, context.name)
 
 
 @when('user deletes the group "{name}"')
@@ -123,7 +122,7 @@ def step_impl(context, name):
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu a klikni u ni na Upravit
-    group_to_update = find_group_with_name(context.browser, context.name)
+    group_to_update = find_group(context.browser, context.name)
     assert group_to_update
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
@@ -173,7 +172,7 @@ def step_impl(context, cur_name, new_name, new_course, new_member_full_name1, ne
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu a klikni u ni na Upravit
-    group_to_update = find_group_with_name(context.browser, cur_name)
+    group_to_update = find_group(context.browser, cur_name)
     assert group_to_update
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()

@@ -21,31 +21,31 @@ def open_clients(driver):
     driver.find_element_by_css_selector('[data-qa=menu_clients]').click()
 
 
-def find_client(context):
-    full_name = common_helpers.client_full_name(context.name, context.surname)
-    all_clients = get_clients(context.browser)
-    # najdi klienta s udaji v kontextu
-    for client in all_clients:
-        found_name = client.find_element_by_css_selector('[data-qa=client_name]').text
-        found_phone = client.find_element_by_css_selector('[data-qa=client_phone]').text
-        found_email = client.find_element_by_css_selector('[data-qa=client_email]').text
-        found_note = client.find_element_by_css_selector('[data-qa=client_note]').text
-        if (found_name == full_name and
-                common_helpers.shrink_str(found_phone) == helpers.frontend_empty_str(common_helpers.shrink_str(context.phone)) and
-                found_email == helpers.frontend_empty_str(context.email) and
-                found_note == helpers.frontend_empty_str(context.note)):
-            return True
-    return False
-
-
-def find_client_with_full_name(driver, full_name):
+def find_client(driver, full_name, **data):
     all_clients = get_clients(driver)
-    # najdi klienta s udaji v kontextu
+    # najdi klienta s udaji v parametrech
     for client in all_clients:
         found_name = client.find_element_by_css_selector('[data-qa=client_name]').text
+        # srovnej identifikatory
         if found_name == full_name:
-            return client
+            # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
+            if data:
+                found_phone = client.find_element_by_css_selector('[data-qa=client_phone]').text
+                found_email = client.find_element_by_css_selector('[data-qa=client_email]').text
+                found_note = client.find_element_by_css_selector('[data-qa=client_note]').text
+                if (common_helpers.shrink_str(found_phone) == helpers.frontend_empty_str(
+                        common_helpers.shrink_str(data['phone'])) and
+                        found_email == helpers.frontend_empty_str(data['email']) and
+                        found_note == helpers.frontend_empty_str(data['note'])):
+                    return client
+            else:
+                return client
     return False
+
+
+def find_client_with_context(context):
+    full_name = common_helpers.client_full_name(context.name, context.surname)
+    return find_client(context.browser, full_name, phone=context.phone, email=context.email, note=context.note)
 
 
 def wait_form_visible(driver):
@@ -96,7 +96,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) > context.old_clients_cnt)
     # je klient opravdu pridany?
-    assert find_client(context)
+    assert find_client_with_context(context)
 
 
 @then('the client is updated')
@@ -104,7 +104,7 @@ def step_impl(context):
     # pockej na update klientu
     helpers.wait_loading_cycle(context.browser)
     # ma klient opravdu nove udaje?
-    assert find_client(context)
+    assert find_client_with_context(context)
     assert clients_cnt(context.browser) == context.old_clients_cnt
 
 
@@ -113,8 +113,8 @@ def step_impl(context):
     # pockej na smazani klienta
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) < context.old_clients_cnt)
-    # je klient opravdu pridany?
-    assert not find_client_with_full_name(context.browser, context.full_name)
+    # je klient opravdu smazany?
+    assert not find_client(context.browser, context.full_name)
 
 
 @when('user deletes the client "{full_name}"')
@@ -126,7 +126,7 @@ def step_impl(context, full_name):
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi klienta a klikni u nej na Upravit
-    client_to_delete = find_client_with_full_name(context.browser, full_name)
+    client_to_delete = find_client(context.browser, full_name)
     assert client_to_delete
     button_edit_client = client_to_delete.find_element_by_css_selector('[data-qa=button_edit_client]')
     button_edit_client.click()
@@ -186,7 +186,7 @@ def step_impl(context, cur_full_name, new_name, new_surname, new_phone, new_emai
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi klienta a klikni u nej na Upravit
-    client_to_update = find_client_with_full_name(context.browser, cur_full_name)
+    client_to_update = find_client(context.browser, cur_full_name)
     assert client_to_update
     button_edit_client = client_to_update.find_element_by_css_selector('[data-qa=button_edit_client]')
     button_edit_client.click()

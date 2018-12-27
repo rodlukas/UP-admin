@@ -4,7 +4,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from tests.ui_steps import helpers
-from tests import common_helpers
 from selenium.webdriver.common.keys import Keys
 from tests.common_steps import applications
 from tests.ui_steps import login_logout
@@ -22,34 +21,29 @@ def open_applications(driver):
     driver.find_element_by_css_selector('[data-qa=menu_applications]').click()
 
 
-def find_application(context):
-    all_found_courses_with_applications = context.browser.find_elements_by_css_selector('[data-qa=applications_for_course]')
+def find_application(driver, client, course, **data):
+    all_found_courses_with_applications = driver.find_elements_by_css_selector(
+        '[data-qa=applications_for_course]')
     for course_with_applications in all_found_courses_with_applications:
         found_course = course_with_applications.find_element_by_css_selector('[data-qa=application_course]').text
         applications_for_course = course_with_applications.find_elements_by_css_selector('[data-qa=application]')
-        # najdi zadost s udaji v kontextu
+        # najdi zadost s udaji v parametrech
         for application in applications_for_course:
             found_client = application.find_element_by_css_selector('[data-qa=client_name]').text
-            found_note = application.find_element_by_css_selector('[data-qa=application_note]').text
-            if (found_client == context.client and
-                    found_course == context.course and
-                    found_note == context.note):
-                return True
+            # srovnej identifikatory
+            if found_client == client and found_course == course:
+                # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
+                if data:
+                    found_note = application.find_element_by_css_selector('[data-qa=application_note]').text
+                    if found_note == data['note']:
+                        return application
+                else:
+                    return application
     return False
 
 
-def find_application_with_client_and_course(driver, client, course):
-    all_found_courses_with_applications = driver.find_elements_by_css_selector('[data-qa=applications_for_course]')
-    for course_with_applications in all_found_courses_with_applications:
-        found_course = course_with_applications.find_element_by_css_selector('[data-qa=application_course]').text
-        applications_for_course = course_with_applications.find_elements_by_css_selector('[data-qa=application]')
-        # najdi zadost s udaji v kontextu
-        for application in applications_for_course:
-            found_client = application.find_element_by_css_selector('[data-qa=client_name]').text
-            if (found_client == client and
-                    found_course == course):
-                return application
-    return False
+def find_application_with_context(context):
+    return find_application(context.browser, context.client, context.course, note=context.note)
 
 
 def wait_form_visible(driver):
@@ -96,7 +90,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: applications_cnt(driver) > context.old_applications_cnt)
     # je zadost opravdu pridana?
-    assert find_application(context)
+    assert find_application_with_context(context)
 
 
 @then('the application is updated')
@@ -104,7 +98,7 @@ def step_impl(context):
     # pockej na update zadosti
     helpers.wait_loading_cycle(context.browser)
     # ma zadost opravdu nove udaje?
-    assert find_application(context)
+    assert find_application_with_context(context)
     assert applications_cnt(context.browser) == context.old_applications_cnt
 
 
@@ -113,8 +107,8 @@ def step_impl(context):
     # pockej na smazani zadosti
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: applications_cnt(driver) < context.old_applications_cnt)
-    # je zadost opravdu pridana?
-    assert not find_application_with_client_and_course(context.browser, context.client, context.course)
+    # je zadost opravdu smazana?
+    assert not find_application(context.browser, context.client, context.course)
 
 
 @when('user deletes the application from client "{full_name}" for course "{course}"')
@@ -126,7 +120,7 @@ def step_impl(context, full_name, course):
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi zadost
-    application_to_update = find_application_with_client_and_course(context.browser, context.client, context.course)
+    application_to_update = find_application(context.browser, context.client, context.course)
     assert application_to_update
     # uloz puvodni pocet zadosti
     save_old_applications_cnt_to_context(context)
@@ -170,7 +164,7 @@ def step_impl(context, cur_full_name, cur_course, new_full_name, new_course, new
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi zadost a klikni u ni na Upravit
-    application_to_update = find_application_with_client_and_course(context.browser, cur_full_name, cur_course)
+    application_to_update = find_application(context.browser, cur_full_name, cur_course)
     assert application_to_update
     button_edit_application = application_to_update.find_element_by_css_selector('[data-qa=button_edit_application]')
     button_edit_application.click()
