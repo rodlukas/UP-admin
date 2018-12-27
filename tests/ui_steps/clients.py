@@ -21,12 +21,8 @@ def open_clients(driver):
     driver.find_element_by_css_selector('[data-qa=menu_clients]').click()
 
 
-def client_full_name(name, surname):
-    return f"{surname} {name}"
-
-
 def find_client(context):
-    full_name = client_full_name(context.name, context.surname)
+    full_name = common_helpers.client_full_name(context.name, context.surname)
     all_clients = get_clients(context.browser)
     # najdi klienta s udaji v kontextu
     for client in all_clients:
@@ -82,9 +78,6 @@ def insert_to_form(context):
     return note_field
 
 
-
-
-
 @then('the client is added')
 def step_impl(context):
     # pockej na pridani klienta
@@ -107,7 +100,7 @@ def step_impl(context):
 
 @then('the client is deleted')
 def step_impl(context):
-    # pockej na pridani klienta
+    # pockej na smazani klienta
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) < context.old_clients_cnt)
     # je klient opravdu pridany?
@@ -124,9 +117,9 @@ def step_impl(context, full_name):
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi klienta a klikni u nej na Upravit
-    client_to_update = find_client_with_full_name(context.browser, full_name)
-    assert client_to_update
-    button_edit_client = client_to_update.find_element_by_css_selector('[data-qa=button_edit_client]')
+    client_to_delete = find_client_with_full_name(context.browser, full_name)
+    assert client_to_delete
+    button_edit_client = client_to_delete.find_element_by_css_selector('[data-qa=button_edit_client]')
     button_edit_client.click()
     # uloz puvodni pocet klientu
     context.old_clients_cnt = clients_cnt(context.browser)

@@ -42,7 +42,7 @@ export default class Groups extends Component {
         const GroupTable = () =>
             <tbody>
             {groups.map(group =>
-                <tr key={group.id}>
+                <tr key={group.id} data-qa="group">
                     <td>
                         <GroupName group={group} link/>
                     </td>
@@ -53,14 +53,14 @@ export default class Groups extends Component {
                         <ClientsList clients={group.memberships}/>
                     </td>
                     <td>
-                        <EditButton onClick={() => this.toggle(group)}/>
+                        <EditButton onClick={() => this.toggle(group)} data-qa="button_edit_group"/>
                     </td>
                 </tr>)}
             </tbody>
         const HeadingContent = () =>
             <Fragment>
                 Skupiny
-                <AddButton content="Přidat skupinu" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat skupinu" onClick={() => this.toggle()} data-qa="button_add_group"/>
             </Fragment>
         return (
             <div>

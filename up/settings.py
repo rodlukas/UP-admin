@@ -61,6 +61,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',

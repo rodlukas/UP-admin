@@ -9,23 +9,12 @@ from tests.api_steps import login_logout
 API_ENDPOINT = helpers.api_url("/clients/")
 
 
-def get_clients(api_client):
-    all_clients_resp = api_client.get(API_ENDPOINT)
-    assert all_clients_resp.status_code == status.HTTP_200_OK
-    return json.loads(all_clients_resp.content)
-
-
 def clients_cnt(api_client):
-    return len(get_clients(api_client))
-
-
-def parse_client_full_name(full_name):
-    full_name = full_name.split()
-    return {'surname': full_name[0], 'name': full_name[1]}
+    return len(helpers.get_clients(api_client))
 
 
 def find_client(context):
-    all_clients = get_clients(context.api_client)
+    all_clients = helpers.get_clients(context.api_client)
     # najdi klienta s udaji v kontextu
     for client in all_clients:
         if (client['name'] == context.name and
@@ -34,16 +23,6 @@ def find_client(context):
                 client['email'] == context.email and
                 client['note'] == context.note):
             return True
-    return False
-
-
-def find_client_with_full_name(api_client, full_name):
-    all_clients = get_clients(api_client)
-    full_name_parsed = parse_client_full_name(full_name)
-    for client in all_clients:
-        if (client['name'] == full_name_parsed['name'] and
-                client['surname'] == full_name_parsed['surname']):
-            return client
     return False
 
 
@@ -98,14 +77,24 @@ def step_impl(context):
 
 @then('the client is deleted')
 def step_impl(context):
-    # TODO
-    ...
+    # smazani bylo uspesne
+    assert context.resp.status_code == status.HTTP_204_NO_CONTENT
+    client_found = helpers.find_client_with_full_name(context.api_client, context.full_name)
+    assert not client_found
+    assert clients_cnt(context.api_client) < context.old_clients_cnt
 
 
 @when('user deletes the client "{full_name}"')
 def step_impl(context, full_name):
-    # TODO
-    ...
+    # nacti jmeno klienta do kontextu
+    context.full_name = full_name
+    # najdi klienta
+    client_to_delete = helpers.find_client_with_full_name(context.api_client, full_name)
+    assert client_to_delete
+    # uloz puvodni pocet klientu
+    context.old_clients_cnt = clients_cnt(context.api_client)
+    # smazani klienta
+    context.resp = context.api_client.delete(f"{API_ENDPOINT}{client_to_delete['id']}/")
 
 
 @then('the client is not added')
@@ -148,7 +137,7 @@ def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, n
     context.email = new_email
     context.note = new_note
     # najdi klienta
-    client_to_update = find_client_with_full_name(context.api_client, full_name)
+    client_to_update = helpers.find_client_with_full_name(context.api_client, full_name)
     assert client_to_update
     # uloz puvodni pocet klientu
     context.old_clients_cnt = clients_cnt(context.api_client)
