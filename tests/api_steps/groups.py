@@ -28,9 +28,10 @@ def find_group(context):
 
 
 def group_equal_to_context(group, context):
+    # POZOR - data v kontextu nemusi obsahovat dane klice
     memberships = parse_memberships(group['memberships'])
     return (group['name'] == context.name and
-            group['course']['name'] == context.course['name'] and
+            group['course']['name'] == context.course.get('name') and
             set(memberships) == set(context.memberships))
 
 
@@ -52,10 +53,14 @@ def group_dict(context):
 
 
 def load_data_to_context(context, name, course, *memberships):
-    context.name = name
+    load_id_data_to_context(context, name)
     context.course = helpers.find_course_with_name(context.api_client, course)
     # z memberships vyfiltruj prazdne stringy
     context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
+
+
+def load_id_data_to_context(context, name):
+    context.name = name
 
 
 def save_old_groups_cnt_to_context(context):
@@ -99,9 +104,9 @@ def step_impl(context):
 @when('user deletes the group "{name}"')
 def step_impl(context, name):
     # nacti jmeno skupiny do kontextu
-    context.name = name
+    load_id_data_to_context(context, name)
     # najdi skupinu
-    group_to_delete = helpers.find_group_with_name(context.api_client, name)
+    group_to_delete = helpers.find_group_with_name(context.api_client, context.name)
     assert group_to_delete
     # uloz puvodni pocet skupin
     save_old_groups_cnt_to_context(context)
@@ -121,12 +126,14 @@ def step_impl(context):
 
 
 @when(
-    'user updates the data of group "{name}" to name "{new_name}", course "{course}" and clients to "{member_full_name1}", "{member_full_name2}" and "{member_full_name3}"')
-def step_impl(context, name, new_name, course, member_full_name1, member_full_name2, member_full_name3):
+    'user updates the data of group "{cur_name}" to name "{new_name}", course "{new_course}" and clients to "{new_member_full_name1}", "{new_member_full_name2}" and "{new_member_full_name3}"')
+def step_impl(context, cur_name, new_name, new_course, new_member_full_name1, new_member_full_name2,
+              new_member_full_name3):
     # nacteni dat skupiny do kontextu
-    load_data_to_context(context, new_name, course, member_full_name1, member_full_name2, member_full_name3)
+    load_data_to_context(context, new_name, new_course, new_member_full_name1, new_member_full_name2,
+                         new_member_full_name3)
     # najdi skupinu
-    group_to_update = helpers.find_group_with_name(context.api_client, name)
+    group_to_update = helpers.find_group_with_name(context.api_client, cur_name)
     assert group_to_update
     # uloz puvodni pocet skupin
     save_old_groups_cnt_to_context(context)

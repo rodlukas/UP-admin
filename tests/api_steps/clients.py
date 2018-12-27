@@ -98,7 +98,7 @@ def step_impl(context, full_name):
     # nacti jmeno klienta do kontextu
     context.full_name = full_name
     # najdi klienta
-    client_to_delete = helpers.find_client_with_full_name(context.api_client, full_name)
+    client_to_delete = helpers.find_client_with_full_name(context.api_client, context.full_name)
     assert client_to_delete
     # uloz puvodni pocet klientu
     save_old_clients_cnt_to_context(context)
@@ -132,12 +132,12 @@ def step_impl(context, name, surname, phone, email, note):
 
 
 @when(
-    'user updates the data of client "(?P<full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)" and note "(?P<new_note>.*)"')
-def step_impl(context, full_name, new_name, new_surname, new_phone, new_email, new_note):
+    'user updates the data of client "(?P<cur_full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)" and note "(?P<new_note>.*)"')
+def step_impl(context, cur_full_name, new_name, new_surname, new_phone, new_email, new_note):
     # nacteni dat klienta do kontextu
     load_data_to_context(context, new_name, new_surname, new_phone, new_email, new_note)
     # najdi klienta
-    client_to_update = helpers.find_client_with_full_name(context.api_client, full_name)
+    client_to_update = helpers.find_client_with_full_name(context.api_client, cur_full_name)
     assert client_to_update
     # uloz puvodni pocet klientu
     save_old_clients_cnt_to_context(context)

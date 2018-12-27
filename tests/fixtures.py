@@ -1,4 +1,4 @@
-from admin.models import Client, Course, Group, Membership
+from admin.models import Client, Course, Group, Membership, Application
 from django.contrib.auth import get_user_model
 
 
@@ -51,3 +51,8 @@ def user():
         password=password
     )
     return {'username': username, 'password': password}
+
+
+def applications(courses_list, clients_list):
+    Application(client=clients_list[2], course=courses_list[0]).save()
+    Application(client=clients_list[3], course=courses_list[1], note="abcd").save()

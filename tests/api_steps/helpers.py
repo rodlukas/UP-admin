@@ -1,10 +1,14 @@
 import json
 from rest_framework import status
+from tests import common_helpers
 
 
 def parse_client_full_name(full_name):
+    # POZOR - muze byt zaslan prazdny string
     full_name = full_name.split()
-    return {'surname': full_name[0], 'name': full_name[1]}
+    if len(full_name) == 2:
+        return {'surname': full_name[0], 'name': full_name[1]}
+    return {'surname': '', 'name': ''}
 
 
 def api_url(url):
@@ -26,6 +30,22 @@ def find_group_with_name(api_client, name):
     for group in all_groups:
         if group['name'] == name:
             return group
+    return {}
+
+
+def client_full_names_equal(client1, client2):
+    # POZOR - data v kontextu nemusi obsahovat dane klice
+    client1_full_name = common_helpers.client_full_name(client1.get('name'), client1.get('surname'))
+    client2_full_name = common_helpers.client_full_name(client2.get('name'), client2.get('surname'))
+    return client1_full_name == client2_full_name
+
+
+def find_application_with_client_and_course(api_client, client, course):
+    all_applications = get_applications(api_client)
+    for application in all_applications:
+        if (client_full_names_equal(application['client'], client) and
+                application['course']['name'] == course['name']):
+            return application
     return {}
 
 
@@ -51,5 +71,11 @@ def get_groups(api_client):
 
 def get_courses(api_client):
     all_courses_resp = api_client.get(api_url("/courses/"))
+    assert all_courses_resp.status_code == status.HTTP_200_OK
+    return json.loads(all_courses_resp.content)
+
+
+def get_applications(api_client):
+    all_courses_resp = api_client.get(api_url("/applications/"))
     assert all_courses_resp.status_code == status.HTTP_200_OK
     return json.loads(all_courses_resp.content)
