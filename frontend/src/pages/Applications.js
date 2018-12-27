@@ -74,12 +74,12 @@ export default class Applications extends Component {
                     <ListGroupItemHeading>
                         <ClientName client={application.client} link/>
                     </ListGroupItemHeading>
-                    <ListGroupItemText>
+                    <ListGroupItemText data-qa="application_note">
                         {application.note}
                     </ListGroupItemText>
                 </Col>
                 <Col>
-                    <EditButton onClick={() => this.toggle(application)}/>
+                    <EditButton onClick={() => this.toggle(application)} data-qa="button_edit_application"/>
                     {' '}
                     <DeleteButton
                         onClick={() => {
@@ -87,14 +87,15 @@ export default class Applications extends Component {
                                 + application.client.surname + " " + application.client.name
                                 + " o " + application.course.name + '?'
                             if (window.confirm(msg))
-                                this.delete(application.id)
-                    }}/>
+                                this.delete(application.id)}}
+                        data-qa="button_delete_application"
+                    />
                 </Col>
             </Fragment>
         const CourseApplications = ({applications}) =>
             <Fragment>
                 {applications.map(application =>
-                    <ListGroupItem key={application.id}>
+                    <ListGroupItem key={application.id} data-qa="application">
                         <Container>
                             <Row>
                                 <Application application={application}/>
@@ -105,9 +106,11 @@ export default class Applications extends Component {
         const AllApplications = () =>
             <div className="pageContent">
                 {applications.map(courseApplications =>
-                    <ListGroup key={courseApplications.course}>
+                    <ListGroup key={courseApplications.course} data-qa="applications_for_course">
                         <h4 className="Applications-h4">
-                            {courseApplications.course}
+                            <span data-qa="application_course">
+                                {courseApplications.course}
+                            </span>
                             {' '}
                             <ApplicantsCount cnt={courseApplications.values.length}/>
                         </h4>
@@ -121,7 +124,7 @@ export default class Applications extends Component {
         const HeadingContent = () =>
             <Fragment>
                 Zájemci o kurzy
-                <AddButton content="Přidat zájemce" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat zájemce" onClick={() => this.toggle()} data-qa="button_add_application"/>
             </Fragment>
         return (
             <Fragment>

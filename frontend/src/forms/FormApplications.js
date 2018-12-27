@@ -65,7 +65,7 @@ export default class FormApplications extends Component {
     render() {
         const {client, clients, course, note} = this.state
         return (
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} data-qa="form_application">
                 <ModalHeader toggle={this.close}>
                     {this.isObject ? 'Úprava' : 'Přidání'} zájemce o kurz
                 </ModalHeader>
@@ -89,7 +89,7 @@ export default class FormApplications extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Col id="course" sm={3}>
+                        <Col sm={3}>
                             Kurz
                         </Col>
                         <Col sm={9}>
@@ -110,7 +110,8 @@ export default class FormApplications extends Component {
                             Poznámka
                         </Label>
                         <Col sm={9}>
-                            <Input type="textarea" id="note" value={note} onChange={this.onChange}/>
+                            <Input type="textarea" id="note" value={note} onChange={this.onChange}
+                                   data-qa="application_field_note"/>
                         </Col>
                     </FormGroup>
                 </ModalBody>
