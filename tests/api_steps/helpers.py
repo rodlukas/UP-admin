@@ -3,16 +3,23 @@ from rest_framework import status
 from tests import common_helpers
 
 
+def api_url(url):
+    return "/api/v1" + url
+
+
+API_CLIENTS = api_url("/clients/")
+API_GROUPS = api_url("/groups/")
+API_COURSES = api_url("/courses/")
+API_APPLICATIONS = api_url("/applications/")
+API_AUTH = api_url("/jwt-auth/")
+
+
 def parse_client_full_name(full_name):
     # POZOR - muze byt zaslan prazdny string
     full_name = full_name.split()
     if len(full_name) == 2:
         return {'surname': full_name[0], 'name': full_name[1]}
     return {'surname': '', 'name': ''}
-
-
-def api_url(url):
-    return "/api/v1" + url
 
 
 def find_client_with_full_name(api_client, full_name):
@@ -58,24 +65,24 @@ def find_course_with_name(api_client, name):
 
 
 def get_clients(api_client):
-    all_clients_resp = api_client.get(api_url("/clients/"))
+    all_clients_resp = api_client.get(API_CLIENTS)
     assert all_clients_resp.status_code == status.HTTP_200_OK
     return json.loads(all_clients_resp.content)
 
 
 def get_groups(api_client):
-    all_groups_resp = api_client.get(api_url("/groups/"))
+    all_groups_resp = api_client.get(API_GROUPS)
     assert all_groups_resp.status_code == status.HTTP_200_OK
     return json.loads(all_groups_resp.content)
 
 
 def get_courses(api_client):
-    all_courses_resp = api_client.get(api_url("/courses/"))
+    all_courses_resp = api_client.get(API_COURSES)
     assert all_courses_resp.status_code == status.HTTP_200_OK
     return json.loads(all_courses_resp.content)
 
 
 def get_applications(api_client):
-    all_courses_resp = api_client.get(api_url("/applications/"))
+    all_courses_resp = api_client.get(API_APPLICATIONS)
     assert all_courses_resp.status_code == status.HTTP_200_OK
     return json.loads(all_courses_resp.content)

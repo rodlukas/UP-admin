@@ -5,8 +5,6 @@ from rest_framework import status
 from tests.common_steps import applications
 from tests.api_steps import login_logout
 
-API_ENDPOINT = helpers.api_url("/applications/")
-
 
 def applications_cnt(api_client):
     return len(helpers.get_applications(api_client))
@@ -30,7 +28,7 @@ def application_equal_to_context(application, context):
 
 def find_application_with_id(context, application_id):
     # nacti zadost z endpointu podle id
-    application_resp = context.api_client.get(f"{API_ENDPOINT}{application_id}/")
+    application_resp = context.api_client.get(f"{helpers.API_APPLICATIONS}{application_id}/")
     assert application_resp.status_code == status.HTTP_200_OK
     application = json.loads(application_resp.content)
     # porovnej ziskana data se zaslanymi udaji
@@ -102,7 +100,7 @@ def step_impl(context, full_name, course):
     # uloz puvodni pocet zadosti
     save_old_applications_cnt_to_context(context)
     # smazani zadosti
-    context.resp = context.api_client.delete(f"{API_ENDPOINT}{application_to_delete['id']}/")
+    context.resp = context.api_client.delete(f"{helpers.API_APPLICATIONS}{application_to_delete['id']}/")
 
 
 @then('the application is not added')
@@ -130,7 +128,7 @@ def step_impl(context, cur_full_name, cur_course, new_full_name, new_course, new
     # uloz puvodni pocet zadosti
     save_old_applications_cnt_to_context(context)
     # vlozeni zadosti
-    context.resp = context.api_client.put(f"{API_ENDPOINT}{application_to_update['id']}/", application_dict(context))
+    context.resp = context.api_client.put(f"{helpers.API_APPLICATIONS}{application_to_update['id']}/", application_dict(context))
 
 
 use_step_matcher("re")
@@ -144,4 +142,4 @@ def step_impl(context, full_name, course, note):
     # uloz puvodni pocet zadosti
     save_old_applications_cnt_to_context(context)
     # vlozeni zadosti
-    context.resp = context.api_client.post(API_ENDPOINT, application_dict(context))
+    context.resp = context.api_client.post(helpers.API_APPLICATIONS, application_dict(context))

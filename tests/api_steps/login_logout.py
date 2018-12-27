@@ -9,7 +9,7 @@ from tests.common_steps import login_logout
 @When('user logs into app')
 def step_impl(context):
     # prihlas se
-    context.auth_resp = context.api_client.post(helpers.api_url("/jwt-auth/"),
+    context.auth_resp = context.api_client.post(helpers.API_AUTH,
                                                 {"username": context.user['username'],
                                                  "password": context.user['password']})
 
@@ -27,12 +27,12 @@ def step_impl(context):
 
 @When('user logs out of app')
 def step_impl(context):
-    # smaz vsechny nastavene credentials
+    # smaz vsechny nastavene credentials v klientovi
     context.api_client.credentials()
 
 
 @Then('user is logged out of app')
 def step_impl(context):
     # posli dotaz na endpoint - vyzaduje prihlaseni
-    resp = context.api_client.get(helpers.api_url("/clients/"))
+    resp = context.api_client.get(helpers.API_CLIENTS)
     assert resp.status_code == status.HTTP_401_UNAUTHORIZED

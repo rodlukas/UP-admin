@@ -6,8 +6,6 @@ from rest_framework import status
 from tests.common_steps import clients
 from tests.api_steps import login_logout
 
-API_ENDPOINT = helpers.api_url("/clients/")
-
 
 def clients_cnt(api_client):
     return len(helpers.get_clients(api_client))
@@ -32,7 +30,7 @@ def client_equal_to_context(client, context):
 
 def find_client_with_id(context, client_id):
     # nacti klienta z endpointu podle id
-    client_resp = context.api_client.get(f"{API_ENDPOINT}{client_id}/")
+    client_resp = context.api_client.get(f"{helpers.API_CLIENTS}{client_id}/")
     assert client_resp.status_code == status.HTTP_200_OK
     client = json.loads(client_resp.content)
     # porovnej ziskana data se zaslanymi udaji
@@ -103,7 +101,7 @@ def step_impl(context, full_name):
     # uloz puvodni pocet klientu
     save_old_clients_cnt_to_context(context)
     # smazani klienta
-    context.resp = context.api_client.delete(f"{API_ENDPOINT}{client_to_delete['id']}/")
+    context.resp = context.api_client.delete(f"{helpers.API_CLIENTS}{client_to_delete['id']}/")
 
 
 @then('the client is not added')
@@ -128,7 +126,7 @@ def step_impl(context, name, surname, phone, email, note):
     # uloz puvodni pocet klientu
     save_old_clients_cnt_to_context(context)
     # vlozeni klienta
-    context.resp = context.api_client.post(API_ENDPOINT, client_dict(context))
+    context.resp = context.api_client.post(helpers.API_CLIENTS, client_dict(context))
 
 
 @when(
@@ -142,4 +140,4 @@ def step_impl(context, cur_full_name, new_name, new_surname, new_phone, new_emai
     # uloz puvodni pocet klientu
     save_old_clients_cnt_to_context(context)
     # vlozeni klienta
-    context.resp = context.api_client.put(f"{API_ENDPOINT}{client_to_update['id']}/", client_dict(context))
+    context.resp = context.api_client.put(f"{helpers.API_CLIENTS}{client_to_update['id']}/", client_dict(context))

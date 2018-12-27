@@ -6,8 +6,6 @@ from rest_framework import status
 from tests.common_steps import groups
 from tests.api_steps import login_logout
 
-API_ENDPOINT = helpers.api_url("/groups/")
-
 
 def groups_cnt(api_client):
     return len(helpers.get_groups(api_client))
@@ -37,7 +35,7 @@ def group_equal_to_context(group, context):
 
 def find_group_with_id(context, group_id):
     # nacti skupinu z endpointu podle id
-    group_resp = context.api_client.get(f"{API_ENDPOINT}{group_id}/")
+    group_resp = context.api_client.get(f"{helpers.API_GROUPS}{group_id}/")
     assert group_resp.status_code == status.HTTP_200_OK
     group = json.loads(group_resp.content)
     # porovnej ziskana data se zaslanymi udaji
@@ -111,7 +109,7 @@ def step_impl(context, name):
     # uloz puvodni pocet skupin
     save_old_groups_cnt_to_context(context)
     # smazani skupiny
-    context.resp = context.api_client.delete(f"{API_ENDPOINT}{group_to_delete['id']}/")
+    context.resp = context.api_client.delete(f"{helpers.API_GROUPS}{group_to_delete['id']}/")
 
 
 @then('the group is not added')
@@ -138,7 +136,7 @@ def step_impl(context, cur_name, new_name, new_course, new_member_full_name1, ne
     # uloz puvodni pocet skupin
     save_old_groups_cnt_to_context(context)
     # vlozeni skupiny
-    context.resp = context.api_client.put(f"{API_ENDPOINT}{group_to_update['id']}/", group_dict(context))
+    context.resp = context.api_client.put(f"{helpers.API_GROUPS}{group_to_update['id']}/", group_dict(context))
 
 
 use_step_matcher("re")
@@ -152,4 +150,4 @@ def step_impl(context, name, course, member_full_name1, member_full_name2):
     # uloz puvodni pocet skupin
     save_old_groups_cnt_to_context(context)
     # vlozeni skupiny
-    context.resp = context.api_client.post(API_ENDPOINT, group_dict(context))
+    context.resp = context.api_client.post(helpers.API_GROUPS, group_dict(context))
