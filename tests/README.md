@@ -20,7 +20,7 @@ UI i API dané části
 ## Spouštění testů
 * spuštění pouze UI testů: `python manage.py behave --stage=ui`
 * spuštění pouze API testů: `python manage.py behave --stage=api`
-* spuštění testů s tagem `xyz`: `python manage.py behave --tags=xyz`
+* spuštění testů (ze stage `abc`) s tagem `xyz`: `python manage.py behave --stage=abc --tags=xyz`
 
 ## Další informace k testům
 * pro testy se používá BDD framework [behave](https://github.com/behave/behave), 
