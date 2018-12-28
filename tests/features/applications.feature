@@ -33,8 +33,7 @@ Feature: Operations with applications
       # zajemce o skryty kurz
       | Rod Lukáš | Máme doma leváka | testovací poznámka |
       # duplicitni zaznam - klienta se zajmem o dany kurz uz evidujeme
-      # TODO - zatim neni implementovano v systemu
-      #| Rod Lukáš | Kurz Slabika | testovací poznámka |
+      | Rod Lukáš | Kurz Slabika     | testovací poznámka |
 
   @edit @applications
   Scenario: Edit application
