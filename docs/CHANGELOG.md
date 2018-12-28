@@ -1,4 +1,13 @@
 # Seznam nevydaných změn a novinek
 * oprava nefunkčního vyhledávání v react-selectu
 * CI - mazání nepotřebných souborů před nasazením
-* zobrazení načítací operace při dalších operacích (načítání po úpravě/přidání klienta/skupiny)
+* zobrazení načítání při všech operacích za všech případů - dříve někdy záviselo jen na načtení nejnáročnější komponenty 
+ apod., tedy nově je načítání  zobrazeno např. i po úpravě/přidání klienta/skupiny a
+ lépe se ukazuje (závisí na načtení všech prvků aktuálního zobrazení) např. v nastavení,
+ kartě klienta, formuláři pro lekce (v nastavení se např. čeká i na načtění příslušných stavů účasti z kontextu)
+* název tlačítka Přidat stav -> Přidat stav účasti
+* před načtením klienta se už v kartě neukazuje jméno "undefined undefined"
+* lepší konfigurace webpack serveru - už se správně zvolí IP adresa na lokální síti a nezávisí např. na virtuálním adaptéru pro Virtualbox
+* vylepšená validace:
+    * nejde přidat skupina ke kurzu, který je neviditelný
+    * nejde přidat zájemce o neviditelný kurz
