@@ -242,7 +242,7 @@ class Settings extends Component {
                 Nastavení
                 <AddButton content="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}
                            data-qa="button_add_course"/>
-                <AddButton content="Přidat stav" onClick={() => this.toggle(EDIT_TYPE.STATE)}
+                <AddButton content="Přidat stav účasti" onClick={() => this.toggle(EDIT_TYPE.STATE)}
                            data-qa="button_add_attendancestate"/>
             </Fragment>
         return (
