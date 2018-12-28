@@ -61,7 +61,7 @@ export default class FormSettings extends Component {
         const {id, name, visible} = this.state
         const type = (this.TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav")
         return (
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} data-qa="form_settings">
                 <ModalHeader toggle={this.close}>
                     {this.isObject ? 'Úprava' : 'Přidání'} {type}u: {name}
                 </ModalHeader>
@@ -71,16 +71,17 @@ export default class FormSettings extends Component {
                             Název
                         </Label>
                         <Col sm={9}>
-                            <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus/>
+                            <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus
+                                   data-qa="settings_field_name"/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Label for="visible" sm={3}>
+                        <Label for="visible" sm={3} data-qa="settings_label_visible">
                             Viditelnost
                         </Label>
                         <Col sm={9}>
                             <CustomInput type="checkbox" id="visible" label="Bude zobrazováno" checked={visible}
-                                         onChange={this.onChange}/>
+                                         onChange={this.onChange} data-qa="settings_checkbox_visible"/>
                         </Col>
                     </FormGroup>
                     {this.isObject &&
@@ -101,6 +102,7 @@ export default class FormSettings extends Component {
                                             + type + " " + name + '?'
                                         if (window.confirm(msg))
                                             this.delete(id)}}
+                                    data-qa="settings_button_delete"
                                 />
                             </Alert>
                         </Col>

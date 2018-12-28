@@ -3,27 +3,30 @@ import AttendanceStateService from "../api/services/attendancestate"
 
 const AttendanceStatesContext = createContext({
     attendancestates: [],
-    funcRefresh: () => {}
+    funcRefresh: () => {},
+    isLoaded: false
 })
 
 export class AttendanceStatesProvider extends Component {
     state = {
+        IS_LOADED: false,
         attendancestates: []
     }
 
     componentDidMount() {
-        this.getAttendanceStates()
+        this.getAttendanceStates(() => this.setState({IS_LOADED: true}))
     }
 
-    getAttendanceStates = () =>
+    getAttendanceStates = (callback) =>
         AttendanceStateService.getAll()
-            .then(attendancestates => this.setState({attendancestates}))
+            .then(attendancestates => this.setState({attendancestates}, callback))
 
     render = () =>
         <AttendanceStatesContext.Provider
             value={{
                 attendancestates: this.state.attendancestates,
-                funcRefresh: this.getAttendanceStates
+                funcRefresh: this.getAttendanceStates,
+                isLoaded: this.state.IS_LOADED
             }}>
             {this.props.children}
         </AttendanceStatesContext.Provider>

@@ -22,16 +22,21 @@ class Settings extends Component {
             IS_MODAL: false,
             currentObject: {},
             currentType: EDIT_TYPE.STATE,
-            IS_LOADING: true,
+            LOADING_CNT: this.isLoadedAttendanceStates() ? 1 : 0,
             state_default_id: undefined,
             state_excused_id: undefined
         }
     }
 
+    loadingStateIncrement = () =>
+        this.setState({LOADING_CNT: this.state.LOADING_CNT + 1})
+
+    isLoadedAttendanceStates = () =>
+        this.props.attendanceStatesContext.isLoaded
     getAttendanceStatesData = () =>
         this.props.attendanceStatesContext.attendancestates
     callAttendanceStatesFuncRefresh = () =>
-        this.props.attendanceStatesContext.funcRefresh()
+        this.props.attendanceStatesContext.funcRefresh(this.loadingStateIncrement)
 
     toggle = (type, object = {}) =>
         this.setState({
@@ -52,13 +57,18 @@ class Settings extends Component {
     refresh = type => {
         if (type === EDIT_TYPE.COURSE)
         {
-            this.setState({IS_LOADING: true})
-            this.getCourses()
+            this.setState(
+                {LOADING_CNT: this.state.LOADING_CNT - 1},
+                this.getCourses)
         }
         else if (type === EDIT_TYPE.STATE)
         {
-            this.callAttendanceStatesFuncRefresh()
-            this.findStateIndexes()
+            this.setState(
+                {LOADING_CNT: this.state.LOADING_CNT - 1},
+                () => {
+                    this.callAttendanceStatesFuncRefresh()
+                    this.findStateIndexes()
+                })
         }
     }
 
@@ -66,8 +76,7 @@ class Settings extends Component {
         CourseService.getAll()
             .then(courses =>
                 this.setState({
-                    courses,
-                    IS_LOADING: false}))
+                    courses}, this.loadingStateIncrement))
 
     componentDidMount() {
         this.getCourses()
@@ -77,6 +86,8 @@ class Settings extends Component {
     componentDidUpdate(prevProps) {
         if(this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
             this.findStateIndexes()
+        if(this.isLoadedAttendanceStates() !== prevProps.attendanceStatesContext.isLoaded)
+            this.loadingStateIncrement()
     }
 
     findStateIndexes = () => {
@@ -96,9 +107,9 @@ class Settings extends Component {
     }
 
     render() {
-        const {courses, currentType, currentObject, state_excused_id, state_default_id, IS_MODAL, IS_LOADING} = this.state
-        const Visible = ({visible}) =>
-            <FontAwesomeIcon icon={visible ? faCheck : faTimes} size="lg"/>
+        const {courses, currentType, currentObject, state_excused_id, state_default_id, IS_MODAL, LOADING_CNT} = this.state
+        const Visible = ({visible, ...props}) =>
+            <FontAwesomeIcon icon={visible ? faCheck : faTimes} size="lg" {...props}/>
         const AttendanceStates = () =>
             <Fragment>
                 <h2 className="text-center">
@@ -114,15 +125,16 @@ class Settings extends Component {
                     </thead>
                     <tbody>
                     {this.getAttendanceStatesData().map(attendancestate =>
-                        <tr key={attendancestate.id}>
-                            <td>
+                        <tr key={attendancestate.id} data-qa="attendancestate">
+                            <td data-qa="attendancestate_name">
                                 {attendancestate.name}
                             </td>
                             <td>
-                                <Visible visible={attendancestate.visible}/>
+                                <Visible visible={attendancestate.visible} data-qa="attendancestate_visible"/>
                             </td>
                             <td>
-                                <EditButton onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}/>
+                                <EditButton onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}
+                                            data-qa="button_edit_attendancestate"/>
                             </td>
                         </tr>)}
                     </tbody>
@@ -189,15 +201,16 @@ class Settings extends Component {
                     </thead>
                     <tbody>
                     {courses.map(course =>
-                        <tr key={course.id}>
-                            <td>
+                        <tr key={course.id} data-qa="course">
+                            <td data-qa="course_name">
                                 {course.name}
                             </td>
                             <td>
-                                <Visible visible={course.visible}/>
+                                <Visible visible={course.visible} data-qa="course_visible"/>
                             </td>
                             <td>
-                                <EditButton onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}/>
+                                <EditButton onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}
+                                            data-qa="button_edit_course"/>
                             </td>
                         </tr>)}
                     </tbody>
@@ -227,14 +240,16 @@ class Settings extends Component {
         const HeadingContent = () =>
             <Fragment>
                 Nastavení
-                <AddButton content="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}/>
-                <AddButton content="Přidat stav" onClick={() => this.toggle(EDIT_TYPE.STATE)}/>
+                <AddButton content="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}
+                           data-qa="button_add_course"/>
+                <AddButton content="Přidat stav" onClick={() => this.toggle(EDIT_TYPE.STATE)}
+                           data-qa="button_add_attendancestate"/>
             </Fragment>
         return (
             <Fragment>
                 <Container>
                     <Heading content={<HeadingContent/>}/>
-                    {IS_LOADING ?
+                    {LOADING_CNT !== 2 ?
                         <Loading/> :
                         <SettingsContent/>}
                 </Container>
