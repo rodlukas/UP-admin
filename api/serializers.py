@@ -7,6 +7,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.db.models import Q
 import re
+from api import serializers_helpers
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -14,10 +15,10 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = '__all__'
 
-    def validate_phone(self, value):
-        if value and (not re.match(r"[0-9\s]+$", value) or sum(c.isdigit() for c in value) is not 9):
+    def validate_phone(self, phone):
+        if phone and (not re.match(r"[0-9\s]+$", phone) or sum(c.isdigit() for c in phone) is not 9):
             raise serializers.ValidationError("Telefonní číslo musí obsahovat 9 číslic")
-        return value
+        return phone
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -72,6 +73,9 @@ class GroupSerializer(serializers.ModelSerializer):
                     Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
+    def validate_course_id(self, course):
+        return serializers_helpers.validate_course_is_visible(course)
+
 
 class AttendanceStateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -88,6 +92,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = '__all__'
+
+    def validate_course_id(self, course):
+        return serializers_helpers.validate_course_is_visible(course)
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
