@@ -10,10 +10,10 @@ Feature: Operations with applications
     Then the application is added
 
     Examples: Applications
-      | full_name    | course             | note               |
-      | Rod Lukáš    | Předškolák s ADHD  |                    |
-      | Rod Lukáš    | Máme doma leváka   | testovací poznámka |
-      | Rodová Petra | Kurz Slabika       | testovací poznámka |
+      | full_name       | course            | note               |
+      | Rod Lukáš       | Předškolák s ADHD |                    |
+      | Rodová Petra    | Kurz Slabika      | testovací poznámka |
+      | Jirušková Aneta | xyz               | 55-*/%ˇ:_(4$       |
 
   @add @applications
   Scenario Outline: Add invalid application
@@ -21,18 +21,24 @@ Feature: Operations with applications
     Then the application is not added
 
     Examples: Applications
-      | full_name | course       | note               |
+      | full_name | course           | note               |
       # chybi jmeno klienta
-      |           | Kurz Slabika |                    |
+      |           | Kurz Slabika     |                    |
       # chybi kurz
-      | Rod Lukáš |              | testovací poznámka |
+      | Rod Lukáš |                  | testovací poznámka |
+      # neexistujici kurz
+      | Rod Lukáš | blabla           | testovací poznámka |
+      # neexistujici klient
+      | blabla    | Kurz Slabika     |                    |
+      # zajemce o skryty kurz
+      | Rod Lukáš | Máme doma leváka | testovací poznámka |
       # duplicitni zaznam - klienta se zajmem o dany kurz uz evidujeme
       # TODO - zatim neni implementovano v systemu
       #| Rod Lukáš | Kurz Slabika | testovací poznámka |
 
   @edit @applications
   Scenario: Edit application
-    When user updates the data of the application from client "Rod Lukáš" for course "Kurz Slabika" to client "Uhlíř Jaroslav", course "Kurz Slabika" and note "xxx"
+    When user updates the data of the application from client "Rod Lukáš" for course "Kurz Slabika" to client "Uhlíř Jaroslav", course "xyz" and note "xxx"
     Then the application is updated
 
   @delete @applications

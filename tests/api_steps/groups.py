@@ -43,16 +43,16 @@ def find_group_with_id(context, group_id):
 
 
 def group_dict(context):
-    memberships = [{'client_id': helpers.find_client_with_full_name(context.api_client, membership)['id']}
+    memberships = [{'client_id': helpers.find_client_with_full_name(context.api_client, membership).get('id')}
                    for membership in context.memberships]
     return {'name': context.name,
-            'course_id': context.course.get('id', ''),
+            'course_id': context.course.get('id'),
             'memberships': memberships}
 
 
 def load_data_to_context(context, name, course, *memberships):
     load_id_data_to_context(context, name)
-    context.course = helpers.find_course_with_name(context.api_client, course)
+    context.course = helpers.find_course_with_name(context.api_client, course, only_visible=True)
     # z memberships vyfiltruj prazdne stringy
     context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
 

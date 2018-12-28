@@ -25,6 +25,8 @@ Feature: Operations with groups
       |           | Kurz Slabika |                   |                   |
       # chybi kurz
       | Slabika 3 |              |                   |                   |
+      # neexistujici kurz
+      | Slabika 3 | blabla       |                   |                   |
 
   @edit @groups
   Scenario: Edit group that has members

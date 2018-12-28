@@ -36,8 +36,8 @@ def find_application_with_id(context, application_id):
 
 
 def application_dict(context):
-    return {'client_id': context.client.get('id', ''),
-            'course_id': context.course.get('id', ''),
+    return {'client_id': context.client.get('id'),
+            'course_id': context.course.get('id'),
             'note': context.note}
 
 
@@ -48,7 +48,7 @@ def load_data_to_context(context, full_name, course, note):
 
 def load_id_data_to_context(context, full_name, course):
     context.client = helpers.find_client_with_full_name(context.api_client, full_name)
-    context.course = helpers.find_course_with_name(context.api_client, course)
+    context.course = helpers.find_course_with_name(context.api_client, course, only_visible=True)
 
 
 def save_old_applications_cnt_to_context(context):
@@ -121,7 +121,7 @@ def step_impl(context, cur_full_name, cur_course, new_full_name, new_course, new
     load_data_to_context(context, new_full_name, new_course, new_note)
     # najdi zadost
     cur_client_found = helpers.find_client_with_full_name(context.api_client, cur_full_name)
-    cur_course_found = helpers.find_course_with_name(context.api_client, cur_course)
+    cur_course_found = helpers.find_course_with_name(context.api_client, cur_course, only_visible=True)
     application_to_update = helpers.find_application_with_client_and_course(context.api_client, cur_client_found,
                                                                             cur_course_found)
     assert application_to_update

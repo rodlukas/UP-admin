@@ -75,8 +75,8 @@ def insert_to_form(context):
     course_field.send_keys(Keys.BACK_SPACE)
     note_field.clear()
     # vloz nove udaje
-    client_field.send_keys(context.client, Keys.ENTER)
-    course_field.send_keys(context.course, Keys.ENTER)
+    helpers.react_select_insert(context.browser, client_field, context.client)
+    helpers.react_select_insert(context.browser, course_field, context.course)
     note_field.send_keys(context.note)
     # vrat posledni element
     return note_field

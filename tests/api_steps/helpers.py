@@ -10,6 +10,7 @@ def api_url(url):
 API_CLIENTS = api_url("/clients/")
 API_GROUPS = api_url("/groups/")
 API_COURSES = api_url("/courses/")
+API_ATTENDANCESTATES = api_url("/attendancestates/")
 API_APPLICATIONS = api_url("/applications/")
 API_AUTH = api_url("/jwt-auth/")
 
@@ -40,6 +41,14 @@ def find_group_with_name(api_client, name):
     return {}
 
 
+def find_attendancestate_with_name(api_client, name):
+    all_attendancestates = get_attendancestates(api_client)
+    for attendancestate in all_attendancestates:
+        if attendancestate['name'] == name:
+            return attendancestate
+    return {}
+
+
 def client_full_names_equal(client1, client2):
     # POZOR - data v kontextu nemusi obsahovat dane klice
     client1_full_name = common_helpers.client_full_name(client1.get('name'), client1.get('surname'))
@@ -56,16 +65,23 @@ def find_application_with_client_and_course(api_client, client, course):
     return {}
 
 
-def find_course_with_name(api_client, name):
+def find_course_with_name(api_client, name, only_visible=False):
     all_courses = get_courses(api_client)
     for course in all_courses:
         if course['name'] == name:
-            return course
+            if not only_visible or (only_visible and course['visible']):
+                return course
     return {}
 
 
 def get_clients(api_client):
     all_clients_resp = api_client.get(API_CLIENTS)
+    assert all_clients_resp.status_code == status.HTTP_200_OK
+    return json.loads(all_clients_resp.content)
+
+
+def get_attendancestates(api_client):
+    all_clients_resp = api_client.get(API_ATTENDANCESTATES)
     assert all_clients_resp.status_code == status.HTTP_200_OK
     return json.loads(all_clients_resp.content)
 

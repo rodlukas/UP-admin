@@ -1,3 +1,10 @@
+from distutils.util import strtobool
+
+
+def to_bool(string):
+    return bool(strtobool(string))
+
+
 def shrink_str(phone):
     return phone.replace(" ", "")
 

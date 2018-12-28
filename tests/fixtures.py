@@ -1,4 +1,4 @@
-from admin.models import Client, Course, Group, Membership, Application
+from admin.models import Client, Course, Group, Membership, Application, AttendanceState
 from django.contrib.auth import get_user_model
 
 
@@ -18,7 +18,8 @@ def courses():
     courses_list = [
         Course(name="Kurz Slabika", visible=True),
         Course(name="Předškolák s ADHD", visible=True),
-        Course(name="Máme doma leváka", visible=True)
+        Course(name="Máme doma leváka", visible=False),
+        Course(name="xyz", visible=True)
     ]
     for course in courses_list:
         course.save()
@@ -56,3 +57,8 @@ def user():
 def applications(courses_list, clients_list):
     Application(client=clients_list[2], course=courses_list[0]).save()
     Application(client=clients_list[3], course=courses_list[1], note="abcd").save()
+
+
+def attendancestates():
+    AttendanceState(name="OK", visible=True).save()
+    AttendanceState(name="omluven", visible=False).save()

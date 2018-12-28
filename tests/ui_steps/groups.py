@@ -64,9 +64,9 @@ def insert_to_form(context):
     memberships_field.send_keys(Keys.BACK_SPACE)
     # vloz nove udaje
     name_field.send_keys(context.name)
-    course_field.send_keys(context.course, Keys.ENTER)
+    helpers.react_select_insert(context.browser, course_field, context.course)
     for membership in context.memberships:
-        memberships_field.send_keys(membership, Keys.ENTER)
+        helpers.react_select_insert(context.browser, memberships_field, membership)
     # vrat posledni element
     return memberships_field
 
