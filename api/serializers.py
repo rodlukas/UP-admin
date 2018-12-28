@@ -1,6 +1,7 @@
 from admin.models import *
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.validators import UniqueValidator
 from django.db.models import F, ExpressionWrapper
 from rest_framework.settings import api_settings
 from datetime import timedelta
@@ -22,6 +23,8 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(validators=[UniqueValidator(queryset=Course.objects.all())])
+
     class Meta:
         model = Course
         fields = '__all__'
@@ -37,6 +40,7 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(validators=[UniqueValidator(queryset=Group.objects.all())])
     memberships = MembershipSerializer(many=True)
     course = CourseSerializer(read_only=True)
     course_id = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), source='course', write_only=True)
@@ -78,6 +82,8 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class AttendanceStateSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(validators=[UniqueValidator(queryset=AttendanceState.objects.all())])
+
     class Meta:
         model = AttendanceState
         fields = '__all__'
