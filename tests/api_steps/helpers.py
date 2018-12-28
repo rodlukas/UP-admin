@@ -65,12 +65,11 @@ def find_application_with_client_and_course(api_client, client, course):
     return {}
 
 
-def find_course_with_name(api_client, name, only_visible=False):
+def find_course_with_name(api_client, name):
     all_courses = get_courses(api_client)
     for course in all_courses:
         if course['name'] == name:
-            if not only_visible or (only_visible and course['visible']):
-                return course
+            return course
     return {}
 
 

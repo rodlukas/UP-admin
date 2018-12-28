@@ -52,7 +52,7 @@ def group_dict(context):
 
 def load_data_to_context(context, name, course, *memberships):
     load_id_data_to_context(context, name)
-    context.course = helpers.find_course_with_name(context.api_client, course, only_visible=True)
+    context.course = helpers.find_course_with_name(context.api_client, course)
     # z memberships vyfiltruj prazdne stringy
     context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
 

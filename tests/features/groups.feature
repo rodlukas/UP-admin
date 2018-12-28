@@ -20,13 +20,15 @@ Feature: Operations with groups
     Then the group is not added
 
     Examples: Groups
-      | name      | course       | member_full_name1 | member_full_name2 |
+      | name      | course           | member_full_name1 | member_full_name2 |
       # chybi nazev skupiny
-      |           | Kurz Slabika |                   |                   |
+      |           | Kurz Slabika     |                   |                   |
       # chybi kurz
-      | Slabika 3 |              |                   |                   |
+      | Slabika 3 |                  |                   |                   |
       # neexistujici kurz
-      | Slabika 3 | blabla       |                   |                   |
+      | Slabika 3 | blabla           |                   |                   |
+      # skryty kurz
+      | Slabika 3 | Máme doma leváka |                   |                   |
 
   @edit @groups
   Scenario: Edit group that has members
