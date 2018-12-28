@@ -24,15 +24,21 @@ import {groupByCourses} from "../global/utils"
 import PrepaidCounters from "../components/PrepaidCounters"
 
 export default class Card extends Component {
-    state = {
-        object: {},
-        IS_MODAL: false,
-        currentLecture: {},
-        lectures: [],
-        memberships: [],
-        IS_LOADING: true,
-        defaultCourse: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz pri pridavani lekce
+    constructor(props) {
+        super(props)
+        this.state = {
+            object: {},
+            IS_MODAL: false,
+            currentLecture: {},
+            lectures: [],
+            memberships: [],
+            LOADING_CNT: this.isClient() ? 0 : 1,
+            defaultCourse: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz pri pridavani lekce
+        }
     }
+
+    loadingStateIncrement = () =>
+        this.setState({LOADING_CNT: this.state.LOADING_CNT + 1})
 
     getId = () =>
         this.props.match.params.id
@@ -77,20 +83,34 @@ export default class Card extends Component {
             this.getMemberships()
     }
 
-    // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
-    componentDidUpdate(prevProps) {
-        if (this.getId() !== this.getPrevId(prevProps) || this.isClient() !== this.wasClient(prevProps)) {
-            this.setState({IS_LOADING: true})
-            this.getObject()
-            this.getLectures()
-            if (this.isClient())
-                this.getMemberships()
+    refresh = (all=true) => {
+        if (this.isClient() && all) {
+            this.setState(
+                {LOADING_CNT: this.state.LOADING_CNT - 3},
+                () => {
+                    this.getObject()
+                    this.getLectures()
+                    this.getMemberships()
+                })
+        }
+        else {
+            this.setState(
+                {LOADING_CNT: this.state.LOADING_CNT - 2},
+                () => {
+                    this.getObject()
+                    this.getLectures()
+                })
         }
     }
 
+    // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
+    componentDidUpdate(prevProps) {
+        if (this.getId() !== this.getPrevId(prevProps) || this.isClient() !== this.wasClient(prevProps))
+            this.refresh()
+    }
+
     refreshAfterLectureChanges = () => {
-        this.getObject()
-        this.getLectures()
+        this.refresh(false)
     }
 
     toggle = (lecture = {}) =>
@@ -104,12 +124,12 @@ export default class Card extends Component {
 
     getMemberships = (id = this.getId()) =>
         GroupService.getAllFromClient(id)
-            .then(memberships => this.setState({memberships}))
+            .then(memberships => this.setState({memberships}, this.loadingStateIncrement))
 
     getObject = (IS_CLIENT = this.isClient(), id = this.getId()) => {
         let service = (IS_CLIENT ? ClientService : GroupService)
         service.get(id)
-            .then(object => this.setState({object}))
+            .then(object => this.setState({object}, this.loadingStateIncrement))
     }
 
     getLectures = (IS_CLIENT = this.isClient(), id = this.getId()) => {
@@ -122,9 +142,8 @@ export default class Card extends Component {
             const grouppedByCourses = groupByCourses(lectures)
             this.getDefaultCourseSingle(grouppedByCourses)
             this.setState({
-                lectures: grouppedByCourses,
-                IS_LOADING: false
-            })
+                lectures: grouppedByCourses
+            }, this.loadingStateIncrement)
         })
     }
 
@@ -142,7 +161,7 @@ export default class Card extends Component {
     }
 
     render() {
-        const {object, lectures, defaultCourse, currentLecture, memberships, IS_LOADING, IS_MODAL} = this.state
+        const {object, lectures, defaultCourse, currentLecture, memberships, LOADING_CNT, IS_MODAL} = this.state
         const ClientInfo = () =>
             <ListGroup>
                 {this.isClient() &&
@@ -244,7 +263,7 @@ export default class Card extends Component {
                 <Container>
                     <Heading content={<HeadingContent/>}/>
                 </Container>
-                {!IS_LOADING ?
+                {LOADING_CNT === 3 ?
                     <CardContent/> :
                     <Loading/>}
             </Fragment>

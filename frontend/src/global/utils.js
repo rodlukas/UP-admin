@@ -35,6 +35,11 @@ export function prettyPhone(phone) {
     return phone ? phone.match(/.{3}/g).join(' ') : ""
 }
 
+// vrati value, pokud je value undefined tak vrati prazdny string
+function getAttrSafe(val) {
+    return val || ''
+}
+
 export function clientName(client) {
-    return client.surname + " " + client.name
+    return getAttrSafe(client.surname) + " " + getAttrSafe(client.name)
 }
