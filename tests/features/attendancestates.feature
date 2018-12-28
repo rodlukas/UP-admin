@@ -11,8 +11,8 @@ Feature: Operations with attendance states
 
     Examples: Attendance states
       | name     | visible |
-      | nepřišel | True       |
-      | test     | False      |
+      | nepřišel | True    |
+      | test     | False   |
 
   @add @attendancestates
   Scenario Outline: Add invalid attendance state
@@ -21,10 +21,9 @@ Feature: Operations with attendance states
 
     Examples: Attendance states
       | name | visible |
-      |      | True       |
-      # duplicitni kurz
-      # TODO - zatim neni implementovano v systemu
-      #| Kurz Slabika | True |
+      |      | True    |
+      # duplicitni nazev stavu ucasti
+      | OK   | False   |
 
   @edit @attendancestates
   Scenario: Edit attendance state

@@ -19,12 +19,11 @@ Feature: Operations with courses
     When user adds new course "<name>" with visibility "<visibility>"
     Then the course is not added
 
-    Examples: Groups
-      | name | visibility |
-      |      | True       |
-      # duplicitni kurz
-      # TODO - zatim neni implementovano v systemu
-      #| Kurz Slabika | True |
+    Examples: Courses
+      | name         | visibility |
+      |              | True       |
+      # duplicitni nazev kurzu
+      | Kurz Slabika | False      |
 
   @edit @courses
   Scenario: Edit course

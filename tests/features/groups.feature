@@ -29,6 +29,8 @@ Feature: Operations with groups
       | Slabika 3 | blabla           |                   |                   |
       # skryty kurz
       | Slabika 3 | Máme doma leváka |                   |                   |
+      # duplicitni nazev skupiny
+      | Slabika 1 | Máme doma leváka |                   |                   |
 
   @edit @groups
   Scenario: Edit group that has members
