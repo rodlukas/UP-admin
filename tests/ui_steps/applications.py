@@ -21,9 +21,21 @@ def open_applications(driver):
     driver.find_element_by_css_selector('[data-qa=menu_applications]').click()
 
 
+def showed_applications_cnts_for_courses_matches(driver):
+    # zkontroluj, zda sedi zobrazene cislo s poctem zajemcu o kurzy se skutecnym poctem zajemcu o dany kurz
+    all_found_courses_with_applications = driver.find_elements_by_css_selector('[data-qa=applications_for_course]')
+    success = True
+    for course_with_applications in all_found_courses_with_applications:
+        computed_cnt = len(course_with_applications.find_elements_by_css_selector('[data-qa=application]'))
+        showed_cnt = int(course_with_applications.find_element_by_css_selector('[data-qa=applications_for_course_cnt]').text)
+        if showed_cnt != computed_cnt:
+            success = False
+            break
+    return success
+
+
 def find_application(driver, client, course, **data):
-    all_found_courses_with_applications = driver.find_elements_by_css_selector(
-        '[data-qa=applications_for_course]')
+    all_found_courses_with_applications = driver.find_elements_by_css_selector('[data-qa=applications_for_course]')
     for course_with_applications in all_found_courses_with_applications:
         found_course = course_with_applications.find_element_by_css_selector('[data-qa=application_course]').text
         applications_for_course = course_with_applications.find_elements_by_css_selector('[data-qa=application]')
@@ -91,6 +103,7 @@ def step_impl(context):
         lambda driver: applications_cnt(driver) > context.old_applications_cnt)
     # je zadost opravdu pridana?
     assert find_application_with_context(context)
+    assert showed_applications_cnts_for_courses_matches(context.browser)
 
 
 @then('the application is updated')
@@ -100,6 +113,7 @@ def step_impl(context):
     # ma zadost opravdu nove udaje?
     assert find_application_with_context(context)
     assert applications_cnt(context.browser) == context.old_applications_cnt
+    assert showed_applications_cnts_for_courses_matches(context.browser)
 
 
 @then('the application is deleted')
@@ -109,10 +123,12 @@ def step_impl(context):
         lambda driver: applications_cnt(driver) < context.old_applications_cnt)
     # je zadost opravdu smazana?
     assert not find_application(context.browser, context.client, context.course)
+    assert showed_applications_cnts_for_courses_matches(context.browser)
 
 
 @when('user deletes the application from client "{full_name}" for course "{course}"')
 def step_impl(context, full_name, course):
+    assert showed_applications_cnts_for_courses_matches(context.browser)
     # nacti jmeno zadosti do kontextu
     load_id_data_to_context(context, full_name, course)
     # klikni v menu na zadosti
@@ -152,11 +168,13 @@ def step_impl(context):
         form_application_visible = True
     assert form_application_visible
     assert applications_cnt(context.browser) == context.old_applications_cnt
+    assert showed_applications_cnts_for_courses_matches(context.browser)
 
 
 @when(
     'user updates the data of the application from client "{cur_full_name}" for course "{cur_course}" to client "{new_full_name}", course "{new_course}" and note "{new_note}"')
 def step_impl(context, cur_full_name, cur_course, new_full_name, new_course, new_note):
+    assert showed_applications_cnts_for_courses_matches(context.browser)
     # nacti data zadosti do kontextu
     load_data_to_context(context, new_full_name, new_course, new_note)
     # klikni v menu na zadosti
@@ -182,6 +200,7 @@ use_step_matcher("re")
 @when(
     'user adds new application from client "(?P<full_name>.*)" for course "(?P<course>.*)" with note "(?P<note>.*)"')
 def step_impl(context, full_name, course, note):
+    assert showed_applications_cnts_for_courses_matches(context.browser)
     # nacti data zadosti do kontextu
     load_data_to_context(context, full_name, course, note)
     # klikni v menu na zadosti
