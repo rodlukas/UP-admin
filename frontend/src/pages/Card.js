@@ -156,8 +156,11 @@ export default class Card extends Component {
             object.memberships[elemId].prepaid_cnt = Number(prepaid_cnt)
         else
             throw new Error("Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě")
-        this.setState({object})
-        this.getLectures()
+        this.setState({
+                object,
+                LOADING_CNT: this.state.LOADING_CNT - 1
+            },
+            this.getLectures)
     }
 
     render() {
