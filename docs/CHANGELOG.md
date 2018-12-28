@@ -8,6 +8,7 @@
 * název tlačítka Přidat stav -> Přidat stav účasti
 * před načtením klienta se už v kartě neukazuje jméno "undefined undefined"
 * lepší konfigurace webpack serveru - už se správně zvolí IP adresa na lokální síti a nezávisí např. na virtuálním adaptéru pro Virtualbox
-* vylepšená validace:
-    * nejde přidat skupina ke kurzu, který je neviditelný
-    * nejde přidat zájemce o neviditelný kurz
+* **vylepšená validace:**
+    * *neviditelné kurzy:* nelze přidat skupina nebo zájemce ke kurzu, který je neviditelný
+    * *duplicity:* nelze přidat skupinu, kurz a stav účasti s již existujícím názvem
+    * *unikátní zájemci o kurz:* každý klient může mít zájem o kurz nejvýše jednou
