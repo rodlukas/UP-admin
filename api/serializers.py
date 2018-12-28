@@ -1,7 +1,7 @@
 from admin.models import *
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.validators import UniqueValidator
+from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 from django.db.models import F, ExpressionWrapper
 from rest_framework.settings import api_settings
 from datetime import timedelta
@@ -98,6 +98,13 @@ class ApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = '__all__'
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Application.objects.all(),
+                fields=('course', 'client'),
+                message="Zájem klienta o zadaný kurz je již evidován."
+            )
+        ]
 
     def validate_course_id(self, course):
         return serializers_helpers.validate_course_is_visible(course)
