@@ -12,3 +12,7 @@
     * *neviditelné kurzy:* nelze přidat skupina nebo zájemce ke kurzu, který je neviditelný
     * *duplicity:* nelze přidat skupinu, kurz a stav účasti s již existujícím názvem
     * *unikátní zájemci o kurz:* každý klient může mít zájem o kurz nejvýše jednou
+* zobrazení tel. čísel klientů v zájemcích o kurz
+* přehlednější seznam zájemců o kurzy
+* tel. čísla už se nerozdělují na více řádků
+* *vytvoření testů pro API a UI (behave, Selenium) pro všechny části aplikace*
