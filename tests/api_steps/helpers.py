@@ -73,31 +73,27 @@ def find_course_with_name(api_client, name):
     return {}
 
 
+def get_api_response(api_client, API_URL):
+    resp = api_client.get(API_URL)
+    assert resp.status_code == status.HTTP_200_OK
+    return json.loads(resp.content)
+
+
 def get_clients(api_client):
-    all_clients_resp = api_client.get(API_CLIENTS)
-    assert all_clients_resp.status_code == status.HTTP_200_OK
-    return json.loads(all_clients_resp.content)
+    return get_api_response(api_client, API_CLIENTS)
 
 
 def get_attendancestates(api_client):
-    all_clients_resp = api_client.get(API_ATTENDANCESTATES)
-    assert all_clients_resp.status_code == status.HTTP_200_OK
-    return json.loads(all_clients_resp.content)
+    return get_api_response(api_client, API_ATTENDANCESTATES)
 
 
 def get_groups(api_client):
-    all_groups_resp = api_client.get(API_GROUPS)
-    assert all_groups_resp.status_code == status.HTTP_200_OK
-    return json.loads(all_groups_resp.content)
+    return get_api_response(api_client, API_GROUPS)
 
 
 def get_courses(api_client):
-    all_courses_resp = api_client.get(API_COURSES)
-    assert all_courses_resp.status_code == status.HTTP_200_OK
-    return json.loads(all_courses_resp.content)
+    return get_api_response(api_client, API_COURSES)
 
 
 def get_applications(api_client):
-    all_courses_resp = api_client.get(API_APPLICATIONS)
-    assert all_courses_resp.status_code == status.HTTP_200_OK
-    return json.loads(all_courses_resp.content)
+    return get_api_response(api_client, API_APPLICATIONS)
