@@ -39,10 +39,10 @@ script:
   - source scripts/release_tasks.sh
 
   # proved testy a spocitej pokryti kodu
-  - coverage run -a manage.py test
-  - coverage run -a manage.py behave --stage=ui
-  - coverage run -a manage.py behave --stage=api
   - yarn test
+  - coverage run -a manage.py test
+  - coverage run -a manage.py behave --stage=api
+  - coverage run -a manage.py behave --stage=ui
 after_success:
   # posli pokryti kodu do codecov
   - codecov --token=$CODECOV_TOKEN
