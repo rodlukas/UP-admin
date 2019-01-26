@@ -87,7 +87,7 @@ export default class Applications extends Component {
                         {application.note}
                     </span>
                 </Col>
-                <Col>
+                <Col className="text-right">
                     <EditButton onClick={() => this.toggle(application)} data-qa="button_edit_application"/>
                     {' '}
                     <DeleteButton
