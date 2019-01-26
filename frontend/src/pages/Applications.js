@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from "react"
-import {Modal, Container, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Badge, Col, Row} from "reactstrap"
+import {Modal, Container, ListGroup, ListGroupItem, Badge, Col, Row} from "reactstrap"
 import ApplicationService from "../api/services/application"
 import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
@@ -11,6 +11,7 @@ import EditButton from "../components/buttons/EditButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import Heading from "../components/Heading"
 import {groupByCourses} from "../global/utils"
+import Phone from "../components/Phone"
 
 export default class Applications extends Component {
     constructor(props) {
@@ -73,12 +74,18 @@ export default class Applications extends Component {
         const Application = ({application}) =>
             <Fragment>
                 <Col>
-                    <ListGroupItemHeading>
+                    <h5>
                         <ClientName client={application.client} link/>
-                    </ListGroupItemHeading>
-                    <ListGroupItemText data-qa="application_note">
+                    </h5>
+                </Col>
+                {application.client.phone &&
+                <Col>
+                    <Phone phone={application.client.phone} icon/>
+                </Col>}
+                <Col xs="auto">
+                    <span data-qa="application_note">
                         {application.note}
-                    </ListGroupItemText>
+                    </span>
                 </Col>
                 <Col>
                     <EditButton onClick={() => this.toggle(application)} data-qa="button_edit_application"/>
@@ -99,7 +106,7 @@ export default class Applications extends Component {
                 {applications.map(application =>
                     <ListGroupItem key={application.id} data-qa="application">
                         <Container>
-                            <Row>
+                            <Row className="align-items-center">
                                 <Application application={application}/>
                             </Row>
                         </Container>
