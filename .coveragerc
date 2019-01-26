@@ -1,6 +1,7 @@
 [run]
 omit =
     */migrations/*
+    frontend
 source =
     admin
     api
