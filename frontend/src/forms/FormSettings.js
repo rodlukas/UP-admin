@@ -118,7 +118,7 @@ export default class FormSettings extends Component {
                                     </InputGroupText>
                                 </InputGroupAddon>
                                 <Input type="number" id="duration" value={duration} onChange={this.onChange}
-                                       required min="1"/>
+                                       required min="1" data-qa="settings_field_duration"/>
                             </InputGroup>
                         </Col>
                     </FormGroup>}

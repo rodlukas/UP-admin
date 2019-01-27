@@ -22,7 +22,8 @@ def find_course(context):
 
 def course_equal_to_context(course, context):
     return (course['name'] == context.name and
-            course['visible'] == context.visible)
+            course['visible'] == context.visible and
+            course['duration'] == int(context.duration))
 
 
 def find_course_with_id(context, course_id):
@@ -36,12 +37,14 @@ def find_course_with_id(context, course_id):
 
 def course_dict(context):
     return {'name': context.name,
-            'visible': context.visible}
+            'visible': context.visible,
+            'duration': context.duration}
 
 
-def load_data_to_context(context, name, visible):
+def load_data_to_context(context, name, visible, duration):
     load_id_data_to_context(context, name)
     context.visible = common_helpers.to_bool(visible)
+    context.duration = duration
 
 
 def load_id_data_to_context(context, name):
@@ -111,10 +114,10 @@ def step_impl(context):
 
 
 @when(
-    'user updates the data of course "{cur_name}" to name "{new_name}" and visibility "{new_visible}"')
-def step_impl(context, cur_name, new_name, new_visible):
+    'user updates the data of course "{cur_name}" to name "{new_name}", visibility "{new_visible}" and duration "{new_duration}"')
+def step_impl(context, cur_name, new_name, new_visible, new_duration):
     # nacteni dat kurzu do kontextu
-    load_data_to_context(context, new_name, new_visible)
+    load_data_to_context(context, new_name, new_visible, new_duration)
     # najdi kurz
     course_to_update = helpers.find_course_with_name(context.api_client, cur_name)
     assert course_to_update
@@ -128,10 +131,10 @@ def step_impl(context, cur_name, new_name, new_visible):
 use_step_matcher("re")
 
 
-@when('user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)"')
-def step_impl(context, name, visible):
+@when('user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)" and duration "(?P<duration>.*)"')
+def step_impl(context, name, visible, duration):
     # nacteni dat kurzu do kontextu
-    load_data_to_context(context, name, visible)
+    load_data_to_context(context, name, visible, duration)
     # uloz puvodni pocet kurzu
     save_old_courses_cnt_to_context(context)
     # vlozeni kurzu

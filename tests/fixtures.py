@@ -16,10 +16,10 @@ def clients():
 
 def courses():
     courses_list = [
-        Course(name="Kurz Slabika", visible=True),
-        Course(name="Předškolák s ADHD", visible=True),
-        Course(name="Máme doma leváka", visible=False),
-        Course(name="xyz", visible=True)
+        Course(name="Kurz Slabika", visible=True, duration=20),
+        Course(name="Předškolák s ADHD", visible=True, duration=30),
+        Course(name="Máme doma leváka", visible=False, duration=40),
+        Course(name="xyz", visible=True, duration=10)
     ]
     for course in courses_list:
         course.save()

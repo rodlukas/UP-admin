@@ -6,28 +6,30 @@ Feature: Operations with courses
 
   @add @courses
   Scenario Outline: Add valid course
-    When user adds new course "<name>" with visibility "<visibility>"
+    When user adds new course "<name>" with visibility "<visibility>" and duration "<duration>"
     Then the course is added
 
     Examples: Courses
-      | name                 | visibility |
-      | Rozvoj grafomotoriky | True       |
-      | Kompletní příprava   | False      |
+      | name                 | visibility | duration |
+      | Rozvoj grafomotoriky | True       | 30       |
+      | Kompletní příprava   | False      | 40       |
 
   @add @courses
   Scenario Outline: Add invalid course
-    When user adds new course "<name>" with visibility "<visibility>"
+    When user adds new course "<name>" with visibility "<visibility>" and duration "<duration>"
     Then the course is not added
 
     Examples: Courses
-      | name         | visibility |
-      |              | True       |
+      | name                 | visibility | duration |
+      |                      | True       | 30       |
       # duplicitni nazev kurzu
-      | Kurz Slabika | False      |
+      | Kurz Slabika         | False      | 20       |
+      # chybejici doba trvani kurzu
+      | Rozvoj grafomotoriky | False      |          |
 
   @edit @courses
   Scenario: Edit course
-    When user updates the data of course "Kurz Slabika" to name "Kurz Slabika 2" and visibility "False"
+    When user updates the data of course "Kurz Slabika" to name "Kurz Slabika 2", visibility "False" and duration "55"
     Then the course is updated
 
   @delete @courses

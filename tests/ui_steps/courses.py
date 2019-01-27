@@ -28,7 +28,9 @@ def find_course(driver, name, **data):
             if data:
                 found_visible_classes = course.find_element_by_css_selector(
                     '[data-qa=course_visible]').get_attribute('class')
-                if helpers.check_fa_bool(data['visible'], found_visible_classes):
+                found_duration = course.find_element_by_css_selector('[data-qa=course_duration]').text
+                if (helpers.check_fa_bool(data['visible'], found_visible_classes) and
+                        found_duration == data['duration']):
                     return course
             else:
                 return course
@@ -36,7 +38,7 @@ def find_course(driver, name, **data):
 
 
 def find_course_with_context(context):
-    return find_course(context.browser, context.name, visible=context.visible)
+    return find_course(context.browser, context.name, visible=context.visible, duration=context.duration)
 
 
 def insert_to_form(context):
@@ -46,20 +48,24 @@ def insert_to_form(context):
     name_field = context.browser.find_element_by_css_selector('[data-qa=settings_field_name]')
     visible_checkbox = context.browser.find_element_by_css_selector('[data-qa=settings_checkbox_visible]')
     visible_label = context.browser.find_element_by_css_selector('[data-qa=settings_label_visible]')
+    duration_field = context.browser.find_element_by_css_selector('[data-qa=settings_field_duration]')
     # smaz vsechny udaje
     name_field.clear()
+    duration_field.clear()
     # vloz nove udaje
     if ((context.visible and not visible_checkbox.is_selected()) or
             (not context.visible and visible_checkbox.is_selected())):
         visible_label.click()
     name_field.send_keys(context.name)
+    duration_field.send_keys(context.duration)
     # vrat posledni element
     return visible_checkbox
 
 
-def load_data_to_context(context, name, visible):
+def load_data_to_context(context, name, visible, duration):
     load_id_data_to_context(context, name)
     context.visible = common_helpers.to_bool(visible)
+    context.duration = duration
 
 
 def load_id_data_to_context(context, name):
@@ -145,10 +151,10 @@ def step_impl(context):
 
 
 @when(
-    'user updates the data of course "{cur_name}" to name "{new_name}" and visibility "{new_visible}"')
-def step_impl(context, cur_name, new_name, new_visible):
+    'user updates the data of course "{cur_name}" to name "{new_name}", visibility "{new_visible}" and duration "{new_duration}"')
+def step_impl(context, cur_name, new_name, new_visible, new_duration):
     # nacti data kurzu do kontextu
-    load_data_to_context(context, new_name, new_visible)
+    load_data_to_context(context, new_name, new_visible, new_duration)
     # klikni v menu na nastaveni
     helpers.open_settings(context.browser)
     # pockej na nacteni
@@ -169,10 +175,10 @@ def step_impl(context, cur_name, new_name, new_visible):
 use_step_matcher("re")
 
 
-@when('user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)"')
-def step_impl(context, name, visible):
+@when('user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)" and duration "(?P<duration>.*)"')
+def step_impl(context, name, visible, duration):
     # nacteni dat kurzu do kontextu
-    load_data_to_context(context, name, visible)
+    load_data_to_context(context, name, visible, duration)
     # klikni v menu na nastaveni
     helpers.open_settings(context.browser)
     # pockej na nacteni a pak klikni na Pridat kurz
