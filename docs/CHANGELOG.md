@@ -19,3 +19,4 @@
  dobu trvání, když je pokaždé stejná - automaticky se nastaví podle zvolného kurzu, přesto je možnost nastavit 
  pro daný kurz stále vlastní hodnotu
 * *vytvoření testů pro API a UI (behave, Selenium) pro všechny části aplikace*
+* klikací labely u položek formulářů napříč celou aplikací
