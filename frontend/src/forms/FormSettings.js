@@ -113,9 +113,9 @@ export default class FormSettings extends Component {
                         <Col sm={9}>
                             <InputGroup>
                                 <InputGroupAddon addonType="prepend">
-                                    <InputGroupText>
+                                    <Label className="input-group-text" for="duration">
                                         <FontAwesomeIcon icon={faHourglass} fixedWidth/>
-                                    </InputGroupText>
+                                    </Label>
                                 </InputGroupAddon>
                                 <Input type="number" id="duration" value={duration} onChange={this.onChange}
                                        required min="1" data-qa="settings_field_duration"/>

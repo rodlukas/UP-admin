@@ -103,7 +103,9 @@ export default class FormClients extends Component {
                         <Col sm={10}>
                             <InputGroup>
                                 <InputGroupAddon addonType="prepend">
-                                    +420
+                                    <Label className="input-group-text" for="phone">
+                                        +420
+                                    </Label>
                                 </InputGroupAddon>
                                 <Input type="tel" id="phone" value={phone} maxLength="11" onChange={this.onChange}
                                        pattern="[0-9]{3} [0-9]{3} [0-9]{3}" data-qa="client_field_phone"/>

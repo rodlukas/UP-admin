@@ -308,9 +308,9 @@ class FormLectures extends Component {
                             <Col sm={4}>
                                 <InputGroup>
                                     <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
+                                        <Label className="input-group-text" for="date">
                                             <FontAwesomeIcon icon={faCalendarAlt} fixedWidth/>
-                                        </InputGroupText>
+                                        </Label>
                                     </InputGroupAddon>
                                     <Input type="date" id="date" value={date} disabled={prepaid}
                                            onChange={this.onChange}
@@ -321,9 +321,9 @@ class FormLectures extends Component {
                             <Col sm={4}>
                                 <InputGroup>
                                     <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
+                                        <Label className="input-group-text" for="time">
                                             <FontAwesomeIcon icon={faClock} fixedWidth/>
-                                        </InputGroupText>
+                                        </Label>
                                     </InputGroupAddon>
                                     <Input type="time" id="time" value={time} disabled={prepaid}
                                            onChange={this.onChange}
@@ -361,9 +361,9 @@ class FormLectures extends Component {
                             <Col sm={4}>
                                 <InputGroup>
                                     <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
+                                        <Label className="input-group-text" for="duration">
                                             <FontAwesomeIcon icon={faHourglass} fixedWidth/>
-                                        </InputGroupText>
+                                        </Label>
                                     </InputGroupAddon>
                                     <Input type="number" id="duration" value={duration} onChange={this.onChange}
                                            required
@@ -381,7 +381,11 @@ class FormLectures extends Component {
                                 <FormGroup row className="align-items-center">
                                     <Col sm={4}>
                                         <InputGroup>
-                                            <InputGroupAddon addonType="prepend">účast</InputGroupAddon>
+                                            <InputGroupAddon addonType="prepend">
+                                                <Label className="input-group-text" for={"at_state" + member.id}>
+                                                    účast
+                                                </Label>
+                                            </InputGroupAddon>
                                             <CustomInput type="select" name="at_state" id={"at_state" + member.id}
                                                          value={at_state[member.id]} onChange={this.onChangeMultiple}
                                                          data-id={member.id} required>
@@ -414,9 +418,9 @@ class FormLectures extends Component {
                                     <Col sm={6}>
                                         <InputGroup>
                                             <InputGroupAddon addonType="prepend">
-                                                <InputGroupText>
+                                                <Label className="input-group-text" for={"at_note" + member.id}>
                                                     <FontAwesomeIcon icon={faClipboardList} fixedWidth/>
-                                                </InputGroupText>
+                                                </Label>
                                             </InputGroupAddon>
                                             <Input type="text" name="at_note" id={"at_note" + member.id}
                                                    value={at_note[member.id]} onChange={this.onChangeMultiple}

@@ -89,9 +89,9 @@ export default class FormApplications extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Col sm={3}>
+                        <Label for="course" sm={3}>
                             Kurz
-                        </Col>
+                        </Label>
                         <Col sm={9}>
                             <Select
                                 inputId="course"
