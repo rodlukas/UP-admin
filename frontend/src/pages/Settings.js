@@ -195,6 +195,7 @@ class Settings extends Component {
                     <thead className="thead-dark">
                     <tr>
                         <th>Název</th>
+                        <th>Trvání</th>
                         <th>Viditelný</th>
                         <th>Akce</th>
                     </tr>
@@ -204,6 +205,9 @@ class Settings extends Component {
                         <tr key={course.id} data-qa="course">
                             <td data-qa="course_name">
                                 {course.name}
+                            </td>
+                            <td data-qa="course_duration">
+                                {course.duration}
                             </td>
                             <td>
                                 <Visible visible={course.visible} data-qa="course_visible"/>

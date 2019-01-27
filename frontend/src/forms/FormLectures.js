@@ -17,8 +17,8 @@ import {TEXTS} from "../global/constants"
 import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
 import {alertRequired} from "../global/utils"
 import Loading from "../components/Loading"
+import {DEFAULT_DURATION} from "../global/constants"
 
-const DEFAULT_DURATION = 30
 const GROUP_DURATION = 45
 
 class FormLectures extends Component {
@@ -54,13 +54,21 @@ class FormLectures extends Component {
                     (this.IS_CLIENT ?
                         this.props.defaultCourse :
                         object.course)),
-            duration: duration || (this.IS_CLIENT ? DEFAULT_DURATION : GROUP_DURATION),
+            duration: duration || this.computeDuration(),
             courses: [],
             object: object,
             prepaid_cnt: 1,
             canceled_disabled: false,
             IS_LOADING: true
         }
+    }
+
+    computeDuration = () => {
+        // pokud je to klient a mame vypocitany nejpravdepodobnejsi kurz, pouzij ho, jinak default
+        if (this.IS_CLIENT)
+            return this.props.defaultCourse ? this.props.defaultCourse.duration : DEFAULT_DURATION
+        // je to skupina
+        return GROUP_DURATION
     }
 
     getAttendanceStatesData = () =>
@@ -161,6 +169,7 @@ class FormLectures extends Component {
         const id = target.dataset.id
         const value = target.type === 'checkbox' ? target.checked : target.value
         const stateVal = this.state[target.name]
+        console.log(stateVal, value, target)
         stateVal[id] = value
         this.setState({[target.name]: stateVal})
         if(target.name === "at_state")
@@ -180,7 +189,7 @@ class FormLectures extends Component {
     }
 
     onSelectChange = (obj, name) =>
-        this.setState({[name]: obj})
+        this.setState({[name]: obj, duration: obj.duration})
 
     onChangePrepaid = () => {
         if (!this.state.prepaid)
@@ -266,159 +275,6 @@ class FormLectures extends Component {
 
     render() {
         const {IS_LOADING, id, canceled, prepaid, canceled_disabled, course, date, time, duration, at_state, at_note, at_paid, object, courses, prepaid_cnt} = this.state
-        const FormContent = () =>
-            <Fragment>
-                <FormGroup row className="align-items-center">
-                    <Col sm={4}>
-                        {this.IS_CLIENT &&
-                        <Fragment>
-                            <CustomInput type="checkbox" id="prepaid" label="Předplaceno" checked={prepaid}
-                                         onChange={e => {
-                                             this.onChangePrepaid()
-                                             this.onChange(e)
-                                         }}
-                            />
-                            {!this.IS_LECTURE &&
-                            <Input type="number" className="FormLectures_prepaidLectureCnt" disabled={!prepaid}
-                                   id="prepaid_cnt" value={prepaid_cnt} required={prepaid}
-                                   onChange={this.onChange}/>}
-                        </Fragment>}
-                    </Col>
-                    <Col sm={4}>
-                        <InputGroup>
-                            <InputGroupAddon addonType="prepend">
-                                <InputGroupText>
-                                    <FontAwesomeIcon icon={faCalendarAlt} fixedWidth/>
-                                </InputGroupText>
-                            </InputGroupAddon>
-                            <Input type="date" id="date" value={date} disabled={prepaid} onChange={this.onChange}
-                                   required={!prepaid} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2099-12-31"
-                                   min="2013-01-01" placeholder="yyyy-mm-dd"/>
-                        </InputGroup>
-                    </Col>
-                    <Col sm={4}>
-                        <InputGroup>
-                            <InputGroupAddon addonType="prepend">
-                                <InputGroupText>
-                                    <FontAwesomeIcon icon={faClock} fixedWidth/>
-                                </InputGroupText>
-                            </InputGroupAddon>
-                            <Input type="time" id="time" value={time} disabled={prepaid} onChange={this.onChange}
-                                   required={!prepaid} placeholder="hh:mm"/>
-                        </InputGroup>
-                    </Col>
-                </FormGroup>
-                <FormGroup row className="align-items-center">
-                    <Col sm={4}>
-                        <CustomInput type="checkbox" id="canceled" label="Zrušeno" checked={canceled}
-                                     onChange={this.onChange} disabled={canceled_disabled}/>
-                        {' '}
-                        {canceled_disabled &&
-                        <Fragment>
-                            <UncontrolledTooltip placement="bottom" target="tooltip_canceled">
-                                Na tuto lekci nikdo nemá přijít, proto je evidována jako zrušená.
-                                Parametr zrušení lze upravit jen když má alespoň jeden klient přijít.
-                            </UncontrolledTooltip>
-                            <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg"
-                                             id="tooltip_canceled"/>
-                        </Fragment>}
-                    </Col>
-                    <Col sm={4}>
-                        <Select
-                            value={course}
-                            getOptionLabel={option => option.name}
-                            getOptionValue={option => option.id}
-                            onChange={newValue => this.onSelectChange(newValue, "course")}
-                            options={courses}
-                            placeholder={"Vyberte kurz..."}
-                            noOptionsMessage={() => TEXTS.NO_RESULTS}
-                            isDisabled={!this.IS_CLIENT}
-                            required/>
-                    </Col>
-                    <Col sm={4}>
-                        <InputGroup>
-                            <InputGroupAddon addonType="prepend">
-                                <InputGroupText>
-                                    <FontAwesomeIcon icon={faHourglass} fixedWidth/>
-                                </InputGroupText>
-                            </InputGroupAddon>
-                            <Input type="number" id="duration" value={duration} onChange={this.onChange} required
-                                   min="1"/>
-                        </InputGroup>
-                    </Col>
-                </FormGroup>
-                <hr/>
-                {this.members.map(member =>
-                    <div key={member.id}>
-                        <h5>
-                            {!this.IS_CLIENT &&
-                            <ClientName client={member}/>}
-                        </h5>
-                        <FormGroup row className="align-items-center">
-                            <Col sm={4}>
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">účast</InputGroupAddon>
-                                    <CustomInput type="select" name="at_state" id={"at_state" + member.id}
-                                                 value={at_state[member.id]} onChange={this.onChangeMultiple}
-                                                 data-id={member.id} required>
-                                        {this.getAttendanceStatesData().map(attendancestate =>
-                                            // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
-                                            (attendancestate.visible || attendancestate.id === at_state[member.id]) &&
-                                            <option key={attendancestate.id} value={attendancestate.id.toString()}>
-                                                {attendancestate.name}
-                                            </option>)}
-                                    </CustomInput>
-                                </InputGroup>
-                            </Col>
-                            <Col sm={2} className="text-center">
-                                <CustomInput type="checkbox" id={"at_paid" + member.id} name="at_paid"
-                                             label="Platba" checked={at_paid[member.id]}
-                                             disabled={prepaid}
-                                             className={at_paid[member.id] ? "text-success" : "text-danger"}
-                                             onChange={this.onChangeMultiple} data-id={member.id}/>
-                                {' '}
-                                {prepaid &&
-                                <Fragment>
-                                    <UncontrolledTooltip placement="bottom" target="tooltip_prepaid">
-                                        Předplacená lekce je automaticky zaplacená.
-                                    </UncontrolledTooltip>
-                                    <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg"
-                                                     id="tooltip_prepaid"/>
-                                </Fragment>}
-                            </Col>
-                            <Col sm={6}>
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
-                                            <FontAwesomeIcon icon={faClipboardList} fixedWidth/>
-                                        </InputGroupText>
-                                    </InputGroupAddon>
-                                    <Input type="text" name="at_note" id={"at_note" + member.id}
-                                           value={at_note[member.id]} onChange={this.onChangeMultiple}
-                                           data-id={member.id}/>
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                    </div>)}
-                {this.IS_LECTURE &&
-                <FormGroup row className="border-top pt-3 align-items-center">
-                    <Label sm={3} className="text-muted">
-                        Smazání
-                    </Label>
-                    <Col sm={9}>
-                        <DeleteButton
-                            content="lekci"
-                            onClick={() => {
-                                let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
-                                    + (this.IS_CLIENT ? "klienta" : "skupiny") + " "
-                                    + (this.IS_CLIENT ? (object.surname + " " + object.name) : object.name)
-                                    + (!prepaid ? (" v " + prettyDateWithLongDayYear(new Date(date)) + " " + time) : '') + '?'
-                                if (window.confirm(msg))
-                                    this.delete(id)}}
-                        />
-                    </Col>
-                </FormGroup>}
-            </Fragment>
         return (
             <Form onSubmit={this.onSubmit}>
                 <ModalHeader toggle={this.close}>
@@ -432,7 +288,163 @@ class FormLectures extends Component {
                 <ModalBody>
                     {IS_LOADING ?
                     <Loading/> :
-                    <FormContent/>}
+                    <Fragment>
+                        <FormGroup row className="align-items-center">
+                            <Col sm={4}>
+                                {this.IS_CLIENT &&
+                                <Fragment>
+                                    <CustomInput type="checkbox" id="prepaid" label="Předplaceno" checked={prepaid}
+                                                 onChange={e => {
+                                                     this.onChangePrepaid()
+                                                     this.onChange(e)
+                                                 }}
+                                    />
+                                    {!this.IS_LECTURE &&
+                                    <Input type="number" className="FormLectures_prepaidLectureCnt" disabled={!prepaid}
+                                           id="prepaid_cnt" value={prepaid_cnt} required={prepaid}
+                                           onChange={this.onChange}/>}
+                                </Fragment>}
+                            </Col>
+                            <Col sm={4}>
+                                <InputGroup>
+                                    <InputGroupAddon addonType="prepend">
+                                        <InputGroupText>
+                                            <FontAwesomeIcon icon={faCalendarAlt} fixedWidth/>
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                    <Input type="date" id="date" value={date} disabled={prepaid}
+                                           onChange={this.onChange}
+                                           required={!prepaid} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2099-12-31"
+                                           min="2013-01-01" placeholder="yyyy-mm-dd"/>
+                                </InputGroup>
+                            </Col>
+                            <Col sm={4}>
+                                <InputGroup>
+                                    <InputGroupAddon addonType="prepend">
+                                        <InputGroupText>
+                                            <FontAwesomeIcon icon={faClock} fixedWidth/>
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                    <Input type="time" id="time" value={time} disabled={prepaid}
+                                           onChange={this.onChange}
+                                           required={!prepaid} placeholder="hh:mm"/>
+                                </InputGroup>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row className="align-items-center">
+                            <Col sm={4}>
+                                <CustomInput type="checkbox" id="canceled" label="Zrušeno" checked={canceled}
+                                             onChange={this.onChange} disabled={canceled_disabled}/>
+                                {' '}
+                                {canceled_disabled &&
+                                <Fragment>
+                                    <UncontrolledTooltip placement="bottom" target="tooltip_canceled">
+                                        Na tuto lekci nikdo nemá přijít, proto je evidována jako zrušená.
+                                        Parametr zrušení lze upravit jen když má alespoň jeden klient přijít.
+                                    </UncontrolledTooltip>
+                                    <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg"
+                                                     id="tooltip_canceled"/>
+                                </Fragment>}
+                            </Col>
+                            <Col sm={4}>
+                                <Select
+                                    value={course}
+                                    getOptionLabel={option => option.name}
+                                    getOptionValue={option => option.id}
+                                    onChange={newValue => this.onSelectChange(newValue, "course")}
+                                    options={courses}
+                                    placeholder={"Vyberte kurz..."}
+                                    noOptionsMessage={() => TEXTS.NO_RESULTS}
+                                    isDisabled={!this.IS_CLIENT}
+                                    required/>
+                            </Col>
+                            <Col sm={4}>
+                                <InputGroup>
+                                    <InputGroupAddon addonType="prepend">
+                                        <InputGroupText>
+                                            <FontAwesomeIcon icon={faHourglass} fixedWidth/>
+                                        </InputGroupText>
+                                    </InputGroupAddon>
+                                    <Input type="number" id="duration" value={duration} onChange={this.onChange}
+                                           required
+                                           min="1"/>
+                                </InputGroup>
+                            </Col>
+                        </FormGroup>
+                        <hr/>
+                        {this.members.map(member =>
+                            <div key={member.id}>
+                                <h5>
+                                    {!this.IS_CLIENT &&
+                                    <ClientName client={member}/>}
+                                </h5>
+                                <FormGroup row className="align-items-center">
+                                    <Col sm={4}>
+                                        <InputGroup>
+                                            <InputGroupAddon addonType="prepend">účast</InputGroupAddon>
+                                            <CustomInput type="select" name="at_state" id={"at_state" + member.id}
+                                                         value={at_state[member.id]} onChange={this.onChangeMultiple}
+                                                         data-id={member.id} required>
+                                                {this.getAttendanceStatesData().map(attendancestate =>
+                                                    // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
+                                                    (attendancestate.visible || attendancestate.id === at_state[member.id]) &&
+                                                    <option key={attendancestate.id}
+                                                            value={attendancestate.id.toString()}>
+                                                        {attendancestate.name}
+                                                    </option>)}
+                                            </CustomInput>
+                                        </InputGroup>
+                                    </Col>
+                                    <Col sm={2} className="text-center">
+                                        <CustomInput type="checkbox" id={"at_paid" + member.id} name="at_paid"
+                                                     label="Platba" checked={at_paid[member.id]}
+                                                     disabled={prepaid}
+                                                     className={at_paid[member.id] ? "text-success" : "text-danger"}
+                                                     onChange={this.onChangeMultiple} data-id={member.id}/>
+                                        {' '}
+                                        {prepaid &&
+                                        <Fragment>
+                                            <UncontrolledTooltip placement="bottom" target="tooltip_prepaid">
+                                                Předplacená lekce je automaticky zaplacená.
+                                            </UncontrolledTooltip>
+                                            <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg"
+                                                             id="tooltip_prepaid"/>
+                                        </Fragment>}
+                                    </Col>
+                                    <Col sm={6}>
+                                        <InputGroup>
+                                            <InputGroupAddon addonType="prepend">
+                                                <InputGroupText>
+                                                    <FontAwesomeIcon icon={faClipboardList} fixedWidth/>
+                                                </InputGroupText>
+                                            </InputGroupAddon>
+                                            <Input type="text" name="at_note" id={"at_note" + member.id}
+                                                   value={at_note[member.id]} onChange={this.onChangeMultiple}
+                                                   data-id={member.id}/>
+                                        </InputGroup>
+                                    </Col>
+                                </FormGroup>
+                            </div>)}
+                        {this.IS_LECTURE &&
+                        <FormGroup row className="border-top pt-3 align-items-center">
+                            <Label sm={3} className="text-muted">
+                                Smazání
+                            </Label>
+                            <Col sm={9}>
+                                <DeleteButton
+                                    content="lekci"
+                                    onClick={() => {
+                                        let msg = "Opravdu chcete smazat " + (prepaid ? 'předplacenou ' : '') + "lekci "
+                                            + (this.IS_CLIENT ? "klienta" : "skupiny") + " "
+                                            + (this.IS_CLIENT ? (object.surname + " " + object.name) : object.name)
+                                            + (!prepaid ? (" v " + prettyDateWithLongDayYear(new Date(date)) + " " + time) : '') + '?'
+                                        if (window.confirm(msg))
+                                            this.delete(id)
+                                    }}
+                                />
+                            </Col>
+                        </FormGroup>}
+                    </Fragment>}
                 </ModalBody>
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>

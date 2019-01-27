@@ -1,11 +1,25 @@
 import React, {Component} from "react"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
-import {EDIT_TYPE} from "../global/constants"
+import {
+    Col,
+    Form,
+    FormGroup,
+    Label,
+    Input,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    Alert,
+    CustomInput,
+    InputGroupAddon, InputGroupText, InputGroup
+} from "reactstrap"
+import {DEFAULT_DURATION, EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faHourglass} from "@fortawesome/pro-solid-svg-icons"
 
 export default class FormSettings extends Component {
     constructor(props) {
@@ -16,7 +30,8 @@ export default class FormSettings extends Component {
         this.state = {
             id: id || '',
             name: name || '',
-            visible: this.isObject ? visible : true
+            visible: this.isObject ? visible : true,
+            duration: DEFAULT_DURATION
         }
     }
 
@@ -28,10 +43,16 @@ export default class FormSettings extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        const {id, name, visible} = this.state
-        const data = {id, name, visible}
-        let request
-        let service = (this.TYPE === EDIT_TYPE.COURSE ? CourseService : AttendanceStateService)
+        const {id, name, visible, duration} = this.state
+        let request, service, data
+        if (this.TYPE === EDIT_TYPE.COURSE) {
+            service = CourseService
+            data = {id, name, visible, duration}
+        }
+        else {
+            service = AttendanceStateService
+            data = {id, name, visible}
+        }
         if (this.isObject)
             request = service.update(data)
         else
@@ -58,7 +79,7 @@ export default class FormSettings extends Component {
     }
 
     render() {
-        const {id, name, visible} = this.state
+        const {id, name, visible, duration} = this.state
         const type = (this.TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav")
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_settings">
@@ -84,6 +105,23 @@ export default class FormSettings extends Component {
                                          onChange={this.onChange} data-qa="settings_checkbox_visible"/>
                         </Col>
                     </FormGroup>
+                    {this.TYPE === EDIT_TYPE.COURSE &&
+                    <FormGroup row>
+                        <Label for="name" sm={3}>
+                            Trvání (pro jednotlivce)
+                        </Label>
+                        <Col sm={9}>
+                            <InputGroup>
+                                <InputGroupAddon addonType="prepend">
+                                    <InputGroupText>
+                                        <FontAwesomeIcon icon={faHourglass} fixedWidth/>
+                                    </InputGroupText>
+                                </InputGroupAddon>
+                                <Input type="number" id="duration" value={duration} onChange={this.onChange}
+                                       required min="1"/>
+                            </InputGroup>
+                        </Col>
+                    </FormGroup>}
                     {this.isObject &&
                     <FormGroup row className="border-top pt-3">
                         <Label sm={3} className="text-muted">

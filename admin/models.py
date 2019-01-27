@@ -54,6 +54,7 @@ class Client(models.Model):
 class Course(models.Model):
     name = models.TextField()
     visible = models.BooleanField()
+    duration = models.PositiveIntegerField()
 
     class Meta:
         ordering = ['name']
