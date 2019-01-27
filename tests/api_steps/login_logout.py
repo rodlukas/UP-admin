@@ -6,12 +6,21 @@ import json
 from tests.common_steps import login_logout
 
 
-@When('user logs into app')
-def step_impl(context):
+def login(context, username, password):
     # prihlas se
-    context.auth_resp = context.api_client.post(helpers.API_AUTH,
-                                                {"username": context.user['username'],
-                                                 "password": context.user['password']})
+    return context.api_client.post(helpers.API_AUTH,
+                                   {"username": username,
+                                    "password": password})
+
+
+@When('user logs into app with correct credentials')
+def step_impl(context):
+    context.auth_resp = login(context, context.user['username'], context.user['password'])
+
+
+@When('user logs into app with wrong credentials')
+def step_impl(context):
+    context.auth_resp = login(context, context.user['username'], "wrongPassword")
 
 
 @Then('user is logged into app')
@@ -23,6 +32,13 @@ def step_impl(context):
     token = auth['token']
     jwt_token = JWT_AUTH['JWT_AUTH_HEADER_PREFIX'] + " " + token
     context.api_client.credentials(HTTP_AUTHORIZATION=jwt_token)
+
+
+@Then('user is not logged into app')
+def step_impl(context):
+    assert context.auth_resp.status_code != status.HTTP_200_OK
+    auth = json.loads(context.auth_resp.content)
+    assert 'token' not in auth
 
 
 @When('user logs out of app')

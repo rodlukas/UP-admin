@@ -13,21 +13,7 @@ def get_jwt_from_local_storage(driver):
     return driver.execute_script("return window.localStorage.getItem(arguments[0]);", LOCAL_STORAGE_JWT_KEY)
 
 
-@When('user logs into app')
-def step_impl(context):
-    # prejdi na hlavni stranku
-    context.browser.get(context.base_url)
-    # vloz prihlasovaci udaje do formulare
-    username_field = context.browser.find_element_by_css_selector('[data-qa=login_field_username]')
-    password_field = context.browser.find_element_by_css_selector('[data-qa=login_field_password]')
-    username_field.send_keys(context.user['username'])
-    password_field.send_keys(context.user['password'])
-    # prihlas se
-    password_field.submit()
-
-
-@Then('user is logged into app')
-def step_impl(context):
+def check_login(context):
     # pockej na nacteni hlavni stranky (aby nedoslo ke zbytecnemu preruseni pozadavku)
     helpers.wait_loading_ends(context.browser)
     # pokud je viditelne tlacitko pro odhlaseni, doslo k uspesnemu prihlaseni
@@ -36,10 +22,45 @@ def step_impl(context):
         button_logout_visible = True
     except NoSuchElementException:
         button_logout_visible = False
-    assert button_logout_visible
     # v localstorage musi byt token
     jwt = get_jwt_from_local_storage(context.browser)
+    return button_logout_visible, jwt
+
+
+def login(context, username, password):
+    # prejdi na hlavni stranku
+    context.browser.get(context.base_url)
+    # vloz prihlasovaci udaje do formulare
+    username_field = context.browser.find_element_by_css_selector('[data-qa=login_field_username]')
+    password_field = context.browser.find_element_by_css_selector('[data-qa=login_field_password]')
+    username_field.send_keys(username)
+    password_field.send_keys(password)
+    # prihlas se
+    password_field.submit()
+
+
+@When('user logs into app with correct credentials')
+def step_impl(context):
+    login(context, context.user['username'], context.user['password'])
+
+
+@When('user logs into app with wrong credentials')
+def step_impl(context):
+    login(context, context.user['username'], "wrongPassword")
+
+
+@Then('user is logged into app')
+def step_impl(context):
+    button_logout_visible, jwt = check_login(context)
+    assert button_logout_visible
     assert jwt is not None
+
+
+@Then('user is not logged into app')
+def step_impl(context):
+    button_logout_visible, jwt = check_login(context)
+    assert not button_logout_visible
+    assert jwt is None
 
 
 @When('user logs out of app')
