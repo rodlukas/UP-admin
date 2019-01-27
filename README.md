@@ -1,4 +1,6 @@
-# Webová aplikace pro projekt „Úspěšný prvňáček“
+# Webová aplikace pro projekt „Úspěšný prvňáček“ 
+<img src="./admin/static/admin/android-chrome-192x192.png" alt="logo" width="60" align="right"/>
+
 [![Build Status](https://travis-ci.com/rodlukas/UP-admin.svg?token=g1rDdptQG4SVzcH6FMo5&branch=master)](https://travis-ci.com/rodlukas/UP-admin)
 [![codecov](https://codecov.io/gh/rodlukas/UP-admin/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/UP-admin)
 | *mi-pyt:*
