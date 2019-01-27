@@ -96,7 +96,7 @@ export default class FormSettings extends Component {
                                    data-qa="settings_field_name"/>
                         </Col>
                     </FormGroup>
-                    <FormGroup row>
+                    <FormGroup row className="align-items-center">
                         <Label for="visible" sm={3} data-qa="settings_label_visible">
                             Viditelnost
                         </Label>
@@ -108,7 +108,7 @@ export default class FormSettings extends Component {
                     {this.TYPE === EDIT_TYPE.COURSE &&
                     <FormGroup row>
                         <Label for="name" sm={3}>
-                            Trvání (pro jednotlivce)
+                            Trvání <small className="text-secondary">(pro jednotlivce)</small>
                         </Label>
                         <Col sm={9}>
                             <InputGroup>

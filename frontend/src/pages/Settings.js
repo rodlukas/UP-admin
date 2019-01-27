@@ -109,7 +109,7 @@ class Settings extends Component {
     render() {
         const {courses, currentType, currentObject, state_excused_id, state_default_id, IS_MODAL, LOADING_CNT} = this.state
         const Visible = ({visible, ...props}) =>
-            <FontAwesomeIcon icon={visible ? faCheck : faTimes} size="lg" {...props}/>
+            <FontAwesomeIcon fixedWidth icon={visible ? faCheck : faTimes} size="lg" {...props} className={visible ? "text-success" : "text-secondary"}/>
         const AttendanceStates = () =>
             <Fragment>
                 <h2 className="text-center">
