@@ -15,4 +15,7 @@
 * zobrazení tel. čísel klientů v zájemcích o kurz
 * přehlednější seznam zájemců o kurzy
 * tel. čísla už se nerozdělují na více řádků
+* *kurzy mají nastavitelnou dobu trvání* - při výběru kurzu pro danou lekci už tedy není potřeba vždy dokola vybírat
+ dobu trvání, když je pokaždé stejná - automaticky se nastaví podle zvolného kurzu, přesto je možnost nastavit 
+ pro daný kurz stále vlastní hodnotu
 * *vytvoření testů pro API a UI (behave, Selenium) pro všechny části aplikace*
