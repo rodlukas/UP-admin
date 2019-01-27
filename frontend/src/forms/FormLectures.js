@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from "react"
 import {UncontrolledTooltip, Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput,
-    InputGroup, InputGroupAddon, InputGroupText} from "reactstrap"
+    InputGroup, InputGroupAddon} from "reactstrap"
 import {toISODate, toISOTime, prettyDateWithLongDayYear} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
 import CourseService from "../api/services/course"

@@ -10,7 +10,7 @@ import {
     ModalFooter,
     Alert,
     CustomInput,
-    InputGroupAddon, InputGroupText, InputGroup
+    InputGroupAddon, InputGroup
 } from "reactstrap"
 import {DEFAULT_DURATION, EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
