@@ -22,7 +22,7 @@ install:
   # nainstaluj JS zavislosti
   - nvm install 8.12.0
   - npm i -g npm@~6.4.1
-  - npm install -g yarn@~1.10.0
+  - npm install -g yarn@~1.13.0
   - yarn install
 
   # nainstaluj Python zavislosti
