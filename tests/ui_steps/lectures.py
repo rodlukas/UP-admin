@@ -66,6 +66,7 @@ def find_lecture(driver, date, time, **data):
         if start in found_start:
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             if data:
+                ...
                 # todo
                 """found_course = lecture.find_element_by_css_selector('[data-qa=course_name]').text
                 found_memberships_elements = lecture.find_elements_by_css_selector('[data-qa=client_name]')
@@ -73,14 +74,16 @@ def find_lecture(driver, date, time, **data):
                 if (set(found_memberships) == set(data['memberships']) and
                         found_course == data['course']):
                     return lecture"""
+                return lecture
             else:
                 return lecture
     return False
 
 
 def find_lecture_with_context(context):
-    # todo , course=context.course
-    return find_lecture(context.browser, context.date, context.time)
+    obj = context.course if not context.is_group else None
+    return find_lecture(context.browser, context.date, context.time, obj=obj, canceled=context.canceled,
+                        attendances=context.attendances)
 
 
 def wait_form_visible(driver):
@@ -115,7 +118,7 @@ def insert_to_form(context):
         canceled_label.click()
     for attendance in context.attendances:
         ...
-        #todo
+        # todo
     # vrat posledni element
     return duration_field
 
@@ -202,16 +205,13 @@ def step_impl(context, client, date, time):
 
 @then('the lecture is not added')
 def step_impl(context):
-    # zmizel formular?
+    # zjisti, zda stale sviti formular a zadna lekce nepribyla
     try:
         WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
             EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=form_lecture]')))
-    except TimeoutException:
-        # formular nezmizel
-        form_group_visible = True
-    else:
-        # formular zmizel
         form_group_visible = False
+    except TimeoutException:
+        form_group_visible = True
     assert form_group_visible
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
 

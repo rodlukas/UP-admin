@@ -123,22 +123,11 @@ def step_impl(context, name):
 
 @then('the attendance state is not added')
 def step_impl(context):
-    # zjisti, zda se objevi alert (stav ucasti se nepridal)
     try:
-        helpers.wait_for_alert_and_accept(context.browser)
+        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=form_settings]')))
+        form_attendancestate_visible = False
     except TimeoutException:
-        # alert se neobjevil, zmizel formular?
-        try:
-            WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
-                EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=form_settings]')))
-        except TimeoutException:
-            # formular nezmizel
-            form_attendancestate_visible = True
-        else:
-            # formular zmizel
-            form_attendancestate_visible = False
-    else:
-        # alert se objevil, takze formular je stale videt
         form_attendancestate_visible = True
     assert form_attendancestate_visible
     assert attendancestates_cnt(context.browser) == context.old_attendancestates_cnt

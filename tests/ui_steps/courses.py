@@ -129,22 +129,12 @@ def step_impl(context, name):
 
 @then('the course is not added')
 def step_impl(context):
-    # zjisti, zda se objevi alert (kurz se nepridal)
+    # zjisti, zda stale sviti formular a zadny kurz nepribyl
     try:
-        helpers.wait_for_alert_and_accept(context.browser)
+        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=form_settings]')))
+        form_course_visible = False
     except TimeoutException:
-        # alert se neobjevil, zmizel formular?
-        try:
-            WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
-                EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=form_settings]')))
-        except TimeoutException:
-            # formular nezmizel
-            form_course_visible = True
-        else:
-            # formular zmizel
-            form_course_visible = False
-    else:
-        # alert se objevil, takze formular je stale videt
         form_course_visible = True
     assert form_course_visible
     assert courses_cnt(context.browser) == context.old_courses_cnt
