@@ -169,7 +169,6 @@ class FormLectures extends Component {
         const id = target.dataset.id
         const value = target.type === 'checkbox' ? target.checked : target.value
         const stateVal = this.state[target.name]
-        console.log(stateVal, value, target)
         stateVal[id] = value
         this.setState({[target.name]: stateVal})
         if(target.name === "at_state")
