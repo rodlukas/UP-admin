@@ -209,7 +209,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class LectureSerializer(serializers.ModelSerializer):
     attendances = AttendanceSerializer(many=True)
     course = CourseSerializer(read_only=True)
-    course_id = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), source='course', write_only=True)
+    course_id = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), source='course', write_only=True,
+                                                   required=False, allow_null=True)
     group = GroupSerializer(read_only=True)
     group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), source='group', write_only=True,
                                                   required=False, allow_null=True)
@@ -251,12 +252,16 @@ class LectureSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # vytvoreni instance lekce
         attendances_data = validated_data.pop('attendances')
-        course = Course.objects.get(pk=validated_data.pop('course').pk)
-        group_data = validated_data.pop('group')
+        group_data = validated_data.get('group', None)
         if group_data is not None:
             group = Group.objects.get(pk=group_data.pk)
         else:
             group = None
+        if 'group' in validated_data:
+            del validated_data['group']
+        # pk kurzu vezmi z dat, pokud jde o skupinu tak primo z ni
+        course_pk_obtain = validated_data.pop('course').pk if 'course' in validated_data else group.course.pk
+        course = Course.objects.get(pk=course_pk_obtain)
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not validated_data['canceled']:
             validated_data['canceled'] = self.should_be_canceled(attendances_data)
@@ -336,6 +341,14 @@ class LectureSerializer(serializers.ModelSerializer):
         return instance
 
     def validate(self, data):
+        # validace kurzu - pro skupiny nepovinny, pro jednotlivce povinny
+        if not data.get('group', None) and 'course' not in data:
+            raise serializers.ValidationError(
+                {'course_id': "Není uveden kurz, pro lekce jednotlivců je to povinné."})
+        elif data.get('group', None) and 'course' in data:
+            raise serializers.ValidationError(
+                {'course_id': "Pro skupiny se kurz neuvádí, protože se určí automaticky."})
+
         # pro zrusene lekce nic nekontroluj
         # tedy pokud je zaslana nova hodnota canceled a je True
         # NEBO pokud neni zaslana nova hodnota a aktualni je True

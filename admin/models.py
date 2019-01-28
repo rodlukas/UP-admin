@@ -78,7 +78,7 @@ class Lecture(models.Model):
     start = models.DateTimeField(null=True)
     canceled = models.BooleanField()
     duration = models.PositiveIntegerField()
-    course = models.ForeignKey(Course, on_delete=models.PROTECT)
+    course = models.ForeignKey(Course, on_delete=models.PROTECT, null=True)
     group = models.ForeignKey(Group, related_name='lectures', on_delete=models.CASCADE, null=True)
 
 

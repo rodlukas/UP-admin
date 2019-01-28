@@ -222,11 +222,13 @@ class FormLectures extends Component {
         let data = {
             id,
             attendances,
-            course_id: course.id,
             duration,
             canceled,
             group_id: !this.IS_CLIENT ? object.id : null,
             start: prepaid ? null : start}
+        if (this.IS_CLIENT) {
+            data = {...data, course_id: course.id}
+        }
 
         let request
         if (this.IS_LECTURE)
