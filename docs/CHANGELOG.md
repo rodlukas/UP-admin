@@ -23,3 +23,4 @@
 * drobná vylepšení a úpravy UI
 * už není potřeba zasílat na API pro lekce i kurz, pokud se jedná o skupinu (je povinný jen u lekcí jednotlivců) - 
  skupina má už rovnou kurz přiřazený a lekce jiných kurzů už nejsou možné
+* čitelnější datum při oznámení časových konfliktů
