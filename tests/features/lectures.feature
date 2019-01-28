@@ -28,8 +28,9 @@ Feature: Operations with lectures
       | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | omluven         | False | test | 40       |
       | Rod Lukáš | 2018-05-07 | 17:00 | False    | Kurz Slabika | OK              | False | test | 10       |
 
+
   @add @lectures
-  Scenario Outline: Add invalid lecture
+  Scenario Outline: Add invalid group lecture
     When user adds new group lecture for group "<group>" with date "<date>", time "<time>", duration "<duration>", canceled "<canceled>", attendance of the client "<client1>" is: "<attendancestate1>", paid "<paid1>", note "<note1>" and attendance of the client "<client2>" is: "<attendancestate2>", paid "<paid2>", note "<note2>"
     Then the lecture is not added
 
@@ -39,6 +40,19 @@ Feature: Operations with lectures
       | Slabika 4 | 2018-05-07 | 15:00 | False    |          | Rodová Petra | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
       # casovy konflikt
       | Slabika 4 | 2018-05-07 | 20:00 | False    | 10       | Rodová Petra | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
+
+
+  @add @lectures
+  Scenario Outline: Add invalid single lecture
+    When user adds new single lecture for client "<client>" for course "<course>" with date "<date>", time "<time>", duration "<duration>", canceled "<canceled>", attendance of the client is: "<attendancestate>", paid "<paid>", note "<note>"
+    Then the lecture is not added
+
+    Examples: Lectures
+      | client    | date       | time  | canceled | course       | attendancestate | paid  | note | duration |
+      # chybi trvani
+      | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | omluven         | False | test |          |
+      # casovy konflikt
+      | Rod Lukáš | 2018-05-07 | 20:00 | False    | Kurz Slabika | omluven         | False | test | 40       |
 
 
   @edit @lectures
