@@ -7,12 +7,13 @@ def api_url(url):
     return "/api/v1" + url
 
 
-API_CLIENTS = api_url("/clients/")
-API_GROUPS = api_url("/groups/")
-API_COURSES = api_url("/courses/")
-API_ATTENDANCESTATES = api_url("/attendancestates/")
 API_APPLICATIONS = api_url("/applications/")
+API_ATTENDANCESTATES = api_url("/attendancestates/")
 API_AUTH = api_url("/jwt-auth/")
+API_CLIENTS = api_url("/clients/")
+API_COURSES = api_url("/courses/")
+API_GROUPS = api_url("/groups/")
+API_LECTURES = api_url("/lectures/")
 
 
 def parse_client_full_name(full_name):
@@ -38,6 +39,14 @@ def find_group_with_name(api_client, name):
     for group in all_groups:
         if group['name'] == name:
             return group
+    return {}
+
+
+def find_lecture_with_start(api_client, start):
+    all_lectures = get_lectures(api_client)
+    for lecture in all_lectures:
+        if common_helpers.parse_django_datetime(lecture['start']) == start:
+            return lecture
     return {}
 
 
@@ -89,6 +98,10 @@ def get_attendancestates(api_client):
 
 def get_groups(api_client):
     return get_api_response(api_client, API_GROUPS)
+
+
+def get_lectures(api_client):
+    return get_api_response(api_client, API_LECTURES)
 
 
 def get_courses(api_client):

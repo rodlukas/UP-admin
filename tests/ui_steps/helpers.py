@@ -32,10 +32,6 @@ def wait_form_settings_visible(driver):
         EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-qa=form_settings]')))
 
 
-def open_settings(driver):
-    driver.find_element_by_css_selector('[data-qa=menu_settings]').click()
-
-
 def wait_loading_ends(driver):
     WebDriverWait(driver, WAIT_TIME).until_not(
         EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=loading]')))
@@ -59,3 +55,23 @@ def react_select_insert(driver, element, value):
         pass
     else:
         found_option.click()
+
+
+def open_settings(driver):
+    driver.find_element_by_css_selector('[data-qa=menu_settings]').click()
+
+
+def open_groups(driver):
+    driver.find_element_by_css_selector('[data-qa=menu_groups]').click()
+
+
+def open_clients(driver):
+    driver.find_element_by_css_selector('[data-qa=menu_clients]').click()
+
+
+def get_clients(driver):
+    return driver.find_elements_by_css_selector('[data-qa=client]')
+
+
+def get_groups(driver):
+    return driver.find_elements_by_css_selector('[data-qa=group]')

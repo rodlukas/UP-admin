@@ -193,16 +193,18 @@ export default class Card extends Component {
                     if (lecture.start === null)
                         className += " lecture-prepaid"
                     return (
-                        <ListGroupItem key={lecture.id} className={className}>
+                        <ListGroupItem key={lecture.id} className={className} data-qa="lecture">
                             <h4>
+                                <span data-qa="lecture_start">
                                 {lecture.start !== null ?
                                     (prettyDateWithDayYear(d) + " – " + prettyTime(d))
                                     :
                                     "Předplacená lekce"}
+                                </span>
                                 {' '}
                                 <LectureNumber lecture={lecture}/>
                                 <div className="float-right">
-                                    <EditButton onClick={() => this.toggle(lecture)}/>
+                                    <EditButton onClick={() => this.toggle(lecture)} data-qa="button_edit_lecture"/>
                                 </div>
                             </h4>
                             <Attendances lecture={lecture} funcRefresh={this.refreshAfterLectureChanges} showClient={!this.isClient()}/>
@@ -236,7 +238,7 @@ export default class Card extends Component {
                         :
                         <GroupName group={object}/>}
                 </span>
-                <AddButton content="Přidat lekci" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat lekci" onClick={() => this.toggle()} data-qa="button_add_lecture"/>
             </Fragment>
         const CardContent = () =>
             <div className="pageContent">

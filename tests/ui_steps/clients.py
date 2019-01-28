@@ -9,12 +9,8 @@ from tests.common_steps import clients
 from tests.ui_steps import login_logout
 
 
-def get_clients(driver):
-    return driver.find_elements_by_css_selector('[data-qa=client]')
-
-
 def clients_cnt(driver):
-    return len(get_clients(driver))
+    return len(helpers.get_clients(driver))
 
 
 def open_clients(driver):
@@ -22,7 +18,7 @@ def open_clients(driver):
 
 
 def find_client(driver, full_name, **data):
-    all_clients = get_clients(driver)
+    all_clients = helpers.get_clients(driver)
     # najdi klienta s udaji v parametrech
     for client in all_clients:
         found_name = client.find_element_by_css_selector('[data-qa=client_name]').text

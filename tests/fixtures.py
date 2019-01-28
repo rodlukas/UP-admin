@@ -1,5 +1,7 @@
-from admin.models import Client, Course, Group, Membership, Application, AttendanceState
+from admin.models import Client, Course, Group, Membership, Application, Lecture, AttendanceState, Attendance
 from django.contrib.auth import get_user_model
+from datetime import datetime
+from django.utils.timezone import make_aware
 
 
 def clients():
@@ -29,13 +31,16 @@ def courses():
 def groups(courses_list, clients_list):
     groups_list = [
         Group(name="Slabika 1", course=courses_list[0]),
-        Group(name="Slabika 2", course=courses_list[1])
+        Group(name="Slabika 2", course=courses_list[1]),
+        Group(name="Slabika 4", course=courses_list[1])
     ]
     for group in groups_list:
         group.save()
 
     memberships_list = [
-        Membership(client=clients_list[0], group=groups_list[0])
+        Membership(client=clients_list[0], group=groups_list[0]),
+        Membership(client=clients_list[0], group=groups_list[2]),
+        Membership(client=clients_list[1], group=groups_list[2])
     ]
     for membership in memberships_list:
         membership.save()
@@ -60,5 +65,19 @@ def applications(courses_list, clients_list):
 
 
 def attendancestates():
-    AttendanceState(name="OK", visible=True).save()
-    AttendanceState(name="omluven", visible=False).save()
+    attendancestates_list = [
+        AttendanceState(name="OK", visible=True),
+        AttendanceState(name="omluven", visible=False)
+    ]
+    for attendancestate in attendancestates_list:
+        attendancestate.save()
+    return attendancestates_list
+
+
+def lectures(courses_list, clients_list, groups_list, attendancestates_list):
+    start = make_aware(datetime(2018, 5, 7, 20, 00))
+    lecture = Lecture(start=start, canceled=False, duration=40, course=courses_list[0])
+    lecture.save()
+    attendance = Attendance(client=clients_list[0], paid=True, lecture=lecture,
+                            attendancestate=attendancestates_list[0])
+    attendance.save()

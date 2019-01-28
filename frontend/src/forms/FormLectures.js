@@ -277,7 +277,7 @@ class FormLectures extends Component {
     render() {
         const {IS_LOADING, id, canceled, prepaid, canceled_disabled, course, date, time, duration, at_state, at_note, at_paid, object, courses, prepaid_cnt} = this.state
         return (
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} data-qa="form_lecture">
                 <ModalHeader toggle={this.close}>
                     {this.IS_LECTURE ? 'Úprava' : 'Přidání'} lekce {(this.IS_CLIENT ? "klienta" : "skupiny")}:
                     {' '}
@@ -294,12 +294,14 @@ class FormLectures extends Component {
                             <Col sm={4}>
                                 {this.IS_CLIENT &&
                                 <Fragment>
-                                    <CustomInput type="checkbox" id="prepaid" label="Předplaceno" checked={prepaid}
+                                    <CustomInput type="checkbox" id="prepaid" checked={prepaid}
                                                  onChange={e => {
                                                      this.onChangePrepaid()
-                                                     this.onChange(e)
-                                                 }}
+                                                     this.onChange(e)}}
                                     />
+                                    <Label for="prepaid">
+                                        Předplaceno
+                                    </Label>
                                     {!this.IS_LECTURE &&
                                     <Input type="number" className="FormLectures_prepaidLectureCnt" disabled={!prepaid}
                                            id="prepaid_cnt" value={prepaid_cnt} required={prepaid}
@@ -316,7 +318,7 @@ class FormLectures extends Component {
                                     <Input type="date" id="date" value={date} disabled={prepaid}
                                            onChange={this.onChange}
                                            required={!prepaid} pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2099-12-31"
-                                           min="2013-01-01" placeholder="yyyy-mm-dd"/>
+                                           min="2013-01-01" placeholder="yyyy-mm-dd" data-qa="lecture_field_date"/>
                                 </InputGroup>
                             </Col>
                             <Col sm={4}>
@@ -327,15 +329,19 @@ class FormLectures extends Component {
                                         </Label>
                                     </InputGroupAddon>
                                     <Input type="time" id="time" value={time} disabled={prepaid}
-                                           onChange={this.onChange}
-                                           required={!prepaid} placeholder="hh:mm"/>
+                                           onChange={this.onChange} required={!prepaid} placeholder="hh:mm"
+                                           data-qa="lecture_field_time"/>
                                 </InputGroup>
                             </Col>
                         </FormGroup>
                         <FormGroup row className="align-items-center">
                             <Col sm={4}>
-                                <CustomInput type="checkbox" id="canceled" label="Zrušeno" checked={canceled}
-                                             onChange={this.onChange} disabled={canceled_disabled}/>
+                                <CustomInput type="checkbox" id="canceled" checked={canceled}
+                                             onChange={this.onChange} disabled={canceled_disabled}
+                                             data-qa="lecture_checkbox_canceled"/>
+                                <Label for="canceled" data-qa="lecture_label_canceled">
+                                    Zrušeno
+                                </Label>
                                 {' '}
                                 {canceled_disabled &&
                                 <Fragment>
@@ -349,6 +355,7 @@ class FormLectures extends Component {
                             </Col>
                             <Col sm={4}>
                                 <Select
+                                    inputId="course"
                                     value={course}
                                     getOptionLabel={option => option.name}
                                     getOptionValue={option => option.id}
@@ -367,8 +374,7 @@ class FormLectures extends Component {
                                         </Label>
                                     </InputGroupAddon>
                                     <Input type="number" id="duration" value={duration} onChange={this.onChange}
-                                           required
-                                           min="1"/>
+                                           required min="1" data-qa="lecture_field_duration"/>
                                 </InputGroup>
                             </Col>
                         </FormGroup>
@@ -444,8 +450,8 @@ class FormLectures extends Component {
                                             + (this.IS_CLIENT ? (object.surname + " " + object.name) : object.name)
                                             + (!prepaid ? (" v " + prettyDateWithLongDayYear(new Date(date)) + " " + time) : '') + '?'
                                         if (window.confirm(msg))
-                                            this.delete(id)
-                                    }}
+                                            this.delete(id)}}
+                                    data-qa="button_delete_lecture"
                                 />
                             </Col>
                         </FormGroup>}

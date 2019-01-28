@@ -10,20 +10,12 @@ from tests.common_steps import groups
 from tests.ui_steps import login_logout
 
 
-def get_groups(driver):
-    return driver.find_elements_by_css_selector('[data-qa=group]')
-
-
 def groups_cnt(driver):
-    return len(get_groups(driver))
-
-
-def open_groups(driver):
-    driver.find_element_by_css_selector('[data-qa=menu_groups]').click()
+    return len(helpers.get_groups(driver))
 
 
 def find_group(driver, name, **data):
-    all_groups = get_groups(driver)
+    all_groups = helpers.get_groups(driver)
     # najdi skupinu s udaji v parametrech
     for group in all_groups:
         found_name = group.find_element_by_css_selector('[data-qa=group_name]').text
@@ -118,7 +110,7 @@ def step_impl(context, name):
     # nacti jmeno skupiny do kontextu
     load_id_data_to_context(context, name)
     # klikni v menu na skupiny
-    open_groups(context.browser)
+    helpers.open_groups(context.browser)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu a klikni u ni na Upravit
@@ -168,7 +160,7 @@ def step_impl(context, cur_name, new_name, new_course, new_member_full_name1, ne
     load_data_to_context(context, new_name, new_course, new_member_full_name1, new_member_full_name2,
                          new_member_full_name3)
     # klikni v menu na skupiny
-    open_groups(context.browser)
+    helpers.open_groups(context.browser)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu a klikni u ni na Upravit
@@ -193,7 +185,7 @@ def step_impl(context, name, course, member_full_name1, member_full_name2):
     # nacti data skupiny do kontextu
     load_data_to_context(context, name, course, member_full_name1, member_full_name2)
     # klikni v menu na skupiny
-    open_groups(context.browser)
+    helpers.open_groups(context.browser)
     # pockej na nacteni a pak klikni na Pridat skupinu
     helpers.wait_loading_ends(context.browser)
     button_add_group = context.browser.find_element_by_css_selector('[data-qa=button_add_group]')
