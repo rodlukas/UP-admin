@@ -390,7 +390,7 @@ class LectureSerializer(serializers.ModelSerializer):
                     # prevod na spravnou TZ
                     local_dt = timezone.localtime(elem.start)
                     # tvorba errormsg
-                    err_datetime = local_dt.strftime("%d. %m. %Y - %H:%M")
+                    err_datetime = f"{local_dt.day}. {local_dt.month}. {local_dt.year} – {local_dt.hour}:{local_dt.minute:02}"
                     err_duration = str(elem.duration)
                     if elem.group is not None:
                         err_obj = f"skupina {elem.group.name}"
