@@ -20,3 +20,6 @@
  pro daný kurz stále vlastní hodnotu
 * *vytvoření testů pro API a UI (behave, Selenium) pro všechny části aplikace*
 * klikací labely u položek formulářů napříč celou aplikací
+* drobná vylepšení a úpravy UI
+* už není potřeba zasílat na API pro lekce i kurz, pokud se jedná o skupinu (je povinný jen u lekcí jednotlivců) - 
+ skupina má už rovnou kurz přiřazený a lekce jiných kurzů už nejsou možné
