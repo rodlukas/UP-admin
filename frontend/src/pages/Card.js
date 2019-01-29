@@ -20,7 +20,7 @@ import Email from "../components/Email"
 import Phone from "../components/Phone"
 import Note from "../components/Note"
 import Heading from "../components/Heading"
-import {groupByCourses} from "../global/utils"
+import {courseDuration, groupByCourses} from "../global/utils"
 import PrepaidCounters from "../components/PrepaidCounters"
 
 export default class Card extends Component {
@@ -192,11 +192,10 @@ export default class Card extends Component {
                         className += " lecture-future"
                     if (lecture.start === null)
                         className += " lecture-prepaid"
-                    const duration = "Trvání: " + lecture.duration + " min."
                     return (
                         <ListGroupItem key={lecture.id} className={className} data-qa="lecture">
                             <h4>
-                                <span data-qa="lecture_start" title={duration}>
+                                <span data-qa="lecture_start" title={courseDuration(lecture.duration)}>
                                 {lecture.start !== null ?
                                     (prettyDateWithDayYear(d) + " – " + prettyTime(d))
                                     :

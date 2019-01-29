@@ -43,3 +43,7 @@ function getAttrSafe(val) {
 export function clientName(client) {
     return getAttrSafe(client.surname) + " " + getAttrSafe(client.name)
 }
+
+export function courseDuration(duration) {
+    return "Trvání: " + duration + " min."
+}
