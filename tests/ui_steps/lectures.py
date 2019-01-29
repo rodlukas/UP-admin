@@ -356,13 +356,14 @@ def step_impl(context, client, date, time, new_paid):
     open_client_card(context.browser, client)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
-    # najdi lekci a klikni u ni na tlacitko platby
+    # najdi lekci
     lecture_to_update = find_lecture(context, date, time)
     assert lecture_to_update
-    button_paid = get_paid_button(lecture_to_update)
-    button_paid.click()
     # uloz ocekavany novy stav do kontextu
     context.new_paid = common_helpers.to_bool(new_paid)
+    # klikni u nalezene lekce na tlacitko platby
+    button_paid = get_paid_button(lecture_to_update)
+    button_paid.click()
 
 
 @when(
@@ -374,13 +375,14 @@ def step_impl(context, client, date, time, new_attendancestate):
     open_client_card(context.browser, client)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
-    # najdi lekci a vyber novy stav ucasti
+    # najdi lekci
     lecture_to_update = find_lecture(context, date, time)
     assert lecture_to_update
-    choose_attendancestate(lecture_to_update, new_attendancestate)
     # uloz ocekavany novy stav do kontextu
     context.cur_attendancestate = get_select_attendancestates(lecture_to_update).all_selected_options
     context.new_attendancestate = new_attendancestate
+    # vyber novy stav ucasti
+    choose_attendancestate(lecture_to_update, new_attendancestate)
 
 
 use_step_matcher("re")
