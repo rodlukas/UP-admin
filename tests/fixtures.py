@@ -66,8 +66,8 @@ def applications(courses_list, clients_list):
 
 def attendancestates():
     attendancestates_list = [
-        AttendanceState(name="OK", visible=True),
-        AttendanceState(name="omluven", visible=True),
+        AttendanceState(name="OK", visible=True, default=True),
+        AttendanceState(name="omluven", visible=True, excused=True),
         AttendanceState(name="skryty", visible=False)
     ]
     for attendancestate in attendancestates_list:

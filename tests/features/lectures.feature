@@ -61,15 +61,26 @@ Feature: Operations with lectures
     Then the lecture is updated
 
 
-  @edit @lectures @test
+  @edit @lectures
   Scenario Outline: Edit single lecture paid state
     When user updates the paid state of lecture of the client "<client>" at "<date>", "<time>" to "<new_paid>"
-    Then the paid state is updated
+    Then the paid state of the attendance is updated
 
     Examples: Lectures data
       | date       | time  | client       | new_paid |
       | 2018-05-07 | 20:00 | Rodová Petra | False    |
       | 2018-05-07 | 21:00 | Rodová Petra | True     |
+
+
+  @edit @lectures @test
+  Scenario Outline: Edit single lecture attendance state
+    When user updates the attendance state of lecture of the client "<client>" at "<date>", "<time>" to "<new_attendancestate>"
+    Then the attendance state of the attendance is updated
+
+    Examples: Lectures data
+      | date       | time  | client       | new_attendancestate |
+      | 2018-05-07 | 20:00 | Rodová Petra | omluven             |
+      | 2018-05-07 | 21:00 | Rodová Petra | omluven             |
 
 
   @delete @lectures

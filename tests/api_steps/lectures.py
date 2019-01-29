@@ -139,7 +139,7 @@ def step_impl(context):
     assert lectures_cnt(context.api_client) == context.old_lectures_cnt
 
 
-@then('the paid state is updated')
+@then('the paid state of the attendance is updated')
 def step_impl(context):
     # uprava byla uspesna
     assert context.resp.status_code == status.HTTP_200_OK
@@ -148,6 +148,17 @@ def step_impl(context):
     assert lecture_to_update
     # ma lekce opravdu nove udaje?
     assert lecture_to_update['attendances'][0]['paid'] == context.new_paid
+
+
+@then('the attendance state of the attendance is updated')
+def step_impl(context):
+    # uprava byla uspesna
+    assert context.resp.status_code == status.HTTP_200_OK
+    # nacti udaje upravovane lekce
+    lecture_to_update = helpers.find_lecture_with_start(context.api_client, context.start)
+    assert lecture_to_update
+    # ma lekce opravdu nove udaje?
+    assert lecture_to_update['attendances'][0]['attendancestate'] == context.new_attendancestate['id']
 
 
 @then('the lecture is deleted')
@@ -214,6 +225,26 @@ def step_impl(context, client, date, time, new_paid):
     context.resp = context.api_client.patch(f"{helpers.API_ATTENDANCES}{attendance_id}/", content)
     # uloz ocekavany novy stav do kontextu
     context.new_paid = common_helpers.to_bool(new_paid)
+
+
+@when(
+    'user updates the attendance state of lecture of the client "{client}" at "{date}", "{time}" to "{new_attendancestate}"')
+def step_impl(context, client, date, time, new_attendancestate):
+    new_attendancestate = helpers.find_attendancestate_with_name(context.api_client, new_attendancestate)
+    # nacteni dat lekce do kontextu
+    load_id_data_to_context(context, date, time)
+    # najdi lekci
+    lecture_to_update = helpers.find_lecture_with_start(context.api_client, common_helpers.prepare_start(date, time))
+    assert lecture_to_update
+    # najdi id attendance
+    attendance_id = lecture_to_update['attendances'][0]['id']
+    attendancestate_id = lecture_to_update['attendances'][0]['attendancestate']
+    # vlozeni lekce
+    content = attendance_dict_patch(attendance_id, attendancestate=new_attendancestate['id'])
+    context.resp = context.api_client.patch(f"{helpers.API_ATTENDANCES}{attendance_id}/", content)
+    # uloz ocekavany novy a aktualni stav do kontextu
+    context.new_attendancestate = new_attendancestate
+    context.cur_attendancestate = helpers.find_attendancestate_with_id(context.api_client, attendancestate_id)
 
 
 use_step_matcher("re")

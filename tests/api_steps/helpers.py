@@ -59,6 +59,12 @@ def find_attendancestate_with_name(api_client, name):
     return {}
 
 
+def find_attendancestate_with_id(api_client, attendancestate_id):
+    attendancestate_resp = api_client.get(f"{API_ATTENDANCESTATES}{attendancestate_id}/")
+    attendancestate = json.loads(attendancestate_resp.content)
+    return attendancestate
+
+
 def client_full_names_equal(client1, client2):
     # POZOR - data v kontextu nemusi obsahovat dane klice
     client1_full_name = common_helpers.client_full_name(client1.get('name'), client1.get('surname'))
