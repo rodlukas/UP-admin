@@ -14,20 +14,20 @@ def groups_cnt(driver):
     return len(helpers.get_groups(driver))
 
 
-def find_group(driver, name, **data):
-    all_groups = helpers.get_groups(driver)
+def find_group(context, name, validate_context=False):
+    all_groups = helpers.get_groups(context.browser)
     # najdi skupinu s udaji v parametrech
     for group in all_groups:
         found_name = group.find_element_by_css_selector('[data-qa=group_name]').text
         # srovnej identifikatory
         if found_name == name:
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-            if data:
+            if validate_context:
                 found_course = group.find_element_by_css_selector('[data-qa=course_name]').text
                 found_memberships_elements = group.find_elements_by_css_selector('[data-qa=client_name]')
                 found_memberships = [element.text for element in found_memberships_elements]
-                if (set(found_memberships) == set(data['memberships']) and
-                        found_course == data['course']):
+                if (set(found_memberships) == set(context.memberships) and
+                        found_course == context.course):
                     return group
             else:
                 return group
@@ -35,7 +35,7 @@ def find_group(driver, name, **data):
 
 
 def find_group_with_context(context):
-    return find_group(context.browser, context.name, course=context.course, memberships=context.memberships)
+    return find_group(context, context.name, validate_context=True)
 
 
 def wait_form_visible(driver):
@@ -102,7 +102,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) < context.old_groups_cnt)
     # je skupina opravdu smazana?
-    assert not find_group(context.browser, context.name)
+    assert not find_group(context, context.name)
 
 
 @when('user deletes the group "{name}"')
@@ -114,7 +114,7 @@ def step_impl(context, name):
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu a klikni u ni na Upravit
-    group_to_update = find_group(context.browser, context.name)
+    group_to_update = find_group(context, context.name)
     assert group_to_update
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
@@ -164,7 +164,7 @@ def step_impl(context, cur_name, new_name, new_course, new_member_full_name1, ne
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu a klikni u ni na Upravit
-    group_to_update = find_group(context.browser, cur_name)
+    group_to_update = find_group(context, cur_name)
     assert group_to_update
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
