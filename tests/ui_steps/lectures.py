@@ -82,9 +82,11 @@ def find_lecture(context, date, time, validate_context=False):
                         found_paid_classes = found_attendance.find_element_by_css_selector(
                             '[data-qa=lecture_attendance_paid]').get_attribute(
                             'class')
-                        found_note = found_attendance.find_element_by_css_selector('[data-qa=lecture_attendance_note]').text
+                        found_note = found_attendance.find_element_by_css_selector(
+                            '[data-qa=lecture_attendance_note]').text
                         expected_paid_class = "text-success" if attendance['paid'] else "text-danger"
-                        found_attendancestate_selected_list = [elem.text for elem in found_attendancestate_selected_list]
+                        found_attendancestate_selected_list = [elem.text for elem in
+                                                               found_attendancestate_selected_list]
                         if (found_note == attendance['note'] and
                                 helpers.check_class_included(found_paid_classes, expected_paid_class) and
                                 len(found_attendancestate_selected_list) == 1 and
@@ -95,7 +97,14 @@ def find_lecture(context, date, time, validate_context=False):
                         # pro single lekce srovnej kurz
                         if not context.is_group and found_course != context.course:
                             return False
-                        # pro skupiny uz jsi overil dost, nasel jsi danou lekci
+                        # pro skupiny jeste over canceled
+                        canceled_classes = lecture.get_attribute("class")
+                        expected_canceled_class = "lecture-canceled"
+                        if (context.canceled and not helpers.check_class_included(canceled_classes,
+                                                                                  expected_canceled_class) or
+                                not context.canceled and helpers.check_class_included(canceled_classes,
+                                                                                      expected_canceled_class)):
+                            return False
                         return lecture
                 else:
                     return lecture
