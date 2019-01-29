@@ -24,3 +24,4 @@
 * už není potřeba zasílat na API pro lekce i kurz, pokud se jedná o skupinu (je povinný jen u lekcí jednotlivců) - 
  skupina má už rovnou kurz přiřazený a lekce jiných kurzů už nejsou možné
 * čitelnější datum při oznámení časových konfliktů
+* při nahrazování lekce se do automaticky vytvářené lekce vloží do poznámky kromě "Náhrada lekce" i datum nahrazované lekce
