@@ -159,6 +159,14 @@ def step_impl(context):
     assert lecture_to_update
     # ma lekce opravdu nove udaje?
     assert lecture_to_update['attendances'][0]['attendancestate'] == context.new_attendancestate['id']
+    # pokud se lekce nove zmenila na omluvenou a byla zaplacena, over pridani nahradni lekce
+    excused_attendancestate = common_helpers.get_excused_attendancestate()
+    if (context.cur_attendancestate['name'] != excused_attendancestate and
+            context.new_attendancestate['name'] == excused_attendancestate and
+            lecture_to_update['attendances'][0]['paid']):
+        assert lectures_cnt(context.api_client) == context.old_lectures_cnt + 1
+    else:
+        assert lectures_cnt(context.api_client) == context.old_lectures_cnt
 
 
 @then('the lecture is deleted')
@@ -239,6 +247,8 @@ def step_impl(context, client, date, time, new_attendancestate):
     # najdi id attendance
     attendance_id = lecture_to_update['attendances'][0]['id']
     attendancestate_id = lecture_to_update['attendances'][0]['attendancestate']
+    # uloz puvodni pocet lekci
+    save_old_lectures_cnt_to_context(context)
     # vlozeni lekce
     content = attendance_dict_patch(attendance_id, attendancestate=new_attendancestate['id'])
     context.resp = context.api_client.patch(f"{helpers.API_ATTENDANCES}{attendance_id}/", content)

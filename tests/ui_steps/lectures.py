@@ -271,6 +271,14 @@ def step_impl(context):
     assert lecture_to_update
     # ma lekce opravdu nove udaje?
     assert verify_attendancestate(lecture_to_update, context.new_attendancestate)
+    # pokud se lekce nove zmenila na omluvenou a byla zaplacena, over pridani nahradni lekce
+    excused_attendancestate = common_helpers.get_excused_attendancestate()
+    if (context.cur_attendancestate != excused_attendancestate and
+            context.new_attendancestate == excused_attendancestate and
+            verify_paid(lecture_to_update, True)):
+        assert lectures_cnt(context.browser) == context.old_lectures_cnt + 1
+    else:
+        assert lectures_cnt(context.browser) == context.old_lectures_cnt
 
 
 @then('the lecture is deleted')
@@ -379,8 +387,10 @@ def step_impl(context, client, date, time, new_attendancestate):
     lecture_to_update = find_lecture(context, date, time)
     assert lecture_to_update
     # uloz ocekavany novy stav do kontextu
-    context.cur_attendancestate = get_select_attendancestates(lecture_to_update).all_selected_options
+    context.cur_attendancestate = get_select_attendancestates(lecture_to_update).all_selected_options[0].text
     context.new_attendancestate = new_attendancestate
+    # uloz puvodni pocet lekci
+    save_old_lectures_cnt_to_context(context)
     # vyber novy stav ucasti
     choose_attendancestate(lecture_to_update, new_attendancestate)
 
