@@ -13,7 +13,7 @@ Feature: Operations with lectures
     Examples: Lectures
       | group     | date       | time  | canceled | duration | client1      | attendancestate1 | paid1 | note1 | client2         | attendancestate2 | paid2 | note2 |
       | Slabika 4 | 2018-05-07 | 15:00 | False    | 50       | Rodová Petra | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
-      | Slabika 4 | 2018-05-07 | 16:00 | False    | 40       | Rodová Petra | omluven          | False | test  | Jirušková Aneta | omluven          | False | test  |
+      | Slabika 4 | 2018-05-07 | 16:00 | False    | 40       | Rodová Petra | abcd             | False | test  | Jirušková Aneta | OK               | False | test  |
       | Slabika 4 | 2018-05-07 | 17:00 | False    | 10       | Rodová Petra | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
 
 
@@ -25,7 +25,7 @@ Feature: Operations with lectures
     Examples: Lectures
       | client    | date       | time  | canceled | course       | attendancestate | paid  | note | duration |
       | Rod Lukáš | 2018-05-07 | 15:00 | False    | Kurz Slabika | OK              | True  |      | 50       |
-      | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | omluven         | False | test | 40       |
+      | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | abcd            | False | test | 40       |
       | Rod Lukáš | 2018-05-07 | 17:00 | False    | Kurz Slabika | OK              | False | test | 10       |
 
 
@@ -50,9 +50,9 @@ Feature: Operations with lectures
     Examples: Lectures
       | client    | date       | time  | canceled | course       | attendancestate | paid  | note | duration |
       # chybi trvani
-      | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | omluven         | False | test |          |
+      | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | OK              | False | test |          |
       # casovy konflikt
-      | Rod Lukáš | 2018-05-07 | 20:00 | False    | Kurz Slabika | omluven         | False | test | 40       |
+      | Rod Lukáš | 2018-05-07 | 20:00 | False    | Kurz Slabika | OK              | False | test | 40       |
 
 
   @edit @lectures
@@ -72,7 +72,7 @@ Feature: Operations with lectures
       | 2018-05-07 | 21:00 | Rodová Petra | True     |
 
 
-  @edit @lectures @test
+  @edit @lectures
   Scenario Outline: Edit single lecture attendance state
     When user updates the attendance state of lecture of the client "<client>" at "<date>", "<time>" to "<new_attendancestate>"
     Then the attendance state of the attendance is updated

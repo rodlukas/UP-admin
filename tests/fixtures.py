@@ -68,6 +68,7 @@ def attendancestates():
     attendancestates_list = [
         AttendanceState(name="OK", visible=True, default=True),
         AttendanceState(name="omluven", visible=True, excused=True),
+        AttendanceState(name="abcd", visible=True),
         AttendanceState(name="skryty", visible=False)
     ]
     for attendancestate in attendancestates_list:
