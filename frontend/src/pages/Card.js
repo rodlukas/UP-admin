@@ -192,10 +192,11 @@ export default class Card extends Component {
                         className += " lecture-future"
                     if (lecture.start === null)
                         className += " lecture-prepaid"
+                    const duration = "Trvání: " + lecture.duration + " min."
                     return (
                         <ListGroupItem key={lecture.id} className={className} data-qa="lecture">
                             <h4>
-                                <span data-qa="lecture_start">
+                                <span data-qa="lecture_start" title={duration}>
                                 {lecture.start !== null ?
                                     (prettyDateWithDayYear(d) + " – " + prettyTime(d))
                                     :
