@@ -14,7 +14,8 @@ Feature: Operations with lectures
       | group     | date       | time  | canceled | duration | client1      | attendancestate1 | paid1 | note1 | client2         | attendancestate2 | paid2 | note2 |
       | Slabika 4 | 2018-05-07 | 15:00 | False    | 50       | Rodová Petra | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
       | Slabika 4 | 2018-05-07 | 16:00 | False    | 40       | Rodová Petra | abcd             | False | test  | Jirušková Aneta | OK               | False | test  |
-      | Slabika 4 | 2018-05-07 | 17:00 | False    | 10       | Rodová Petra | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
+      | Slabika 4 | 2018-05-07 | 17:00 | False    | 10       | Rodová Petra | omluven          | False | test  | Jirušková Aneta | OK               | False | test  |
+      | Slabika 4 | 2018-05-07 | 17:10 | True     | 10       | Rodová Petra | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
 
 
   @add @lectures
@@ -26,7 +27,7 @@ Feature: Operations with lectures
       | client    | date       | time  | canceled | course       | attendancestate | paid  | note | duration |
       | Rod Lukáš | 2018-05-07 | 15:00 | False    | Kurz Slabika | OK              | True  |      | 50       |
       | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | abcd            | False | test | 40       |
-      | Rod Lukáš | 2018-05-07 | 17:00 | False    | Kurz Slabika | OK              | False | test | 10       |
+      | Rod Lukáš | 2018-05-07 | 17:00 | True     | Kurz Slabika | OK              | False | test | 10       |
 
 
   @add @lectures
