@@ -5,7 +5,6 @@ from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 from django.db.models import F, ExpressionWrapper
 from rest_framework.settings import api_settings
 from datetime import timedelta
-from django.utils import timezone
 from django.db.models import Q
 import re
 from api import serializers_helpers
@@ -122,6 +121,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     client = ClientSerializer(read_only=True)
     client_id = serializers.PrimaryKeyRelatedField(queryset=Client.objects.all(), source='client', write_only=True)
     remind_pay = serializers.SerializerMethodField(read_only=True)
+
     # + attendancestate vraci jen ID
 
     class Meta:
@@ -168,7 +168,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
                 prepaid_lecture = Lecture.objects.create(course=instance.lecture.course, duration="30", canceled=False)
                 Attendance.objects.create(paid=True, client=instance.client, lecture=prepaid_lecture,
                                           attendancestate=AttendanceState.objects.get(default=True),
-                                          note="Náhrada lekce")
+                                          note=f"Náhrada lekce ({serializers_helpers.date_str(instance.lecture.start)})")
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not instance.lecture.canceled:
             instance.lecture.canceled = self.should_be_canceled(instance.lecture.attendances.all())
@@ -333,7 +333,7 @@ class LectureSerializer(serializers.ModelSerializer):
                         prepaid_lecture = Lecture.objects.create(course=instance.course, duration="30", canceled=False)
                         Attendance.objects.create(paid=True, client=attendance.client, lecture=prepaid_lecture,
                                                   attendancestate=AttendanceState.objects.get(default=True),
-                                                  note="Náhrada lekce")
+                                                  note=f"Náhrada lekce ({serializers_helpers.date_str(instance.start)})")
             # nastav lekci jako zrusenou pokud nikdo nema prijit
             if not instance.canceled:
                 instance.canceled = self.should_be_canceled(attendances_data)
@@ -387,10 +387,8 @@ class LectureSerializer(serializers.ModelSerializer):
                     # do konfliktu nezapocitavej zrusene lekce
                     if elem.canceled:
                         continue
-                    # prevod na spravnou TZ
-                    local_dt = timezone.localtime(elem.start)
                     # tvorba errormsg
-                    err_datetime = f"{local_dt.day}. {local_dt.month}. {local_dt.year} – {local_dt.hour}:{local_dt.minute:02}"
+                    err_datetime = serializers_helpers.datetime_str(elem.start)
                     err_duration = str(elem.duration)
                     if elem.group is not None:
                         err_obj = f"skupina {elem.group.name}"
