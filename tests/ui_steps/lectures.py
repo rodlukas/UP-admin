@@ -100,6 +100,12 @@ def insert_to_form(context):
     duration_field = context.browser.find_element_by_css_selector('[data-qa=lecture_field_duration]')
     canceled_checkbox = context.browser.find_element_by_css_selector('[data-qa=lecture_checkbox_canceled]')
     canceled_label = context.browser.find_element_by_css_selector('[data-qa=lecture_label_canceled]')
+
+    # pokud se nejedna o skupinu, vloz i kurz
+    if not context.is_group:
+        course_field = context.browser.find_element_by_id('course')
+        course_field.send_keys(Keys.BACK_SPACE)
+        helpers.react_select_insert(context.browser, course_field, context.course)
     # smaz vsechny udaje
     date_field.clear()
     time_field.clear()
@@ -108,11 +114,6 @@ def insert_to_form(context):
     date_field.send_keys(context.date)
     time_field.send_keys(context.time)
     duration_field.send_keys(context.duration)
-    # pokud se nejedna o skupinu, vloz i kurz
-    if not context.is_group:
-        course_field = context.browser.find_element_by_id('course')
-        course_field.send_keys(Keys.BACK_SPACE)
-        helpers.react_select_insert(context.browser, course_field, context.course)
     if ((context.canceled and not canceled_checkbox.is_selected()) or
             (not context.canceled and canceled_checkbox.is_selected())):
         canceled_label.click()
@@ -192,6 +193,8 @@ def step_impl(context, client, date, time):
     assert lecture_to_update
     button_edit_lecture = lecture_to_update.find_element_by_css_selector('[data-qa=button_edit_lecture]')
     button_edit_lecture.click()
+    # pockej na nacteni
+    helpers.wait_loading_ends(context.browser)
     # uloz puvodni pocet lekci
     save_old_lectures_cnt_to_context(context)
     # pockej az bude viditelny formular
@@ -232,6 +235,8 @@ def step_impl(context, date, time, new_date, new_time, new_course, new_duration,
     assert lecture_to_update
     button_edit_lecture = lecture_to_update.find_element_by_css_selector('[data-qa=button_edit_lecture]')
     button_edit_lecture.click()
+    # pockej na nacteni
+    helpers.wait_loading_ends(context.browser)
     # uloz puvodni pocet skupin
     save_old_lectures_cnt_to_context(context)
     # vloz vsechny udaje do formulare
