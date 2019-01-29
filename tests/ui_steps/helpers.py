@@ -27,6 +27,11 @@ def check_fa_bool(visible, classes):
     return False
 
 
+def check_class_included(classes, class_to_search):
+    classes_list = classes.split()
+    return class_to_search in classes_list
+
+
 def wait_form_settings_visible(driver):
     WebDriverWait(driver, WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-qa=form_settings]')))

@@ -6,6 +6,7 @@ from selenium.common.exceptions import TimeoutException
 from tests.ui_steps import helpers
 from tests import common_helpers
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 from tests.common_steps import lectures
 from tests.ui_steps import login_logout
 
@@ -54,41 +55,80 @@ def open_client_card(driver, name):
     assert found_client_success
 
 
-def find_lecture(driver, date, time, **data):
-    all_lectures = get_lectures(driver)
-    # najdi skupinu s danym nazvem
-    for lecture in all_lectures:
-        found_start = lecture.find_element_by_css_selector('[data-qa=lecture_start]').text
-        # srovnej identifikatory
-        start = common_helpers.prepare_start(date, time)
-        start = f"{start.day}. {start.month}. {start.year} – {start.hour}:{start.minute:02}"
-        # je to substring?
-        if start in found_start:
-            # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-            if data:
-                ...
-                # todo
-                """found_course = lecture.find_element_by_css_selector('[data-qa=course_name]').text
-                found_memberships_elements = lecture.find_elements_by_css_selector('[data-qa=client_name]')
-                found_memberships = [element.text for element in found_memberships_elements]
-                if (set(found_memberships) == set(data['memberships']) and
-                        found_course == data['course']):
-                    return lecture"""
-                return lecture
-            else:
-                return lecture
+def find_lecture(context, date, time, validate_context=False):
+    all_courses = context.browser.find_elements_by_css_selector('[data-qa=card_course]')
+    for course in all_courses:
+        found_course = course.find_element_by_css_selector('[data-qa=card_course_name]').text
+        all_course_lectures = course.find_elements_by_css_selector('[data-qa=lecture]')
+        # najdi lekci s danym zacatkem
+        for lecture in all_course_lectures:
+            found_start = lecture.find_element_by_css_selector('[data-qa=lecture_start]').text
+            found_duration = lecture.find_element_by_css_selector(
+                '[data-qa=lecture_start]').get_attribute('title')
+            # srovnej identifikatory
+            start = common_helpers.prepare_start(date, time)
+            start = f"{start.day}. {start.month}. {start.year} – {start.hour}:{start.minute:02}"
+            # je to substring?
+            if start in found_start:
+                # identifikatory sedi, otestuj pripadna dalsi data z kontextu nebo rovnou vrat nalezeny prvek
+                if validate_context:
+                    found_attendances_cnt = 0
+                    for attendance in context.attendances:
+                        # najdi attendance prislusici danemu klientovi
+                        found_attendance = find_attendance_in_card(context, lecture, attendance['client'])
+                        # uloz si nalezene atributy ucasti
+                        found_attendancestate_selected_list = Select(found_attendance.find_element_by_css_selector(
+                            '[data-qa=lecture_select_attendance_attendancestate]')).all_selected_options
+                        found_paid_classes = found_attendance.find_element_by_css_selector(
+                            '[data-qa=lecture_attendance_paid]').get_attribute(
+                            'class')
+                        found_note = found_attendance.find_element_by_css_selector('[data-qa=lecture_attendance_note]').text
+                        expected_paid_class = "text-success" if attendance['paid'] else "text-danger"
+                        found_attendancestate_selected_list = [elem.text for elem in found_attendancestate_selected_list]
+                        if (found_note == attendance['note'] and
+                                helpers.check_class_included(found_paid_classes, expected_paid_class) and
+                                len(found_attendancestate_selected_list) == 1 and
+                                attendance['attendancestate'] in found_attendancestate_selected_list):
+                            found_attendances_cnt += 1
+                    if (found_attendances_cnt == len(context.attendances) and
+                            context.duration in found_duration):
+                        # pro single lekce srovnej kurz
+                        if not context.is_group and found_course != context.course:
+                            return False
+                        # pro skupiny uz jsi overil dost, nasel jsi danou lekci
+                        return lecture
+                else:
+                    return lecture
     return False
 
 
 def find_lecture_with_context(context):
-    obj = context.course if not context.is_group else None
-    return find_lecture(context.browser, context.date, context.time, obj=obj, canceled=context.canceled,
-                        attendances=context.attendances)
+    return find_lecture(context, context.date, context.time, validate_context=True)
 
 
 def wait_form_visible(driver):
     WebDriverWait(driver, helpers.WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-qa=form_lecture]')))
+
+
+def find_attendance_in_form(context, client):
+    if not context.is_group:
+        return context.browser.find_element_by_css_selector('[data-qa=form_lecture_attendance]')
+    all_attendances = context.browser.find_elements_by_css_selector('[data-qa=form_lecture_attendance]')
+    for attendance in all_attendances:
+        if attendance.find_element_by_css_selector('[data-qa=client_name]').text == client:
+            return attendance
+    return None
+
+
+def find_attendance_in_card(context, lecture, client):
+    if not context.is_group:
+        return lecture.find_element_by_css_selector('[data-qa=lecture_attendance]')
+    all_attendances = lecture.find_elements_by_css_selector('[data-qa=lecture_attendance]')
+    for attendance in all_attendances:
+        if attendance.find_element_by_css_selector('[data-qa=client_name]').text == client:
+            return attendance
+    return None
 
 
 def insert_to_form(context):
@@ -100,7 +140,6 @@ def insert_to_form(context):
     duration_field = context.browser.find_element_by_css_selector('[data-qa=lecture_field_duration]')
     canceled_checkbox = context.browser.find_element_by_css_selector('[data-qa=lecture_checkbox_canceled]')
     canceled_label = context.browser.find_element_by_css_selector('[data-qa=lecture_label_canceled]')
-
     # pokud se nejedna o skupinu, vloz i kurz
     if not context.is_group:
         course_field = context.browser.find_element_by_id('course')
@@ -118,8 +157,23 @@ def insert_to_form(context):
             (not context.canceled and canceled_checkbox.is_selected())):
         canceled_label.click()
     for attendance in context.attendances:
-        ...
-        # todo
+        # najdi attendance prislusici danemu klientovi
+        found_attendance = find_attendance_in_form(context, attendance['client'])
+        paid_checkbox = found_attendance.find_element_by_css_selector('[data-qa=lecture_checkbox_attendance_paid')
+        paid_label = found_attendance.find_element_by_css_selector('[data-qa=lecture_label_attendance_paid')
+        attendancestate_select = Select(found_attendance.find_element_by_css_selector(
+            '[data-qa=lecture_select_attendance_attendancestate'))
+        note_field = found_attendance.find_element_by_css_selector('[data-qa=lecture_field_attendance_note')
+        # smazani stavajicich udaju
+        note_field.clear()
+        # vlozeni novych udaju
+        if ((attendance['paid'] and not paid_checkbox.is_selected()) or
+                (not attendance['paid'] and paid_checkbox.is_selected())):
+            paid_label.click()
+        note_field.send_keys(attendance['note'])
+        found_attendance.find_element_by_css_selector(
+            '[data-qa=lecture_select_attendance_attendancestate').click()
+        attendancestate_select.select_by_visible_text(attendance['attendancestate'])
     # vrat posledni element
     return duration_field
 
@@ -177,7 +231,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: lectures_cnt(driver) < context.old_lectures_cnt)
     # je lekce opravdu smazana?
-    assert not find_lecture(context.browser, context.date, context.time)
+    assert not find_lecture(context, context.date, context.time)
 
 
 @when('user deletes the lecture of the client "{client}" at "{date}", "{time}"')
@@ -189,7 +243,7 @@ def step_impl(context, client, date, time):
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi lekci a klikni u ni na Upravit
-    lecture_to_update = find_lecture(context.browser, date, time)
+    lecture_to_update = find_lecture(context, date, time)
     assert lecture_to_update
     button_edit_lecture = lecture_to_update.find_element_by_css_selector('[data-qa=button_edit_lecture]')
     button_edit_lecture.click()
@@ -231,7 +285,7 @@ def step_impl(context, date, time, new_date, new_time, new_course, new_duration,
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi lekci a klikni u ni na Upravit
-    lecture_to_update = find_lecture(context.browser, date, time)
+    lecture_to_update = find_lecture(context, date, time)
     assert lecture_to_update
     button_edit_lecture = lecture_to_update.find_element_by_css_selector('[data-qa=button_edit_lecture]')
     button_edit_lecture.click()

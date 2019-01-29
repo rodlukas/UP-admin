@@ -213,8 +213,8 @@ export default class Card extends Component {
         const AllLectures = () =>
             <Fragment>
                 {lectures.map(courseLectures =>
-                    <Col key={courseLectures.course} sm="9" md="7" lg="5" xl="3">
-                        <h4 className="text-center">
+                    <Col key={courseLectures.course} sm="9" md="7" lg="5" xl="3" data-qa="card_course">
+                        <h4 className="text-center" data-qa="card_course_name">
                             {courseLectures.course}
                         </h4>
                         <ListGroup>

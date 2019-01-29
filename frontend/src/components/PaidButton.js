@@ -18,7 +18,7 @@ export default class PaidButton extends Component {
         return (
             <FontAwesomeIcon icon={faUsdCircle} size="2x"
                              className={className}
-                             onClick={this.onClick}/>
+                             onClick={this.onClick} data-qa="lecture_attendance_paid"/>
         )
     }
 }

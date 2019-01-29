@@ -37,5 +37,5 @@ Feature: Operations with attendance states
 
     Examples: Attendance states
       | name    |
-      | omluven |
+      | skryty  |
       | OK      |

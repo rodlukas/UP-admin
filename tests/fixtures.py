@@ -67,7 +67,8 @@ def applications(courses_list, clients_list):
 def attendancestates():
     attendancestates_list = [
         AttendanceState(name="OK", visible=True),
-        AttendanceState(name="omluven", visible=False)
+        AttendanceState(name="omluven", visible=True),
+        AttendanceState(name="skryty", visible=False)
     ]
     for attendancestate in attendancestates_list:
         attendancestate.save()
@@ -79,5 +80,5 @@ def lectures(courses_list, clients_list, groups_list, attendancestates_list):
     lecture = Lecture(start=start, canceled=False, duration=40, course=courses_list[0])
     lecture.save()
     attendance = Attendance(client=clients_list[0], paid=True, lecture=lecture,
-                            attendancestate=attendancestates_list[0])
+                            attendancestate=attendancestates_list[1])
     attendance.save()

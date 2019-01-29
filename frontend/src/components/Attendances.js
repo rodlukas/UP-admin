@@ -7,7 +7,7 @@ import RemindPay from "./RemindPay"
 import "./Attendances.css"
 
 const Attendance = ({attendance, showClient = false, funcRefresh}) =>
-    <li>
+    <li data-qa="lecture_attendance">
         {showClient &&
         <ClientName client={attendance.client} link/>}
         {' '}

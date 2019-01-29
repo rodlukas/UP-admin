@@ -380,7 +380,7 @@ class FormLectures extends Component {
                         </FormGroup>
                         <hr/>
                         {this.members.map(member =>
-                            <div key={member.id}>
+                            <div key={member.id} data-qa="form_lecture_attendance">
                                 <h5>
                                     {!this.IS_CLIENT &&
                                     <ClientName client={member}/>}
@@ -395,7 +395,8 @@ class FormLectures extends Component {
                                             </InputGroupAddon>
                                             <CustomInput type="select" name="at_state" id={"at_state" + member.id}
                                                          value={at_state[member.id]} onChange={this.onChangeMultiple}
-                                                         data-id={member.id} required>
+                                                         data-id={member.id} required
+                                                         data-qa="lecture_select_attendance_attendancestate">
                                                 {this.getAttendanceStatesData().map(attendancestate =>
                                                     // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                                     (attendancestate.visible || attendancestate.id === at_state[member.id]) &&
@@ -408,10 +409,13 @@ class FormLectures extends Component {
                                     </Col>
                                     <Col sm={2} className="text-center">
                                         <CustomInput type="checkbox" id={"at_paid" + member.id} name="at_paid"
-                                                     label="Platba" checked={at_paid[member.id]}
-                                                     disabled={prepaid}
-                                                     className={at_paid[member.id] ? "text-success" : "text-danger"}
-                                                     onChange={this.onChangeMultiple} data-id={member.id}/>
+                                                     checked={at_paid[member.id]} disabled={prepaid}
+                                                     onChange={this.onChangeMultiple} data-id={member.id}
+                                                     data-qa="lecture_checkbox_attendance_paid"/>
+                                        <Label for={"at_paid" + member.id} data-qa="lecture_label_attendance_paid"
+                                               className={at_paid[member.id] ? "text-success" : "text-danger"}>
+                                            Platba
+                                        </Label>
                                         {' '}
                                         {prepaid &&
                                         <Fragment>
@@ -431,7 +435,7 @@ class FormLectures extends Component {
                                             </InputGroupAddon>
                                             <Input type="text" name="at_note" id={"at_note" + member.id}
                                                    value={at_note[member.id]} onChange={this.onChangeMultiple}
-                                                   data-id={member.id}/>
+                                                   data-id={member.id} data-qa="lecture_field_attendance_note"/>
                                         </InputGroup>
                                     </Col>
                                 </FormGroup>
