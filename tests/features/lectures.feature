@@ -60,6 +60,18 @@ Feature: Operations with lectures
     When user updates the data of lecture at "2018-05-07", "20:00" to date "2018-05-08", time "21:00", course "Předškolák s ADHD", duration "88", canceled "True", attendance of the client "Rodová Petra" is: "OK", paid "False", note "test"
     Then the lecture is updated
 
+
+  @edit @lectures @test
+  Scenario Outline: Edit single lecture paid state
+    When user updates the paid state of lecture of the client "<client>" at "<date>", "<time>" to "<new_paid>"
+    Then the paid state is updated
+
+    Examples: Lectures data
+      | date       | time  | client       | new_paid |
+      | 2018-05-07 | 20:00 | Rodová Petra | False    |
+      | 2018-05-07 | 21:00 | Rodová Petra | True     |
+
+
   @delete @lectures
   Scenario: Delete lecture
     When user deletes the lecture of the client "Rodová Petra" at "2018-05-07", "20:00"

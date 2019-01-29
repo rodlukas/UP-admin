@@ -62,6 +62,11 @@ def attendance_dict(api_client, client, attendancestate, paid, note):
             'note': note}
 
 
+def attendance_dict_patch(attendance_id, **obj):
+    obj['id'] = attendance_id
+    return obj
+
+
 def lecture_dict(context, original_lecture=None):
     attendances_res = deepcopy(context.attendances)
     for attendance in attendances_res:
@@ -134,6 +139,17 @@ def step_impl(context):
     assert lectures_cnt(context.api_client) == context.old_lectures_cnt
 
 
+@then('the paid state is updated')
+def step_impl(context):
+    # uprava byla uspesna
+    assert context.resp.status_code == status.HTTP_200_OK
+    # nacti udaje upravovane lekce
+    lecture_to_update = helpers.find_lecture_with_start(context.api_client, context.start)
+    assert lecture_to_update
+    # ma lekce opravdu nove udaje?
+    assert lecture_to_update['attendances'][0]['paid'] == context.new_paid
+
+
 @then('the lecture is deleted')
 def step_impl(context):
     # smazani bylo uspesne
@@ -181,6 +197,23 @@ def step_impl(context, date, time, new_date, new_time, new_course, new_duration,
     # vlozeni lekce
     context.resp = context.api_client.put(f"{helpers.API_LECTURES}{lecture_to_update['id']}/", lecture_dict(context,
                                                                                                             lecture_to_update))
+
+
+@when(
+    'user updates the paid state of lecture of the client "{client}" at "{date}", "{time}" to "{new_paid}"')
+def step_impl(context, client, date, time, new_paid):
+    # nacteni dat lekce do kontextu
+    load_id_data_to_context(context, date, time)
+    # najdi lekci
+    lecture_to_update = helpers.find_lecture_with_start(context.api_client, common_helpers.prepare_start(date, time))
+    assert lecture_to_update
+    # najdi id attendance
+    attendance_id = lecture_to_update['attendances'][0]['id']
+    # vlozeni lekce
+    content = attendance_dict_patch(attendance_id, paid=new_paid)
+    context.resp = context.api_client.patch(f"{helpers.API_ATTENDANCES}{attendance_id}/", content)
+    # uloz ocekavany novy stav do kontextu
+    context.new_paid = common_helpers.to_bool(new_paid)
 
 
 use_step_matcher("re")

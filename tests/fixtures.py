@@ -76,9 +76,13 @@ def attendancestates():
 
 
 def lectures(courses_list, clients_list, groups_list, attendancestates_list):
-    start = make_aware(datetime(2018, 5, 7, 20, 00))
-    lecture = Lecture(start=start, canceled=False, duration=40, course=courses_list[0])
-    lecture.save()
-    attendance = Attendance(client=clients_list[0], paid=True, lecture=lecture,
-                            attendancestate=attendancestates_list[1])
-    attendance.save()
+    start1 = make_aware(datetime(2018, 5, 7, 20, 00))
+    lecture1 = Lecture(start=start1, canceled=False, duration=40, course=courses_list[0])
+    lecture1.save()
+    Attendance(client=clients_list[0], paid=True, lecture=lecture1,
+               attendancestate=attendancestates_list[1]).save()
+    start2 = make_aware(datetime(2018, 5, 7, 21, 00))
+    lecture2 = Lecture(start=start2, canceled=False, duration=40, course=courses_list[0])
+    lecture2.save()
+    Attendance(client=clients_list[0], paid=False, lecture=lecture2,
+               attendancestate=attendancestates_list[1]).save()

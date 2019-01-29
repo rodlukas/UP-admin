@@ -7,6 +7,7 @@ def api_url(url):
     return "/api/v1" + url
 
 
+API_ATTENDANCES = api_url("/attendances/")
 API_APPLICATIONS = api_url("/applications/")
 API_ATTENDANCESTATES = api_url("/attendancestates/")
 API_AUTH = api_url("/jwt-auth/")
