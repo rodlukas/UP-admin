@@ -20,8 +20,9 @@ def filter_empty_strings_from_list(src_list):
     return list(filter(None, src_list))
 
 
-def parse_django_datetime(datetime):
-    return parse_datetime(datetime)
+def parse_django_datetime(datetime_str):
+    print(datetime_str)
+    return parse_datetime(datetime_str)
 
 
 def prepare_start(date, time):

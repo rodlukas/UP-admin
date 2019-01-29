@@ -46,7 +46,8 @@ def find_group_with_name(api_client, name):
 def find_lecture_with_start(api_client, start):
     all_lectures = get_lectures(api_client)
     for lecture in all_lectures:
-        if common_helpers.parse_django_datetime(lecture['start']) == start:
+        # muze prijit None (predplacena lekce)
+        if lecture['start'] and common_helpers.parse_django_datetime(lecture['start']) == start:
             return lecture
     return {}
 

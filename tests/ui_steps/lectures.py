@@ -60,6 +60,11 @@ def get_paid_button(driver):
         '[data-qa=lecture_attendance_paid]')
 
 
+def get_select_attendancestates(driver):
+    return Select(driver.find_element_by_css_selector(
+        '[data-qa=lecture_select_attendance_attendancestate]'))
+
+
 def find_lecture(context, date, time, validate_context=False):
     all_courses = context.browser.find_elements_by_css_selector('[data-qa=card_course]')
     for course in all_courses:
@@ -81,17 +86,11 @@ def find_lecture(context, date, time, validate_context=False):
                     for attendance in context.attendances:
                         # najdi attendance prislusici danemu klientovi
                         found_attendance = find_attendance_in_card(context, lecture, attendance['client'])
-                        # uloz si nalezene atributy ucasti
-                        found_attendancestate_selected_list = Select(found_attendance.find_element_by_css_selector(
-                            '[data-qa=lecture_select_attendance_attendancestate]')).all_selected_options
                         found_note = found_attendance.find_element_by_css_selector(
                             '[data-qa=lecture_attendance_note]').text
-                        found_attendancestate_selected_list = [elem.text for elem in
-                                                               found_attendancestate_selected_list]
                         if (found_note == attendance['note'] and
-                                len(found_attendancestate_selected_list) == 1 and
                                 verify_paid(found_attendance, attendance['paid']) and
-                                attendance['attendancestate'] in found_attendancestate_selected_list):
+                                verify_attendancestate(found_attendance, attendance['attendancestate'])):
                             found_attendances_cnt += 1
                     if (found_attendances_cnt == len(context.attendances) and
                             context.duration in found_duration):
@@ -171,8 +170,6 @@ def insert_to_form(context):
         found_attendance = find_attendance_in_form(context, attendance['client'])
         paid_checkbox = found_attendance.find_element_by_css_selector('[data-qa=lecture_checkbox_attendance_paid')
         paid_label = found_attendance.find_element_by_css_selector('[data-qa=lecture_label_attendance_paid')
-        attendancestate_select = Select(found_attendance.find_element_by_css_selector(
-            '[data-qa=lecture_select_attendance_attendancestate'))
         note_field = found_attendance.find_element_by_css_selector('[data-qa=lecture_field_attendance_note')
         # smazani stavajicich udaju
         note_field.clear()
@@ -181,9 +178,7 @@ def insert_to_form(context):
                 (not attendance['paid'] and paid_checkbox.is_selected())):
             paid_label.click()
         note_field.send_keys(attendance['note'])
-        found_attendance.find_element_by_css_selector(
-            '[data-qa=lecture_select_attendance_attendancestate').click()
-        attendancestate_select.select_by_visible_text(attendance['attendancestate'])
+        choose_attendancestate(found_attendance, attendance['attendancestate'])
     # vrat posledni element
     return duration_field
 
@@ -220,9 +215,22 @@ def attendance_dict(client, attendancestate, paid, note):
 def verify_paid(found_attendance, new_paid):
     found_paid_classes = get_paid_button(found_attendance).get_attribute('class')
     expected_paid_class = "text-success" if new_paid else "text-danger"
-    print(found_paid_classes)
-    print(expected_paid_class)
     return helpers.check_class_included(found_paid_classes, expected_paid_class)
+
+
+def verify_attendancestate(found_attendance, new_attendancestate):
+    # uloz si nalezene atributy ucasti
+    found_attendancestate_selected_list = get_select_attendancestates(found_attendance).all_selected_options
+    found_attendancestate_selected_list = [elem.text for elem in
+                                           found_attendancestate_selected_list]
+    return (len(found_attendancestate_selected_list) == 1 and
+            new_attendancestate in found_attendancestate_selected_list)
+
+
+def choose_attendancestate(found_attendance, new_attendancestate):
+    attendancestate_select = Select(found_attendance.find_element_by_css_selector(
+        '[data-qa=lecture_select_attendance_attendancestate'))
+    attendancestate_select.select_by_visible_text(new_attendancestate)
 
 
 @then('the lecture is added')
@@ -243,7 +251,7 @@ def step_impl(context):
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
 
 
-@then('the paid state is updated')
+@then('the paid state of the attendance is updated')
 def step_impl(context):
     # pockej na update lekci
     helpers.wait_loading_cycle(context.browser)
@@ -252,6 +260,17 @@ def step_impl(context):
     assert lecture_to_update
     # ma lekce opravdu nove udaje?
     assert verify_paid(lecture_to_update, context.new_paid)
+
+
+@then('the attendance state of the attendance is updated')
+def step_impl(context):
+    # pockej na update lekci
+    helpers.wait_loading_cycle(context.browser)
+    # najdi upravovanou lekci
+    lecture_to_update = find_lecture(context, context.date, context.time)
+    assert lecture_to_update
+    # ma lekce opravdu nove udaje?
+    assert verify_attendancestate(lecture_to_update, context.new_attendancestate)
 
 
 @then('the lecture is deleted')
@@ -337,13 +356,31 @@ def step_impl(context, client, date, time, new_paid):
     open_client_card(context.browser, client)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
-    # najdi lekci a klikni u ni na Upravit
+    # najdi lekci a klikni u ni na tlacitko platby
     lecture_to_update = find_lecture(context, date, time)
     assert lecture_to_update
     button_paid = get_paid_button(lecture_to_update)
     button_paid.click()
     # uloz ocekavany novy stav do kontextu
     context.new_paid = common_helpers.to_bool(new_paid)
+
+
+@when(
+    'user updates the attendance state of lecture of the client "{client}" at "{date}", "{time}" to "{new_attendancestate}"')
+def step_impl(context, client, date, time, new_attendancestate):
+    # nacteni dat lekce do kontextu
+    load_id_data_to_context(context, date, time)
+    # otevri kartu prislusneho klienta
+    open_client_card(context.browser, client)
+    # pockej na nacteni
+    helpers.wait_loading_ends(context.browser)
+    # najdi lekci a vyber novy stav ucasti
+    lecture_to_update = find_lecture(context, date, time)
+    assert lecture_to_update
+    choose_attendancestate(lecture_to_update, new_attendancestate)
+    # uloz ocekavany novy stav do kontextu
+    context.cur_attendancestate = get_select_attendancestates(lecture_to_update).all_selected_options
+    context.new_attendancestate = new_attendancestate
 
 
 use_step_matcher("re")
