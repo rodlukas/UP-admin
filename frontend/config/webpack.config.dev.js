@@ -17,7 +17,6 @@ const BundleTracker = require('webpack-bundle-tracker'); // dodano
 function getIPAddress() {
   let interfaces = require('os').networkInterfaces()
   for (let devName in interfaces) {
-    console.log(devName)
     if (devName !== 'Wi-Fi' && devName !== 'Ethernet')
       continue
     let iface = interfaces[devName]
