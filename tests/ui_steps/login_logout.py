@@ -27,9 +27,16 @@ def check_login(context):
     return button_logout_visible, jwt
 
 
+def wait_form_login_visible(driver):
+    WebDriverWait(driver, helpers.WAIT_TIME).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, '[data-qa=login_field_username]')))
+
+
 def login(context, username, password):
     # prejdi na hlavni stranku
     context.browser.get(context.base_url)
+    # pockej az bude dostupny prihlasovaci formular
+    wait_form_login_visible(context.browser)
     # vloz prihlasovaci udaje do formulare
     username_field = context.browser.find_element_by_css_selector('[data-qa=login_field_username]')
     password_field = context.browser.find_element_by_css_selector('[data-qa=login_field_password]')
