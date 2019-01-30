@@ -13,3 +13,5 @@ export const JWT_HEADER_PREFIX = 'Bearer '
 export const TEXTS = {
     NO_RESULTS: "Nic nenalezeno"
 }
+
+export const DEFAULT_DURATION = 30

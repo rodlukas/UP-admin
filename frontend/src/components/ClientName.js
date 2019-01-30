@@ -1,10 +1,11 @@
 import React from "react"
 import {Link} from "react-router-dom"
 import APP_URLS from "../urls"
+import {clientName} from "../global/utils"
 
 const PlainName = ({client}) =>
-    <span>
-        {client.surname} {client.name}
+    <span data-qa="client_name">
+        {clientName(client)}
     </span>
 
 const ClientName = ({client, link = false}) =>

@@ -2,6 +2,7 @@ import os
 import datetime
 import raven
 import environ
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -12,7 +13,8 @@ env = environ.Env(
     DATABASE_URL=str,
     SECRET_KEY=str,
     FIO_API_KEY=str,
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    HEROKU=(bool, False)
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -21,10 +23,12 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 600
 FIO_API_KEY = env('FIO_API_KEY')
+TESTING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
 
 # Django konstanty
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
+HEROKU = env('HEROKU')
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -43,6 +47,8 @@ INSTALLED_APPS = [
     'raven.contrib.django.raven_compat',
     'debug_toolbar',
 ]
+if not HEROKU:
+    INSTALLED_APPS.append('behave_django')
 
 # API
 REST_FRAMEWORK = {
@@ -55,6 +61,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Bearer',
@@ -108,7 +115,9 @@ CACHES = {
 DATABASES = {
     'default': env.db()
 }
-DATABASES['default']['CONN_MAX_AGE'] = CONST_DB_CON_AGE
+# v testech zpusobuje problemy, (neuzavrou se hned spojeni)
+if not TESTING:
+    DATABASES['default']['CONN_MAX_AGE'] = CONST_DB_CON_AGE
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -162,4 +171,5 @@ DEBUG_TOOLBAR_PANELS = [
 ]
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': lambda request: True if DEBUG else False,
+    'SHOW_COLLAPSED': True,
 }

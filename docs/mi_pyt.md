@@ -6,15 +6,13 @@
 ## Úkol
 **Kompletní pokrytí celé aplikace testy:**
 * aplikace v současné době obsahuje pouze několik jednoduchých *smoke* testů
-    * viz. [/admin/tests](/admin/tests) a [/api/tests](/api/tests) - otestuje se, zda funguje vykreslení stránky a zda lze přidat klienta skrze model a pak skrze API s autentizací
+    * viz. [/admin/tests](/admin/tests) a [/api/tests](/api/tests) - 
+    otestuje se, zda funguje vykreslení stránky a zda lze přidat klienta skrze model a pak skrze API s autentizací
     * nepoužívání testů je samozřejmě špatně, protože při jakékoliv změně není pod kontrolou, zda se nerozbouralo něco, co předtím fungovalo, 
-    navíc se počítá s dalším rozšiřováním a je tedy potřeba mít k dispozici berličku, která bude hlídat funkčnost aplikace během dalšího vývoje
-* je potřeba vytvořit testy jak pro API, tak pro vnitřní fungování (tedy testovat API i např. modely)
-* vysoké pokrytí kódu je nutné, **nikoliv ale postačující** - lze ho dosáhnout poměrně snadno, cílem testů je ale skutečně otestovat, že se aplikace ve všech případech (**včetně** hraničních!) chová správně
-
----
-
-> Zadání lze případně doplnit o:
-> * refaktoring [/api/serializers.py](/api/serializers.py) - odstranění dlouhých metod, duplicitních kódů atd. (to lze samozřejmě provést až po vytvoření kvalitních testů, aby nedošlo k zanesení nových chyb)
-> * dodání stránkování do API
-> * vytvoření schéma API
+    navíc se počítá s dalším rozšiřováním a refaktoringem a je tedy potřeba mít k dispozici berličku, 
+    která bude hlídat funkčnost aplikace během dalšího vývoje
+* testovat se bude **REST API a frontend**
+* cílem testů je otestovat, že se aplikace skutečně ve všech případech (**včetně** hraničních!) chová správně dle požadavků
+    * z toho důvodu budou vytvořeny scénáře, které pokrývají všechny funkce aplikace a k nim budou vytvořeny odpovídající testy,
+     které otestují, zda aplikace funguje dle scénáře (knihovna [behave](https://github.com/behave/behave))
+    * pro testování frontendu bude použito [selenium](https://github.com/SeleniumHQ/selenium)

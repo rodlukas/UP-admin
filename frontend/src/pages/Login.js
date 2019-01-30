@@ -51,14 +51,14 @@ class Login extends Component {
                 <Row className="justify-content-center pageContent">
                     <Col md="9" lg="7">
                         <Card className="p-4">
-                            <Form onSubmit={this.onSubmit}>
+                            <Form onSubmit={this.onSubmit} data-qa="form_login">
                                 <FormGroup row>
                                     <Label for="username" sm={4}>
                                         Uživatelské jméno
                                     </Label>
                                     <Col sm={8}>
                                         <Input type="text" id="username" value={username} onChange={this.onChange}
-                                               required autoCapitalize="none" autoFocus/>
+                                               required autoCapitalize="none" autoFocus data-qa="login_field_username"/>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -67,7 +67,7 @@ class Login extends Component {
                                     </Label>
                                     <Col sm={8}>
                                         <Input type="password" id="password" value={password} onChange={this.onChange}
-                                               required/>
+                                               required data-qa="login_field_password"/>
                                     </Col>
                                 </FormGroup>
                                 <SubmitButton content="Přihlásit"/>

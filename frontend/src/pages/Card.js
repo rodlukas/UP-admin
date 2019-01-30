@@ -20,19 +20,25 @@ import Email from "../components/Email"
 import Phone from "../components/Phone"
 import Note from "../components/Note"
 import Heading from "../components/Heading"
-import {groupByCourses} from "../global/utils"
+import {courseDuration, groupByCourses} from "../global/utils"
 import PrepaidCounters from "../components/PrepaidCounters"
 
 export default class Card extends Component {
-    state = {
-        object: {},
-        IS_MODAL: false,
-        currentLecture: {},
-        lectures: [],
-        memberships: [],
-        IS_LOADING: true,
-        defaultCourse: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz pri pridavani lekce
+    constructor(props) {
+        super(props)
+        this.state = {
+            object: {},
+            IS_MODAL: false,
+            currentLecture: {},
+            lectures: [],
+            memberships: [],
+            LOADING_CNT: this.isClient() ? 0 : 1,
+            defaultCourse: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz pri pridavani lekce
+        }
     }
+
+    loadingStateIncrement = () =>
+        this.setState({LOADING_CNT: this.state.LOADING_CNT + 1})
 
     getId = () =>
         this.props.match.params.id
@@ -77,20 +83,34 @@ export default class Card extends Component {
             this.getMemberships()
     }
 
-    // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
-    componentDidUpdate(prevProps) {
-        if (this.getId() !== this.getPrevId(prevProps) || this.isClient() !== this.wasClient(prevProps)) {
-            this.setState({IS_LOADING: true})
-            this.getObject()
-            this.getLectures()
-            if (this.isClient())
-                this.getMemberships()
+    refresh = (all=true) => {
+        if (this.isClient() && all) {
+            this.setState(
+                {LOADING_CNT: this.state.LOADING_CNT - 3},
+                () => {
+                    this.getObject()
+                    this.getLectures()
+                    this.getMemberships()
+                })
+        }
+        else {
+            this.setState(
+                {LOADING_CNT: this.state.LOADING_CNT - 2},
+                () => {
+                    this.getObject()
+                    this.getLectures()
+                })
         }
     }
 
+    // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
+    componentDidUpdate(prevProps) {
+        if (this.getId() !== this.getPrevId(prevProps) || this.isClient() !== this.wasClient(prevProps))
+            this.refresh()
+    }
+
     refreshAfterLectureChanges = () => {
-        this.getObject()
-        this.getLectures()
+        this.refresh(false)
     }
 
     toggle = (lecture = {}) =>
@@ -104,12 +124,12 @@ export default class Card extends Component {
 
     getMemberships = (id = this.getId()) =>
         GroupService.getAllFromClient(id)
-            .then(memberships => this.setState({memberships}))
+            .then(memberships => this.setState({memberships}, this.loadingStateIncrement))
 
     getObject = (IS_CLIENT = this.isClient(), id = this.getId()) => {
         let service = (IS_CLIENT ? ClientService : GroupService)
         service.get(id)
-            .then(object => this.setState({object}))
+            .then(object => this.setState({object}, this.loadingStateIncrement))
     }
 
     getLectures = (IS_CLIENT = this.isClient(), id = this.getId()) => {
@@ -122,9 +142,8 @@ export default class Card extends Component {
             const grouppedByCourses = groupByCourses(lectures)
             this.getDefaultCourseSingle(grouppedByCourses)
             this.setState({
-                lectures: grouppedByCourses,
-                IS_LOADING: false
-            })
+                lectures: grouppedByCourses
+            }, this.loadingStateIncrement)
         })
     }
 
@@ -137,12 +156,15 @@ export default class Card extends Component {
             object.memberships[elemId].prepaid_cnt = Number(prepaid_cnt)
         else
             throw new Error("Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě")
-        this.setState({object})
-        this.getLectures()
+        this.setState({
+                object,
+                LOADING_CNT: this.state.LOADING_CNT - 1
+            },
+            this.getLectures)
     }
 
     render() {
-        const {object, lectures, defaultCourse, currentLecture, memberships, IS_LOADING, IS_MODAL} = this.state
+        const {object, lectures, defaultCourse, currentLecture, memberships, LOADING_CNT, IS_MODAL} = this.state
         const ClientInfo = () =>
             <ListGroup>
                 {this.isClient() &&
@@ -171,16 +193,18 @@ export default class Card extends Component {
                     if (lecture.start === null)
                         className += " lecture-prepaid"
                     return (
-                        <ListGroupItem key={lecture.id} className={className}>
+                        <ListGroupItem key={lecture.id} className={className} data-qa="lecture">
                             <h4>
+                                <span data-qa="lecture_start" title={courseDuration(lecture.duration)}>
                                 {lecture.start !== null ?
                                     (prettyDateWithDayYear(d) + " – " + prettyTime(d))
                                     :
                                     "Předplacená lekce"}
+                                </span>
                                 {' '}
                                 <LectureNumber lecture={lecture}/>
                                 <div className="float-right">
-                                    <EditButton onClick={() => this.toggle(lecture)}/>
+                                    <EditButton onClick={() => this.toggle(lecture)} data-qa="button_edit_lecture"/>
                                 </div>
                             </h4>
                             <Attendances lecture={lecture} funcRefresh={this.refreshAfterLectureChanges} showClient={!this.isClient()}/>
@@ -189,8 +213,8 @@ export default class Card extends Component {
         const AllLectures = () =>
             <Fragment>
                 {lectures.map(courseLectures =>
-                    <Col key={courseLectures.course} sm="9" md="7" lg="5" xl="3">
-                        <h4 className="text-center">
+                    <Col key={courseLectures.course} sm="9" md="7" lg="5" xl="3" data-qa="card_course">
+                        <h4 className="text-center" data-qa="card_course_name">
                             {courseLectures.course}
                         </h4>
                         <ListGroup>
@@ -214,7 +238,7 @@ export default class Card extends Component {
                         :
                         <GroupName group={object}/>}
                 </span>
-                <AddButton content="Přidat lekci" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat lekci" onClick={() => this.toggle()} data-qa="button_add_lecture"/>
             </Fragment>
         const CardContent = () =>
             <div className="pageContent">
@@ -244,7 +268,7 @@ export default class Card extends Component {
                 <Container>
                     <Heading content={<HeadingContent/>}/>
                 </Container>
-                {!IS_LOADING ?
+                {LOADING_CNT === 3 ?
                     <CardContent/> :
                     <Loading/>}
             </Fragment>

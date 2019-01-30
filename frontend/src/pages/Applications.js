@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from "react"
-import {Modal, Container, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Badge, Col, Row} from "reactstrap"
+import {Modal, Container, ListGroup, ListGroupItem, Badge, Col, Row} from "reactstrap"
 import ApplicationService from "../api/services/application"
 import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
@@ -11,6 +11,7 @@ import EditButton from "../components/buttons/EditButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import Heading from "../components/Heading"
 import {groupByCourses} from "../global/utils"
+import Phone from "../components/Phone"
 
 export default class Applications extends Component {
     constructor(props) {
@@ -65,21 +66,29 @@ export default class Applications extends Component {
         const {applications, courses, currentApplication, IS_MODAL, LOADING_CNT} = this.state
         const ApplicantsCount = ({cnt}) =>
             <Badge color="secondary" pill>
-                {cnt}
+                <span data-qa="applications_for_course_cnt">
+                    {cnt}
+                </span>
                 {' '}zájemc{cnt === 1 ? "e" : ((cnt > 1 && cnt < 5) ? "i" : "ů")}
             </Badge>
         const Application = ({application}) =>
             <Fragment>
                 <Col>
-                    <ListGroupItemHeading>
+                    <h5>
                         <ClientName client={application.client} link/>
-                    </ListGroupItemHeading>
-                    <ListGroupItemText>
-                        {application.note}
-                    </ListGroupItemText>
+                    </h5>
                 </Col>
+                {application.client.phone &&
                 <Col>
-                    <EditButton onClick={() => this.toggle(application)}/>
+                    <Phone phone={application.client.phone} icon/>
+                </Col>}
+                <Col xs="auto">
+                    <span data-qa="application_note">
+                        {application.note}
+                    </span>
+                </Col>
+                <Col className="text-right">
+                    <EditButton onClick={() => this.toggle(application)} data-qa="button_edit_application"/>
                     {' '}
                     <DeleteButton
                         onClick={() => {
@@ -87,16 +96,17 @@ export default class Applications extends Component {
                                 + application.client.surname + " " + application.client.name
                                 + " o " + application.course.name + '?'
                             if (window.confirm(msg))
-                                this.delete(application.id)
-                    }}/>
+                                this.delete(application.id)}}
+                        data-qa="button_delete_application"
+                    />
                 </Col>
             </Fragment>
         const CourseApplications = ({applications}) =>
             <Fragment>
                 {applications.map(application =>
-                    <ListGroupItem key={application.id}>
+                    <ListGroupItem key={application.id} data-qa="application">
                         <Container>
-                            <Row>
+                            <Row className="align-items-center">
                                 <Application application={application}/>
                             </Row>
                         </Container>
@@ -105,9 +115,11 @@ export default class Applications extends Component {
         const AllApplications = () =>
             <div className="pageContent">
                 {applications.map(courseApplications =>
-                    <ListGroup key={courseApplications.course}>
+                    <ListGroup key={courseApplications.course} data-qa="applications_for_course">
                         <h4 className="Applications-h4">
-                            {courseApplications.course}
+                            <span data-qa="application_course">
+                                {courseApplications.course}
+                            </span>
                             {' '}
                             <ApplicantsCount cnt={courseApplications.values.length}/>
                         </h4>
@@ -121,7 +133,7 @@ export default class Applications extends Component {
         const HeadingContent = () =>
             <Fragment>
                 Zájemci o kurzy
-                <AddButton content="Přidat zájemce" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat zájemce" onClick={() => this.toggle()} data-qa="button_add_application"/>
             </Fragment>
         return (
             <Fragment>

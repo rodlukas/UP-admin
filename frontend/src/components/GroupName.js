@@ -3,7 +3,7 @@ import {Link} from "react-router-dom"
 import APP_URLS from "../urls"
 
 const PlainName = ({group, title}) =>
-    <span>
+    <span data-qa="group_name">
         {title && "Skupina "}{group.name}
     </span>
 

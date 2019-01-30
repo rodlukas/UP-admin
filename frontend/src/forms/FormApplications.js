@@ -5,9 +5,8 @@ import Select from "react-select"
 import ClientService from "../api/services/client"
 import SubmitButton from "../components/buttons/SubmitButton"
 import CancelButton from "../components/buttons/CancelButton"
-import ClientName from "../components/ClientName"
 import {TEXTS} from "../global/constants"
-import {alertRequired} from "../global/utils"
+import {alertRequired, clientName} from "../global/utils"
 
 export default class FormApplications extends Component {
     constructor(props) {
@@ -66,7 +65,7 @@ export default class FormApplications extends Component {
     render() {
         const {client, clients, course, note} = this.state
         return (
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} data-qa="form_application">
                 <ModalHeader toggle={this.close}>
                     {this.isObject ? 'Úprava' : 'Přidání'} zájemce o kurz
                 </ModalHeader>
@@ -79,7 +78,7 @@ export default class FormApplications extends Component {
                             <Select
                                 inputId="client"
                                 value={client}
-                                getOptionLabel={option => <ClientName client={option}/>}
+                                getOptionLabel={option => clientName(option)}
                                 getOptionValue={option => option.id}
                                 onChange={newValue => this.onSelectChange(newValue, "client")}
                                 options={clients}
@@ -90,9 +89,9 @@ export default class FormApplications extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup row>
-                        <Col id="course" sm={3}>
+                        <Label for="course" sm={3}>
                             Kurz
-                        </Col>
+                        </Label>
                         <Col sm={9}>
                             <Select
                                 inputId="course"
@@ -111,7 +110,8 @@ export default class FormApplications extends Component {
                             Poznámka
                         </Label>
                         <Col sm={9}>
-                            <Input type="textarea" id="note" value={note} onChange={this.onChange}/>
+                            <Input type="textarea" id="note" value={note} onChange={this.onChange}
+                                   data-qa="application_field_note"/>
                         </Col>
                     </FormGroup>
                 </ModalBody>

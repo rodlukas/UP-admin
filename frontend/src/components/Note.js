@@ -3,7 +3,7 @@ import NoInfo from "./NoInfo"
 
 const Note = ({note}) => {
     if (note !== "")
-        return <span>{note}</span>
-    return <NoInfo/>}
+        return <span data-qa="client_note">{note}</span>
+    return <NoInfo data-qa="client_note"/>}
 
 export default Note

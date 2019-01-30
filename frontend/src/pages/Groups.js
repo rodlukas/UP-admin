@@ -18,17 +18,20 @@ export default class Groups extends Component {
         IS_LOADING: true
     }
 
-    toggle = (group = {}) => {
+    toggle = (group = {}) =>
         this.setState({
             currentGroup: group,
             IS_MODAL: !this.state.IS_MODAL
         })
+
+    refresh = () => {
+        this.setState({IS_LOADING: true})
+        this.getGroups()
     }
 
-    getGroups = () => {
+    getGroups = () =>
         GroupService.getAll()
             .then(groups => this.setState({groups, IS_LOADING: false}))
-    }
 
     componentDidMount() {
         this.getGroups()
@@ -39,7 +42,7 @@ export default class Groups extends Component {
         const GroupTable = () =>
             <tbody>
             {groups.map(group =>
-                <tr key={group.id}>
+                <tr key={group.id} data-qa="group">
                     <td>
                         <GroupName group={group} link/>
                     </td>
@@ -50,14 +53,14 @@ export default class Groups extends Component {
                         <ClientsList clients={group.memberships}/>
                     </td>
                     <td>
-                        <EditButton onClick={() => this.toggle(group)}/>
+                        <EditButton onClick={() => this.toggle(group)} data-qa="button_edit_group"/>
                     </td>
                 </tr>)}
             </tbody>
         const HeadingContent = () =>
             <Fragment>
                 Skupiny
-                <AddButton content="Přidat skupinu" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat skupinu" onClick={() => this.toggle()} data-qa="button_add_group"/>
             </Fragment>
         return (
             <div>
@@ -88,7 +91,7 @@ export default class Groups extends Component {
                     </p>}
                 </Container>
                 <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
-                    <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.getGroups}/>
+                    <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.refresh}/>
                 </Modal>
             </div>
         )

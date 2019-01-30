@@ -12,11 +12,29 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
 const BundleTracker = require('webpack-bundle-tracker'); // dodano
-const ip = require('ip'); // dodano
 
 // je potreba dynamicky menit adresu vzhledem k aktualni pridelene adrese zarizeni
-const url = 'http://' + ip.address() + ':3000'
+function getIPAddress() {
+  let interfaces = require('os').networkInterfaces()
+  for (let devName in interfaces) {
+    if (devName !== 'Wi-Fi' && devName !== 'Ethernet')
+      continue
+    let iface = interfaces[devName]
+    for (let i = 0; i < iface.length; i++) {
+      let alias = iface[i]
+      if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+        return alias.address
+    }
+  }
+  return "localhost"
+}
+
+const curLocalIp = getIPAddress()
+const url = 'http://' + curLocalIp + ':3000'
 const urlWithSlash = url + '/'
+const chalk = require('chalk');
+console.log(chalk.magenta.bold('Aplikace je přístupná v celé síti na adrese: ' + curLocalIp));
+
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
 // const publicPath = '/';

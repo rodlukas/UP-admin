@@ -6,9 +6,15 @@ python: '3.7'
 node_js: '8'
 services:
 - postgresql
+env:
+- MOZ_HEADLESS=1
 addons:
+  firefox: latest
   postgresql: '10'
 install:
+  # nainstaluj geckodriver pro selenium testovani
+  - source scripts/install_geckodriver.sh
+
   # spust skripty pro upravu souboru
   - source scripts/create_npmrc.sh
   - source scripts/string_substitution.sh
@@ -16,13 +22,12 @@ install:
   # nainstaluj JS zavislosti
   - nvm install 8.12.0
   - npm i -g npm@~6.4.1
-  - npm install -g yarn@~1.10.0
+  - npm install -g yarn@~1.13.0
   - yarn install
 
   # nainstaluj Python zavislosti
-  - pip install codecov
   - pip install pipenv
-  - pipenv install
+  - pipenv install --dev
 
   # vypis konfigurace prostredi
   - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version
@@ -34,11 +39,16 @@ script:
   - source scripts/release_tasks.sh
 
   # proved testy a spocitej pokryti kodu
-  - coverage run --source=admin,api --omit=*/migrations/* manage.py test
   - yarn test
+  - coverage run -a manage.py test
+  - coverage run -a manage.py behave --stage=api
+  - coverage run -a manage.py behave --stage=ui
 after_success:
   # posli pokryti kodu do codecov
   - codecov --token=$CODECOV_TOKEN
+
+  # vycisteni od testovacich dat a zavislosti
+  - rm -rf geckodriver geckodriver.log coverage.xml
 notifications:
   email: false
   slack:
@@ -48,6 +58,8 @@ deploy:
   api_key: $HEROKU_API_KEY
   app: uspesnyprvnacek-testing
   skip_cleanup: true
+  on:
+    all_branches: true
 - provider: heroku
   api_key: $HEROKU_API_KEY
   app: uspesnyprvnacek-staging

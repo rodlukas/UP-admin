@@ -28,6 +28,11 @@ export default class ClientList extends Component {
             IS_MODAL: !this.state.IS_MODAL
         })
 
+    refresh = () => {
+        this.setState({IS_LOADING: true})
+        this.getClients()
+    }
+
     getClients = () =>
         ClientService.getAll()
             .then(clients => this.setState({clients, IS_LOADING: false}))
@@ -41,7 +46,7 @@ export default class ClientList extends Component {
         const ClientTable = () =>
             <tbody>
             {clients.map(client =>
-                <tr key={client.id}>
+                <tr key={client.id} data-qa="client">
                     <td style={{minWidth: '13em', width: '13em'}}>
                         <ClientName client={client} link/>
                     </td>
@@ -55,14 +60,14 @@ export default class ClientList extends Component {
                         <Note note={client.note}/>
                     </td>
                     <td>
-                        <EditButton onClick={() => this.toggle(client)}/>
+                        <EditButton onClick={() => this.toggle(client)} data-qa="button_edit_client"/>
                     </td>
                 </tr>)}
             </tbody>
         const HeadingContent = () =>
             <Fragment>
                 Klienti
-                <AddButton content="Přidat klienta" onClick={() => this.toggle()}/>
+                <AddButton content="Přidat klienta" onClick={() => this.toggle()} data-qa="button_add_client"/>
             </Fragment>
         return (
             <div>
@@ -94,7 +99,7 @@ export default class ClientList extends Component {
                     </p>}
                 </Container>
                 <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
-                    <FormClients client={currentClient} funcClose={this.toggle} funcRefresh={this.getClients}/>
+                    <FormClients client={currentClient} funcClose={this.toggle} funcRefresh={this.refresh}/>
                 </Modal>
             </div>
         )

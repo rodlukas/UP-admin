@@ -22,20 +22,20 @@ const Menu = props => {
                             <MyNavLink to={APP_URLS.diar}>Diář</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.klienti}>Klienti</MyNavLink>
+                            <MyNavLink to={APP_URLS.klienti} data-qa="menu_clients">Klienti</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.skupiny}>Skupiny</MyNavLink>
+                            <MyNavLink to={APP_URLS.skupiny} data-qa="menu_groups">Skupiny</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.zajemci}>Zájemci</MyNavLink>
+                            <MyNavLink to={APP_URLS.zajemci} data-qa="menu_applications">Zájemci</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.nastaveni}>Nastavení</MyNavLink>
+                            <MyNavLink to={APP_URLS.nastaveni} data-qa="menu_settings">Nastavení</MyNavLink>
                         </NavItem>
                     </Nav>
                     <Button color="secondary"
-                            onClick={authContext.logout}>
+                            onClick={authContext.logout} data-qa="button_logout">
                         Odhlásit
                     </Button>
                     <AuthChecking/>

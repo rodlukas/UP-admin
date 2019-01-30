@@ -34,3 +34,16 @@ export function alertRequired(object, ...inputVals) {
 export function prettyPhone(phone) {
     return phone ? phone.match(/.{3}/g).join(' ') : ""
 }
+
+// vrati value, pokud je value undefined tak vrati prazdny string
+function getAttrSafe(val) {
+    return val || ''
+}
+
+export function clientName(client) {
+    return getAttrSafe(client.surname) + " " + getAttrSafe(client.name)
+}
+
+export function courseDuration(duration) {
+    return "Trvání: " + duration + " min."
+}

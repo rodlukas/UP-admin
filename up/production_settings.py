@@ -2,6 +2,9 @@ from .settings import *
 
 # pro rucni spusteni produkcni verze nastavit True
 MANUAL_PRODUCTION = False
+# pro funkcni testy na Travisu
+if os.getenv('TRAVIS'):
+    MANUAL_PRODUCTION = True
 
 ALLOWED_HOSTS = [
     'uspesnyprvnacek.herokuapp.com',
@@ -79,5 +82,5 @@ X_FRAME_OPTIONS = 'DENY'
 
 if MANUAL_PRODUCTION:
     DEBUG = False
-    ALLOWED_HOSTS += ['localhost']
+    ALLOWED_HOSTS.append('localhost')
     SECURE_SSL_REDIRECT = False

@@ -7,9 +7,9 @@ import GroupService from "../api/services/group"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import ClientName from "../components/ClientName"
 import {TEXTS} from "../global/constants"
 import {alertRequired} from "../global/utils"
+import {clientName} from "../global/utils"
 
 export default class FormGroups extends Component {
     constructor(props) {
@@ -97,7 +97,7 @@ export default class FormGroups extends Component {
     render() {
         const {id, name, clients, memberships, courses, course} = this.state
         return (
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.onSubmit} data-qa="form_group">
                 <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny: {name}</ModalHeader>
                 <ModalBody>
                     <FormGroup row>
@@ -105,7 +105,8 @@ export default class FormGroups extends Component {
                             Název
                         </Label>
                         <Col sm={10}>
-                            <Input type="text" id="name" value={name} onChange={this.onChange} autoFocus required/>
+                            <Input type="text" id="name" value={name} onChange={this.onChange} autoFocus
+                                   data-qa="group_field_name" required/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -133,7 +134,7 @@ export default class FormGroups extends Component {
                             <Select
                                 inputId="memberships"
                                 value={memberships}
-                                getOptionLabel={option => <ClientName client={option}/>}
+                                getOptionLabel={option => clientName(option)}
                                 getOptionValue={option => option.id}
                                 isMulti
                                 closeMenuOnSelect={false}
@@ -157,6 +158,7 @@ export default class FormGroups extends Component {
                                     onClick={() => {
                                         if (window.confirm('Opravdu chcete smazat skupinu ' + name + '?'))
                                             this.delete(id)}}
+                                    data-qa="button_delete_group"
                                 />
                             </Alert>
                         </Col>

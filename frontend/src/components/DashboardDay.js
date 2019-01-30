@@ -8,6 +8,7 @@ import GroupName from "./GroupName"
 import CourseName from "./CourseName"
 import Attendances from "./Attendances"
 import "./DashboardDay.css"
+import {courseDuration} from "../global/utils"
 
 export default class DashboardDay extends Component {
     state = {
@@ -45,7 +46,9 @@ export default class DashboardDay extends Component {
             return (
                 <ListGroupItem className={className}>
                     <h4>
-                        {prettyTime(new Date(lecture.start))}
+                        <span title={courseDuration(lecture.duration)}>
+                            {prettyTime(new Date(lecture.start))}
+                        </span>
                         {' '}
                         <CourseName course={lecture.course}/>
                         {' '}

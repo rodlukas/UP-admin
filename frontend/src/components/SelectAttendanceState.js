@@ -20,7 +20,7 @@ export default class SelectAttendanceState extends Component {
         const {value} = this.state
         return (
             <CustomInput type="select" bsSize="sm" onChange={this.onChange} id={"select" + this.props.attendanceId}
-                         value={value}>
+                         value={value} data-qa="lecture_select_attendance_attendancestate">
                 <AttendanceStateConsumer>
                     {({attendancestates}) =>
                         attendancestates.map(attendancestate =>
