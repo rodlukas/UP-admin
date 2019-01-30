@@ -5,7 +5,7 @@
  lépe se ukazuje (závisí na načtení všech prvků aktuálního zobrazení) např. v nastavení,
  kartě klienta, formuláři pro lekce (v nastavení se např. čeká i na načtení příslušných stavů účasti z kontextu)
 * **drobné úpravy UI:**
-    * název tlačítka Přidat stav -> Přidat stav účasti
+    * název tlačítka *Přidat stav* → *Přidat stav účasti*
     * přehlednější seznam zájemců o kurzy
     * tel. čísla už se nerozdělují na více řádků
     * další drobná vylepšení a úpravy UI
