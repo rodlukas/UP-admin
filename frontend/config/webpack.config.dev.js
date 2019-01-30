@@ -14,8 +14,23 @@ const paths = require('./paths');
 const BundleTracker = require('webpack-bundle-tracker'); // dodano
 
 // je potreba dynamicky menit adresu vzhledem k aktualni pridelene adrese zarizeni
-const networkInterfaces = require('os').networkInterfaces(); // dodano
-const curLocalIp = 'Ethernet' in networkInterfaces ? networkInterfaces['Ethernet'][1]['address'] : networkInterfaces['Wi-Fi'][1]['address']
+function getIPAddress() {
+  let interfaces = require('os').networkInterfaces()
+  for (let devName in interfaces) {
+    console.log(devName)
+    if (devName !== 'Wi-Fi' && devName !== 'Ethernet')
+      continue
+    let iface = interfaces[devName]
+    for (let i = 0; i < iface.length; i++) {
+      let alias = iface[i]
+      if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+        return alias.address
+    }
+  }
+  return "localhost"
+}
+
+const curLocalIp = getIPAddress()
 const url = 'http://' + curLocalIp + ':3000'
 const urlWithSlash = url + '/'
 const chalk = require('chalk');
