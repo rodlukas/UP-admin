@@ -31,5 +31,5 @@
     * **CI/CD:**
         * mazání nepotřebných souborů před nasazením
         * používá se *PostgreSQL 10*
-        * lepší konfigurace webpack serveru - už se správně zvolí IP adresa na lokální síti a nezávisí např. na 
-         virtuálním adaptéru pro Virtualbox
+    * lepší konfigurace webpack serveru - už se správně zvolí IP adresa na lokální síti a nezávisí např. na 
+     virtuálním adaptéru pro Virtualbox
