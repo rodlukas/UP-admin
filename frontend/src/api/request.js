@@ -99,18 +99,19 @@ class ErrorMessage extends Component {
                     // nic nedelej
                 }
             }
+
+            // pokud je logovano do Sentry, pridej o tom na konec zpravy info
+            if ("x-sentry-id" in this.errorResponse.headers)
+                errMsg =
+                    <Fragment>
+                        {errMsg}
+                        <hr/>
+                        Chyba byla zaznamenána v systému ({this.errorResponse.headers["x-sentry-id"]}).
+                    </Fragment>
         } else {
             // stalo se neco jineho pri priprave requestu
             errMsg = this.props.error.message
         }
-        // pokud je logovano do Sentry, pridej o tom na konec zpravy info
-        if("x-sentry-id" in this.errorResponse.headers)
-            errMsg =
-                <Fragment>
-                    {errMsg}
-                    <hr/>
-                    Chyba byla zaznamenána v systému ({this.errorResponse.headers["x-sentry-id"]}).
-                </Fragment>
         this.setState({errMsg: errMsg})
     }
 
