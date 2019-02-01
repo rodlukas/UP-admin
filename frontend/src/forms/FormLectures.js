@@ -102,6 +102,8 @@ class FormLectures extends Component {
     // zaridi, ze se nastavi disabled checkbox Zruseno pokud jsou vsichni omluveni a pripadne zpet vrati puvodni hodnotu
     checkDisabledCanceled = () => {
         const client_cnt = Object.keys(this.state.at_state).length
+        if (client_cnt === 0)
+            return
         let excused_cnt = 0
         const excused_id = this.getExcusedStateIndex()
         Object.keys(this.state.at_state).forEach(elem => {
@@ -440,6 +442,10 @@ class FormLectures extends Component {
                                     </Col>
                                 </FormGroup>
                             </div>)}
+                        {!Boolean(this.members.length) &&
+                        <p className="text-muted text-center">
+                            Žádní účastníci
+                        </p>}
                         {this.IS_LECTURE &&
                         <FormGroup row className="border-top pt-3 align-items-center">
                             <Label sm={3} className="text-muted">

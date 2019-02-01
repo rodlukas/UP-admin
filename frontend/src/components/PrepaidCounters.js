@@ -57,6 +57,10 @@ export default class PrepaidCounters extends Component {
                             </ListGroupItem>
                         </ListGroup>
                     </Col>)}
+                {!Boolean(this.props.memberships.length) &&
+                <p className="text-muted text-center">
+                    Žádní účastníci
+                </p>}
                 </Row>
             </Container>
         )

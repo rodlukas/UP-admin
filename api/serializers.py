@@ -15,7 +15,8 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = '__all__'
 
-    def validate_phone(self, phone):
+    @staticmethod
+    def validate_phone(phone):
         if phone and (not re.match(r"[0-9\s]+$", phone) or sum(c.isdigit() for c in phone) is not 9):
             raise serializers.ValidationError("Telefonní číslo musí obsahovat 9 číslic")
         return phone
@@ -76,7 +77,8 @@ class GroupSerializer(serializers.ModelSerializer):
                     Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
-    def validate_course_id(self, course):
+    @staticmethod
+    def validate_course_id(course):
         return serializers_helpers.validate_course_is_visible(course)
 
 
@@ -105,7 +107,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def validate_course_id(self, course):
+    @staticmethod
+    def validate_course_id(course):
         return serializers_helpers.validate_course_is_visible(course)
 
 
@@ -128,19 +131,10 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         exclude = 'lecture',  # ochrana proti cykleni
 
-    # zaridi, ze lekce bude zrusena pokud jsou vsichni omluveni
-    @staticmethod
-    def should_be_canceled(attendances):
-        client_cnt = len(attendances)
-        excused_cnt = 0
-        for attendance in attendances:
-            if attendance.attendancestate.excused:
-                excused_cnt += 1
-        return client_cnt == excused_cnt
-
     def update(self, instance, validated_data):
         prev_attendancestate = instance.attendancestate
         prev_canceled = instance.lecture.canceled
+        # uprava ucasti
         instance.client = Client.objects.get(pk=validated_data.get('client', instance.client).pk)
         instance.lecture = Lecture.objects.get(pk=validated_data.get('lecture', instance.lecture).pk)
         instance.attendancestate = AttendanceState.objects.get(
@@ -149,38 +143,15 @@ class AttendanceSerializer(serializers.ModelSerializer):
         instance.note = validated_data.get('note', instance.note)
         instance.save()
         # proved korekce poctu predplacenych lekci
-        # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
-        # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
-        if (instance.attendancestate.excused and not prev_attendancestate.excused and instance.paid) \
-                or (not prev_canceled and instance.lecture.canceled
-                    and instance.attendancestate.default and instance.paid):
-            if instance.lecture.group is not None:
-                # najdi clenstvi nalezici klientovi v teto skupine
-                try:
-                    membership = instance.lecture.group.memberships.get(client=instance.client)
-                except ObjectDoesNotExist:
-                    # pokud uz klient neni clenem skupiny, nic nedelej
-                    pass
-                else:
-                    membership.prepaid_cnt = membership.prepaid_cnt + 1
-                    membership.save()
-            else:
-                prepaid_lecture = Lecture.objects.create(course=instance.lecture.course, duration="30", canceled=False)
-                Attendance.objects.create(paid=True, client=instance.client, lecture=prepaid_lecture,
-                                          attendancestate=AttendanceState.objects.get(default=True),
-                                          note=f"Náhrada lekce ({serializers_helpers.date_str(instance.lecture.start)})")
+        serializers_helpers.lecture_corrections(instance.lecture, instance, prev_canceled, prev_attendancestate)
         # nastav lekci jako zrusenou pokud nikdo nema prijit
-        if not instance.lecture.canceled:
-            instance.lecture.canceled = self.should_be_canceled(instance.lecture.attendances.all())
-            instance.lecture.save()
+        serializers_helpers.lecture_cancellability(instance.lecture)
         return instance
 
     def validate(self, data):
         # u predplacene lekce nelze menit parametry platby
         if self.instance and self.instance.lecture.start is None:
-            if 'paid' in data and not data['paid']:
-                raise serializers.ValidationError(
-                    {api_settings.NON_FIELD_ERRORS_KEY: "U předplacené lekce nelze měnit parametry platby"})
+            serializers_helpers.validate_prepaid_non_changable_paid_state(data)
         return data
 
     @staticmethod
@@ -238,17 +209,6 @@ class LectureSerializer(serializers.ModelSerializer):
                                             attendancestate=attendancestate_default_pk)
         return cnt.count() + 1  # +1 aby prvni kurz nebyl jako 0.
 
-    # zaridi, ze lekce bude zrusena pokud jsou vsichni omluveni
-    # (z frontendu by jiz melo prijit pripravene, ale pro konzistenci je kontrola radeji i zde)
-    @staticmethod
-    def should_be_canceled(attendances_data):
-        client_cnt = len(attendances_data)
-        excused_cnt = 0
-        for attendance in attendances_data:
-            if attendance.get('attendancestate').excused:
-                excused_cnt += 1
-        return client_cnt == excused_cnt
-
     def create(self, validated_data):
         # vytvoreni instance lekce
         attendances_data = validated_data.pop('attendances')
@@ -264,7 +224,7 @@ class LectureSerializer(serializers.ModelSerializer):
         course = Course.objects.get(pk=course_pk_obtain)
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not validated_data['canceled']:
-            validated_data['canceled'] = self.should_be_canceled(attendances_data)
+            validated_data['canceled'] = serializers_helpers.should_be_canceled(attendances_data)
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
         # vytvoreni jednotlivych ucasti
         for attendance_data in attendances_data:
@@ -300,6 +260,7 @@ class LectureSerializer(serializers.ModelSerializer):
         else:
             instance.group = None
         instance.save()
+
         if 'attendances' in validated_data:
             # upravy jednotlivych ucasti
             attendances_data = validated_data['attendances']
@@ -314,30 +275,9 @@ class LectureSerializer(serializers.ModelSerializer):
                 attendance.attendancestate = AttendanceState.objects.get(pk=attendance_data['attendancestate'].pk)
                 attendance.save()
                 # proved korekce poctu predplacenych lekci
-                # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
-                # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
-                if (attendance.attendancestate.excused and not prev_attendancestate.excused and attendance.paid) \
-                        or (not prev_canceled and instance.canceled
-                            and attendance.attendancestate.default and attendance.paid):
-                    if instance.group is not None:
-                        # najdi clenstvi nalezici klientovi v teto skupine
-                        try:
-                            membership = instance.group.memberships.get(client=attendance.client)
-                        except ObjectDoesNotExist:
-                            # pokud uz klient neni clenem skupiny, nic nedelej
-                            pass
-                        else:
-                            membership.prepaid_cnt = membership.prepaid_cnt + 1
-                            membership.save()
-                    else:
-                        prepaid_lecture = Lecture.objects.create(course=instance.course, duration="30", canceled=False)
-                        Attendance.objects.create(paid=True, client=attendance.client, lecture=prepaid_lecture,
-                                                  attendancestate=AttendanceState.objects.get(default=True),
-                                                  note=f"Náhrada lekce ({serializers_helpers.date_str(instance.start)})")
+                serializers_helpers.lecture_corrections(instance, attendance, prev_canceled, prev_attendancestate)
             # nastav lekci jako zrusenou pokud nikdo nema prijit
-            if not instance.canceled:
-                instance.canceled = self.should_be_canceled(attendances_data)
-                instance.save()
+            serializers_helpers.lecture_cancellability(instance)
         return instance
 
     def validate(self, data):
@@ -357,10 +297,8 @@ class LectureSerializer(serializers.ModelSerializer):
         # pro nove predplacene lekce proved jednoduchou kontrolu (nelze menit parametry platby)
         if 'start' in data and data['start'] is None:
             attendances = data['attendances'] if ('attendances' in data) else self.instance.attendances
-            for elem in attendances:
-                if not elem['paid']:
-                    raise serializers.ValidationError(
-                        {api_settings.NON_FIELD_ERRORS_KEY: "U předplacené lekce nelze měnit parametry platby"})
+            for attendance in attendances:
+                serializers_helpers.validate_prepaid_non_changable_paid_state(attendance)
             return data
         # pokud se meni duration/start, je potreba znat obe hodnoty, aby sel spocitat casovy konflikt
         if ('start' in data and 'duration' not in data) or ('start' not in data and 'duration' in data):
