@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunSQL('CREATE COLLATION cz (locale = "cs_CZ.UTF-8")'),
+        migrations.RunSQL('CREATE COLLATION cz (locale = "cs_CZ.utf8")'),
         migrations.RunSQL('ALTER TABLE admin_attendancestate ALTER COLUMN name TYPE VARCHAR COLLATE cz;'),
         migrations.RunSQL('ALTER TABLE admin_client ALTER COLUMN name TYPE VARCHAR COLLATE cz;'),
         migrations.RunSQL('ALTER TABLE admin_client ALTER COLUMN surname TYPE VARCHAR COLLATE cz;'),

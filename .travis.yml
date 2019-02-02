@@ -11,6 +11,12 @@ env:
 addons:
   firefox: latest
   postgresql: '10'
+before_install:
+  # pridani CZ pro databazi
+  - sudo apt-get update
+  - sudo apt-get install language-pack-cs
+  - sudo /etc/init.d/postgresql stop
+  - sudo /etc/init.d/postgresql start
 install:
   # nainstaluj geckodriver pro selenium testovani
   - source scripts/install_geckodriver.sh
