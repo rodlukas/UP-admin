@@ -11,3 +11,4 @@
 * barevně odlišené řádky s transakcemi v bankovnictví
 * úprava stavových kódu API pro bankovnictví - už vrací jen 200/500, ostatní chyby jsou zahrnuty v 500 a
  podrobnější informace jsou přiloženy do JSONu rovnou na serveru (tedy na frontendu není žádná logika navíc)
+* oprava náhodně občas nefungujících testů na CI (po každém scénáři je smazána localstorage)

@@ -19,3 +19,8 @@ def after_all(context):
 
 def before_scenario(context, scenario):
     context.user = fixtures.user()
+
+
+def after_scenario(context, step):
+    # odhlaseni - je potreba, jinak testy obcas neprojdou
+    context.browser.execute_script("window.localStorage.clear();")
