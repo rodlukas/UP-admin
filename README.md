@@ -92,3 +92,11 @@
     * https://semaphoreci.com/community/tutorials/setting-up-a-bdd-stack-on-a-django-application
     * https://help.crossbrowsertesting.com/selenium-testing/frameworks/behave/
 * [super tutoriál s příklady na behave](https://jenisys.github.io/behave.example/index.html)
+* v případě problémech při UI testování:
+    * použít [TerminalImageViewer](https://github.com/stefanhaustein/TerminalImageViewer) a snímek získat takto:
+    ```python
+    from random import randint
+    
+    file = randint(0, 100000)
+    context.browser.save_screenshot(f'{file}.png')
+    ```
