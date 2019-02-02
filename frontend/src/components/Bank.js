@@ -151,7 +151,7 @@ export default class Bank extends Component {
                     </div>
                 </ListGroupItem>
                 <ListGroupItem>
-                    <Table responsive>
+                    <Table responsive striped>
                         <thead>
                         <tr>
                             <th>Poznámka</th>
