@@ -6,3 +6,5 @@
     * ve skupině bez členů je místo počítadel předplacených lekcí zobrazeno "Žádní účastníci"
     * lekce bez účastníků se už neoznačují automaticky jako zrušené
     * ve formuláři pro lekci bez účastníků se zobrazuje místo účastí "Žádní účastníci"
+* **oprava řazení napříč aplikací** - řadí se podle české abecedy, tedy např. klienti už jsou konečně ve správném pořadí
+ i vzhledem k diakritice

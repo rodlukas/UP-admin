@@ -29,6 +29,7 @@
         * **staging** → **testing**: `heroku pg:copy uspesnyprvnacek-staging::DATABASE_URL DATABASE_URL --confirm uspesnyprvnacek-testing -a uspesnyprvnacek-testing`
     * **naplánování pravidelné zálohy DB:** `heroku pg:backups:schedule DATABASE_URL --at "03:00 Europe/Prague" -a uspesnyprvnacek`
         * **výpis záloh:** `heroku pg:backups -a uspesnyprvnacek`
+    * CZ řazení - viz [heroku dokumentace](https://help.heroku.com/JSPK1LZU/how-to-change-an-order-result-by-locale-on-heroku-postgres) a příslušný [soubor](/admin/migrations/0037_auto_20190202_0956.py) s migrací
 
 ## Články pro inspiraci
 
