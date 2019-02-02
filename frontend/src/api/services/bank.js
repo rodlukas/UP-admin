@@ -7,7 +7,7 @@ function get() {
     return request({
         url: baseUrl,
         method: API_METHODS.get
-    })
+    }, true, false)
 }
 
 const BankService = {

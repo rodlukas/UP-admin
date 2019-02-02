@@ -120,7 +120,7 @@ class ErrorMessage extends Component {
     }
 }
 
-const request = function (options) {
+const request = function (options, ignore_errors = false, return_data = true) {
     const onSuccess = response => {
         const responseUrl = response.request.responseURL
         console.info('%cÚspěch: ' + responseUrl, 'color: green', response)
@@ -128,19 +128,23 @@ const request = function (options) {
             // responseURL neni definovana v IE, tedy v IE se zobrazi vice notifikaci, ale aspon bude appka fungovat
             if ((responseUrl && !responseUrl.match(API_URLS.Login.url)) || responseUrl === undefined)
                 notify(NOTIFY_TEXT.SUCCESS, toast.TYPE.SUCCESS)
-        return response.data
+        return return_data ? response.data : response
     }
 
     const onError = error => {
-        notify(<ErrorMessage error={error}/>, toast.TYPE.ERROR)
-        if (error.response)
-        {
-            if(error.response.status === 401)
-                history.push(APP_URLS.prihlasit)
-            else if (error.response.status === 404)
-                history.push(APP_URLS.notfound)
+        if (!ignore_errors) {
+            notify(<ErrorMessage error={error}/>, toast.TYPE.ERROR)
+            if (error.response) {
+                if (error.response.status === 401)
+                    history.push(APP_URLS.prihlasit)
+                else if (error.response.status === 404)
+                    history.push(APP_URLS.notfound)
+            }
+            return Promise.reject(error.response || error.message)
+        } else {
+            console.log(error.response)
+            return error.response
         }
-        return Promise.reject(error.response || error.message)
     }
 
     const notify = (message, level) => {

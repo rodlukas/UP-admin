@@ -23,51 +23,30 @@ export default class Bank extends Component {
         IS_LOADING: true,
         REFRESH_DISABLED: true,
         DATA_PROBLEM: false,
-        STATUS_CODE: undefined
-    }
-
-    getApiError = () =>
-    {
-        const general_err_msg = "Data se nepodařilo stáhnout"
-        let detail_err_msg
-        switch (this.state.STATUS_CODE){
-            case 404:
-                detail_err_msg = "špatně zaslaný dotaz"
-                break
-            case 409:
-                detail_err_msg = "překročení intervalu pro dotazování"
-                break
-            case 500:
-                detail_err_msg = "neexistující/neplatný token"
-                break
-            default:
-                detail_err_msg = "neznámá chyba"
-                break
-        }
-        return general_err_msg + " (" + detail_err_msg + " - chyba " + this.state.STATUS_CODE + ")"
+        STATUS_INFO: undefined
     }
 
     getBankData = () =>
         BankService.get()
-            .then(bankData => {
-                if (bankData.status_code)
+            .then(response => {
+                if (response.status !== 200)
                     this.setState({
                         bankData: this.bankDataInit,
                         DATA_PROBLEM: true,
                         IS_LOADING: false,
-                        STATUS_CODE: bankData.status_code
+                        STATUS_INFO: response.data.status_info
                     })
                 else
                     this.setState({
                         bankData: {
-                            info: bankData.accountStatement.info,
-                            transactions: bankData.accountStatement.transactionList.transaction,
-                            fetch_timestamp: bankData.fetch_timestamp
+                            info: response.data.accountStatement.info,
+                            transactions: response.data.accountStatement.transactionList.transaction,
+                            fetch_timestamp: response.data.fetch_timestamp
                         },
                         IS_LOADING: false,
                         REFRESH_DISABLED: true,
                         DATA_PROBLEM: false,
-                        STATUS_CODE: undefined
+                        STATUS_INFO: undefined
                     })
                 // po zadanem poctu sekund povol tlacitko refresh
                 this.timeoutId = setTimeout(() => this.setState({REFRESH_DISABLED: false}), REFRESH_TIMEOUT * 1000)
@@ -87,9 +66,9 @@ export default class Bank extends Component {
     }
 
     render() {
-        const TableInfo = ({text}) =>
+        const TableInfo = ({text, color = "text-muted"}) =>
             <Fragment>
-                <tr className="text-muted text-center">
+                <tr className={color + " text-center"}>
                     <td colSpan="4">{text}</td>
                 </tr>
             </Fragment>
@@ -188,7 +167,7 @@ export default class Bank extends Component {
                                 :
                                 <Transactions/>
                             :
-                            <TableInfo text={this.getApiError()}/>
+                            <TableInfo text={this.state.STATUS_INFO} color="text-danger"/>
                         }
                         </tbody>
                     </Table>

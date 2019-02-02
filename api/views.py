@@ -85,5 +85,5 @@ class LectureViewSet(viewsets.ModelViewSet):
 class BankView(APIView):
     @method_decorator(cache_page(60))
     def get(self, request, format=None):
-        json = Bank.get_bank_data()
-        return JsonResponse(json)
+        status_code, json = Bank.get_bank_data()
+        return JsonResponse(json, status=status_code)
