@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.db.models import Prefetch
+from .paginations import LecturePagination
 
 
 class ClientViewSet(viewsets.ModelViewSet):
@@ -57,6 +58,7 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 
 class LectureViewSet(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
+    # pagination_class = LecturePagination
     filter_backends = OrderingFilter, DjangoFilterBackend,
     ordering_fields = 'start',
     filterset_fields = 'group',
