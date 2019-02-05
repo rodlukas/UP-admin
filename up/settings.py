@@ -14,7 +14,8 @@ env = environ.Env(
     SECRET_KEY=str,
     FIO_API_KEY=str,
     DEBUG=(bool, False),
-    HEROKU=(bool, False)
+    HEROKU=(bool, False),
+    ENVIRONMENT=str
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -24,6 +25,7 @@ CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 600
 FIO_API_KEY = env('FIO_API_KEY')
 TESTING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
+ENVIRONMENT = env('ENVIRONMENT')
 
 # Django konstanty
 DEBUG = env('DEBUG')

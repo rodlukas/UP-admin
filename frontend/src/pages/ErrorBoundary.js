@@ -2,7 +2,7 @@ import React, {Component, Fragment} from "react"
 import Heading from "../components/Heading"
 import {Alert, Container, Row, Col} from "reactstrap"
 import {withRouter} from "react-router-dom"
-import * as Sentry from '@sentry/browser'
+import * as Sentry from "@sentry/browser"
 import CustomButton from "../components/buttons/CustomButton"
 import {Token} from "../auth/AuthContext"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
