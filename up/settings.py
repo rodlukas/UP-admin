@@ -15,7 +15,8 @@ env = environ.Env(
     FIO_API_KEY=str,
     DEBUG=(bool, False),
     HEROKU=(bool, False),
-    ENVIRONMENT=str
+    ENVIRONMENT=str,
+    SENTRY_DSN=str
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -24,6 +25,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 600
 FIO_API_KEY = env('FIO_API_KEY')
+SENTRY_DSN = env('SENTRY_DSN')
 TESTING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
 ENVIRONMENT = env('ENVIRONMENT')
 
