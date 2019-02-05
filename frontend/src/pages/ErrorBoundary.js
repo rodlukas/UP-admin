@@ -31,8 +31,19 @@ class ErrorBoundary extends Component {
         })
     }
 
+    getToken = () => {
+        const token = Token.get()
+        let decodedToken = {
+            email: '',
+            username: ''
+        }
+        if (!!token)
+            decodedToken = Token.decodeToken(token)
+        return decodedToken
+    }
+
     render() {
-        const decodedToken = Token.getDecoded()
+        const decodedToken = this.getToken()
         const HeadingContent = () =>
             "Chyba aplikace"
         if (this.state.hasError) {
