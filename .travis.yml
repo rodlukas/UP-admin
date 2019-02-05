@@ -45,7 +45,6 @@ script:
   - source scripts/release_tasks.sh
 
   # proved testy a spocitej pokryti kodu
-  - yarn test
   - coverage run -a manage.py test
   - coverage run -a manage.py behave --stage=api
   - coverage run -a manage.py behave --stage=ui
