@@ -142,7 +142,6 @@ const request = function (options, ignore_errors = false, return_data = true) {
             }
             return Promise.reject(error.response || error.message)
         } else {
-            console.log(error.response)
             return error.response
         }
     }
