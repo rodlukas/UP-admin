@@ -42,3 +42,4 @@ if MANUAL_PRODUCTION:
     DEBUG = False
     ALLOWED_HOSTS.append('localhost')
     SECURE_SSL_REDIRECT = False
+    os.environ['SENTRY_DSN'] = SENTRY_DSN   # pro JS
