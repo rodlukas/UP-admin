@@ -13,11 +13,11 @@ djangorestframework-jwt = "==1.11.0"
 gunicorn = "==19.9.0"
 "psycopg2" = "==2.7.7"
 pyjwt = "==1.7.1"
-raven = "==6.10.0"
 requests = "==2.21.0"
 whitenoise = "==4.1.2"
 django-debug-toolbar = "==1.11"
 django-debug-toolbar-request-history = "==0.0.9"
+sentry-sdk = "==0.7.0"
 
 [dev-packages]
 behave-django = "==1.1.0"

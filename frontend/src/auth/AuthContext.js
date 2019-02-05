@@ -40,7 +40,7 @@ class AuthProvider extends Component {
 
     isTokenExpired = (token, refreshExpiringToken) => {
         try {
-            let decodedToken = decode(token)
+            let decodedToken = Token.getDecoded()
             if (refreshExpiringToken) {
                 const dif = decodedToken.exp - AuthProvider.getCurrentDate()
                 Token.logToConsole(token, decodedToken, dif)
@@ -120,6 +120,10 @@ class Token {
 
     static get() {
         return localStorage.getItem(AUTH_STORAGE_KEY)
+    }
+
+    static getDecoded() {
+        return decode(Token.get())
     }
 
     static logToConsole(token, decoded, dif) {

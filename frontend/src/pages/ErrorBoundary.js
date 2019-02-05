@@ -1,7 +1,12 @@
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import Heading from "../components/Heading"
 import {Alert, Container, Row, Col} from "reactstrap"
 import {withRouter} from "react-router-dom"
+import * as Sentry from '@sentry/browser'
+import CustomButton from "../components/buttons/CustomButton"
+import {Token} from "../auth/AuthContext"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faPenNib} from "@fortawesome/pro-solid-svg-icons"
 
 class ErrorBoundary extends Component {
     constructor(props) {
@@ -18,14 +23,16 @@ class ErrorBoundary extends Component {
         })
     }
 
-    componentDidCatch(error, info) {
+    componentDidCatch(error, errorInfo) {
         this.setState({
             hasError: true,
             error: error,
-            errorInfo: info})
+            errorInfo: errorInfo
+        })
     }
 
     render() {
+        const decodedToken = Token.getDecoded()
         const HeadingContent = () =>
             "Chyba aplikace"
         if (this.state.hasError) {
@@ -35,13 +42,31 @@ class ErrorBoundary extends Component {
                     <p>
                         Nastala neočekávaná chyba v aplikaci. Zkuste tuto stránku načíst znovu.
                     </p>
-                    <Container>
-                        <Row>
-                            <Col>
-                                <Alert color="danger" className="text-left" style={{whiteSpace: 'pre-wrap'}}>
-                                    {this.state.error && this.state.error.toString()}
-                                    <br/>
-                                    {this.state.errorInfo && this.state.errorInfo.componentStack}
+                    <CustomButton onClick={() => Sentry.showReportDialog(
+                        {
+                            title: "Došlo k chybě v aplikaci",
+                            user: {
+                                'email': decodedToken.email,
+                                'name': decodedToken.username
+                            }
+                        })} content={
+                        <Fragment>
+                            Odeslat zpětnou vazbu <FontAwesomeIcon icon={faPenNib} transform="right-2"/>
+                        </Fragment>
+                    }/>
+                    <Container className="mt-3">
+                        <Row className="justify-content-center">
+                            <Col className="col-auto">
+                                <Alert color="danger">
+                                    <h4 className="alert-heading">Popis chyby</h4>
+                                    <details className="text-left" style={{whiteSpace: 'pre'}}>
+                                        <summary className="font-weight-bold">
+                                            {this.state.error && this.state.error.toString()}
+                                        </summary>
+                                        <small>
+                                            {this.state.errorInfo && this.state.errorInfo.componentStack}
+                                        </small>
+                                    </details>
                                 </Alert>
                             </Col>
                         </Row>

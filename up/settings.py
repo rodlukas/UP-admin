@@ -1,8 +1,8 @@
 import os
 import datetime
-import raven
 import environ
 import sys
+import sentry_sdk
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'django_filters',
-    'raven.contrib.django.raven_compat',
     'debug_toolbar',
 ]
 if not HEROKU:
@@ -74,8 +73,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',  # odeslani Sentry ID v HTTP header
-    'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',  # logovani 404 do Sentry
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
