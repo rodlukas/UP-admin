@@ -26,7 +26,7 @@ CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 600
 FIO_API_KEY = env('FIO_API_KEY')
 SENTRY_DSN = env('SENTRY_DSN')
-TESTING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
+TESTS_RUNNING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
 ENVIRONMENT = env('ENVIRONMENT')
 
 # Django konstanty
@@ -117,7 +117,7 @@ DATABASES = {
     'default': env.db()
 }
 # v testech zpusobuje problemy, (neuzavrou se hned spojeni)
-if not TESTING:
+if not TESTS_RUNNING:
     DATABASES['default']['CONN_MAX_AGE'] = CONST_DB_CON_AGE
 
 # Password validation
