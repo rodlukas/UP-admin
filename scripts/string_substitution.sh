@@ -2,7 +2,7 @@
 
 # funkce pro nahrazeni retezcu (arg1: $1) retezcem (arg2: $2)
 substitute() {
-    git grep -l "$1" | xargs sed -i "s/$1/$2/g"
+    git grep -l "$1" | xargs sed -i "s|$1|$2|g"
     echo "nahrazeni \"$1\" hodnotou \"$2\" probehlo uspesne"
 }
 
@@ -10,6 +10,7 @@ substitute() {
 GIT_VERSION_STRING='GIT_VERSION'
 GIT_RELEASE_STRING='GIT_RELEASE'
 GIT_DATETIME_STRING='GIT_DATETIME'
+SENTRY_DSN_STRING='SENTRY_DSN'
 
 # nastaveni novych hodnot pro nahrazovane retezce
 VERSION=$(git rev-parse --short HEAD)
@@ -22,5 +23,6 @@ cd frontend
 substitute "$GIT_VERSION_STRING" "$VERSION"
 substitute "$GIT_RELEASE_STRING" "$RELEASE"
 substitute "$GIT_DATETIME_STRING" "$DATETIME"
+substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
 
 cd ..

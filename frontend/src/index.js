@@ -8,9 +8,11 @@ import {AuthProvider} from "./auth/AuthContext"
 import * as Sentry from "@sentry/browser"
 import {getEnvName} from "./global/funcEnvironments"
 
-Sentry.init({
-    environment: getEnvName()
-})
+if (process.env.NODE_ENV === 'production')
+    Sentry.init({
+        dsn: "SENTRY_DSN",
+        environment: getEnvName()
+    })
 
 const App = () =>
     <AuthProvider>
