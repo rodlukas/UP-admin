@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from "react"
-import {UncontrolledTooltip, Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput,
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput,
     InputGroup, InputGroupAddon} from "reactstrap"
 import {toISODate, toISOTime, prettyDateWithLongDayYear} from "../global/funcDateTime"
 import LectureService from "../api/services/lecture"
@@ -7,7 +7,7 @@ import CourseService from "../api/services/course"
 import ClientName from "../components/ClientName"
 import "./FormLectures.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faCalendarAlt, faClock, faHourglass, faClipboardList, faInfoCircle} from "@fortawesome/pro-solid-svg-icons"
+import {faCalendarAlt, faClock, faHourglass, faClipboardList} from "@fortawesome/pro-solid-svg-icons"
 import GroupName from "../components/GroupName"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
