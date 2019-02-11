@@ -6,40 +6,45 @@ Feature: Operations with groups
 
   @add @groups
   Scenario Outline: Add valid group
-    When user adds new group "<name>" for course "<course>" with clients "<member_full_name1>" and "<member_full_name2>"
+    When user adds new group "<name>" for course "<course>" with activity "<active>" and clients "<member_full_name1>" and "<member_full_name2>"
     Then the group is added
 
     Examples: Groups
-      | name      | course       | member_full_name1 | member_full_name2 |
-      | Slabika 3 | Kurz Slabika |                   |                   |
-      | Slabika 3 | Kurz Slabika | Rod Lukáš         | Uhlíř Jaroslav    |
+      | name      | course       | active | member_full_name1 | member_full_name2 |
+      | Slabika 3 | Kurz Slabika | True   |                   |                   |
+      | Slabika 3 | Kurz Slabika | True   | Rod Lukáš         | Uhlíř Jaroslav    |
+      | Slabika 3 | Kurz Slabika | False  | Rod Lukáš         | Uhlíř Jaroslav    |
 
   @add @groups
   Scenario Outline: Add invalid group
-    When user adds new group "<name>" for course "<course>" with clients "<member_full_name1>" and "<member_full_name2>"
+    When user adds new group "<name>" for course "<course>" with activity "<active>" and clients "<member_full_name1>" and "<member_full_name2>"
     Then the group is not added
 
     Examples: Groups
-      | name      | course           | member_full_name1 | member_full_name2 |
+      | name      | course           | active | member_full_name1 | member_full_name2 |
       # chybi nazev skupiny
-      |           | Kurz Slabika     |                   |                   |
+      |           | Kurz Slabika     | True   |                   |                   |
       # chybi kurz
-      | Slabika 3 |                  |                   |                   |
+      | Slabika 3 |                  | True   |                   |                   |
       # neexistujici kurz
-      | Slabika 3 | blabla           |                   |                   |
+      | Slabika 3 | blabla           | True   |                   |                   |
       # skryty kurz
-      | Slabika 3 | Máme doma leváka |                   |                   |
+      | Slabika 3 | Máme doma leváka | True   |                   |                   |
       # duplicitni nazev skupiny
-      | Slabika 1 | Máme doma leváka |                   |                   |
+      | Slabika 1 | Kurz Slabika     | True   |                   |                   |
+      # neaktivni klient
+      | Slabika 3 | Kurz Slabika     | True   | Neaktivní Pavel   |                   |
+      # neaktivni i aktivni klient
+      | Slabika 3 | Kurz Slabika     | True   | Neaktivní Pavel   | Rod Lukáš         |
 
   @edit @groups
   Scenario: Edit group that has members
-    When user updates the data of group "Slabika 1" to name "Slabika 3", course "Předškolák s ADHD" and clients to "Rod Lukáš", "Uhlíř Jaroslav" and "Rodová Petra"
+    When user updates the data of group "Slabika 1" to name "Slabika 3", course "Předškolák s ADHD", activity "False" and clients to "Rod Lukáš", "Uhlíř Jaroslav" and "Rodová Petra"
     Then the group is updated
 
   @edit @groups
   Scenario: Edit group that has no members
-    When user updates the data of group "Slabika 2" to name "Slabika 3", course "Předškolák s ADHD" and clients to "Rod Lukáš", "Uhlíř Jaroslav" and "Rodová Petra"
+    When user updates the data of group "Slabika 2" to name "Slabika 3", course "Předškolák s ADHD", activity "False" and clients to "Rod Lukáš", "Uhlíř Jaroslav" and "Rodová Petra"
     Then the group is updated
 
   @delete @groups

@@ -6,60 +6,63 @@ Feature: Operations with clients
 
   @add @clients
   Scenario Outline: Add valid clients
-    When user adds new client "<name>" "<surname>" with phone "<phone>", email "<email>" and note "<note>"
+    When user adds new client "<name>" "<surname>" with phone "<phone>", email "<email>", note "<note>" and activity "<active>"
     Then the client is added
 
     Examples: Clients
-      | name      | surname | phone       | email                | note |
-      | Lukáš     | Rod     | 123456789   | bla.bla@centrum22.cz | test |
-      | Drahomíra | Novotná |             |                      |      |
-      | Lukáš     | Rod     | 123 456 789 | bla.bla@centrum22.cz |      |
+      | name      | surname | phone       | email                | note | active |
+      | Lukáš     | Rod     | 123456789   | bla.bla@centrum22.cz | test | True   |
+      | Drahomíra | Novotná |             |                      |      | True   |
+      | Lukáš     | Rod     | 123 456 789 | bla.bla@centrum22.cz |      | True   |
+      | Lukáš     | Rod     | 123 456 789 | bla.bla@centrum22.cz |      | False  |
 
 
   @add @clients
   Scenario Outline: Add invalid clients
-    When user adds new client "<name>" "<surname>" with phone "<phone>", email "<email>" and note "<note>"
+    When user adds new client "<name>" "<surname>" with phone "<phone>", email "<email>", note "<note>" and activity "<active>"
     Then the client is not added
 
     Examples: Clients
-      | name  | surname | phone     | email | note |
+      | name  | surname | phone     | email | note | active |
       # nevalidni telefonni cislo
-      | Lukáš | Rod     | 12345678  |       |      |
-      | Lukáš | Rod     | 12345678s |       |      |
-      | Lukáš | Rod     | sssssssss |       |      |
-      | Lukáš | Rod     | 1         |       |      |
-      | Lukáš | Rod     | ---       |       |      |
+      | Lukáš | Rod     | 12345678  |       |      | True   |
+      | Lukáš | Rod     | 12345678s |       |      | True   |
+      | Lukáš | Rod     | sssssssss |       |      | True   |
+      | Lukáš | Rod     | 1         |       |      | True   |
+      | Lukáš | Rod     | ---       |       |      | True   |
       # nevalidni e-mail
-      | Lukáš | Rod     |           | b@b   |      |
-      | Lukáš | Rod     |           | b     |      |
-      | Lukáš | Rod     |           | @b.cz |      |
-      | Lukáš | Rod     |           | @b    |      |
-      | Lukáš | Rod     |           | s@b.2 |      |
-      | Lukáš | Rod     |           | @     |      |
+      | Lukáš | Rod     |           | b@b   |      | True   |
+      | Lukáš | Rod     |           | b     |      | True   |
+      | Lukáš | Rod     |           | @b.cz |      | True   |
+      | Lukáš | Rod     |           | @b    |      | True   |
+      | Lukáš | Rod     |           | s@b.2 |      | True   |
+      | Lukáš | Rod     |           | @     |      | True   |
       # chybejici jmeno/prijmeni
-      | Lukáš |         |           |       |      |
-      |       | Rod     |           |       |      |
-      |       |         |           |       |      |
+      | Lukáš |         |           |       |      | True   |
+      |       | Rod     |           |       |      | True   |
+      |       |         |           |       |      | True   |
 
-  @edit @clients
+  @edit @clients @test
   Scenario Outline: Edit client
-    When user updates the data of client "<cur_full_name>" to name "<new_name>", surname "<new_surname>", phone "<new_phone>", email "<new_email>" and note "<new_note>"
+    When user updates the data of client "<cur_full_name>" to name "<new_name>", surname "<new_surname>", phone "<new_phone>", email "<new_email>", note "<new_note>" and activity "<new_active>"
     Then the client is updated
 
     Examples: Clients
-      | cur_full_name | new_name | new_surname | new_phone | new_email | new_note |
+      | cur_full_name | new_name | new_surname | new_phone | new_email | new_note | new_active |
       # zadna zmena
-      | Rod Lukáš     | Lukáš    | Rod         | 555555555 | r@r.cz    | test     |
+      | Rod Lukáš     | Lukáš    | Rod         | 555555555 | r@r.cz    | test     | True       |
       # zmena telefonu
-      | Rod Lukáš     | Lukáš    | Rod         | 123456789 | r@r.cz    | test     |
+      | Rod Lukáš     | Lukáš    | Rod         | 123456789 | r@r.cz    | test     | True       |
       # zmena e-mailu
-      | Rod Lukáš     | Lukáš    | Rod         | 555555555 | e@e.cz    | test     |
+      | Rod Lukáš     | Lukáš    | Rod         | 555555555 | e@e.cz    | test     | True       |
       # zmena poznamky
-      | Rod Lukáš     | Lukáš    | Rod         | 555555555 | r@r.cz    | xxxx     |
+      | Rod Lukáš     | Lukáš    | Rod         | 555555555 | r@r.cz    | xxxx     | True       |
       # zmena krestniho jmena
-      | Rod Lukáš     | Pavel    | Rod         | 555555555 | r@r.cz    | test     |
+      | Rod Lukáš     | Pavel    | Rod         | 555555555 | r@r.cz    | test     | True       |
       # zmena prijmeni
-      | Rod Lukáš     | Lukáš    | Rodd        | 555555555 | r@r.cz    | test     |
+      | Rod Lukáš     | Lukáš    | Rodd        | 555555555 | r@r.cz    | test     | True       |
+      # zadna aktivity
+      | Rod Lukáš     | Lukáš    | Rod         | 555555555 | r@r.cz    | test     | False      |
 
 
   @delete @clients

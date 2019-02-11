@@ -10,6 +10,7 @@ import Note from "../components/Note"
 import EditButton from "../components/buttons/EditButton"
 import AddButton from "../components/buttons/AddButton"
 import Heading from "../components/Heading"
+import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -18,7 +19,8 @@ export default class ClientList extends Component {
             clients: [],
             IS_MODAL: false,
             currentClient: {},
-            IS_LOADING: true
+            IS_LOADING: true,
+            active: true
         }
     }
 
@@ -28,14 +30,14 @@ export default class ClientList extends Component {
             IS_MODAL: !this.state.IS_MODAL
         })
 
-    refresh = () => {
-        this.setState({IS_LOADING: true})
-        this.getClients()
+    refresh = (active = this.state.active) => {
+        this.setState({IS_LOADING: true, active: active}, () => this.getClients(active))
     }
 
-    getClients = () =>
-        ClientService.getAll()
-            .then(clients => this.setState({clients, IS_LOADING: false}))
+    getClients = (active = this.state.active) => {
+        const request = active ? ClientService.getActive() : ClientService.getInactive()
+        request.then(clients => this.setState({clients, IS_LOADING: false}))
+    }
 
     componentDidMount() {
         this.getClients()
@@ -68,6 +70,7 @@ export default class ClientList extends Component {
             <Fragment>
                 Klienti
                 <AddButton content="Přidat klienta" onClick={() => this.toggle()} data-qa="button_add_client"/>
+                <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
             </Fragment>
         return (
             <div>

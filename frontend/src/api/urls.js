@@ -9,7 +9,10 @@ export const API_URLS = {
         url: 'attendancestates' + API_DELIM
     },
     Clients: {
-        url: 'clients' + API_DELIM
+        url: 'clients' + API_DELIM,
+        filters: {
+            active: 'active'
+        }
     },
     Lectures: {
         url: 'lectures' + API_DELIM,
@@ -31,7 +34,8 @@ export const API_URLS = {
     Groups: {
         url: 'groups' + API_DELIM,
         filters: {
-            client: 'client'
+            client: 'client',
+            active: 'active'
         }
     },
     Attendances: {

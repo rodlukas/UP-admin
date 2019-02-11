@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import Select from "react-select"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert} from "reactstrap"
+import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
 import CourseService from "../api/services/course"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
@@ -10,15 +10,17 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import {TEXTS} from "../global/constants"
 import {alertRequired} from "../global/utils"
 import {clientName} from "../global/utils"
+import Tooltip from "../components/Tooltip"
 
 export default class FormGroups extends Component {
     constructor(props) {
         super(props)
         this.isGroup = Boolean(Object.keys(props.group).length)
-        const {name, memberships, id, course} = props.group
+        const {name, memberships, id, course, active} = props.group
         this.state = {
             id: id || '',
             name: name || '',
+            active: this.isGroup ? active : true,
             course: this.isGroup ? course : null,
             memberships: this.isGroup ? this.getMembers(memberships) : [],
             clients: [],
@@ -43,7 +45,7 @@ export default class FormGroups extends Component {
     }
 
     getDataCourses = () =>
-        CourseService.getAll()
+        CourseService.getVisible()
             .then(courses => this.setState({courses}))
 
     onSelectChange = (obj, name) =>
@@ -57,10 +59,10 @@ export default class FormGroups extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        const {id, name, memberships, course} = this.state
+        const {id, name, memberships, course, active} = this.state
         if(alertRequired("kurz", course))
             return
-        const data = {id, name, memberships: this.prepareMembersForSubmit(memberships), course_id: course.id}
+        const data = {id, name, memberships: this.prepareMembersForSubmit(memberships), course_id: course.id, active}
         let request
         if (this.isGroup)
             request = GroupService.update(data)
@@ -86,7 +88,7 @@ export default class FormGroups extends Component {
             })
 
     getClients = () =>
-        ClientService.getAll()
+        ClientService.getActive()
             .then(clients => this.setState({clients}))
 
     componentDidMount() {
@@ -95,7 +97,7 @@ export default class FormGroups extends Component {
     }
 
     render() {
-        const {id, name, clients, memberships, courses, course} = this.state
+        const {id, name, clients, memberships, courses, course, active} = this.state
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_group">
                 <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny: {name}</ModalHeader>
@@ -143,6 +145,19 @@ export default class FormGroups extends Component {
                                 placeholder={"Vyberte členy skupiny..."}
                                 isClearable={false}
                                 noOptionsMessage={() => TEXTS.NO_RESULTS}/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row className="align-items-center">
+                        <Label for="active" sm={2} data-qa="group_label_active">
+                            Aktivní
+                        </Label>
+                        <Col sm={10}>
+                            <CustomInput type="checkbox" id="active" label="Je aktivní" checked={active}
+                                         onChange={this.onChange} data-qa="group_checkbox_active"/>
+                            {' '}
+                            {!active &&
+                            <Tooltip postfix="active"
+                                     text="Neaktivním skupinám nelze vytvořit lekci."/>}
                         </Col>
                     </FormGroup>
                     {this.isGroup &&

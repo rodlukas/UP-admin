@@ -18,6 +18,7 @@ import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
 import {alertRequired} from "../global/utils"
 import Loading from "../components/Loading"
 import {DEFAULT_DURATION} from "../global/constants"
+import Tooltip from "../components/Tooltip"
 
 const GROUP_DURATION = 45
 
@@ -346,14 +347,14 @@ class FormLectures extends Component {
                                 </Label>
                                 {' '}
                                 {canceled_disabled &&
-                                <Fragment>
-                                    <UncontrolledTooltip placement="bottom" target="tooltip_canceled">
-                                        Na tuto lekci nikdo nemá přijít, proto je evidována jako zrušená.
-                                        Parametr zrušení lze upravit jen když má alespoň jeden klient přijít.
-                                    </UncontrolledTooltip>
-                                    <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg"
-                                                     id="tooltip_canceled"/>
-                                </Fragment>}
+                                    <Tooltip postfix="canceled"
+                                             text={
+                                                 <Fragment>
+                                                     Na tuto lekci nikdo nemá přijít, proto je evidována jako zrušená.
+                                                     <br/>
+                                                     Parametr zrušení lze upravit jen když má alespoň jeden klient.
+                                                 </Fragment>}
+                                    />}
                             </Col>
                             <Col sm={4}>
                                 <Select
@@ -420,13 +421,8 @@ class FormLectures extends Component {
                                         </Label>
                                         {' '}
                                         {prepaid &&
-                                        <Fragment>
-                                            <UncontrolledTooltip placement="bottom" target="tooltip_prepaid">
-                                                Předplacená lekce je automaticky zaplacená.
-                                            </UncontrolledTooltip>
-                                            <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg"
-                                                             id="tooltip_prepaid"/>
-                                        </Fragment>}
+                                        <Tooltip postfix="prepaid"
+                                                 text="Předplacená lekce je automaticky zaplacená."/>}
                                     </Col>
                                     <Col sm={6}>
                                         <InputGroup>

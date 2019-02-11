@@ -16,6 +16,7 @@ from .paginations import LecturePagination
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+    filterset_fields = 'active',
 
 
 class AttendanceViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
@@ -35,6 +36,7 @@ class AttendanceStateViewSet(viewsets.ModelViewSet):
 
 class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
+    filterset_fields = 'active',
 
     def get_queryset(self):
         qs = Group.objects.select_related('course')\

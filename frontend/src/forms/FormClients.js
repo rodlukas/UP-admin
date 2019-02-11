@@ -1,24 +1,39 @@
 import React, {Component} from "react"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, InputGroupAddon, InputGroup} from "reactstrap"
+import {
+    Col,
+    Form,
+    FormGroup,
+    Label,
+    Input,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    Alert,
+    InputGroupAddon,
+    InputGroup,
+    CustomInput
+} from "reactstrap"
 import ClientService from "../api/services/client"
 import ClientName from "../components/ClientName"
 import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import {prettyPhone} from "../global/utils"
+import Tooltip from "../components/Tooltip"
 
 export default class FormClients extends Component {
     constructor(props) {
         super(props)
         this.isClient = Boolean(Object.keys(props.client).length)
-        const {id, name, surname, email, phone, note} = props.client
+        const {id, name, surname, email, phone, note, active} = props.client
         this.state = {
             id: id || '',
             name: name || '',
             surname: surname || '',
             email: email || '',
             phone: prettyPhone(phone) || '',
-            note: note || ''
+            note: note || '',
+            active: this.isClient ? active : true
         }
     }
 
@@ -33,8 +48,8 @@ export default class FormClients extends Component {
 
     onSubmit = e => {
         e.preventDefault()
-        const {id, name, surname, email, phone, note} = this.state
-        const data = {id, name, surname, email, phone, note}
+        const {id, name, surname, email, phone, note, active} = this.state
+        const data = {id, name, surname, email, phone, note, active}
         let request
         if (this.isClient)
             request = ClientService.update(data)
@@ -60,7 +75,7 @@ export default class FormClients extends Component {
             })
 
     render() {
-        const {id, name, surname, email, phone, note} = this.state
+        const {id, name, surname, email, phone, note, active} = this.state
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_client">
                 <ModalHeader toggle={this.close}>
@@ -119,6 +134,19 @@ export default class FormClients extends Component {
                         <Col sm={10}>
                             <Input type="textarea" id="note" value={note} onChange={this.onChange}
                                    data-qa="client_field_note"/>
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row className="align-items-center">
+                        <Label for="active" sm={2} data-qa="client_label_active">
+                            Aktivní
+                        </Label>
+                        <Col sm={10}>
+                            <CustomInput type="checkbox" id="active" label="Je aktivní" checked={active}
+                                         onChange={this.onChange} data-qa="client_checkbox_active"/>
+                            {' '}
+                            {!active &&
+                            <Tooltip postfix="active"
+                                     text="Neaktivním klientům nelze vytvořit lekci (ani skupinovou)."/>}
                         </Col>
                     </FormGroup>
                     {this.isClient &&

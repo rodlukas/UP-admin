@@ -61,6 +61,7 @@ class GroupSerializer(serializers.ModelSerializer):
         # vytvoreni instance skupiny
         instance.name = validated_data.get('name', instance.name)
         instance.course = Course.objects.get(pk=validated_data.get('course', instance.course).pk)
+        instance.active = validated_data.get('active', instance.active)
         instance.save()
         # upravy clenstvi
         if 'memberships' in validated_data:
@@ -76,6 +77,12 @@ class GroupSerializer(serializers.ModelSerializer):
                 if client.id not in current_members_ids:
                     Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
+
+    @staticmethod
+    def validate_memberships(memberships):
+        for membership in memberships:
+            serializers_helpers.validate_client_is_active(membership['client'])
+        return memberships
 
     @staticmethod
     def validate_course_id(course):
@@ -279,6 +286,19 @@ class LectureSerializer(serializers.ModelSerializer):
             # nastav lekci jako zrusenou pokud nikdo nema prijit
             serializers_helpers.lecture_cancellability(instance)
         return instance
+
+    @staticmethod
+    def validate_attendances(attendances):
+        for attendance in attendances:
+            serializers_helpers.validate_client_is_active(attendance['client'])
+        return attendances
+
+    @staticmethod
+    def validate_group_id(group):
+        # pokud je zaslana skupina, zvaliduj ji
+        if group:
+            serializers_helpers.validate_group_is_active(group)
+        return group
 
     def validate(self, data):
         # validace kurzu - pro skupiny nepovinny, pro jednotlivce povinny

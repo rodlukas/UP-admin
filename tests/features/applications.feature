@@ -14,6 +14,8 @@ Feature: Operations with applications
       | Rod Lukáš       | Předškolák s ADHD |                    |
       | Rodová Petra    | Kurz Slabika      | testovací poznámka |
       | Jirušková Aneta | xyz               | 55-*/%ˇ:_(4$       |
+      # neaktivni klient (musi projit)
+      | Rod Lukáš       | Předškolák s ADHD |                    |
 
   @add @applications
   Scenario Outline: Add invalid application
@@ -21,19 +23,19 @@ Feature: Operations with applications
     Then the application is not added
 
     Examples: Applications
-      | full_name | course           | note               |
+      | full_name | course            | note               |
       # chybi jmeno klienta
-      |           | Kurz Slabika     |                    |
+      |           | Kurz Slabika      |                    |
       # chybi kurz
-      | Rod Lukáš |                  | testovací poznámka |
+      | Rod Lukáš |                   | testovací poznámka |
       # neexistujici kurz
-      | Rod Lukáš | blabla           | testovací poznámka |
+      | Rod Lukáš | blabla            | testovací poznámka |
       # neexistujici klient
-      | blabla    | Kurz Slabika     |                    |
+      | blabla    | Kurz Slabika      |                    |
       # zajemce o skryty kurz
-      | Rod Lukáš | Máme doma leváka | testovací poznámka |
+      | Rod Lukáš | Máme doma leváka  | testovací poznámka |
       # duplicitni zaznam - klienta se zajmem o dany kurz uz evidujeme
-      | Rod Lukáš | Kurz Slabika     | testovací poznámka |
+      | Rod Lukáš | Kurz Slabika      | testovací poznámka |
 
   @edit @applications
   Scenario: Edit application

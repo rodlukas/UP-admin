@@ -17,6 +17,20 @@ function getAll() {
     })
 }
 
+function getActive() {
+    return request({
+        url: baseUrl + "?" + API_URLS.Groups.filters.active + "=true",
+        method: API_METHODS.get
+    })
+}
+
+function getInactive() {
+    return request({
+        url: baseUrl + "?" + API_URLS.Groups.filters.active + "=false",
+        method: API_METHODS.get
+    })
+}
+
 function getAllFromClient(client) {
     const url = baseUrl + "?" + API_URLS.Groups.filters.client + "=" + client
     return request({
@@ -49,7 +63,7 @@ function create(context) {
 }
 
 const GroupService = {
-    getAll, get, create, update, remove, getAllFromClient
+    getAll, get, getActive, getInactive, create, update, remove, getAllFromClient
 }
 
 export default GroupService

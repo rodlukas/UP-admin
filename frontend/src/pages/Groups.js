@@ -9,13 +9,15 @@ import CourseName from "../components/CourseName"
 import EditButton from "../components/buttons/EditButton"
 import AddButton from "../components/buttons/AddButton"
 import Heading from "../components/Heading"
+import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 
 export default class Groups extends Component {
     state = {
         groups: [],
         IS_MODAL: false,
         currentGroup: {},
-        IS_LOADING: true
+        IS_LOADING: true,
+        active: true
     }
 
     toggle = (group = {}) =>
@@ -24,14 +26,14 @@ export default class Groups extends Component {
             IS_MODAL: !this.state.IS_MODAL
         })
 
-    refresh = () => {
-        this.setState({IS_LOADING: true})
-        this.getGroups()
+    refresh = (active = this.state.active) => {
+        this.setState({IS_LOADING: true, active: active}, () => this.getGroups(active))
     }
 
-    getGroups = () =>
-        GroupService.getAll()
-            .then(groups => this.setState({groups, IS_LOADING: false}))
+    getGroups = (active = this.state.active) => {
+        const request = active ? GroupService.getActive() : GroupService.getInactive()
+        request.then(groups => this.setState({groups, IS_LOADING: false}))
+    }
 
     componentDidMount() {
         this.getGroups()
@@ -61,6 +63,7 @@ export default class Groups extends Component {
             <Fragment>
                 Skupiny
                 <AddButton content="Přidat skupinu" onClick={() => this.toggle()} data-qa="button_add_group"/>
+                <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
             </Fragment>
         return (
             <div>

@@ -14,6 +14,26 @@ def validate_course_is_visible(course):
     return course
 
 
+def validate_client_is_active(client):
+    """
+    overi, ze zaslany klient je aktivni, jinak vyhodi vyjimku
+    """
+    if not client.active:
+        raise serializers.ValidationError(
+            "Zadaný klient není aktivní, pro další akce je potřeba nastavit jej jako aktivního.")
+    return client
+
+
+def validate_group_is_active(group):
+    """
+    overi, ze zaslana skupina je aktivni, jinak vyhodi vyjimku
+    """
+    if not group.active:
+        raise serializers.ValidationError(
+            "Zadaná skupina není aktivní, pro další akce je potřeba nastavit ji jako aktivní.")
+    return group
+
+
 def datetime_zone(datetime):
     # prevod na spravnou TZ
     return timezone.localtime(datetime)

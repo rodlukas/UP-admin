@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MinLengthValidator
 
 
 class AttendanceState(models.Model):
@@ -41,6 +40,7 @@ class Client(models.Model):
     phone = models.TextField(blank=True)
     email = models.EmailField(blank=True)
     note = models.TextField(blank=True)
+    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['surname', 'name']
@@ -69,6 +69,7 @@ class Application(models.Model):
 class Group(models.Model):
     name = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
+    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['name']

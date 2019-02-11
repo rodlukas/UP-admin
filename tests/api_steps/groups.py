@@ -30,7 +30,8 @@ def group_equal_to_context(group, context):
     memberships = parse_memberships(group['memberships'])
     return (group['name'] == context.name and
             group['course']['name'] == context.course.get('name') and
-            set(memberships) == set(context.memberships))
+            set(memberships) == set(context.memberships) and
+            group['active'] == context.active)
 
 
 def find_group_with_id(context, group_id):
@@ -47,14 +48,16 @@ def group_dict(context):
                    for membership in context.memberships]
     return {'name': context.name,
             'course_id': context.course.get('id'),
-            'memberships': memberships}
+            'memberships': memberships,
+            'active': context.active}
 
 
-def load_data_to_context(context, name, course, *memberships):
+def load_data_to_context(context, name, course, active, *memberships):
     load_id_data_to_context(context, name)
     context.course = helpers.find_course_with_name(context.api_client, course)
     # z memberships vyfiltruj prazdne stringy
     context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
+    context.active = common_helpers.to_bool(active)
 
 
 def load_id_data_to_context(context, name):
@@ -124,11 +127,11 @@ def step_impl(context):
 
 
 @when(
-    'user updates the data of group "{cur_name}" to name "{new_name}", course "{new_course}" and clients to "{new_member_full_name1}", "{new_member_full_name2}" and "{new_member_full_name3}"')
-def step_impl(context, cur_name, new_name, new_course, new_member_full_name1, new_member_full_name2,
+    'user updates the data of group "{cur_name}" to name "{new_name}", course "{new_course}", activity "{new_active}" and clients to "{new_member_full_name1}", "{new_member_full_name2}" and "{new_member_full_name3}"')
+def step_impl(context, cur_name, new_name, new_course, new_active, new_member_full_name1, new_member_full_name2,
               new_member_full_name3):
     # nacteni dat skupiny do kontextu
-    load_data_to_context(context, new_name, new_course, new_member_full_name1, new_member_full_name2,
+    load_data_to_context(context, new_name, new_course, new_active, new_member_full_name1, new_member_full_name2,
                          new_member_full_name3)
     # najdi skupinu
     group_to_update = helpers.find_group_with_name(context.api_client, cur_name)
@@ -143,10 +146,10 @@ use_step_matcher("re")
 
 
 @when(
-    'user adds new group "(?P<name>.*)" for course "(?P<course>.*)" with clients "(?P<member_full_name1>.*)" and "(?P<member_full_name2>.*)"')
-def step_impl(context, name, course, member_full_name1, member_full_name2):
+    'user adds new group "(?P<name>.*)" for course "(?P<course>.*)" with activity "(?P<active>.*)" and clients "(?P<member_full_name1>.*)" and "(?P<member_full_name2>.*)"')
+def step_impl(context, name, course, active, member_full_name1, member_full_name2):
     # nacteni dat skupiny do kontextu
-    load_data_to_context(context, name, course, member_full_name1, member_full_name2)
+    load_data_to_context(context, name, course, active, member_full_name1, member_full_name2)
     # uloz puvodni pocet skupin
     save_old_groups_cnt_to_context(context)
     # vlozeni skupiny

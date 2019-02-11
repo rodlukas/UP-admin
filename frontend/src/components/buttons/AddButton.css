@@ -1,7 +1,0 @@
-h1 .AddButton {
-    float: right;
-}
-
-h1 .AddButton + .AddButton {
-    margin-right: 0.3rem
-}

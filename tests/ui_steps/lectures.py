@@ -19,40 +19,24 @@ def lectures_cnt(driver):
     return len(get_lectures(driver))
 
 
-def open_group_card(driver, name):
+def open_group_card(context, name):
     # otevri skupiny z menu
-    helpers.open_groups(driver)
+    helpers.open_groups(context.browser)
     # pockej na nacteni
-    helpers.wait_loading_ends(driver)
-    # najdi skupinu s danym nazvem
-    all_groups = helpers.get_groups(driver)
-    found_group_success = False
-    for group in all_groups:
-        found_name = group.find_element_by_css_selector('[data-qa=group_name]')
-        # srovnej identifikator
-        if found_name.text == name:
-            found_name.click()
-            found_group_success = True
-            break
-    assert found_group_success
+    helpers.wait_loading_ends(context.browser)
+    # najdi skupinu s danym nazvem a otevri jeji kartu
+    found_group = helpers.find_group(context, name, True)
+    return found_group
 
 
-def open_client_card(driver, name):
+def open_client_card(context, full_name):
     # otevri klienty z menu
-    helpers.open_clients(driver)
+    helpers.open_clients(context.browser)
     # pockej na nacteni
-    helpers.wait_loading_ends(driver)
-    # najdi klienta s danym jmenem
-    all_clients = helpers.get_clients(driver)
-    found_client_success = False
-    for client in all_clients:
-        found_full_name = client.find_element_by_css_selector('[data-qa=client_name]')
-        # srovnej identifikator
-        if found_full_name.text == name:
-            found_full_name.click()
-            found_client_success = True
-            break
-    assert found_client_success
+    helpers.wait_loading_ends(context.browser)
+    # najdi klienta s danym jmenem a otevri jeho kartu
+    found_client = helpers.find_client(context, full_name, True)
+    return found_client
 
 
 def get_paid_button(driver):
@@ -295,7 +279,7 @@ def step_impl(context, client, date, time):
     # nacti timestamp lekce do kontextu
     load_id_data_to_context(context, date, time)
     # otevri kartu prislusneho klienta
-    open_client_card(context.browser, client)
+    open_client_card(context, client)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi lekci a klikni u ni na Upravit
@@ -337,7 +321,7 @@ def step_impl(context, date, time, new_date, new_time, new_course, new_duration,
     # nacti data skupiny do kontextu
     load_data_to_context(context, new_course, new_date, new_time, new_duration, new_canceled, new_attendances)
     # otevri kartu prislusneho klienta
-    open_client_card(context.browser, client)
+    open_client_card(context, client)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi lekci a klikni u ni na Upravit
@@ -361,7 +345,7 @@ def step_impl(context, client, date, time, new_paid):
     # nacteni dat lekce do kontextu
     load_id_data_to_context(context, date, time)
     # otevri kartu prislusneho klienta
-    open_client_card(context.browser, client)
+    open_client_card(context, client)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi lekci
@@ -380,7 +364,7 @@ def step_impl(context, client, date, time, new_attendancestate):
     # nacteni dat lekce do kontextu
     load_id_data_to_context(context, date, time)
     # otevri kartu prislusneho klienta
-    open_client_card(context.browser, client)
+    open_client_card(context, client)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi lekci
@@ -407,7 +391,7 @@ def step_impl(context, group, date, time, duration, canceled, client1, attendanc
     # nacti data lekce do kontextu
     load_data_to_context(context, group, date, time, duration, canceled, attendances, is_group=True)
     # otevri kartu prislusne skupiny
-    open_group_card(context.browser, group)
+    open_group_card(context, group)
     # pockej na nacteni a pak klikni na Pridat lekci
     helpers.wait_loading_ends(context.browser)
     button_add_lecture = context.browser.find_element_by_css_selector('[data-qa=button_add_lecture]')
@@ -427,7 +411,7 @@ def step_impl(context, client, course, date, time, duration, canceled, attendanc
     # nacti data lekce do kontextu
     load_data_to_context(context, course, date, time, duration, canceled, attendances)
     # otevri kartu prislusneho klienta
-    open_client_card(context.browser, client)
+    open_client_card(context, client)
     # pockej na nacteni a pak klikni na Pridat lekci
     helpers.wait_loading_ends(context.browser)
     button_add_lecture = context.browser.find_element_by_css_selector('[data-qa=button_add_lecture]')

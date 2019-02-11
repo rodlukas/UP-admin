@@ -17,6 +17,20 @@ function getAll() {
     })
 }
 
+function getActive() {
+    return request({
+        url: baseUrl + "?" + API_URLS.Clients.filters.active + "=true",
+        method: API_METHODS.get
+    })
+}
+
+function getInactive() {
+    return request({
+        url: baseUrl + "?" + API_URLS.Clients.filters.active + "=false",
+        method: API_METHODS.get
+    })
+}
+
 function update(context) {
     return request({
         url: baseUrl + context.id + API_DELIM,
@@ -41,7 +55,7 @@ function create(context) {
 }
 
 const ClientService = {
-    getAll, get, create, update, remove
+    getAll, get, getActive, getInactive, create, update, remove
 }
 
 export default ClientService

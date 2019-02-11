@@ -11,31 +11,11 @@ from tests.ui_steps import login_logout
 
 
 def groups_cnt(driver):
-    return len(helpers.get_groups(driver))
-
-
-def find_group(context, name, validate_context=False):
-    all_groups = helpers.get_groups(context.browser)
-    # najdi skupinu s udaji v parametrech
-    for group in all_groups:
-        found_name = group.find_element_by_css_selector('[data-qa=group_name]').text
-        # srovnej identifikatory
-        if found_name == name:
-            # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-            if validate_context:
-                found_course = group.find_element_by_css_selector('[data-qa=course_name]').text
-                found_memberships_elements = group.find_elements_by_css_selector('[data-qa=client_name]')
-                found_memberships = [element.text for element in found_memberships_elements]
-                if (set(found_memberships) == set(context.memberships) and
-                        found_course == context.course):
-                    return group
-            else:
-                return group
-    return False
+    return len(helpers.get_groups(driver, True) + helpers.get_groups(driver, False))
 
 
 def find_group_with_context(context):
-    return find_group(context, context.name, validate_context=True)
+    return helpers.find_group(context, context.name, validate_context=True)
 
 
 def wait_form_visible(driver):
@@ -50,28 +30,43 @@ def insert_to_form(context):
     name_field = context.browser.find_element_by_css_selector('[data-qa=group_field_name]')
     course_field = context.browser.find_element_by_id('course')
     memberships_field = context.browser.find_element_by_id('memberships')
+    active_checkbox = context.browser.find_element_by_css_selector('[data-qa=group_checkbox_active]')
+    active_label = context.browser.find_element_by_css_selector('[data-qa=group_label_active]')
     # smaz vsechny udaje
     name_field.clear()
     course_field.send_keys(Keys.BACK_SPACE)
+    # v testech jsou max 2 clenove - odstran je
+    memberships_field.send_keys(Keys.BACK_SPACE)
     memberships_field.send_keys(Keys.BACK_SPACE)
     # vloz nove udaje
     name_field.send_keys(context.name)
     helpers.react_select_insert(context.browser, course_field, context.course)
     for membership in context.memberships:
-        helpers.react_select_insert(context.browser, memberships_field, membership)
+        if not helpers.react_select_insert(context.browser, memberships_field, membership):
+            context.react_select_success = False
+    if ((context.active and not active_checkbox.is_selected()) or
+            (not context.active and active_checkbox.is_selected())):
+        active_label.click()
     # vrat posledni element
     return memberships_field
 
 
-def load_data_to_context(context, name, course, *memberships):
+def load_data_to_context(context, name, course, active, *memberships):
     load_id_data_to_context(context, name)
     context.course = course
+    context.active = common_helpers.to_bool(active)
     # z memberships vyfiltruj prazdne stringy
     context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
+    # pro indikaci neuspesneho zadani clenu do react-selectu (clen nebyl ve vyberu)
+    context.react_select_success = True
 
 
 def load_id_data_to_context(context, name):
     context.name = name
+
+
+def wait_switching_available(driver):
+    helpers.wait_switching_available(driver, "form_group")
 
 
 def save_old_groups_cnt_to_context(context):
@@ -80,6 +75,8 @@ def save_old_groups_cnt_to_context(context):
 
 @then('the group is added')
 def step_impl(context):
+    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
+    wait_switching_available(context.browser)
     # pockej na pridani skupiny
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) > context.old_groups_cnt)
@@ -89,6 +86,8 @@ def step_impl(context):
 
 @then('the group is updated')
 def step_impl(context):
+    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
+    wait_switching_available(context.browser)
     # pockej na update skupin
     helpers.wait_loading_cycle(context.browser)
     # ma skupina opravdu nove udaje?
@@ -98,11 +97,13 @@ def step_impl(context):
 
 @then('the group is deleted')
 def step_impl(context):
+    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
+    wait_switching_available(context.browser)
     # pockej na smazani skupiny
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) < context.old_groups_cnt)
     # je skupina opravdu smazana?
-    assert not find_group(context, context.name)
+    assert not helpers.find_group(context, context.name)
 
 
 @when('user deletes the group "{name}"')
@@ -113,13 +114,13 @@ def step_impl(context, name):
     helpers.open_groups(context.browser)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
+    # uloz puvodni pocet skupin
+    save_old_groups_cnt_to_context(context)
     # najdi skupinu a klikni u ni na Upravit
-    group_to_update = find_group(context, context.name)
+    group_to_update = helpers.find_group(context, context.name)
     assert group_to_update
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
-    # uloz puvodni pocet skupin
-    save_old_groups_cnt_to_context(context)
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
     # klikni na smazat
@@ -148,28 +149,35 @@ def step_impl(context):
     else:
         # alert se objevil, takze formular je stale videt
         form_group_visible = True
-    assert form_group_visible
-    assert groups_cnt(context.browser) == context.old_groups_cnt
+    # pokud nedoslo k problemu pri zadavani clenu do react-selectu, vse prover
+    # pokud k problemu doslo, lekce se pridala, ale to neni chyba - prida se bez neexistujicich clenu
+    if context.react_select_success:
+        assert form_group_visible
+        # zavri formular
+        helpers.close_modal(context.browser)
+        # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
+        wait_switching_available(context.browser)
+        assert groups_cnt(context.browser) == context.old_groups_cnt
 
 
 @when(
-    'user updates the data of group "{cur_name}" to name "{new_name}", course "{new_course}" and clients to "{new_member_full_name1}", "{new_member_full_name2}" and "{new_member_full_name3}"')
-def step_impl(context, cur_name, new_name, new_course, new_member_full_name1, new_member_full_name2,
+    'user updates the data of group "{cur_name}" to name "{new_name}", course "{new_course}", activity "{new_active}" and clients to "{new_member_full_name1}", "{new_member_full_name2}" and "{new_member_full_name3}"')
+def step_impl(context, cur_name, new_name, new_course, new_active, new_member_full_name1, new_member_full_name2,
               new_member_full_name3):
     # nacti data skupiny do kontextu
-    load_data_to_context(context, new_name, new_course, new_member_full_name1, new_member_full_name2,
+    load_data_to_context(context, new_name, new_course, new_active, new_member_full_name1, new_member_full_name2,
                          new_member_full_name3)
     # klikni v menu na skupiny
     helpers.open_groups(context.browser)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
+    # uloz puvodni pocet skupin
+    save_old_groups_cnt_to_context(context)
     # najdi skupinu a klikni u ni na Upravit
-    group_to_update = find_group(context, cur_name)
+    group_to_update = helpers.find_group(context, cur_name)
     assert group_to_update
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
-    # uloz puvodni pocet skupin
-    save_old_groups_cnt_to_context(context)
     # vloz vsechny udaje do formulare
     last_field = insert_to_form(context)
     # odesli formular
@@ -180,18 +188,19 @@ use_step_matcher("re")
 
 
 @when(
-    'user adds new group "(?P<name>.*)" for course "(?P<course>.*)" with clients "(?P<member_full_name1>.*)" and "(?P<member_full_name2>.*)"')
-def step_impl(context, name, course, member_full_name1, member_full_name2):
+    'user adds new group "(?P<name>.*)" for course "(?P<course>.*)" with activity "(?P<active>.*)" and clients "(?P<member_full_name1>.*)" and "(?P<member_full_name2>.*)"')
+def step_impl(context, name, course, active, member_full_name1, member_full_name2):
     # nacti data skupiny do kontextu
-    load_data_to_context(context, name, course, member_full_name1, member_full_name2)
+    load_data_to_context(context, name, course, active, member_full_name1, member_full_name2)
     # klikni v menu na skupiny
     helpers.open_groups(context.browser)
-    # pockej na nacteni a pak klikni na Pridat skupinu
+    # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
-    button_add_group = context.browser.find_element_by_css_selector('[data-qa=button_add_group]')
-    button_add_group.click()
     # uloz puvodni pocet skupin
     save_old_groups_cnt_to_context(context)
+    # klikni na Pridat skupinu
+    button_add_group = context.browser.find_element_by_css_selector('[data-qa=button_add_group]')
+    button_add_group.click()
     # vloz vsechny udaje do formulare
     last_field = insert_to_form(context)
     # odesli formular
