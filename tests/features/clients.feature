@@ -42,7 +42,7 @@ Feature: Operations with clients
       |       | Rod     |           |       |      | True   |
       |       |         |           |       |      | True   |
 
-  @edit @clients @test
+  @edit @clients
   Scenario Outline: Edit client
     When user updates the data of client "<cur_full_name>" to name "<new_name>", surname "<new_surname>", phone "<new_phone>", email "<new_email>", note "<new_note>" and activity "<new_active>"
     Then the client is updated
