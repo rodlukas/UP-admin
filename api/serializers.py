@@ -79,12 +79,6 @@ class GroupSerializer(serializers.ModelSerializer):
         return instance
 
     @staticmethod
-    def validate_memberships(memberships):
-        for membership in memberships:
-            serializers_helpers.validate_client_is_active(membership['client'])
-        return memberships
-
-    @staticmethod
     def validate_course_id(course):
         return serializers_helpers.validate_course_is_visible(course)
 

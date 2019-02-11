@@ -14,6 +14,10 @@ Feature: Operations with groups
       | Slabika 3 | Kurz Slabika | True   |                   |                   |
       | Slabika 3 | Kurz Slabika | True   | Rod Lukáš         | Uhlíř Jaroslav    |
       | Slabika 3 | Kurz Slabika | False  | Rod Lukáš         | Uhlíř Jaroslav    |
+      # neaktivni klient
+      | Slabika 3 | Kurz Slabika | True   | Neaktivní Pavel   |                   |
+      # neaktivni i aktivni klient
+      | Slabika 3 | Kurz Slabika | True   | Neaktivní Pavel   | Rod Lukáš         |
 
   @add @groups
   Scenario Outline: Add invalid group
@@ -32,10 +36,6 @@ Feature: Operations with groups
       | Slabika 3 | Máme doma leváka | True   |                   |                   |
       # duplicitni nazev skupiny
       | Slabika 1 | Kurz Slabika     | True   |                   |                   |
-      # neaktivni klient
-      | Slabika 3 | Kurz Slabika     | True   | Neaktivní Pavel   |                   |
-      # neaktivni i aktivni klient
-      | Slabika 3 | Kurz Slabika     | True   | Neaktivní Pavel   | Rod Lukáš         |
 
   @edit @groups
   Scenario: Edit group that has members

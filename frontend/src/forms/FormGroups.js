@@ -88,7 +88,7 @@ export default class FormGroups extends Component {
             })
 
     getClients = () =>
-        ClientService.getActive()
+        ClientService.getAll()
             .then(clients => this.setState({clients}))
 
     componentDidMount() {
