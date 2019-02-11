@@ -45,8 +45,8 @@ script:
 
   # proved testy a spocitej pokryti kodu
   - coverage run -a manage.py test
-  - coverage run -a manage.py behave --stage=api
-  - coverage run -a manage.py behave --stage=ui
+  - coverage run -a manage.py behave --stage=api --format=progress3
+  - coverage run -a manage.py behave --stage=ui --format=progress3
 after_success:
   # posli pokryti kodu do codecov
   - codecov --token=$CODECOV_TOKEN
