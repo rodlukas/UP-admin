@@ -100,7 +100,7 @@ export default class Diary extends Component {
                 <Container fluid className="pageContent">
                     <Row>
                     {this.getWeek().map(day =>
-                        <Col key={day} sm="12" md="6" lg="" className="diary-day">
+                        <Col key={day} md="6" lg="" className="diary-day">
                             <DashboardDay
                                 date={day}
                                 setRefreshState={this.setRefreshState}
