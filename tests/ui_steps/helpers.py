@@ -57,7 +57,8 @@ def react_select_insert(driver, element, value):
     # vlozi prvek do react-selectu pokud je nalezen v nabidce react-selectu
     element.send_keys(value)
     try:
-        found_option = driver.find_element_by_xpath("//*[@role='option']")
+        # najdi moznosti react-selectu, moznosti maji id zacinajici danym stringem
+        found_option = driver.find_element_by_css_selector("[id^='react-select-']")
     except NoSuchElementException:
         pass
     else:
