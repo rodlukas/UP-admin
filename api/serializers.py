@@ -281,10 +281,11 @@ class LectureSerializer(serializers.ModelSerializer):
             serializers_helpers.lecture_cancellability(instance)
         return instance
 
-    @staticmethod
-    def validate_attendances(attendances):
-        for attendance in attendances:
-            serializers_helpers.validate_client_is_active(attendance['client'])
+    def validate_attendances(self, attendances):
+        # vsichni klienti musi byt aktivni, platne pouze pro vytvareni lekci
+        if not self.instance:
+            for attendance in attendances:
+                serializers_helpers.validate_client_is_active(attendance['client'])
         return attendances
 
     @staticmethod
