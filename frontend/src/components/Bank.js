@@ -7,8 +7,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSyncAlt, faExternalLinkAlt, faExclamationCircle} from "@fortawesome/pro-solid-svg-icons"
 import CustomButton from "./buttons/CustomButton"
 import {prettyAmount} from "../global/utils"
+import {RENT_PRICE} from "../global/constants"
 
-const RENT = 3530
 const REFRESH_TIMEOUT = 60 // sekundy
 
 export default class Bank extends Component {
@@ -107,7 +107,7 @@ export default class Bank extends Component {
         const balance = this.state.bankData.info.closingBalance
         return (
             <ListGroup className="pageContent">
-                <ListGroupItem color={balance < RENT ? "danger" : "success"}>
+                <ListGroupItem color={balance < RENT_PRICE ? "danger" : "success"}>
                     <h4 className="text-center">
                         Aktuální stav:
                         {' '}
@@ -121,7 +121,7 @@ export default class Bank extends Component {
                                 :
                                 "načítání"}
                         {' '}
-                        {balance && balance < RENT &&
+                        {balance && balance < RENT_PRICE &&
                         <Fragment>
                             <UncontrolledTooltip placement="bottom" target="tooltip_rent">
                                 Na účtu není dostatek peněz pro zaplacení nájmu!

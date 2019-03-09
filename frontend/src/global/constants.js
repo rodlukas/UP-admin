@@ -15,3 +15,5 @@ export const TEXTS = {
 }
 
 export const DEFAULT_DURATION = 30
+
+export const RENT_PRICE = 3572
