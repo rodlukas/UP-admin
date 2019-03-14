@@ -20,7 +20,8 @@ django-debug-toolbar-request-history = "==0.0.9"
 sentry-sdk = "==0.7.6"
 
 [dev-packages]
-behave-django = "==1.1.0"
+behave-django = "==1.2.0"
+coverage = "==4.5.3"
 codecov = "==2.0.15"
 selenium = "==3.141.0"
 
