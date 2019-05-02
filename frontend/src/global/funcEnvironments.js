@@ -15,7 +15,7 @@ export function isEnvDevelopment() {
 }
 
 export function isEnvProduction() {
-    return !isEnvStaging() && !isEnvTesting() && getEnvName() === "production"
+    return getAppUrl() === "uspesnyprvnacek"
 }
 
 export function getEnvName() {

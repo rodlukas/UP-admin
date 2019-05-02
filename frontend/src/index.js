@@ -6,9 +6,10 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "./index.css"
 import {AuthProvider} from "./auth/AuthContext"
 import * as Sentry from "@sentry/browser"
-import {getEnvName} from "./global/funcEnvironments"
+import {getEnvName, isEnvProduction} from "./global/funcEnvironments"
 
-if (process.env.NODE_ENV === 'production')
+// dsn se nahradi url, jinak nefunguje (proto podminka)
+if (isEnvProduction())
     Sentry.init({
         dsn: "SENTRY_DSN",
         environment: getEnvName()
