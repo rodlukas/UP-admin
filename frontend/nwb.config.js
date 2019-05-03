@@ -17,6 +17,10 @@ module.exports = function ({command}) {
         }
     }
     config.webpack = {
+        aliases: {
+            // react-hot-loader
+            'react-dom': '@hot-loader/react-dom'
+        },
         html: {
             //this setting is required for HtmlWebpackHarddiskPlugin to work
             alwaysWriteToDisk: true,

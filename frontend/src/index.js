@@ -27,4 +27,4 @@ export default hot(App)
 render(<App/>, document.getElementById("root"))
 
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister()
+serviceWorker.register()

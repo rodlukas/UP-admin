@@ -87,9 +87,8 @@ export default class Main extends Component {
                                 <PrivateRoute
                                     path={APP_URLS.klienti} component={withTracker(Clients)} exact/>
                                 <PrivateRoute
-                                    path={APP_URLS.klienti + "/:id"} component={withTracker(Card)}/>
-                                <PrivateRoute
-                                    path={APP_URLS.skupiny + "/:id"} component={withTracker(Card)}/>
+                                    path={[APP_URLS.klienti + "/:id", APP_URLS.skupiny + "/:id"]}
+                                    component={withTracker(Card)}/>
                                 <PrivateRoute
                                     path={APP_URLS.zajemci} component={withTracker(Applications)}/>
                                 <PrivateRoute
