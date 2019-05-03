@@ -1,11 +1,13 @@
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const path = require('path')
-const isPro = process.env.NODE_ENV === 'production'
+const isProduction = process.env.NODE_ENV === 'production'
+
 module.exports = function ({command}) {
     let config = {
         type: 'react-app'
     }
-    // Only include react-hot-loader config when serving a development build
+    // react-hot-loader
+    // * Only include react-hot-loader config when serving a development build
     if (command.startsWith('serve')) {
         config.babel = {plugins: 'react-hot-loader/babel'}
         config.webpack = {
@@ -17,16 +19,17 @@ module.exports = function ({command}) {
         }
     }
     config.webpack = {
+        // react-hot-loader
         aliases: {
-            // react-hot-loader
             'react-dom': '@hot-loader/react-dom'
         },
+        // automaticke generovani html souboru do templates slozky s prislusnymi odkazy na zdrojove soubory
         html: {
             //this setting is required for HtmlWebpackHarddiskPlugin to work
             alwaysWriteToDisk: true,
-            filename: 'react.html'
+            filename: 'react-autogenerate.html'
         },
-        publicPath: isPro ? "/static/" : "http://localhost:3000/",
+        publicPath: isProduction ? "/static/" : "http://localhost:3000/",
         extra: {
             plugins: [
                 // this will copy an `index.html` for django to use
@@ -36,7 +39,7 @@ module.exports = function ({command}) {
             ]
         },
         config: function (webpackConfig) {
-            if (!isPro) {
+            if (!isProduction) {
                 webpackConfig.entry = [
                     'webpack-dev-server/client?http://0.0.0.0:3000',
                     'webpack/hot/only-dev-server',

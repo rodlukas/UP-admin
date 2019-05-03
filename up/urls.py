@@ -8,7 +8,7 @@ urlpatterns = [
     path('api/v1/', include('api.urls')),
     # favicona pro starsi prohlizece
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('admin/favicon.ico'))),
-    re_path(r'^', TemplateView.as_view(template_name="react.html")),
+    re_path(r'^', TemplateView.as_view(template_name="react-autogenerate.html")),
 ]
 
 if DEBUG or MANUAL_PRODUCTION:
