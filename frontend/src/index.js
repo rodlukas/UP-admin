@@ -7,6 +7,7 @@ import "./index.css"
 import {AuthProvider} from "./auth/AuthContext"
 import * as Sentry from "@sentry/browser"
 import {getEnvName, isEnvProduction} from "./global/funcEnvironments"
+import {hot} from 'react-hot-loader/root'
 
 // dsn se nahradi url, jinak nefunguje (proto podminka)
 if (isEnvProduction())
@@ -19,6 +20,9 @@ const App = () =>
     <AuthProvider>
         <Main/>
     </AuthProvider>
+
+// react-hot-loader export
+export default hot(App)
 
 render(<App/>, document.getElementById("root"))
 

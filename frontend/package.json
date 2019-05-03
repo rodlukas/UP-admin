@@ -6,13 +6,12 @@
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
-    "start": "nwb serve-react-app",
+    "start": "nwb serve-react-app --no-hmre",
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server"
   },
   "dependencies": {
-    "html-webpack-harddisk-plugin": "^1.0.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
     "@fortawesome/pro-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
@@ -20,19 +19,20 @@
     "axios": "^0.18.0",
     "bootstrap": "^4.1.1",
     "history": "^4.7.2",
+    "html-webpack-harddisk-plugin": "^1.0.1",
     "jwt-decode": "^2.2.0",
+    "nwb": "0.23.x",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react-dom": "npm:@hot-loader/react-dom",
     "react-ga": "^2.5.7",
+    "react-hot-loader": "^4.8.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "3.0.0",
     "react-select": "2.4.2",
     "react-toastify": "^4.1.0",
-    "reactstrap": "8",
-    "nwb": "0.23.x"
+    "reactstrap": "8"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "author": "",
   "license": "MIT",
   "repository": ""

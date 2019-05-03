@@ -1,10 +1,22 @@
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
-const path = require('path');
-const isPro = process.env.NODE_ENV === 'production';
-module.exports = {
-    type: 'react-app',
-    webpack: {
-        // dont forget delete src/index.html to use this config: mountid, title, favicon
+const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
+const path = require('path')
+const isPro = process.env.NODE_ENV === 'production'
+module.exports = function ({command}) {
+    let config = {
+        type: 'react-app'
+    }
+    // Only include react-hot-loader config when serving a development build
+    if (command.startsWith('serve')) {
+        config.babel = {plugins: 'react-hot-loader/babel'}
+        config.webpack = {
+            config(webpackConfig) {
+                // React Hot Loader's patch module needs to run before your app
+                webpackConfig.entry.unshift('react-hot-loader/patch')
+                return webpackConfig
+            }
+        }
+    }
+    config.webpack = {
         html: {
             //this setting is required for HtmlWebpackHarddiskPlugin to work
             alwaysWriteToDisk: true,
@@ -19,20 +31,20 @@ module.exports = {
                 })
             ]
         },
-        config: function (config) {
+        config: function (webpackConfig) {
             if (!isPro) {
-                config.entry = [
+                webpackConfig.entry = [
                     'webpack-dev-server/client?http://0.0.0.0:3000',
                     'webpack/hot/only-dev-server',
                     './src/index.js'
-                ];
+                ]
             }
-
-            return config
+            return webpackConfig
         }
-    },
-    devServer: {
+    }
+    config.devServer = {
         // allow django host, in case you use custom domain for django app
         allowedHosts: ["0.0.0.0"]
     }
-};
+    return config
+}
