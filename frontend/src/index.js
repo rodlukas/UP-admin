@@ -1,4 +1,4 @@
-import registerServiceWorker from './registerServiceWorker'
+import * as serviceWorker from './serviceWorker'
 import React from "react"
 import {render} from "react-dom"
 import Main from "./Main"
@@ -21,4 +21,6 @@ const App = () =>
     </AuthProvider>
 
 render(<App/>, document.getElementById("root"))
-registerServiceWorker()
+
+// Learn more about service workers: https://bit.ly/CRA-PWA
+serviceWorker.unregister()
