@@ -47,6 +47,15 @@ module.exports = function ({command}) {
                 ]
             }
             return webpackConfig
+        },
+        rules: {
+            postcss: {
+                plugins: [
+                    // dependence z nwb
+                    require('autoprefixer'),
+                    require('cssnano')
+                ]
+            }
         }
     }
     config.devServer = {

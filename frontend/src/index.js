@@ -2,7 +2,7 @@ import * as serviceWorker from './serviceWorker'
 import React from "react"
 import {render} from "react-dom"
 import Main from "./Main"
-import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/css/bootstrap.css"
 import "./index.css"
 import {AuthProvider} from "./auth/AuthContext"
 import * as Sentry from "@sentry/browser"
