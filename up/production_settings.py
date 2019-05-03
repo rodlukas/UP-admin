@@ -21,7 +21,7 @@ sentry_sdk.init(
 # Static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'assets'),
+    os.path.join(BASE_DIR, 'frontend', 'dist'),
 ]
 
 # Django konstanty

@@ -10,5 +10,8 @@
   "scripts": {
     "postinstall": "cd frontend && yarn install && yarn build",
     "test": "cd frontend && yarn test"
+  },
+  "dependencies": {
+    "html-webpack-harddisk-plugin": "^1.0.1"
   }
 }

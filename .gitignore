@@ -2,12 +2,8 @@
 ### Moje
 webpack-stats.dev.json
 webpack-stats.prod.json
-/assets
-/staticfiles/bundles
-/staticfiles/rest_framework
-/staticfiles/admin
-/staticfiles/debug_toolbar
-/staticfiles/staticfiles.json
+/staticfiles/*
+!/staticfiles/.gitkeep
 /node_modules/*
 
 ### JetBrains template
