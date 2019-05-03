@@ -9,7 +9,7 @@
 ## Užitečné příkazy
 * **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
     1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
-    2. `yarn install`
+    2. `yarn install` (z rootu, automaticky se pak provede i build)
     3. přes `manage.py` spustit:
         1. `collectstatic --settings=up.production_settings --noinput`
         2. `runserver --settings=up.production_settings 0.0.0.0:8000`
