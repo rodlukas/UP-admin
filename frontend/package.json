@@ -28,10 +28,10 @@
     "react-scripts": "3.0.0",
     "react-select": "2.4.2",
     "react-toastify": "^4.1.0",
-    "reactstrap": "8"
+    "reactstrap": "8",
+    "nwb": "0.23.x"
   },
   "devDependencies": {
-    "nwb": "0.23.x"
   },
   "author": "",
   "license": "MIT",

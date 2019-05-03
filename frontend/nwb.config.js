@@ -6,9 +6,6 @@ module.exports = {
     webpack: {
         // dont forget delete src/index.html to use this config: mountid, title, favicon
         html: {
-            mountId: 'app',
-            title: 'Django react',
-            // favicon: 'src/favicon.ico'
             //this setting is required for HtmlWebpackHarddiskPlugin to work
             alwaysWriteToDisk: true,
             filename: 'react.html'
