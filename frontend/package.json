@@ -1,9 +1,18 @@
 {
   "name": "frontend2",
-  "version": "0.1.0",
-  "license": "UNLICENSED",
+  "version": "1.0.0",
+  "description": "Describe frontend2 here",
   "private": true,
+  "scripts": {
+    "build": "nwb build-react-app",
+    "clean": "nwb clean-app",
+    "start": "nwb serve-react-app",
+    "test": "nwb test-react",
+    "test:coverage": "nwb test-react --coverage",
+    "test:watch": "nwb test-react --server"
+  },
   "dependencies": {
+    "html-webpack-harddisk-plugin": "^1.0.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
     "@fortawesome/pro-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
@@ -21,25 +30,10 @@
     "react-toastify": "^4.1.0",
     "reactstrap": "8"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+  "devDependencies": {
+    "nwb": "0.23.x"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "author": "",
+  "license": "MIT",
+  "repository": ""
 }
