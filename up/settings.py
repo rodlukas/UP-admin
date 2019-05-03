@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'admin',
-    'webpack_loader',
     'rest_framework',
     'api',
     'django_filters',
