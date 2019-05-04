@@ -6325,7 +6325,7 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-nwb@0.23.x:
+nwb@^0.23.0:
   version "0.23.0"
   resolved "https://registry.yarnpkg.com/nwb/-/nwb-0.23.0.tgz#038f8e54ea36b3887cecfc8ae5d3aef7b204d75a"
   integrity sha512-FoNOQaK4J+PUUBLWn2eUDv829OEwxz2Bi9MuXPrV8ZGNf0zTDw5gCNIzDnwzf5yuwLQe9LbVjUd1JmjYh4uw6A==

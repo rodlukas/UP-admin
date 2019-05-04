@@ -21,7 +21,7 @@
     "history": "^4.9.0",
     "html-webpack-harddisk-plugin": "^1.0.1",
     "jwt-decode": "^2.2.0",
-    "nwb": "0.23.x",
+    "nwb": "^0.23.0",
     "react": "^16.8.6",
     "react-ga": "^2.5.7",
     "react-hot-loader": "^4.8.4",
