@@ -45,7 +45,7 @@ const RouteTracker = () =>
     <Route component={GoogleAnalytics}/>
 
 const init = (options = {}) => {
-    const isProduction = !isEnvProduction()
+    const isProduction = isEnvProduction()
     if (isProduction) {
         ReactGA.initialize(
             "UA-53235943-3", {
