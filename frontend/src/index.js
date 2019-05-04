@@ -7,6 +7,9 @@ import {AuthProvider} from "./auth/AuthContext"
 import * as Sentry from "@sentry/browser"
 import {getEnvName, isEnvProduction} from "./global/funcEnvironments"
 import {hot} from 'react-hot-loader/root'
+import history from "./global/history"
+import {Router} from "react-router-dom"
+import GA from "./global/GoogleAnalytics"
 
 // dsn se nahradi url, jinak nefunguje (proto podminka)
 if (isEnvProduction())
@@ -16,9 +19,12 @@ if (isEnvProduction())
     })
 
 const App = () =>
-    <AuthProvider>
-        <Main/>
-    </AuthProvider>
+    <Router history={history}>
+        {GA.init() && <GA.RouteTracker/>}
+        <AuthProvider>
+            <Main/>
+        </AuthProvider>
+    </Router>
 
 // react-hot-loader export
 export default hot(App)
