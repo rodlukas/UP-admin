@@ -1,4 +1,3 @@
-import * as serviceWorker from './serviceWorker'
 import React from "react"
 import {render} from "react-dom"
 import Main from "./Main"
@@ -25,6 +24,3 @@ const App = () =>
 export default hot(App)
 
 render(<App/>, document.getElementById("root"))
-
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register()
