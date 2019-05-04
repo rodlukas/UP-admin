@@ -1,6 +1,26 @@
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const path = require('path')
 const isProduction = process.env.NODE_ENV === 'production'
+const chalk = require('chalk')
+
+// je potreba dynamicky menit adresu vzhledem k aktualni pridelene adrese zarizeni
+function getIPAddress() {
+    let interfaces = require('os').networkInterfaces()
+    for (let devName in interfaces) {
+        if (devName !== 'Wi-Fi' && devName !== 'Ethernet')
+            continue
+        let iface = interfaces[devName]
+        for (let i = 0; i < iface.length; i++) {
+            let alias = iface[i]
+            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+                return alias.address
+        }
+    }
+    return "localhost"
+}
+
+const url = 'http://' + getIPAddress() + ':3000/'
+console.log(chalk.magenta.bold('Aplikace je přístupná v celé síti na adrese: ' + url))
 
 module.exports = function ({command}) {
     let config = {
@@ -29,7 +49,7 @@ module.exports = function ({command}) {
             alwaysWriteToDisk: true,
             filename: 'react-autogenerate.html'
         },
-        publicPath: isProduction ? "/static/" : "http://localhost:3000/",
+        publicPath: isProduction ? "/static/" : url,
         extra: {
             plugins: [
                 // this will copy an `index.html` for django to use
