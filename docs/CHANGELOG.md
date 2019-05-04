@@ -4,3 +4,6 @@ odstraneni zbytecneho overheadu
     * [nwb](https://github.com/insin/nwb) s pomocí [tutoriálu](https://tamhv.github.io/2018/05/14/Setup-django-with-react-using-nwb/)
         * HMR: viz. [nwb faq](https://github.com/insin/nwb/blob/master/docs/FAQ.md#how-can-i-use-react-hot-loader-instead-of-react-transform) - využití nového [react-hot-loader](https://github.com/gaearon/react-hot-loader) spolu s nádstavbou [React-🔥-Dom](https://github.com/hot-loader/react-dom) pro fungování hooků
 * optimalizace zavislosti v package.json - respektovani semantickeho verzovani
+* nova komponenta pro Google Analytics - stara zpusobovala znovunacitani vsech komponent na strance pri kliknuti na cokoliv,
+tedy napr. na hamburger menu/polozku v menu co znamena aktualni stranku..
+
