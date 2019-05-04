@@ -13,4 +13,4 @@ class ViewTest(SimpleTestCase):
     def test_view_uses_correct_template(self):
         response = self.client.get('/', secure=True)
         self.assertEquals(response.status_code, 200)
-        self.assertTemplateUsed(response, 'index.html')
+        self.assertTemplateUsed(response, 'react-autogenerate.html')

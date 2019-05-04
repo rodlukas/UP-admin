@@ -1,6 +1,5 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "ÚPadmin",
     "icons": [
         {
             "src": "/static/admin/android-chrome-192x192.png",
@@ -15,5 +14,6 @@
     ],
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
-    "display": "standalone"
+    "display": "standalone",
+    "start_url": "/?utm_source=a2hs"
 }

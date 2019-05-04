@@ -9,7 +9,7 @@
 ## Užitečné příkazy
 * **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
     1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
-    2. `yarn install`
+    2. `yarn install` (z rootu, automaticky se pak provede i build)
     3. přes `manage.py` spustit:
         1. `collectstatic --settings=up.production_settings --noinput`
         2. `runserver --settings=up.production_settings 0.0.0.0:8000`
@@ -21,7 +21,7 @@
     * `yarn outdated`
     * `yarn add/remove [package]`
     * `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
-    * `yarn test/install`
+    * `yarn install`
 * **HEROKU**
     * **vytvoření uživatele:** `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * **připojení k DB z externí aplikace** - je potřeba přidat do URI na konec `?sslmode=require`
@@ -34,9 +34,12 @@
 ## Články pro inspiraci
 
 ### statické soubory
-* **nastavení Webpacku a Djanga:** http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
+* [nwb](https://github.com/insin/nwb) s pomocí [tutoriálu](https://tamhv.github.io/2018/05/14/Setup-django-with-react-using-nwb/)
+    * HMR: viz. [nwb faq](https://github.com/insin/nwb/blob/master/docs/FAQ.md#how-can-i-use-react-hot-loader-instead-of-react-transform) - využití nového [react-hot-loader](https://github.com/gaearon/react-hot-loader) spolu s nádstavbou [React-🔥-Dom](https://github.com/hot-loader/react-dom) pro fungování hooků
+
+~~* **nastavení Webpacku a Djanga:** http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
     * super vysvětlení - https://www.techiediaries.com/django-react-rest/
-    * popis autora nástrojů - http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/
+    * popis autora nástrojů - http://owaislone.org/blog/modern-frontends-with-django/, http://owaislone.org/blog/webpack-plus-reactjs-and-django/~~
     
 ### nasazení
 * **checklist**

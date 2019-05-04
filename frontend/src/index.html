@@ -1,4 +1,3 @@
-{% load render_bundle from webpack_loader %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="cs">
@@ -18,7 +17,7 @@
     <meta name="theme-color" content="#ffffff">
 </head>
 <body>
+<noscript>V prohlížeči nemáte zapnutý Javascript.</noscript>
 <div id="root" class="loader"></div>
-{% render_bundle 'main' attrs='async defer' %}
 </body>
 </html>

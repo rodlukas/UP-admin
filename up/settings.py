@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'admin',
-    'webpack_loader',
     'rest_framework',
     'api',
     'django_filters',
@@ -147,12 +146,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
-    }
-}
 
 # debug toolbar
 DEBUG_TOOLBAR_PANELS = [
