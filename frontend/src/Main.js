@@ -21,7 +21,7 @@ import "./Main.css"
 import ErrorBoundary from "./pages/ErrorBoundary"
 import {AuthConsumer} from "./auth/AuthContext"
 import history from "./global/history"
-import withTracker from './global/withTracker'
+import GA from './global/GoogleAnalytics'
 
 export default class Main extends Component {
     constructor(props) {
@@ -47,6 +47,7 @@ export default class Main extends Component {
     render() {
         return (
             <Router history={history}>
+                {GA.init() && <GA.RouteTracker/>}
                 <div className={getEnvName()}>
                     <Navbar light className="border-bottom" expand="sm">
                         <NavbarBrand tag={RouterNavLink} exact to="/">
@@ -77,22 +78,22 @@ export default class Main extends Component {
                         <div className="content">
                             <Switch>
                                 <PrivateRoute
-                                    path={APP_URLS.prehled} component={withTracker(Dashboard)} exact/>
+                                    path={APP_URLS.prehled} component={Dashboard} exact/>
                                 <Route
-                                    path={APP_URLS.prihlasit} component={withTracker(Login)}/>
+                                    path={APP_URLS.prihlasit} component={Login}/>
                                 <PrivateRoute
-                                    path={APP_URLS.skupiny} component={withTracker(Groups)} exact/>
+                                    path={APP_URLS.skupiny} component={Groups} exact/>
                                 <PrivateRoute
-                                    path={APP_URLS.diar + "/:year?/:month?/:day?"} component={withTracker(Diary)}/>
+                                    path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
                                 <PrivateRoute
-                                    path={APP_URLS.klienti} component={withTracker(Clients)} exact/>
+                                    path={APP_URLS.klienti} component={Clients} exact/>
                                 <PrivateRoute
                                     path={[APP_URLS.klienti + "/:id", APP_URLS.skupiny + "/:id"]}
-                                    component={withTracker(Card)}/>
+                                    component={(Card)}/>
                                 <PrivateRoute
-                                    path={APP_URLS.zajemci} component={withTracker(Applications)}/>
+                                    path={APP_URLS.zajemci} component={Applications}/>
                                 <PrivateRoute
-                                    path={APP_URLS.nastaveni} component={withTracker(Settings)}/>
+                                    path={APP_URLS.nastaveni} component={Settings}/>
                                 <Route component={NotFound}/>
                             </Switch>
                         </div>
