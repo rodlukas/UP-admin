@@ -20,7 +20,6 @@ function getIPAddress() {
 }
 
 const url = 'http://' + getIPAddress() + ':3000/'
-console.log(chalk.magenta.bold('Aplikace je přístupná v celé síti na adrese: ' + url))
 
 module.exports = function ({command}) {
     let config = {
@@ -37,6 +36,8 @@ module.exports = function ({command}) {
                 return webpackConfig
             }
         }
+
+        console.log(chalk.magenta.bold('Frontend je přístupný v celé síti na adrese: ' + url))
     }
     config.webpack = {
         // react-hot-loader
