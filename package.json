@@ -1,17 +1,15 @@
 {
-  "name": "frontend-root",
-  "version": "0.1.0",
+  "name": "up-frontend-root",
+  "version": "1.0.0",
+  "author": "Lukáš Rod <info@lukasrod.cz> (https://lukasrod.cz)",
+  "private": true,
   "license": "UNLICENSED",
   "engines": {
-    "node": "10.15.3",
+    "node": "10.15.x",
     "npm": "6.7.x",
     "yarn": "1.15.x"
   },
   "scripts": {
-    "postinstall": "cd frontend && yarn install && yarn build",
-    "test": "cd frontend && yarn test"
-  },
-  "dependencies": {
-    "html-webpack-harddisk-plugin": "^1.0.1"
+    "postinstall": "cd frontend && yarn install && yarn build"
   }
 }
