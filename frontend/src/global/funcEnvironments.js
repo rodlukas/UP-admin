@@ -2,6 +2,10 @@ export function getAppUrl() {
     return window.location.hostname.split(".")[0]
 }
 
+export function isHosted() {
+    return isEnvStaging() || isEnvTesting() || isEnvProduction()
+}
+
 export function isEnvStaging() {
     return getAppUrl() === "uspesnyprvnacek-staging"
 }
