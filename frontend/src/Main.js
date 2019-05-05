@@ -46,7 +46,7 @@ export default class Main extends Component {
         return (
             <div className={getEnvName()}>
                 <Navbar light className="border-bottom" expand="sm">
-                    <NavbarBrand tag={RouterNavLink} exact to="/">
+                    <NavbarBrand tag={RouterNavLink} exact to="/" onClick={this.closeNavbar}>
                         ÚP<sub>admin</sub>
                     </NavbarBrand>
                     {isEnvDevelopment() &&
