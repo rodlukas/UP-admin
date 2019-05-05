@@ -45,9 +45,9 @@ export default class Card extends Component {
     getPrevId = (prevProps) =>
         prevProps.match.params.id
     isClient = () =>
-        this.props.match.path.includes(APP_URLS.klienti)
+        this.props.match.path.includes(APP_URLS.klienti.url)
     wasClient = (prevProps) =>
-        prevProps.match.path.includes(APP_URLS.klienti)
+        prevProps.match.path.includes(APP_URLS.klienti.url)
 
     // zvolit optimalni kurz, jehoz lekce bude s nejvyssi pravdepodobnosti pridavana ve formulari
     getDefaultCourseSingle = lectures => {

@@ -16,22 +16,22 @@ const Menu = props => {
                 <Fragment>
                     <Nav className="ml-auto" navbar>
                         <NavItem>
-                            <MyNavLink exact activeClassName="active" to={APP_URLS.prehled}>Přehled</MyNavLink>
+                            <MyNavLink exact activeClassName="active" to={APP_URLS.prehled.url}>Přehled</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.diar}>Diář</MyNavLink>
+                            <MyNavLink to={APP_URLS.diar.url}>Diář</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.klienti} data-qa="menu_clients">Klienti</MyNavLink>
+                            <MyNavLink to={APP_URLS.klienti.url} data-qa="menu_clients">Klienti</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.skupiny} data-qa="menu_groups">Skupiny</MyNavLink>
+                            <MyNavLink to={APP_URLS.skupiny.url} data-qa="menu_groups">Skupiny</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.zajemci} data-qa="menu_applications">Zájemci</MyNavLink>
+                            <MyNavLink to={APP_URLS.zajemci.url} data-qa="menu_applications">Zájemci</MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.nastaveni} data-qa="menu_settings">Nastavení</MyNavLink>
+                            <MyNavLink to={APP_URLS.nastaveni.url} data-qa="menu_settings">Nastavení</MyNavLink>
                         </NavItem>
                     </Nav>
                     <Button color="secondary"

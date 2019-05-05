@@ -16,15 +16,15 @@ import {ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import APP_URLS from "./urls"
 import AppVersion from "./components/AppVersion"
-import {getEnvName, isEnvDevelopment, isEnvProduction, isEnvStaging, isEnvTesting} from "./global/funcEnvironments"
+import {getEnvName, isEnvDevelopment, isEnvStaging, isEnvTesting} from "./global/funcEnvironments"
 import "./Main.css"
 import ErrorBoundary from "./pages/ErrorBoundary"
 import {AuthConsumer} from "./auth/AuthContext"
+import Page from "./components/Page"
 
 export default class Main extends Component {
     constructor(props) {
         super(props)
-        this.editTitle()
     }
 
     state = {
@@ -36,11 +36,6 @@ export default class Main extends Component {
 
     closeNavbar = () =>
         this.setState({IS_MENU_OPEN: false})
-
-    editTitle = () => {
-        if (!isEnvProduction())
-            document.title += " – " + getEnvName()
-    }
 
     render() {
         return (
@@ -74,23 +69,36 @@ export default class Main extends Component {
                     <div className="content">
                         <Switch>
                             <PrivateRoute
-                                path={APP_URLS.prehled} component={Dashboard} exact/>
-                            <Route
-                                path={APP_URLS.prihlasit} component={Login}/>
+                                path={APP_URLS.prehled.url} component={Dashboard}
+                                title={APP_URLS.prehled.title} exact/>
+                            <Page
+                                path={APP_URLS.prihlasit.url} component={Login}
+                                title={APP_URLS.prihlasit.title}/>
                             <PrivateRoute
-                                path={APP_URLS.skupiny} component={Groups} exact/>
+                                path={APP_URLS.skupiny.url} component={Groups}
+                                title={APP_URLS.skupiny.title} exact/>
                             <PrivateRoute
-                                path={APP_URLS.diar + "/:year?/:month?/:day?"} component={Diary}/>
+                                path={APP_URLS.diar.url + "/:year?/:month?/:day?"} component={Diary}
+                                title={APP_URLS.diar.title}/>
                             <PrivateRoute
-                                path={APP_URLS.klienti} component={Clients} exact/>
+                                path={APP_URLS.klienti.url} component={Clients}
+                                title={APP_URLS.klienti.title} exact/>
                             <PrivateRoute
-                                path={[APP_URLS.klienti + "/:id", APP_URLS.skupiny + "/:id"]}
-                                component={(Card)}/>
+                                path={APP_URLS.klienti.url + "/:id"}
+                                component={Card}
+                                title={APP_URLS.klienti.title}/>
                             <PrivateRoute
-                                path={APP_URLS.zajemci} component={Applications}/>
+                                path={APP_URLS.skupiny.url + "/:id"}
+                                component={Card}
+                                title={APP_URLS.skupiny.title}/>
                             <PrivateRoute
-                                path={APP_URLS.nastaveni} component={Settings}/>
-                            <Route component={NotFound}/>
+                                path={APP_URLS.zajemci.url} component={Applications}
+                                title={APP_URLS.zajemci.title}/>
+                            <PrivateRoute
+                                path={APP_URLS.nastaveni.url} component={Settings}
+                                title={APP_URLS.nastaveni.title}/>
+                            <Page component={NotFound}
+                                  title={APP_URLS.nenalezeno.title}/>
                         </Switch>
                     </div>
                 </ErrorBoundary>

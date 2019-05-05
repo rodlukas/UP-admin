@@ -10,6 +10,7 @@ import EditButton from "../components/buttons/EditButton"
 import AddButton from "../components/buttons/AddButton"
 import Heading from "../components/Heading"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
+import APP_URLS from "../urls"
 
 export default class Groups extends Component {
     state = {
@@ -61,7 +62,7 @@ export default class Groups extends Component {
             </tbody>
         const HeadingContent = () =>
             <Fragment>
-                Skupiny
+                {APP_URLS.skupiny.title}
                 <AddButton content="Přidat skupinu" onClick={() => this.toggle()} data-qa="button_add_group"/>
                 <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
             </Fragment>

@@ -10,7 +10,7 @@ const PlainName = ({group, title}) =>
 const GroupName = ({group, link = false, title = false}) =>
     <span className="clientName">
         {link ?
-            <Link to={(APP_URLS.skupiny + "/" + group.id)}>
+            <Link to={(APP_URLS.skupiny.url + "/" + group.id)}>
                 <PlainName group={group} title={title}/>
             </Link>
             :

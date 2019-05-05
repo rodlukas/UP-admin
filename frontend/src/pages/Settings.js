@@ -13,6 +13,7 @@ import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
 import {faCheck, faTimes} from "@fortawesome/pro-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import AppRelease from "../components/AppRelease"
+import APP_URLS from "../urls"
 
 class Settings extends Component {
     constructor(props) {
@@ -247,7 +248,7 @@ class Settings extends Component {
             </div>
         const HeadingContent = () =>
             <Fragment>
-                Nastavení
+                {APP_URLS.nastaveni.title}
                 <AddButton content="Přidat kurz" onClick={() => this.toggle(EDIT_TYPE.COURSE)}
                            data-qa="button_add_course"/>
                 <AddButton content="Přidat stav účasti" onClick={() => this.toggle(EDIT_TYPE.STATE)}

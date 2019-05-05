@@ -54,7 +54,7 @@ export default class Diary extends Component {
     }
 
     static serializeDateUrl (date) {
-        return APP_URLS.diar + "/" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()
+        return APP_URLS.diar.url + "/" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()
     }
 
     // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)

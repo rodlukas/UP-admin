@@ -23,3 +23,10 @@ export function getEnvName() {
         : (isEnvTesting() ? "testing"
             : process.env.NODE_ENV)
 }
+
+export function getEnvNameShort() {
+    return isEnvStaging() ? "STAGE"
+        : (isEnvTesting() ? "TEST"
+            : (isEnvProduction() ? "PROD"
+            : "DEV"))
+}

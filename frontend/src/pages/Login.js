@@ -5,6 +5,7 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import Heading from "../components/Heading"
 import {WithAuthContext} from "../auth/AuthContext"
 import Loading from "../components/Loading"
+import APP_URLS from "../urls"
 
 class Login extends Component {
     constructor(props) {
@@ -42,7 +43,7 @@ class Login extends Component {
         if (this.props.authContext.IS_AUTH)
             return <Redirect to={from}/>
         const HeadingContent = () =>
-            "Přihlášení"
+            APP_URLS.prihlasit.title
         if (this.props.authContext.IS_LOADING)
             return <Loading text="Probíhá přihlašování"/>
         return (

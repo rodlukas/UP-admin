@@ -11,7 +11,7 @@ const PlainName = ({client}) =>
 const ClientName = ({client, link = false}) =>
     <span className="clientName">
         {link ?
-            <Link to={(APP_URLS.klienti + "/" + client.id)}>
+            <Link to={(APP_URLS.klienti.url + "/" + client.id)}>
                 <PlainName client={client}/>
             </Link>
             :

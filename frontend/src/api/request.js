@@ -136,9 +136,9 @@ const request = function (options, ignore_errors = false, return_data = true) {
             notify(<ErrorMessage error={error}/>, toast.TYPE.ERROR)
             if (error.response) {
                 if (error.response.status === 401)
-                    history.push(APP_URLS.prihlasit)
+                    history.push(APP_URLS.prihlasit.url)
                 else if (error.response.status === 404)
-                    history.push(APP_URLS.notfound)
+                    history.push(APP_URLS.nenalezeno.url)
             }
             return Promise.reject(error.response || error.message)
         } else {

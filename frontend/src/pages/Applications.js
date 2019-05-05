@@ -12,6 +12,7 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import Heading from "../components/Heading"
 import {groupByCourses} from "../global/utils"
 import Phone from "../components/Phone"
+import APP_URLS from "../urls"
 
 export default class Applications extends Component {
     constructor(props) {
@@ -132,7 +133,7 @@ export default class Applications extends Component {
             </div>
         const HeadingContent = () =>
             <Fragment>
-                Zájemci o kurzy
+                {APP_URLS.zajemci.title}
                 <AddButton content="Přidat zájemce" onClick={() => this.toggle()} data-qa="button_add_application"/>
             </Fragment>
         return (

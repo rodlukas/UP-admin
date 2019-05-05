@@ -11,6 +11,7 @@ import EditButton from "../components/buttons/EditButton"
 import AddButton from "../components/buttons/AddButton"
 import Heading from "../components/Heading"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
+import APP_URLS from "../urls"
 
 export default class ClientList extends Component {
     constructor(props) {
@@ -68,7 +69,7 @@ export default class ClientList extends Component {
             </tbody>
         const HeadingContent = () =>
             <Fragment>
-                Klienti
+                {APP_URLS.klienti.title}
                 <AddButton content="Přidat klienta" onClick={() => this.toggle()} data-qa="button_add_client"/>
                 <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
             </Fragment>
