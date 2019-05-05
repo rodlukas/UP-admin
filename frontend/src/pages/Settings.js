@@ -238,7 +238,11 @@ class Settings extends Component {
                 </Row>
                 <hr/>
                 <p className="text-center">
-                    <span className="font-weight-bold">Verze aplikace:</span> <AppVersion/><AppRelease/> - GIT_DATETIME
+                    <span className="font-weight-bold">Verze aplikace:</span>
+                    {' '}
+                    <AppVersion/><AppRelease/> –
+                    {' '}
+                    <span className="text-nowrap">GIT_DATETIME</span>
                 </p>
             </div>
         const HeadingContent = () =>

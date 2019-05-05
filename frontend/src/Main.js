@@ -39,7 +39,7 @@ export default class Main extends Component {
 
     editTitle = () => {
         if (!isEnvProduction())
-            document.title += " - " + getEnvName()
+            document.title += " – " + getEnvName()
     }
 
     render() {
