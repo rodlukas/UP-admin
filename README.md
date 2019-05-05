@@ -80,6 +80,12 @@
 
 ### React
 * [inspirace pro protected router v Context API](https://medium.freecodecamp.org/how-to-protect-your-routes-with-react-context-717670c4713a)
+* Pro zrychlení načítání se používá *lazy loading* a `React Suspense` 
+(vše zaobaleno v error-boundary pro správné fungování) - viz 
+[oficiální dokumentace](https://reactjs.org/docs/code-splitting.html) a další hezké články 
+[1](https://hackernoon.com/lazy-loading-and-preloading-components-in-react-16-6-804de091c82d), 
+[2](https://itnext.io/async-react-using-react-router-suspense-a86ade1176dc), 
+[3](https://www.peterbe.com/plog/react-16.6-with-suspense-and-lazy-loading-components-with-react-router-dom)
 
 ### další
 * [blog o djangu+react+rest](https://wsvincent.com/)
