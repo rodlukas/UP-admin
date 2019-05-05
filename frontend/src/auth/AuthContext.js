@@ -2,6 +2,8 @@ import React, {Component, createContext} from "react"
 import LoginService from "../api/services/login"
 import {prettyDateTime} from "../global/funcDateTime"
 import decode from "jwt-decode"
+import history from "../global/history"
+import APP_URLS from "../urls"
 
 const AUTH_REFRESH_THRESHOLD = 60 * 65 // sekundy -> 65 minut (60*65)
 const AUTH_STORAGE_KEY = "jwt"
@@ -31,6 +33,8 @@ class AuthProvider extends Component {
     logout = () => {
         Token.remove()
         this.isAuthenticated(false)
+        // z jakekoliv stranky presmeruj uzivatele na prihlaseni (napr. na strance nenalezeno ho to jinak ponecha i po odhlaseni
+        history.push(APP_URLS.prihlasit.url)
     }
 
     isAuthenticated = (refreshExpiringToken = true) => {
