@@ -19,11 +19,11 @@ export default class Loading extends Component {
 
     render() {
         return (
-            <div className="text-center" data-qa="loading">
+            <div className="text-center mt-2" data-qa="loading">
                 <FontAwesomeIcon icon={faSpinnerThird} spin size="3x"/>
                 <br/>
                 {this.props.text ? this.props.text : "Načítání"}...
-                {this.state.LONG_LOADING && " Stále pracuji 😏"}
+                {this.state.LONG_LOADING && " Stále pracuji 😎"}
             </div>
         )
     }
