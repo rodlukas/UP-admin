@@ -19,7 +19,7 @@ const SelectAttendanceState = props => {
                      value={props.value} data-qa="lecture_select_attendance_attendancestate">
             {attendancestates.map(attendancestate =>
                 // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
-                (attendancestate.visible || attendancestate.id === value) &&
+                (attendancestate.visible || attendancestate.id === props.value) &&
                 <option key={attendancestate.id} value={attendancestate.id}>
                     {attendancestate.name}
                 </option>)}
