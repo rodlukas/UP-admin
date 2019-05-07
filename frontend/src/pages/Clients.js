@@ -13,7 +13,7 @@ import Heading from "../components/Heading"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 import APP_URLS from "../urls"
 
-export default class ClientList extends Component {
+export default class Clients extends Component {
     constructor(props) {
         super(props)
         this.state = {
