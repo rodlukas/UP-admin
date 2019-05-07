@@ -75,10 +75,9 @@ class AuthProvider extends Component {
             })
     }
 
-    login = (username, password) => {
-        const data = {username, password}
+    login = credentials => {
         this.setAuthLoading(true)
-        LoginService.authenticate(data)
+        LoginService.authenticate(credentials)
             .then(({token}) => {
                 Token.save(token)
                 this.setAuthLoading(false)
@@ -108,11 +107,6 @@ class AuthProvider extends Component {
         </AuthContext.Provider>
 }
 
-const WithAuthContext = WrappedComponent => props =>
-    <AuthContext.Consumer>
-        {authContext => <WrappedComponent {...props} authContext={authContext}/>}
-    </AuthContext.Consumer>
-
 class Token {
     static remove() {
         localStorage.clear()
@@ -140,6 +134,4 @@ class Token {
     }
 }
 
-const AuthConsumer = AuthContext.Consumer
-
-export {Token, AuthConsumer, AuthProvider, WithAuthContext}
+export {Token, AuthProvider, AuthContext}

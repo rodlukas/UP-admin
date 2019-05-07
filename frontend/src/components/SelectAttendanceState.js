@@ -1,36 +1,30 @@
-import React, {Component} from "react"
+import React, {useContext} from "react"
 import {CustomInput} from "reactstrap"
 import AttendanceService from "../api/services/attendance"
-import {AttendanceStateConsumer} from "../contexts/AttendanceStateContext"
+import {AttendanceStatesContext} from "../contexts/AttendanceStateContext"
 
-export default class SelectAttendanceState extends Component {
-    state = {
-        value: this.props.value
-    }
+const SelectAttendanceState = props => {
+    const {attendancestates} = useContext(AttendanceStatesContext)
 
-    onChange = e => {
+    const onChange = e => {
         const newValue = e.target.value
-        const id = this.props.attendanceId
+        const id = props.attendanceId
         const data = {id, attendancestate: newValue}
         AttendanceService.patch(data)
-            .then(() => this.props.funcRefresh())
+            .then(() => props.funcRefresh())
     }
 
-    render() {
-        const {value} = this.state
-        return (
-            <CustomInput type="select" bsSize="sm" onChange={this.onChange} id={"select" + this.props.attendanceId}
-                         value={value} data-qa="lecture_select_attendance_attendancestate">
-                <AttendanceStateConsumer>
-                    {({attendancestates}) =>
-                        attendancestates.map(attendancestate =>
-                        // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
-                        (attendancestate.visible || attendancestate.id === value) &&
-                        <option key={attendancestate.id} value={attendancestate.id}>
-                            {attendancestate.name}
-                        </option>)}
-                </AttendanceStateConsumer>
-            </CustomInput>
-        )
-    }
+    return (
+        <CustomInput type="select" bsSize="sm" onChange={onChange} id={"select" + props.attendanceId}
+                     value={props.value} data-qa="lecture_select_attendance_attendancestate">
+            {attendancestates.map(attendancestate =>
+                // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
+                (attendancestate.visible || attendancestate.id === value) &&
+                <option key={attendancestate.id} value={attendancestate.id}>
+                    {attendancestate.name}
+                </option>)}
+        </CustomInput>
+    )
 }
+
+export default SelectAttendanceState

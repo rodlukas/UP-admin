@@ -17,10 +17,11 @@ export class AttendanceStatesProvider extends Component {
         this.getAttendanceStates(() => this.setState({IS_LOADED: true}))
     }
 
-    getAttendanceStates = (callback) =>
+    getAttendanceStates = callback =>
         AttendanceStateService.getAll()
             .then(attendancestates => this.setState({attendancestates}, callback))
 
+    // TODO - v aplikaci se nikde nevyuyiva pro zobrazeni nacitani isLoaded
     render = () =>
         <AttendanceStatesContext.Provider
             value={{
@@ -37,6 +38,5 @@ const WithAttendanceStatesContext = WrappedComponent => props =>
         {attendanceStatesContext => <WrappedComponent {...props} attendanceStatesContext={attendanceStatesContext}/>}
     </AttendanceStatesContext.Consumer>
 
-const AttendanceStateConsumer = AttendanceStatesContext.Consumer
 
-export {AttendanceStateConsumer, WithAttendanceStatesContext}
+export {WithAttendanceStatesContext, AttendanceStatesContext}

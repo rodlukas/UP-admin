@@ -1,30 +1,26 @@
-import React, {Component} from "react"
+import React, {useState, useEffect} from "react"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSpinnerThird} from "@fortawesome/pro-solid-svg-icons"
 
 const LONG_LOADING_THRESHOLD = 5 // sekundy
 
-export default class Loading extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            LONG_LOADING: false
-        }
-        this.timeoutId = setTimeout(() => this.setState({LONG_LOADING: true}), LONG_LOADING_THRESHOLD * 1000)
-    }
+const Loading = props => {
+    const [longLoading, setLongLoading] = useState(false)
 
-    componentWillUnmount() {
-        clearTimeout(this.timeoutId)
-    }
+    useEffect(() => {
+        const timeoutId = setTimeout(() => setLongLoading(true), LONG_LOADING_THRESHOLD * 1000)
 
-    render() {
-        return (
-            <div className="text-center mt-2" data-qa="loading">
-                <FontAwesomeIcon icon={faSpinnerThird} spin size="3x"/>
-                <br/>
-                {this.props.text ? this.props.text : "Načítání"}...
-                {this.state.LONG_LOADING && " Stále pracuji 😎"}
-            </div>
-        )
-    }
+        return () => clearTimeout(timeoutId)
+    }, [])
+
+    return (
+        <div className="text-center mt-2" data-qa="loading">
+            <FontAwesomeIcon icon={faSpinnerThird} spin size="3x"/>
+            <br/>
+            {props.text ? props.text : "Načítání"}...
+            {longLoading && " Stále pracuji 😎"}
+        </div>
+    )
 }
+
+export default Loading

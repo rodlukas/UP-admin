@@ -1,19 +1,19 @@
-import {PureComponent} from "react"
-import {WithAuthContext} from "./AuthContext"
+import {useContext, useEffect} from "react"
+import {AuthContext} from "./AuthContext"
 
 // interval pro dotazovani na platnost tokenu (pripadne se obnovi jeho platnost)
 const REFRESH_TOKEN_INTERVAL = 210 * 60 * 1000 // milisekundy -> 3.5 hodiny (210*60*1000)
 
-class AuthChecking extends PureComponent {
-    componentDidMount() {
-        this.intervalId = setInterval(this.props.authContext.isAuthenticated, REFRESH_TOKEN_INTERVAL)
-    }
+const AuthChecking = () => {
+    const authContext = useContext(AuthContext)
 
-    componentWillUnmount() {
-        clearInterval(this.intervalId)
-    }
+    useEffect(() => {
+        const intervalId = setInterval(authContext.isAuthenticated, REFRESH_TOKEN_INTERVAL)
 
-    render = () => null
+        return () => clearInterval(intervalId)
+    }, [authContext])
+
+    return null
 }
 
-export default WithAuthContext(AuthChecking)
+export default AuthChecking

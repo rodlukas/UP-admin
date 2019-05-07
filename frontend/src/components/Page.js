@@ -1,27 +1,20 @@
-import React from "react"
+import React, {useEffect} from "react"
 import {Route} from "react-router-dom"
 import {getEnvNameShort, isEnvProduction} from "../global/funcEnvironments"
 
-class Page extends Route {
-    setTitle() {
-        let title = ""
-        if (!isEnvProduction())
-            title = getEnvNameShort() + " | "
-        document.title = title + this.props.title + " – ÚPadmin"
-    }
 
-    componentDidMount() {
-        this.setTitle()
-    }
+const Page = props => {
+    const {title, ...rest} = props
 
-    componentDidUpdate() {
-        this.setTitle()
-    }
+    useEffect(() => {
+        // nastav title stranky
+        const envTitle = !isEnvProduction()
+            ? getEnvNameShort() + " | "
+            : ""
+        document.title = envTitle + title + " – ÚPadmin"
+    }, [title])
 
-    render() {
-        const {title, ...rest} = this.props
-        return <Route {...rest} />
-    }
+    return <Route {...rest} />
 }
 
 export default Page

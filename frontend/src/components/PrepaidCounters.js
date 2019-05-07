@@ -1,68 +1,68 @@
-import React, {Component} from "react"
-import {Input, Container, Row, Col, ListGroup, ListGroupItem, InputGroup, InputGroupAddon} from "reactstrap"
+import React, {useState, useEffect} from "react"
+import {Input, Container, Row, Col, Label, ListGroup, ListGroupItem, InputGroup, InputGroupAddon} from "reactstrap"
 import ClientName from "./ClientName"
 import MembershipService from "../api/services/membership"
 
-export default class PrepaidCounters extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            prepaid_cnts: this.createPrepaidCntObjects()
-        }
-    }
+const PrepaidCounters = props => {
 
-    onChange = e => {
-        const target = e.target
-        const prepaid_cnts = this.state.prepaid_cnts
-        const value = target.value
-        const id = target.dataset.id
-        prepaid_cnts[id] = value
-        this.setState({prepaid_cnts})
-        const data = {id, prepaid_cnt: value}
-        MembershipService.patch(data)
-            .then(this.props.funcRefreshPrepaidCnt(id, value))
-    }
-
-    createPrepaidCntObjects() {
+    function createPrepaidCntObjects() {
         let objects = {}
-        if(this.props.memberships)
-            this.props.memberships.forEach(membership =>
+        if (props.memberships)
+            props.memberships.forEach(membership =>
                 objects[membership.id] = membership.prepaid_cnt)
         return objects
     }
 
-    onFocus = e =>
-        e.target.select()
+    const [prepaidCnts, setPrepaidCnts] = useState(() => createPrepaidCntObjects())
 
-    componentDidUpdate(prevProps) {
-        if(this.props.memberships !== prevProps.memberships)
-            this.createPrepaidCntObjects()
+    useEffect(() => {
+        createPrepaidCntObjects()
+    }, [props.memberships])
+
+    function onChange(e) {
+        const target = e.target
+        const newPrepaidCnts = prepaidCnts
+        const value = target.value
+        const id = target.dataset.id
+        newPrepaidCnts[id] = value
+        setPrepaidCnts(newPrepaidCnts)
+        const data = {id, prepaid_cnt: value}
+        MembershipService.patch(data)
+            .then(props.funcRefreshPrepaidCnt(id, value))
     }
 
-    render() {
-        const {prepaid_cnts} = this.state
-        return (
-            <Container fluid>
-                <Row className="justify-content-center">
-                {this.props.memberships && this.props.memberships.map(membership =>
+    function onFocus(e) {
+        e.target.select()
+    }
+
+    return (
+        <Container fluid>
+            <Row className="justify-content-center">
+                {props.memberships && props.memberships.map(membership =>
                     <Col sm="9" md="3" lg="2" xl="2" key={membership.id}>
                         <ListGroup>
                             <ListGroupItem>
                                 <h5><ClientName client={membership.client} link/></h5>
                                 <InputGroup>
-                                    <InputGroupAddon addonType="prepend">předplaceno</InputGroupAddon>
-                                    <Input type="number" value={prepaid_cnts[membership.id]} min="0"
-                                           onChange={this.onChange} data-id={membership.id} onFocus={this.onFocus}/>
+                                    <InputGroupAddon addonType="prepend">
+                                        <Label className="input-group-text" for={"prepaid_cnt" + membership.id}>
+                                            předplaceno
+                                        </Label>
+                                    </InputGroupAddon>
+                                    <Input type="number" value={prepaidCnts[membership.id]} min="0"
+                                           onChange={onChange} data-id={membership.id} onFocus={onFocus}
+                                           id={"prepaid_cnt" + membership.id}/>
                                 </InputGroup>
                             </ListGroupItem>
                         </ListGroup>
                     </Col>)}
-                {this.props.memberships && !Boolean(this.props.memberships.length) &&
+                {props.memberships && !Boolean(props.memberships.length) &&
                 <p className="text-muted text-center">
                     Žádní účastníci
                 </p>}
-                </Row>
-            </Container>
-        )
-    }
+            </Row>
+        </Container>
+    )
 }
+
+export default PrepaidCounters

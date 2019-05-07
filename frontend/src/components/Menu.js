@@ -1,18 +1,18 @@
-import React, {Fragment} from "react"
+import React, {Fragment, useContext} from "react"
 import {NavLink as RouterNavLink} from "react-router-dom"
 import {Nav, NavItem, NavLink, Button} from "reactstrap"
 import "./Menu.css"
 import APP_URLS from "../urls"
-import {AuthConsumer} from "../auth/AuthContext"
+import {AuthContext} from "../auth/AuthContext"
 import AuthChecking from "../auth/AuthChecking"
 
 const Menu = props => {
+    const authContext = useContext(AuthContext)
     const MyNavLink = otherProps =>
         <NavLink onClick={props.closeNavbar} tag={RouterNavLink} {...otherProps}/>
     return (
-        <AuthConsumer>
-            {authContext =>
-                authContext.IS_AUTH &&
+        <Fragment>
+            {authContext.IS_AUTH &&
                 <Fragment>
                     <Nav className="ml-auto" navbar>
                         <NavItem>
@@ -40,7 +40,7 @@ const Menu = props => {
                     </Button>
                     <AuthChecking/>
                 </Fragment>}
-        </AuthConsumer>
+        </Fragment>
     )
 }
 
