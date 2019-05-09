@@ -9,7 +9,7 @@ import {getEnvName, isHosted} from "./global/funcEnvironments"
 import {hot} from 'react-hot-loader/root'
 import history from "./global/history"
 import {Router} from "react-router-dom"
-import GA from "./global/GoogleAnalytics"
+import GA from "./components/GoogleAnalytics"
 
 // CI provede substituci stringu za URL, promenna prostredi ale musi existovat, jinak nefunguje (proto podminka)
 if (isHosted())

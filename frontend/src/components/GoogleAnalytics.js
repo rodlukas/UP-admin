@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import ReactGA from 'react-ga'
 import {Route} from 'react-router-dom'
-import {isEnvProduction} from "./funcEnvironments"
+import {isEnvProduction} from "../global/funcEnvironments"
 
 /*
 vychazi z: https://vanja.gavric.org/blog/integrate-google-analytics-with-react-router-v4/
