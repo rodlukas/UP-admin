@@ -15,23 +15,32 @@
     * *... (výčet není konečný)*
 * Backend v [Djangu](https://www.djangoproject.com/) (Python), frontend v [Reactu](https://reactjs.org/) (JS), databáze PostgreSQL
 * Frontend jako SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)), použitý Bootstrap ([reactstrap](https://reactstrap.github.io/)) a mnoho dalších knihoven, responzivní aplikace
+    * aplikace odolná proti pádům JS díky [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
 * Nasazeno na [Heroku](https://www.heroku.com/)
 * REST API přes [Django REST Framework](http://www.django-rest-framework.org/)
-* [JWT](https://jwt.io/) autentizace
+* [JWT](https://jwt.io/) autentizace, **HTTPS-only** (+ pokročilé zabezpečení, viz. [1](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [2](https://wsvincent.com/django-best-practices/))
 * Pokročilé debugování na lokálním i vzdáleném prostředí díky [Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar) a jeho doplňku [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/)
 * Každý den ve 3:00 se provádí automatická záloha databáze (viz. https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
 * [využité tipy k optimalizaci Djanga](https://www.revsys.com/tidbits/django-performance-simple-things/) + [další podobný článek](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)
 * **respektování standardů**
     * https://pep8.org a také (tam, kde to dává smysl) https://12factor.net/ a https://roca-style.org/
-* 4 prostředí:
+* 4 prostředí (3x PaaS [Heroku](https://www.heroku.com/)):
     * **vývojové (lokální)** - pro lokální vývoj, žlutá lišta,
     * **testing** - umožňuje zapnout debugování, deploy každého commitu, modrá lišta
     * **staging** - stejná verze aplikace jako na produkci, deploy při release, zelená lišta
     * **produkce** - používá klient, deploy při release (jako staging)
-* logování do *[Logentries](https://logentries.com/)* (logy se uchovávají po 7 dnů)
-* odchytávání chyb přes *[Sentry](https://sentry.io/)*, propojení se *[Slackem](https://slack.com/)*
-* **CI a CD** má na starost [Travis](https://travis-ci.com/) - automatizovaný build, testování i nasazení na různá prostředí
+* logování z Heroku do *[Logentries](https://logentries.com/)* (logy se uchovávají po 7 dnů, tříděné podle typu prostředí)
+* odchytávání chyb (v Pythonu i JS) přes *[Sentry](https://sentry.io/)* (tříděné podle typu prostředí)
+    * při chybě na frontendu možnost poslat zpětnou vazbu vázanou ke konkrétní chybě díky propojení *Sentry* a [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
+* propojení se *[Slackem](https://slack.com/)*
+* **CI a CD** má na starost [Travis](https://travis-ci.com/) - automatizovaný build, testování i nasazení 
+na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické nastavení verze do aplikace,
+tokenů apod.
 * kompletní vývoj v IDE *Pycharm (Professional Edition)*
+* rozsáhlé testy API i frontendu spustitelné na CI i na lokálním PC
+    * BDD framework [behave](https://github.com/behave/behave) - testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy
+    * pro testování UI se používá [selenium](https://github.com/SeleniumHQ/selenium)
+    * více viz. [docs README](/docs/README.md)
 * **Struktura repozitáře:**
     ```bash
     ├── .idea ........ nastavení pro IDE (Pycharm od Jetbrains)      
@@ -41,6 +50,7 @@
     ├── frontend ..... klientská část webové aplikace   
     ├── scripts ...... skripty pro CI/CD
     ├── staticfiles .. složka pro statické soubory (prázdná, přesun až na CI)
+    ├── tests ........ kompletní testy API i frontendu
     └── up ........... celý Django projekt
     ```
 ---
