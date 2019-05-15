@@ -182,7 +182,7 @@ class LectureSerializer(serializers.ModelSerializer):
     attendances = AttendanceSerializer(many=True)
     course = CourseSerializer(read_only=True)
     course_id = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all(), source='course', write_only=True,
-                                                   required=False, allow_null=True)
+                                                   required=False)
     group = GroupSerializer(read_only=True)
     group_id = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all(), source='group', write_only=True,
                                                   required=False, allow_null=True)
@@ -303,6 +303,11 @@ class LectureSerializer(serializers.ModelSerializer):
         elif data.get('group', None) and 'course' in data:
             raise serializers.ValidationError(
                 {'course_id': "Pro skupiny se kurz neuvádí, protože se určí automaticky."})
+
+        # single lekce musi mit jen jednoho ucastnika
+        if not data.get('group', None) and 'attendances' in data and len(data['attendances']) != 1:
+            raise serializers.ValidationError(
+                {'attendances': "Lekce pro jednotlivce musí mít jen jednoho účastníka."})
 
         # pro zrusene lekce nic nekontroluj
         # tedy pokud je zaslana nova hodnota canceled a je True
