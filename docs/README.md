@@ -12,10 +12,14 @@
     * konfigurace kurzů a stavů účasti
     * propojení s API Fio Banky - na hlavní stránce se přehledně zobrazují transakce z účtu
     * automatický odhad kurzu pro nově přidávané lekce
+    * respektování a kontrola všech omezení daných danou doménou (např. duplicity apod.)
+    * automatické přidání předplacené lekce při omluvě/zrušení lekce ze strany lektorky
+    * funkce pro vedení aktivních a neaktivních klientů a skupin
     * *... (výčet není konečný)*
 * Backend v [Djangu](https://www.djangoproject.com/) (Python), frontend v [Reactu](https://reactjs.org/) (JS), databáze PostgreSQL
 * Frontend jako SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)), použitý Bootstrap ([reactstrap](https://reactstrap.github.io/)) a mnoho dalších knihoven, responzivní aplikace
     * aplikace odolná proti pádům JS díky [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
+    * pro zrychlení načítání se používá lazy loading [`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)
 * Nasazeno na [Heroku](https://www.heroku.com/)
 * REST API přes [Django REST Framework](http://www.django-rest-framework.org/)
 * [JWT](https://jwt.io/) autentizace, **HTTPS-only** (+ pokročilé zabezpečení, viz. [1](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [2](https://wsvincent.com/django-best-practices/))
@@ -30,9 +34,10 @@
     * **staging** - stejná verze aplikace jako na produkci, deploy při release, zelená lišta
     * **produkce** - používá klient, deploy při release (jako staging)
 * logování z Heroku do *[Logentries](https://logentries.com/)* (logy se uchovávají po 7 dnů, tříděné podle typu prostředí)
-* odchytávání chyb (v Pythonu i JS) přes *[Sentry](https://sentry.io/)* (tříděné podle typu prostředí)
+* odchytávání chyb (v Pythonu i JS) přes *[Sentry](https://sentry.io/)* (tříděné podle typu prostředí, aktivní na produkci, testing i staging prostředí)
     * při chybě na frontendu možnost poslat zpětnou vazbu vázanou ke konkrétní chybě díky propojení *Sentry* a [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
 * propojení se *[Slackem](https://slack.com/)*
+* napojení na *[Google Analytics](https://analytics.google.com/)*
 * **CI a CD** má na starost [Travis](https://travis-ci.com/) - automatizovaný build, testování i nasazení 
 na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické nastavení verze do aplikace,
 tokenů apod.
