@@ -8,10 +8,11 @@ const AuthChecking = () => {
     const authContext = useContext(AuthContext)
 
     useEffect(() => {
+        authContext.isAuthenticated()
         const intervalId = setInterval(authContext.isAuthenticated, REFRESH_TOKEN_INTERVAL)
 
         return () => clearInterval(intervalId)
-    }, [authContext])
+    }, [authContext.IS_AUTH])
 
     return null
 }

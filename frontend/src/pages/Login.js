@@ -18,8 +18,8 @@ export default function Login(props) {
 
     useEffect(() => {
         // pokud dojde k přesměrování po neúspěšném požadavku (401), je potřeba okamžitě zjistit, zda je potřeba upravit stav AuthContext (jinak cyklení)
-        authContext.isAuthenticated()
-    }, [authContext])
+        authContext.isAuthenticated(false)
+    }, [authContext.IS_AUTH])
 
     function login() {
         authContext.login(values)
