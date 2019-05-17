@@ -36,3 +36,21 @@ b {
 h4 .badge {
     margin: 0;
 }
+
+/* TODO do zvlastniho souboru, ale je potreba vytvorit komponentu pro zobrazeni lekce
+    (sjednoceni zobrazeni v DashboardDay s Card do jedne komponenty) */
+.lecture-canceled h4 {
+    text-decoration: line-through
+}
+
+.lecture-future {
+    background-color: #fff3cd !important
+}
+
+.lecture-prepaid {
+    background-color: #d4edda !important
+}
+
+.lecture-canceled {
+    background-color: #f8d7da !important
+}
