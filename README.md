@@ -30,6 +30,10 @@ Logentries -
     * `yarn add/remove [package]`
     * `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
     * `yarn install`
+* **pipenv:**
+    * `pipenv update --outdated`
+    * `pipenv update` - update all
+    * `pipenv update <pkg>`
 * **HEROKU**
     * **vytvoření uživatele:** `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * **připojení k DB z externí aplikace** - je potřeba přidat do URI na konec `?sslmode=require`
