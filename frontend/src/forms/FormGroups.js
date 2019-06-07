@@ -22,7 +22,8 @@ export default class FormGroups extends Component {
             name: name || '',
             active: this.isGroup ? active : true,
             course: this.isGroup ? course : null,
-            memberships: this.isGroup ? this.getMembers(memberships) : [],
+            // vychozi hodnota memberships je null, protoze pri smazani vsech clenu React-select automaticky nastavi null
+            memberships: this.isGroup ? this.getMembers(memberships) : null,
             clients: [],
             courses: []
         }
@@ -39,8 +40,9 @@ export default class FormGroups extends Component {
     // pripravi pole se cleny ve spravnem formatu, aby slo poslat do API
     prepareMembersForSubmit(memberships) {
         let members = []
-        memberships.map(membership =>
-            members.push({client_id: membership.id}))
+        if(memberships !== null)
+            memberships.map(membership =>
+                members.push({client_id: membership.id}))
         return members
     }
 
