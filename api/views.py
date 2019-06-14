@@ -21,7 +21,6 @@ class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     filterset_fields = 'active',
 
     def destroy(self, request, *args, **kwargs):
-        raise "ss"
         try:
             result = super().destroy(request, *args, **kwargs)
         except ProtectedError:
