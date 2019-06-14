@@ -10,13 +10,23 @@ from django.http import JsonResponse
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.db.models import Prefetch
+from django.db.models.deletion import ProtectedError
+from .mixins import ProtectedErrorMixin
 from .paginations import LecturePagination
 
 
-class ClientViewSet(viewsets.ModelViewSet):
+class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
     filterset_fields = 'active',
+
+    def destroy(self, request, *args, **kwargs):
+        raise "ss"
+        try:
+            result = super().destroy(request, *args, **kwargs)
+        except ProtectedError:
+            result = super().get_result("Klienta lze smazat jen pokud nemá žádné lekce.")
+        return result
 
 
 class AttendanceViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
@@ -29,9 +39,16 @@ class MembershipViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     serializer_class = MembershipSerializer
 
 
-class AttendanceStateViewSet(viewsets.ModelViewSet):
+class AttendanceStateViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     queryset = AttendanceState.objects.all()
     serializer_class = AttendanceStateSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            result = super().destroy(request, *args, **kwargs)
+        except ProtectedError:
+            result = super().get_result("Stav účasti lze smazat jen pokud se nikde nepoužívá.")
+        return result
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -47,10 +64,18 @@ class GroupViewSet(viewsets.ModelViewSet):
         return qs
 
 
-class CourseViewSet(viewsets.ModelViewSet):
+class CourseViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     filterset_fields = 'visible',
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            result = super().destroy(request, *args, **kwargs)
+        except ProtectedError:
+            msg = "Kurz lze smazat jen pokud se nikde nepoužívá (neexistuje žádná lekce kurzu ani skupina patřící k danému kurzu."
+            result = super().get_result(msg)
+        return result
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
