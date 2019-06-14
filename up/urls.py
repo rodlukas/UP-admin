@@ -2,7 +2,7 @@ from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
-from up.production_settings import DEBUG, MANUAL_PRODUCTION
+from django.conf import settings
 
 urlpatterns = [
     path('api/v1/', include('api.urls')),
@@ -12,7 +12,7 @@ urlpatterns = [
     re_path(r'^', TemplateView.as_view(template_name="react-autogenerate.html")),
 ]
 
-if DEBUG or MANUAL_PRODUCTION:
+if settings.DEBUG or settings.MANUAL_PRODUCTION:
     import debug_toolbar
     urlpatterns = [
         re_path(r'^__debug__/', include(debug_toolbar.urls)),

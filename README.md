@@ -16,7 +16,7 @@ Logentries -
 
 ## Užitečné příkazy
 * **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
-    1. v `up/production_settings.py` nastavit `MANUAL_PRODUCTION = True`
+    1. v `.env` nastavit `MANUAL_PRODUCTION=True` (nastaví se proměnná prostředí)
     2. `yarn install` (z rootu, automaticky se pak provede i build)
     3. přes `manage.py` spustit:
         1. `collectstatic --settings=up.production_settings --noinput`

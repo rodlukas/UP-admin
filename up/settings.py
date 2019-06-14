@@ -2,7 +2,6 @@ import os
 import datetime
 import environ
 import sys
-import sentry_sdk
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,7 +15,8 @@ env = environ.Env(
     DEBUG=(bool, False),
     HEROKU=(bool, False),
     ENVIRONMENT=str,
-    SENTRY_DSN=str
+    SENTRY_DSN=str,
+    MANUAL_PRODUCTION=(bool, False),
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -28,6 +28,8 @@ FIO_API_KEY = env('FIO_API_KEY')
 SENTRY_DSN = env('SENTRY_DSN')
 TESTS_RUNNING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
 ENVIRONMENT = env('ENVIRONMENT')
+# pro rucni spusteni produkcni verze nastavit True
+MANUAL_PRODUCTION = env('MANUAL_PRODUCTION')
 
 # Django konstanty
 DEBUG = env('DEBUG')

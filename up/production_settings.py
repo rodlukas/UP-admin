@@ -1,8 +1,7 @@
 from .settings import *
+import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-# pro rucni spusteni produkcni verze nastavit True
-MANUAL_PRODUCTION = False
 # pro funkcni testy na Travisu
 if os.getenv('TRAVIS'):
     MANUAL_PRODUCTION = True
