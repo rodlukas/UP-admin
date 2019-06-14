@@ -6,6 +6,15 @@ b {
     font-weight: 600;
 }
 
+label {
+    user-select: none;
+}
+
+/* pro spravne zarovnani labelu u checkboxu */
+.custom-control {
+    display: inline-block !important;
+}
+
 .pageContent {
     clear: both
 }
