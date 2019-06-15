@@ -12,7 +12,6 @@ from django.utils.decorators import method_decorator
 from django.db.models import Prefetch
 from django.db.models.deletion import ProtectedError
 from .mixins import ProtectedErrorMixin
-from .paginations import LecturePagination
 
 
 class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
@@ -84,7 +83,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 
 class LectureViewSet(viewsets.ModelViewSet):
     serializer_class = LectureSerializer
-    # pagination_class = LecturePagination
     filter_backends = OrderingFilter, DjangoFilterBackend,
     ordering_fields = 'start',
     filterset_fields = 'group',
