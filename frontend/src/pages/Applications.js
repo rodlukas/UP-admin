@@ -74,21 +74,21 @@ export default class Applications extends Component {
             </Badge>
         const Application = ({application}) =>
             <Fragment>
-                <Col>
-                    <h5>
+                <Col md="3">
+                    <h5 className="mb-0">
                         <ClientName client={application.client} link/>
                     </h5>
                 </Col>
                 {application.client.phone &&
-                <Col>
+                <Col md="2">
                     <Phone phone={application.client.phone} icon/>
                 </Col>}
-                <Col xs="auto">
+                <Col md="4">
                     <span data-qa="application_note">
                         {application.note}
                     </span>
                 </Col>
-                <Col className="text-right">
+                <Col className="text-right mt-1 mt-md-0" md="3">
                     <EditButton onClick={() => this.toggle(application)} data-qa="button_edit_application"/>
                     {' '}
                     <DeleteButton
@@ -106,11 +106,9 @@ export default class Applications extends Component {
             <Fragment>
                 {applications.map(application =>
                     <ListGroupItem key={application.id} data-qa="application">
-                        <Container>
-                            <Row className="align-items-center">
-                                <Application application={application}/>
-                            </Row>
-                        </Container>
+                        <Row className="align-items-center">
+                            <Application application={application}/>
+                        </Row>
                     </ListGroupItem>)}
             </Fragment>
         const AllApplications = () =>

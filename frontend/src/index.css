@@ -2,6 +2,10 @@ html, body, .content, .root {
     background-color: #ECF0F5;
 }
 
+.container {
+    max-width: 1140px !important;
+}
+
 b {
     font-weight: 600;
 }
