@@ -115,7 +115,7 @@ export default class Applications extends Component {
             <div className="pageContent">
                 {applications.map(courseApplications =>
                     <ListGroup key={courseApplications.course} data-qa="applications_for_course">
-                        <h4 className="Applications-h4">
+                        <h4>
                             <span data-qa="application_course">
                                 {courseApplications.course}
                             </span>

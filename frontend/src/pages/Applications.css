@@ -2,6 +2,6 @@
     margin-bottom: 0 !important;
 }
 
-.Applications-h4 {
-    margin-top: 0.2rem !important;
+.list-group+.list-group {
+    margin-top: 1rem
 }
