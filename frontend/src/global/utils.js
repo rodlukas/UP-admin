@@ -36,7 +36,7 @@ export function prettyPhone(phone) {
 }
 
 // vrati value, pokud je value undefined tak vrati prazdny string
-function getAttrSafe(val) {
+export function getAttrSafe(val) {
     return val || ''
 }
 
