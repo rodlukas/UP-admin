@@ -110,7 +110,7 @@ export default class FormGroups extends Component {
                         </Label>
                         <Col sm={10}>
                             <Input type="text" id="name" value={name} onChange={this.onChange} autoFocus
-                                   data-qa="group_field_name" required/>
+                                   data-qa="group_field_name" required spellCheck/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

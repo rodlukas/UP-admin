@@ -111,7 +111,7 @@ export default class FormApplications extends Component {
                         </Label>
                         <Col sm={9}>
                             <Input type="textarea" id="note" value={note} onChange={this.onChange}
-                                   data-qa="application_field_note"/>
+                                   data-qa="application_field_note" spellCheck/>
                         </Col>
                     </FormGroup>
                 </ModalBody>

@@ -433,7 +433,8 @@ class FormLectures extends Component {
                                             </InputGroupAddon>
                                             <Input type="text" name="at_note" id={"at_note" + member.id}
                                                    value={at_note[member.id]} onChange={this.onChangeMultiple}
-                                                   data-id={member.id} data-qa="lecture_field_attendance_note"/>
+                                                   data-id={member.id} data-qa="lecture_field_attendance_note"
+                                                   spellCheck/>
                                         </InputGroup>
                                     </Col>
                                 </FormGroup>

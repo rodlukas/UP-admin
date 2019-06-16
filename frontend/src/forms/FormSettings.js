@@ -93,7 +93,7 @@ export default class FormSettings extends Component {
                         </Label>
                         <Col sm={9}>
                             <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus
-                                   data-qa="settings_field_name"/>
+                                   data-qa="settings_field_name" spellCheck/>
                         </Col>
                     </FormGroup>
                     <FormGroup row className="align-items-center">

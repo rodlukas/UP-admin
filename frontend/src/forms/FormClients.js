@@ -90,7 +90,7 @@ export default class FormClients extends Component {
                         </Label>
                         <Col sm={10}>
                             <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus
-                                   data-qa="client_field_name"/>
+                                   data-qa="client_field_name" spellCheck/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -99,7 +99,7 @@ export default class FormClients extends Component {
                         </Label>
                         <Col sm={10}>
                             <Input type="text" id="surname" value={surname} onChange={this.onChange} required
-                                   data-qa="client_field_surname"/>
+                                   data-qa="client_field_surname" spellCheck/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -133,7 +133,7 @@ export default class FormClients extends Component {
                         </Label>
                         <Col sm={10}>
                             <Input type="textarea" id="note" value={note} onChange={this.onChange}
-                                   data-qa="client_field_note"/>
+                                   data-qa="client_field_note" spellCheck/>
                         </Col>
                     </FormGroup>
                     <FormGroup row className="align-items-center">
