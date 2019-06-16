@@ -4,7 +4,7 @@ import {ListGroup, ListGroupItem, Table, UncontrolledTooltip} from "reactstrap"
 import {prettyDateWithDayYearIfDiff, prettyTimeWithSeconds, isToday} from "../global/funcDateTime"
 import NoInfo from "./NoInfo"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faSyncAlt, faExternalLinkAlt, faExclamationCircle} from "@fortawesome/pro-solid-svg-icons"
+import {faSyncAlt, faExternalLinkAlt, faExclamationCircle, faInfoCircle} from "@fortawesome/pro-solid-svg-icons"
 import CustomButton from "./buttons/CustomButton"
 import {prettyAmount} from "../global/utils"
 import {RENT_PRICE} from "../global/constants"
@@ -172,7 +172,9 @@ export default class Bank extends Component {
                         </tbody>
                     </Table>
                     <div className="text-center text-muted font-italic">
-                        Starší položky než 14 dní lze zobrazit pouze v bankovnictví.
+                        <FontAwesomeIcon icon={faInfoCircle}/>
+                        {' '}
+                        Transakce starší 14 dnů lze zobrazit pouze v bankovnictví
                     </div>
                 </ListGroupItem>
             </ListGroup>
