@@ -248,11 +248,10 @@ export default class Card extends Component {
                             <ClientInfo/>
                         </Col>
                     </Row>
-                </Container>
-                {!this.isClient() &&
-                <PrepaidCounters memberships={object.memberships} funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}/>}
-                <br/>
-                <Container fluid>
+                    {!this.isClient() &&
+                    <PrepaidCounters memberships={object.memberships}
+                                     funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}/>}
+                    <br/>
                     <Row className="justify-content-center">
                         <AllLectures/>
                     </Row>
