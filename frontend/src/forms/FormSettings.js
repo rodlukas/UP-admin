@@ -106,8 +106,8 @@ export default class FormSettings extends Component {
                         </Col>
                     </FormGroup>
                     {this.TYPE === EDIT_TYPE.COURSE &&
-                    <FormGroup row>
-                        <Label for="name" sm={3}>
+                    <FormGroup row className="align-items-center">
+                        <Label for="name" sm={3} className="py-0">
                             Trvání <small className="text-secondary">(pro jednotlivce)</small>
                         </Label>
                         <Col sm={9}>
