@@ -9,14 +9,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # env promenne
 env = environ.Env(
     # nastaveni typu a pripadne vychozi hodnoty
-    DATABASE_URL=str,
-    SECRET_KEY=str,
-    FIO_API_KEY=str,
-    DEBUG=(bool, False),
-    HEROKU=(bool, False),
-    ENVIRONMENT=str,
-    SENTRY_DSN=str,
-    MANUAL_PRODUCTION=(bool, False),
+    DATABASE_URL=str,                   # url pouzivane DB (napr. postgresql://postgres:postgres@localhost:5432/up)
+    SECRET_KEY=str,                     # tajny klic pro Django
+    FIO_API_KEY=str,                    # token pro pristup do Fia
+    DEBUG=(bool, False),                # aktivace debug prostredi
+    HEROKU=(bool, False),               # priznak nasazeni aplikace na Heroku
+    ENVIRONMENT=str,                    # nazev aktualniho prostredi, kde je aplikace spustena (pro Sentry)
+    SENTRY_DSN=str,                     # DSN klic pro Sentry
+    MANUAL_PRODUCTION=(bool, False),    # pro rucni spusteni produkcni verze nastavit True
+    BANK_ACTIVE=(bool, True),           # aktivace propojeni s bankou
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -24,17 +25,19 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # vlastni konstanty
 CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 600
-FIO_API_KEY = env('FIO_API_KEY')
-SENTRY_DSN = env('SENTRY_DSN')
 TESTS_RUNNING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
+
+# vlastni konstanty nactene z prostredi/souboru
+BANK_ACTIVE = env('BANK_ACTIVE')
 ENVIRONMENT = env('ENVIRONMENT')
-# pro rucni spusteni produkcni verze nastavit True
+FIO_API_KEY = env('FIO_API_KEY')
+HEROKU = env('HEROKU')
 MANUAL_PRODUCTION = env('MANUAL_PRODUCTION')
+SENTRY_DSN = env('SENTRY_DSN')
 
 # Django konstanty
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY')
-HEROKU = env('HEROKU')
 ALLOWED_HOSTS = ['*']
 
 # Application definition
