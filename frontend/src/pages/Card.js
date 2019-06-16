@@ -176,7 +176,7 @@ export default class Card extends Component {
                         <b>E-mail:</b> <Email email={object.email}/>
                     </ListGroupItem>
                     <ListGroupItem>
-                        <b>Členství ve skupinách:</b> <GroupsList groups={memberships}/>
+                        <b>Skupiny:</b> <GroupsList groups={memberships}/>
                     </ListGroupItem>
                     <ListGroupItem>
                         <b>Poznámka:</b> <Note note={object.note}/>
