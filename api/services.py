@@ -25,7 +25,7 @@ class Bank:
                 status_info = "špatně zaslaný dotaz na banku"
             else:
                 status_info = "neznámá chyba"
-            json_data = {'status_info': f"Data se nepodařilo stáhnout - {status_info}"}
+            json_data = {'status_info': f"Data se nepodařilo stáhnout – {status_info}"}
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         else:
             # serad od nejnovejsich transakci
