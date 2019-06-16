@@ -5,7 +5,7 @@ import {getAttrSafe} from "../global/utils"
 
 const PlainName = ({client}) =>
     <span data-qa="client_name">
-        <b>{getAttrSafe(client.surname)}</b> {getAttrSafe(client.name)}
+        <span className="font-weight-bold">{getAttrSafe(client.surname)}</span> {getAttrSafe(client.name)}
     </span>
 
 const ClientName = ({client, link = false}) =>
