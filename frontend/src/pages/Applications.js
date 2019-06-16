@@ -79,10 +79,10 @@ export default class Applications extends Component {
                         <ClientName client={application.client} link/>
                     </h5>
                 </Col>
-                {application.client.phone &&
                 <Col md="2">
-                    <Phone phone={application.client.phone} icon/>
-                </Col>}
+                    {application.client.phone &&
+                    <Phone phone={application.client.phone} icon/>}
+                </Col>
                 <Col md="4">
                     <span data-qa="application_note">
                         {application.note}
