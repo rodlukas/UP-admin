@@ -43,10 +43,5 @@ label {
     font-size: 1rem;
     font-weight: 600;
     vertical-align: bottom;
-    margin-bottom: 0.3rem;
     text-align: left;
-}
-
-h4 .badge {
-    margin: 0;
 }

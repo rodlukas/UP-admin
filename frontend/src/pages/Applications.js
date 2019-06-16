@@ -114,7 +114,8 @@ export default class Applications extends Component {
         const AllApplications = () =>
             <div className="pageContent">
                 {applications.map(courseApplications =>
-                    <ListGroup key={courseApplications.course} data-qa="applications_for_course">
+                    <ListGroup key={courseApplications.course} data-qa="applications_for_course"
+                               className="applications_course">
                         <h4>
                             <span data-qa="application_course">
                                 {courseApplications.course}
