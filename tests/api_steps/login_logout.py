@@ -1,6 +1,6 @@
 from behave import *
 from tests.api_steps import helpers
-from up.settings import JWT_AUTH
+from django.conf import settings
 from rest_framework import status
 import json
 from tests.common_steps import login_logout
@@ -30,7 +30,7 @@ def step_impl(context):
     assert 'token' in auth
     # uloz do klienta token pro dalsi pozadavky
     token = auth['token']
-    jwt_token = JWT_AUTH['JWT_AUTH_HEADER_PREFIX'] + " " + token
+    jwt_token = settings.SIMPLE_JWT['AUTH_HEADER_TYPES'][0] + " " + token
     context.api_client.credentials(HTTP_AUTHORIZATION=jwt_token)
 
 
