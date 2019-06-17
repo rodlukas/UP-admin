@@ -25,9 +25,9 @@ install:
   - source scripts/string_substitution.sh
 
   # nainstaluj JS zavislosti
-  - nvm install 10.15.3
-  - npm i -g npm@~6.7.0
-  - npm install -g yarn@~1.15.2
+  - nvm install 10.16.0
+  - npm i -g npm@~6.9.0
+  - npm install -g yarn@~1.16.0
   - yarn install
 
   # nainstaluj Python zavislosti
