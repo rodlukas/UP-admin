@@ -59,8 +59,9 @@ if not HEROKU:
 
 # API
 REST_FRAMEWORK = {
+    # pouziva se JWTTokenUserAuthentication, aby se neprovadel pri kazdem req DB lookup na uzivatele
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTTokenUserAuthentication',
     ),
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
@@ -70,11 +71,11 @@ REST_FRAMEWORK = {
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
-JWT_AUTH = {
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(minutes=CONST_AUTH_EXPIRATION),
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=2)
+SIMPLE_JWT = {
+    # pouzivaji se Sliding tokens - 1 a tentyz token pro autentizaci i refresh
+    'SLIDING_TOKEN_LIFETIME': datetime.timedelta(minutes=CONST_AUTH_EXPIRATION),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': datetime.timedelta(days=2),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.SlidingToken',)
 }
 
 MIDDLEWARE = [
