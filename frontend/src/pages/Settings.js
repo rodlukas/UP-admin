@@ -53,6 +53,12 @@ class Settings extends Component {
         // odesli na API patch pozadavek
         const data = {id: value, [target.dataset.attribute]: true}
         AttendanceStateService.patch(data)
+            .then(() =>
+                this.setState(
+                    {LOADING_CNT: this.state.LOADING_CNT - 1},
+                    () => {
+                        this.callAttendanceStatesFuncRefresh()
+                    }))
     }
 
     refresh = type => {
