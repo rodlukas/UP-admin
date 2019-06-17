@@ -41,6 +41,13 @@ Logentries -
         * **staging** → **testing**: `heroku pg:copy uspesnyprvnacek-staging::DATABASE_URL DATABASE_URL --confirm uspesnyprvnacek-testing -a uspesnyprvnacek-testing`
     * **naplánování pravidelné zálohy DB:** `heroku pg:backups:schedule DATABASE_URL --at "03:00 Europe/Prague" -a uspesnyprvnacek`
         * **výpis záloh:** `heroku pg:backups -a uspesnyprvnacek`
+    * **upgrade PostgreSQL:** ([heroku docs](https://devcenter.heroku.com/articles/upgrading-heroku-postgres-databases#upgrading-with-pg-copy))
+        * všechny příkazy nutné doplnit `-a uspesnyprvnacek-testing/uspesnyprvnacek-staging/uspesnyprvnacek`
+        1. vytvoření nové DB (trvá několik minut): `heroku addons:create heroku-postgresql:hobby-dev`
+        2. maintanance mode aktivace (aby nikdo nic nezapsal): `heroku maintenance:on`
+        3. přenos dat ze staré (`DATABASE_URL`) do nové DB (`HEROKU_POSTGRESQL_COLOR`): `heroku pg:copy DATABASE_URL HEROKU_POSTGRESQL_COLOR`
+        4. nastavení nové DB jako primární: `heroku pg:promote HEROKU_POSTGRESQL_COLOR`
+        5. deaktivace maintanance mode: `heroku maintenance:off`
     * CZ řazení - viz [heroku dokumentace](https://help.heroku.com/JSPK1LZU/how-to-change-an-order-result-by-locale-on-heroku-postgres) a příslušný [soubor](/admin/migrations/0037_auto_20190202_0956.py) s migrací
 
 ## Články pro inspiraci
