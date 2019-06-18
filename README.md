@@ -25,15 +25,15 @@ Logentries -
     1. povolit python+node ve firewallu (např. na chvíli interaktivní režim ESETu)
     2. na mobilním zařízení zadat privátní IP adresu počítače se serverem (zobrazí se např. při spouštění webpack-dev-serveru
     3. při změně privátní adresy restart webpack-dev-serveru
-* **yarn:**
-    * `yarn outdated`
-    * `yarn add/remove [package]`
-    * `yarn upgrade [package]`, `yarn upgrade [package]@[version]`
-    * `yarn install`
-* **pipenv:**
-    * `pipenv update --outdated`
-    * `pipenv update` - update all
-    * `pipenv update <pkg>`
+* **yarn/pipenv:**
+
+    | yarn                  | pipenv                                        |
+    | -----------           | -----------                                   |
+    | `yarn outdated`       | `pipenv update --outdated`                    |
+    | `yarn add/remove/upgrade [package \| package@version]`, `--dev` přepínač   | `pipenv install/uninstall/update [ \| pkg]`, `--dev` přepínač        |
+    | `yarn install`        | `pipenv install`, `--dev` přepínač            |
+    | ---                   | aktivace virt. prostředí: `pipenv shell`      |
+    
 * **HEROKU**
     * **vytvoření uživatele:** `heroku run python manage.py createsuperuser --settings=up.production_settings -a uspesnyprvnacek`
     * **připojení k DB z externí aplikace** - je potřeba přidat do URI na konec `?sslmode=require`
