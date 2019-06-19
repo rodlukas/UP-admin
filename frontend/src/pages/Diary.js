@@ -63,8 +63,7 @@ export default class Diary extends Component {
     }
 
     setRefreshState = () => {
-        this.setState({shouldRefresh: true})
-        this.setState({shouldRefresh: false})
+        this.setState({shouldRefresh: true}, () => this.setState({shouldRefresh: false}))
     }
 
     render() {
