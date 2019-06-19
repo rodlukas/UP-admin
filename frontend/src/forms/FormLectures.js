@@ -302,7 +302,7 @@ class FormLectures extends Component {
                                                      this.onChangePrepaid()
                                                      this.onChange(e)}}
                                     />
-                                    <Label for="prepaid">
+                                    <Label for="prepaid" className="mb-0">
                                         Předplaceno
                                     </Label>
                                     {!this.IS_LECTURE &&
@@ -342,7 +342,7 @@ class FormLectures extends Component {
                                 <CustomInput type="checkbox" id="canceled" checked={canceled}
                                              onChange={this.onChange} disabled={canceled_disabled}
                                              data-qa="lecture_checkbox_canceled"/>
-                                <Label for="canceled" data-qa="lecture_label_canceled">
+                                <Label for="canceled" data-qa="lecture_label_canceled" className="mb-0">
                                     Zrušeno
                                 </Label>
                                 {' '}
@@ -416,7 +416,7 @@ class FormLectures extends Component {
                                                      onChange={this.onChangeMultiple} data-id={member.id}
                                                      data-qa="lecture_checkbox_attendance_paid"/>
                                         <Label for={"at_paid" + member.id} data-qa="lecture_label_attendance_paid"
-                                               className={at_paid[member.id] ? "text-success" : "text-danger"}>
+                                               className={"mb-0 " + (at_paid[member.id] ? "text-success" : "text-danger")}>
                                             Platba
                                         </Label>
                                         {' '}

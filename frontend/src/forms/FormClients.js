@@ -141,11 +141,8 @@ export default class FormClients extends Component {
                             Aktivní
                         </Label>
                         <Col sm={10}>
-                            <CustomInput type="checkbox" id="active" checked={active}
+                            <CustomInput type="checkbox" id="active" checked={active} label="Je aktivní"
                                          onChange={this.onChange} data-qa="client_checkbox_active"/>
-                            <Label for="active" className="mb-0">
-                                Je aktivní
-                            </Label>
                             {' '}
                             {!active &&
                             <Tooltip postfix="active"
