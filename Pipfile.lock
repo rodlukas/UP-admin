@@ -63,10 +63,10 @@
         },
         "django-debug-toolbar-request-history": {
             "hashes": [
-                "sha256:e5ec8a228d37384d704de2656f375ced29cfd51655b2e7ea706eb1c487e4da5d"
+                "sha256:7b3885cb4bf3955a3dff6749e79c1f616b8227484c382a0b5958c2a2c3e7d3f7"
             ],
             "index": "pypi",
-            "version": "==0.0.10"
+            "version": "==0.0.11"
         },
         "django-environ": {
             "hashes": [
