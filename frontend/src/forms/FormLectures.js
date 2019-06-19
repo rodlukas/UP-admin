@@ -350,9 +350,9 @@ class FormLectures extends Component {
                                     <Tooltip postfix="canceled"
                                              text={
                                                  <Fragment>
-                                                     Na tuto lekci nikdo nemá přijít, proto je evidována jako zrušená.
+                                                     Na tuto lekci nemá nikdo přijít, proto je automaticky zrušená.
                                                      <br/>
-                                                     Parametr zrušení lze upravit jen když má alespoň jeden klient.
+                                                     Toto lze změnit jen když má přijít alespoň jeden klient.
                                                  </Fragment>}
                                     />}
                             </Col>
