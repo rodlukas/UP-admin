@@ -1,6 +1,5 @@
 import React, {Component, Fragment} from "react"
-import {Container, Row, Col, Modal, ListGroup, ListGroupItem} from "reactstrap"
-import FormLectures from "../forms/FormLectures"
+import {Container, Row, Col, ListGroup, ListGroupItem} from "reactstrap"
 import {prettyTime, prettyDateWithDayYear} from "../global/funcDateTime"
 import LectureNumber from "../components/LectureNumber"
 import GroupService from "../api/services/group"
@@ -13,8 +12,6 @@ import "./Card.css"
 import GroupName from "../components/GroupName"
 import Attendances from "../components/Attendances"
 import BackButton from "../components/buttons/BackButton"
-import AddButton from "../components/buttons/AddButton"
-import EditButton from "../components/buttons/EditButton"
 import GroupsList from "../components/GroupsList"
 import Email from "../components/Email"
 import Phone from "../components/Phone"
@@ -22,14 +19,15 @@ import Note from "../components/Note"
 import Heading from "../components/Heading"
 import {courseDuration, groupByCourses} from "../global/utils"
 import PrepaidCounters from "../components/PrepaidCounters"
+import ModalClients from "../forms/ModalClients"
+import ModalLectures from "../forms/ModalLectures"
+import ModalGroups from "../forms/ModalGroups"
 
 export default class Card extends Component {
     constructor(props) {
         super(props)
         this.state = {
             object: {},
-            IS_MODAL: false,
-            currentLecture: {},
             lectures: [],
             memberships: [],
             LOADING_CNT: this.isClient() ? 0 : 1,
@@ -83,7 +81,15 @@ export default class Card extends Component {
             this.getMemberships()
     }
 
-    refresh = (all=true) => {
+    refreshObject = () => {
+        this.setState(
+            {LOADING_CNT: this.state.LOADING_CNT - 1},
+            () =>
+                this.getObject()
+        )
+    }
+
+    refresh = (all = true) => {
         if (this.isClient() && all) {
             this.setState(
                 {LOADING_CNT: this.state.LOADING_CNT - 3},
@@ -112,12 +118,6 @@ export default class Card extends Component {
     refreshAfterLectureChanges = () => {
         this.refresh(false)
     }
-
-    toggle = (lecture = {}) =>
-        this.setState({
-            currentLecture: lecture,
-            IS_MODAL: !this.state.IS_MODAL
-        })
 
     goBack = () =>
         this.props.history.goBack()
@@ -164,7 +164,7 @@ export default class Card extends Component {
     }
 
     render() {
-        const {object, lectures, defaultCourse, currentLecture, memberships, LOADING_CNT, IS_MODAL} = this.state
+        const {object, lectures, defaultCourse, memberships, LOADING_CNT} = this.state
         const ClientInfo = () =>
             <ListGroup>
                 {this.isClient() &&
@@ -204,11 +204,14 @@ export default class Card extends Component {
                                 {' '}
                                 <LectureNumber lecture={lecture}/>
                                 <div className="float-right">
-                                    <EditButton onClick={() => this.toggle(lecture)} data-qa="button_edit_lecture"/>
+                                    <ModalLectures IS_CLIENT={this.isClient()} object={object} currentLecture={lecture}
+                                                   refresh={this.refreshAfterLectureChanges}/>
                                 </div>
                             </h4>
-                            <Attendances lecture={lecture} funcRefresh={this.refreshAfterLectureChanges} showClient={!this.isClient()}/>
-                        </ListGroupItem>)})}
+                            <Attendances lecture={lecture} funcRefresh={this.refreshAfterLectureChanges}
+                                         showClient={!this.isClient()}/>
+                        </ListGroupItem>)
+                })}
             </Fragment>
         const AllLectures = () =>
             <Fragment>
@@ -238,7 +241,12 @@ export default class Card extends Component {
                         :
                         <GroupName group={object}/>}
                 </span>
-                <AddButton content="Přidat lekci" onClick={() => this.toggle()} data-qa="button_add_lecture"/>
+                <ModalLectures defaultCourse={defaultCourse} IS_CLIENT={this.isClient()}
+                               object={object} refresh={this.refreshAfterLectureChanges}/>
+                {this.isClient() &&
+                <ModalClients currentClient={object} refresh={this.refreshObject}/>}
+                {!this.isClient() &&
+                <ModalGroups currentGroup={object} refresh={this.refreshObject}/>}
             </Fragment>
         const CardContent = () =>
             <div className="pageContent">
@@ -256,11 +264,6 @@ export default class Card extends Component {
                         <AllLectures/>
                     </Row>
                 </Container>
-                <Modal isOpen={IS_MODAL} toggle={this.toggle} size="lg" className="ModalFormLecture">
-                    <FormLectures lecture={currentLecture} object={object} funcClose={this.toggle}
-                                  IS_CLIENT={this.isClient()} funcRefresh={this.refreshAfterLectureChanges}
-                                  defaultCourse={defaultCourse}/>
-                </Modal>
             </div>
         return (
             <Fragment>

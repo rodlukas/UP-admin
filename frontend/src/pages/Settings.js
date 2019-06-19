@@ -140,7 +140,8 @@ class Settings extends Component {
                                 <Visible visible={attendancestate.visible} data-qa="attendancestate_visible"/>
                             </td>
                             <td>
-                                <EditButton onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}
+                                <EditButton content="Upravit stav účasti"
+                                            onClick={() => this.toggle(EDIT_TYPE.STATE, attendancestate)}
                                             data-qa="button_edit_attendancestate"/>
                             </td>
                         </tr>)}
@@ -220,7 +221,8 @@ class Settings extends Component {
                                 <Visible visible={course.visible} data-qa="course_visible"/>
                             </td>
                             <td>
-                                <EditButton onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}
+                                <EditButton content="Upravit kurz"
+                                            onClick={() => this.toggle(EDIT_TYPE.COURSE, course)}
                                             data-qa="button_edit_course"/>
                             </td>
                         </tr>)}

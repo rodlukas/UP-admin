@@ -1,11 +1,11 @@
-h1 .AddButton, h1 .BackButton, h1 .ActiveSwitcher {
+h1 .btn:not(.ActiveSwitcher .btn), h1 .ActiveSwitcher {
     margin-top: 0.3rem
 }
 
-h1 .AddButton, h1 .ActiveSwitcher {
+h1 .btn, h1 .ActiveSwitcher {
     float: right;
 }
 
-h1 .AddButton + .AddButton, h1 .AddButton + .ActiveSwitcher {
+h1 .btn + .btn,  h1 .AddButton + .ActiveSwitcher {
     margin-right: 0.3rem
 }

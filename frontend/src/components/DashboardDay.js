@@ -9,6 +9,7 @@ import CourseName from "./CourseName"
 import Attendances from "./Attendances"
 import "./DashboardDay.css"
 import {courseDuration} from "../global/utils"
+import ModalLectures from "../forms/ModalLectures"
 
 export default class DashboardDay extends Component {
     state = {
@@ -26,6 +27,8 @@ export default class DashboardDay extends Component {
             }))
     }
 
+    getProperRefreshFunc = () => this.props.setRefreshState || this.getLectures
+
     componentDidMount() {
         this.getLectures()
     }
@@ -37,14 +40,14 @@ export default class DashboardDay extends Component {
 
     render() {
         const {lectures, IS_LOADING} = this.state
+        const properRefreshFunc = this.getProperRefreshFunc()
         const title = prettyDateWithLongDayYearIfDiff(this.getDate())
-        const Lecture = ({lecture}) =>
-        {
+        const Lecture = ({lecture}) => {
             let className = lecture.group ? "LectureGroup" : ""
             if (lecture.canceled)
                 className = "lecture-canceled"
             return (
-                <ListGroupItem className={className}>
+                <ListGroupItem className={className + " lecture"}>
                     <h4>
                         <span title={courseDuration(lecture.duration)}>
                             {prettyTime(new Date(lecture.start))}
@@ -53,18 +56,22 @@ export default class DashboardDay extends Component {
                         <CourseName course={lecture.course}/>
                         {' '}
                         <LectureNumber lecture={lecture}/>
+                        <div className="float-right">
+                            <ModalLectures IS_CLIENT={!lecture.group}
+                                           object={lecture.group ? lecture.group : lecture.attendances[0].client}
+                                           currentLecture={lecture} refresh={properRefreshFunc}/>
+                        </div>
                     </h4>
                     {lecture.group &&
                     <h5>
                         <GroupName group={lecture.group} title link/>
                     </h5>}
-                    <Attendances lecture={lecture} funcRefresh={this.props.setRefreshState || this.getLectures}
-                                 showClient/>
+                    <Attendances lecture={lecture} funcRefresh={properRefreshFunc} showClient/>
                 </ListGroupItem>
             )
         }
         const EmptyLecture = () =>
-            <ListGroupItem>
+            <ListGroupItem className="lecture">
                 <ListGroupItemHeading className="text-muted text-center">
                     Volno
                 </ListGroupItemHeading>
@@ -77,13 +84,13 @@ export default class DashboardDay extends Component {
                     <EmptyLecture/>}
             </Fragment>
         const DayLoading = () =>
-            <ListGroupItem>
+            <ListGroupItem className="lecture">
                 <Loading/>
             </ListGroupItem>
         return (
             <ListGroup className="pageContent">
                 <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''}>
-                    <h4 className="text-center">{title}</h4>
+                    <h4 className="text-center mb-0">{title}</h4>
                 </ListGroupItem>
                 {IS_LOADING ?
                     <DayLoading/>

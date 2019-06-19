@@ -1,31 +1,21 @@
 import React, {Component, Fragment} from "react"
-import {Table, Modal, Container} from "reactstrap"
-import FormGroups from "../forms/FormGroups"
+import {Table, Container} from "reactstrap"
 import GroupService from "../api/services/group"
 import ClientsList from "../components/ClientsList"
 import Loading from "../components/Loading"
 import GroupName from "../components/GroupName"
 import CourseName from "../components/CourseName"
-import EditButton from "../components/buttons/EditButton"
-import AddButton from "../components/buttons/AddButton"
 import Heading from "../components/Heading"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 import APP_URLS from "../urls"
+import ModalGroups from "../forms/ModalGroups"
 
 export default class Groups extends Component {
     state = {
         groups: [],
-        IS_MODAL: false,
-        currentGroup: {},
         IS_LOADING: true,
         active: true
     }
-
-    toggle = (group = {}) =>
-        this.setState({
-            currentGroup: group,
-            IS_MODAL: !this.state.IS_MODAL
-        })
 
     refresh = (active = this.state.active) => {
         this.setState({IS_LOADING: true, active: active}, () => this.getGroups(active))
@@ -41,7 +31,7 @@ export default class Groups extends Component {
     }
 
     render() {
-        const {groups, currentGroup, IS_MODAL, IS_LOADING} = this.state
+        const {groups, IS_LOADING} = this.state
         const GroupTable = () =>
             <tbody>
             {groups.map(group =>
@@ -56,14 +46,14 @@ export default class Groups extends Component {
                         <ClientsList clients={group.memberships}/>
                     </td>
                     <td>
-                        <EditButton onClick={() => this.toggle(group)} data-qa="button_edit_group"/>
+                        <ModalGroups currentGroup={group} refresh={this.refresh}/>
                     </td>
                 </tr>)}
             </tbody>
         const HeadingContent = () =>
             <Fragment>
                 {APP_URLS.skupiny.title}
-                <AddButton content="Přidat skupinu" onClick={() => this.toggle()} data-qa="button_add_group"/>
+                <ModalGroups refresh={this.refresh}/>
                 <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
             </Fragment>
         return (
@@ -94,9 +84,6 @@ export default class Groups extends Component {
                         Žádné skupiny
                     </p>}
                 </Container>
-                <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
-                    <FormGroups group={currentGroup} funcClose={this.toggle} funcRefresh={this.refresh}/>
-                </Modal>
             </div>
         )
     }

@@ -87,7 +87,7 @@ export default class Diary extends Component {
                 {' '}
                 <Link to={this.getCurrentMondaySerialized()}>
                     <Button color="secondary" disabled={isEqualDate(this.getCurrentMonday(), this.getRequiredMonday())}
-                            onClick={e => this.removeFocusAfterClick(e)}>
+                            onClick={e => this.removeFocusAfterClick(e)} className="float-none">
                         Dnes
                     </Button>
                 </Link>
