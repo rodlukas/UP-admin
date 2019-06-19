@@ -9,7 +9,7 @@ import APP_URLS from "../urls"
 import useForm from "../hooks/useForm"
 
 export default function Login(props) {
-    const {values, handleChange, handleSubmit} = useForm({
+    const [values, handleChange, handleSubmit] = useForm({
         username: '',
         password: ''
     }, login)

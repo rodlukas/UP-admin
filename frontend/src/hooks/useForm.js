@@ -18,11 +18,11 @@ const useForm = (initState, callback) => {
         setValues(values => ({...values, [event.target.id]: event.target.value}))
     }
 
-    return {
+    return [
+        values,
         handleChange,
         handleSubmit,
-        values,
-    }
+    ]
 }
 
 export default useForm
