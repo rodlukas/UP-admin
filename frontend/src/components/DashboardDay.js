@@ -90,7 +90,7 @@ export default class DashboardDay extends Component {
         return (
             <ListGroup className="pageContent">
                 <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''}>
-                    <h4 className="text-center mb-0">{title}</h4>
+                    <h4 className="text-center mb-0 text-nowrap">{title}</h4>
                 </ListGroupItem>
                 {IS_LOADING ?
                     <DayLoading/>
