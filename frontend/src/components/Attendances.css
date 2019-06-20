@@ -37,3 +37,7 @@
 .lecture-canceled {
     background-color: #f8d7da !important
 }
+
+.lecture {
+    padding: 1rem 1rem .75rem 1rem !important;
+}

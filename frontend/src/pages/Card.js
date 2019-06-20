@@ -193,7 +193,7 @@ export default class Card extends Component {
                     if (lecture.start === null)
                         className += " lecture-prepaid"
                     return (
-                        <ListGroupItem key={lecture.id} className={className} data-qa="lecture">
+                        <ListGroupItem key={lecture.id} className={className + " lecture"} data-qa="lecture">
                             <h4>
                                 <span data-qa="lecture_start" title={courseDuration(lecture.duration)}>
                                 {lecture.start !== null ?
