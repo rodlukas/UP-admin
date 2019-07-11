@@ -6,6 +6,5 @@ get_latest_release() {
     sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
 }
 
-REPO="rodlukas/UP-admin"
-LATEST_RELEASE=$(get_latest_release "$REPO")
-git clone --branch "$LATEST_RELEASE" "$REPO"
+LATEST_RELEASE=$(get_latest_release "rodlukas/UP-admin")
+git clone --depth 1 --branch "$LATEST_RELEASE" "https://github.com/rodlukas/UP-admin.git"

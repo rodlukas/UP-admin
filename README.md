@@ -135,15 +135,19 @@ pipenv install --dev
 ```
 Vytvoříme databázi
 ```bash
-- psql -c 'create database up;' -U postgres
+psql -c 'create database up;' -U postgres
 ```
-A připravíme celou Django aplikaci na spuštění
+Připravíme celou Django aplikaci na spuštění
 ```bash
 source scripts/release_tasks.sh
 ```
 Soubor `.env.default` v kořenovém adresáři přejmenujeme na `.env`
 ```bash
 mv .env.default .env
+```
+A vytvoříme uživatelský účet pro přístup do aplikace (zadáme libovolné údaje, kterými se poté budeme přihlašovat)
+```bash
+python manage.py createsuperuser
 ```
 ### Spuštění
 Spustíme vývojový server
