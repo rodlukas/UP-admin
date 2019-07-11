@@ -76,3 +76,11 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+- provider: releases
+  user: $GH_USER
+  password: $GH_TOKEN
+  file_glob: true
+  file: frontend/dist/*
+  skip_cleanup: true
+  on:
+    tags: true
