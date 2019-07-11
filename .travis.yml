@@ -12,10 +12,7 @@ addons:
   postgresql: '11'
 before_install:
   # pridani CZ pro databazi
-  - sudo apt-get update
-  - sudo apt-get install language-pack-cs
-  - sudo /etc/init.d/postgresql stop
-  - sudo /etc/init.d/postgresql start
+  - source scripts/postgresql_cs.sh
 install:
   # nainstaluj geckodriver pro selenium testovani
   - source scripts/install_geckodriver.sh
@@ -54,8 +51,8 @@ after_success:
   # vycisteni od testovacich dat a zavislosti
   - rm -rf geckodriver geckodriver.log coverage.xml
 
-  # vytvoreni souboru dist.zip se sestavenym frontendem (obsahuje frontend/dist/*) pro nahrani na GH
-  - zip -r dist.zip frontend/dist
+  # vytvoreni souboru frontend.zip se sestavenym frontendem (obsahuje frontend/dist/*) pro nahrani na GH
+  - zip -r frontend.zip frontend/dist admin/templates/react-autogenerate.html
 notifications:
   email: false
   slack:
@@ -63,7 +60,7 @@ notifications:
 deploy:
 - provider: releases
   api_key: $GH_API_KEY
-  file: dist.zip
+  file: frontend.zip
   skip_cleanup: true
   on:
     tags: true
@@ -87,4 +84,4 @@ deploy:
     tags: true
 after_deploy:
   # po prvnim deploy (GH) smaze soubor, po ostatnich deploy uz nic neudela
-  - rm -f dist.zip
+  - rm -f frontend.zip

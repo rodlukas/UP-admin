@@ -124,26 +124,34 @@ Nejdříve naklonujeme poslední produkční verzi repozitáře a přejdeme do n
 ```bash
 source scripts/git_clone_latest_release.sh && cd UP-admin
 ```
-Stáhneme již sestavené zdrojové kódy frontendu z poslední produkční verze a umístíme je do `frontend/dist`
+Stáhneme již sestavené zdrojové kódy frontendu z poslední produkční verze a rozbalíme je přímo do repozitáře
 ```bash
-wget https://github.com/rodlukas/UP-admin/releases/latest/download/dist.zip
-unzip dist.zip && rm dist.zip
+wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
+unzip frontend.zip && rm frontend.zip
 ```
 Nainstalujeme všechny závislosti pro backend
 ```bash
 pipenv install --dev
 ```
-Vytvoříme databázi
+Vytvoříme databázi a uživatele pro přístup do databáze
 ```bash
-psql -c 'create database up;' -U postgres
+sudo -u postgres psql
+
+CREATE DATABASE up;
+CREATE USER up WITH ENCRYPTED PASSWORD 'up';
+GRANT ALL PRIVILEGES ON DATABASE up TO up;
 ```
-Připravíme celou Django aplikaci na spuštění
+Nahrajeme český balíček pro databázi
 ```bash
-source scripts/release_tasks.sh
+source scripts/postgresql_cs.sh
 ```
 Soubor `.env.default` v kořenovém adresáři přejmenujeme na `.env`
 ```bash
 mv .env.default .env
+```
+Připravíme celou Django aplikaci na spuštění
+```bash
+source scripts/release_tasks.sh
 ```
 A vytvoříme uživatelský účet pro přístup do aplikace (zadáme libovolné údaje, kterými se poté budeme přihlašovat)
 ```bash
@@ -152,7 +160,7 @@ python manage.py createsuperuser
 ### Spuštění
 Spustíme vývojový server
 ```bash
-python manage.py runserver --settings=up.production_settings 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8000
 ```
 Aplikace je nyní dostupná na adrese http://localhost:8000/
 ### Poznámky
