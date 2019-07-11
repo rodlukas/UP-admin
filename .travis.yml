@@ -77,8 +77,7 @@ deploy:
   on:
     tags: true
 - provider: releases
-  user: $GH_USER
-  password: $GH_TOKEN
+  api_key: $GH_API_KEY
   file_glob: true
   file: frontend/dist/*
   skip_cleanup: true
