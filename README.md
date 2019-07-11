@@ -114,18 +114,20 @@ nástroje, spouští se Django vývojový server a také webpack-dev-server pro 
 Zde ale budu popisovat postup spuštění produkční verze aplikace, tedy té, která je nejblíže verzi u zákazníka.
 ### Instalace
 Pro spuštění je potřeba mít v OS nainstalováno:
-* Python 3 (konkrétní verze viz [Pipfile](/Pipfile))
-* Node.js (konkrétní verze viz [package.json](/package.json))
-* Yarn (případně NPM, konkrétní verze viz [package.json](/package.json))
-* Git
+* [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile))
+* [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv))
+* [Git](https://git-scm.com/downloads)
+> Není potřeba Node.js ani NPM/Yarn, ve vlastním prostředí totiž nelze frontend sestavit, protože je potřeba přístup přes token k privátnímu registru pro [FontAwesome PRO](https://fontawesome.com/).
 
 Nejdříve naklonujeme repozitář
 ```bash
 git clone https://github.com/rodlukas/UP-admin.git
 ```
 
+TBD
+
 ### Spuštění
-TODO
+TBD
 1. v `.env` nastavit `MANUAL_PRODUCTION=True` (nastaví se proměnná prostředí)
 2. `yarn install` (z rootu, automaticky se pak provede i build)
 3. přes `manage.py` spustit:
