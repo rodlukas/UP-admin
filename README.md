@@ -101,7 +101,16 @@ Aplikaci lze na lokálním prostředí ve dvou režimech, výchozí je klasický
 nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend.
 Zde ale budu popisovat postup spuštění produkční verze aplikace, tedy té, která je nejblíže verzi u zákazníka.
 ### Instalace
-Pro spuštění je potřeba mít... TBD
+Pro spuštění je potřeba mít v OS nainstalováno:
+* Python 3 (konkrétní verze viz [Pipfile](/Pipfile))
+* Node.js (konkrétní verze viz [package.json](/package.json))
+* Yarn (případně NPM, konkrétní verze viz [package.json](/package.json))
+* Git
+
+Nejdříve naklonujeme repozitář
+```bash
+git clone https://github.com/rodlukas/UP-admin.git
+```
 
 ### Spuštění
 TODO
@@ -114,6 +123,6 @@ TODO
 #### Otevření aplikace na jiném zařízení v síti
 Aplikace je připravena na otevření i z dalších zařízeních v síti (např. z mobilního telefonu). 
 Obvykle je potřeba provést tyto 2 kroky:
-1. povolit Python a NodeJS ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
+1. povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
 2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server (zobrazí se např. při spouštění webpack-dev-serveru)
 > **Poznámka:** Při změně privátní adresy počítače je potřeba restartovat webpack-dev-server
