@@ -11,7 +11,7 @@ addons:
   firefox: latest
   postgresql: '11'
 before_install:
-  # pridani CZ pro databazi
+  # pridani ceskeho balicku pro funkcni CZ v databazi
   - source scripts/postgresql_cs.sh
 install:
   # nainstaluj geckodriver pro selenium testovani
@@ -51,7 +51,7 @@ after_success:
   # vycisteni od testovacich dat a zavislosti
   - rm -rf geckodriver geckodriver.log coverage.xml
 
-  # vytvoreni souboru frontend.zip se sestavenym frontendem (obsahuje frontend/dist/*) pro nahrani na GH
+  # vytvoreni souboru frontend.zip se sestavenym frontendem (vcetne template) pro nahrani na GH
   - zip -r frontend.zip frontend/dist admin/templates/react-autogenerate.html
 notifications:
   email: false
@@ -83,5 +83,5 @@ deploy:
   on:
     tags: true
 after_deploy:
-  # po prvnim deploy (GH) smaze soubor, po ostatnich deploy uz nic neudela
+  # po prvnim deploy (GH) smaz frontend.zip, po ostatnich deploy uz nic nedelej
   - rm -f frontend.zip

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# pridani CZ pro databazi
+# pridani ceskeho balicku pro funkcni CZ v databazi
 sudo apt-get update
 sudo apt-get install language-pack-cs
 sudo /etc/init.d/postgresql stop

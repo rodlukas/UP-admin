@@ -124,16 +124,16 @@ Nejdříve naklonujeme poslední produkční verzi repozitáře a přejdeme do n
 ```bash
 source scripts/git_clone_latest_release.sh && cd UP-admin
 ```
-Stáhneme již sestavené zdrojové kódy frontendu z poslední produkční verze a rozbalíme je přímo do repozitáře
+Stáhneme již sestavené zdrojové kódy frontendu z poslední produkční verze a rozbalíme je přímo do repozitáře (a *zip* smažeme)
 ```bash
 wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
 unzip frontend.zip && rm frontend.zip
 ```
-Nainstalujeme všechny závislosti pro backend
+Soubor `.env.default` v kořenovém adresáři přejmenujeme na `.env`
 ```bash
-pipenv install --dev
+mv .env.default .env
 ```
-Vytvoříme databázi a uživatele pro přístup do databáze
+Spustíme *psql CLI*, kde pomocí tří příkazů vytvoříme databázi a uživatele pro přístup do databáze
 ```bash
 sudo -u postgres psql
 
@@ -145,9 +145,10 @@ Nahrajeme český balíček pro databázi
 ```bash
 source scripts/postgresql_cs.sh
 ```
-Soubor `.env.default` v kořenovém adresáři přejmenujeme na `.env`
+Nainstalujeme všechny závislosti pro backend a aktivujeme virtuální prostředí Pythonu
 ```bash
-mv .env.default .env
+pipenv install --dev
+pipenv shell
 ```
 Připravíme celou Django aplikaci na spuštění
 ```bash
@@ -166,6 +167,7 @@ Aplikace je nyní dostupná na adrese http://localhost:8000/
 ### Poznámky
 #### Otevření aplikace na jiném zařízení v síti
 Aplikace je připravena na otevření i z dalších zařízeních v síti (např. z mobilního telefonu). 
+
 Obvykle je potřeba provést tyto 2 kroky:
 1. povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
 2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server (zobrazí se např. při spouštění webpack-dev-serveru)
