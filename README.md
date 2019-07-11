@@ -16,10 +16,10 @@ Logentries -
 
 ## Základní informace o aplikaci
 Aplikaci jsem vytvořil v roce 2018 v rámci bakalářské práce na FIT ČVUT - vizte [repozitář s textem práce](https://github.com/rodlukas/bachelors-thesis), 
-od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) úspěšně denně používána a nadále na ní pracuji a rozšiřuji ji
+od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) úspěšně denně používána a nadále na ní pracuji a rozšiřuji ji.
 ### Informace o technologiích
-Aplikace je striktně rozdělena na frontend a backend, navzájem komunikující skrz REST API zabezpečené [JWT](https://jwt.io/) autentizací,
-pro databázi se používá [PostgreSQL 11](https://www.postgresql.org/).
+Aplikace je striktně rozdělena na frontend a backend, ty spolu komunikující přes REST API zabezpečené [JWT](https://jwt.io/) autentizací.
+Jako databáze se používá [PostgreSQL 11](https://www.postgresql.org/).
 #### Backend
 Obsahuje veškerou logiku a pro klienta vystavuje REST API, postaven na těchto technologiích:
 * [Python 3.7](https://www.python.org/),
@@ -31,7 +31,7 @@ Obsahuje veškerou logiku a pro klienta vystavuje REST API, postaven na těchto 
 Optimalizované komplexní SQL dotazy v Djangu (viz články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/), [[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
 Aplikace umožňuje pokročilé debugování na lokálním i vzdáleném prostředí díky [Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar) a jeho doplňku [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
 #### Frontend
-Responzivní JS webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
+Responzivní JS (ES2018) webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
 * [React 16.8](https://reactjs.org/),
 * Bootstrap ([Reactstrap](https://reactstrap.github.io/)),
 * [React Router 4](https://reacttraining.com/react-router/),
@@ -95,19 +95,24 @@ Seznam prostředích:
 ```
 ---
 
-
-## Spuštění aplikace na lokálním prostředí
+## Spuštění produkční verze aplikace na lokálním prostředí
+Aplikaci lze na lokálním prostředí ve dvou režimech, výchozí je klasický vývojový - ten obsahuje pokročilé debugovací
+nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend.
+Zde ale budu popisovat postup spuštění produkční verze aplikace, tedy té, která je nejblíže verzi u zákazníka.
+### Instalace
 Pro spuštění je potřeba mít... TBD
 
-## Užitečné příkazy
-* **MANUÁLNÍ SPUŠTĚNÍ PRODUKČNÍ VERZE:**
-    1. v `.env` nastavit `MANUAL_PRODUCTION=True` (nastaví se proměnná prostředí)
-    2. `yarn install` (z rootu, automaticky se pak provede i build)
-    3. přes `manage.py` spustit:
-        1. `collectstatic --settings=up.production_settings --noinput`
-        2. `runserver --settings=up.production_settings 0.0.0.0:8000`
-* **spuštění na jiném zařízení v síti:**
-    1. povolit python+node ve firewallu (např. na chvíli interaktivní režim ESETu)
-    2. na mobilním zařízení zadat privátní IP adresu počítače se serverem (zobrazí se např. při spouštění webpack-dev-serveru
-    3. při změně privátní adresy restart webpack-dev-serveru
-    
+### Spuštění
+TODO
+1. v `.env` nastavit `MANUAL_PRODUCTION=True` (nastaví se proměnná prostředí)
+2. `yarn install` (z rootu, automaticky se pak provede i build)
+3. přes `manage.py` spustit:
+    1. `collectstatic --settings=up.production_settings --noinput`
+    2. `runserver --settings=up.production_settings 0.0.0.0:8000`
+### Poznámky
+#### Otevření aplikace na jiném zařízení v síti
+Aplikace je připravena na otevření i z dalších zařízeních v síti (např. z mobilního telefonu). 
+Obvykle je potřeba provést tyto 2 kroky:
+1. povolit Python a NodeJS ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
+2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server (zobrazí se např. při spouštění webpack-dev-serveru)
+> **Poznámka:** Při změně privátní adresy počítače je potřeba restartovat webpack-dev-server
