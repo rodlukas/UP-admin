@@ -114,26 +114,43 @@ Zde ale budu popisovat postup spuštění produkční verze aplikace, tedy té, 
 ### Instalace
 Pro spuštění je potřeba mít v OS nainstalováno:
 * [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile))
-* [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv))
+* [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv)
 * [Git](https://git-scm.com/downloads)
-> Není potřeba Node.js ani NPM/Yarn, ve vlastním prostředí totiž nelze frontend sestavit, protože je potřeba přístup přes token k privátnímu registru pro [FontAwesome PRO](https://fontawesome.com/).
+> **Poznámka:** Node.js ani NPM/Yarn nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
+ přístup přes token k privátnímu registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho použijeme automaticky 
+ sestavenou poslední produkční verzi frontendu z CI.
 
-Nejdříve naklonujeme repozitář
+Nejdříve naklonujeme poslední produkční verzi repozitáře a přejdeme do ní
 ```bash
-git clone https://github.com/rodlukas/UP-admin.git
+source scripts/git_clone_latest_release.sh && cd UP-admin
 ```
-...
-
-
-TBD
-
+Stáhneme již sestavené zdrojové kódy frontendu z poslední produkční verze a umístíme je do `frontend/dist`
+```bash
+wget https://github.com/rodlukas/UP-admin/releases/latest/download/dist.zip
+unzip dist.zip && rm dist.zip
+```
+Nainstalujeme všechny závislosti pro backend
+```bash
+pipenv install --dev
+```
+Vytvoříme databázi
+```bash
+- psql -c 'create database up;' -U postgres
+```
+A připravíme celou Django aplikaci na spuštění
+```bash
+source scripts/release_tasks.sh
+```
+Soubor `.env.default` v kořenovém adresáři přejmenujeme na `.env`
+```bash
+mv .env.default .env
+```
 ### Spuštění
-TBD
-1. v `.env` nastavit `MANUAL_PRODUCTION=True` (nastaví se proměnná prostředí)
-2. `yarn install` (z rootu, automaticky se pak provede i build)
-3. přes `manage.py` spustit:
-    1. `collectstatic --settings=up.production_settings --noinput`
-    2. `runserver --settings=up.production_settings 0.0.0.0:8000`
+Spustíme vývojový server
+```bash
+python manage.py runserver --settings=up.production_settings 0.0.0.0:8000
+```
+Aplikace je nyní dostupná na adrese http://localhost:8000/
 ### Poznámky
 #### Otevření aplikace na jiném zařízení v síti
 Aplikace je připravena na otevření i z dalších zařízeních v síti (např. z mobilního telefonu). 
