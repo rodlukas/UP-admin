@@ -5,7 +5,6 @@
 [![codecov](https://codecov.io/gh/rodlukas/UP-admin/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/UP-admin)
 
 [Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | 
-[Travis CI](https://travis-ci.com/rodlukas/UP-admin) | 
 [Heroku](https://dashboard.heroku.com/apps) | 
 [Slack](https://uspesnyprvnacek.slack.com/messages) | 
 Logentries - 
@@ -29,9 +28,9 @@ Logentries -
 
 ## Základní informace o aplikaci
 Aplikaci jsem vytvořil v roce 2018 v rámci bakalářské práce na FIT ČVUT - vizte [repozitář s textem práce](https://github.com/rodlukas/bachelors-thesis), 
-od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) úspěšně denně používána a nadále na ní pracuji a rozšiřuji ji.
+od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) denně úspěšně používána a nadále na ní pracuji a rozšiřuji ji.
 ### Použité technologie
-Aplikace je striktně rozdělena na frontend a backend, ty spolu komunikující přes REST API zabezpečené [JWT](https://jwt.io/) autentizací.
+Aplikace je striktně rozdělena na frontend a backend, ty spolu komunikují přes REST API zabezpečené [JWT](https://jwt.io/) autentizací.
 Jako databáze se používá [PostgreSQL 11](https://www.postgresql.org/).
 #### Backend
 Obsahuje veškerou logiku a pro klienta vystavuje REST API, postaven na těchto technologiích:
@@ -41,7 +40,7 @@ Obsahuje veškerou logiku a pro klienta vystavuje REST API, postaven na těchto 
 * [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
 * [a další...](/Pipfile)
 
-Optimalizované komplexní SQL dotazy v Djangu (viz články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/), [[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
+V Djangu jsou pro mnohonásobné zrychlení pokročile optimalizované komplexní SQL dotazy (viz články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/), [[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
 Aplikace umožňuje pokročilé debugování na lokálním i vzdáleném prostředí díky [Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar) a jeho doplňku [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
 #### Frontend
 Responzivní JS (ES2018) webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
@@ -68,7 +67,6 @@ Pro zrychlení načítání celé aplikace se používá lazy loading [`React.la
 * automatické přidání předplacené lekce při omluvě/zrušení lekce ze strany lektorky
 * funkce pro vedení aktivních a neaktivních klientů a skupin
 * *... (výčet není konečný)*
-
 ### Informace o nasazených aplikacích
 Aplikace aktuálně běží na 4 prostředích (3x PaaS [Heroku](https://www.heroku.com/)), které se liší příslušnou nasazenou verzí aplikace, 
 konkrétní instancí databáze, umožňují různé úrovně debugování a kosmeticky se liší také barvou menu. 
@@ -90,10 +88,11 @@ konkrétní instancí databáze, umožňují různé úrovně debugování a kos
     * **CI a CD** má na starost [Travis](https://travis-ci.com/) - automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické nastavení verze do aplikace, tokenů apod.
 * Aplikace **respektuje standardy** [PEP 8](https://pep8.org), [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/)
 * Kompletní vývoj aplikace probíhá v IDE *[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)*.
-* Základ aplikace tvoří také **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí
+* Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí
     * Testování je postaveno na BDD frameworku [behave](https://github.com/behave/behave) - testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy
     * Pro testování UI se používá [selenium](https://github.com/SeleniumHQ/selenium)
     * Další informace o testech: [tests/README.md](/tests/README.md)
+
 ## Struktura repozitáře
 ```bash
 ├── .idea ........ nastavení pro IDE (Pycharm od Jetbrains)      
@@ -123,6 +122,8 @@ Nejdříve naklonujeme repozitář
 ```bash
 git clone https://github.com/rodlukas/UP-admin.git
 ```
+...
+
 
 TBD
 
