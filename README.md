@@ -14,10 +14,23 @@ Logentries -
 [testing](https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3) |
 [GA](https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243)
 
+## Obsah
+* [Základní informace o aplikaci](#základní-informace-o-aplikaci)
+   * [Použité technologie](#použité-technologie)
+      * [Backend](#backend)
+      * [Frontend](#frontend)
+   * [Klíčové funkce aplikace](#klíčové-funkce-aplikace)
+   * [Informace o nasazených aplikacích](#informace-o-nasazených-aplikacích)
+* [Struktura repozitáře](#struktura-repozitáře)
+* [Spuštění produkční verze aplikace na lokálním prostředí](#spuštění-produkční-verze-aplikace-na-lokálním-prostředí)
+   * [Instalace](#instalace)
+   * [Spuštění](#spuštění)
+   * [Poznámky](#poznámky)
+
 ## Základní informace o aplikaci
 Aplikaci jsem vytvořil v roce 2018 v rámci bakalářské práce na FIT ČVUT - vizte [repozitář s textem práce](https://github.com/rodlukas/bachelors-thesis), 
 od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) úspěšně denně používána a nadále na ní pracuji a rozšiřuji ji.
-### Informace o technologiích
+### Použité technologie
 Aplikace je striktně rozdělena na frontend a backend, ty spolu komunikující přes REST API zabezpečené [JWT](https://jwt.io/) autentizací.
 Jako databáze se používá [PostgreSQL 11](https://www.postgresql.org/).
 #### Backend
@@ -66,7 +79,6 @@ konkrétní instancí databáze, umožňují různé úrovně debugování a kos
 > * **staging** - stejná verze aplikace jako na produkci, deploy při release *(zelené menu)*,
 > * **produkce** - produkční verze používaná zákazníkem, deploy při release (jako staging) *(bílé menu)*.
 
-**Další informace:**
 * Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[2]](https://wsvincent.com/django-best-practices/)).
 * Na produkci se každý den ve 3:00 provádí [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
 * Aplikace jsou napojené na další služby:
@@ -101,10 +113,21 @@ Aplikaci lze na lokálním prostředí ve dvou režimech, výchozí je klasický
 nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend.
 Zde ale budu popisovat postup spuštění produkční verze aplikace, tedy té, která je nejblíže verzi u zákazníka.
 ### Instalace
-Pro spuštění je potřeba mít... TBD
+Pro spuštění je potřeba mít v OS nainstalováno:
+* [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile))
+* [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv))
+* [Git](https://git-scm.com/downloads)
+> Není potřeba Node.js ani NPM/Yarn, ve vlastním prostředí totiž nelze frontend sestavit, protože je potřeba přístup přes token k privátnímu registru pro [FontAwesome PRO](https://fontawesome.com/).
+
+Nejdříve naklonujeme repozitář
+```bash
+git clone https://github.com/rodlukas/UP-admin.git
+```
+
+TBD
 
 ### Spuštění
-TODO
+TBD
 1. v `.env` nastavit `MANUAL_PRODUCTION=True` (nastaví se proměnná prostředí)
 2. `yarn install` (z rootu, automaticky se pak provede i build)
 3. přes `manage.py` spustit:
@@ -114,6 +137,6 @@ TODO
 #### Otevření aplikace na jiném zařízení v síti
 Aplikace je připravena na otevření i z dalších zařízeních v síti (např. z mobilního telefonu). 
 Obvykle je potřeba provést tyto 2 kroky:
-1. povolit Python a NodeJS ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
+1. povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
 2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server (zobrazí se např. při spouštění webpack-dev-serveru)
 > **Poznámka:** Při změně privátní adresy počítače je potřeba restartovat webpack-dev-server
