@@ -40,16 +40,16 @@ Responzivní JS (ES2018) webová aplikace typu SPA ([Single-Page-App](https://en
 Aplikace je odolná proti pádům JS díky [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
 Pro zrychlení načítání celé aplikace se používá lazy loading [`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html).
 ### Klíčové funkce aplikace
-* evidence klientů a skupin klientů docházejících na lekce kurzů
-* evidence lekcí klientů a skupin včetně předplacených - stav účasti, platba, datum, čas, zrušení, poznámky
+* **evidence klientů a skupin klientů docházejících na lekce kurzů**
+* **evidence lekcí klientů a skupin včetně předplacených - stav účasti, platba, datum, čas, zrušení, poznámky**
+* **evidence zájemců o kurzy**
+* **zobrazení lekcí ve 3 formách: v kartě klienta/skupiny, v diáři a na hlavní stránce v přehledu pro dnešní den**
 * kontrola časových konfliktů lekcí
 * automatické rušení lekcí když nikdo nemá přijít
 * automatické vytváření předplacených náhrad lekcí při omluvě předem
 * upozornění, že má klient příště platit
-* zobrazení lekcí v kartě klienta/skupiny, v diáři a na hlavní stránce dnešní přehled
-* evidence zájemců o kurzy
 * konfigurace kurzů a stavů účasti
-* propojení s API Fio Banky - na hlavní stránce se přehledně zobrazují transakce z účtu
+* propojení s API Fio Banky - na hlavní stránce se přehledně zobrazují nedávné transakce z účtu
 * automatický odhad kurzu pro nově přidávané lekce
 * respektování a kontrola všech omezení daných danou doménou (např. duplicity apod.)
 * automatické přidání předplacené lekce při omluvě/zrušení lekce ze strany lektorky
@@ -57,13 +57,14 @@ Pro zrychlení načítání celé aplikace se používá lazy loading [`React.la
 * *... (výčet není konečný)*
 
 ### Informace o nasazených aplikacích
-Aplikace aktuálně běží na 4 prostředích (3x PaaS [Heroku](https://www.heroku.com/)), liší se příslušnou nasazenou verzí aplikace, 
-konkrétní instancí databáze, umožňují různé úrovně debugování a kosmeticky se liší barvou menu. 
-Seznam prostředích:
-* **vývojové (lokální)** - pro lokální vývoj *(žluté menu)*,
-* **testing** - umožňuje zapnout debugování, deploy každého commitu *(modré menu)*
-* **staging** - stejná verze aplikace jako na produkci, deploy při release, *(zelené menu)*
-* **produkce** - produkční verze používaná zákazníkem, deploy při release (jako staging) *(bílé menu)*
+Aplikace aktuálně běží na 4 prostředích (3x PaaS [Heroku](https://www.heroku.com/)), které se liší příslušnou nasazenou verzí aplikace, 
+konkrétní instancí databáze, umožňují různé úrovně debugování a kosmeticky se liší také barvou menu. 
+
+> **Seznam prostředí:**
+> * **vývojové (lokální)** - pro lokální vývoj *(žluté menu)*,
+> * **testing** - umožňuje zapnout debugování, deploy každého commitu *(modré menu)*,
+> * **staging** - stejná verze aplikace jako na produkci, deploy při release *(zelené menu)*,
+> * **produkce** - produkční verze používaná zákazníkem, deploy při release (jako staging) *(bílé menu)*.
 
 **Další informace:**
 * Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[2]](https://wsvincent.com/django-best-practices/)).
