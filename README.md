@@ -14,10 +14,23 @@ Logentries -
 [testing](https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3) |
 [GA](https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243)
 
+## Obsah
+* [Základní informace o aplikaci](#základní-informace-o-aplikaci)
+   * [Použité technologie](#použité-technologie)
+      * [Backend](#backend)
+      * [Frontend](#frontend)
+   * [Klíčové funkce aplikace](#klíčové-funkce-aplikace)
+   * [Informace o nasazených aplikacích](#informace-o-nasazených-aplikacích)
+* [Struktura repozitáře](#struktura-repozitáře)
+* [Spuštění produkční verze aplikace na lokálním prostředí](#spuštění-produkční-verze-aplikace-na-lokálním-prostředí)
+   * [Instalace](#instalace)
+   * [Spuštění](#spuštění)
+   * [Poznámky](#poznámky)
+
 ## Základní informace o aplikaci
 Aplikaci jsem vytvořil v roce 2018 v rámci bakalářské práce na FIT ČVUT - vizte [repozitář s textem práce](https://github.com/rodlukas/bachelors-thesis), 
 od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) úspěšně denně používána a nadále na ní pracuji a rozšiřuji ji.
-### Informace o technologiích
+### Použité technologie
 Aplikace je striktně rozdělena na frontend a backend, ty spolu komunikující přes REST API zabezpečené [JWT](https://jwt.io/) autentizací.
 Jako databáze se používá [PostgreSQL 11](https://www.postgresql.org/).
 #### Backend
@@ -66,7 +79,6 @@ konkrétní instancí databáze, umožňují různé úrovně debugování a kos
 > * **staging** - stejná verze aplikace jako na produkci, deploy při release *(zelené menu)*,
 > * **produkce** - produkční verze používaná zákazníkem, deploy při release (jako staging) *(bílé menu)*.
 
-**Další informace:**
 * Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[2]](https://wsvincent.com/django-best-practices/)).
 * Na produkci se každý den ve 3:00 provádí [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
 * Aplikace jsou napojené na další služby:
