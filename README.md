@@ -83,7 +83,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
 [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
 * **Aplikace jsou napojené na další služby:**
     * [Slack](https://slack.com/),
-    * [Google Analytics](https://analytics.google.com/),
+    * **sledování chování a návštěv** umožňuje napojení na [Google Analytics](https://analytics.google.com/),
     * **logování** z Heroku se zasílá do [Logentries](https://logentries.com/) (logy se uchovávají po 7 dnů, tříděné podle typu prostředí)
     * **odchytávání chyb na backendu i frontendu** přes [Sentry](https://sentry.io/) (tříděné podle typu prostředí, aktivní na produkci, testing i staging prostředí)
         * při chybě na frontendu je možné poslat zpětnou vazbu vázanou ke konkrétní chybě díky propojení Sentry a [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
@@ -93,7 +93,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
 * Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí.
     * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
-    * Pro **testování UI** se používá [selenium](https://github.com/SeleniumHQ/selenium).
+    * Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
     * **Další informace o testech: [tests/README.md](/tests/README.md)**
 
 ## Struktura repozitáře
