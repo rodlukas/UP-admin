@@ -19,13 +19,14 @@ Složka **`common_steps`** obsahuje kroky, které jsou používané pro API i UI
 Soubor **`common_helpers.py`** obsahuje pomocné funkce, které jsou používány pro API i UI testy. **Soubory `api_environment.py` a `ui_environment.py`** obsahují obecné nastavení prostředí pro dané API/UI testy (např. nastavení prohlížeče, klienta...).
 
 ## Spouštění testů
-K dispozici jsou dvě různé sady testů (tzv. *stage*): testy UI a testy API. Pro spuštění konkrétní sady tedy stačí tyto příkazy:
+K dispozici jsou **dvě různé sady testů (tzv. *stage*): testy UI a testy API**. 
+Pro spuštění konkrétní sady tedy stačí tyto příkazy:
 * spuštění **UI testů:** `python manage.py behave --stage=ui`,
 * spuštění **API testů:** `python manage.py behave --stage=api`.
 
-Testování lze ještě dále zúžit na konkrétní testovanou část či operaci (označené tzv. *tagem*) z dané sady testů (*stage*). Pro jednoduchost jsou *tagy* pro testované části stejné, jako příslušné názvy souborů obsahujících testové scénáře v přirozeném jazyce (`features/*.features`) a souborů obsahujících samotné implementace testů pro obě sady testů (`api_steps/*.py` a `ui_steps/*.py`). *Tagem* lze, jak bylo řečeno, zúžit testy i na operace, konkrétně jsou k dispozici *tagy* pro CRUD operace (`add`, `delete` a `edit`) a také pro přihlášení/odhlášení (`login` a `logout`).
+Testování lze ještě dále zúžit na **konkrétní testovanou část či operaci (označené tzv. *tagem*)** z dané sady testů (*stage*). Pro jednoduchost jsou *tagy* pro testované části totožné s názvy souborů testových scénářů (`features/*.features`) i implementací testů (`api_steps/*.py` a `ui_steps/*.py`). *Tagem* lze, jak bylo řečeno, také zúžit testy na prováděné operace s danou entitou, konkrétně jsou k dispozici *tagy* pro CRUD operace (`add`, `delete` a `edit`) a také pro přihlášení/odhlášení (`login` a `logout`).
 
-Tabulka s jednotlivými testovanými částmi:
+**Tabulka s jednotlivými testovanými částmi:**
 
 | testovaná část | název *tagu* i souborů s testy |
 | --- | --- |
