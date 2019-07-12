@@ -62,14 +62,14 @@ Aplikace umožňuje pokročilé debugování na lokálním i vzdáleném prostř
 #### Frontend
 Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
 * [React 16.8](https://reactjs.org/),
-* [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)),
+* [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 * [React Router 4](https://reacttraining.com/react-router/),
 * [a další...](/frontend/package.json)
 
 Aplikace je odolná proti pádům JS díky [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
 Pro zrychlení načítání celé aplikace se používá lazy loading [`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html).
 ### Informace o nasazených aplikacích
-Aplikace aktuálně běží na 4 prostředích (3x PaaS [Heroku](https://www.heroku.com/)), které se liší příslušnou nasazenou verzí aplikace, 
+Aplikace aktuálně běží na **4 prostředích** (3x PaaS [Heroku](https://www.heroku.com/)), které se liší příslušnou nasazenou verzí aplikace, 
 konkrétní instancí databáze, umožňují různé úrovně debugování a kosmeticky se liší také barvou menu. 
 
 > **Seznam prostředí:**
@@ -95,7 +95,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
     * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
     * Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
-    * **Další informace o testech: [tests/README.md](tests/)**
+    * **Podrobné informace o testech jsou v [tests/README.md](tests/)**.
 
 ## Struktura repozitáře
 ```bash
@@ -109,7 +109,6 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
 ├── tests ........ kompletní testy API i frontendu
 └── up ........... celý Django projekt
 ```
----
 
 ## Jak spustit aplikaci
 Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je klasický vývojový – ten obsahuje pokročilé debugovací
@@ -172,7 +171,7 @@ A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovo
 $ python manage.py createsuperuser
 ```
 💡 *(NEPOVINNÉ)* Na závěr můžeme ještě **naplnit naší databázi [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql)**, která ukážou fungování aplikace a usnadní první použití 
-(obsahují několik klientů, skupin, lekcí, zájemců, kurzů a stavů účasti) – po zadání příkazu je vyžadováno heslo uživatele `up`, které jsme nastavili taktéž `up`
+(obsahují několik klientů, skupin, lekcí, zájemců, kurzů a stavů účasti) – po zadání příkazu je vyžadováno heslo databázového uživatele `up`, které jsme nastavili taktéž `up`
 ```bash
 $ psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
 ```
