@@ -49,4 +49,4 @@ Příklad spuštění testů UI jen pro skupiny:
 python manage.py behave --stage=ui --tags=groups
 ```
 
-> **Tip pro spouštění velkého množství testů:** pro jednodušší a přehlednější výpis informací o průběhu testů v konzoli je vhodné k příkazu pro spuštění testů přidat argument `--format=progress3`
+> **Tip pro spouštění velkého množství testů:** pro jednodušší a přehlednější výpis informací o průběhu testů v konzoli je vhodné k příkazu pro spuštění testů přidat argument `--format=progress3` (viz [dokumentace behave](https://behave.readthedocs.io/en/latest/formatters.html?highlight=progress3#formatters))
