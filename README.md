@@ -150,7 +150,6 @@ Spustíme ***psql CLI***, kde pomocí dvou příkazů **vytvoříme databázi a 
 ```
 $ sudo -u postgres psql
 
-postgres=# 
 postgres=# CREATE USER up WITH ENCRYPTED PASSWORD 'up';
 postgres=# CREATE DATABASE up WITH OWNER up;
 postgres=# exit
@@ -172,9 +171,8 @@ A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovo
 ```bash
 python manage.py createsuperuser
 ```
-(NEPOVINNÉ) Na závěr můžeme volitelně ještě naplnit naší databázi [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql), která usnadní počáteční použití aplikace 
-(obsahují několik klientů, skupin, lekcí, zájemců, kurzů a stavů účasti) – po zadání příkazu je vyžadováno heslo uživatele `up`, které 
-jsme nastavili `up`
+💡 *(NEPOVINNÉ)* Na závěr můžeme ještě **naplnit naší databázi [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql)**, která ukážou fungování aplikace a usnadní první použití 
+(obsahují několik klientů, skupin, lekcí, zájemců, kurzů a stavů účasti) – po zadání příkazu je vyžadováno heslo uživatele `up`, které jsme nastavili taktéž `up`
 ```bash
 $ psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
 ```
