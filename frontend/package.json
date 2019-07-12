@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "Lukáš Rod <info@lukasrod.cz> (https://lukasrod.cz)",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nwb build-react-app",
     "clean": "nwb clean-app",
