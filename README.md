@@ -24,7 +24,6 @@ Logentries -
 * [Spuštění produkční verze aplikace na lokálním prostředí](#spuštění-produkční-verze-aplikace-na-lokálním-prostředí)
    * [Instalace](#instalace)
    * [Spuštění](#spuštění)
-   * [Poznámky](#poznámky)
 
 ## Základní informace o aplikaci
 Aplikaci jsem vytvořil v roce 2018 v rámci bakalářské práce na FIT ČVUT - vizte [repozitář s textem práce](https://github.com/rodlukas/bachelors-thesis), 
@@ -45,7 +44,7 @@ Aplikace umožňuje pokročilé debugování na lokálním i vzdáleném prostř
 #### Frontend
 Responzivní JS (ES2018) webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
 * [React 16.8](https://reactjs.org/),
-* Bootstrap ([Reactstrap](https://reactstrap.github.io/)),
+* [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)),
 * [React Router 4](https://reacttraining.com/react-router/),
 * [a další...](/frontend/package.json)
 
@@ -111,48 +110,53 @@ konkrétní instancí databáze, umožňují různé úrovně debugování a kos
 Aplikaci lze na lokálním prostředí ve dvou režimech, výchozí je klasický vývojový - ten obsahuje pokročilé debugovací
 nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend.
 Zde ale budu popisovat postup spuštění produkční verze aplikace, tedy té, která je nejblíže verzi u zákazníka.
-### Instalace
+### Požadavky
 Pro spuštění je potřeba mít v OS nainstalováno:
 * [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile))
 * [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv)
 * [Git](https://git-scm.com/downloads)
 > **Poznámka:** Node.js ani NPM/Yarn nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
- přístup přes token k privátnímu registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho použijeme automaticky 
- sestavenou poslední produkční verzi frontendu z CI.
-
-Nejdříve naklonujeme poslední produkční verzi repozitáře a přejdeme do ní
+ přístup přes token k privátnímu registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
+ automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assets ke každému release).
+### Instalace
+Nejdříve naklonujeme repozitář, otevřeme jeho složku a nahrajeme si poslední produkční verzi repozitáře
 ```bash
-source scripts/git_clone_latest_release.sh && cd UP-admin
+$ git clone "https://github.com/rodlukas/UP-admin.git" && cd UP-admin
+
+$ git fetch --tags
+$ latestRelease=$(git describe --tags `git rev-list --tags --max-count=1`)
+$ git checkout $latestRelease
 ```
 Stáhneme již sestavené zdrojové kódy frontendu z poslední produkční verze a rozbalíme je přímo do repozitáře (a *zip* smažeme)
 ```bash
-wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
-unzip frontend.zip && rm frontend.zip
+$ wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
+$ unzip frontend.zip && rm frontend.zip
 ```
-Soubor `.env.default` v kořenovém adresáři přejmenujeme na `.env`
+Přejmenujeme výchozí konfigurační soubor `.env.default` v kořenovém adresáři na `.env`
 ```bash
-mv .env.default .env
+$ mv .env.default .env
 ```
-Spustíme *psql CLI*, kde pomocí tří příkazů vytvoříme databázi a uživatele pro přístup do databáze
-```bash
-sudo -u postgres psql
+Spustíme *psql CLI*, kde pomocí tří příkazů vytvoříme databázi a uživatele pro přístup do databáze, na závěr ukončíme CLI
+```
+$ sudo -u postgres psql
 
-CREATE DATABASE up;
-CREATE USER up WITH ENCRYPTED PASSWORD 'up';
-GRANT ALL PRIVILEGES ON DATABASE up TO up;
+postgres=# CREATE DATABASE up;
+postgres=# CREATE USER up WITH ENCRYPTED PASSWORD 'up';
+postgres=# GRANT ALL PRIVILEGES ON DATABASE up TO up;
+postgres=# exit
 ```
 Nahrajeme český balíček pro databázi
 ```bash
-source scripts/postgresql_cs.sh
+$ source scripts/postgresql_cs.sh
 ```
 Nainstalujeme všechny závislosti pro backend a aktivujeme virtuální prostředí Pythonu
 ```bash
-pipenv install --dev
-pipenv shell
+$ pipenv install --dev
+$ pipenv shell
 ```
 Připravíme celou Django aplikaci na spuštění
 ```bash
-source scripts/release_tasks.sh
+$ source scripts/release_tasks.sh
 ```
 A vytvoříme uživatelský účet pro přístup do aplikace (zadáme libovolné údaje, kterými se poté budeme přihlašovat)
 ```bash
@@ -161,14 +165,12 @@ python manage.py createsuperuser
 ### Spuštění
 Spustíme vývojový server
 ```bash
-python manage.py runserver 0.0.0.0:8000
+$ python manage.py runserver 0.0.0.0:8000
 ```
 Aplikace je nyní dostupná na adrese http://localhost:8000/
-### Poznámky
-#### Otevření aplikace na jiném zařízení v síti
-Aplikace je připravena na otevření i z dalších zařízeních v síti (např. z mobilního telefonu). 
-
+> **Poznámka: otevření aplikace na jiném zařízení v síti**
+>
+> Aplikace je připravena také na zobrazení z dalších zařízeních v síti (např. z mobilního telefonu). 
 Obvykle je potřeba provést tyto 2 kroky:
-1. povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
-2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server (zobrazí se např. při spouštění webpack-dev-serveru)
-> **Poznámka:** Při změně privátní adresy počítače je potřeba restartovat webpack-dev-server
+> 1. povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
+> 2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server
