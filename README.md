@@ -169,7 +169,7 @@ $ source scripts/shell/release_tasks.sh
 ```
 A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se poté budeme přihlašovat)
 ```bash
-python manage.py createsuperuser
+$ python manage.py createsuperuser
 ```
 💡 *(NEPOVINNÉ)* Na závěr můžeme ještě **naplnit naší databázi [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql)**, která ukážou fungování aplikace a usnadní první použití 
 (obsahují několik klientů, skupin, lekcí, zájemců, kurzů a stavů účasti) – po zadání příkazu je vyžadováno heslo uživatele `up`, které jsme nastavili taktéž `up`
@@ -193,7 +193,7 @@ Obvykle je potřeba provést tyto 2 kroky:
 ### Testování
 Můžeme také snadno spustit různé testy aplikace, například otestovat, jestli správně funguje API pro klienty
 ```bash
-python manage.py behave --stage=api --tags=clients
+$ python manage.py behave --stage=api --tags=clients
 ```
 Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o testech a možnostech spouštění](tests/).
 
