@@ -40,7 +40,7 @@ Od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/)
 * automatické vytváření předplacených náhrad lekcí při omluvě předem
 * upozornění, že má klient příště platit
 * konfigurace kurzů a stavů účasti
-* propojení s API Fio Banky – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu
+* propojení s API *Fio banky* – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu
 * automatický odhad kurzu pro nově přidávané lekce
 * respektování a kontrola všech omezení daných danou doménou (např. duplicity apod.)
 * automatické přidání předplacené lekce při omluvě/zrušení lekce ze strany lektorky
