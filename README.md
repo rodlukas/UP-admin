@@ -27,11 +27,11 @@ Logentries -
 * [Licence](#licence)
 
 ## Základní informace o aplikaci
-Aplikaci jsem vytvořil v roce 2018 v rámci **bakalářské práce na FIT ČVUT** - vizte [repozitář s textem práce](https://github.com/rodlukas/bachelors-thesis).
+Aplikaci jsem vytvořil v roce 2018 v rámci **bakalářské práce na FIT ČVUT** – vizte [repozitář s textem práce](https://github.com/rodlukas/bachelors-thesis).
 Od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) denně úspěšně používána a její rozšiřování a práce na ní stále pokračují ❤️.
 ### Klíčové funkce aplikace
 * **evidence klientů a skupin klientů docházejících na lekce kurzů**
-* **evidence lekcí klientů a skupin včetně předplacených - stav účasti, platba, datum, čas, zrušení, poznámky**
+* **evidence lekcí klientů a skupin včetně předplacených – stav účasti, platba, datum, čas, zrušení, poznámky**
 * **evidence zájemců o kurzy**
 * **zobrazení lekcí ve 3 formách: v kartě klienta/skupiny, v diáři a na hlavní stránce v přehledu pro dnešní den**
 * kontrola časových konfliktů lekcí
@@ -39,7 +39,7 @@ Od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/)
 * automatické vytváření předplacených náhrad lekcí při omluvě předem
 * upozornění, že má klient příště platit
 * konfigurace kurzů a stavů účasti
-* propojení s API Fio Banky - na hlavní stránce se přehledně zobrazují nedávné transakce z účtu
+* propojení s API Fio Banky – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu
 * automatický odhad kurzu pro nově přidávané lekce
 * respektování a kontrola všech omezení daných danou doménou (např. duplicity apod.)
 * automatické přidání předplacené lekce při omluvě/zrušení lekce ze strany lektorky
@@ -72,10 +72,10 @@ Aplikace aktuálně běží na 4 prostředích (3x PaaS [Heroku](https://www.her
 konkrétní instancí databáze, umožňují různé úrovně debugování a kosmeticky se liší také barvou menu. 
 
 > **Seznam prostředí:**
-> * **vývojové (lokální)** - pro lokální vývoj *(žluté menu)*,
-> * **testing** - umožňuje zapnout debugování, deploy každého commitu *(modré menu)*,
-> * **staging** - stejná verze aplikace jako na produkci, deploy při release *(zelené menu)*,
-> * **produkce** - produkční verze používaná zákazníkem, deploy při release (jako staging) *(bílé menu)*.
+> * **vývojové (lokální)** – pro lokální vývoj *(žluté menu)*,
+> * **testing** – umožňuje zapnout debugování, deploy každého commitu *(modré menu)*,
+> * **staging** – stejná verze aplikace jako na produkci, deploy při release *(zelené menu)*,
+> * **produkce** – produkční verze používaná zákazníkem, deploy při release (jako staging) *(bílé menu)*.
 
 * Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, 
 viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[2]](https://wsvincent.com/django-best-practices/)).
@@ -87,11 +87,11 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
     * **logování** z Heroku se zasílá do [Logentries](https://logentries.com/) (logy se uchovávají po 7 dnů, tříděné podle typu prostředí)
     * **odchytávání chyb na backendu i frontendu** přes [Sentry](https://sentry.io/) (tříděné podle typu prostředí, aktivní na produkci, testing i staging prostředí)
         * při chybě na frontendu je možné poslat zpětnou vazbu vázanou ke konkrétní chybě díky propojení Sentry a [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
-    * **CI a CD** má na starost [Travis](https://travis-ci.com/) - automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
+    * **CI a CD** má na starost [Travis](https://travis-ci.com/) – automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
 * Aplikace **respektuje standardy** [PEP 8](https://pep8.org), [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
 * Kompletní vývoj aplikace probíhá v IDE *[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)*.
 * Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí.
-    * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** - 
+    * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
     * Pro **testování UI** se používá [selenium](https://github.com/SeleniumHQ/selenium).
     * **Další informace o testech: [tests/README.md](/tests/README.md)**
@@ -111,8 +111,8 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
 ---
 
 ## Jak spustit aplikaci
-Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je klasický vývojový - ten obsahuje pokročilé debugovací
-nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spuštění ve druhém režimu - produkční verze aplikace, tedy ta, která je nejblíže verzi u zákazníka.
+Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je klasický vývojový – ten obsahuje pokročilé debugovací
+nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spuštění ve druhém režimu – **produkční verze aplikace**, tedy ta, která je nejblíže verzi u zákazníka.
 ### Požadavky
 Pro spuštění je potřeba mít v OS nainstalováno:
 * [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile))
