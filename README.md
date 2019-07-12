@@ -104,7 +104,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
 ├── api .......... Django aplikace pro API
 ├── docs ......... další dokumenty k aplikaci     
 ├── frontend ..... klientská část webové aplikace   
-├── scripts ...... skripty pro CI/CD
+├── scripts ...... skripty pro CI/CD/instalaci
 ├── staticfiles .. složka pro statické soubory (prázdná, přesun až na CI)
 ├── tests ........ kompletní testy API i frontendu
 └── up ........... celý Django projekt
