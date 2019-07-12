@@ -77,8 +77,10 @@ konkrétní instancí databáze, umožňují různé úrovně debugování a kos
 > * **staging** - stejná verze aplikace jako na produkci, deploy při release *(zelené menu)*,
 > * **produkce** - produkční verze používaná zákazníkem, deploy při release (jako staging) *(bílé menu)*.
 
-* Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[2]](https://wsvincent.com/django-best-practices/)).
-* Na produkci se každý den ve 3:00 provádí [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
+* Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, 
+viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[2]](https://wsvincent.com/django-best-practices/)).
+* Na produkci se každý den ve 3:00 provádí 
+[automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
 * **Aplikace jsou napojené na další služby:**
     * [Slack](https://slack.com/),
     * [Google Analytics](https://analytics.google.com/),
@@ -86,11 +88,12 @@ konkrétní instancí databáze, umožňují různé úrovně debugování a kos
     * **odchytávání chyb na backendu i frontendu** přes [Sentry](https://sentry.io/) (tříděné podle typu prostředí, aktivní na produkci, testing i staging prostředí)
         * při chybě na frontendu je možné poslat zpětnou vazbu vázanou ke konkrétní chybě díky propojení Sentry a [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
     * **CI a CD** má na starost [Travis](https://travis-ci.com/) - automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
-* Aplikace **respektuje standardy** [PEP 8](https://pep8.org), [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/)
+* Aplikace **respektuje standardy** [PEP 8](https://pep8.org), [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
 * Kompletní vývoj aplikace probíhá v IDE *[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)*.
-* Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí
-    * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** - testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy
-    * Pro **testování UI** se používá [selenium](https://github.com/SeleniumHQ/selenium)
+* Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí.
+    * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** - 
+    testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
+    * Pro **testování UI** se používá [selenium](https://github.com/SeleniumHQ/selenium).
     * **Další informace o testech: [tests/README.md](/tests/README.md)**
 
 ## Struktura repozitáře
