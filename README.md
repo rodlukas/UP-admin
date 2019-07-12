@@ -24,6 +24,7 @@ Logentries –
 * [Jak spustit aplikaci](#jak-spustit-aplikaci)
    * [Instalace](#instalace)
    * [Spuštění](#spuštění)
+   * [Testování](#testování)
 * [Licence](#licence)
 
 ## Základní informace o aplikaci
@@ -176,7 +177,7 @@ python manage.py createsuperuser
 ```bash
 $ python manage.py runserver 0.0.0.0:8000
 ```
-**✅ Aplikace je nyní dostupná na adrese http://localhost:8000/**
+**✅ Aplikace je nyní dostupná na adrese http://localhost:8000/.**
 
 > **Poznámka: otevření aplikace na jiném zařízení v síti**
 >
@@ -184,6 +185,14 @@ $ python manage.py runserver 0.0.0.0:8000
 Obvykle je potřeba provést tyto 2 kroky:
 > 1. povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
 > 2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server
+
+### Testování
+Můžeme také snadno spustit různé testy aplikace, například otestovat, jestli správně funguje API pro klienty
+```bash
+python manage.py behave --stage=api --tags=clients
+```
+Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o testech a možnostech spouštění](tests/README.md).
+
 ## Licence
 Licencováno pod [MIT](LICENSE).
 
