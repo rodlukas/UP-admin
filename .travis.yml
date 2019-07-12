@@ -12,14 +12,14 @@ addons:
   postgresql: '11'
 before_install:
   # pridani ceskeho balicku pro funkcni CZ v databazi
-  - source scripts/postgresql_cs.sh
+  - source scripts/shell/postgresql_cs.sh
 install:
   # nainstaluj geckodriver pro selenium testovani
-  - source scripts/install_geckodriver.sh
+  - source scripts/shell/install_geckodriver.sh
 
   # spust skripty pro upravu souboru
-  - source scripts/create_npmrc.sh
-  - source scripts/string_substitution.sh
+  - source scripts/shell/create_npmrc.sh
+  - source scripts/shell/string_substitution.sh
 
   # nainstaluj JS zavislosti
   - nvm install 10.16.0
@@ -38,7 +38,7 @@ script:
   - psql -c 'create database travis_ci_test;' -U postgres
 
   # priprav Django aplikaci
-  - source scripts/release_tasks.sh
+  - source scripts/shell/release_tasks.sh
 
   # proved testy a spocitej pokryti kodu
   - coverage run -a manage.py test

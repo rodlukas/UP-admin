@@ -146,18 +146,18 @@ $ unzip frontend.zip && rm frontend.zip
 ```bash
 $ mv .env.default .env
 ```
-Spustíme ***psql CLI***, kde pomocí tří příkazů **vytvoříme databázi a uživatele** pro přístup do databáze, na závěr ukončíme CLI
+Spustíme ***psql CLI***, kde pomocí dvou příkazů **vytvoříme databázi a uživatele** pro přístup do databáze, na závěr ukončíme CLI
 ```
 $ sudo -u postgres psql
 
-postgres=# CREATE DATABASE up;
+postgres=# 
 postgres=# CREATE USER up WITH ENCRYPTED PASSWORD 'up';
-postgres=# GRANT ALL PRIVILEGES ON DATABASE up TO up;
+postgres=# CREATE DATABASE up WITH OWNER up;
 postgres=# exit
 ```
 Nahrajeme **český balíček pro databázi** (kvůli českému řazení podle abecedy)
 ```bash
-$ source scripts/postgresql_cs.sh
+$ source scripts/shell/postgresql_cs.sh
 ```
 Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu
 ```bash
@@ -166,11 +166,17 @@ $ pipenv shell
 ```
 **Připravíme celou Django aplikaci na spuštění**
 ```bash
-$ source scripts/release_tasks.sh
+$ source scripts/shell/release_tasks.sh
 ```
 A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se poté budeme přihlašovat)
 ```bash
 python manage.py createsuperuser
+```
+(NEPOVINNÉ) Na závěr můžeme volitelně ještě naplnit naší databázi [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql), která usnadní počáteční použití aplikace 
+(obsahují několik klientů, skupin, lekcí, zájemců, kurzů a stavů účasti) – po zadání příkazu je vyžadováno heslo uživatele `up`, které 
+jsme nastavili `up`
+```bash
+$ psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
 ```
 ### Spuštění
 **Spustíme vývojový server** 🚀
