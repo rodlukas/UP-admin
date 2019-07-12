@@ -95,7 +95,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
     * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
     * Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
-    * **Další informace o testech: [tests/README.md](/tests/README.md)**
+    * **Další informace o testech: [tests/README.md](tests/)**
 
 ## Struktura repozitáře
 ```bash
@@ -191,7 +191,7 @@ Můžeme také snadno spustit různé testy aplikace, například otestovat, jes
 ```bash
 python manage.py behave --stage=api --tags=clients
 ```
-Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o testech a možnostech spouštění](tests/README.md).
+Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o testech a možnostech spouštění](tests/).
 
 ## Licence
 Licencováno pod [MIT](LICENSE).
