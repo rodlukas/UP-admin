@@ -115,10 +115,10 @@ Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je k
 nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spuštění ve druhém režimu – **produkční verze aplikace**, tedy ta, která je nejblíže verzi u zákazníka.
 ### Požadavky
 Pro spuštění je potřeba mít v OS nainstalováno:
-* [Python 3.7](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile))
-* [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv)
-* [Git](https://git-scm.com/downloads)
-* [PostgreSQL 11](https://www.postgresql.org/download/)
+* [Python 3.7](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile)),
+* [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv),
+* [Git](https://git-scm.com/downloads),
+* [PostgreSQL 11](https://www.postgresql.org/download/).
 
 <a name="npmpro">
   
