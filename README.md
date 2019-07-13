@@ -95,7 +95,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
     * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
     * Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
-    * **Podrobné informace o testech jsou v [tests/README.md](tests/)**.
+    * **Podrobné informace o testech jsou v [`tests/README.md`](tests/)**.
 
 ## Struktura repozitáře
 ```bash
@@ -115,7 +115,7 @@ Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je k
 nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spuštění ve druhém režimu – **produkční verze aplikace**, tedy ta, která je nejblíže verzi u zákazníka.
 ### Požadavky
 Pro spuštění je potřeba mít v OS nainstalováno:
-* [Python 3.7](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile)),
+* [Python 3.7](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
 * [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv),
 * [Git](https://git-scm.com/downloads),
 * [PostgreSQL 11](https://www.postgresql.org/download/).
@@ -137,7 +137,7 @@ $ git fetch --tags
 $ latestRelease=$(git describe --tags `git rev-list --tags --max-count=1`)
 $ git checkout $latestRelease
 ```
-Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je přímo do repozitáře (a *zip* smažeme)
+Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je přímo do repozitáře (a `frontend.zip` smažeme)
 ```bash
 $ wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
 $ unzip frontend.zip && rm frontend.zip
