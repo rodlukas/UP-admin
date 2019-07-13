@@ -163,7 +163,7 @@ Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální pros
 $ pipenv install --dev
 $ pipenv shell
 ```
-**Připravíme celou Django aplikaci na spuštění**
+**Připravíme celou Django aplikaci na spuštění** (skript nastaví výchozí soubor s nastavením Djanga, připraví statické soubory frontendu pro nasazení a vytvoří databázové schéma)
 ```bash
 $ source scripts/shell/release_tasks.sh
 ```
