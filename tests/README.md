@@ -3,7 +3,7 @@ V této složce se nachází **rozsáhlé testy API i frontendu** tvořící zá
 
 Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy. Pro pokročilejší integraci *behave* s Djangem je použité [behave-django](https://github.com/behave/behave-django).
 
-Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium), konkrétně [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html). Pro jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa` (ve výjimečných případech toto nelze a používá se přímo `id` elementu – např. komponenty *react-select*).
+Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium), konkrétně [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html). Pro jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa` (ve výjimečných případech toto nelze a používá se přímo `id` elementu – např. komponenty používající [React Select](https://github.com/JedWatson/react-select)).
 ## Struktura adresářů
 ```bash
 ├── api_steps ........ testovací kroky pro API      
@@ -11,12 +11,12 @@ Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/se
 ├── features ......... popsané funkce a scénáře pro API i UI
 └── ui_steps ......... testovací kroky pro UI
 ```
-Ve **složkách `api_steps` a `ui_steps`** jsou soubory s názvy **`<testovana_cast>.py`** – ty pokrývají danou testovanou část aplikace popsanou v souboru `features/<testovana_cast>.feature` (např. skupiny, klienty...). Dále je v obou složkách vždy soubor **`helpers.py`**,
+Ve **složkách [`api_steps`](api_steps) a [`ui_steps`](ui_steps)** jsou soubory s názvy **`<testovana_cast>.py`** – ty pokrývají danou testovanou část aplikace popsanou v souboru `features/<testovana_cast>.feature` (např. skupiny, klienty...). Dále je v obou složkách vždy soubor **`helpers.py`**,
 který obsahuje pomocné funkce používané v rámci dané složky.
 
-Složka **`common_steps`** obsahuje kroky, které jsou používané pro API i UI testy dané části `<testovana_cast>.py`.
+Složka **[`common_steps`](common_steps)** obsahuje kroky, které jsou používané pro API i UI testy dané části `<testovana_cast>.py`.
 
-Soubor **`common_helpers.py`** obsahuje pomocné funkce, které jsou používány pro API i UI testy. **Soubory `api_environment.py` a `ui_environment.py`** obsahují obecné nastavení prostředí pro dané API/UI testy (např. nastavení prohlížeče, klienta...).
+Soubor **[`common_helpers.py`](common_helpers.py)** obsahuje pomocné funkce, které jsou používány pro API i UI testy. **Soubory [`api_environment.py`](api_environment.py) a [`ui_environment.py`](ui_environment.py)** obsahují obecné nastavení prostředí pro dané API/UI testy (např. nastavení prohlížeče, klienta...).
 
 ## Spouštění testů
 K dispozici jsou **dvě různé sady testů (tzv. *stage*): testy UI a testy API**. 

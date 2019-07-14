@@ -95,7 +95,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
     * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
     * Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
-    * **Podrobné informace o testech jsou v [tests/README.md](tests/)**.
+    * **Podrobné informace o testech jsou v [`tests/README.md`](tests/)**.
 
 ## Struktura repozitáře
 ```bash
@@ -106,7 +106,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
 ├── frontend ..... klientská část webové aplikace   
 ├── scripts ...... skripty pro CI/CD/instalaci
 ├── staticfiles .. složka pro statické soubory (prázdná, přesun až na CI)
-├── tests ........ kompletní testy API i frontendu
+├── tests ........ kompletní testy API i UI (frontendu)
 └── up ........... celý Django projekt
 ```
 
@@ -115,9 +115,10 @@ Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je k
 nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spuštění ve druhém režimu – **produkční verze aplikace**, tedy ta, která je nejblíže verzi u zákazníka.
 ### Požadavky
 Pro spuštění je potřeba mít v OS nainstalováno:
-* [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [Pipfile](/Pipfile))
-* [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv)
-* [Git](https://git-scm.com/downloads)
+* [Python 3.7](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
+* [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv),
+* [Git](https://git-scm.com/downloads),
+* [PostgreSQL 11](https://www.postgresql.org/download/).
 
 <a name="npmpro">
   
@@ -136,7 +137,7 @@ $ git fetch --tags
 $ latestRelease=$(git describe --tags `git rev-list --tags --max-count=1`)
 $ git checkout $latestRelease
 ```
-Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je přímo do repozitáře (a *zip* smažeme)
+Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je přímo do repozitáře (a `frontend.zip` smažeme)
 ```bash
 $ wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
 $ unzip frontend.zip && rm frontend.zip
@@ -162,7 +163,7 @@ Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální pros
 $ pipenv install --dev
 $ pipenv shell
 ```
-**Připravíme celou Django aplikaci na spuštění**
+**Připravíme celou Django aplikaci na spuštění** (skript nastaví výchozí soubor s nastavením Djanga, připraví statické soubory frontendu pro nasazení a vytvoří databázové schéma)
 ```bash
 $ source scripts/shell/release_tasks.sh
 ```
@@ -187,7 +188,7 @@ $ python manage.py runserver 0.0.0.0:8000
 > Aplikace je připravena také na zobrazení z dalších zařízeních v síti (např. z mobilního telefonu). 
 Obvykle je potřeba provést tyto 2 kroky:
 > 1. povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
-> 2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server
+> 2. na mobilním zařízení zadat privátní IP adresu počítače, na kterém běží server.
 
 ### Testování
 Můžeme také snadno spustit různé testy aplikace, například otestovat, jestli správně funguje API pro klienty
