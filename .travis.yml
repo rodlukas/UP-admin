@@ -52,7 +52,7 @@ after_success:
   - rm -rf geckodriver geckodriver.log coverage.xml
 
   # vytvoreni souboru frontend.zip se sestavenym frontendem (vcetne template) pro nahrani na GH
-  - zip -r frontend.zip frontend/dist admin/templates/react-autogenerate.html
+  - zip -r frontend.zip frontend/dist admin/templates/react-autogenerate.html -x frontend/dist/react-autogenerate.html
 notifications:
   email: false
   slack:
