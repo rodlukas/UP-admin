@@ -18,6 +18,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Pipenv (up)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="swagger-ui-bundle" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
