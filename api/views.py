@@ -1,7 +1,6 @@
 from rest_framework import viewsets, mixins
 from .serializers import *
 from admin.models import *
-from datetime import datetime
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .services import Bank
@@ -12,6 +11,8 @@ from django.utils.decorators import method_decorator
 from django.db.models import Prefetch
 from django.db.models.deletion import ProtectedError
 from .mixins import ProtectedErrorMixin
+from django_filters import rest_framework as filters
+from . import filters as custom_filters
 
 
 class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
@@ -50,16 +51,11 @@ class AttendanceStateViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
 
 
 class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.select_related('course') \
+        .prefetch_related(Prefetch('memberships', queryset=Membership.objects.select_related('client')))
     serializer_class = GroupSerializer
-    filterset_fields = 'active',
-
-    def get_queryset(self):
-        qs = Group.objects.select_related('course')\
-            .prefetch_related(Prefetch('memberships', queryset=Membership.objects.select_related('client')))
-        id_client = self.request.query_params.get('client')
-        if id_client is not None:
-            qs = qs.filter(memberships__client__pk=id_client)
-        return qs
+    filter_backends = filters.DjangoFilterBackend,
+    filterset_class = custom_filters.GroupFilter
 
 
 class CourseViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
@@ -82,24 +78,14 @@ class ApplicationViewSet(viewsets.ModelViewSet):
 
 
 class LectureViewSet(viewsets.ModelViewSet):
+    queryset = Lecture.objects.order_by('-start') \
+        .select_related('group__course', 'course') \
+        .prefetch_related(Prefetch('attendances', queryset=Attendance.objects.select_related('client')),
+                          Prefetch('group__memberships', queryset=Membership.objects.select_related('client')))
     serializer_class = LectureSerializer
     filter_backends = OrderingFilter, DjangoFilterBackend,
+    filterset_class = custom_filters.LectureFilter
     ordering_fields = 'start',
-    filterset_fields = 'group',
-
-    def get_queryset(self):
-        qs = Lecture.objects.order_by('-start')\
-            .select_related('group__course', 'course')\
-            .prefetch_related(Prefetch('attendances', queryset=Attendance.objects.select_related('client')),
-                              Prefetch('group__memberships', queryset=Membership.objects.select_related('client')))
-        date = self.request.query_params.get('date')
-        client_id = self.request.query_params.get('client')
-        if date is not None:
-            date = datetime.date(datetime.strptime(date, "%Y-%m-%d"))
-            qs = qs.filter(start__date=date)
-        elif client_id is not None:
-            qs = qs.filter(attendances__client=client_id, group__isnull=True)
-        return qs
 
     def get_serializer(self, *args, **kwargs):
         # pokud prislo pole, nastav serializer na many=True
