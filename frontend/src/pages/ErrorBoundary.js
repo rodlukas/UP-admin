@@ -14,7 +14,7 @@ class ErrorBoundary extends Component {
         this.state = {
             hasError: false,
             error: null,
-            info: null
+            errorInfo: null
         }
         // aby fungoval react-router pri nejake chybe
         this.props.history.listen(() => {
