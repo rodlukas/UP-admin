@@ -20,14 +20,16 @@
   <img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square">
 </p>
 
-> [Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | 
-[Heroku](https://dashboard.heroku.com/apps) | 
-[Slack](https://uspesnyprvnacek.slack.com/messages) | 
-Logentries – 
-[produkce](https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836) / 
-[staging](https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803) / 
-[testing](https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3) |
-[Google Analytics](https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243)
+<p align="center">
+  <a href="https://sentry.io/uspesnyprvnacek/up-admin/">Sentry</a> | 
+  <a href="https://dashboard.heroku.com/apps">Heroku</a> | 
+  <a href="https://uspesnyprvnacek.slack.com/messages">Slack</a> | 
+  <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> | 
+  Logentries – 
+  <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">produkce</a> / 
+  <a href="https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803">staging</a> / 
+  <a href="https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3">testing</a>
+</p>
 
 ## Obsah
 * [Základní informace o aplikaci](#základní-informace-o-aplikaci)
