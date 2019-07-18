@@ -1,8 +1,11 @@
 # Webová aplikace pro projekt „Úspěšný prvňáček“ 
 <img src="./admin/static/admin/android-chrome-192x192.png" alt="logo" width="60" align="right"/>
 
-[![Build Status](https://travis-ci.com/rodlukas/UP-admin.svg?token=g1rDdptQG4SVzcH6FMo5&branch=master)](https://travis-ci.com/rodlukas/UP-admin)
-[![codecov](https://codecov.io/gh/rodlukas/UP-admin/branch/master/graph/badge.svg?token=2kJIBqfP0a)](https://codecov.io/gh/rodlukas/UP-admin)
+![Travis (.com)](https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square)
+![Codecov](https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square)
+![GitHub](https://img.shields.io/github/license/rodlukas/UP-admin.svg?style=flat-square)
+![GitHub release](https://img.shields.io/github/release/rodlukas/UP-admin.svg?style=flat-square)
+![GitHub commits since latest release](https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square)
 
 > [Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | 
 [Heroku](https://dashboard.heroku.com/apps) | 
