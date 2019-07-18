@@ -1,14 +1,14 @@
 import React, {Component, Fragment} from "react"
-import {Table, Container} from "reactstrap"
+import {Container, Table} from "reactstrap"
 import GroupService from "../api/services/group"
-import ClientsList from "../components/ClientsList"
-import Loading from "../components/Loading"
-import GroupName from "../components/GroupName"
-import CourseName from "../components/CourseName"
-import Heading from "../components/Heading"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
-import APP_URLS from "../urls"
+import ClientsList from "../components/ClientsList"
+import CourseName from "../components/CourseName"
+import GroupName from "../components/GroupName"
+import Heading from "../components/Heading"
+import Loading from "../components/Loading"
 import ModalGroups from "../forms/ModalGroups"
+import APP_URLS from "../urls"
 
 export default class Groups extends Component {
     state = {

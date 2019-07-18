@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSpinnerThird} from "@fortawesome/pro-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import React, {useEffect, useState} from "react"
 
 const LONG_LOADING_THRESHOLD = 5 // sekundy
 

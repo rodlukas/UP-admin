@@ -1,25 +1,25 @@
 import React, {Component} from "react"
 import {
+    Alert,
     Col,
+    CustomInput,
     Form,
     FormGroup,
-    Label,
     Input,
-    ModalHeader,
+    InputGroup,
+    InputGroupAddon,
+    Label,
     ModalBody,
     ModalFooter,
-    Alert,
-    InputGroupAddon,
-    InputGroup,
-    CustomInput
+    ModalHeader
 } from "reactstrap"
 import ClientService from "../api/services/client"
-import ClientName from "../components/ClientName"
-import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
+import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import {prettyPhone} from "../global/utils"
+import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
+import {prettyPhone} from "../global/utils"
 
 export default class FormClients extends Component {
     constructor(props) {

@@ -1,8 +1,8 @@
-import React from "react"
-import NoInfo from "./NoInfo"
-import {prettyPhone} from "../global/utils"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faPhone} from "@fortawesome/pro-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import React from "react"
+import {prettyPhone} from "../global/utils"
+import NoInfo from "./NoInfo"
 import "./Phone.css"
 
 const Phone = ({phone, icon = false}) => {

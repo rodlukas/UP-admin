@@ -1,7 +1,7 @@
+import decode from "jwt-decode"
 import React, {Component, createContext} from "react"
 import LoginService from "../api/services/login"
 import {prettyDateTime} from "../global/funcDateTime"
-import decode from "jwt-decode"
 import history from "../global/history"
 import APP_URLS from "../urls"
 

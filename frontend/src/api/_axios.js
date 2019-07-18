@@ -1,6 +1,6 @@
 import axios from "axios"
-import {API_URL, JWT_HEADER_PREFIX} from "../global/constants"
 import {Token} from "../auth/AuthContext"
+import {API_URL, JWT_HEADER_PREFIX} from "../global/constants"
 
 const axiosInstance = axios.create({
     baseURL: API_URL,

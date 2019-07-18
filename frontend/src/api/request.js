@@ -1,10 +1,10 @@
 import React, {Component, Fragment} from "react"
-import axiosRequest from "./_axios"
-import {NOTIFY_TEXT} from "../global/constants"
 import {toast} from "react-toastify"
-import {API_METHODS, API_URLS} from "./urls"
-import APP_URLS from "../urls"
+import {NOTIFY_TEXT} from "../global/constants"
 import history from "../global/history"
+import APP_URLS from "../urls"
+import axiosRequest from "./_axios"
+import {API_METHODS, API_URLS} from "./urls"
 
 class ErrorMessage extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import React from "react"
-import GroupName from "./GroupName"
 import ComponentsList from "./ComponentsList"
+import GroupName from "./GroupName"
 
 const GroupsList = ({groups = []}) => {
     if (!groups.length)

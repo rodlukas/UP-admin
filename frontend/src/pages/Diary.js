@@ -1,21 +1,22 @@
+import {faArrowAltCircleLeft, faArrowAltCircleRight} from "@fortawesome/pro-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import React, {Component, Fragment} from "react"
-import {Container, Row, Col, Button} from "reactstrap"
+import {Link} from "react-router-dom"
+import {Button, Col, Container, Row} from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
+import Heading from "../components/Heading"
 import {
-    prettyDateWithYearIfDiff,
-    isEqualDate,
-    getMonday,
     addDays,
     DAYS_IN_WEEK,
+    getMonday,
     getWeekSerializedFromMonday,
-    yearDiffs, prettyDateWithLongDayYear
+    isEqualDate,
+    prettyDateWithLongDayYear,
+    prettyDateWithYearIfDiff,
+    yearDiffs
 } from "../global/funcDateTime"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/pro-solid-svg-icons"
 import APP_URLS from "../urls"
-import {Link} from "react-router-dom"
 import "./Diary.css"
-import Heading from "../components/Heading"
 
 export default class Diary extends Component {
     state = {

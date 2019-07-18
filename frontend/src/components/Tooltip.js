@@ -1,7 +1,7 @@
-import {UncontrolledTooltip} from "reactstrap"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faInfoCircle} from "@fortawesome/pro-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import React, {Fragment} from "react"
+import {UncontrolledTooltip} from "reactstrap"
 
 const Tooltip = ({postfix, text}) =>
     <Fragment>

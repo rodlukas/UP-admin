@@ -1,16 +1,15 @@
 import React, {Component} from "react"
 import Select from "react-select"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, Alert, CustomInput} from "reactstrap"
-import CourseService from "../api/services/course"
+import {Alert, Col, CustomInput, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 import ClientService from "../api/services/client"
+import CourseService from "../api/services/course"
 import GroupService from "../api/services/group"
-import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
+import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import {TEXTS} from "../global/constants"
-import {alertRequired} from "../global/utils"
-import {clientName} from "../global/utils"
 import Tooltip from "../components/Tooltip"
+import {TEXTS} from "../global/constants"
+import {alertRequired, clientName} from "../global/utils"
 
 export default class FormGroups extends Component {
     constructor(props) {

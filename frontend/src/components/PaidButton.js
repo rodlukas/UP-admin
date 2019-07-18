@@ -1,8 +1,8 @@
-import React from "react"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faUsdCircle} from "@fortawesome/pro-solid-svg-icons"
-import "./PaidButton.css"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import React from "react"
 import AttendanceService from "../api/services/attendance"
+import "./PaidButton.css"
 
 const PaidButton = props => {
     function onClick() {

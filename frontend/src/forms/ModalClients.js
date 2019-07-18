@@ -1,8 +1,8 @@
 import React, {Fragment} from "react"
 import {Modal} from "reactstrap"
-import FormClients from "../forms/FormClients"
-import EditButton from "../components/buttons/EditButton"
 import AddButton from "../components/buttons/AddButton"
+import EditButton from "../components/buttons/EditButton"
+import FormClients from "../forms/FormClients"
 import useModal from "../hooks/useModal"
 
 const ModalClients = ({currentClient = null, refresh}) => {

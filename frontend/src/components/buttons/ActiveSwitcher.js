@@ -1,7 +1,7 @@
 import React from "react"
 import {Button, ButtonGroup} from "reactstrap"
-import "./buttons.css"
 import "./ActiveSwitcher.css"
+import "./buttons.css"
 
 export default function ActiveSwitcher(props) {
 

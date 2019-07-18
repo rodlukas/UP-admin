@@ -1,9 +1,9 @@
 import React, {Component} from "react"
-import {Container, Row, Col} from "reactstrap"
+import {Col, Container, Row} from "reactstrap"
+import Bank from "../components/Bank"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import {toISODate} from "../global/funcDateTime"
-import Bank from "../components/Bank"
 
 export default class Dashboard extends Component {
     getDate = () => toISODate(new Date())

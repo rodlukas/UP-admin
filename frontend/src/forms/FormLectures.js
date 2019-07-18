@@ -1,24 +1,34 @@
-import React, {Component, Fragment} from "react"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter, CustomInput,
-    InputGroup, InputGroupAddon} from "reactstrap"
-import {toISODate, toISOTime, prettyDateWithLongDayYear} from "../global/funcDateTime"
-import LectureService from "../api/services/lecture"
-import CourseService from "../api/services/course"
-import ClientName from "../components/ClientName"
-import "./FormLectures.css"
+import {faCalendarAlt, faClipboardList, faClock, faHourglass} from "@fortawesome/pro-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faCalendarAlt, faClock, faHourglass, faClipboardList} from "@fortawesome/pro-solid-svg-icons"
-import GroupName from "../components/GroupName"
-import DeleteButton from "../components/buttons/DeleteButton"
-import CancelButton from "../components/buttons/CancelButton"
-import SubmitButton from "../components/buttons/SubmitButton"
+import React, {Component, Fragment} from "react"
 import Select from "react-select"
-import {TEXTS} from "../global/constants"
-import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
-import {alertRequired} from "../global/utils"
+import {
+    Col,
+    CustomInput,
+    Form,
+    FormGroup,
+    Input,
+    InputGroup,
+    InputGroupAddon,
+    Label,
+    ModalBody,
+    ModalFooter,
+    ModalHeader
+} from "reactstrap"
+import CourseService from "../api/services/course"
+import LectureService from "../api/services/lecture"
+import CancelButton from "../components/buttons/CancelButton"
+import DeleteButton from "../components/buttons/DeleteButton"
+import SubmitButton from "../components/buttons/SubmitButton"
+import ClientName from "../components/ClientName"
+import GroupName from "../components/GroupName"
 import Loading from "../components/Loading"
-import {DEFAULT_DURATION} from "../global/constants"
 import Tooltip from "../components/Tooltip"
+import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
+import {DEFAULT_DURATION, TEXTS} from "../global/constants"
+import {prettyDateWithLongDayYear, toISODate, toISOTime} from "../global/funcDateTime"
+import {alertRequired} from "../global/utils"
+import "./FormLectures.css"
 
 const GROUP_DURATION = 45
 

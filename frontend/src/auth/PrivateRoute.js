@@ -1,9 +1,9 @@
 import React, {useContext} from "react"
 import {Redirect} from "react-router-dom"
-import APP_URLS from "../urls"
 import {AuthContext} from "../auth/AuthContext"
-import {AttendanceStatesProvider} from "../contexts/AttendanceStateContext"
 import Page from "../components/Page"
+import {AttendanceStatesProvider} from "../contexts/AttendanceStateContext"
+import APP_URLS from "../urls"
 
 const PrivateRoute = ({component: WrappedComponent, ...rest}) => {
     const authContext = useContext(AuthContext)

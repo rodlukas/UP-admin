@@ -1,7 +1,7 @@
 import React from "react"
 import {Link} from "react-router-dom"
-import APP_URLS from "../urls"
 import {getAttrSafe} from "../global/utils"
+import APP_URLS from "../urls"
 
 const PlainName = ({client}) =>
     <span data-qa="client_name">

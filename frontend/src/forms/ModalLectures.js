@@ -1,7 +1,7 @@
 import React, {Fragment} from "react"
 import {Modal} from "reactstrap"
-import EditButton from "../components/buttons/EditButton"
 import AddButton from "../components/buttons/AddButton"
+import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
 import FormLectures from "./FormLectures"
 

@@ -1,25 +1,26 @@
+import {faHourglass} from "@fortawesome/pro-solid-svg-icons"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import React, {Component} from "react"
 import {
+    Alert,
     Col,
+    CustomInput,
     Form,
     FormGroup,
-    Label,
     Input,
-    ModalHeader,
+    InputGroup,
+    InputGroupAddon,
+    Label,
     ModalBody,
     ModalFooter,
-    Alert,
-    CustomInput,
-    InputGroupAddon, InputGroup
+    ModalHeader
 } from "reactstrap"
-import {DEFAULT_DURATION, EDIT_TYPE} from "../global/constants"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
-import DeleteButton from "../components/buttons/DeleteButton"
 import CancelButton from "../components/buttons/CancelButton"
+import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faHourglass} from "@fortawesome/pro-solid-svg-icons"
+import {DEFAULT_DURATION, EDIT_TYPE} from "../global/constants"
 
 export default class FormSettings extends Component {
     constructor(props) {

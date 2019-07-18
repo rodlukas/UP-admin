@@ -1,15 +1,15 @@
+import * as Sentry from "@sentry/browser"
+import "bootstrap/dist/css/bootstrap.css"
 import React from "react"
 import {render} from "react-dom"
-import Main from "./Main"
-import "bootstrap/dist/css/bootstrap.css"
-import "./index.css"
-import {AuthProvider} from "./auth/AuthContext"
-import * as Sentry from "@sentry/browser"
-import {getEnvName, isHosted} from "./global/funcEnvironments"
 import {hot} from 'react-hot-loader/root'
-import history from "./global/history"
 import {Router} from "react-router-dom"
+import {AuthProvider} from "./auth/AuthContext"
 import GA from "./components/GoogleAnalytics"
+import {getEnvName, isHosted} from "./global/funcEnvironments"
+import history from "./global/history"
+import "./index.css"
+import Main from "./Main"
 
 // CI provede substituci stringu za URL, promenna prostredi ale musi existovat, jinak nefunguje (proto podminka)
 if (isHosted())

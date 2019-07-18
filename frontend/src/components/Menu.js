@@ -1,10 +1,10 @@
 import React, {Fragment, useContext} from "react"
 import {NavLink as RouterNavLink} from "react-router-dom"
-import {Nav, NavItem, NavLink, Button} from "reactstrap"
-import "./Menu.css"
-import APP_URLS from "../urls"
-import {AuthContext} from "../auth/AuthContext"
+import {Button, Nav, NavItem, NavLink} from "reactstrap"
 import AuthChecking from "../auth/AuthChecking"
+import {AuthContext} from "../auth/AuthContext"
+import APP_URLS from "../urls"
+import "./Menu.css"
 
 const Menu = props => {
     const authContext = useContext(AuthContext)

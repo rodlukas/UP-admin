@@ -1,13 +1,13 @@
-import React, {Component, Fragment} from "react"
-import BankService from "../api/services/bank"
-import {ListGroup, ListGroupItem, Table, UncontrolledTooltip} from "reactstrap"
-import {prettyDateWithDayYearIfDiff, prettyTimeWithSeconds, isToday} from "../global/funcDateTime"
-import NoInfo from "./NoInfo"
+import {faExclamationCircle, faExternalLinkAlt, faInfoCircle, faSyncAlt} from "@fortawesome/pro-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faSyncAlt, faExternalLinkAlt, faExclamationCircle, faInfoCircle} from "@fortawesome/pro-solid-svg-icons"
-import CustomButton from "./buttons/CustomButton"
-import {prettyAmount} from "../global/utils"
+import React, {Component, Fragment} from "react"
+import {ListGroup, ListGroupItem, Table, UncontrolledTooltip} from "reactstrap"
+import BankService from "../api/services/bank"
 import {RENT_PRICE} from "../global/constants"
+import {isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds} from "../global/funcDateTime"
+import {prettyAmount} from "../global/utils"
+import CustomButton from "./buttons/CustomButton"
+import NoInfo from "./NoInfo"
 
 const REFRESH_TIMEOUT = 60 // sekundy
 

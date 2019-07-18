@@ -1,10 +1,10 @@
 import React from "react"
+import "./Attendances.css"
+import ClientName from "./ClientName"
 import LectureNote from "./LectureNote"
 import PaidButton from "./PaidButton"
-import SelectAttendanceState from "./SelectAttendanceState"
-import ClientName from "./ClientName"
 import RemindPay from "./RemindPay"
-import "./Attendances.css"
+import SelectAttendanceState from "./SelectAttendanceState"
 
 const Attendance = ({attendance, showClient = false, funcRefresh}) =>
     <li data-qa="lecture_attendance">

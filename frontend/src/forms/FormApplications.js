@@ -1,10 +1,10 @@
 import React, {Component} from "react"
-import {Col, Form, FormGroup, Label, Input, ModalHeader, ModalBody, ModalFooter} from "reactstrap"
-import ApplicationService from "../api/services/application"
 import Select from "react-select"
+import {Col, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
+import ApplicationService from "../api/services/application"
 import ClientService from "../api/services/client"
-import SubmitButton from "../components/buttons/SubmitButton"
 import CancelButton from "../components/buttons/CancelButton"
+import SubmitButton from "../components/buttons/SubmitButton"
 import {TEXTS} from "../global/constants"
 import {alertRequired, clientName} from "../global/utils"
 

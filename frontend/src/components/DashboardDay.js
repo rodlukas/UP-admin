@@ -1,15 +1,15 @@
 import React, {Component, Fragment} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading} from "reactstrap"
-import {prettyDateWithLongDayYearIfDiff, toISODate, prettyTime, isToday} from "../global/funcDateTime"
-import LectureNumber from "./LectureNumber"
 import LectureService from "../api/services/lecture"
-import Loading from "./Loading"
-import GroupName from "./GroupName"
-import CourseName from "./CourseName"
-import Attendances from "./Attendances"
-import "./DashboardDay.css"
-import {courseDuration} from "../global/utils"
 import ModalLectures from "../forms/ModalLectures"
+import {isToday, prettyDateWithLongDayYearIfDiff, prettyTime, toISODate} from "../global/funcDateTime"
+import {courseDuration} from "../global/utils"
+import Attendances from "./Attendances"
+import CourseName from "./CourseName"
+import "./DashboardDay.css"
+import GroupName from "./GroupName"
+import LectureNumber from "./LectureNumber"
+import Loading from "./Loading"
 
 export default class DashboardDay extends Component {
     state = {
