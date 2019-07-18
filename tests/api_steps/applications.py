@@ -1,9 +1,11 @@
-from behave import *
 import json
-from tests.api_steps import helpers
+
+from behave import *
 from rest_framework import status
-from tests.common_steps import applications
+
+from tests.api_steps import helpers
 from tests.api_steps import login_logout
+from tests.common_steps import applications
 
 
 def applications_cnt(api_client):

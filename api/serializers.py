@@ -1,12 +1,14 @@
-from admin.models import Application, Attendance, AttendanceState, Course, Client, Group, Lecture, Membership
-from rest_framework import serializers
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
-from django.db.models import F, ExpressionWrapper
-from rest_framework.settings import api_settings
-from datetime import timedelta
-from django.db.models import Q
 import re
+from datetime import timedelta
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F, ExpressionWrapper
+from django.db.models import Q
+from rest_framework import serializers
+from rest_framework.settings import api_settings
+from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
+
+from admin.models import Application, Attendance, AttendanceState, Course, Client, Group, Lecture, Membership
 from api import serializers_helpers
 
 

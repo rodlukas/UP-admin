@@ -1,7 +1,9 @@
-from distutils.util import strtobool
-from django.utils.dateparse import parse_datetime
 from datetime import datetime
+from distutils.util import strtobool
+
+from django.utils.dateparse import parse_datetime
 from django.utils.timezone import make_aware
+
 from admin.models import AttendanceState
 
 

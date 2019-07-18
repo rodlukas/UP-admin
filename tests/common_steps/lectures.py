@@ -1,6 +1,7 @@
 from behave import *
-from .. import fixtures
+
 from admin.models import Client, Group, AttendanceState, Course, Lecture
+from .. import fixtures
 
 
 @given('the database with some clients, groups, courses and attendance states')

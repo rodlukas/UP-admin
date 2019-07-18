@@ -1,9 +1,11 @@
+import json
+
 from behave import *
-from tests.api_steps import helpers
 from django.conf import settings
 from rest_framework import status
-import json
+
 from tests.common_steps import login_logout
+from tests.api_steps import helpers
 
 
 def login(context, username, password):

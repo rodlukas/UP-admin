@@ -1,8 +1,8 @@
 from django.urls import include, path
 from rest_framework import routers
-from api import views
 from rest_framework_simplejwt.views import TokenObtainSlidingView, TokenRefreshSlidingView
 
+from api import views
 
 router = routers.DefaultRouter()
 router.register('clients', views.ClientViewSet)

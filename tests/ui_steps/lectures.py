@@ -1,13 +1,14 @@
 from behave import *
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from tests.ui_steps import helpers
-from tests import common_helpers
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+
+from tests import common_helpers
 from tests.common_steps import lectures
+from tests.ui_steps import helpers
 from tests.ui_steps import login_logout
 
 

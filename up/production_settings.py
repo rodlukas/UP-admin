@@ -1,6 +1,7 @@
-from .settings import *
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+
+from .settings import *
 
 # pro funkcni testy na Travisu
 if os.getenv('TRAVIS'):

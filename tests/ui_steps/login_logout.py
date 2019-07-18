@@ -1,10 +1,11 @@
 from behave import *
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from tests.ui_steps import helpers
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from tests.common_steps import login_logout
+from tests.ui_steps import helpers
 
 LOCAL_STORAGE_JWT_KEY = 'jwt'
 

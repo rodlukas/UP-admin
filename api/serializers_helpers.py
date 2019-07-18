@@ -1,8 +1,9 @@
-from admin.models import Attendance, AttendanceState, Lecture
-from rest_framework import serializers
-from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
+from rest_framework import serializers
 from rest_framework.settings import api_settings
+
+from admin.models import Attendance, AttendanceState, Lecture
 
 
 def validate_course_is_visible(course):

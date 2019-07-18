@@ -1,19 +1,20 @@
-from rest_framework import viewsets, mixins
-from .serializers import ApplicationSerializer, AttendanceSerializer, AttendanceStateSerializer, CourseSerializer, \
-    ClientSerializer, GroupSerializer, LectureSerializer, MembershipSerializer
-from admin.models import Application, Attendance, AttendanceState, Course, Client, Group, Lecture, Membership
-from rest_framework.filters import OrderingFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from .services import Bank
-from rest_framework.views import APIView
-from django.http import JsonResponse
-from django.views.decorators.cache import cache_page
-from django.utils.decorators import method_decorator
 from django.db.models import Prefetch
 from django.db.models.deletion import ProtectedError
-from .mixins import ProtectedErrorMixin
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, mixins
+from rest_framework.filters import OrderingFilter
+from rest_framework.views import APIView
+
+from admin.models import Application, Attendance, AttendanceState, Course, Client, Group, Lecture, Membership
 from . import filters as custom_filters
+from .mixins import ProtectedErrorMixin
+from .serializers import ApplicationSerializer, AttendanceSerializer, AttendanceStateSerializer, CourseSerializer, \
+    ClientSerializer, GroupSerializer, LectureSerializer, MembershipSerializer
+from .services import Bank
 
 
 class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):

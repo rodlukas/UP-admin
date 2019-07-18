@@ -5,6 +5,7 @@ Vlastni filtry pro API - umozni nam (krome zakladniho filtrovani):
 2. filtrovani provadet nad rucne vytvorenym querysetem
 """
 from django_filters import rest_framework as filters
+
 from admin.models import Lecture, Group
 
 

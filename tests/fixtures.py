@@ -1,7 +1,9 @@
-from admin.models import Client, Course, Group, Membership, Application, Lecture, AttendanceState, Attendance
-from django.contrib.auth import get_user_model
 from datetime import datetime
+
+from django.contrib.auth import get_user_model
 from django.utils.timezone import make_aware
+
+from admin.models import Client, Course, Group, Membership, Application, Lecture, AttendanceState, Attendance
 
 
 def clients():

@@ -1,6 +1,7 @@
 from selenium import webdriver
-from tests import fixtures
 from selenium.webdriver.firefox.options import Options
+
+from tests import fixtures
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
