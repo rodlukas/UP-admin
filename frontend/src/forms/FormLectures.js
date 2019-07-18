@@ -416,7 +416,7 @@ class FormLectures extends Component {
                                                      onChange={this.onChangeMultiple} data-id={member.id}
                                                      data-qa="lecture_checkbox_attendance_paid"/>
                                         <Label for={"at_paid" + member.id} data-qa="lecture_label_attendance_paid"
-                                               className={"mb-0 " + (at_paid[member.id] ? "text-success" : "text-danger")}>
+                                               className={"mb-0 font-weight-bold " + (at_paid[member.id] ? "text-success" : "text-danger")}>
                                             Platba
                                         </Label>
                                         {' '}
