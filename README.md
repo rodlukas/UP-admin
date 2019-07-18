@@ -1,11 +1,24 @@
-# Webová aplikace pro projekt „Úspěšný prvňáček“ 
-<img src="./admin/static/admin/android-chrome-192x192.png" alt="logo" width="60" align="right"/>
+<p align="center">
+  <a href="https://getbootstrap.com/">
+    <img src="./admin/static/admin/android-chrome-192x192.png" alt="ÚPadmin logo" width="72">
+  </a>
+</p>
 
-![Travis (.com)](https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square)
-![Codecov](https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square)
-![GitHub](https://img.shields.io/github/license/rodlukas/UP-admin.svg?style=flat-square)
-![GitHub release](https://img.shields.io/github/release/rodlukas/UP-admin.svg?style=flat-square)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square)
+<h3 align="center">ÚPadmin</h1>
+
+<p align="center">
+  Webová aplikace pro projekt <strong><a href="https://uspesnyprvnacek.cz/">Úspěšný prvňáček</a></strong>.
+</p>
+
+---
+
+<p align="center">
+  <img alt="Travis (.com)" src="https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square">
+  <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square">
+  <img alt="GitHub" src="https://img.shields.io/github/license/rodlukas/UP-admin.svg?style=flat-square">
+  <img alt="GitHub release" src="https://img.shields.io/github/release/rodlukas/UP-admin.svg?style=flat-square">
+  <img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square">
+</p>
 
 > [Sentry](https://sentry.io/uspesnyprvnacek/up-admin/) | 
 [Heroku](https://dashboard.heroku.com/apps) | 
