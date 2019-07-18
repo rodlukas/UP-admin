@@ -62,7 +62,7 @@ const Main = () => {
             </Navbar>
             <ToastContainer/>
             <ErrorBoundary>
-                <div className="content">
+                <main className="content">
                     <Suspense fallback={<Loading/>}>
                         <Switch>
                             <PrivateRoute
@@ -104,7 +104,7 @@ const Main = () => {
                                   title={APP_URLS.nenalezeno.title}/>
                         </Switch>
                     </Suspense>
-                </div>
+                </main>
             </ErrorBoundary>
         </div>
     )

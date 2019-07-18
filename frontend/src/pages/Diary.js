@@ -94,7 +94,7 @@ export default class Diary extends Component {
             </Fragment>
         // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
         return (
-            <div>
+            <Fragment>
                 <Heading content={<HeadingContent/>}/>
                 <Container fluid className="pageContent">
                     <Row>
@@ -108,7 +108,7 @@ export default class Diary extends Component {
                         </Col>)}
                     </Row>
                 </Container>
-            </div>
+            </Fragment>
         )
     }
 }

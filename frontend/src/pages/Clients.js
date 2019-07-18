@@ -64,35 +64,33 @@ export default class Clients extends Component {
                 <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
             </Fragment>
         return (
-            <div>
-                <Container>
-                    <Heading content={<HeadingContent/>}/>
-                    <Table striped size="sm" responsive className="pageContent">
-                        <thead className="thead-dark">
-                        <tr>
-                            <th>Příjmení a jméno</th>
-                            <th>Telefon</th>
-                            <th style={{wordBreak: 'keep-all'}}>E-mail</th>
-                            <th>Poznámka</th>
-                            <th>Akce</th>
-                        </tr>
-                        </thead>
-                        {IS_LOADING ?
-                            <tbody>
-                                <tr>
-                                    <td colSpan="5">
-                                        <Loading/>
-                                    </td>
-                                </tr>
-                            </tbody> :
-                            <ClientTable/>}
-                    </Table>
-                    {!Boolean(clients.length) && !IS_LOADING &&
-                    <p className="text-muted text-center">
-                        Žádní klienti
-                    </p>}
-                </Container>
-            </div>
+            <Container>
+                <Heading content={<HeadingContent/>}/>
+                <Table striped size="sm" responsive className="pageContent">
+                    <thead className="thead-dark">
+                    <tr>
+                        <th>Příjmení a jméno</th>
+                        <th>Telefon</th>
+                        <th style={{wordBreak: 'keep-all'}}>E-mail</th>
+                        <th>Poznámka</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    {IS_LOADING ?
+                        <tbody>
+                            <tr>
+                                <td colSpan="5">
+                                    <Loading/>
+                                </td>
+                            </tr>
+                        </tbody> :
+                        <ClientTable/>}
+                </Table>
+                {!Boolean(clients.length) && !IS_LOADING &&
+                <p className="text-muted text-center">
+                    Žádní klienti
+                </p>}
+            </Container>
         )
     }
 }

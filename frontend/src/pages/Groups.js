@@ -57,34 +57,32 @@ export default class Groups extends Component {
                 <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
             </Fragment>
         return (
-            <div>
-                <Container>
-                    <Heading content={<HeadingContent/>}/>
-                    <Table striped size="sm" responsive className="pageContent">
-                        <thead className="thead-dark">
-                        <tr>
-                            <th>Název</th>
-                            <th>Kurz</th>
-                            <th>Členové</th>
-                            <th>Akce</th>
-                        </tr>
-                        </thead>
-                        {IS_LOADING ?
-                            <tbody>
-                                <tr>
-                                    <td colSpan="4">
-                                        <Loading/>
-                                    </td>
-                                </tr>
-                            </tbody> :
-                            <GroupTable/>}
-                    </Table>
-                    {!Boolean(groups.length) && !IS_LOADING &&
-                    <p className="text-muted text-center">
-                        Žádné skupiny
-                    </p>}
-                </Container>
-            </div>
+            <Container>
+                <Heading content={<HeadingContent/>}/>
+                <Table striped size="sm" responsive className="pageContent">
+                    <thead className="thead-dark">
+                    <tr>
+                        <th>Název</th>
+                        <th>Kurz</th>
+                        <th>Členové</th>
+                        <th>Akce</th>
+                    </tr>
+                    </thead>
+                    {IS_LOADING ?
+                        <tbody>
+                            <tr>
+                                <td colSpan="4">
+                                    <Loading/>
+                                </td>
+                            </tr>
+                        </tbody> :
+                        <GroupTable/>}
+                </Table>
+                {!Boolean(groups.length) && !IS_LOADING &&
+                <p className="text-muted text-center">
+                    Žádné skupiny
+                </p>}
+            </Container>
         )
     }
 }

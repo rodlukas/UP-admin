@@ -67,11 +67,9 @@ export default class Bank extends Component {
 
     render() {
         const TableInfo = ({text, color = "text-muted"}) =>
-            <Fragment>
-                <tr className={color + " text-center"}>
-                    <td colSpan="4">{text}</td>
-                </tr>
-            </Fragment>
+            <tr className={color + " text-center"}>
+                <td colSpan="4">{text}</td>
+            </tr>
         const Transactions = () =>
             this.state.bankData.transactions.map(transaction => {
                 const date = new Date(transaction.column0.value.split("+")[0])
