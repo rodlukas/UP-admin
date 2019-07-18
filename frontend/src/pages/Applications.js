@@ -18,7 +18,6 @@ export default class Applications extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            clients: [],
             applications: [],
             IS_MODAL: false,
             currentApplication: {},
