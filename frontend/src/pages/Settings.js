@@ -30,7 +30,9 @@ class Settings extends Component {
     }
 
     loadingStateIncrement = () =>
-        this.setState({LOADING_CNT: this.state.LOADING_CNT + 1})
+        this.setState(prevState => ({LOADING_CNT: prevState.LOADING_CNT + 1}))
+
+    loadingStateDecrementCallback = prevState => ({LOADING_CNT: prevState.LOADING_CNT - 1})
 
     isLoadedAttendanceStates = () =>
         this.props.attendanceStatesContext.isLoaded
@@ -55,23 +57,21 @@ class Settings extends Component {
         AttendanceStateService.patch(data)
             .then(() =>
                 this.setState(
-                    {LOADING_CNT: this.state.LOADING_CNT - 1},
-                    () => {
-                        this.callAttendanceStatesFuncRefresh()
-                    }))
+                    this.loadingStateDecrementCallback,
+                    this.callAttendanceStatesFuncRefresh))
     }
 
     refresh = type => {
         if (type === EDIT_TYPE.COURSE)
         {
             this.setState(
-                {LOADING_CNT: this.state.LOADING_CNT - 1},
+                this.loadingStateDecrementCallback,
                 this.getCourses)
         }
         else if (type === EDIT_TYPE.STATE)
         {
             this.setState(
-                {LOADING_CNT: this.state.LOADING_CNT - 1},
+                this.loadingStateDecrementCallback,
                 () => {
                     this.callAttendanceStatesFuncRefresh()
                     this.findStateIndexes()
@@ -82,8 +82,7 @@ class Settings extends Component {
     getCourses = () =>
         CourseService.getAll()
             .then(courses =>
-                this.setState({
-                    courses}, this.loadingStateIncrement))
+                this.setState({courses}, this.loadingStateIncrement))
 
     componentDidMount() {
         this.getCourses()

@@ -36,7 +36,7 @@ export default class Card extends Component {
     }
 
     loadingStateIncrement = () =>
-        this.setState({LOADING_CNT: this.state.LOADING_CNT + 1})
+        this.setState(prevState => ({LOADING_CNT: prevState.LOADING_CNT + 1}))
 
     getId = () =>
         this.props.match.params.id
@@ -83,7 +83,7 @@ export default class Card extends Component {
 
     refreshObject = () => {
         this.setState(
-            {LOADING_CNT: this.state.LOADING_CNT - 1},
+            prevState => ({LOADING_CNT: prevState.LOADING_CNT - 1}),
             () =>
                 this.getObject()
         )
@@ -92,7 +92,7 @@ export default class Card extends Component {
     refresh = (all = true) => {
         if (this.isClient() && all) {
             this.setState(
-                {LOADING_CNT: this.state.LOADING_CNT - 3},
+                prevState => ({LOADING_CNT: prevState.LOADING_CNT - 3}),
                 () => {
                     this.getObject()
                     this.getLectures()
@@ -101,7 +101,7 @@ export default class Card extends Component {
         }
         else {
             this.setState(
-                {LOADING_CNT: this.state.LOADING_CNT - 2},
+                prevState => ({LOADING_CNT: prevState.LOADING_CNT - 2}),
                 () => {
                     this.getObject()
                     this.getLectures()
@@ -156,10 +156,11 @@ export default class Card extends Component {
             object.memberships[elemId].prepaid_cnt = Number(prepaid_cnt)
         else
             throw new Error("Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě")
-        this.setState({
+        this.setState(
+            prevState => ({
                 object,
-                LOADING_CNT: this.state.LOADING_CNT - 1
-            },
+                LOADING_CNT: prevState.LOADING_CNT - 1
+            }),
             this.getLectures)
     }
 

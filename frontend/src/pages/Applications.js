@@ -26,13 +26,13 @@ export default class Applications extends Component {
     }
 
     toggle = (application = {}) =>
-        this.setState({
+        this.setState(prevState => ({
             currentApplication: application,
-            IS_MODAL: !this.state.IS_MODAL
-        })
+            IS_MODAL: !prevState.IS_MODAL
+        }))
 
     refresh = () => {
-        this.setState({LOADING_CNT: this.state.LOADING_CNT - 1})
+        this.setState(prevState => ({LOADING_CNT: prevState.LOADING_CNT - 1}))
         this.getApplications()
     }
 
@@ -40,18 +40,19 @@ export default class Applications extends Component {
         ApplicationService.getAll()
             .then(applications => {
                 const grouppedByCourses = groupByCourses(applications)
-                this.setState({
+                this.setState(prevState => ({
                     applications: grouppedByCourses,
-                    LOADING_CNT: this.state.LOADING_CNT + 1
-                })
+                    LOADING_CNT: prevState.LOADING_CNT + 1
+                }))
             })
 
     getCourses = () =>
         CourseService.getVisible()
-            .then(courses => this.setState({
-                courses,
-                LOADING_CNT: this.state.LOADING_CNT + 1
-            }))
+            .then(courses => this.setState(
+                prevState => ({
+                    courses,
+                    LOADING_CNT: prevState.LOADING_CNT + 1
+                })))
 
     delete = id =>
         ApplicationService.remove(id)

@@ -112,17 +112,17 @@ class FormLectures extends Component {
                 excused_cnt++
         })
         if(client_cnt === excused_cnt) // vsichni jsou omluveni, lekce nejde zrusit
-            this.setState({
-                canceled_previous: this.state.canceled,
+            this.setState(prevState => ({
+                canceled_previous: prevState.canceled,
                 canceled: true,
-                canceled_disabled: true})
+                canceled_disabled: true}))
         else
         {
             if (this.state.canceled_disabled) // vsichni uz nejsou omluveni (ale byli), hodnotu checkboxu vrat na puvodni
-                this.setState({
-                    canceled: this.state.canceled_previous,
+                this.setState(prevState => ({
+                    canceled: prevState.canceled_previous,
                     canceled_previous: undefined
-                })
+                }))
             this.setState({canceled_disabled: false}) // uz neni potreba aby byl checkbox Zruseno disabled
         }
     }
