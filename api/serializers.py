@@ -1,4 +1,4 @@
-from admin.models import *
+from admin.models import Application, Attendance, AttendanceState, Course, Client, Group, Lecture, Membership
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator

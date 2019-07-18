@@ -1,4 +1,4 @@
-from admin.models import *
+from admin.models import Attendance, AttendanceState, Lecture
 from rest_framework import serializers
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist

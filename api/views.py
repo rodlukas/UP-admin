@@ -1,6 +1,7 @@
 from rest_framework import viewsets, mixins
-from .serializers import *
-from admin.models import *
+from .serializers import ApplicationSerializer, AttendanceSerializer, AttendanceStateSerializer, CourseSerializer, \
+    ClientSerializer, GroupSerializer, LectureSerializer, MembershipSerializer
+from admin.models import Application, Attendance, AttendanceState, Course, Client, Group, Lecture, Membership
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from .services import Bank
