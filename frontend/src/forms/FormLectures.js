@@ -312,7 +312,7 @@ class FormLectures extends Component {
                                 </Fragment>}
                             </Col>
                             <Col sm={4}>
-                                <InputGroup>
+                                <InputGroup title="Datum">
                                     <InputGroupAddon addonType="prepend">
                                         <Label className="input-group-text" for="date">
                                             <FontAwesomeIcon icon={faCalendarAlt} fixedWidth/>
@@ -325,7 +325,7 @@ class FormLectures extends Component {
                                 </InputGroup>
                             </Col>
                             <Col sm={4}>
-                                <InputGroup>
+                                <InputGroup title="Čas začátku">
                                     <InputGroupAddon addonType="prepend">
                                         <Label className="input-group-text" for="time">
                                             <FontAwesomeIcon icon={faClock} fixedWidth/>
@@ -370,7 +370,7 @@ class FormLectures extends Component {
                                     required/>
                             </Col>
                             <Col sm={4}>
-                                <InputGroup>
+                                <InputGroup title="Trvání">
                                     <InputGroupAddon addonType="prepend">
                                         <Label className="input-group-text" for="duration">
                                             <FontAwesomeIcon icon={faHourglass} fixedWidth/>
@@ -425,7 +425,7 @@ class FormLectures extends Component {
                                                  text="Předplacená lekce je automaticky zaplacená."/>}
                                     </Col>
                                     <Col sm={6}>
-                                        <InputGroup>
+                                        <InputGroup title="Poznámka">
                                             <InputGroupAddon addonType="prepend">
                                                 <Label className="input-group-text" for={"at_note" + member.id}>
                                                     <FontAwesomeIcon icon={faClipboardList} fixedWidth/>
