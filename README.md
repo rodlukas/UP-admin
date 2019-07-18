@@ -10,8 +10,6 @@
   Webová aplikace pro projekt <strong><a href="https://uspesnyprvnacek.cz/">Úspěšný prvňáček</a></strong>.
 </p>
 
----
-
 <p align="center">
   <img alt="Travis (.com)" src="https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square">
   <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square">
