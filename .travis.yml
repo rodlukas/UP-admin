@@ -24,7 +24,7 @@ install:
   # nainstaluj JS zavislosti
   - nvm install 10.16.0
   - npm i -g npm@~6.9.0
-  - npm install -g yarn@~1.16.0
+  - npm install -g yarn@~1.17.3
   - yarn install
 
   # nainstaluj Python zavislosti
@@ -32,7 +32,7 @@ install:
   - pipenv install --dev
 
   # vypis konfigurace prostredi
-  - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version
+  - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version && ls -la
 script:
   # vytvor DB
   - psql -c 'create database travis_ci_test;' -U postgres
