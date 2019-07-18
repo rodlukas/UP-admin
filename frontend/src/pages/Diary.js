@@ -8,7 +8,7 @@ import {
     addDays,
     DAYS_IN_WEEK,
     getWeekSerializedFromMonday,
-    yearDiffs
+    yearDiffs, prettyDateWithLongDayYear
 } from "../global/funcDateTime"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faArrowAltCircleRight, faArrowAltCircleLeft} from "@fortawesome/pro-solid-svg-icons"
@@ -77,15 +77,15 @@ export default class Diary extends Component {
             </Fragment>
         const HeadingContent = () =>
             <Fragment>
-                <Link to={this.getPrevMondaySerialized()}>
+                <Link to={this.getPrevMondaySerialized()} title="Předchozí týden">
                     <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"/>
                 </Link>
                 <Title/>
-                <Link to={this.getNextMondaySerialized()}>
+                <Link to={this.getNextMondaySerialized()} title="Další týden">
                     <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
                 </Link>
                 {' '}
-                <Link to={this.getCurrentMondaySerialized()}>
+                <Link to={this.getCurrentMondaySerialized()} title={prettyDateWithLongDayYear(new Date())}>
                     <Button color="secondary" disabled={isEqualDate(this.getCurrentMonday(), this.getRequiredMonday())}
                             onClick={e => this.removeFocusAfterClick(e)} className="float-none">
                         Dnes
