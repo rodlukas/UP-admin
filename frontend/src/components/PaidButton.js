@@ -14,9 +14,10 @@ const PaidButton = props => {
     }
 
     const className = "PaidButton " + (props.paid ? "text-success" : "text-danger")
+    const title = "Označit lekci jako " + (props.paid ? "NE" : "") + "ZAPLACENOU"
     return (
         <FontAwesomeIcon icon={faUsdCircle} size="2x"
-                         className={className}
+                         className={className} title={title}
                          onClick={onClick} data-qa="lecture_attendance_paid"/>
     )
 }
