@@ -93,7 +93,7 @@ class LectureViewSet(viewsets.ModelViewSet):
         # pokud prislo pole, nastav serializer na many=True
         if isinstance(kwargs.get('data', {}), list):
             kwargs['many'] = True
-        return super(LectureViewSet, self).get_serializer(*args, **kwargs)
+        return super().get_serializer(*args, **kwargs)
 
 
 class BankView(APIView):

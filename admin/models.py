@@ -31,7 +31,7 @@ class AttendanceState(models.Model):
                 qs = qs.exclude(pk=self.pk)
             # a nastav jim excused=False
             qs.update(excused=False)
-        super(AttendanceState, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class Client(models.Model):
