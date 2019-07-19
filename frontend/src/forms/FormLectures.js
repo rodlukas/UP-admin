@@ -118,7 +118,7 @@ class FormLectures extends Component {
         let excused_cnt = 0
         const excused_id = this.getExcusedStateIndex()
         Object.keys(this.state.at_state).forEach(elem => {
-            if(Number(this.state.at_state[elem]) === excused_id) // ve state je String
+            if(this.state.at_state[elem] === excused_id) // ve state je String
                 excused_cnt++
         })
         if(client_cnt === excused_cnt) // vsichni jsou omluveni, lekce nejde zrusit
@@ -180,12 +180,17 @@ class FormLectures extends Component {
     onChangeMultiple = e => {
         const target = e.target
         const id = target.dataset.id
-        const value = target.type === 'checkbox' ? target.checked : target.value
-        const stateVal = this.state[target.name]
-        stateVal[id] = value
-        this.setState({[target.name]: stateVal})
-        if(target.name === "at_state")
-            this.checkDisabledCanceled()
+        let value = target.type === 'checkbox' ? target.checked : target.value
+        if (target.name === "at_state")
+            value = Number(value)
+        this.setState(prevState => {
+            const newStateVal = {...prevState[target.name]}
+            newStateVal[id] = value
+            return ({[target.name]: newStateVal})
+        }, () => {
+            if (target.name === "at_state")
+                this.checkDisabledCanceled()
+        })
     }
 
     getCourses = () =>
