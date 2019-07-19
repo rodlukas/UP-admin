@@ -2,8 +2,7 @@ import re
 from datetime import timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F, ExpressionWrapper
-from django.db.models import Q, DateTimeField
+from django.db.models import F, ExpressionWrapper, Q, DateTimeField
 from rest_framework import serializers
 from rest_framework.settings import api_settings
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
