@@ -43,6 +43,7 @@
    * [Instalace](#instalace)
    * [Spuštění](#spuštění)
    * [Testování](#testování)
+* [Screenshoty z aplikace](#screenshoty-z-aplikace)
 * [Licence](#licence)
 
 ## Základní informace o aplikaci
@@ -219,6 +220,12 @@ Můžeme také snadno spustit různé testy aplikace, například otestovat, jes
 $ python manage.py behave --stage=api --tags=clients
 ```
 Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o testech a možnostech spouštění](tests/).
+
+## Screenshoty z aplikace
+> **Poznámka:** Modrými obdelníky jsou skryta jména klientů.
+
+### Diář
+![screenshot z diáře](docs/screenshots/diary.png)
 
 ## Licence
 Licencováno pod [MIT](LICENSE).
