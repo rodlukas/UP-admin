@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, ExpressionWrapper
-from django.db.models import Q
+from django.db.models import Q, DateTimeField
 from rest_framework import serializers
 from rest_framework.settings import api_settings
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
@@ -336,7 +336,7 @@ class LectureSerializer(serializers.ModelSerializer):
             # z atributu vytvor dotaz na end, pro funkcni operaci potreba pronasobit timedelta
             expression = F('start') + (timedelta(minutes=1) * F('duration'))
             # proved dotaz, vrat datetime
-            end_db = ExpressionWrapper(expression, output_field=models.DateTimeField())
+            end_db = ExpressionWrapper(expression, output_field=DateTimeField())
             # ke kazdemu zaznamu prirad hodnotu end_db ziskanou z vyrazu vyse a zjisti, zda existuji lekce v konfliktu
             qs = Lecture.objects.annotate(end_db=end_db).filter(start__lt=end, end_db__gt=data['start'])
             # pokud updatuju, proveruji pouze ostatni lekce
