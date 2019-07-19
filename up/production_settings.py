@@ -1,7 +1,7 @@
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from .settings import *
+from .settings import *  # lgtm [py/polluting-import]
 
 # pro funkcni testy na Travisu
 if os.getenv('TRAVIS'):
