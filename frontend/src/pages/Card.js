@@ -153,9 +153,9 @@ export default class Card extends Component {
             prevState => {
                 let success_update_cnt = 0
                 const memberships = prevState.object.memberships.map(membership => {
-                    if (membership.id === Number(id)) {
+                    if (membership.id === id) {
                         success_update_cnt++
-                        return {...membership, prepaid_cnt: Number(prepaid_cnt)}
+                        return {...membership, prepaid_cnt: prepaid_cnt}
                     } else {
                         return membership
                     }

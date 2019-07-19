@@ -30,7 +30,7 @@ const Main = () => {
     const authContext = useContext(AuthContext)
 
     function toggleNavbar() {
-        setIsMenuOpened(!isMenuOpened)
+        setIsMenuOpened(prevIsMenuOpened => !prevIsMenuOpened)
     }
 
     function closeNavbar() {

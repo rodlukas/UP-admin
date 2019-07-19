@@ -21,11 +21,14 @@ const PrepaidCounters = props => {
 
     function onChange(e) {
         const target = e.target
-        const newPrepaidCnts = prepaidCnts
-        const value = target.value
-        const id = target.dataset.id
-        newPrepaidCnts[id] = value
-        setPrepaidCnts(newPrepaidCnts)
+        const value = Number(target.value)
+        const id = Number(target.dataset.id)
+        setPrepaidCnts(prevPrepaidCnts => {
+            // vytvorime kopii prepaidCnts (ma jen jednu uroven -> staci melka kopie)
+            const newPrepaidCnts = {...prevPrepaidCnts}
+            newPrepaidCnts[id] = value
+            return newPrepaidCnts
+        })
         const data = {id, prepaid_cnt: value}
         MembershipService.patch(data)
             .then(props.funcRefreshPrepaidCnt(id, value))

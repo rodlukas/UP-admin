@@ -15,7 +15,7 @@ const useForm = (initState, callback) => {
 
     const handleChange = event => {
         event.persist()
-        setValues(values => ({...values, [event.target.id]: event.target.value}))
+        setValues(prevValues => ({...prevValues, [event.target.id]: event.target.value}))
     }
 
     return [
