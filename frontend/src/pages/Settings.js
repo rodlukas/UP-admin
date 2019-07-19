@@ -42,11 +42,11 @@ class Settings extends Component {
         this.props.attendanceStatesContext.funcRefresh(this.loadingStateIncrement)
 
     toggle = (type, object = {}) =>
-        this.setState({
+        this.setState(prevState => ({
             currentObject: object,
             currentType: type,
-            IS_MODAL: !this.state.IS_MODAL
-        })
+            IS_MODAL: !prevState.IS_MODAL
+        }))
 
     onChange = e => {
         const target = e.target
