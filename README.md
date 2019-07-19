@@ -1,7 +1,5 @@
 <p align="center">
-  <a href="https://getbootstrap.com/">
-    <img src="./admin/static/admin/android-chrome-192x192.png" alt="ÚPadmin logo" width="72">
-  </a>
+  <img src="./admin/static/admin/android-chrome-192x192.png" alt="ÚPadmin logo" width="72">
 </p>
 
 <h3 align="center">ÚPadmin</h1>
