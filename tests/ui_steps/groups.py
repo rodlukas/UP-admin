@@ -6,9 +6,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
+# noinspection PyUnresolvedReferences
 from tests.common_steps import groups
-from tests.ui_steps import helpers
-from tests.ui_steps import login_logout
+# noinspection PyUnresolvedReferences
+from tests.ui_steps import helpers, login_logout
 
 
 def groups_cnt(driver):

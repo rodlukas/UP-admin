@@ -4,8 +4,9 @@ from behave import *
 from django.conf import settings
 from rest_framework import status
 
-from tests.common_steps import login_logout
 from tests.api_steps import helpers
+# noinspection PyUnresolvedReferences
+from tests.common_steps import login_logout
 
 
 def login(context, username, password):

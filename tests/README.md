@@ -50,3 +50,9 @@ $ python manage.py behave --stage=ui --tags=groups
 ```
 
 > **Tip pro spouštění velkého množství testů:** pro jednodušší a přehlednější výpis informací o průběhu testů v konzoli je vhodné k příkazu pro spuštění testů přidat argument `--format=progress3` (viz [dokumentace behave](https://behave.readthedocs.io/en/latest/formatters.html?highlight=progress3#formatters)).
+
+## Poznámky
+Společné kroky pro behave testy se klasicky importují, např. `from tests.common_steps import groups`, IDE tento import ale 
+vzhledem ke způsobu fungování behave označí jako nepoužitý a při optimalizacích jej může odstranit. Proto je u těchto importů
+direktiva `# noinspection PyUnresolvedReferences`, která tomuto zamezí a zároveň umožní automatickou optimalizaci importů
+nad celým projektem bez výjimek.

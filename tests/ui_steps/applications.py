@@ -5,9 +5,10 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+# noinspection PyUnresolvedReferences
 from tests.common_steps import applications
-from tests.ui_steps import helpers
-from tests.ui_steps import login_logout
+# noinspection PyUnresolvedReferences
+from tests.ui_steps import helpers, login_logout
 
 
 def get_applications(driver):
