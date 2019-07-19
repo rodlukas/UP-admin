@@ -102,12 +102,16 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
 [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
 * **Aplikace jsou napojené na další služby:**
     * **CI a CD** má na starost [Travis](https://travis-ci.com/) – automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
-    * **automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání potenciálních chyb a zranitelností má na starost [LGTM](https://lgtm.com/)
-    * **logování** z Heroku se zasílá do [Logentries](https://logentries.com/) (logy se uchovávají po 7 dnů, tříděné podle typu prostředí)
-    * **odchytávání chyb na backendu i frontendu** přes [Sentry](https://sentry.io/) (tříděné podle typu prostředí, aktivní na produkci, testing i staging prostředí)
-        * při chybě na frontendu je možné poslat zpětnou vazbu vázanou ke konkrétní chybě díky propojení Sentry a [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
-    * **sledování chování a návštěv** umožňuje napojení na [Google Analytics](https://analytics.google.com/),
-    * [Slack](https://slack.com/),
+    * **Automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání potenciálních chyb a 
+    zranitelností má na starost [LGTM](https://lgtm.com/).
+    * **Logování** z Heroku se zasílá do [Logentries](https://logentries.com/) (logy se uchovávají po 7 dnů, tříděné 
+    podle typu prostředí).
+    * **Odchytávání chyb na backendu i frontendu** včetně následné evidence, notifikací a propojení s repozitářem zařizuje
+     [Sentry](https://sentry.io/) (tříděné podle typu prostředí, aktivní na produkci, testing i staging prostředí). 
+     Při chybě na frontendu je možné poslat **zpětnou vazbu vázanou ke konkrétní chybě** díky propojení Sentry a 
+     [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
+    * **Sledování chování a návštěv** umožňuje napojení na [Google Analytics](https://analytics.google.com/) (díky modulu [react-ga](https://github.com/react-ga/react-ga)).
+    * [Slack](https://slack.com/)
 * Aplikace **respektuje standardy** [PEP 8](https://pep8.org), [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
 * Kompletní vývoj aplikace probíhá v IDE *[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)* (řeší například automatickou optimalizaci importů apod.).
 * Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí.
