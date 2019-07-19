@@ -147,20 +147,26 @@ export default class Card extends Component {
         })
     }
 
-    // uprava nadrazeneho objektu po uprave prepaid_cnt
+    // uprava nadrazeneho objektu (tohoto) po uprave v synovi (prepaid_cnt)
     funcRefreshPrepaidCnt = (id, prepaid_cnt) => {
-        const object = this.state.object
-        // najdi membership s danym id
-        const elemId = object.memberships.findIndex(elem => elem.id === Number(id))
-        if(elemId !== -1)
-            object.memberships[elemId].prepaid_cnt = Number(prepaid_cnt)
-        else
-            throw new Error("Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě")
         this.setState(
-            prevState => ({
-                object,
-                LOADING_CNT: prevState.LOADING_CNT - 1
-            }),
+            prevState => {
+                let success_update_cnt = 0
+                const memberships = prevState.object.memberships.map(membership => {
+                    if (membership.id === Number(id)) {
+                        success_update_cnt++
+                        return {...membership, prepaid_cnt: Number(prepaid_cnt)}
+                    } else {
+                        return membership
+                    }
+                })
+                if (success_update_cnt !== 1)
+                    throw new Error("Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě")
+                return ({
+                    object: {...prevState.object, memberships},
+                    LOADING_CNT: prevState.LOADING_CNT - 1
+                })
+            },
             this.getLectures)
     }
 
