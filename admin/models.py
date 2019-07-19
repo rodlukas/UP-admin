@@ -10,7 +10,7 @@ class AttendanceState(models.Model):
     class Meta:
         ordering = ['name']
 
-    # pokud je default False, nastav ho na None, vsechny zaznamy budou tedy NULL nebo True (True diky unique jen jeden)
+    # zaridi unikatnost True pro atributy default, excused
     def save(self, *args, **kwargs):
         if self.default:
             # vyber ostatni polozky s default=True
