@@ -225,7 +225,7 @@ Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o tes
 > **Poznámka:** modrými obdelníky jsou skryta jména klientů.
 
 ### Diář
-![screenshot z diáře](docs/screenshots/diary.png)
+[![screenshot z diáře](docs/screenshots/diary.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
 
 ## Licence
 Licencováno pod [MIT](LICENSE).
