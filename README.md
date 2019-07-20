@@ -68,6 +68,9 @@ Od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/)
 ### Použité technologie
 Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **REST API** zabezpečené **[JWT](https://jwt.io/) autentizací**.
 Jako databáze se používá [PostgreSQL 11](https://www.postgresql.org/).
+
+> **Poznámka:** součástí repozitáře je také diagram nasazení a logický datový model – viz [`docs/README.md`](docs).
+
 #### Backend
 Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
 * [Python 3.7](https://www.python.org/),
@@ -126,7 +129,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
 ├── .idea ........ nastavení pro IDE (Pycharm od Jetbrains)      
 ├── admin ........ Django aplikace pro samotnou webovou aplikaci        
 ├── api .......... Django aplikace pro API
-├── docs ......... další dokumenty k aplikaci     
+├── docs ......... další dokumenty a soubory k aplikaci včetně diagramů      
 ├── frontend ..... klientská část webové aplikace   
 ├── scripts ...... skripty pro CI/CD/instalaci
 ├── staticfiles .. složka pro statické soubory (prázdná, přesun až na CI)
