@@ -13,7 +13,6 @@ urlpatterns = [
     path('open-api/', get_schema_view(
         title="ÚPadmin API",
         description="...",
-        url='/api/v1',  # todo - zatim drf neimplementuje
         authentication_classes=[authentication.BasicAuthentication]
     ), name='openapi-schema'),
     path('docs/', TemplateView.as_view(
