@@ -10,6 +10,9 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import Tooltip from "../components/Tooltip"
 import {TEXTS} from "../global/constants"
 import {alertRequired, clientName} from "../global/utils"
+import "./forms.css"
+import Or from "./helpers/Or"
+import ModalClients from "./ModalClients"
 
 export default class FormGroups extends Component {
     constructor(props) {
@@ -88,6 +91,15 @@ export default class FormGroups extends Component {
                 this.refresh()
             })
 
+    getClientsAfterAddition = newClient =>
+        ClientService.getAll()
+            .then(clients => this.setState(prevState => {
+                return {
+                    clients,
+                    memberships: [...prevState.memberships, newClient]
+                }
+            }))
+
     getClients = () =>
         ClientService.getAll()
             .then(clients => this.setState({clients}))
@@ -143,9 +155,10 @@ export default class FormGroups extends Component {
                                 closeMenuOnSelect={false}
                                 onChange={newValue => this.onSelectChange(newValue, "memberships")}
                                 options={clients}
-                                placeholder={"Vyberte členy skupiny..."}
+                                placeholder={"Vyberte členy z existujících klientů..."}
                                 isClearable={false}
                                 noOptionsMessage={() => TEXTS.NO_RESULTS}/>
+                            <Or content={<ModalClients refresh={this.getClientsAfterAddition} sendResult inSentence/>}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row className="align-items-center">

@@ -7,6 +7,9 @@ import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import {TEXTS} from "../global/constants"
 import {alertRequired, clientName} from "../global/utils"
+import "./forms.css"
+import Or from "./helpers/Or"
+import ModalClients from "./ModalClients"
 
 export default class FormApplications extends Component {
     constructor(props) {
@@ -54,6 +57,10 @@ export default class FormApplications extends Component {
     refresh = () =>
         this.props.funcRefresh()
 
+    getClientsAfterAddition = newClient =>
+        ClientService.getAll()
+            .then(clients => this.setState({clients, client: newClient}))
+
     getClients = () =>
         ClientService.getAll()
             .then(clients => this.setState({clients}))
@@ -82,10 +89,11 @@ export default class FormApplications extends Component {
                                 getOptionValue={option => option.id}
                                 onChange={newValue => this.onSelectChange(newValue, "client")}
                                 options={clients}
-                                placeholder={"Vyberte klienta..."}
+                                placeholder={"Vyberte existujícího klienta..."}
                                 noOptionsMessage={() => TEXTS.NO_RESULTS}
                                 required
                                 autoFocus/>
+                            <Or content={<ModalClients refresh={this.getClientsAfterAddition} sendResult inSentence/>}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

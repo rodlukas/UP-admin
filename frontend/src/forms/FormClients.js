@@ -47,6 +47,8 @@ export default class FormClients extends Component {
     }
 
     onSubmit = e => {
+        // stopPropagation, aby nedoslo k propagaci submit na nadrazene formulare pri vnoreni modalnich oken
+        e.stopPropagation()
         e.preventDefault()
         const {id, name, surname, email, phone, note, active} = this.state
         const data = {id, name, surname, email, phone, note, active}
@@ -55,17 +57,20 @@ export default class FormClients extends Component {
             request = ClientService.update(data)
         else
             request = ClientService.create(data)
-        request.then(() => {
+        request.then(response => {
             this.close()
-            this.refresh()
+            this.refresh(response)
         })
     }
 
     close = () =>
         this.props.funcClose()
 
-    refresh = () =>
-        this.props.funcRefresh()
+    refresh = newClient => {
+        this.props.sendResult ?
+            this.props.funcRefresh(newClient) :
+            this.props.funcRefresh()
+    }
 
     delete = id =>
         ClientService.remove(id)

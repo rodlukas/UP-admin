@@ -9,3 +9,7 @@ h1 .btn, h1 .ActiveSwitcher {
 h1 .btn + .btn,  h1 .AddButton + .ActiveSwitcher {
     margin-right: 0.3rem
 }
+
+.small_button {
+    padding: 0 .5rem !important;
+}

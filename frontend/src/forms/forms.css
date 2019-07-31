@@ -1,0 +1,8 @@
+.form_or {
+    margin-bottom: 0;
+    margin-top: .5rem
+}
+
+.form_or > * {
+    vertical-align: middle;
+}
