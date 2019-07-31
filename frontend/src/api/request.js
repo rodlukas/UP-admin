@@ -150,7 +150,7 @@ const request = function (options, ignore_errors = false, return_data = true) {
     const notify = (message, level) => {
         const options = {
             type: level,
-            autoClose: level === toast.TYPE.ERROR ? 100000 : 4000
+            autoClose: level === toast.TYPE.ERROR ? 15000 : 4000
         }
         toast(message, options)
     }
