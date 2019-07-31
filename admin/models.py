@@ -2,10 +2,10 @@ from django.db import models
 
 
 class AttendanceState(models.Model):
+    default = models.BooleanField(default=False)  # metoda save() osetruje, aby bylo jen jedno True v DB
+    excused = models.BooleanField(default=False)  # metoda save() osetruje, aby bylo jen jedno True v DB
     name = models.TextField()
     visible = models.BooleanField()
-    default = models.BooleanField(default=False)    # metoda save() osetruje, aby bylo jen jedno True v DB
-    excused = models.BooleanField(default=False)    # metoda save() osetruje, aby bylo jen jedno True v DB
 
     class Meta:
         ordering = ['name']
@@ -35,12 +35,12 @@ class AttendanceState(models.Model):
 
 
 class Client(models.Model):
-    name = models.TextField()
-    surname = models.TextField()
-    phone = models.TextField(blank=True)
-    email = models.EmailField(blank=True)
-    note = models.TextField(blank=True)
     active = models.BooleanField(default=True)
+    email = models.EmailField(blank=True)
+    name = models.TextField()
+    note = models.TextField(blank=True)
+    phone = models.TextField(blank=True)
+    surname = models.TextField()
 
     class Meta:
         ordering = ['surname', 'name']
@@ -53,9 +53,9 @@ class Client(models.Model):
 
 class Course(models.Model):
     color = models.CharField(max_length=7, default="#000")
+    duration = models.PositiveIntegerField()
     name = models.TextField()
     visible = models.BooleanField()
-    duration = models.PositiveIntegerField()
 
     class Meta:
         ordering = ['name']
@@ -71,25 +71,25 @@ class Application(models.Model):
 
 
 class Group(models.Model):
+    active = models.BooleanField(default=True)
     name = models.TextField()
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
-    active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['name']
 
 
 class Lecture(models.Model):
-    start = models.DateTimeField(null=True)
     canceled = models.BooleanField()
     duration = models.PositiveIntegerField()
+    start = models.DateTimeField(null=True)
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
     group = models.ForeignKey(Group, related_name='lectures', on_delete=models.CASCADE, null=True)
 
 
 class Attendance(models.Model):
-    paid = models.BooleanField()
     note = models.TextField(blank=True)
+    paid = models.BooleanField()
     # on_delete: tedy lze smazat pouze klienta co nema zadne attendances
     client = models.ForeignKey(Client, related_name='attendances', on_delete=models.PROTECT)
     lecture = models.ForeignKey(Lecture, related_name='attendances', on_delete=models.CASCADE)
