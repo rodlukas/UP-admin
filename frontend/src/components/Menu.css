@@ -5,3 +5,10 @@
 .navbar {
     background-color: white;
 }
+
+@media (min-width: 576px) {
+    /* pri klasickem menu pridej mezeru k odhlasovacimu tlacitku */
+    .navbar-expand-sm .btn {
+        margin-left: .5rem
+    }
+}
