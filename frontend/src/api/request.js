@@ -13,7 +13,7 @@ class ErrorMessage extends Component {
             errMsg: ""
         }
         this.errorResponse = props.error.response
-        this.djangoError = props.error.request.response
+        this.djangoError = props.error.request ? props.error.request.response : 'null'
     }
 
     componentDidMount() {

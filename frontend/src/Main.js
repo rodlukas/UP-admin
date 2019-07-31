@@ -60,8 +60,8 @@ const Main = () => {
                     <Menu closeNavbar={closeNavbar}/>
                 </Collapse>
             </Navbar>
-            <ToastContainer/>
             <ErrorBoundary>
+                <ToastContainer/>
                 <main className="content">
                     <Suspense fallback={<Loading/>}>
                         <Switch>
