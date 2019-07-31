@@ -29,6 +29,7 @@ import {DEFAULT_DURATION, TEXTS} from "../global/constants"
 import {prettyDateWithLongDayYear, toISODate, toISOTime} from "../global/funcDateTime"
 import {alertRequired} from "../global/utils"
 import "./FormLectures.css"
+import {selectStyles} from "./helpers/SelectCourseColors"
 
 const GROUP_DURATION = 45
 
@@ -382,6 +383,7 @@ class FormLectures extends Component {
                                     placeholder={"Vyberte kurz..."}
                                     noOptionsMessage={() => TEXTS.NO_RESULTS}
                                     isDisabled={!this.IS_CLIENT}
+                                    styles={selectStyles}
                                     required/>
                             </Col>
                             <Col sm={4}>

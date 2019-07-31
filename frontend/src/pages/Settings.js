@@ -8,6 +8,7 @@ import AppRelease from "../components/AppRelease"
 import AppVersion from "../components/AppVersion"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
+import Circle from "../components/Circle"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
@@ -125,7 +126,7 @@ class Settings extends Component {
                     <thead className="thead-dark">
                     <tr>
                         <th>Název</th>
-                        <th>Viditelný</th>
+                        <th className="text-center">Viditelný</th>
                         <th>Akce</th>
                     </tr>
                     </thead>
@@ -135,7 +136,7 @@ class Settings extends Component {
                             <td data-qa="attendancestate_name">
                                 {attendancestate.name}
                             </td>
-                            <td>
+                            <td className="text-center">
                                 <Visible visible={attendancestate.visible} data-qa="attendancestate_visible"/>
                             </td>
                             <td>
@@ -202,8 +203,9 @@ class Settings extends Component {
                     <thead className="thead-dark">
                     <tr>
                         <th>Název</th>
-                        <th>Trvání</th>
-                        <th>Viditelný</th>
+                        <th className="text-center">Viditelný</th>
+                        <th className="text-center">Barva</th>
+                        <th className="text-center">Trvání</th>
                         <th>Akce</th>
                     </tr>
                     </thead>
@@ -213,11 +215,14 @@ class Settings extends Component {
                             <td data-qa="course_name">
                                 {course.name}
                             </td>
-                            <td data-qa="course_duration">
-                                {course.duration}
-                            </td>
-                            <td>
+                            <td className="text-center">
                                 <Visible visible={course.visible} data-qa="course_visible"/>
+                            </td>
+                            <td className="text-center">
+                                <Circle color={course.color}/>
+                            </td>
+                            <td data-qa="course_duration" className="text-center">
+                                {course.duration}
                             </td>
                             <td>
                                 <EditButton content="Upravit kurz"

@@ -1,5 +1,6 @@
 import React, {Component, Fragment} from "react"
 import {toast} from "react-toastify"
+import Notification from "../components/Notification"
 import {NOTIFY_TEXT} from "../global/constants"
 import history from "../global/history"
 import APP_URLS from "../urls"
@@ -116,7 +117,7 @@ class ErrorMessage extends Component {
     }
 
     render() {
-        return this.state.errMsg
+        return <Notification text={this.state.errMsg} type={toast.TYPE.ERROR}/>
     }
 }
 
@@ -127,7 +128,7 @@ const request = function (options, ignore_errors = false, return_data = true) {
         if (options.method !== API_METHODS.get)
             // responseURL neni definovana v IE, tedy v IE se zobrazi vice notifikaci, ale aspon bude appka fungovat
             if ((responseUrl && !responseUrl.match(API_URLS.Login.url)) || responseUrl === undefined)
-                notify(NOTIFY_TEXT.SUCCESS, toast.TYPE.SUCCESS)
+                notify(<Notification type={toast.TYPE.SUCCESS}/>, toast.TYPE.SUCCESS)
         return return_data ? response.data : response
     }
 
@@ -149,8 +150,7 @@ const request = function (options, ignore_errors = false, return_data = true) {
     const notify = (message, level) => {
         const options = {
             type: level,
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: level === toast.TYPE.ERROR ? 10000 : 4000
+            autoClose: level === toast.TYPE.ERROR ? 100000 : 4000
         }
         toast(message, options)
     }

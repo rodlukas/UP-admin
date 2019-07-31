@@ -1,6 +1,6 @@
 import React, {lazy, Suspense, useContext, useState} from "react"
 import {NavLink as RouterNavLink, Switch} from "react-router-dom"
-import {ToastContainer} from "react-toastify"
+import {toast, ToastContainer} from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import {Badge, Collapse, Navbar, NavbarBrand, NavbarToggler} from "reactstrap"
 import {AuthContext} from "./auth/AuthContext"
@@ -61,7 +61,7 @@ const Main = () => {
                 </Collapse>
             </Navbar>
             <ErrorBoundary>
-                <ToastContainer/>
+                <ToastContainer position={toast.POSITION.TOP_RIGHT}/>
                 <main className="content">
                     <Suspense fallback={<Loading/>}>
                         <Switch>

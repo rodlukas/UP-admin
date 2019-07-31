@@ -1,0 +1,8 @@
+.circle {
+    display: inline-block;
+    width: 1.7rem;
+    height: 1.7rem;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
+    border-radius: 50%;
+    vertical-align: middle;
+}

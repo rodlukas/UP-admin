@@ -1,6 +1,5 @@
 export const API_URL = "/api/v1/"
 export const NOTIFY_TEXT = {
-    SUCCESS: "Úspěšně uloženo",
     ERROR: "Chyba při provádění požadavku",
     ERROR_TIMEOUT: "Aplikace je přetížena (požadavek trval moc dlouho), pokračujte za chvíli"
 }

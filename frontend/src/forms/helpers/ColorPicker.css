@@ -21,6 +21,10 @@
 .ColorPickerWindow {
     position: absolute;
     z-index: 2;
+    /* rozsireni okraju, kam se da najet mysi bez zavreni okna */
+    padding: 1rem;
+    left: -1rem;
+    top: -1rem
 }
 
 .ColorPickerInput > div {

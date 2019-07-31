@@ -1,50 +1,81 @@
 import {faPalette} from "@fortawesome/pro-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import React, {Fragment, useState} from "react"
+import chroma from "chroma-js"
+import React, {Fragment} from "react"
 import {ChromePicker} from "react-color"
+import {toast} from "react-toastify"
 import {Col, InputGroup, InputGroupAddon, Label} from "reactstrap"
+import Notification from "../../components/Notification"
 import "./ColorPicker.css"
 
-const ColorPicker = props => {
-    const [isPickerVisible, setIsPickerVisible] = useState(false)
-
-    function togglePicker() {
-        setIsPickerVisible(prevIsPickerVisible => !prevIsPickerVisible)
+export default class ColorPicker extends React.Component {
+    constructor(props) {
+        super(props)
+        this.customToastId = "ColorPicker"
+        this.state = {
+            isPickerVisible: false
+        }
     }
 
-    function closePicker() {
-        setIsPickerVisible(false)
+    togglePicker = () => {
+        if (!this.state.isPickerVisible)
+            this.validateColor(this.props.color)
+        this.setState(prevState => ({isPickerVisible: !prevState.isPickerVisible}))
     }
 
-    return (
-        <Fragment>
-            <Label for="color" sm={3} className="py-0" onClick={togglePicker}>
-                Barva
-            </Label>
-            <Col sm={9}>
-                <InputGroup title="Barva">
-                    <InputGroupAddon addonType="prepend">
-                        <Label className="input-group-text" for="color" onClick={togglePicker}>
-                            <FontAwesomeIcon icon={faPalette} fixedWidth/>
-                        </Label>
-                    </InputGroupAddon>
-                    <div id="color" data-qa="settings_field_color" tabIndex="0" onFocus={togglePicker}
-                         className="ColorPickerInput" onClick={togglePicker} title="Změnit barvu">
-                        <div style={{background: props.color}}/>
-                    </div>
-                    {isPickerVisible ?
-                        <div className="ColorPickerWindow" onMouseLeave={closePicker}
-                             onBlur={closePicker}>
-                            <ChromePicker
-                                disableAlpha
-                                color={props.color}
-                                onChange={newColor => props.onChange(newColor.hex)}/>
+    closePicker = () => {
+        this.setState({isPickerVisible: false})
+        toast.dismiss(this.customToastId)
+    }
+
+    validateColor = color => {
+        // pokud barvy nejsou dostatecne kontrastni a jeste neni zobrazene upozorneni, zobraz ho
+        if (chroma.contrast(chroma(color), 'white') < 2) {
+            toast(
+                <Notification
+                    type={toast.TYPE.WARNING}
+                    text="Zvolená barva je málo kontrastní k bílé a byla by špatně vidět, zvolte více kontrastnější."/>,
+                {
+                    toastId: this.customToastId,
+                    autoClose: false,
+                    type: toast.TYPE.WARNING
+                })
+        } else
+            toast.dismiss(this.customToastId)
+    }
+
+    render() {
+        return (
+            <Fragment>
+                <Label for="color" sm={3} className="py-0" onClick={this.togglePicker}>
+                    Barva
+                </Label>
+                <Col sm={9}>
+                    <InputGroup>
+                        <InputGroupAddon addonType="prepend" title="Barva">
+                            <Label className="input-group-text" for="color" onClick={this.togglePicker}>
+                                <FontAwesomeIcon icon={faPalette} fixedWidth/>
+                            </Label>
+                        </InputGroupAddon>
+                        <div id="color" data-qa="settings_field_color" tabIndex="0" onFocus={this.togglePicker}
+                             className="ColorPickerInput" onClick={this.togglePicker} title="Změnit barvu">
+                            <div style={{background: this.props.color}}/>
                         </div>
-                        : null}
-                </InputGroup>
-            </Col>
-        </Fragment>
-    )
+                        {this.state.isPickerVisible ?
+                            <div className="ColorPickerWindow" onMouseLeave={this.closePicker}
+                                 onBlur={this.closePicker}>
+                                <ChromePicker
+                                    disableAlpha
+                                    color={this.props.color}
+                                    onChange={newColor => {
+                                        this.props.onChange(newColor.hex)
+                                        this.validateColor(newColor.hex)
+                                    }}/>
+                            </div>
+                            : null}
+                    </InputGroup>
+                </Col>
+            </Fragment>
+        )
+    }
 }
-
-export default ColorPicker
