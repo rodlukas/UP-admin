@@ -30,6 +30,12 @@ class CourseSerializer(serializers.ModelSerializer):
         model = Course
         fields = '__all__'
 
+    @staticmethod
+    def validate_color(color):
+        if not re.match(r"^#(?:[0-9a-fA-F]{3}){1,2}$", color):  # regex viz https://stackoverflow.com/a/1636354
+            raise serializers.ValidationError("Barva není v HEX formátu")
+        return color
+
 
 class MembershipSerializer(serializers.ModelSerializer):
     client = ClientSerializer(read_only=True)

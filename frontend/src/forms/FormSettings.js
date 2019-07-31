@@ -1,6 +1,6 @@
 import {faHourglass} from "@fortawesome/pro-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import {
     Alert,
     Col,
@@ -20,19 +20,21 @@ import CourseService from "../api/services/course"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import {DEFAULT_DURATION, EDIT_TYPE} from "../global/constants"
+import {DEFAULT_COLOR, DEFAULT_DURATION, EDIT_TYPE} from "../global/constants"
+import ColorPicker from "./helpers/ColorPicker"
 
 export default class FormSettings extends Component {
     constructor(props) {
         super(props)
         this.isObject = Boolean(Object.keys(props.object).length)
         this.TYPE = props.TYPE
-        const {id, name, visible} = props.object
+        const {id, name, visible, color} = props.object
         this.state = {
             id: id || '',
             name: name || '',
             visible: this.isObject ? visible : true,
-            duration: DEFAULT_DURATION
+            duration: DEFAULT_DURATION,
+            color: color || DEFAULT_COLOR
         }
     }
 
@@ -42,13 +44,16 @@ export default class FormSettings extends Component {
         this.setState({[target.id]: value})
     }
 
+    onChangeColor = newColor =>
+        this.setState({color: newColor})
+
     onSubmit = e => {
         e.preventDefault()
-        const {id, name, visible, duration} = this.state
+        const {id, name, visible, duration, color} = this.state
         let request, service, data
         if (this.TYPE === EDIT_TYPE.COURSE) {
             service = CourseService
-            data = {id, name, visible, duration}
+            data = {id, name, visible, duration, color}
         }
         else {
             service = AttendanceStateService
@@ -80,7 +85,7 @@ export default class FormSettings extends Component {
     }
 
     render() {
-        const {id, name, visible, duration} = this.state
+        const {id, name, visible, duration, color} = this.state
         const type = (this.TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav")
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_settings">
@@ -107,22 +112,27 @@ export default class FormSettings extends Component {
                         </Col>
                     </FormGroup>
                     {this.TYPE === EDIT_TYPE.COURSE &&
-                    <FormGroup row className="align-items-center">
-                        <Label for="name" sm={3} className="py-0">
-                            Trvání <small className="text-secondary">(pro jednotlivce)</small>
-                        </Label>
-                        <Col sm={9}>
-                            <InputGroup title="Trvání">
-                                <InputGroupAddon addonType="prepend">
-                                    <Label className="input-group-text" for="duration">
-                                        <FontAwesomeIcon icon={faHourglass} fixedWidth/>
-                                    </Label>
-                                </InputGroupAddon>
-                                <Input type="number" id="duration" value={duration} onChange={this.onChange}
-                                       required min="1" data-qa="settings_field_duration"/>
-                            </InputGroup>
-                        </Col>
-                    </FormGroup>}
+                    <Fragment>
+                        <FormGroup row className="align-items-center">
+                            <Label for="name" sm={3} className="py-0">
+                                Trvání <small className="text-secondary">(pro jednotlivce)</small>
+                            </Label>
+                            <Col sm={9}>
+                                <InputGroup title="Trvání">
+                                    <InputGroupAddon addonType="prepend">
+                                        <Label className="input-group-text" for="duration">
+                                            <FontAwesomeIcon icon={faHourglass} fixedWidth/>
+                                        </Label>
+                                    </InputGroupAddon>
+                                    <Input type="number" id="duration" value={duration} onChange={this.onChange}
+                                           required min="1" data-qa="settings_field_duration"/>
+                                </InputGroup>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row className="align-items-center">
+                            <ColorPicker color={color} onChange={this.onChangeColor}/>
+                        </FormGroup>
+                    </Fragment>}
                     {this.isObject &&
                     <FormGroup row className="border-top pt-3">
                         <Label sm={3} className="text-muted">

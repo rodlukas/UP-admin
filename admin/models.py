@@ -52,6 +52,7 @@ class Client(models.Model):
 
 
 class Course(models.Model):
+    color = models.CharField(max_length=7, default="#000")
     name = models.TextField()
     visible = models.BooleanField()
     duration = models.PositiveIntegerField()

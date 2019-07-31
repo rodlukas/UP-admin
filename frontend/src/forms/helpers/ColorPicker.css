@@ -1,0 +1,35 @@
+/* mnoho z nasledujicich stylu koresponduje se styly bootstrap inputu */
+
+.ColorPickerInput {
+    padding: .375rem;
+    background: white;
+    border-radius: 0 .25rem .25rem 0;
+    height: calc(1.5em + .75rem + 2px);
+    border: 1px solid #ced4da;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.ColorPickerInput:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25);
+}
+
+.ColorPickerWindow {
+    position: absolute;
+    z-index: 2;
+}
+
+.ColorPickerInput > div {
+    width: 3rem;
+    height: 100%;
+    border-radius: .25rem;
+}
+
+/* chrome-picker obsahuje hardcoded font-family s nedostupnym fontem */
+.chrome-picker {
+    font-family: unset !important;
+}
