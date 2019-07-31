@@ -24,8 +24,7 @@ export default class FormGroups extends Component {
             name: name || '',
             active: this.isGroup ? active : true,
             course: this.isGroup ? course : null,
-            // vychozi hodnota memberships je null, protoze pri smazani vsech clenu React-select automaticky nastavi null
-            memberships: this.isGroup ? this.getMembers(memberships) : null,
+            memberships: this.isGroup ? this.getMembers(memberships) : [],
             clients: [],
             courses: []
         }
@@ -42,9 +41,8 @@ export default class FormGroups extends Component {
     // pripravi pole se cleny ve spravnem formatu, aby slo poslat do API
     prepareMembersForSubmit(memberships) {
         let members = []
-        if(memberships !== null)
-            memberships.map(membership =>
-                members.push({client_id: membership.id}))
+        memberships.map(membership =>
+            members.push({client_id: membership.id}))
         return members
     }
 
@@ -52,8 +50,12 @@ export default class FormGroups extends Component {
         CourseService.getVisible()
             .then(courses => this.setState({courses}))
 
-    onSelectChange = (obj, name) =>
+    onSelectChange = (obj, name) => {
+        // pri smazani vsech clenu React-select automaticky nastavi null, pro korektni fungovani (napr. push) je potreba udrzovat prazdne pole
+        if (name === "memberships" && obj === null)
+            obj = []
         this.setState({[name]: obj})
+    }
 
     onChange = e => {
         const target = e.target
