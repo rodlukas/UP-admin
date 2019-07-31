@@ -28,12 +28,12 @@ export default class FormSettings extends Component {
         super(props)
         this.isObject = Boolean(Object.keys(props.object).length)
         this.TYPE = props.TYPE
-        const {id, name, visible, color} = props.object
+        const {id, name, visible, duration, color} = props.object
         this.state = {
             id: id || '',
             name: name || '',
             visible: this.isObject ? visible : true,
-            duration: DEFAULT_DURATION,
+            duration: duration || DEFAULT_DURATION,
             color: color || DEFAULT_COLOR
         }
     }
