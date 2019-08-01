@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react"
 import {Col, Container, Input, InputGroup, InputGroupAddon, Label, ListGroup, ListGroupItem, Row} from "reactstrap"
 import MembershipService from "../api/services/membership"
 import ClientName from "./ClientName"
+import "./PrepaidCounters.css"
 
 const PrepaidCounters = props => {
 
@@ -54,7 +55,7 @@ const PrepaidCounters = props => {
                                     </InputGroupAddon>
                                     <Input type="number" value={prepaidCnts[membership.id]} min="0"
                                            onChange={onChange} data-id={membership.id} onFocus={onFocus}
-                                           id={"prepaid_cnt" + membership.id}/>
+                                           id={"prepaid_cnt" + membership.id} className="PrepaidCountersInput"/>
                                 </InputGroup>
                             </ListGroupItem>
                         </ListGroup>
