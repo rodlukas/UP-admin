@@ -58,7 +58,7 @@ Od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/)
 * automatické rušení lekcí když nikdo nemá přijít
 * automatické vytváření předplacených náhrad lekcí při omluvě předem
 * upozornění, že má klient příště platit
-* konfigurace kurzů a stavů účasti
+* konfigurace kurzů a stavů účasti včetně např. intuitivního nastavení zvolené barvy pro kurz
 * propojení s API *Fio banky* – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu
 * automatický odhad kurzu pro nově přidávané lekce
 * respektování a kontrola všech omezení daných danou doménou (např. duplicity apod.)
