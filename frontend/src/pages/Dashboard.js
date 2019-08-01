@@ -18,7 +18,7 @@ export default class Dashboard extends Component {
                 <Row className="justify-content-center">
                     <Col sm="11" md="8" lg="8" xl="5">
                         <Heading content={<HeadingContentDay/>}/>
-                        <DashboardDay date={this.getDate()}/>
+                        <DashboardDay date={this.getDate()} withoutWaiting/>
                     </Col>
                     <Col sm="11" md="8" lg="8" xl="5">
                         <Heading content={<HeadingContentBank/>}/>

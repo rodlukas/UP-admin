@@ -30,7 +30,15 @@ export default class DashboardDay extends Component {
     getProperRefreshFunc = () => this.props.setRefreshState || this.getLectures
 
     componentDidMount() {
-        this.getLectures()
+        if (this.props.withoutWaiting)
+            this.getLectures()
+        else
+            // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
+            this.timeoutId = setTimeout(this.getLectures, 1000)
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeoutId)
     }
 
     componentDidUpdate(prevProps) {
