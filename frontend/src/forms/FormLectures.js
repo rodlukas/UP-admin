@@ -427,7 +427,7 @@ class FormLectures extends Component {
                                             </CustomInput>
                                         </InputGroup>
                                     </Col>
-                                    <Col sm={2} className="text-center">
+                                    <Col sm={2} className="text-sm-center">
                                         <CustomInput type="checkbox" id={"at_paid" + member.id} name="at_paid"
                                                      checked={at_paid[member.id]} disabled={prepaid}
                                                      onChange={this.onChangeMultiple} data-id={member.id}

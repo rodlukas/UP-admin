@@ -3,3 +3,9 @@
     display: inline-block !important;
     margin-left: 0.7rem !important;
 }
+
+@media (max-width: 575.98px) {
+    .form-group > div:not(:last-child) {
+        margin-bottom: 1rem
+    }
+}
