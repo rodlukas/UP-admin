@@ -9,6 +9,7 @@ import {TEXTS} from "../global/constants"
 import {alertRequired, clientName} from "../global/utils"
 import "./forms.css"
 import Or from "./helpers/Or"
+import {selectStyles} from "./helpers/SelectCourseColors"
 import ModalClients from "./ModalClients"
 
 export default class FormApplications extends Component {
@@ -110,6 +111,7 @@ export default class FormApplications extends Component {
                                 options={this.props.courses}
                                 placeholder={"Vyberte kurz..."}
                                 noOptionsMessage={() => TEXTS.NO_RESULTS}
+                                styles={selectStyles}
                                 required/>
                         </Col>
                     </FormGroup>
