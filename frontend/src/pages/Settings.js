@@ -219,7 +219,7 @@ class Settings extends Component {
                                 <Visible visible={course.visible} data-qa="course_visible"/>
                             </td>
                             <td className="text-center">
-                                <Circle color={course.color}/>
+                                <Circle color={course.color} size={1.7} showTitle/>
                             </td>
                             <td data-qa="course_duration" className="text-center">
                                 {course.duration}
