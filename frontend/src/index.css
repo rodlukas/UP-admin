@@ -58,3 +58,9 @@ label {
 .Toastify__toast {
     font-family: unset !important;
 }
+
+/* django-debug-toolbar */
+/* zaridi, aby tlacitko DDT nikdy neprekazelo notifikacim (to je dulezite predevsim pro UI testy) */
+#djDebugToolbarHandle {
+    top: 380px !important;
+}
