@@ -9,7 +9,7 @@ const GroupsList = ({groups = []}) => {
                 žádné skupiny
             </span>)
     const groupComponents = groups.map(membership =>
-        <GroupName group={membership} key={membership.id} link/>)
+        <GroupName group={membership} key={membership.id} link showCircle/>)
     return <ComponentsList components={groupComponents}/>
 }
 

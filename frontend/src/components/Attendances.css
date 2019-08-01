@@ -22,10 +22,6 @@
 }
 
 /* styly pro lekce, ktere obsahuji Attendances */
-.lecture-canceled h4 {
-    text-decoration: line-through
-}
-
 .lecture-future {
     background-color: #fff3cd !important
 }
@@ -39,5 +35,79 @@
 }
 
 .lecture {
-    padding: 1rem 1rem .75rem 1rem !important;
+    padding: 0 0 .75rem 0 !important;
+}
+
+.lecture_dashboardday .lecture_heading {
+    color: white;
+}
+
+.lecture_dashboardday .LectureNumber {
+    background-color: white;
+}
+
+.lecture_heading {
+    padding: 0 0 0 1rem;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: .1rem;
+}
+
+@media (max-width: 575.98px) {
+    .lecture_heading {
+        flex-wrap: wrap;
+    }
+}
+
+.lecture_content h5 {
+    margin-top: .4rem;
+}
+
+.lecture .CourseName {
+    flex-grow: 1;
+    line-height: .9;
+}
+
+.lecture .LectureNumber {
+    margin-right: .5rem;
+}
+
+.lecture_heading .btn {
+    border-radius: .25rem 0 0 .25rem;
+}
+
+.lecture_heading h4 {
+    display: inline-block;
+    margin: 0
+}
+
+.lecture_content {
+    padding: 0 1rem 0 1rem
+}
+
+.lecture_free {
+    padding-top: 1rem !important;
+}
+
+.lecture-canceled h4 span {
+    position: relative;
+    display: inline-block;
+}
+
+.lecture-canceled h4 span::after {
+    content: '';
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 50%;
+}
+
+.lecture-canceled h4 span::after {
+    border-bottom: 2px solid rgba(255, 0, 0, 0.6);
+}
+
+.lecture-canceled.lecture_dashboardday h4 span::after {
+    transform: skewY(10deg);
 }

@@ -65,8 +65,8 @@ export default class Applications extends Component {
 
     render() {
         const {applications, courses, currentApplication, IS_MODAL, LOADING_CNT} = this.state
-        const ApplicantsCount = ({cnt}) =>
-            <Badge color="secondary" pill>
+        const ApplicantsCount = ({cnt, color}) =>
+            <Badge pill style={{color: color}} className="font-weight-bold">
                 <span data-qa="applications_for_course_cnt">
                     {cnt}
                 </span>
@@ -114,16 +114,19 @@ export default class Applications extends Component {
         const AllApplications = () =>
             <div className="pageContent">
                 {applications.map(courseApplications =>
-                    <ListGroup key={courseApplications.course} data-qa="applications_for_course"
+                    <ListGroup key={courseApplications.course.id} data-qa="applications_for_course"
                                className="applications_course">
-                        <h4>
-                            <span data-qa="application_course">
-                                {courseApplications.course}
-                            </span>
-                            {' '}
-                            <ApplicantsCount cnt={courseApplications.values.length}/>
-                        </h4>
-                        <CourseApplications applications={courseApplications.values}/>
+                        <ListGroupItem style={{background: courseApplications.course.color}}>
+                            <h4 className="mb-0 Applications_courseHeading">
+                                <span data-qa="application_course">
+                                    {courseApplications.course.name}
+                                </span>
+                                {' '}
+                                <ApplicantsCount cnt={courseApplications.lectures.length}
+                                                 color={courseApplications.course.color}/>
+                            </h4>
+                        </ListGroupItem>
+                        <CourseApplications applications={courseApplications.lectures}/>
                     </ListGroup>)}
                 {!Boolean(applications.length) &&
                 <p className="text-muted text-center">

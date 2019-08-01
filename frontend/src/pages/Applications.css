@@ -1,3 +1,12 @@
 .applications_course+.applications_course {
     margin-top: 1rem
 }
+
+.Applications_courseHeading {
+    color: white
+}
+
+.Applications_courseHeading .badge {
+    background-color: white !important;
+    margin-left: .3rem;
+}

@@ -56,15 +56,14 @@ export default class Card extends Component {
             else if(lectures.length === 1)
             {
                 // chodi na jeden jediny kurz, vyber ho
-                const firstLectureOfCourse = lectures[0].values[0]
-                this.setState({defaultCourse: firstLectureOfCourse.course})
+                this.setState({defaultCourse: lectures[0].course})
             }
             else if(lectures.length > 1)
             {
                 // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
                 let latestLecturesOfEachCourse = []
                 lectures.forEach(
-                    elem => latestLecturesOfEachCourse.push(elem.values[0]))
+                    elem => latestLecturesOfEachCourse.push(elem.lectures[0]))
                 const latestLecture = latestLecturesOfEachCourse.reduce(
                     (prev, current) => (prev.start > current.start) ? prev : current)
                 this.setState({defaultCourse: latestLecture.course})
@@ -200,35 +199,39 @@ export default class Card extends Component {
                     if (lecture.start === null)
                         className += " lecture-prepaid"
                     return (
-                        <ListGroupItem key={lecture.id} className={className + " lecture"} data-qa="lecture">
-                            <h4>
-                                <span data-qa="lecture_start" title={courseDuration(lecture.duration)}>
-                                {lecture.start !== null ?
-                                    (prettyDateWithDayYear(d) + " – " + prettyTime(d))
-                                    :
-                                    "Předplacená lekce"}
-                                </span>
-                                {' '}
+                        <ListGroupItem key={lecture.id} className={className + " lecture lecture_card"}
+                                       data-qa="lecture">
+                            <div className="lecture_heading">
+                                <h4>
+                                    <span data-qa="lecture_start" title={courseDuration(lecture.duration)}>
+                                    {lecture.start !== null ?
+                                        (prettyDateWithDayYear(d) + " – " + prettyTime(d))
+                                        :
+                                        "Předplacená lekce"}
+                                    </span>
+                                </h4>
                                 <LectureNumber lecture={lecture}/>
-                                <div className="float-right">
-                                    <ModalLectures IS_CLIENT={this.isClient()} object={object} currentLecture={lecture}
-                                                   refresh={this.refreshAfterLectureChanges}/>
-                                </div>
-                            </h4>
-                            <Attendances lecture={lecture} funcRefresh={this.refreshAfterLectureChanges}
-                                         showClient={!this.isClient()}/>
+                                <ModalLectures IS_CLIENT={this.isClient()} object={object} currentLecture={lecture}
+                                               refresh={this.refreshAfterLectureChanges}/>
+                            </div>
+                            <div className="lecture_content">
+                                <Attendances lecture={lecture} funcRefresh={this.refreshAfterLectureChanges}
+                                             showClient={!this.isClient()}/>
+                            </div>
                         </ListGroupItem>)
                 })}
             </Fragment>
         const AllLectures = () =>
             <Fragment>
                 {lectures.map(courseLectures =>
-                    <Col key={courseLectures.course} sm="9" md="7" lg="5" xl="3" data-qa="card_course">
-                        <h4 className="text-center" data-qa="card_course_name">
-                            {courseLectures.course}
-                        </h4>
+                    <Col key={courseLectures.course.id} sm="9" md="7" lg="5" xl="3" data-qa="card_course">
                         <ListGroup>
-                            <CourseLectures courseLectures={courseLectures.values}/>
+                            <ListGroupItem style={{background: courseLectures.course.color}}>
+                                <h4 className="text-center mb-0 Card_courseHeading" data-qa="card_course_name">
+                                    {courseLectures.course.name}
+                                </h4>
+                            </ListGroupItem>
+                            <CourseLectures courseLectures={courseLectures.lectures}/>
                         </ListGroup>
                     </Col>)}
                 {!Boolean(lectures.length) &&

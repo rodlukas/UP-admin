@@ -3,3 +3,11 @@
         max-width: 800px !important;
     }
 }
+
+.lecture_card h4 {
+    flex-grow: 1;
+}
+
+.Card_courseHeading {
+    color: white
+}

@@ -47,31 +47,31 @@ export default class DashboardDay extends Component {
             if (lecture.canceled)
                 className = "lecture-canceled"
             return (
-                <ListGroupItem className={className + " lecture"}>
-                    <h4>
-                        <span title={courseDuration(lecture.duration)}>
-                            {prettyTime(new Date(lecture.start))}
-                        </span>
-                        {' '}
+                <ListGroupItem className={className + " lecture lecture_dashboardday"}>
+                    <div className="lecture_heading" style={{background: lecture.course.color}}>
+                        <h4>
+                            <span title={courseDuration(lecture.duration)} className="font-weight-bold">
+                                {prettyTime(new Date(lecture.start))}
+                            </span>
+                        </h4>
                         <CourseName course={lecture.course}/>
-                        {' '}
-                        <LectureNumber lecture={lecture}/>
-                        <div className="float-right">
-                            <ModalLectures IS_CLIENT={!lecture.group}
-                                           object={lecture.group ? lecture.group : lecture.attendances[0].client}
-                                           currentLecture={lecture} refresh={properRefreshFunc}/>
-                        </div>
-                    </h4>
-                    {lecture.group &&
-                    <h5>
-                        <GroupName group={lecture.group} title link/>
-                    </h5>}
-                    <Attendances lecture={lecture} funcRefresh={properRefreshFunc} showClient/>
+                        <LectureNumber lecture={lecture} colorize/>
+                        <ModalLectures IS_CLIENT={!lecture.group}
+                                       object={lecture.group ? lecture.group : lecture.attendances[0].client}
+                                       currentLecture={lecture} refresh={properRefreshFunc}/>
+                    </div>
+                    <div className="lecture_content">
+                        {lecture.group &&
+                        <h5>
+                            <GroupName group={lecture.group} title link/>
+                        </h5>}
+                        <Attendances lecture={lecture} funcRefresh={properRefreshFunc} showClient/>
+                    </div>
                 </ListGroupItem>
             )
         }
         const EmptyLecture = () =>
-            <ListGroupItem className="lecture">
+            <ListGroupItem className="lecture lecture_free">
                 <ListGroupItemHeading className="text-muted text-center">
                     Volno
                 </ListGroupItemHeading>
