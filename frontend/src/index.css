@@ -7,6 +7,10 @@ html, body, .content, .root {
     max-width: 1140px !important;
 }
 
+.modal {
+    -webkit-overflow-scrolling: touch;
+}
+
 b {
     font-weight: 600;
 }
