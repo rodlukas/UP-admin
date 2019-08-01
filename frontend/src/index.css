@@ -29,7 +29,7 @@ label {
     clear: both
 }
 
-/* TABLE */
+/*** TABLE ***/
 .table {
     background-color: white !important;
 }
@@ -42,7 +42,7 @@ label {
     border-top: 0 !important;
 }
 
-/* BADGE */
+/*** BADGE ***/
 .badge {
     white-space: normal; /* aby se text zalamoval a nepretekal */
     font-size: 1rem;
@@ -50,16 +50,23 @@ label {
     vertical-align: bottom;
 }
 
-/* react-toastify */
+/*** REACT-TOASTIFY ***/
+/* vychozi zluta je spatne citelna s bilym textem */
 .Toastify__toast--warning {
     background: #e7b90f !important;
 }
 
+/* vychozi text podle bootstrapu, nikoliv podle toastify */
 .Toastify__toast {
     font-family: unset !important;
 }
 
-/* django-debug-toolbar */
+/* aby notifikace neprekryvala menu */
+.Toastify__toast-container--top-right {
+   top: unset !important;
+}
+
+/*** DJANGO-DEBUG-TOOLBAR ***/
 /* zaridi, aby tlacitko DDT nikdy neprekazelo notifikacim (to je dulezite predevsim pro UI testy) */
 #djDebugToolbarHandle {
     top: 380px !important;
