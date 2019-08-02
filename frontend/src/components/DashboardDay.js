@@ -98,8 +98,8 @@ export default class DashboardDay extends Component {
             </ListGroupItem>
         return (
             <ListGroup className="pageContent">
-                <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''} className="text-center">
-                    <h4 className="DashboardDay_date mb-0 text-nowrap d-inline-block">
+                <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''} className="text-center DashboardDay_date">
+                    <h4 className="mb-0 text-nowrap d-inline-block">
                         {title}
                     </h4>
                     <ModalLecturesFast refresh={properRefreshFunc} date={this.props.date} className="float-right"
