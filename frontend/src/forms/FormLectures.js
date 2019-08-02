@@ -57,7 +57,7 @@ class FormLectures extends Component {
             prepaid: isPrepaid,
             canceled: canceled || false,
             canceled_previous: undefined,
-            date: (this.IS_LECTURE && !isPrepaid) ? toISODate(date) : '',
+            date: (this.IS_LECTURE && !isPrepaid) ? toISODate(date) : this.props.date,
             time: (this.IS_LECTURE && !isPrepaid) ? toISOTime(date) : '',
             course:
                 (this.IS_LECTURE ?

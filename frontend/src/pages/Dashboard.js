@@ -1,8 +1,9 @@
-import React, {Component} from "react"
+import React, {Component, Fragment} from "react"
 import {Col, Container, Row} from "reactstrap"
 import Bank from "../components/Bank"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
+import ModalLecturesFast from "../forms/ModalLecturesFast"
 import {toISODate} from "../global/funcDateTime"
 
 export default class Dashboard extends Component {
@@ -10,7 +11,11 @@ export default class Dashboard extends Component {
 
     render() {
         const HeadingContentDay = () =>
-            "Dnešní přehled"
+            <Fragment>
+                Dnešní přehled
+                {' '}
+                <ModalLecturesFast refresh={this.setRefreshState}/>
+            </Fragment>
         const HeadingContentBank = () =>
             "Bankovní účet"
         return (

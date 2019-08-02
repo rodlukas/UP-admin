@@ -75,17 +75,19 @@ export default class FormGroups extends Component {
             request = GroupService.update(data)
         else
             request = GroupService.create(data)
-        request.then(() => {
+        request.then(response => {
             this.close()
-            this.refresh()
+            this.refresh(response)
         })
     }
 
     close = () =>
         this.props.funcClose()
 
-    refresh = () =>
-        this.props.funcRefresh()
+    refresh = newGroup =>
+        this.props.sendResult ?
+            this.props.funcRefresh(newGroup) :
+            this.props.funcRefresh()
 
     delete = id =>
         GroupService.remove(id)

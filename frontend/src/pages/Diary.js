@@ -5,6 +5,7 @@ import {Link} from "react-router-dom"
 import {Button, Col, Container, Row} from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
+import ModalLecturesFast from "../forms/ModalLecturesFast"
 import {
     addDays,
     DAYS_IN_WEEK,
@@ -92,6 +93,8 @@ export default class Diary extends Component {
                         Dnes
                     </Button>
                 </Link>
+                {' '}
+                <ModalLecturesFast refresh={this.setRefreshState}/>
             </Fragment>
         // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
         return (

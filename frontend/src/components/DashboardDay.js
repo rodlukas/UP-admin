@@ -2,6 +2,7 @@ import React, {Component, Fragment} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading} from "reactstrap"
 import LectureService from "../api/services/lecture"
 import ModalLectures from "../forms/ModalLectures"
+import ModalLecturesFast from "../forms/ModalLecturesFast"
 import {isToday, prettyDateWithLongDayYearIfDiff, prettyTime, toISODate} from "../global/funcDateTime"
 import {courseDuration} from "../global/utils"
 import Attendances from "./Attendances"
@@ -33,7 +34,7 @@ export default class DashboardDay extends Component {
         if (this.props.withoutWaiting)
             this.getLectures()
         else
-            // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
+        // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
             this.timeoutId = setTimeout(this.getLectures, 1000)
     }
 
@@ -97,8 +98,12 @@ export default class DashboardDay extends Component {
             </ListGroupItem>
         return (
             <ListGroup className="pageContent">
-                <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''}>
-                    <h4 className="text-center mb-0 text-nowrap">{title}</h4>
+                <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''} className="text-center">
+                    <h4 className="DashboardDay_date mb-0 text-nowrap d-inline-block">
+                        {title}
+                    </h4>
+                    <ModalLecturesFast refresh={properRefreshFunc} date={this.props.date} className="float-right"
+                                       size="sm" direction="up"/>
                 </ListGroupItem>
                 {IS_LOADING ?
                     <DayLoading/>
