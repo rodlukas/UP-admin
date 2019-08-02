@@ -1,15 +1,14 @@
 import React, {Component} from "react"
-import Select from "react-select"
 import {Col, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 import ApplicationService from "../api/services/application"
 import ClientService from "../api/services/client"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import {TEXTS} from "../global/constants"
-import {alertRequired, clientName} from "../global/utils"
+import {alertRequired} from "../global/utils"
 import "./forms.css"
 import Or from "./helpers/Or"
-import {selectStyles} from "./helpers/SelectCourseColors"
+import SelectClient from "./helpers/SelectClient"
+import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
 export default class FormApplications extends Component {
@@ -83,17 +82,10 @@ export default class FormApplications extends Component {
                             Klient
                         </Label>
                         <Col sm={9}>
-                            <Select
-                                inputId="client"
+                            <SelectClient
                                 value={client}
-                                getOptionLabel={option => clientName(option)}
-                                getOptionValue={option => option.id}
-                                onChange={newValue => this.onSelectChange(newValue, "client")}
                                 options={clients}
-                                placeholder={"Vyberte existujícího klienta..."}
-                                noOptionsMessage={() => TEXTS.NO_RESULTS}
-                                required
-                                autoFocus/>
+                                onChangeCallback={this.onSelectChange}/>
                             <Or content={<ModalClients refresh={this.getClientsAfterAddition} sendResult inSentence/>}/>
                         </Col>
                     </FormGroup>
@@ -102,17 +94,10 @@ export default class FormApplications extends Component {
                             Kurz
                         </Label>
                         <Col sm={9}>
-                            <Select
-                                inputId="course"
+                            <SelectCourse
                                 value={course}
-                                getOptionLabel={option => option.name}
-                                getOptionValue={option => option.id}
-                                onChange={newValue => this.onSelectChange(newValue, "course")}
-                                options={this.props.courses}
-                                placeholder={"Vyberte kurz..."}
-                                noOptionsMessage={() => TEXTS.NO_RESULTS}
-                                styles={selectStyles}
-                                required/>
+                                onChangeCallback={this.onSelectChange}
+                                options={this.props.courses}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

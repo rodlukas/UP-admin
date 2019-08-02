@@ -12,7 +12,7 @@ import {TEXTS} from "../global/constants"
 import {alertRequired, clientName} from "../global/utils"
 import "./forms.css"
 import Or from "./helpers/Or"
-import {selectStyles} from "./helpers/SelectCourseColors"
+import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
 export default class FormGroups extends Component {
@@ -132,17 +132,10 @@ export default class FormGroups extends Component {
                             Kurz
                         </Label>
                         <Col sm={10}>
-                            <Select
-                                inputId="course"
+                            <SelectCourse
                                 value={course}
-                                getOptionLabel={option => option.name}
-                                getOptionValue={option => option.id}
-                                onChange={newValue => this.onSelectChange(newValue, "course")}
-                                options={courses}
-                                placeholder={"Vyberte kurz..."}
-                                noOptionsMessage={() => TEXTS.NO_RESULTS}
-                                styles={selectStyles}
-                                required/>
+                                onChangeCallback={this.onSelectChange}
+                                options={courses}/>
                         </Col>
                     </FormGroup>
                     <FormGroup row>

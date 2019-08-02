@@ -1,7 +1,6 @@
 import {faCalendarAlt, faClipboardList, faClock, faHourglass} from "@fortawesome/pro-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import React, {Component, Fragment} from "react"
-import Select from "react-select"
 import {
     Col,
     CustomInput,
@@ -25,11 +24,11 @@ import GroupName from "../components/GroupName"
 import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
-import {DEFAULT_DURATION, TEXTS} from "../global/constants"
+import {DEFAULT_DURATION} from "../global/constants"
 import {prettyDateWithLongDayYear, toISODate, toISOTime} from "../global/funcDateTime"
 import {alertRequired} from "../global/utils"
 import "./FormLectures.css"
-import {selectStyles} from "./helpers/SelectCourseColors"
+import SelectCourse from "./helpers/SelectCourse"
 
 const GROUP_DURATION = 45
 
@@ -373,18 +372,11 @@ class FormLectures extends Component {
                                     />}
                             </Col>
                             <Col sm={4}>
-                                <Select
-                                    inputId="course"
+                                <SelectCourse
                                     value={course}
-                                    getOptionLabel={option => option.name}
-                                    getOptionValue={option => option.id}
-                                    onChange={newValue => this.onSelectChange(newValue, "course")}
+                                    onChangeCallback={this.onSelectChange}
                                     options={courses}
-                                    placeholder={"Vyberte kurz..."}
-                                    noOptionsMessage={() => TEXTS.NO_RESULTS}
-                                    isDisabled={!this.IS_CLIENT}
-                                    styles={selectStyles}
-                                    required/>
+                                    isDisabled={!this.IS_CLIENT}/>
                             </Col>
                             <Col sm={4}>
                                 <InputGroup title="Trvání">
