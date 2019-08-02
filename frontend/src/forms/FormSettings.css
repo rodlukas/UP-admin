@@ -1,0 +1,5 @@
+@media (min-width: 576px) {
+    .FormSettings_labelDuration {
+        line-height: .8;
+    }
+}

@@ -21,6 +21,7 @@ import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import {DEFAULT_COLOR, DEFAULT_DURATION, EDIT_TYPE} from "../global/constants"
+import "./FormSettings.css"
 import ColorPicker from "./helpers/ColorPicker"
 
 export default class FormSettings extends Component {
@@ -114,8 +115,8 @@ export default class FormSettings extends Component {
                     {this.TYPE === EDIT_TYPE.COURSE &&
                     <Fragment>
                         <FormGroup row className="align-items-center">
-                            <Label for="duration" sm={3} className="py-0">
-                                Trvání <small className="text-secondary">(pro jednotlivce)</small>
+                            <Label for="duration" sm={3} className="FormSettings_labelDuration">
+                                Trvání <small className="text-secondary text-nowrap">(pro jednotlivce)</small>
                             </Label>
                             <Col sm={9}>
                                 <InputGroup title="Trvání">

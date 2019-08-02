@@ -47,7 +47,7 @@ export default class ColorPicker extends React.Component {
     render() {
         return (
             <Fragment>
-                <Label for="color" sm={3} className="py-0" onClick={this.togglePicker}>
+                <Label for="color" sm={3} onClick={this.togglePicker}>
                     Barva
                 </Label>
                 <Col sm={9}>
