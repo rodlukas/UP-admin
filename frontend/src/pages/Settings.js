@@ -79,7 +79,7 @@ class Settings extends Component {
                 this.loadingStateDecrementCallback,
                 () => {
                     this.callAttendanceStatesFuncRefresh()
-                    this.findStateIndexes()
+                    // neni zde potreba volat findStateIndexes - resi componentDidUpdate
                 })
         }
     }
@@ -96,6 +96,7 @@ class Settings extends Component {
 
     componentDidUpdate(prevProps) {
         if(this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
+            // je potreba volat findStateIndexes, protoze se napr. muze skryt vychozi stav, tzn. API mu odebere i priznak ze je vychozi - je potreba tyto zmeny projevit
             this.findStateIndexes()
         if(this.isLoadedAttendanceStates() !== prevProps.attendanceStatesContext.isLoaded)
             this.loadingStateIncrement()
