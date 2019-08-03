@@ -22,17 +22,14 @@ const Visible = ({visible, ...props}) =>
                      className={visible ? "text-success" : "text-secondary"}/>
 
 class Settings extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            courses: [],
-            IS_MODAL: false,
-            currentObject: {},
-            currentType: EDIT_TYPE.STATE,
-            LOADING_CNT: this.isLoadedAttendanceStates() ? 1 : 0,
-            state_default_id: undefined,
-            state_excused_id: undefined
-        }
+    state = {
+        courses: [],
+        IS_MODAL: false,
+        currentObject: {},
+        currentType: EDIT_TYPE.STATE,
+        LOADING_CNT: this.props.attendanceStatesContext.isLoaded ? 1 : 0,
+        state_default_id: undefined,
+        state_excused_id: undefined
     }
 
     loadingStateIncrement = () =>
@@ -40,8 +37,6 @@ class Settings extends Component {
 
     loadingStateDecrementCallback = prevState => ({LOADING_CNT: prevState.LOADING_CNT - 1})
 
-    isLoadedAttendanceStates = () =>
-        this.props.attendanceStatesContext.isLoaded
     getAttendanceStatesData = () =>
         this.props.attendanceStatesContext.attendancestates
     callAttendanceStatesFuncRefresh = () =>
@@ -99,20 +94,17 @@ class Settings extends Component {
         if (this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
         // je potreba volat findStateIndexes, protoze se napr. muze skryt vychozi stav, tzn. API mu odebere i priznak ze je vychozi - je potreba tyto zmeny projevit
             this.findStateIndexes()
-        if (this.isLoadedAttendanceStates() !== prevProps.attendanceStatesContext.isLoaded)
+        if (this.props.attendanceStatesContext.isLoaded !== prevProps.attendanceStatesContext.isLoaded)
             this.loadingStateIncrement()
     }
 
     findStateIndexes = () => {
-        let default_elem = undefined, excused_elem = undefined
-        if (this.getAttendanceStatesData() !== null) {
-            default_elem = this.getAttendanceStatesData().find(elem => elem.default === true)
-            if (default_elem !== undefined)
-                default_elem = default_elem.id
-            excused_elem = this.getAttendanceStatesData().find(elem => elem.excused === true)
-            if (excused_elem !== undefined)
-                excused_elem = excused_elem.id
-        }
+        let default_elem = this.getAttendanceStatesData().find(elem => elem.default === true)
+        if (default_elem !== undefined)
+            default_elem = default_elem.id
+        let excused_elem = this.getAttendanceStatesData().find(elem => elem.excused === true)
+        if (excused_elem !== undefined)
+            excused_elem = excused_elem.id
         this.setState({
             state_default_id: default_elem,
             state_excused_id: excused_elem
