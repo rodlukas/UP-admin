@@ -1,7 +1,6 @@
 import React, {Component, Fragment} from "react"
 import {Badge, Col, Container, ListGroup, ListGroupItem, Modal, Row} from "reactstrap"
 import ApplicationService from "../api/services/application"
-import CourseService from "../api/services/course"
 import AddButton from "../components/buttons/AddButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import EditButton from "../components/buttons/EditButton"
@@ -9,12 +8,13 @@ import ClientName from "../components/ClientName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import Phone from "../components/Phone"
+import {WithCoursesVisibleContext} from "../contexts/CoursesVisibleContext"
 import FormApplications from "../forms/FormApplications"
 import {groupByCourses} from "../global/utils"
 import APP_URLS from "../urls"
 import "./Applications.css"
 
-export default class Applications extends Component {
+class Applications extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -46,25 +46,18 @@ export default class Applications extends Component {
                 }))
             })
 
-    getCourses = () =>
-        CourseService.getVisible()
-            .then(courses => this.setState(
-                prevState => ({
-                    courses,
-                    LOADING_CNT: prevState.LOADING_CNT + 1
-                })))
-
     delete = id =>
         ApplicationService.remove(id)
             .then(() => this.refresh())
 
     componentDidMount() {
         this.getApplications()
-        this.getCourses()
+        // prednacteni pro FormApplications
+        this.props.coursesVisibleContext.funcRefresh()
     }
 
     render() {
-        const {applications, courses, currentApplication, IS_MODAL, LOADING_CNT} = this.state
+        const {applications, currentApplication, IS_MODAL, LOADING_CNT} = this.state
         const ApplicantsCount = ({cnt, color}) =>
             <Badge pill style={{color: color}} className="font-weight-bold">
                 <span data-qa="applications_for_course_cnt">
@@ -142,15 +135,17 @@ export default class Applications extends Component {
             <Fragment>
                 <Container>
                     <Heading content={<HeadingContent/>}/>
-                    {LOADING_CNT !== 2 ?
+                    {LOADING_CNT !== 1 ?
                         <Loading/> :
                         <AllApplications/>}
                 </Container>
                 <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
-                    <FormApplications application={currentApplication} courses={courses} funcClose={this.toggle}
+                    <FormApplications application={currentApplication} funcClose={this.toggle}
                                       funcRefresh={this.refresh}/>
                 </Modal>
             </Fragment>
         )
     }
 }
+
+export default WithCoursesVisibleContext(Applications)

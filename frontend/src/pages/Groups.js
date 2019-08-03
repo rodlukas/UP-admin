@@ -7,10 +7,11 @@ import CourseName from "../components/CourseName"
 import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
+import {WithCoursesVisibleContext} from "../contexts/CoursesVisibleContext"
 import ModalGroups from "../forms/ModalGroups"
 import APP_URLS from "../urls"
 
-export default class Groups extends Component {
+class Groups extends Component {
     state = {
         groups: [],
         IS_LOADING: true,
@@ -28,6 +29,8 @@ export default class Groups extends Component {
 
     componentDidMount() {
         this.getGroups()
+        // prednacteni pro FormGroups
+        this.props.coursesVisibleContext.funcRefresh()
     }
 
     render() {
@@ -86,3 +89,5 @@ export default class Groups extends Component {
         )
     }
 }
+
+export default WithCoursesVisibleContext(Groups)

@@ -11,7 +11,8 @@ import EditButton from "../components/buttons/EditButton"
 import Circle from "../components/Circle"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
-import {WithAttendanceStatesContext} from "../contexts/AttendanceStateContext"
+import {WithAttendanceStatesContext} from "../contexts/AttendanceStatesContext"
+import {WithCoursesVisibleContext} from "../contexts/CoursesVisibleContext"
 import FormSettings from "../forms/FormSettings"
 import {EDIT_TYPE} from "../global/constants"
 import APP_URLS from "../urls"
@@ -67,7 +68,10 @@ class Settings extends Component {
         {
             this.setState(
                 this.loadingStateDecrementCallback,
-                this.getCourses)
+                () => {
+                    this.getCourses()
+                    this.props.coursesVisibleContext.funcHardRefresh()
+                })
         }
         else if (type === EDIT_TYPE.STATE)
         {
@@ -283,4 +287,4 @@ class Settings extends Component {
     }
 }
 
-export default WithAttendanceStatesContext(Settings)
+export default WithAttendanceStatesContext(WithCoursesVisibleContext(Settings))

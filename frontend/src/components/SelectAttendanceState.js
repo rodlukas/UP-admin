@@ -1,7 +1,7 @@
 import React, {useContext} from "react"
 import {CustomInput} from "reactstrap"
 import AttendanceService from "../api/services/attendance"
-import {AttendanceStatesContext} from "../contexts/AttendanceStateContext"
+import {AttendanceStatesContext} from "../contexts/AttendanceStatesContext"
 
 const SelectAttendanceState = props => {
     const {attendancestates} = useContext(AttendanceStatesContext)

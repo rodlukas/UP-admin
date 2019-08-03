@@ -2,7 +2,8 @@ import React, {useContext} from "react"
 import {Redirect} from "react-router-dom"
 import {AuthContext} from "../auth/AuthContext"
 import Page from "../components/Page"
-import {AttendanceStatesProvider} from "../contexts/AttendanceStateContext"
+import {AttendanceStatesProvider} from "../contexts/AttendanceStatesContext"
+import {CoursesVisibleProvider} from "../contexts/CoursesVisibleContext"
 import APP_URLS from "../urls"
 
 const PrivateRoute = ({component: WrappedComponent, ...rest}) => {
@@ -12,7 +13,9 @@ const PrivateRoute = ({component: WrappedComponent, ...rest}) => {
         authContext.IS_AUTH
             ?
             <AttendanceStatesProvider>
-                <WrappedComponent {...props}/>
+                <CoursesVisibleProvider>
+                    <WrappedComponent {...props}/>
+                </CoursesVisibleProvider>
             </AttendanceStatesProvider>
             :
             <Redirect to={{

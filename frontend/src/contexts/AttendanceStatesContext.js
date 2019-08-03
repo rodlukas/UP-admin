@@ -9,25 +9,25 @@ const AttendanceStatesContext = createContext({
 
 export class AttendanceStatesProvider extends Component {
     state = {
-        IS_LOADED: false,
+        isLoaded: false,
         attendancestates: []
     }
 
     componentDidMount() {
-        this.getAttendanceStates(() => this.setState({IS_LOADED: true}))
+        this.getAttendanceStates(() => this.setState({isLoaded: true}))
     }
 
     getAttendanceStates = callback =>
         AttendanceStateService.getAll()
             .then(attendancestates => this.setState({attendancestates}, callback))
 
-    // TODO - v aplikaci se nikde nevyuyiva pro zobrazeni nacitani isLoaded
+    // TODO - v aplikaci se nikde nevyuziva pro zobrazeni nacitani isLoaded
     render = () =>
         <AttendanceStatesContext.Provider
             value={{
                 attendancestates: this.state.attendancestates,
                 funcRefresh: this.getAttendanceStates,
-                isLoaded: this.state.IS_LOADED
+                isLoaded: this.state.isLoaded
             }}>
             {this.props.children}
         </AttendanceStatesContext.Provider>
