@@ -473,7 +473,7 @@ class FormLectures extends Component {
                     <CancelButton onClick={this.close}/>
                     {' '}
                     <SubmitButton content={this.IS_LECTURE ? 'Uložit' : 'Přidat'}
-                                  disabled={this.props.coursesVisibleContext.isLoaded}/>
+                                  disabled={!this.props.coursesVisibleContext.isLoaded}/>
                 </ModalFooter>
             </Form>
         )
