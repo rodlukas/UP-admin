@@ -43,36 +43,15 @@ class Clients extends Component {
     }
 
     render() {
-        const ClientTable = () =>
-            <tbody>
-            {this.getClientsData().map(client =>
-                <tr key={client.id} data-qa="client">
-                    <td style={{minWidth: '13em', width: '13em'}}>
-                        <ClientName client={client} link/>
-                    </td>
-                    <td style={{minWidth: '7em'}}>
-                        <Phone phone={client.phone}/>
-                    </td>
-                    <td>
-                        <Email email={client.email}/>
-                    </td>
-                    <td>
-                        <Note note={client.note}/>
-                    </td>
-                    <td>
-                        <ModalClients currentClient={client} refresh={this.refresh}/>
-                    </td>
-                </tr>)}
-            </tbody>
-        const HeadingContent = () =>
-            <Fragment>
-                {APP_URLS.klienti.title}
-                <ModalClients refresh={this.refresh}/>
-                <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
-            </Fragment>
         return (
             <Container>
-                <Heading content={<HeadingContent/>}/>
+                <Heading content={
+                    <Fragment>
+                        {APP_URLS.klienti.title}
+                        <ModalClients refresh={this.refresh}/>
+                        <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
+                    </Fragment>
+                }/>
                 <Table striped size="sm" responsive className="pageContent">
                     <thead className="thead-dark">
                     <tr>
@@ -83,15 +62,34 @@ class Clients extends Component {
                         <th>Akce</th>
                     </tr>
                     </thead>
+                    <tbody>
                     {this.isLoading() ?
-                        <tbody>
-                            <tr>
-                                <td colSpan="5">
-                                    <Loading/>
-                                </td>
-                            </tr>
-                        </tbody> :
-                        <ClientTable/>}
+                        <tr>
+                            <td colSpan="5">
+                                <Loading/>
+                            </td>
+                        </tr> :
+                        <Fragment>
+                            {this.getClientsData().map(client =>
+                                <tr key={client.id} data-qa="client">
+                                    <td style={{minWidth: '13em', width: '13em'}}>
+                                        <ClientName client={client} link/>
+                                    </td>
+                                    <td style={{minWidth: '7em'}}>
+                                        <Phone phone={client.phone}/>
+                                    </td>
+                                    <td>
+                                        <Email email={client.email}/>
+                                    </td>
+                                    <td>
+                                        <Note note={client.note}/>
+                                    </td>
+                                    <td>
+                                        <ModalClients currentClient={client} refresh={this.refresh}/>
+                                    </td>
+                                </tr>)}
+                        </Fragment>}
+                    </tbody>
                 </Table>
                 {!Boolean(this.getClientsData().length) && !this.isLoading() &&
                 <p className="text-muted text-center">

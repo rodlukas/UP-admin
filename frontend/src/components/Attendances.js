@@ -21,14 +21,15 @@ const Attendance = ({attendance, showClient = false, funcRefresh}) =>
                                attendanceId={attendance.id}
                                funcRefresh={funcRefresh}/>
     </li>
+
 const Attendances = ({lecture, showClient = false, funcRefresh}) => {
     const className = "Attendances" + (lecture.group ? " AttendancesGroup" : "")
     return (
-    <ul className={className}>
-        {lecture.attendances.map(attendance =>
-            <Attendance attendance={attendance} key={attendance.id} showClient={showClient}
-                        funcRefresh={funcRefresh}/>)}
-    </ul>)
+        <ul className={className}>
+            {lecture.attendances.map(attendance =>
+                <Attendance attendance={attendance} key={attendance.id} showClient={showClient}
+                            funcRefresh={funcRefresh}/>)}
+        </ul>)
 }
 
 

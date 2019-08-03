@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react"
+import React, {Component} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading} from "reactstrap"
 import LectureService from "../api/services/lecture"
 import {WithAttendanceStatesContext} from "../contexts/AttendanceStatesContext"
@@ -52,54 +52,10 @@ class DashboardDay extends Component {
         const {lectures, IS_LOADING} = this.state
         const properRefreshFunc = this.getProperRefreshFunc()
         const title = prettyDateWithLongDayYearIfDiff(this.getDate())
-        const Lecture = ({lecture}) => {
-            let className = lecture.group ? "LectureGroup" : ""
-            if (lecture.canceled)
-                className = "lecture-canceled"
-            return (
-                <ListGroupItem className={className + " lecture lecture_dashboardday"}>
-                    <div className="lecture_heading" style={{background: lecture.course.color}}>
-                        <h4>
-                            <span title={courseDuration(lecture.duration)} className="font-weight-bold">
-                                {prettyTime(new Date(lecture.start))}
-                            </span>
-                        </h4>
-                        <CourseName course={lecture.course}/>
-                        <LectureNumber lecture={lecture} colorize/>
-                        <ModalLectures IS_CLIENT={!lecture.group}
-                                       object={lecture.group ? lecture.group : lecture.attendances[0].client}
-                                       currentLecture={lecture} refresh={properRefreshFunc}/>
-                    </div>
-                    <div className="lecture_content">
-                        {lecture.group &&
-                        <h5>
-                            <GroupName group={lecture.group} title link/>
-                        </h5>}
-                        <Attendances lecture={lecture} funcRefresh={properRefreshFunc} showClient/>
-                    </div>
-                </ListGroupItem>
-            )
-        }
-        const EmptyLecture = () =>
-            <ListGroupItem className="lecture lecture_free">
-                <ListGroupItemHeading className="text-muted text-center">
-                    Volno
-                </ListGroupItemHeading>
-            </ListGroupItem>
-        const Lectures = () =>
-            <Fragment>
-                {Boolean(lectures.length) ?
-                    lectures.map(lecture => <Lecture lecture={lecture} key={lecture.id}/>)
-                    :
-                    <EmptyLecture/>}
-            </Fragment>
-        const DayLoading = () =>
-            <ListGroupItem className="lecture">
-                <Loading/>
-            </ListGroupItem>
         return (
             <ListGroup className="pageContent">
-                <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''} className="text-center DashboardDay_date">
+                <ListGroupItem color={isToday(this.getDate()) ? "primary" : ''}
+                               className="text-center DashboardDay_date">
                     <h4 className="mb-0 text-nowrap d-inline-block">
                         {title}
                     </h4>
@@ -107,9 +63,45 @@ class DashboardDay extends Component {
                                        size="sm" direction="up"/>
                 </ListGroupItem>
                 {IS_LOADING || !this.props.attendanceStatesContext.isLoaded ?
-                    <DayLoading/>
+                    <ListGroupItem className="lecture">
+                        <Loading/>
+                    </ListGroupItem>
                     :
-                    <Lectures/>}
+                    Boolean(lectures.length) ?
+                        lectures.map(lecture => {
+                            let className = lecture.group ? "LectureGroup" : ""
+                            if (lecture.canceled)
+                                className = "lecture-canceled"
+                            return (
+                                <ListGroupItem key={lecture.id} className={className + " lecture lecture_dashboardday"}>
+                                    <div className="lecture_heading" style={{background: lecture.course.color}}>
+                                        <h4>
+                                            <span title={courseDuration(lecture.duration)} className="font-weight-bold">
+                                                {prettyTime(new Date(lecture.start))}
+                                            </span>
+                                        </h4>
+                                        <CourseName course={lecture.course}/>
+                                        <LectureNumber lecture={lecture} colorize/>
+                                        <ModalLectures IS_CLIENT={!lecture.group}
+                                                       object={lecture.group ? lecture.group : lecture.attendances[0].client}
+                                                       currentLecture={lecture} refresh={properRefreshFunc}/>
+                                    </div>
+                                    <div className="lecture_content">
+                                        {lecture.group &&
+                                        <h5>
+                                            <GroupName group={lecture.group} title link/>
+                                        </h5>}
+                                        <Attendances lecture={lecture} funcRefresh={properRefreshFunc} showClient/>
+                                    </div>
+                                </ListGroupItem>
+                            )
+                        })
+                        :
+                        <ListGroupItem className="lecture lecture_free">
+                            <ListGroupItemHeading className="text-muted text-center">
+                                Volno
+                            </ListGroupItemHeading>
+                        </ListGroupItem>}
             </ListGroup>
         )
     }

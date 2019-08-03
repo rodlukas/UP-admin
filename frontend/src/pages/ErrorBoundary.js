@@ -44,12 +44,10 @@ class ErrorBoundary extends Component {
 
     render() {
         const decodedToken = this.getToken()
-        const HeadingContent = () =>
-            "Chyba aplikace"
         if (this.state.hasError) {
             return (
                 <div className="text-center">
-                    <Heading content={<HeadingContent/>}/>
+                    <Heading content="Chyba aplikace"/>
                     <p>
                         Nastala neočekávaná chyba v aplikaci. Zkuste tuto stránku načíst znovu.
                     </p>

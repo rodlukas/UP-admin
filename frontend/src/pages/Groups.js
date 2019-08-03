@@ -35,33 +35,15 @@ class Groups extends Component {
 
     render() {
         const {groups, IS_LOADING} = this.state
-        const GroupTable = () =>
-            <tbody>
-            {groups.map(group =>
-                <tr key={group.id} data-qa="group">
-                    <td>
-                        <GroupName group={group} link/>
-                    </td>
-                    <td>
-                        <CourseName course={group.course}/>
-                    </td>
-                    <td>
-                        <ClientsList clients={group.memberships}/>
-                    </td>
-                    <td>
-                        <ModalGroups currentGroup={group} refresh={this.refresh}/>
-                    </td>
-                </tr>)}
-            </tbody>
-        const HeadingContent = () =>
-            <Fragment>
-                {APP_URLS.skupiny.title}
-                <ModalGroups refresh={this.refresh}/>
-                <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
-            </Fragment>
         return (
             <Container>
-                <Heading content={<HeadingContent/>}/>
+                <Heading content={
+                    <Fragment>
+                        {APP_URLS.skupiny.title}
+                        <ModalGroups refresh={this.refresh}/>
+                        <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
+                    </Fragment>
+                }/>
                 <Table striped size="sm" responsive className="pageContent">
                     <thead className="thead-dark">
                     <tr>
@@ -71,15 +53,31 @@ class Groups extends Component {
                         <th>Akce</th>
                     </tr>
                     </thead>
+                    <tbody>
                     {IS_LOADING ?
-                        <tbody>
-                            <tr>
-                                <td colSpan="4">
-                                    <Loading/>
-                                </td>
-                            </tr>
-                        </tbody> :
-                        <GroupTable/>}
+                        <tr>
+                            <td colSpan="4">
+                                <Loading/>
+                            </td>
+                        </tr> :
+                        <Fragment>
+                            {groups.map(group =>
+                                <tr key={group.id} data-qa="group">
+                                    <td>
+                                        <GroupName group={group} link/>
+                                    </td>
+                                    <td>
+                                        <CourseName course={group.course}/>
+                                    </td>
+                                    <td>
+                                        <ClientsList clients={group.memberships}/>
+                                    </td>
+                                    <td>
+                                        <ModalGroups currentGroup={group} refresh={this.refresh}/>
+                                    </td>
+                                </tr>)}
+                        </Fragment>}
+                    </tbody>
                 </Table>
                 {!Boolean(groups.length) && !IS_LOADING &&
                 <p className="text-muted text-center">

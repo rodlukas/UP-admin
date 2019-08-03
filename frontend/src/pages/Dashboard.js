@@ -10,23 +10,21 @@ export default class Dashboard extends Component {
     getDate = () => toISODate(new Date())
 
     render() {
-        const HeadingContentDay = () =>
-            <Fragment>
-                Dnešní přehled
-                {' '}
-                <ModalLecturesFast refresh={this.setRefreshState}/>
-            </Fragment>
-        const HeadingContentBank = () =>
-            "Bankovní účet"
         return (
             <Container fluid>
                 <Row className="justify-content-center">
                     <Col sm="11" md="8" lg="8" xl="5">
-                        <Heading content={<HeadingContentDay/>}/>
+                        <Heading content={
+                            <Fragment>
+                                Dnešní přehled
+                                {' '}
+                                <ModalLecturesFast refresh={this.setRefreshState}/>
+                            </Fragment>
+                        }/>
                         <DashboardDay date={this.getDate()} withoutWaiting/>
                     </Col>
                     <Col sm="11" md="8" lg="8" xl="5">
-                        <Heading content={<HeadingContentBank/>}/>
+                        <Heading content="Bankovní účet"/>
                         <Bank/>
                     </Col>
                 </Row>

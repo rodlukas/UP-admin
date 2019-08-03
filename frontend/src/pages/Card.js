@@ -70,8 +70,7 @@ export default class Card extends Component {
                     this.getLectures()
                     this.getMemberships()
                 })
-        }
-        else {
+        } else {
             this.setState(
                 prevState => ({LOADING_CNT: prevState.LOADING_CNT - 2}),
                 () => {
@@ -140,117 +139,111 @@ export default class Card extends Component {
 
     render() {
         const {object, lectures, defaultCourse, memberships, LOADING_CNT} = this.state
-        const ClientInfo = () =>
-            <ListGroup>
-                {this.isClient() &&
-                <Fragment>
-                    <ListGroupItem>
-                        <b>Telefon:</b> <Phone phone={object.phone}/>
-                    </ListGroupItem>
-                    <ListGroupItem>
-                        <b>E-mail:</b> <Email email={object.email}/>
-                    </ListGroupItem>
-                    <ListGroupItem>
-                        <b>Skupiny:</b> <GroupsList groups={memberships}/>
-                    </ListGroupItem>
-                    <ListGroupItem>
-                        <b>Poznámka:</b> <Note note={object.note}/>
-                    </ListGroupItem>
-                </Fragment>}
-            </ListGroup>
-        const CourseLectures = ({courseLectures}) =>
-            <Fragment>
-                {courseLectures.map(lecture => {
-                    const d = new Date(lecture.start)
-                    let className = lecture.canceled ? "lecture-canceled" : ""
-                    if (d > Date.now())
-                        className += " lecture-future"
-                    if (lecture.start === null)
-                        className += " lecture-prepaid"
-                    return (
-                        <ListGroupItem key={lecture.id} className={className + " lecture lecture_card"}
-                                       data-qa="lecture">
-                            <div className="lecture_heading">
-                                <h4>
-                                    <span data-qa="lecture_start" title={courseDuration(lecture.duration)}>
-                                    {lecture.start !== null ?
-                                        (prettyDateWithDayYear(d) + " – " + prettyTime(d))
-                                        :
-                                        "Předplacená lekce"}
-                                    </span>
-                                </h4>
-                                <LectureNumber lecture={lecture}/>
-                                <ModalLectures IS_CLIENT={this.isClient()} object={object} currentLecture={lecture}
-                                               refresh={this.refreshAfterLectureChanges}/>
-                            </div>
-                            <div className="lecture_content">
-                                <Attendances lecture={lecture} funcRefresh={this.refreshAfterLectureChanges}
-                                             showClient={!this.isClient()}/>
-                            </div>
-                        </ListGroupItem>)
-                })}
-            </Fragment>
-        const AllLectures = () =>
-            <Fragment>
-                {lectures.map(courseLectures =>
-                    <Col key={courseLectures.course.id} sm="9" md="7" lg="5" xl="3" data-qa="card_course">
-                        <ListGroup>
-                            <ListGroupItem style={{background: courseLectures.course.color}}>
-                                <h4 className="text-center mb-0 Card_courseHeading" data-qa="card_course_name">
-                                    {courseLectures.course.name}
-                                </h4>
-                            </ListGroupItem>
-                            <CourseLectures courseLectures={courseLectures.lectures}/>
-                        </ListGroup>
-                    </Col>)}
-                {!Boolean(lectures.length) &&
-                <p className="text-muted text-center">
-                    Žádné lekce
-                </p>}
-            </Fragment>
-        const HeadingContent = () =>
-            <Fragment>
-                <BackButton onClick={this.goBack}/>
-                {' '}
-                {"Karta " + (this.isClient() ? "klienta" : "skupiny")}:
-                {' '}
-                <span className="font-weight-bold">
-                    {this.isClient() ?
-                        <ClientName client={object}/>
-                        :
-                        <GroupName group={object}/>}
-                </span>
-                <ModalLectures defaultCourse={defaultCourse} IS_CLIENT={this.isClient()}
-                               object={object} refresh={this.refreshAfterLectureChanges}/>
-                {this.isClient() &&
-                <ModalClients currentClient={object} refresh={this.refreshObject}/>}
-                {!this.isClient() &&
-                <ModalGroups currentGroup={object} refresh={this.refreshObject}/>}
-            </Fragment>
-        const CardContent = () =>
-            <div className="pageContent">
-                <Container fluid>
-                    <Row className="justify-content-center">
-                        <Col sm="9" md="7" lg="5" xl="3">
-                            <ClientInfo/>
-                        </Col>
-                    </Row>
-                    {!this.isClient() &&
-                    <PrepaidCounters memberships={object.memberships}
-                                     funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}/>}
-                    <br/>
-                    <Row className="justify-content-center">
-                        <AllLectures/>
-                    </Row>
-                </Container>
-            </div>
         return (
             <Fragment>
                 <Container>
-                    <Heading content={<HeadingContent/>}/>
+                    <Heading content={
+                        <Fragment>
+                            <BackButton onClick={this.goBack}/>
+                            {' '}
+                            {"Karta " + (this.isClient() ? "klienta" : "skupiny")}:
+                            {' '}
+                            <span className="font-weight-bold">
+                                {this.isClient() ?
+                                    <ClientName client={object}/>
+                                    :
+                                    <GroupName group={object}/>}
+                            </span>
+                            <ModalLectures defaultCourse={defaultCourse} IS_CLIENT={this.isClient()}
+                                           object={object} refresh={this.refreshAfterLectureChanges}/>
+                            {this.isClient() &&
+                            <ModalClients currentClient={object} refresh={this.refreshObject}/>}
+                            {!this.isClient() &&
+                            <ModalGroups currentGroup={object} refresh={this.refreshObject}/>}
+                        </Fragment>
+                    }/>
                 </Container>
                 {LOADING_CNT === 3 ?
-                    <CardContent/> :
+                    <div className="pageContent">
+                        <Container fluid>
+                            <Row className="justify-content-center">
+                                <Col sm="9" md="7" lg="5" xl="3">
+                                    <ListGroup>
+                                        {this.isClient() &&
+                                        <Fragment>
+                                            <ListGroupItem>
+                                                <b>Telefon:</b> <Phone phone={object.phone}/>
+                                            </ListGroupItem>
+                                            <ListGroupItem>
+                                                <b>E-mail:</b> <Email email={object.email}/>
+                                            </ListGroupItem>
+                                            <ListGroupItem>
+                                                <b>Skupiny:</b> <GroupsList groups={memberships}/>
+                                            </ListGroupItem>
+                                            <ListGroupItem>
+                                                <b>Poznámka:</b> <Note note={object.note}/>
+                                            </ListGroupItem>
+                                        </Fragment>}
+                                    </ListGroup>
+                                </Col>
+                            </Row>
+                            {!this.isClient() &&
+                            <PrepaidCounters memberships={object.memberships}
+                                             funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}/>}
+                            <br/>
+                            <Row className="justify-content-center">
+                                {lectures.map(courseLectures =>
+                                    <Col key={courseLectures.course.id} sm="9" md="7" lg="5" xl="3"
+                                         data-qa="card_course">
+                                        <ListGroup>
+                                            <ListGroupItem style={{background: courseLectures.course.color}}>
+                                                <h4 className="text-center mb-0 Card_courseHeading"
+                                                    data-qa="card_course_name">
+                                                    {courseLectures.course.name}
+                                                </h4>
+                                            </ListGroupItem>
+                                            {courseLectures.lectures.map(lecture => {
+                                                const d = new Date(lecture.start)
+                                                let className = lecture.canceled ? "lecture-canceled" : ""
+                                                if (d > Date.now())
+                                                    className += " lecture-future"
+                                                if (lecture.start === null)
+                                                    className += " lecture-prepaid"
+                                                return (
+                                                    <ListGroupItem key={lecture.id}
+                                                                   className={className + " lecture lecture_card"}
+                                                                   data-qa="lecture">
+                                                        <div className="lecture_heading">
+                                                            <h4>
+                                                                <span data-qa="lecture_start"
+                                                                      title={courseDuration(lecture.duration)}>
+                                                                {lecture.start !== null ?
+                                                                    (prettyDateWithDayYear(d) + " – " + prettyTime(d))
+                                                                    :
+                                                                    "Předplacená lekce"}
+                                                                </span>
+                                                            </h4>
+                                                            <LectureNumber lecture={lecture}/>
+                                                            <ModalLectures IS_CLIENT={this.isClient()}
+                                                                           object={object} currentLecture={lecture}
+                                                                           refresh={this.refreshAfterLectureChanges}/>
+                                                        </div>
+                                                        <div className="lecture_content">
+                                                            <Attendances lecture={lecture}
+                                                                         funcRefresh={this.refreshAfterLectureChanges}
+                                                                         showClient={!this.isClient()}/>
+                                                        </div>
+                                                    </ListGroupItem>)
+                                            })}
+                                        </ListGroup>
+                                    </Col>)}
+                                {!Boolean(lectures.length) &&
+                                <p className="text-muted text-center">
+                                    Žádné lekce
+                                </p>}
+                            </Row>
+                        </Container>
+                    </div> :
                     <Loading/>}
             </Fragment>
         )
