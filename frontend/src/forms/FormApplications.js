@@ -23,7 +23,8 @@ class FormApplications extends Component {
             course: this.isObject ? course : null,
             client: this.isObject ? client : null,
             note: note || '',
-            clients: []
+            clients: [],
+            IS_LOADING: true
         }
     }
 
@@ -59,13 +60,23 @@ class FormApplications extends Component {
     refresh = () =>
         this.props.funcRefresh()
 
-    getClientsAfterAddition = newClient =>
-        ClientService.getAll()
-            .then(clients => this.setState({clients, client: newClient}))
+    getClientsAfterAddition = newClient => {
+        this.setState({IS_LOADING: true}, () => {
+            ClientService.getAll()
+                .then(clients => this.setState({
+                    clients,
+                    client: newClient,
+                    IS_LOADING: false
+                }))
+        })
+    }
 
     getClients = () =>
         ClientService.getAll()
-            .then(clients => this.setState({clients}))
+            .then(clients => this.setState({
+                clients,
+                IS_LOADING: false
+            }))
 
     componentDidMount() {
         this.getClients()
@@ -80,7 +91,7 @@ class FormApplications extends Component {
                     {this.isObject ? 'Úprava' : 'Přidání'} zájemce o kurz
                 </ModalHeader>
                 <ModalBody>
-                    {!this.props.coursesVisibleContext.isLoaded ?
+                    {!this.props.coursesVisibleContext.isLoaded || this.state.IS_LOADING ?
                         <Loading/> :
                         <Fragment>
                             <FormGroup row>
