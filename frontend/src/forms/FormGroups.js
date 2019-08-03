@@ -28,7 +28,8 @@ class FormGroups extends Component {
             active: this.isGroup ? active : true,
             course: this.isGroup ? course : null,
             memberships: this.isGroup ? this.getMembers(memberships) : [],
-            clients: []
+            clients: [],
+            IS_LOADING: true
         }
     }
 
@@ -93,18 +94,25 @@ class FormGroups extends Component {
                 this.refresh()
             })
 
-    getClientsAfterAddition = newClient =>
-        ClientService.getAll()
-            .then(clients => this.setState(prevState => {
-                return {
-                    clients,
-                    memberships: [...prevState.memberships, newClient]
-                }
-            }))
+    getClientsAfterAddition = newClient => {
+        this.setState({IS_LOADING: true}, () => {
+            ClientService.getAll()
+                .then(clients => this.setState(prevState => {
+                    return {
+                        clients,
+                        memberships: [...prevState.memberships, newClient],
+                        IS_LOADING: false
+                    }
+                }))
+        })
+    }
 
     getClients = () =>
         ClientService.getAll()
-            .then(clients => this.setState({clients}))
+            .then(clients => this.setState({
+                clients,
+                IS_LOADING: false
+            }))
 
     componentDidMount() {
         this.getClients()
@@ -117,7 +125,7 @@ class FormGroups extends Component {
             <Form onSubmit={this.onSubmit} data-qa="form_group">
                 <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny: {name}</ModalHeader>
                 <ModalBody>
-                    {!this.props.coursesVisibleContext.isLoaded ?
+                    {!this.props.coursesVisibleContext.isLoaded || this.state.IS_LOADING ?
                         <Loading/> :
                         <Fragment>
                             <FormGroup row>
