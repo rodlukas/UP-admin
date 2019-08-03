@@ -23,15 +23,12 @@ import APP_URLS from "../urls"
 import "./Card.css"
 
 export default class Card extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            object: {},
-            lectures: [],
-            memberships: [],
-            LOADING_CNT: this.isClient() ? 0 : 1,
-            defaultCourse: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz pri pridavani lekce
-        }
+    state = {
+        object: {},
+        lectures: [],
+        memberships: [],
+        LOADING_CNT: this.isClient() ? 0 : 1,
+        defaultCourse: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz pri pridavani lekce
     }
 
     loadingStateIncrement = () =>

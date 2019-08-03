@@ -15,14 +15,11 @@ import APP_URLS from "../urls"
 import "./Applications.css"
 
 class Applications extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            applications: [],
-            IS_MODAL: false,
-            currentApplication: {},
-            LOADING_CNT: 0
-        }
+    state = {
+        applications: [],
+        IS_MODAL: false,
+        currentApplication: {},
+        LOADING_CNT: 0
     }
 
     toggle = (application = {}) =>
