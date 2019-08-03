@@ -19,9 +19,10 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
+import {WithClientsActiveContext} from "../contexts/ClientsActiveContext"
 import {prettyPhone} from "../global/utils"
 
-export default class FormClients extends Component {
+class FormClients extends Component {
     constructor(props) {
         super(props)
         this.isClient = Boolean(Object.keys(props.client).length)
@@ -60,6 +61,7 @@ export default class FormClients extends Component {
         request.then(response => {
             this.close()
             this.refresh(response)
+            this.props.clientsActiveContext.funcHardRefresh()
         })
     }
 
@@ -77,6 +79,7 @@ export default class FormClients extends Component {
             .then(() => {
                 this.close()
                 this.refresh()
+                this.props.clientsActiveContext.funcHardRefresh()
             })
 
     render() {
@@ -184,3 +187,5 @@ export default class FormClients extends Component {
         )
     }
 }
+
+export default WithClientsActiveContext(FormClients)

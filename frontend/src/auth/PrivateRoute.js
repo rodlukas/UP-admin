@@ -3,6 +3,7 @@ import {Redirect} from "react-router-dom"
 import {AuthContext} from "../auth/AuthContext"
 import Page from "../components/Page"
 import {AttendanceStatesProvider} from "../contexts/AttendanceStatesContext"
+import {ClientsActiveProvider} from "../contexts/ClientsActiveContext"
 import {CoursesVisibleProvider} from "../contexts/CoursesVisibleContext"
 import APP_URLS from "../urls"
 
@@ -14,7 +15,9 @@ const PrivateRoute = ({component: WrappedComponent, ...rest}) => {
             ?
             <AttendanceStatesProvider>
                 <CoursesVisibleProvider>
-                    <WrappedComponent {...props}/>
+                    <ClientsActiveProvider>
+                        <WrappedComponent {...props}/>
+                    </ClientsActiveProvider>
                 </CoursesVisibleProvider>
             </AttendanceStatesProvider>
             :

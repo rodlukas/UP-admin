@@ -11,9 +11,9 @@ import {
     ModalHeader,
     UncontrolledButtonDropdown,
 } from "reactstrap"
-import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import Loading from "../components/Loading"
+import {WithClientsActiveContext} from "../contexts/ClientsActiveContext"
 import {TEXTS} from "../global/constants"
 import {prettyDate} from "../global/funcDateTime"
 import {getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses} from "../global/utils"
@@ -32,7 +32,6 @@ class ModalLecturesFast extends React.Component {
             IS_CLIENT: undefined,
             IS_MODAL_SELECT: true,
             object: null,
-            clients: [],
             groups: [],
             defaultCourse: null,
             IS_LOADING: false
@@ -40,6 +39,8 @@ class ModalLecturesFast extends React.Component {
     }
 
     setClient(IS_CLIENT) {
+        if (IS_CLIENT)
+            this.props.clientsActiveContext.funcRefresh()
         this.setState({
             IS_CLIENT: IS_CLIENT
         })
@@ -77,22 +78,18 @@ class ModalLecturesFast extends React.Component {
         this.setState({IS_CLIENT: undefined})
     }
 
-    getClients = () =>
-        ClientService.getActive()
-            .then(clients => this.setState({clients}))
-
     getGroups = () =>
         GroupService.getActive()
             .then(groups => this.setState({groups}))
 
     componentDidMount() {
-        this.getClients()
         this.getGroups()
     }
 
-    getClientsAfterAddition = newClient =>
-        ClientService.getActive()
-            .then(clients => this.setState({clients, object: newClient}))
+    getClientsAfterAddition = newClient => {
+        this.setState({object: newClient})
+        this.props.clientsActiveContext.funcHardRefresh()
+    }
 
     getGroupsAfterAddition = newGroup =>
         GroupService.getActive()
@@ -132,14 +129,14 @@ class ModalLecturesFast extends React.Component {
                         Výběr {this.state.IS_CLIENT ? 'klienta' : 'skupiny'}
                     </ModalHeader>
                     <ModalBody>
-                        {this.state.IS_LOADING ?
-                            <Loading text="Vypočítávám optimální kurz pro klienta"/>
+                        {this.state.IS_LOADING || !this.props.clientsActiveContext.isLoaded ?
+                            <Loading text={this.state.IS_LOADING && "Vypočítávám optimální kurz pro klienta"}/>
                             :
                             this.state.IS_CLIENT ?
                                 <Fragment>
                                     <SelectClient
                                         value={this.state.object}
-                                        options={this.state.clients}
+                                        options={this.props.clientsActiveContext.clients}
                                         onChangeCallback={this.onSelectChange}/>
                                     <Or content={<ModalClients refresh={this.getClientsAfterAddition} sendResult
                                                                inSentence/>}/>
@@ -177,4 +174,4 @@ class ModalLecturesFast extends React.Component {
     }
 }
 
-export default ModalLecturesFast
+export default WithClientsActiveContext(ModalLecturesFast)
