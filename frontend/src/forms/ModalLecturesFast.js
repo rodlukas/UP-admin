@@ -13,8 +13,10 @@ import {
 } from "reactstrap"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
+import Loading from "../components/Loading"
 import {TEXTS} from "../global/constants"
 import {prettyDate} from "../global/funcDateTime"
+import {getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses} from "../global/utils"
 import Or from "./helpers/Or"
 import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
@@ -30,7 +32,9 @@ class ModalLecturesFast extends React.Component {
             IS_MODAL_SELECT: true,
             object: null,
             clients: [],
-            groups: []
+            groups: [],
+            defaultCourse: null,
+            IS_LOADING: false
         }
     }
 
@@ -47,10 +51,26 @@ class ModalLecturesFast extends React.Component {
         })
     }
 
-    onSelectChange = (obj, name = null) =>
-        this.setState({
-            object: obj
-        })
+    onSelectChange = (obj, name = null) => {
+        // pokud se jedna o skupinu, jen ji uloz (je zbytecne resit defaultCourse, skupina ma kurz jasny)
+        if (!this.state.IS_CLIENT)
+            this.setState({object: obj})
+        else {
+            // jedna se o klienta, nejdriv zobraz nacitani, behem ktereho pro nej pripravis nejoptimalnejsi vychozi kurz,
+            // pak klienta (a kurz) teprve uloz (diky tomu se az pak zobrazi formular) a nacitani skryj pro priste
+            this.setState({IS_LOADING: true}, () => {
+                const request = getLecturesForGroupingByCourses(obj.id, this.state.IS_CLIENT)
+                request.then(lectures => {
+                    const lecturesGroupedByCourses = groupByCourses(lectures)
+                    this.setState({defaultCourse: getDefaultCourse(lecturesGroupedByCourses, this.state.IS_CLIENT),}, () =>
+                        this.setState({
+                            object: obj,
+                            IS_LOADING: false
+                        }))
+                })
+            })
+        }
+    }
 
     toggleModalSelect = () => {
         this.setState({IS_CLIENT: undefined})
@@ -111,35 +131,40 @@ class ModalLecturesFast extends React.Component {
                         Výběr {this.state.IS_CLIENT ? 'klienta' : 'skupiny'}
                     </ModalHeader>
                     <ModalBody>
-                        {this.state.IS_CLIENT ?
-                            <Fragment>
-                                <SelectClient
-                                    value={this.state.object}
-                                    options={this.state.clients}
-                                    onChangeCallback={this.onSelectChange}/>
-                                <Or content={<ModalClients refresh={this.getClientsAfterAddition} sendResult
-                                                           inSentence/>}/>
-                            </Fragment>
+                        {this.state.IS_LOADING ?
+                            <Loading text="Vypočítávám optimální kurz pro klienta"/>
                             :
-                            <Fragment>
-                                <Select
-                                    inputId="group"
-                                    value={this.state.object}
-                                    getOptionLabel={option => option.name}
-                                    getOptionValue={option => option.id}
-                                    onChange={newValue => this.onSelectChange(newValue)}
-                                    options={this.state.groups}
-                                    placeholder={"Vyberte existující skupinu..."}
-                                    noOptionsMessage={() => TEXTS.NO_RESULTS}
-                                    required
-                                    autoFocus/>
-                                <Or content={<ModalGroups refresh={this.getGroupsAfterAddition} sendResult
-                                                           inSentence/>}/>
-                            </Fragment>}
+                            this.state.IS_CLIENT ?
+                                <Fragment>
+                                    <SelectClient
+                                        value={this.state.object}
+                                        options={this.state.clients}
+                                        onChangeCallback={this.onSelectChange}/>
+                                    <Or content={<ModalClients refresh={this.getClientsAfterAddition} sendResult
+                                                               inSentence/>}/>
+                                </Fragment>
+                                :
+                                <Fragment>
+                                    <Select
+                                        inputId="group"
+                                        value={this.state.object}
+                                        getOptionLabel={option => option.name}
+                                        getOptionValue={option => option.id}
+                                        onChange={newValue => this.onSelectChange(newValue)}
+                                        options={this.state.groups}
+                                        placeholder={"Vyberte existující skupinu..."}
+                                        noOptionsMessage={() => TEXTS.NO_RESULTS}
+                                        required
+                                        autoFocus/>
+                                    <Or content={<ModalGroups refresh={this.getGroupsAfterAddition} sendResult
+                                                              inSentence/>}/>
+                                </Fragment>
+                        }
                     </ModalBody>
                 </Modal>}
                 {this.state.object !== null &&
                 <ModalLecturesPlain
+                    defaultCourse={this.state.defaultCourse}
                     date={this.props.date || ''}
                     object={this.state.object}
                     isModal={this.state.IS_MODAL}

@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react"
 
 const LONG_LOADING_THRESHOLD = 5 // sekundy
 
-const Loading = props => {
+const Loading = ({text}) => {
     const [longLoading, setLongLoading] = useState(false)
 
     useEffect(() => {
@@ -17,7 +17,7 @@ const Loading = props => {
         <div className="text-center mt-2" data-qa="loading">
             <FontAwesomeIcon icon={faSpinnerThird} spin size="3x"/>
             <br/>
-            {props.text ? props.text : "Načítání"}...
+            {text ? text : "Načítání"}...
             {longLoading && " Stále pracuji 😎"}
         </div>
     )

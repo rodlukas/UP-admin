@@ -2,7 +2,6 @@ import React, {Component, Fragment} from "react"
 import {Col, Container, ListGroup, ListGroupItem, Row} from "reactstrap"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
-import LectureService from "../api/services/lecture"
 import Attendances from "../components/Attendances"
 import BackButton from "../components/buttons/BackButton"
 import ClientName from "../components/ClientName"
@@ -19,7 +18,7 @@ import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
 import ModalLectures from "../forms/ModalLectures"
 import {prettyDateWithDayYear, prettyTime} from "../global/funcDateTime"
-import {courseDuration, groupByCourses} from "../global/utils"
+import {courseDuration, getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses} from "../global/utils"
 import APP_URLS from "../urls"
 import "./Card.css"
 
@@ -46,32 +45,6 @@ export default class Card extends Component {
         this.props.match.path.includes(APP_URLS.klienti.url)
     wasClient = (prevProps) =>
         prevProps.match.path.includes(APP_URLS.klienti.url)
-
-    // zvolit optimalni kurz, jehoz lekce bude s nejvyssi pravdepodobnosti pridavana ve formulari
-    getDefaultCourseSingle = lectures => {
-        if(this.isClient())
-        {
-            if(lectures.length === 0)
-                this.setState({defaultCourse: null})
-            else if(lectures.length === 1)
-            {
-                // chodi na jeden jediny kurz, vyber ho
-                this.setState({defaultCourse: lectures[0].course})
-            }
-            else if(lectures.length > 1)
-            {
-                // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
-                let latestLecturesOfEachCourse = []
-                lectures.forEach(
-                    elem => latestLecturesOfEachCourse.push(elem.lectures[0]))
-                const latestLecture = latestLecturesOfEachCourse.reduce(
-                    (prev, current) => (prev.start > current.start) ? prev : current)
-                this.setState({defaultCourse: latestLecture.course})
-            }
-        }
-        else
-            this.setState({defaultCourse: null})
-    }
 
     componentDidMount() {
         this.getObject()
@@ -131,17 +104,13 @@ export default class Card extends Component {
             .then(object => this.setState({object}, this.loadingStateIncrement))
     }
 
-    getLectures = (IS_CLIENT = this.isClient(), id = this.getId()) => {
-        let request
-        if (IS_CLIENT)
-            request = LectureService.getAllFromClientOrdered(id, false)
-        else
-            request = LectureService.getAllFromGroupOrdered(id, false)
+    getLectures = () => {
+        const request = getLecturesForGroupingByCourses(this.getId(), this.isClient())
         request.then(lectures => {
-            const grouppedByCourses = groupByCourses(lectures)
-            this.getDefaultCourseSingle(grouppedByCourses)
+            const lecturesGroupedByCourses = groupByCourses(lectures)
             this.setState({
-                lectures: grouppedByCourses
+                lectures: lecturesGroupedByCourses,
+                defaultCourse: getDefaultCourse(lecturesGroupedByCourses, this.isClient()),
             }, this.loadingStateIncrement)
         })
     }
