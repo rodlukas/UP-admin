@@ -3,7 +3,7 @@ V této složce se nachází **rozsáhlé testy API i frontendu** tvořící zá
 
 Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy. Pro pokročilejší integraci *behave* s Djangem je použité [behave-django](https://github.com/behave/behave-django).
 
-Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium), konkrétně [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html). Pro jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa` (ve výjimečných případech toto nelze a používá se přímo `id` elementu – např. komponenty používající [React Select](https://github.com/JedWatson/react-select)).
+Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium), konkrétně [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html). Pro jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa` (ve výjimečných případech toto nelze a používá se přímo `id` elementu – např. komponenty s [React Select](https://github.com/JedWatson/react-select) používají React props `inputId` a `classNamePrefix`).
 ## Struktura adresářů
 ```bash
 ├── api_steps ........ testovací kroky pro API      
