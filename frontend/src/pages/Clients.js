@@ -13,13 +13,10 @@ import ModalClients from "../forms/ModalClients"
 import APP_URLS from "../urls"
 
 class Clients extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            clients: [],
-            IS_LOADING: true,
-            active: true
-        }
+    state = {
+        clients: [],
+        IS_LOADING: true,
+        active: true
     }
 
     isLoading = () =>

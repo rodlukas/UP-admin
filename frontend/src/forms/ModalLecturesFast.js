@@ -11,9 +11,9 @@ import {
     ModalHeader,
     UncontrolledButtonDropdown,
 } from "reactstrap"
-import GroupService from "../api/services/group"
 import Loading from "../components/Loading"
 import {WithClientsActiveContext} from "../contexts/ClientsActiveContext"
+import {WithGroupsActiveContext} from "../contexts/GroupsActiveContext"
 import {TEXTS} from "../global/constants"
 import {prettyDate} from "../global/funcDateTime"
 import {getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses} from "../global/utils"
@@ -25,22 +25,20 @@ import ModalGroups from "./ModalGroups"
 import ModalLecturesPlain from "./ModalLecturesPlain"
 
 class ModalLecturesFast extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            IS_MODAL: true,
-            IS_CLIENT: undefined,
-            IS_MODAL_SELECT: true,
-            object: null,
-            groups: [],
-            defaultCourse: null,
-            IS_LOADING: false
-        }
+    state = {
+        IS_MODAL: true,
+        IS_CLIENT: undefined,
+        IS_MODAL_SELECT: true,
+        object: null,
+        defaultCourse: null,
+        IS_LOADING: false
     }
 
     setClient(IS_CLIENT) {
         if (IS_CLIENT)
             this.props.clientsActiveContext.funcRefresh()
+        else
+            this.props.groupsActiveContext.funcRefresh()
         this.setState({
             IS_CLIENT: IS_CLIENT
         })
@@ -78,22 +76,15 @@ class ModalLecturesFast extends React.Component {
         this.setState({IS_CLIENT: undefined})
     }
 
-    getGroups = () =>
-        GroupService.getActive()
-            .then(groups => this.setState({groups}))
-
-    componentDidMount() {
-        this.getGroups()
-    }
-
     getClientsAfterAddition = newClient => {
         this.setState({object: newClient})
         this.props.clientsActiveContext.funcHardRefresh()
     }
 
-    getGroupsAfterAddition = newGroup =>
-        GroupService.getActive()
-            .then(groups => this.setState({groups, object: newGroup}))
+    getGroupsAfterAddition = newGroup => {
+        this.setState({object: newGroup})
+        this.props.groupsActiveContext.funcHardRefresh()
+    }
 
     refreshAfterSave = () => {
         this.setState({
@@ -129,7 +120,9 @@ class ModalLecturesFast extends React.Component {
                         Výběr {this.state.IS_CLIENT ? 'klienta' : 'skupiny'}
                     </ModalHeader>
                     <ModalBody>
-                        {this.state.IS_LOADING || !this.props.clientsActiveContext.isLoaded ?
+                        {this.state.IS_LOADING ||
+                        (this.state.IS_CLIENT && !this.props.clientsActiveContext.isLoaded) ||
+                        (!this.state.IS_CLIENT && !this.props.groupsActiveContext.isLoaded) ?
                             <Loading text={this.state.IS_LOADING && "Vypočítávám optimální kurz pro klienta"}/>
                             :
                             this.state.IS_CLIENT ?
@@ -149,7 +142,7 @@ class ModalLecturesFast extends React.Component {
                                         getOptionLabel={option => option.name}
                                         getOptionValue={option => option.id}
                                         onChange={newValue => this.onSelectChange(newValue)}
-                                        options={this.state.groups}
+                                        options={this.props.groupsActiveContext.groups}
                                         placeholder={"Vyberte existující skupinu..."}
                                         noOptionsMessage={() => TEXTS.NO_RESULTS}
                                         required
@@ -174,4 +167,4 @@ class ModalLecturesFast extends React.Component {
     }
 }
 
-export default WithClientsActiveContext(ModalLecturesFast)
+export default WithClientsActiveContext(WithGroupsActiveContext(ModalLecturesFast))

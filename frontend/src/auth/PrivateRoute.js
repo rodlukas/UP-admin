@@ -5,6 +5,7 @@ import Page from "../components/Page"
 import {AttendanceStatesProvider} from "../contexts/AttendanceStatesContext"
 import {ClientsActiveProvider} from "../contexts/ClientsActiveContext"
 import {CoursesVisibleProvider} from "../contexts/CoursesVisibleContext"
+import {GroupsActiveProvider} from "../contexts/GroupsActiveContext"
 import APP_URLS from "../urls"
 
 const PrivateRoute = ({component: WrappedComponent, ...rest}) => {
@@ -16,7 +17,9 @@ const PrivateRoute = ({component: WrappedComponent, ...rest}) => {
             <AttendanceStatesProvider>
                 <CoursesVisibleProvider>
                     <ClientsActiveProvider>
-                        <WrappedComponent {...props}/>
+                        <GroupsActiveProvider>
+                            <WrappedComponent {...props}/>
+                        </GroupsActiveProvider>
                     </ClientsActiveProvider>
                 </CoursesVisibleProvider>
             </AttendanceStatesProvider>

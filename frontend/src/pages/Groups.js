@@ -8,6 +8,7 @@ import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import {WithCoursesVisibleContext} from "../contexts/CoursesVisibleContext"
+import {WithGroupsActiveContext} from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
 import APP_URLS from "../urls"
 
@@ -18,13 +19,21 @@ class Groups extends Component {
         active: true
     }
 
+    isLoading = () =>
+        this.state.active ? !this.props.groupsActiveContext.isLoaded : this.state.IS_LOADING
+
+    getGroupsData = () =>
+        this.state.active ? this.props.groupsActiveContext.groups : this.state.groups
+
     refresh = (active = this.state.active) => {
-        this.setState({IS_LOADING: true, active: active}, () => this.getGroups(active))
+        this.setState({IS_LOADING: true, active: active}, () => this.getGroups(active, true))
     }
 
-    getGroups = (active = this.state.active) => {
-        const request = active ? GroupService.getActive() : GroupService.getInactive()
-        request.then(groups => this.setState({groups, IS_LOADING: false}))
+    getGroups = (active = this.state.active, callFromRefresh = false) => {
+        if (active)
+            callFromRefresh ? this.props.groupsActiveContext.funcHardRefresh() : this.props.groupsActiveContext.funcRefresh()
+        else
+            GroupService.getInactive().then(groups => this.setState({groups, IS_LOADING: false}))
     }
 
     componentDidMount() {
@@ -34,7 +43,6 @@ class Groups extends Component {
     }
 
     render() {
-        const {groups, IS_LOADING} = this.state
         return (
             <Container>
                 <Heading content={
@@ -54,14 +62,14 @@ class Groups extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {IS_LOADING ?
+                    {this.isLoading() ?
                         <tr>
                             <td colSpan="4">
                                 <Loading/>
                             </td>
                         </tr> :
                         <Fragment>
-                            {groups.map(group =>
+                            {this.getGroupsData().map(group =>
                                 <tr key={group.id} data-qa="group">
                                     <td>
                                         <GroupName group={group} link/>
@@ -79,7 +87,7 @@ class Groups extends Component {
                         </Fragment>}
                     </tbody>
                 </Table>
-                {!Boolean(groups.length) && !IS_LOADING &&
+                {!Boolean(this.getGroupsData().length) && !this.isLoading() &&
                 <p className="text-muted text-center">
                     Žádné skupiny
                 </p>}
@@ -88,4 +96,4 @@ class Groups extends Component {
     }
 }
 
-export default WithCoursesVisibleContext(Groups)
+export default WithCoursesVisibleContext(WithGroupsActiveContext(Groups))

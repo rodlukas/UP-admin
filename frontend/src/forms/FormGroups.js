@@ -9,6 +9,7 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import {WithCoursesVisibleContext} from "../contexts/CoursesVisibleContext"
+import {WithGroupsActiveContext} from "../contexts/GroupsActiveContext"
 import {TEXTS} from "../global/constants"
 import {alertRequired, clientName} from "../global/utils"
 import "./forms.css"
@@ -76,6 +77,7 @@ class FormGroups extends Component {
         request.then(response => {
             this.close()
             this.refresh(response)
+            this.props.groupsActiveContext.funcHardRefresh()
         })
     }
 
@@ -92,6 +94,7 @@ class FormGroups extends Component {
             .then(() => {
                 this.close()
                 this.refresh()
+                this.props.groupsActiveContext.funcHardRefresh()
             })
 
     getClientsAfterAddition = newClient => {
@@ -215,4 +218,4 @@ class FormGroups extends Component {
     }
 }
 
-export default WithCoursesVisibleContext(FormGroups)
+export default WithCoursesVisibleContext(WithGroupsActiveContext(FormGroups))
