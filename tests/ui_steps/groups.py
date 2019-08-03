@@ -49,8 +49,6 @@ def insert_to_form(context):
     if ((context.active and not active_checkbox.is_selected()) or
             (not context.active and active_checkbox.is_selected())):
         active_label.click()
-    # vrat posledni element
-    return memberships_field
 
 
 def load_data_to_context(context, name, course, active, *memberships):
@@ -181,9 +179,9 @@ def step_impl(context, cur_name, new_name, new_course, new_active, new_member_fu
     button_edit_group = group_to_update.find_element_by_css_selector('[data-qa=button_edit_group]')
     button_edit_group.click()
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_group")
 
 
 use_step_matcher("re")
@@ -204,6 +202,6 @@ def step_impl(context, name, course, active, member_full_name1, member_full_name
     button_add_group = context.browser.find_element_by_css_selector('[data-qa=button_add_group]')
     button_add_group.click()
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_group")

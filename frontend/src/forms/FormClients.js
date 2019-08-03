@@ -176,7 +176,9 @@ export default class FormClients extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton content={this.isClient ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton
+                        data-qa="button_submit_client"
+                        content={this.isClient ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

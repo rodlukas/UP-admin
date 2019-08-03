@@ -2,10 +2,11 @@ import React from "react"
 import Select from "react-select"
 import {TEXTS} from "../../global/constants"
 import {clientName} from "../../global/utils"
+import {react_select_ids} from "./func"
 
 const SelectClient = ({value, onChangeCallback, options}) =>
     <Select
-        inputId="client"
+        {...react_select_ids("client")}
         value={value}
         getOptionLabel={option => clientName(option)}
         getOptionValue={option => option.id}

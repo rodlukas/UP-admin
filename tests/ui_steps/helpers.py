@@ -10,7 +10,7 @@ WAIT_TIME_SHORT = 3
 
 
 def wait_loading_cycle(driver):
-    # pockej na loading, pokud se ukaze, pockej az skonci
+    # pockej na loading, pokud se ukaze, pockej, az skonci
     try:
         WebDriverWait(driver, WAIT_TIME).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '[data-qa=loading]')))
@@ -18,6 +18,14 @@ def wait_loading_cycle(driver):
         pass
     else:
         wait_loading_ends(driver)
+
+
+def submit_form(context, button_name):
+    # klikni na tlacitko s danym data-qa atributem
+    # - klasicke element.submit() se nepouziva proto, ze netestuje typicke chovani uzivatele - kliknuti na tlacitko
+    #   ulozeni, ale odeslani Enterem, tedy napr. pokud by bylo tlacitko disabled, testy projdou, ale uzivateli to nejde
+    button = context.browser.find_element_by_css_selector(f'[data-qa={button_name}]')
+    button.click()
 
 
 def check_fa_bool(visible, classes):
@@ -63,6 +71,8 @@ def react_select_insert(driver, element, value):
         pass
     else:
         found_option.click()
+    # zavri react-select kliknutim na dropdown ikonu (jinak muze prekryvat jine elementy)
+    driver.find_element_by_css_selector(f".{element.get_attribute('id')}__indicators").click()
 
 
 def open_settings(driver):

@@ -12,6 +12,7 @@ import {WithCoursesVisibleContext} from "../contexts/CoursesVisibleContext"
 import {TEXTS} from "../global/constants"
 import {alertRequired, clientName} from "../global/utils"
 import "./forms.css"
+import {react_select_ids} from "./helpers/func"
 import Or from "./helpers/Or"
 import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
@@ -145,7 +146,7 @@ class FormGroups extends Component {
                                 </Label>
                                 <Col sm={10}>
                                     <Select
-                                        inputId="memberships"
+                                        {...react_select_ids("memberships")}
                                         value={memberships}
                                         getOptionLabel={option => clientName(option)}
                                         getOptionValue={option => option.id}
@@ -197,7 +198,9 @@ class FormGroups extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton content={this.isGroup ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton
+                        data-qa="button_submit_group"
+                        content={this.isGroup ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

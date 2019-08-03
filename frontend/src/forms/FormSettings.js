@@ -161,7 +161,9 @@ export default class FormSettings extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton content={this.isObject ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton
+                        data-qa="button_submit_settings"
+                        content={this.isObject ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

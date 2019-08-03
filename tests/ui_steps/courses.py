@@ -60,8 +60,6 @@ def insert_to_form(context):
         visible_label.click()
     name_field.send_keys(context.name)
     duration_field.send_keys(context.duration)
-    # vrat posledni element
-    return visible_checkbox
 
 
 def load_data_to_context(context, name, visible, duration):
@@ -159,9 +157,9 @@ def step_impl(context, cur_name, new_name, new_visible, new_duration):
     # uloz puvodni pocet kurzu
     save_old_courses_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_settings")
 
 
 use_step_matcher("re")
@@ -180,6 +178,6 @@ def step_impl(context, name, visible, duration):
     # uloz puvodni pocet kurzu
     save_old_courses_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_settings")

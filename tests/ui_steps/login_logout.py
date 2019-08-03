@@ -45,7 +45,7 @@ def login(context, username, password):
     username_field.send_keys(username)
     password_field.send_keys(password)
     # prihlas se
-    password_field.submit()
+    helpers.submit_form(context, "button_submit_login")
 
 
 @When('user logs into app with correct credentials')

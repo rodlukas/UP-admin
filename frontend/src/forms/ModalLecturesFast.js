@@ -17,6 +17,7 @@ import Loading from "../components/Loading"
 import {TEXTS} from "../global/constants"
 import {prettyDate} from "../global/funcDateTime"
 import {getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses} from "../global/utils"
+import {react_select_ids} from "./helpers/func"
 import Or from "./helpers/Or"
 import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
@@ -146,7 +147,7 @@ class ModalLecturesFast extends React.Component {
                                 :
                                 <Fragment>
                                     <Select
-                                        inputId="group"
+                                        {...react_select_ids("group")}
                                         value={this.state.object}
                                         getOptionLabel={option => option.name}
                                         getOptionValue={option => option.id}

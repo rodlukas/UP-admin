@@ -55,8 +55,6 @@ def insert_to_form(context):
             (not context.visible and visible_checkbox.is_selected())):
         visible_label.click()
     name_field.send_keys(context.name)
-    # vrat posledni element
-    return visible_checkbox
 
 
 def load_data_to_context(context, name, visible):
@@ -152,9 +150,9 @@ def step_impl(context, cur_name, new_name, new_visible):
     # uloz puvodni pocet stavu ucasti
     save_old_attendancestates_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_settings")
 
 
 use_step_matcher("re")
@@ -173,6 +171,6 @@ def step_impl(context, name, visible):
     # uloz puvodni pocet stavu ucasti
     save_old_attendancestates_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_settings")

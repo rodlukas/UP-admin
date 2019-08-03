@@ -121,7 +121,9 @@ class FormApplications extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton content={this.isObject ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton
+                        data-qa="button_submit_application"
+                        content={this.isObject ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )

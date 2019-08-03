@@ -58,7 +58,9 @@ export default function Login(props) {
                                            required data-qa="login_field_password"/>
                                 </Col>
                             </FormGroup>
-                            <SubmitButton content="Přihlásit"/>
+                            <SubmitButton
+                                data-qa="button_submit_login"
+                                content="Přihlásit"/>
                         </Form>
                     </Card>
                 </Col>
