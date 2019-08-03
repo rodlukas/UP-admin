@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from "react"
 import {ListGroup, ListGroupItem, ListGroupItemHeading} from "reactstrap"
 import LectureService from "../api/services/lecture"
+import {WithAttendanceStatesContext} from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesFast from "../forms/ModalLecturesFast"
 import {isToday, prettyDateWithLongDayYearIfDiff, prettyTime, toISODate} from "../global/funcDateTime"
@@ -12,7 +13,7 @@ import GroupName from "./GroupName"
 import LectureNumber from "./LectureNumber"
 import Loading from "./Loading"
 
-export default class DashboardDay extends Component {
+class DashboardDay extends Component {
     state = {
         lectures: [],
         IS_LOADING: true
@@ -105,7 +106,7 @@ export default class DashboardDay extends Component {
                     <ModalLecturesFast refresh={properRefreshFunc} date={this.props.date} className="float-right"
                                        size="sm" direction="up"/>
                 </ListGroupItem>
-                {IS_LOADING ?
+                {IS_LOADING || !this.props.attendanceStatesContext.isLoaded ?
                     <DayLoading/>
                     :
                     <Lectures/>}
@@ -113,3 +114,5 @@ export default class DashboardDay extends Component {
         )
     }
 }
+
+export default WithAttendanceStatesContext(DashboardDay)

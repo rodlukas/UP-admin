@@ -297,7 +297,7 @@ class FormLectures extends Component {
                         <GroupName group={object}/>)}
                 </ModalHeader>
                 <ModalBody>
-                    {!this.props.coursesVisibleContext.isLoaded ?
+                    {!this.props.coursesVisibleContext.isLoaded || !this.props.attendanceStatesContext.isLoaded ?
                         <Loading/> :
                         <Fragment>
                             <FormGroup row className="align-items-center">

@@ -21,7 +21,6 @@ export class AttendanceStatesProvider extends Component {
         AttendanceStateService.getAll()
             .then(attendancestates => this.setState({attendancestates}, callback))
 
-    // TODO - v aplikaci se nikde nevyuziva pro zobrazeni nacitani isLoaded
     render = () =>
         <AttendanceStatesContext.Provider
             value={{
