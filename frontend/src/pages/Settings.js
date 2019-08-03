@@ -170,9 +170,11 @@ class Settings extends Component {
                 <Alert color="danger">
                     Není vybraný stav „omluven“, aplikace nemůže správně fungovat!
                 </Alert>}
-                <p>
-                    Pro správné fungování aplikace je třeba zvolit výchozí stav účasti, ten zároveň
-                    <span className="font-weight-bold"> musí reprezentovat stav „klient se zúčastní/zúčastnil“</span>.
+                <h4 className="text-center">Výchozí stav</h4>
+                <p className="mb-2">
+                    Pro správné fungování aplikace je třeba zvolit <span className="font-weight-bold">výchozí</span> stav
+                    účasti (viditelný), ten zároveň <span className="font-weight-bold">musí reprezentovat stav
+                    „klient se zúčastní/zúčastnil“</span>.
                 </p>
                 <CustomInput type="select" id="state_default_id" value={state_default_id || "default"}
                              onChange={this.onChange} data-attribute="default">
@@ -180,13 +182,16 @@ class Settings extends Component {
                         Vyberte stav...
                     </option>
                     {this.getAttendanceStatesData().map(attendancestate =>
+                        // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
+                        attendancestate.visible &&
                         <option key={attendancestate.id} value={attendancestate.id}>
                             {attendancestate.name}
                         </option>)}
                 </CustomInput>
-                <p>
-                    Pro správné fungování omluvených a zrušených lekcí je třeba zvolit stav účasti, který
-                    <span className="font-weight-bold"> reprezentuje stav „klient je omluven“</span>.
+                <h4 className="mt-3 text-center">Stav omluven</h4>
+                <p className="mb-2">
+                    Pro správné fungování omluvených a zrušených lekcí je třeba zvolit stav účasti (viditelný),
+                    který <span className="font-weight-bold">reprezentuje stav „klient je omluven“</span>.
                 </p>
                 <CustomInput type="select" id="state_excused_id" value={state_excused_id || "default"}
                              onChange={this.onChange} data-attribute="excused">
@@ -194,6 +199,8 @@ class Settings extends Component {
                         Vyberte stav...
                     </option>
                     {this.getAttendanceStatesData().map(attendancestate =>
+                        // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
+                        attendancestate.visible &&
                         <option key={attendancestate.id} value={attendancestate.id}>
                             {attendancestate.name}
                         </option>)}
