@@ -14,12 +14,16 @@ export class AttendanceStatesProvider extends Component {
     }
 
     componentDidMount() {
-        this.getAttendanceStates(() => this.setState({isLoaded: true}))
+        this.getAttendanceStates()
     }
 
-    getAttendanceStates = callback =>
-        AttendanceStateService.getAll()
-            .then(attendancestates => this.setState({attendancestates}, callback))
+    getAttendanceStates = (callback = () => {}) =>
+        this.setState({isLoaded: false}, () =>
+            AttendanceStateService.getAll()
+                .then(attendancestates => this.setState({
+                    attendancestates,
+                    isLoaded: true
+                }, callback)))
 
     render = () =>
         <AttendanceStatesContext.Provider

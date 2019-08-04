@@ -27,20 +27,16 @@ class Settings extends Component {
         IS_MODAL: false,
         currentObject: {},
         currentType: EDIT_TYPE.STATE,
-        LOADING_CNT: this.props.attendanceStatesContext.isLoaded ? 1 : 0,
+        IS_LOADING: true,
         state_default_id: undefined,
         state_excused_id: undefined
     }
 
-    loadingStateIncrement = () =>
-        this.setState(prevState => ({LOADING_CNT: prevState.LOADING_CNT + 1}))
-
-    loadingStateDecrementCallback = prevState => ({LOADING_CNT: prevState.LOADING_CNT - 1})
-
     getAttendanceStatesData = () =>
         this.props.attendanceStatesContext.attendancestates
     callAttendanceStatesFuncRefresh = () =>
-        this.props.attendanceStatesContext.funcRefresh(this.loadingStateIncrement)
+        // zde je potreba zavolat findStateIndexes, to ale obstara componentDidUpdate
+        this.props.attendanceStatesContext.funcRefresh()
 
     toggle = (type, object = {}) =>
         this.setState(prevState => ({
@@ -56,46 +52,30 @@ class Settings extends Component {
         // odesli na API patch pozadavek
         const data = {id: value, [target.dataset.attribute]: true}
         AttendanceStateService.patch(data)
-            .then(() =>
-                this.setState(
-                    this.loadingStateDecrementCallback,
-                    this.callAttendanceStatesFuncRefresh))
+            .then(() => this.callAttendanceStatesFuncRefresh())
     }
 
     refresh = type => {
-        if (type === EDIT_TYPE.COURSE) {
-            this.setState(
-                this.loadingStateDecrementCallback,
-                () => {
-                    this.getCourses()
-                    this.props.coursesVisibleContext.funcHardRefresh()
-                })
-        } else if (type === EDIT_TYPE.STATE) {
-            this.setState(
-                this.loadingStateDecrementCallback,
-                () => {
-                    this.callAttendanceStatesFuncRefresh()
-                    // neni zde potreba volat findStateIndexes - resi componentDidUpdate
-                })
-        }
+        if (type === EDIT_TYPE.COURSE)
+            this.setState({IS_LOADING: false}, () => {
+                this.getCourses()
+                this.props.coursesVisibleContext.funcHardRefresh()
+            })
+        else if (type === EDIT_TYPE.STATE)
+            this.callAttendanceStatesFuncRefresh()
     }
 
     getCourses = () =>
         CourseService.getAll()
             .then(courses =>
-                this.setState({courses}, this.loadingStateIncrement))
+                this.setState({courses}, () =>
+                    this.setState({IS_LOADING: false})))
 
     componentDidMount() {
         this.getCourses()
-        this.findStateIndexes()
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
-        // je potreba volat findStateIndexes, protoze se napr. muze skryt vychozi stav, tzn. API mu odebere i priznak ze je vychozi - je potreba tyto zmeny projevit
+        // kdyz uz mas data z kontextu, proved hledani, jinak se o zavolani hledani postara componentDidUpdate
+        if (this.props.attendanceStatesContext.isLoaded)
             this.findStateIndexes()
-        if (this.props.attendanceStatesContext.isLoaded !== prevProps.attendanceStatesContext.isLoaded)
-            this.loadingStateIncrement()
     }
 
     findStateIndexes = () => {
@@ -111,8 +91,14 @@ class Settings extends Component {
         })
     }
 
+    componentDidUpdate(prevProps) {
+        // data z kontextu po componentDidMount z AttendanceStatesContext se zmenila, je potreba projevit zmeny do stavu
+        if (this.props.attendanceStatesContext.isLoaded && !prevProps.attendanceStatesContext.isLoaded)
+            this.findStateIndexes()
+    }
+
     render() {
-        const {courses, currentType, currentObject, state_excused_id, state_default_id, IS_MODAL, LOADING_CNT} = this.state
+        const {courses, currentType, currentObject, state_excused_id, state_default_id, IS_MODAL} = this.state
         return (
             <Fragment>
                 <Container>
@@ -125,7 +111,7 @@ class Settings extends Component {
                                        data-qa="button_add_attendancestate"/>
                         </Fragment>
                     }/>
-                    {LOADING_CNT !== 2 ?
+                    {this.state.IS_LOADING || !this.props.attendanceStatesContext.isLoaded ?
                         <Loading/> :
                         <div className="pageContent">
                             <Row>
