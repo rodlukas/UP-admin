@@ -69,9 +69,9 @@ export default class Diary extends Component {
         e.target.blur()
     }
 
-    setRefreshState = () => {
-        this.setState({shouldRefresh: true}, () => this.setState({shouldRefresh: false}))
-    }
+    setRefreshState = () =>
+        this.setState({shouldRefresh: true},
+            () => this.setState({shouldRefresh: false}))
 
     render() {
         // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
@@ -106,8 +106,7 @@ export default class Diary extends Component {
                                 <DashboardDay
                                     date={day}
                                     setRefreshState={this.setRefreshState}
-                                    shouldRefresh={this.state.shouldRefresh}
-                                />
+                                    shouldRefresh={this.state.shouldRefresh}/>
                             </Col>)}
                     </Row>
                 </Container>

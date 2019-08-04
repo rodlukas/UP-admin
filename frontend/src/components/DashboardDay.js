@@ -29,8 +29,6 @@ class DashboardDay extends Component {
             }))
     }
 
-    getProperRefreshFunc = () => this.props.setRefreshState || this.getLectures
-
     componentDidMount() {
         if (this.props.withoutWaiting)
             this.getLectures()
@@ -50,7 +48,6 @@ class DashboardDay extends Component {
 
     render() {
         const {lectures, IS_LOADING} = this.state
-        const properRefreshFunc = this.getProperRefreshFunc()
         const title = prettyDateWithLongDayYearIfDiff(this.getDate())
         return (
             <ListGroup className="pageContent">
@@ -59,7 +56,9 @@ class DashboardDay extends Component {
                     <h4 className="mb-0 text-nowrap d-inline-block">
                         {title}
                     </h4>
-                    <ModalLecturesFast refresh={properRefreshFunc} date={this.props.date} className="float-right"
+                    <ModalLecturesFast refresh={this.props.setRefreshState}
+                                       date={this.props.date}
+                                       className="float-right"
                                        size="sm" direction="up"/>
                 </ListGroupItem>
                 {IS_LOADING || !this.props.attendanceStatesContext.isLoaded ?
@@ -84,14 +83,15 @@ class DashboardDay extends Component {
                                         <LectureNumber lecture={lecture} colorize/>
                                         <ModalLectures IS_CLIENT={!lecture.group}
                                                        object={lecture.group ? lecture.group : lecture.attendances[0].client}
-                                                       currentLecture={lecture} refresh={properRefreshFunc}/>
+                                                       currentLecture={lecture} refresh={this.props.setRefreshState}/>
                                     </div>
                                     <div className="lecture_content">
                                         {lecture.group &&
                                         <h5>
                                             <GroupName group={lecture.group} title link/>
                                         </h5>}
-                                        <Attendances lecture={lecture} funcRefresh={properRefreshFunc} showClient/>
+                                        <Attendances
+                                            lecture={lecture} funcRefresh={this.props.setRefreshState} showClient/>
                                     </div>
                                 </ListGroupItem>
                             )

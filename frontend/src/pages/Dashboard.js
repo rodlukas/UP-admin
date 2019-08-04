@@ -7,7 +7,15 @@ import ModalLecturesFast from "../forms/ModalLecturesFast"
 import {toISODate} from "../global/funcDateTime"
 
 export default class Dashboard extends Component {
+    state = {
+        shouldRefresh: false
+    }
+
     getDate = () => toISODate(new Date())
+
+    setRefreshState = () =>
+        this.setState({shouldRefresh: true},
+            () => this.setState({shouldRefresh: false}))
 
     render() {
         return (
@@ -21,7 +29,11 @@ export default class Dashboard extends Component {
                                 <ModalLecturesFast refresh={this.setRefreshState}/>
                             </Fragment>
                         }/>
-                        <DashboardDay date={this.getDate()} withoutWaiting/>
+                        <DashboardDay
+                            date={this.getDate()}
+                            setRefreshState={this.setRefreshState}
+                            shouldRefresh={this.state.shouldRefresh}
+                            withoutWaiting/>
                     </Col>
                     <Col sm="11" md="8" lg="8" xl="5">
                         <Heading content="Bankovní účet"/>
