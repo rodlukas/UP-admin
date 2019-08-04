@@ -14,6 +14,7 @@ import Loading from "../components/Loading"
 import Note from "../components/Note"
 import Phone from "../components/Phone"
 import PrepaidCounters from "../components/PrepaidCounters"
+import {WithAttendanceStatesContext} from "../contexts/AttendanceStatesContext"
 import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
 import ModalLectures from "../forms/ModalLectures"
@@ -22,7 +23,7 @@ import {courseDuration, getDefaultCourse, getLecturesForGroupingByCourses, group
 import APP_URLS from "../urls"
 import "./Card.css"
 
-export default class Card extends Component {
+class Card extends Component {
     isClient = () =>
         this.props.match.path.includes(APP_URLS.klienti.url)
 
@@ -161,7 +162,7 @@ export default class Card extends Component {
                         </Fragment>
                     }/>
                 </Container>
-                {LOADING_CNT === 3 ?
+                {(LOADING_CNT === 3 && this.props.attendanceStatesContext.isLoaded) ?
                     <div className="pageContent">
                         <Container fluid>
                             <Row className="justify-content-center">
@@ -247,3 +248,5 @@ export default class Card extends Component {
         )
     }
 }
+
+export default WithAttendanceStatesContext(Card)
