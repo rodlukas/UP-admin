@@ -115,7 +115,7 @@ class ModalLecturesFast extends React.Component {
                     </DropdownMenu>
                 </UncontrolledButtonDropdown>
                 {this.state.IS_CLIENT !== undefined &&
-                <Modal isOpen={this.state.IS_MODAL_SELECT} toggle={this.toggleModalSelect}>
+                <Modal isOpen={this.state.IS_MODAL_SELECT} toggle={this.toggleModalSelect} autoFocus={false}>
                     <ModalHeader toggle={this.toggleModalSelect}>
                         Výběr {this.state.IS_CLIENT ? 'klienta' : 'skupiny'}
                     </ModalHeader>
