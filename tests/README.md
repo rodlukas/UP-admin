@@ -24,7 +24,7 @@ Pro spuštění konkrétní sady tedy stačí tyto příkazy:
 * spuštění **UI testů:** `$ python manage.py behave --stage=ui`,
 * spuštění **API testů:** `$ python manage.py behave --stage=api`.
 
-> **Tip pro UI testy:** ve výchozím nastavení běží UI testy v tzv. *headless* módu prohlížeče, tedy bez GUI (prohlížeč není vidět), pokud chcete průběh UI testů }postupné proklikávání a psaní v aplikaci] vidět, stačí mód [v souboru ui_environment.py](ui_environment.py) vypnout: `options.headless = False`.
+> **Tip pro UI testy:** ve výchozím nastavení běží UI testy v tzv. *headless* módu prohlížeče, tedy bez GUI (prohlížeč není vidět), pokud chcete průběh UI testů (postupné proklikávání a psaní v aplikaci) vidět, stačí do [souboru .env](../.env) přidat řádek: `HEADLESS=False`.
 
 Testování lze ještě dále zúžit na **konkrétní testovanou část či operaci (označené tzv. *tagem*)** z dané sady testů (*stage*). Pro jednoduchost jsou *tagy* pro testované části totožné s názvy souborů testových scénářů (`features/*.features`) i implementací testů (`api_steps/*.py` a `ui_steps/*.py`). *Tagem* lze, jak bylo řečeno, také zúžit testy na prováděné operace s danou entitou, konkrétně jsou k dispozici *tagy* pro CRUD operace (`add`, `delete` a `edit`) a také pro přihlášení/odhlášení (`login` a `logout`).
 

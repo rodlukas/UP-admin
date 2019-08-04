@@ -19,6 +19,8 @@ env = environ.Env(
     SENTRY_DSN=str,                     # DSN klic pro Sentry
     MANUAL_PRODUCTION=(bool, False),    # pro rucni spusteni produkcni verze nastavit True
     BANK_ACTIVE=(bool, True),           # aktivace propojeni s bankou
+    TESTS_RUNNING=(bool, False),        # indikace bezicich testu
+    HEADLESS=(bool, True)               # indikace headless mode pro testy UI
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -26,7 +28,6 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # vlastni konstanty
 CONST_AUTH_EXPIRATION = 60 * 8  # minuty -> 8 hodin (60*8)
 CONST_DB_CON_AGE = 600
-TESTS_RUNNING = len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave']
 
 # vlastni konstanty nactene z prostredi/souboru
 BANK_ACTIVE = env('BANK_ACTIVE')
@@ -35,6 +36,9 @@ FIO_API_KEY = env('FIO_API_KEY')
 HEROKU = env('HEROKU')
 MANUAL_PRODUCTION = env('MANUAL_PRODUCTION')
 SENTRY_DSN = env('SENTRY_DSN')
+HEADLESS = env('HEADLESS')
+# osetreni pro bezici testy - rozpoznani spusteni z radky/promenna prostredi (kvuli IDE)
+TESTS_RUNNING = env('TESTS_RUNNING') or (len(sys.argv) > 1 and sys.argv[1] in ['test', 'behave'])
 
 # Django konstanty
 DEBUG = env('DEBUG')
