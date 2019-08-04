@@ -23,6 +23,9 @@ import APP_URLS from "../urls"
 import "./Card.css"
 
 export default class Card extends Component {
+    isClient = () =>
+        this.props.match.path.includes(APP_URLS.klienti.url)
+
     state = {
         object: {},
         lectures: [],
@@ -38,8 +41,6 @@ export default class Card extends Component {
         this.props.match.params.id
     getPrevId = (prevProps) =>
         prevProps.match.params.id
-    isClient = () =>
-        this.props.match.path.includes(APP_URLS.klienti.url)
     wasClient = (prevProps) =>
         prevProps.match.path.includes(APP_URLS.klienti.url)
 
