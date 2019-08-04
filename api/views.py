@@ -18,10 +18,11 @@ from .services import Bank
 
 """
 pro simulaci casove prodlevy pozadavku lze pouzit:
-def get_queryset(self):
-    import time
-    time.sleep(10)
-    return AttendanceState.objects.all()
+
+    def get_queryset(self):
+        import time
+        time.sleep(10)
+        return AttendanceState.objects.all()
 """
 
 
