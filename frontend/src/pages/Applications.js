@@ -49,7 +49,7 @@ class Applications extends Component {
 
     componentDidMount() {
         this.getApplications()
-        // prednacteni pro FormApplications
+        // prednacteni pro FormApplications (klienty z kontextu nenacitame, protoze chceme i neaktivni)
         this.props.coursesVisibleContext.funcRefresh()
     }
 
