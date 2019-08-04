@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="API testy komplet" type="PyBehaveRunConfigurationType" factoryName="Behave">
+    <module name="up" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs>
+      <env name="TESTS_RUNNING" value="True" />
+    </envs>
+    <option name="SDK_HOME" value="C:\Users\rodlu\.virtualenvs\up-MxZ3Z9Tw\Scripts\python.exe" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <option name="IS_MODULE_SDK" value="false" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <WHAT_TO_RUN WHAT_TO_RUN="$PROJECT_DIR$/tests" />
+    <option name="ADDITIONAL_ARGS" value="--stage=api" />
+    <method v="2" />
+  </configuration>
+</component>
