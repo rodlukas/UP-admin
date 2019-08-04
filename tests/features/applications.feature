@@ -4,15 +4,15 @@ Feature: Operations with applications
     Given the database with some clients, applications and courses
     And the logged user
 
-  @add @applications
+  @add @applications @fast.row<row.id>
   Scenario Outline: Add valid application
     When user adds new application from client "<full_name>" for course "<course>" with note "<note>"
     Then the application is added
 
     Examples: Applications
       | full_name       | course            | note               |
-      | Rod Lukáš       | Předškolák s ADHD |                    |
       | Rodová Petra    | Kurz Slabika      | testovací poznámka |
+      | Rod Lukáš       | Předškolák s ADHD |                    |
       | Jirušková Aneta | xyz               | 55-*/%ˇ:_(4$       |
       # neaktivni klient (musi projit)
       | Rod Lukáš       | Předškolák s ADHD |                    |

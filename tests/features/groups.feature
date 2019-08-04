@@ -4,15 +4,15 @@ Feature: Operations with groups
     Given the database with some clients, groups and courses
     And the logged user
 
-  @add @groups
+  @add @groups @fast.row<row.id>
   Scenario Outline: Add valid group
     When user adds new group "<name>" for course "<course>" with activity "<active>" and clients "<member_full_name1>" and "<member_full_name2>"
     Then the group is added
 
     Examples: Groups
       | name      | course       | active | member_full_name1 | member_full_name2 |
-      | Slabika 3 | Kurz Slabika | True   |                   |                   |
       | Slabika 3 | Kurz Slabika | True   | Rod Lukáš         | Uhlíř Jaroslav    |
+      | Slabika 3 | Kurz Slabika | True   |                   |                   |
       | Slabika 3 | Kurz Slabika | False  | Rod Lukáš         | Uhlíř Jaroslav    |
       # neaktivni klient
       | Slabika 3 | Kurz Slabika | True   | Neaktivní Pavel   |                   |

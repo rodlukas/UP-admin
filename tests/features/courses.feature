@@ -4,14 +4,14 @@ Feature: Operations with courses
     Given the database with some courses
     And the logged user
 
-  @add @courses
+  @add @courses @fast.row<row.id>
   Scenario Outline: Add valid course
     When user adds new course "<name>" with visibility "<visibility>" and duration "<duration>"
     Then the course is added
 
     Examples: Courses
       | name                 | visibility | duration |
-      | Rozvoj grafomotoriky | True       | 30       |
+      | Rozvoj grafomotoriky | True       | 35       |
       | Kompletní příprava   | False      | 40       |
 
   @add @courses
@@ -21,7 +21,7 @@ Feature: Operations with courses
 
     Examples: Courses
       | name                 | visibility | duration |
-      |                      | True       | 30       |
+      |                      | True       | 35       |
       # duplicitni nazev kurzu
       | Kurz Slabika         | False      | 20       |
       # chybejici doba trvani kurzu

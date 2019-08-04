@@ -3,7 +3,7 @@ Feature: Login and logout
   Background: Prepared database
     Given the database with user
 
-  @login @login_logout
+  @login @login_logout @fast.row1.1
   Scenario: Login to app with correct credentials
     When user logs into app with correct credentials
     Then user is logged into app
@@ -13,7 +13,7 @@ Feature: Login and logout
     When user logs into app with wrong credentials
     Then user is not logged into app
 
-  @logout @login_logout
+  @logout @login_logout @fast.row1.1
   Scenario: Logout from app
     Given the logged user
     When user logs out of app
