@@ -132,7 +132,6 @@ export default class Bank extends React.PureComponent {
                                 <TableInfo text="Žádné nedávné transakce"/>
                                 :
                                 this.state.bankData.transactions.map(transaction => {
-                                    console.log("...")
                                     const date = new Date(transaction.column0.value.split("+")[0])
                                     const amount = transaction.column1.value
                                     const message_obj = transaction.column16
