@@ -1,6 +1,6 @@
 import {faExclamationCircle, faExternalLinkAlt, faInfoCircle, faSyncAlt} from "@fortawesome/pro-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import React, {Component, Fragment} from "react"
+import React, {Fragment} from "react"
 import {ListGroup, ListGroupItem, Table, UncontrolledTooltip} from "reactstrap"
 import BankService from "../api/services/bank"
 import {RENT_PRICE} from "../global/constants"
@@ -11,7 +11,12 @@ import NoInfo from "./NoInfo"
 
 const REFRESH_TIMEOUT = 60 // sekundy
 
-export default class Bank extends Component {
+const TableInfo = ({text, color = "text-muted"}) =>
+    <tr className={color + " text-center"}>
+        <td colSpan="4">{text}</td>
+    </tr>
+
+export default class Bank extends React.PureComponent {
     bankDataInit = {
         info: {},
         transactions: [],
@@ -61,47 +66,10 @@ export default class Bank extends Component {
     }
 
     onClick = () => {
-        this.setState({IS_LOADING: true})
-        this.getBankData()
+        this.setState({IS_LOADING: true}, this.getBankData)
     }
 
     render() {
-        const TableInfo = ({text, color = "text-muted"}) =>
-            <tr className={color + " text-center"}>
-                <td colSpan="4">{text}</td>
-            </tr>
-        const Transactions = () =>
-            this.state.bankData.transactions.map(transaction => {
-                const date = new Date(transaction.column0.value.split("+")[0])
-                const amount = transaction.column1.value
-                const message_obj = transaction.column16
-                const id = transaction.column22.value
-                const comment_obj = transaction.column25
-                const target_account_owner_obj = transaction.column10
-                const amount_className = "font-weight-bold text-right" + (amount < 0 ? " text-danger" : "")
-                return (
-                    <tr key={id} className={isToday(date) ? "table-warning" : undefined}>
-                        <td>
-                            {comment_obj ?
-                                comment_obj.value
-                                :
-                                target_account_owner_obj ?
-                                    "Vlastník protiúčtu: " + target_account_owner_obj.value
-                                    :
-                                    <NoInfo/>}
-                        </td>
-                        <td>
-                            {message_obj ?
-                                message_obj.value
-                                :
-                                <NoInfo/>}
-                        </td>
-                        <td className="text-right" style={{minWidth: '6em'}}>{prettyDateWithDayYearIfDiff(date, true)}</td>
-                        <td className={amount_className} style={{minWidth: '7em'}}>
-                            {prettyAmount(amount)} Kč
-                        </td>
-                    </tr>)
-            })
         const balance = this.state.bankData.info.closingBalance
         return (
             <ListGroup className="pageContent">
@@ -163,7 +131,41 @@ export default class Bank extends Component {
                             !Boolean(this.state.bankData.transactions.length) && !this.state.IS_LOADING ?
                                 <TableInfo text="Žádné nedávné transakce"/>
                                 :
-                                <Transactions/>
+                                this.state.bankData.transactions.map(transaction => {
+                                    console.log("...")
+                                    const date = new Date(transaction.column0.value.split("+")[0])
+                                    const amount = transaction.column1.value
+                                    const message_obj = transaction.column16
+                                    const id = transaction.column22.value
+                                    const comment_obj = transaction.column25
+                                    const duplicates = message_obj && comment_obj && message_obj.value === comment_obj.value
+                                    const target_account_owner_obj = transaction.column10
+                                    const amount_className = "font-weight-bold text-right" + (amount < 0 ? " text-danger" : "")
+                                    return (
+                                        <tr key={id} className={isToday(date) ? "table-warning" : undefined}>
+                                            <td colSpan={duplicates && 2}>
+                                                {comment_obj ?
+                                                    comment_obj.value
+                                                    :
+                                                    target_account_owner_obj ?
+                                                        "Vlastník protiúčtu: " + target_account_owner_obj.value
+                                                        :
+                                                        <NoInfo/>}
+                                            </td>
+                                            {!duplicates &&
+                                            <td>
+                                                {message_obj ?
+                                                    message_obj.value
+                                                    :
+                                                    <NoInfo/>}
+                                            </td>}
+                                            <td className="text-right"
+                                                style={{minWidth: '6em'}}>{prettyDateWithDayYearIfDiff(date, true)}</td>
+                                            <td className={amount_className} style={{minWidth: '7em'}}>
+                                                {prettyAmount(amount)} Kč
+                                            </td>
+                                        </tr>)
+                                })
                             :
                             <TableInfo text={this.state.STATUS_INFO} color="text-danger"/>
                         }
