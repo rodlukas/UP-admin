@@ -48,32 +48,32 @@ export function getDefaultCourse(lecturesGroupedByCourses, isClient) {
     return null
 }
 
-    export function prettyAmount(amount) {
-        return amount.toLocaleString('cs-CZ')
-    }
+export function prettyAmount(amount) {
+    return amount.toLocaleString('cs-CZ')
+}
 
 // workaround dokud nebude fungovat required v react-selectu - TODO
-    export function alertRequired(object, ...inputVals) {
-        if (inputVals.some(e => e === null)) {
-            alert("Není zvolen žádný " + object + "!")
-            return true
-        }
-        return false
+export function alertRequired(object, ...inputVals) {
+    if (inputVals.some(e => e === null)) {
+        alert("Není zvolen žádný " + object + "!")
+        return true
     }
+    return false
+}
 
-    export function prettyPhone(phone) {
-        return phone ? phone.match(/.{3}/g).join(' ') : ""
-    }
+export function prettyPhone(phone) {
+    return phone ? phone.match(/.{3}/g).join(' ') : ""
+}
 
 // vrati value, pokud je value undefined tak vrati prazdny string
-    export function getAttrSafe(val) {
-        return val || ''
-    }
+export function getAttrSafe(val) {
+    return val || ''
+}
 
-    export function clientName(client) {
-        return getAttrSafe(client.surname) + " " + getAttrSafe(client.name)
-    }
+export function clientName(client) {
+    return getAttrSafe(client.surname) + " " + getAttrSafe(client.name)
+}
 
-    export function courseDuration(duration) {
-        return "Trvání: " + duration + " min."
-    }
+export function courseDuration(duration) {
+    return "Trvání: " + duration + " min."
+}
