@@ -2,6 +2,7 @@ const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const path = require('path')
 const isProduction = process.env.NODE_ENV === 'production'
 const chalk = require('chalk')
+const os = require('os')
 
 // aktualne se nepouziva, nahrazeno hostname
 // je potreba dynamicky menit adresu vzhledem k aktualni pridelene adrese zarizeni
@@ -20,12 +21,10 @@ function getIPAddress() {
     return "localhost"
 }
 
-function getHostname() {
-    // bez .local by nefungovalo na iOS
-    return require('os').hostname().toLowerCase() + '.local'
-}
+// bez .local by nefungovalo na iOS
+const hostName = os.hostname().toLowerCase() + '.local'
 
-const url = 'http://' + getHostname() + ':3000/'
+const url = 'http://' + hostName + ':3000/'
 
 module.exports = function ({command}) {
     let config = {
@@ -89,7 +88,7 @@ module.exports = function ({command}) {
         // allow django host, in case you use custom domain for django app
         allowedHosts: [
             "0.0.0.0",
-            getHostname()
+            hostName
         ]
     }
     return config
