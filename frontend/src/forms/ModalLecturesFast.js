@@ -96,9 +96,7 @@ class ModalLecturesFast extends React.Component {
     }
 
     render() {
-        let title = "Přidat lekci"
-        if (this.props.date)
-            title += " na " + prettyDate(new Date(this.props.date))
+        const title = "Přidat lekci na " + (this.props.date ? prettyDate(new Date(this.props.date)) : "jiný den")
         return (
             <Fragment>
                 <UncontrolledButtonDropdown direction={this.props.direction} className={this.props.className}>
