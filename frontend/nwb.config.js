@@ -3,6 +3,7 @@ const path = require('path')
 const isProduction = process.env.NODE_ENV === 'production'
 const chalk = require('chalk')
 
+// aktualne se nepouziva, nahrazeno hostname
 // je potreba dynamicky menit adresu vzhledem k aktualni pridelene adrese zarizeni
 function getIPAddress() {
     let interfaces = require('os').networkInterfaces()
@@ -19,7 +20,12 @@ function getIPAddress() {
     return "localhost"
 }
 
-const url = 'http://' + getIPAddress() + ':3000/'
+function getHostname() {
+    // bez .local by nefungovalo na iOS
+    return require('os').hostname().toLowerCase() + '.local'
+}
+
+const url = 'http://' + getHostname() + ':3000/'
 
 module.exports = function ({command}) {
     let config = {
@@ -81,7 +87,10 @@ module.exports = function ({command}) {
     }
     config.devServer = {
         // allow django host, in case you use custom domain for django app
-        allowedHosts: ["0.0.0.0"]
+        allowedHosts: [
+            "0.0.0.0",
+            getHostname()
+        ]
     }
     return config
 }
