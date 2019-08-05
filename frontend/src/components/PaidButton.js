@@ -1,10 +1,17 @@
+// @flow
 import {faUsdCircle} from "@fortawesome/pro-solid-svg-icons"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import React from "react"
 import AttendanceService from "../api/services/attendance"
 import "./PaidButton.css"
 
-const PaidButton = props => {
+type Props = {
+    paid: boolean,
+    attendanceId: number,
+    funcRefresh: () => void
+}
+
+const PaidButton = (props: Props) => {
     function onClick() {
         const newPaid = !props.paid
         const id = props.attendanceId

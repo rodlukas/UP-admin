@@ -91,5 +91,8 @@ module.exports = function ({command}) {
             hostName
         ]
     }
+    config.babel = {
+        presets: ["flow"]
+    }
     return config
 }
