@@ -10,7 +10,7 @@
     "yarn": "1.17.x"
   },
   "scripts": {
-    "heroku-prebuild": "yarn install --production=false",
+    "heroku-prebuild": "cd frontend && yarn install --production=false",
     "postinstall": "cd frontend && yarn install && yarn build"
   }
 }
