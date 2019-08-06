@@ -89,7 +89,7 @@ class FormClients extends Component {
                 <ModalHeader toggle={this.close}>
                     {this.isClient ? 'Úprava' : 'Přidání'} klienta:
                     {' '}
-                    <ClientName client={{name, surname}}/>
+                    <ClientName client={{name, surname}} bold/>
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>

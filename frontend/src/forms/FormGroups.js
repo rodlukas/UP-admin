@@ -6,6 +6,7 @@ import GroupService from "../api/services/group"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
+import GroupName from "../components/GroupName"
 import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import {WithCoursesVisibleContext} from "../contexts/CoursesVisibleContext"
@@ -126,7 +127,11 @@ class FormGroups extends Component {
         const {id, name, clients, memberships, course, active} = this.state
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_group">
-                <ModalHeader toggle={this.close}>{this.isGroup ? 'Úprava' : 'Přidání'} skupiny: {name}</ModalHeader>
+                <ModalHeader toggle={this.close}>
+                    {this.isGroup ? 'Úprava' : 'Přidání'} skupiny:
+                    {' '}
+                    <GroupName group={{name}} bold/>
+                </ModalHeader>
                 <ModalBody>
                     {!this.props.coursesVisibleContext.isLoaded || this.state.IS_LOADING ?
                         <Loading/> :

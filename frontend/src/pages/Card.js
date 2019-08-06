@@ -147,12 +147,10 @@ class Card extends Component {
                             {' '}
                             {"Karta " + (this.isClient() ? "klienta" : "skupiny")}:
                             {' '}
-                            <span className="font-weight-bold">
-                                {this.isClient() ?
-                                    <ClientName client={object}/>
-                                    :
-                                    <GroupName group={object}/>}
-                            </span>
+                            {this.isClient() ?
+                                <ClientName client={object} bold/>
+                                :
+                                <GroupName group={object} bold/>}
                             <ModalLectures defaultCourse={defaultCourse} IS_CLIENT={this.isClient()}
                                            object={object} refresh={this.refreshAfterLectureChanges}/>
                             {this.isClient() &&

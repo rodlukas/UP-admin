@@ -292,9 +292,9 @@ class FormLectures extends Component {
                     {this.IS_LECTURE ? 'Úprava' : 'Přidání'} lekce {(this.IS_CLIENT ? "klienta" : "skupiny")}:
                     {' '}
                     {(this.IS_CLIENT ?
-                        <ClientName client={object}/>
+                        <ClientName client={object} bold/>
                         :
-                        <GroupName group={object}/>)}
+                        <GroupName group={object} bold/>)}
                 </ModalHeader>
                 <ModalBody>
                     {!this.props.coursesVisibleContext.isLoaded || !this.props.attendanceStatesContext.isLoaded ?
