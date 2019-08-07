@@ -4,23 +4,6 @@ const isProduction = process.env.NODE_ENV === 'production'
 const chalk = require('chalk')
 const os = require('os')
 
-// aktualne se nepouziva, nahrazeno hostname
-// je potreba dynamicky menit adresu vzhledem k aktualni pridelene adrese zarizeni
-function getIPAddress() {
-    let interfaces = require('os').networkInterfaces()
-    for (let devName in interfaces) {
-        if (devName !== 'Wi-Fi' && devName !== 'Ethernet')
-            continue
-        let iface = interfaces[devName]
-        for (let i = 0; i < iface.length; i++) {
-            let alias = iface[i]
-            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
-                return alias.address
-        }
-    }
-    return "localhost"
-}
-
 // bez .local by nefungovalo na iOS
 const hostName = os.hostname().toLowerCase() + '.local'
 
