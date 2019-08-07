@@ -2,4 +2,5 @@ path_classifiers:
   library:
     - frontend/flow-typed
 queries:
-  include: "*"
+  include:
+    - severity: ["error", "warning", "recommendation"]
