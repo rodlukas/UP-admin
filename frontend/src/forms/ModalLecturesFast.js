@@ -62,11 +62,13 @@ class ModalLecturesFast extends React.Component {
                 const request = getLecturesForGroupingByCourses(obj.id, this.state.IS_CLIENT)
                 request.then(lectures => {
                     const lecturesGroupedByCourses = groupByCourses(lectures)
-                    this.setState({defaultCourse: getDefaultCourse(lecturesGroupedByCourses, this.state.IS_CLIENT),}, () =>
-                        this.setState({
-                            object: obj,
-                            IS_LOADING: false
-                        }))
+                    this.setState(prevState => (
+                            {defaultCourse: getDefaultCourse(lecturesGroupedByCourses, prevState.IS_CLIENT)}),
+                        () =>
+                            this.setState({
+                                object: obj,
+                                IS_LOADING: false
+                            }))
                 })
             })
         }
