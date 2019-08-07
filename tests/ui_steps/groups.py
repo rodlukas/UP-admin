@@ -7,9 +7,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 # noinspection PyUnresolvedReferences
-from tests.common_steps import groups
+from tests.common_steps import groups  # lgtm [py/unused-import]
 # noinspection PyUnresolvedReferences
-from tests.ui_steps import helpers, login_logout
+from tests.ui_steps import helpers, login_logout  # lgtm [py/unused-import]
 
 
 def groups_cnt(driver):

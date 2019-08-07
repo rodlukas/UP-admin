@@ -6,9 +6,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 # noinspection PyUnresolvedReferences
-from tests.common_steps import applications
+from tests.common_steps import applications  # lgtm [py/unused-import]
 # noinspection PyUnresolvedReferences
-from tests.ui_steps import helpers, login_logout
+from tests.ui_steps import helpers, login_logout  # lgtm [py/unused-import]
 
 
 def get_applications(driver):

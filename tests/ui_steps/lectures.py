@@ -7,9 +7,9 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from tests import common_helpers
 # noinspection PyUnresolvedReferences
-from tests.common_steps import lectures
+from tests.common_steps import lectures  # lgtm [py/unused-import]
 # noinspection PyUnresolvedReferences
-from tests.ui_steps import helpers, login_logout
+from tests.ui_steps import helpers, login_logout  # lgtm [py/unused-import]
 
 
 def get_lectures(driver):
