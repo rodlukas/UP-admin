@@ -12,6 +12,9 @@ class AttendanceState(models.Model):
 
     # zaridi unikatnost True pro atributy default, excused
     def save(self, *args, **kwargs):
+        # pokud se stav nastavuje na neviditelny, vyresetuj volbu vychoziho/omluveneho stavu
+        if not self.visible:
+            self.default = self.excused = False
         if self.default:
             # vyber ostatni polozky s default=True
             qs = AttendanceState.objects.filter(default=True)
@@ -20,9 +23,6 @@ class AttendanceState(models.Model):
                 qs = qs.exclude(pk=self.pk)
             # a nastav jim default=False
             qs.update(default=False)
-            # pokud se stav nastavuje na neviditelny, vyresetuj volbu vychoziho stavu
-            if self.visible is False:
-                self.default = False
         if self.excused:
             # vyber ostatni polozky s excused=True
             qs = AttendanceState.objects.filter(excused=True)

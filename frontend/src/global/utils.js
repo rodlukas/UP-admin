@@ -1,3 +1,5 @@
+import LectureService from "../api/services/lecture"
+
 export function groupByCourses(data) {
     // seskup data podle kurzu ve formatu "nazev_kurzu":{course: objekt_s_kurzem, lectures: pole_lekci}
     let groupByCourses = data.reduce((obj, item) => {
@@ -17,6 +19,33 @@ export function groupByCourses(data) {
         return 0
     })
     return arrayOfObjects
+}
+
+export function getLecturesForGroupingByCourses(id, isClient) {
+    if (isClient)
+        return LectureService.getAllFromClientOrdered(id, false)
+    return LectureService.getAllFromGroupOrdered(id, false)
+}
+
+export function getDefaultCourse(lecturesGroupedByCourses, isClient) {
+    // vrat optimalni kurz, jehoz lekce bude s nejvyssi pravdepodobnosti pridavana
+    if (isClient) {
+        if (lecturesGroupedByCourses.length === 0)
+            return null
+        else if (lecturesGroupedByCourses.length === 1)
+        // chodi na jeden jediny kurz, vyber ho
+            return lecturesGroupedByCourses[0].course
+        else if (lecturesGroupedByCourses.length > 1) {
+            // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
+            let latestLecturesOfEachCourse = []
+            lecturesGroupedByCourses.forEach(
+                elem => latestLecturesOfEachCourse.push(elem.lectures[0]))
+            const latestLecture = latestLecturesOfEachCourse.reduce(
+                (prev, current) => (prev.start > current.start) ? prev : current)
+            return latestLecture.course
+        }
+    }
+    return null
 }
 
 export function prettyAmount(amount) {

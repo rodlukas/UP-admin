@@ -5,6 +5,7 @@ import {Link} from "react-router-dom"
 import {Button, Col, Container, Row} from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
+import ModalLecturesFast from "../forms/ModalLecturesFast"
 import {
     addDays,
     DAYS_IN_WEEK,
@@ -17,6 +18,11 @@ import {
 } from "../global/funcDateTime"
 import APP_URLS from "../urls"
 import "./Diary.css"
+
+const TitleDate = ({date}) =>
+    <span className={"TitleDate font-weight-bold " + (yearDiffs(date) ? "TitleDate-long" : "")}>
+        {prettyDateWithYearIfDiff(date)}
+    </span>
 
 export default class Diary extends Component {
     state = {
@@ -54,7 +60,7 @@ export default class Diary extends Component {
             return new Date()
     }
 
-    static serializeDateUrl (date) {
+    static serializeDateUrl(date) {
         return APP_URLS.diar.url + "/" + date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDate()
     }
 
@@ -63,50 +69,45 @@ export default class Diary extends Component {
         e.target.blur()
     }
 
-    setRefreshState = () => {
-        this.setState({shouldRefresh: true}, () => this.setState({shouldRefresh: false}))
-    }
+    setRefreshState = () =>
+        this.setState({shouldRefresh: true},
+            () => this.setState({shouldRefresh: false}))
 
     render() {
-        const TitleDate = ({date}) =>
-            <span className={"TitleDate font-weight-bold " + (yearDiffs(date) ? "TitleDate-long" : "")}>
-                {prettyDateWithYearIfDiff(date)}
-            </span>
-        const Title = () =>
-            <Fragment>
-                {' '}Týden <TitleDate date={this.getRequiredMonday()}/> – <TitleDate date={this.getFridayDate()}/>{' '}
-            </Fragment>
-        const HeadingContent = () =>
-            <Fragment>
-                <Link to={this.getPrevMondaySerialized()} title="Předchozí týden">
-                    <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"/>
-                </Link>
-                <Title/>
-                <Link to={this.getNextMondaySerialized()} title="Další týden">
-                    <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
-                </Link>
-                {' '}
-                <Link to={this.getCurrentMondaySerialized()} title={prettyDateWithLongDayYear(new Date())}>
-                    <Button color="secondary" disabled={isEqualDate(this.getCurrentMonday(), this.getRequiredMonday())}
-                            onClick={e => this.removeFocusAfterClick(e)} className="float-none">
-                        Dnes
-                    </Button>
-                </Link>
-            </Fragment>
         // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
         return (
             <Fragment>
-                <Heading content={<HeadingContent/>}/>
+                <Heading content={
+                    <Fragment>
+                        <Link to={this.getPrevMondaySerialized()} title="Předchozí týden">
+                            <FontAwesomeIcon icon={faArrowAltCircleLeft} className="arrowBtn text-muted"/>
+                        </Link>
+                        {' '}Týden <TitleDate date={this.getRequiredMonday()}/> – <TitleDate
+                        date={this.getFridayDate()}/>{' '}
+                        <Link to={this.getNextMondaySerialized()} title="Další týden">
+                            <FontAwesomeIcon icon={faArrowAltCircleRight} className="arrowBtn text-muted"/>
+                        </Link>
+                        {' '}
+                        <Link to={this.getCurrentMondaySerialized()} title={prettyDateWithLongDayYear(new Date())}>
+                            <Button color="secondary"
+                                    disabled={isEqualDate(this.getCurrentMonday(), this.getRequiredMonday())}
+                                    onClick={e => this.removeFocusAfterClick(e)} className="float-none">
+                                Dnes
+                            </Button>
+                        </Link>
+                        {' '}
+                        <ModalLecturesFast refresh={this.setRefreshState}/>
+                    </Fragment>
+                }/>
                 <Container fluid className="pageContent">
                     <Row>
-                    {this.getWeek().map(day =>
-                        <Col key={day} md="6" lg="" className="diary-day">
-                            <DashboardDay
-                                date={day}
-                                setRefreshState={this.setRefreshState}
-                                shouldRefresh={this.state.shouldRefresh}
-                            />
-                        </Col>)}
+                        {this.getWeek().map(day =>
+                            <Col key={day} md="6" lg="" className="diary-day">
+                                <DashboardDay
+                                    date={day}
+                                    setRefreshState={this.setRefreshState}
+                                    shouldRefresh={this.state.shouldRefresh}/>
+                            </Col>)}
                     </Row>
                 </Container>
             </Fragment>

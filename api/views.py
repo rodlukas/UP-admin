@@ -16,6 +16,15 @@ from .serializers import ApplicationSerializer, AttendanceSerializer, Attendance
     ClientSerializer, GroupSerializer, LectureSerializer, MembershipSerializer
 from .services import Bank
 
+"""
+pro simulaci casove prodlevy pozadavku lze pouzit:
+
+    def get_queryset(self):
+        import time
+        time.sleep(10)
+        return AttendanceState.objects.all()
+"""
+
 
 class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     queryset = Client.objects.all()

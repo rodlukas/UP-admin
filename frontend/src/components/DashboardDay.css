@@ -1,3 +1,13 @@
 .LectureGroup {
     background-color: #E7E7E7 !important;
 }
+
+@media (min-width: 576px) {
+    .DashboardDay_date h4 {
+        padding-left: 2.86875rem
+    }
+}
+
+.DashboardDay_date {
+    padding: .75rem !important;
+}

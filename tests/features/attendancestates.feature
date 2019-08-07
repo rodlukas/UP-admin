@@ -4,7 +4,7 @@ Feature: Operations with attendance states
     Given the database with some attendance states
     And the logged user
 
-  @add @attendancestates
+  @add @attendancestates @fast.row<row.id>
   Scenario Outline: Add valid attendance state
     When user adds new attendance state "<name>" with visibility "<visible>"
     Then the attendance state is added

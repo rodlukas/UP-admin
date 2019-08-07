@@ -6,9 +6,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 # noinspection PyUnresolvedReferences
-from tests.common_steps import applications
+from tests.common_steps import applications  # lgtm [py/unused-import]
 # noinspection PyUnresolvedReferences
-from tests.ui_steps import helpers, login_logout
+from tests.ui_steps import helpers, login_logout  # lgtm [py/unused-import]
 
 
 def get_applications(driver):
@@ -80,8 +80,6 @@ def insert_to_form(context):
     helpers.react_select_insert(context.browser, client_field, context.client)
     helpers.react_select_insert(context.browser, course_field, context.course)
     note_field.send_keys(context.note)
-    # vrat posledni element
-    return note_field
 
 
 def load_data_to_context(context, full_name, course, note):
@@ -191,9 +189,9 @@ def step_impl(context, cur_full_name, cur_course, new_full_name, new_course, new
     # uloz puvodni pocet zadosti
     save_old_applications_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_application")
 
 
 use_step_matcher("re")
@@ -214,6 +212,6 @@ def step_impl(context, full_name, course, note):
     # uloz puvodni pocet zadosti
     save_old_applications_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_application")

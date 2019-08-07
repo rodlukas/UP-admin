@@ -6,9 +6,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 # noinspection PyUnresolvedReferences
-from tests.common_steps import clients
+from tests.common_steps import clients  # lgtm [py/unused-import]
 # noinspection PyUnresolvedReferences
-from tests.ui_steps import helpers, login_logout
+from tests.ui_steps import helpers, login_logout  # lgtm [py/unused-import]
 
 
 def clients_cnt(driver):
@@ -56,8 +56,6 @@ def insert_to_form(context):
     if ((context.active and not active_checkbox.is_selected()) or
             (not context.active and active_checkbox.is_selected())):
         active_label.click()
-    # vrat posledni element
-    return note_field
 
 
 def load_data_to_context(context, name, surname, phone, email, note, active):
@@ -170,9 +168,9 @@ def step_impl(context, name, surname, phone, email, note, active):
     button_add_client = context.browser.find_element_by_css_selector('[data-qa=button_add_client]')
     button_add_client.click()
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_client")
 
 
 @when(
@@ -192,6 +190,6 @@ def step_impl(context, cur_full_name, new_name, new_surname, new_phone, new_emai
     button_edit_client = client_to_update.find_element_by_css_selector('[data-qa=button_edit_client]')
     button_edit_client.click()
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_client")

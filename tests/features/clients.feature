@@ -4,7 +4,7 @@ Feature: Operations with clients
     Given the database with some clients
     And the logged user
 
-  @add @clients
+  @add @clients @fast.row<row.id>
   Scenario Outline: Add valid clients
     When user adds new client "<name>" "<surname>" with phone "<phone>", email "<email>", note "<note>" and activity "<active>"
     Then the client is added

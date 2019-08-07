@@ -2,6 +2,11 @@ html, body, .content, .root {
     background-color: #ECF0F5;
 }
 
+/* aby tlacitka s odkazem nemely pointer */
+a .btn.disabled {
+    cursor: default;
+}
+
 /* prepsani pravidla z bootstrapu, nechceme responzivni chovani containeru, staci takto */
 .container {
     max-width: 1140px !important;

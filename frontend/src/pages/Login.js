@@ -28,13 +28,11 @@ export default function Login(props) {
     const {from} = props.location.state || {from: {pathname: "/"}}
     if (authContext.IS_AUTH)
         return <Redirect to={from}/>
-    const HeadingContent = () =>
-        APP_URLS.prihlasit.title
     if (authContext.IS_LOADING)
         return <Loading text="Probíhá přihlašování"/>
     return (
         <Container>
-            <Heading content={<HeadingContent/>}/>
+            <Heading content={APP_URLS.prihlasit.title}/>
             <Row className="justify-content-center pageContent">
                 <Col md="9" lg="7">
                     <Card className="p-4">
@@ -58,7 +56,9 @@ export default function Login(props) {
                                            required data-qa="login_field_password"/>
                                 </Col>
                             </FormGroup>
-                            <SubmitButton content="Přihlásit"/>
+                            <SubmitButton
+                                data-qa="button_submit_login"
+                                content="Přihlásit"/>
                         </Form>
                     </Card>
                 </Col>

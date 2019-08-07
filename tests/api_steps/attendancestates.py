@@ -5,9 +5,9 @@ from rest_framework import status
 
 from tests import common_helpers
 # noinspection PyUnresolvedReferences
-from tests.api_steps import helpers, login_logout
+from tests.api_steps import helpers, login_logout  # lgtm [py/unused-import]
 # noinspection PyUnresolvedReferences
-from tests.common_steps import attendancestates
+from tests.common_steps import attendancestates  # lgtm [py/unused-import]
 
 
 def attendancestates_cnt(api_client):

@@ -8,26 +8,31 @@ import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import Note from "../components/Note"
 import Phone from "../components/Phone"
+import {WithClientsActiveContext} from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import APP_URLS from "../urls"
 
-export default class Clients extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            clients: [],
-            IS_LOADING: true,
-            active: true
-        }
+class Clients extends Component {
+    state = {
+        clients: [],
+        IS_LOADING: true,
+        active: true
     }
 
-    refresh = (active = this.state.active) => {
-        this.setState({IS_LOADING: true, active: active}, () => this.getClients(active))
-    }
+    isLoading = () =>
+        this.state.active ? !this.props.clientsActiveContext.isLoaded : this.state.IS_LOADING
 
-    getClients = (active = this.state.active) => {
-        const request = active ? ClientService.getActive() : ClientService.getInactive()
-        request.then(clients => this.setState({clients, IS_LOADING: false}))
+    getClientsData = () =>
+        this.state.active ? this.props.clientsActiveContext.clients : this.state.clients
+
+    refresh = (active = this.state.active) =>
+        this.setState({IS_LOADING: true, active: active}, () => this.getClients(active, true))
+
+    getClients = (active = this.state.active, callFromRefresh = false) => {
+        if (active)
+            callFromRefresh ? this.props.clientsActiveContext.funcHardRefresh() : this.props.clientsActiveContext.funcRefresh()
+        else
+            ClientService.getInactive().then(clients => this.setState({clients, IS_LOADING: false}))
     }
 
     componentDidMount() {
@@ -35,37 +40,15 @@ export default class Clients extends Component {
     }
 
     render() {
-        const {clients, IS_LOADING} = this.state
-        const ClientTable = () =>
-            <tbody>
-            {clients.map(client =>
-                <tr key={client.id} data-qa="client">
-                    <td style={{minWidth: '13em', width: '13em'}}>
-                        <ClientName client={client} link/>
-                    </td>
-                    <td style={{minWidth: '7em'}}>
-                        <Phone phone={client.phone}/>
-                    </td>
-                    <td>
-                        <Email email={client.email}/>
-                    </td>
-                    <td>
-                        <Note note={client.note}/>
-                    </td>
-                    <td>
-                        <ModalClients currentClient={client} refresh={this.refresh}/>
-                    </td>
-                </tr>)}
-            </tbody>
-        const HeadingContent = () =>
-            <Fragment>
-                {APP_URLS.klienti.title}
-                <ModalClients refresh={this.refresh}/>
-                <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
-            </Fragment>
         return (
             <Container>
-                <Heading content={<HeadingContent/>}/>
+                <Heading content={
+                    <Fragment>
+                        {APP_URLS.klienti.title}
+                        <ModalClients refresh={this.refresh}/>
+                        <ActiveSwitcher onChange={this.refresh} active={this.state.active}/>
+                    </Fragment>
+                }/>
                 <Table striped size="sm" responsive className="pageContent">
                     <thead className="thead-dark">
                     <tr>
@@ -76,17 +59,36 @@ export default class Clients extends Component {
                         <th>Akce</th>
                     </tr>
                     </thead>
-                    {IS_LOADING ?
-                        <tbody>
-                            <tr>
-                                <td colSpan="5">
-                                    <Loading/>
-                                </td>
-                            </tr>
-                        </tbody> :
-                        <ClientTable/>}
+                    <tbody>
+                    {this.isLoading() ?
+                        <tr>
+                            <td colSpan="5">
+                                <Loading/>
+                            </td>
+                        </tr> :
+                        <Fragment>
+                            {this.getClientsData().map(client =>
+                                <tr key={client.id} data-qa="client">
+                                    <td style={{minWidth: '13em', width: '13em'}}>
+                                        <ClientName client={client} link/>
+                                    </td>
+                                    <td style={{minWidth: '7em'}}>
+                                        <Phone phone={client.phone}/>
+                                    </td>
+                                    <td>
+                                        <Email email={client.email}/>
+                                    </td>
+                                    <td>
+                                        <Note note={client.note}/>
+                                    </td>
+                                    <td>
+                                        <ModalClients currentClient={client} refresh={this.refresh}/>
+                                    </td>
+                                </tr>)}
+                        </Fragment>}
+                    </tbody>
                 </Table>
-                {!Boolean(clients.length) && !IS_LOADING &&
+                {!Boolean(this.getClientsData().length) && !this.isLoading() &&
                 <p className="text-muted text-center">
                     Žádní klienti
                 </p>}
@@ -94,3 +96,5 @@ export default class Clients extends Component {
         )
     }
 }
+
+export default WithClientsActiveContext(Clients)

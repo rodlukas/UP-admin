@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 # noinspection PyUnresolvedReferences
-from tests.common_steps import login_logout
+from tests.common_steps import login_logout  # lgtm [py/unused-import]
 from tests.ui_steps import helpers
 
 LOCAL_STORAGE_JWT_KEY = 'jwt'
@@ -45,7 +45,7 @@ def login(context, username, password):
     username_field.send_keys(username)
     password_field.send_keys(password)
     # prihlas se
-    password_field.submit()
+    helpers.submit_form(context, "button_submit_login")
 
 
 @When('user logs into app with correct credentials')

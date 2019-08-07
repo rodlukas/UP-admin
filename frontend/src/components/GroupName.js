@@ -2,25 +2,35 @@ import React from "react"
 import {Link} from "react-router-dom"
 import APP_URLS from "../urls"
 import Circle from "./Circle"
+import ConditionalWrapper from "./ConditionalWrapper"
 import "./GroupName.css"
 
-const PlainName = ({group, title}) =>
+const PlainName = ({group, title, bold}) =>
     <span data-qa="group_name">
-        {title && "Skupina "}{group.name}
+        <ConditionalWrapper
+            condition={bold}
+            wrapper={children =>
+                <span className="font-weight-bold">
+                    {children}
+                </span>}>
+            {title && "Skupina "}{group.name}
+        </ConditionalWrapper>
     </span>
 
-const GroupName = ({group, link = false, title = false, showCircle = false}) =>
+const GroupName = ({group, link = false, title = false, showCircle = false, bold = false}) =>
     <span className="clientName GroupName">
-        {link ?
-            <Link to={(APP_URLS.skupiny.url + "/" + group.id)}>
+        <ConditionalWrapper
+            condition={link}
+            wrapper={children =>
+                <Link to={(APP_URLS.skupiny.url + "/" + group.id)}>
                 <span className="text-nowrap">
                     {showCircle &&
                     <Circle color={group.course.color} size={0.5}/>}
-                    <PlainName group={group} title={title}/>
+                    {children}
                 </span>
-            </Link>
-            :
-            <PlainName group={group} title={title}/>}
+                </Link>}>
+            <PlainName group={group} title={title} bold={bold}/>
+        </ConditionalWrapper>
     </span>
 
 export default GroupName

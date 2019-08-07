@@ -5,20 +5,20 @@ Feature: Operations with lectures
     And the logged user
 
 
-  @add @lectures
+  @add @lectures @fast.row<row.id>
   Scenario Outline: Add valid group lecture
     When user adds new group lecture for group "<group>" with date "<date>", time "<time>", duration "<duration>", canceled "<canceled>", attendance of the client "<client1>" is: "<attendancestate1>", paid "<paid1>", note "<note1>" and attendance of the client "<client2>" is: "<attendancestate2>", paid "<paid2>", note "<note2>"
     Then the lecture is added
 
     Examples: Lectures
       | group     | date       | time  | canceled | duration | client1      | attendancestate1 | paid1 | note1 | client2         | attendancestate2 | paid2 | note2 |
-      | Slabika 4 | 2018-05-07 | 15:00 | False    | 50       | Rodová Petra | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
-      | Slabika 4 | 2018-05-07 | 16:00 | False    | 40       | Rodová Petra | abcd             | False | test  | Jirušková Aneta | OK               | False | test  |
+      | Slabika 4 | 2018-05-07 | 15:00 | False    | 40       | Rodová Petra | abcd             | False | test  | Jirušková Aneta | OK               | True  | test  |
+      | Slabika 4 | 2018-05-07 | 16:00 | False    | 50       | Rodová Petra | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
       | Slabika 4 | 2018-05-07 | 17:00 | False    | 10       | Rodová Petra | omluven          | False | test  | Jirušková Aneta | OK               | False | test  |
       | Slabika 4 | 2018-05-07 | 17:10 | True     | 10       | Rodová Petra | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
 
 
-  @add @lectures
+  @add @lectures @fast.row<row.id>
   Scenario Outline: Add valid single lecture
     When user adds new single lecture for client "<client>" for course "<course>" with date "<date>", time "<time>", duration "<duration>", canceled "<canceled>", attendance of the client is: "<attendancestate>", paid "<paid>", note "<note>"
     Then the lecture is added

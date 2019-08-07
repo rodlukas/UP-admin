@@ -1,11 +1,12 @@
 import React from "react"
 import Select from "react-select"
 import {TEXTS} from "../../global/constants"
-import {selectStyles} from "./SelectCourseColors"
+import {react_select_ids} from "./func"
+import {selectStyles} from "./selectCourseColors"
 
 const SelectCourse = ({value, onChangeCallback, options, isDisabled = false}) =>
     <Select
-        inputId="course"
+        {...react_select_ids("course")}
         value={value}
         getOptionLabel={option => option.name}
         getOptionValue={option => option.id}

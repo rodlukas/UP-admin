@@ -19,9 +19,10 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
+import {WithClientsActiveContext} from "../contexts/ClientsActiveContext"
 import {prettyPhone} from "../global/utils"
 
-export default class FormClients extends Component {
+class FormClients extends Component {
     constructor(props) {
         super(props)
         this.isClient = Boolean(Object.keys(props.client).length)
@@ -60,6 +61,7 @@ export default class FormClients extends Component {
         request.then(response => {
             this.close()
             this.refresh(response)
+            this.props.clientsActiveContext.funcHardRefresh()
         })
     }
 
@@ -77,6 +79,7 @@ export default class FormClients extends Component {
             .then(() => {
                 this.close()
                 this.refresh()
+                this.props.clientsActiveContext.funcHardRefresh()
             })
 
     render() {
@@ -86,7 +89,7 @@ export default class FormClients extends Component {
                 <ModalHeader toggle={this.close}>
                     {this.isClient ? 'Úprava' : 'Přidání'} klienta:
                     {' '}
-                    <ClientName client={{name, surname}}/>
+                    <ClientName client={{name, surname}} bold/>
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
@@ -176,9 +179,13 @@ export default class FormClients extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close}/>
                     {' '}
-                    <SubmitButton content={this.isClient ? 'Uložit' : 'Přidat'}/>
+                    <SubmitButton
+                        data-qa="button_submit_client"
+                        content={this.isClient ? 'Uložit' : 'Přidat'}/>
                 </ModalFooter>
             </Form>
         )
     }
 }
+
+export default WithClientsActiveContext(FormClients)

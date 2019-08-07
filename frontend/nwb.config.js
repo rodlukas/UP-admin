@@ -2,24 +2,12 @@ const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 const path = require('path')
 const isProduction = process.env.NODE_ENV === 'production'
 const chalk = require('chalk')
+const os = require('os')
 
-// je potreba dynamicky menit adresu vzhledem k aktualni pridelene adrese zarizeni
-function getIPAddress() {
-    let interfaces = require('os').networkInterfaces()
-    for (let devName in interfaces) {
-        if (devName !== 'Wi-Fi' && devName !== 'Ethernet')
-            continue
-        let iface = interfaces[devName]
-        for (let i = 0; i < iface.length; i++) {
-            let alias = iface[i]
-            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
-                return alias.address
-        }
-    }
-    return "localhost"
-}
+// bez .local by nefungovalo na iOS
+const hostName = os.hostname().toLowerCase() + '.local'
 
-const url = 'http://' + getIPAddress() + ':3000/'
+const url = 'http://' + hostName + ':3000/'
 
 module.exports = function ({command}) {
     let config = {
@@ -81,7 +69,13 @@ module.exports = function ({command}) {
     }
     config.devServer = {
         // allow django host, in case you use custom domain for django app
-        allowedHosts: ["0.0.0.0"]
+        allowedHosts: [
+            "0.0.0.0",
+            hostName
+        ]
+    }
+    config.babel = {
+        presets: ["flow"]
     }
     return config
 }

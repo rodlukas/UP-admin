@@ -7,9 +7,9 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from tests import common_helpers
 # noinspection PyUnresolvedReferences
-from tests.common_steps import lectures
+from tests.common_steps import lectures  # lgtm [py/unused-import]
 # noinspection PyUnresolvedReferences
-from tests.ui_steps import helpers, login_logout
+from tests.ui_steps import helpers, login_logout  # lgtm [py/unused-import]
 
 
 def get_lectures(driver):
@@ -164,8 +164,6 @@ def insert_to_form(context):
             paid_label.click()
         note_field.send_keys(attendance['note'])
         choose_attendancestate(found_attendance, attendance['attendancestate'])
-    # vrat posledni element
-    return duration_field
 
 
 def load_data_to_context(context, obj, date, time, duration, canceled, attendances, is_group=False):
@@ -335,9 +333,9 @@ def step_impl(context, date, time, new_date, new_time, new_course, new_duration,
     # uloz puvodni pocet skupin
     save_old_lectures_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_lecture")
 
 
 @when(
@@ -400,9 +398,9 @@ def step_impl(context, group, date, time, duration, canceled, client1, attendanc
     # uloz puvodni pocet lekci
     save_old_lectures_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_lecture")
 
 
 @when(
@@ -420,6 +418,6 @@ def step_impl(context, client, course, date, time, duration, canceled, attendanc
     # uloz puvodni pocet lekci
     save_old_lectures_cnt_to_context(context)
     # vloz vsechny udaje do formulare
-    last_field = insert_to_form(context)
+    insert_to_form(context)
     # odesli formular
-    last_field.submit()
+    helpers.submit_form(context, "button_submit_lecture")

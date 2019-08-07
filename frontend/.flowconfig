@@ -1,0 +1,13 @@
+[ignore]
+.*/node_modules/nwb/.*
+.*/dist/.*
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]
