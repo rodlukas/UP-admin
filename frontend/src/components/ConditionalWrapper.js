@@ -8,6 +8,6 @@ type Props = {
 }
 
 const ConditionalWrapper = ({condition, wrapper, children}: Props) =>
-    condition ? wrapper(children) : <Fragment>children</Fragment>
+    condition ? wrapper(children) : <Fragment>{children}</Fragment>
 
 export default ConditionalWrapper
