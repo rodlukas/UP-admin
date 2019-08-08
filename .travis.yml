@@ -3,19 +3,22 @@ language: python
 dist: xenial
 python: '3.7'
 node_js: '10'
+services:
+  - postgresql
+addons:
+  firefox: latest
+  postgresql: '11'
+
+env:
+  global:
+    - MOZ_HEADLESS=1
+    - PIPENV_CACHE_DIR=$HOME/.cache/pipenv
 
 cache:
   yarn: true
   directories:
     - frontend/node_modules
-
-services:
-  - postgresql
-env:
-  - MOZ_HEADLESS=1
-addons:
-  firefox: latest
-  postgresql: '11'
+    - $PIPENV_CACHE_DIR
 
 before_install:
   # pridani ceskeho balicku pro funkcni CZ v databazi
