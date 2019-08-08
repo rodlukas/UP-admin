@@ -55,8 +55,8 @@ after_success:
   # posli pokryti kodu do codecov
   - codecov --token=$CODECOV_TOKEN
 
-  # smazani dat z testovani a dokumentace
-  - rm -rf geckodriver geckodriver.log coverage.xml docs
+  # smazani dat z buildu, testovani a dokumentace
+  - rm -rf geckodriver geckodriver.log coverage.xml docs frontend
 
   # vytvoreni souboru frontend.zip se sestavenym frontendem (vcetne template) pro nahrani na GH
   - zip -r frontend.zip frontend/dist admin/templates/react-autogenerate.html -x frontend/dist/react-autogenerate.html
