@@ -169,9 +169,9 @@ Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční 
 $ wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
 $ unzip frontend.zip && rm frontend.zip
 ```
-**Přejmenujeme výchozí konfigurační soubor `.env.default` v kořenovém adresáři na `.env`**
+**Přejmenujeme vzorový konfigurační soubor `.env.template` v kořenovém adresáři na `.env`**
 ```bash
-$ mv .env.default .env
+$ mv .env.template .env
 ```
 Spustíme ***psql CLI***, kde pomocí dvou příkazů **vytvoříme databázi a uživatele** pro přístup do databáze, na závěr ukončíme CLI
 ```
