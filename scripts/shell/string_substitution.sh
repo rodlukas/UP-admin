@@ -18,7 +18,10 @@ RELEASE=$TRAVIS_TAG
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
 
 # prikazy k provedeni
-cd frontend || echo "CHYBA - Substituce retezcu se nepodarila" && exit
+cd frontend || {
+  echo "CHYBA - Substituce retezcu se nepodarila"
+  exit 1
+}
 
 substitute "$GIT_VERSION_STRING" "$VERSION"
 substitute "$GIT_RELEASE_STRING" "$RELEASE"
