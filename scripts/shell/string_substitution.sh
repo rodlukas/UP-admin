@@ -2,8 +2,8 @@
 
 # funkce pro nahrazeni retezcu (arg1: $1) retezcem (arg2: $2)
 substitute() {
-    git grep -l "$1" | xargs sed -i "s|$1|$2|g"
-    echo "nahrazeni \"$1\" hodnotou \"$2\" probehlo uspesne"
+  git grep -l "$1" | xargs sed -i "s|$1|$2|g"
+  echo "nahrazeni \"$1\" hodnotou \"$2\" probehlo uspesne"
 }
 
 # nastaveni konstant, ktere budou nahrazeny
@@ -18,7 +18,10 @@ RELEASE=$TRAVIS_TAG
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
 
 # prikazy k provedeni
-cd frontend
+cd frontend || {
+  echo "CHYBA - Substituce retezcu se nepodarila"
+  exit 1
+}
 
 substitute "$GIT_VERSION_STRING" "$VERSION"
 substitute "$GIT_RELEASE_STRING" "$RELEASE"

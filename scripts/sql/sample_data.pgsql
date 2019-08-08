@@ -31,11 +31,11 @@ COPY public.admin_client (id, name, surname, phone, email, note, active) FROM st
 -- Data for Name: admin_course; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_course (id, name, visible, duration) FROM stdin;
-1	Feuersteinova metoda	t	30
-2	Kurz Slabika	t	30
-3	RoPraTem	t	40
-4	Máme doma leváka	f	20
+COPY public.admin_course (id, name, visible, duration, color) FROM stdin;
+1	Feuersteinova metoda	t	30	#2EA0BA
+2	Kurz Slabika	t	30	#D2527F
+3	RoPraTem	t	40	#C0392B
+4	Máme doma leváka	f	20	#446CB3
 \.
 
 
