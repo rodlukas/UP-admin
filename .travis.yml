@@ -3,13 +3,20 @@ language: python
 dist: xenial
 python: '3.7'
 node_js: '10'
+
+cache:
+  yarn: true
+  directories:
+    - frontend/node_modules
+
 services:
-- postgresql
+  - postgresql
 env:
-- MOZ_HEADLESS=1
+  - MOZ_HEADLESS=1
 addons:
   firefox: latest
   postgresql: '11'
+
 before_install:
   # pridani ceskeho balicku pro funkcni CZ v databazi
   - source scripts/shell/postgresql_cs.sh
@@ -22,10 +29,7 @@ install:
   - source scripts/shell/string_substitution.sh
 
   # nainstaluj JS zavislosti
-  - nvm install 10.16.0
-  - npm i -g npm@~6.9.0
-  - npm install -g yarn@~1.17.3
-  - yarn install
+  - source scripts/shell/js_install.sh
 
   # nainstaluj Python zavislosti
   - pip install pipenv
@@ -58,30 +62,30 @@ notifications:
   slack:
     secure: kNfvnpEk/TDNyqA6ueJ4cjpAtHKhoDp1sGLuhbj2KHYy4kivA1gDcWiF/Hdp9hAGlCiYVoMrY+dETyFY+zdwJtHbAolAEY0KGeb+Nwy1frU2aFSywbxC/CrnOHNCboTiOEpPivWpX5NAhypAlT0FTN5IFnYfbAkl+u0bnWIXbtxMDDxcV8PnN1IucKAvJeC6FPa7l4dPVmpe8dc0lsDPLD8713O+UG+I2d8CPP4yoYIgqdzLjd9zr05/albSXCXz+MjSfoA2QVfYRIpw0NyegMNdwChdBOTP9xds2D7P0xjLYhPVz98y2i4SyBzZcj+JXRYeA6Voi4WPAKeQHUJunA/dpEUZ/Rt2jIeNBAQxOUmRH+vmhKq+c9OwzeOfNUk7gZHxMFs3MEwPtDy62O9KmazzDDzr5hOCOqKboiGQONWt7Rp1yv4jzxlVZ6OxvzDF/COWnQLOIjVBzjSFIQH6LO5Gz/01ZQAqmtaZoWBb8xr3aebXDbrsPO6YSJZMyfXl4mRcMUGmGpEn1600jACpOKWED5NheRqIZnkSHBT/EurjFSXm7O+GztrPB14m3mBFn4o9xaQrkx35Zop0ZFf33w/UA+CeJ1jMdmArXF7RcNNcWQcZG8KbkIVj2qYUNY7sPjx+3K4B604jaAIj/Iwyoa+xQud0dR4zGZjcNzjRRPk=
 deploy:
-- provider: releases
-  api_key: $GH_API_KEY
-  file: frontend.zip
-  skip_cleanup: true
-  on:
-    tags: true
-- provider: heroku
-  api_key: $HEROKU_API_KEY
-  app: uspesnyprvnacek-testing
-  skip_cleanup: true
-  on:
-    all_branches: true
-- provider: heroku
-  api_key: $HEROKU_API_KEY
-  app: uspesnyprvnacek-staging
-  skip_cleanup: true
-  on:
-    tags: true
-- provider: heroku
-  api_key: $HEROKU_API_KEY
-  app: uspesnyprvnacek
-  skip_cleanup: true
-  on:
-    tags: true
+  - provider: releases
+    api_key: $GH_API_KEY
+    file: frontend.zip
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: heroku
+    api_key: $HEROKU_API_KEY
+    app: uspesnyprvnacek-testing
+    skip_cleanup: true
+    on:
+      all_branches: true
+  - provider: heroku
+    api_key: $HEROKU_API_KEY
+    app: uspesnyprvnacek-staging
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: heroku
+    api_key: $HEROKU_API_KEY
+    app: uspesnyprvnacek
+    skip_cleanup: true
+    on:
+      tags: true
 after_deploy:
   # po prvnim deploy (GH) smaz frontend.zip, po ostatnich deploy uz nic nedelej
   - rm -f frontend.zip
