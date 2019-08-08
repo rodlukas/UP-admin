@@ -2,7 +2,7 @@ language: python
 # xenial je potreba pro fungovani pythonu 3.7
 dist: xenial
 python: '3.7'
-node_js: '10'
+node_js: 'lts/*'  # latest LTS Node.js release
 
 cache:
   yarn: true
