@@ -104,6 +104,7 @@ konkrétní instancí databáze, umožňují různé úrovně debugování a kos
 viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[2]](https://wsvincent.com/django-best-practices/)).
 * Na produkci se každý den ve 3:00 provádí 
 [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
+* Pro **automatické formátování kódů** se používá **[Black](https://github.com/psf/black)** (Python) a **[Prettier](https://github.com/prettier/prettier)** (JS, JSX, CSS, HTML), oba nástroje jsou napojené na IDE a provádějí automatické úpravy.
 * **Aplikace jsou napojené na další služby:**
     * **CI a CD** má na starost [Travis](https://travis-ci.com/) – automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
     * **Automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání potenciálních chyb a 
@@ -117,7 +118,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
     * **Sledování chování a návštěv** umožňuje napojení na [Google Analytics](https://analytics.google.com/) (díky modulu [react-ga](https://github.com/react-ga/react-ga)).
     * [Slack](https://slack.com/)
 * Aplikace **respektuje standardy** [PEP 8](https://pep8.org), [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
-* Kompletní vývoj aplikace probíhá v IDE *[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)* (řeší například automatickou optimalizaci importů apod.).
+* Kompletní vývoj aplikace probíhá v IDE *[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)* (řeší například automatickou optimalizaci importů, automatické formátování kódů apod.).
 * Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí.
     * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
