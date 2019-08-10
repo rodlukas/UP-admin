@@ -5,14 +5,8 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0033_auto_20180926_1043'),
-    ]
+    dependencies = [("admin", "0033_auto_20180926_1043")]
 
     operations = [
-        migrations.AlterField(
-            model_name='client',
-            name='phone',
-            field=models.TextField(blank=True),
-        ),
+        migrations.AlterField(model_name="client", name="phone", field=models.TextField(blank=True))
     ]

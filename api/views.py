@@ -9,11 +9,28 @@ from rest_framework import viewsets, mixins
 from rest_framework.filters import OrderingFilter
 from rest_framework.views import APIView
 
-from admin.models import Application, Attendance, AttendanceState, Course, Client, Group, Lecture, Membership
+from admin.models import (
+    Application,
+    Attendance,
+    AttendanceState,
+    Course,
+    Client,
+    Group,
+    Lecture,
+    Membership,
+)
 from . import filters as custom_filters
 from .mixins import ProtectedErrorMixin
-from .serializers import ApplicationSerializer, AttendanceSerializer, AttendanceStateSerializer, CourseSerializer, \
-    ClientSerializer, GroupSerializer, LectureSerializer, MembershipSerializer
+from .serializers import (
+    ApplicationSerializer,
+    AttendanceSerializer,
+    AttendanceStateSerializer,
+    CourseSerializer,
+    ClientSerializer,
+    GroupSerializer,
+    LectureSerializer,
+    MembershipSerializer,
+)
 from .services import Bank
 
 """
@@ -29,7 +46,7 @@ pro simulaci casove prodlevy pozadavku lze pouzit:
 class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
-    filterset_fields = 'active',
+    filterset_fields = ("active",)
 
     def destroy(self, request, *args, **kwargs):
         try:
@@ -62,17 +79,18 @@ class AttendanceStateViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.select_related('course') \
-        .prefetch_related(Prefetch('memberships', queryset=Membership.objects.select_related('client')))
+    queryset = Group.objects.select_related("course").prefetch_related(
+        Prefetch("memberships", queryset=Membership.objects.select_related("client"))
+    )
     serializer_class = GroupSerializer
-    filter_backends = filters.DjangoFilterBackend,
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = custom_filters.GroupFilter
 
 
 class CourseViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    filterset_fields = 'visible',
+    filterset_fields = ("visible",)
 
     def destroy(self, request, *args, **kwargs):
         try:
@@ -84,24 +102,28 @@ class CourseViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
 
 
 class ApplicationViewSet(viewsets.ModelViewSet):
-    queryset = Application.objects.select_related('course', 'client')
+    queryset = Application.objects.select_related("course", "client")
     serializer_class = ApplicationSerializer
 
 
 class LectureViewSet(viewsets.ModelViewSet):
-    queryset = Lecture.objects.order_by('-start') \
-        .select_related('group__course', 'course') \
-        .prefetch_related(Prefetch('attendances', queryset=Attendance.objects.select_related('client')),
-                          Prefetch('group__memberships', queryset=Membership.objects.select_related('client')))
+    queryset = (
+        Lecture.objects.order_by("-start")
+        .select_related("group__course", "course")
+        .prefetch_related(
+            Prefetch("attendances", queryset=Attendance.objects.select_related("client")),
+            Prefetch("group__memberships", queryset=Membership.objects.select_related("client")),
+        )
+    )
     serializer_class = LectureSerializer
-    filter_backends = OrderingFilter, DjangoFilterBackend,
+    filter_backends = OrderingFilter, DjangoFilterBackend
     filterset_class = custom_filters.LectureFilter
-    ordering_fields = 'start',
+    ordering_fields = ("start",)
 
     def get_serializer(self, *args, **kwargs):
         # pokud prislo pole, nastav serializer na many=True
-        if isinstance(kwargs.get('data', {}), list):
-            kwargs['many'] = True
+        if isinstance(kwargs.get("data", {}), list):
+            kwargs["many"] = True
         return super().get_serializer(*args, **kwargs)
 
 

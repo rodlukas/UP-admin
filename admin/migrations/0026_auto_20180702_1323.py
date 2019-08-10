@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0025_auto_20180702_0939'),
-    ]
+    dependencies = [("admin", "0025_auto_20180702_0939")]
 
     operations = [
         migrations.AlterField(
-            model_name='attendancestate',
-            name='default',
-            field=models.BooleanField(default=False),
-        ),
+            model_name="attendancestate", name="default", field=models.BooleanField(default=False)
+        )
     ]

@@ -5,33 +5,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0010_auto_20180307_1753'),
-    ]
+    dependencies = [("admin", "0010_auto_20180307_1753")]
 
     operations = [
         migrations.AlterField(
-            model_name='attendance',
-            name='note',
-            field=models.TextField(blank=True, default=''),
+            model_name="attendance",
+            name="note",
+            field=models.TextField(blank=True, default=""),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='client',
-            name='email',
-            field=models.TextField(blank=True, default=''),
+            model_name="client",
+            name="email",
+            field=models.TextField(blank=True, default=""),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='client',
-            name='note',
-            field=models.TextField(blank=True, default=''),
+            model_name="client",
+            name="note",
+            field=models.TextField(blank=True, default=""),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='client',
-            name='phone',
-            field=models.TextField(blank=True, default=''),
+            model_name="client",
+            name="phone",
+            field=models.TextField(blank=True, default=""),
             preserve_default=False,
         ),
     ]

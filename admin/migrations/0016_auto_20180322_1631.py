@@ -5,17 +5,9 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0015_auto_20180321_1509'),
-    ]
+    dependencies = [("admin", "0015_auto_20180321_1509")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='membership',
-            name='end',
-        ),
-        migrations.RemoveField(
-            model_name='membership',
-            name='start',
-        ),
+        migrations.RemoveField(model_name="membership", name="end"),
+        migrations.RemoveField(model_name="membership", name="start"),
     ]

@@ -5,13 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0039_auto_20190514_2149'),
-    ]
+    dependencies = [("admin", "0039_auto_20190514_2149")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='application',
-            options={'ordering': ['client__surname', 'client__name']},
-        ),
+            name="application", options={"ordering": ["client__surname", "client__name"]}
+        )
     ]

@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0040_auto_20190718_0938'),
-    ]
+    dependencies = [("admin", "0040_auto_20190718_0938")]
 
     operations = [
         migrations.AddField(
-            model_name='course',
-            name='color',
-            field=models.CharField(default='#000', max_length=7),
-        ),
+            model_name="course", name="color", field=models.CharField(default="#000", max_length=7)
+        )
     ]

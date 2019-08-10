@@ -5,15 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0034_auto_20180926_1613'),
-    ]
+    dependencies = [("admin", "0034_auto_20180926_1613")]
 
     operations = [
         migrations.AddField(
-            model_name='course',
-            name='duration',
+            model_name="course",
+            name="duration",
             field=models.PositiveIntegerField(default=30),
             preserve_default=False,
-        ),
+        )
     ]

@@ -21,7 +21,8 @@ def validate_client_is_active(client):
     """
     if not client.active:
         raise serializers.ValidationError(
-            f"Zadaný klient ({client.surname} {client.name}) není aktivní, pro další akce je potřeba nastavit jej jako aktivního.")
+            f"Zadaný klient ({client.surname} {client.name}) není aktivní, pro další akce je potřeba nastavit jej jako aktivního."
+        )
     return client
 
 
@@ -31,7 +32,8 @@ def validate_group_is_active(group):
     """
     if not group.active:
         raise serializers.ValidationError(
-            "Zadaná skupina není aktivní, pro další akce je potřeba nastavit ji jako aktivní.")
+            "Zadaná skupina není aktivní, pro další akce je potřeba nastavit ji jako aktivní."
+        )
     return group
 
 
@@ -42,7 +44,9 @@ def datetime_zone(datetime):
 
 def datetime_str(datetime):
     datetime = datetime_zone(datetime)
-    return f"{datetime.day}. {datetime.month}. {datetime.year} – {datetime.hour}:{datetime.minute:02}"
+    return (
+        f"{datetime.day}. {datetime.month}. {datetime.year} – {datetime.hour}:{datetime.minute:02}"
+    )
 
 
 def date_str(datetime):
@@ -60,8 +64,9 @@ def should_be_canceled(attendances):
     for attendance in attendances:
         # muze prijit queryset i slovnik
         # pokud attendancestate znamena omluven, pricti jednicku k poctu omluvenych
-        if ((type(attendance) != Attendance and attendance['attendancestate'].excused) or
-                (type(attendance) == Attendance and attendance.attendancestate.excused)):
+        if (type(attendance) != Attendance and attendance["attendancestate"].excused) or (
+            type(attendance) == Attendance and attendance.attendancestate.excused
+        ):
             excused_cnt += 1
     return client_cnt == excused_cnt
 
@@ -69,9 +74,14 @@ def should_be_canceled(attendances):
 def lecture_corrections(lecture, attendance, prev_canceled, prev_attendancestate):
     # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
     # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
-    if (attendance.attendancestate.excused and not prev_attendancestate.excused and attendance.paid) \
-            or (not prev_canceled and lecture.canceled
-                and attendance.attendancestate.default and attendance.paid):
+    if (
+        attendance.attendancestate.excused and not prev_attendancestate.excused and attendance.paid
+    ) or (
+        not prev_canceled
+        and lecture.canceled
+        and attendance.attendancestate.default
+        and attendance.paid
+    ):
         if lecture.group is not None:
             # najdi clenstvi nalezici klientovi v teto skupine
             try:
@@ -83,11 +93,16 @@ def lecture_corrections(lecture, attendance, prev_canceled, prev_attendancestate
                 membership.prepaid_cnt = membership.prepaid_cnt + 1
                 membership.save()
         else:
-            prepaid_lecture = Lecture.objects.create(course=lecture.course, duration=lecture.course.duration,
-                                                     canceled=False)
-            Attendance.objects.create(paid=True, client=attendance.client, lecture=prepaid_lecture,
-                                      attendancestate=AttendanceState.objects.get(default=True),
-                                      note=f"Náhrada lekce ({date_str(lecture.start)})")
+            prepaid_lecture = Lecture.objects.create(
+                course=lecture.course, duration=lecture.course.duration, canceled=False
+            )
+            Attendance.objects.create(
+                paid=True,
+                client=attendance.client,
+                lecture=prepaid_lecture,
+                attendancestate=AttendanceState.objects.get(default=True),
+                note=f"Náhrada lekce ({date_str(lecture.start)})",
+            )
 
 
 def lecture_cancellability(lecture):
@@ -100,6 +115,7 @@ def lecture_cancellability(lecture):
 
 
 def validate_prepaid_non_changable_paid_state(attendance):
-    if 'paid' in attendance and not attendance['paid']:
+    if "paid" in attendance and not attendance["paid"]:
         raise serializers.ValidationError(
-            {api_settings.NON_FIELD_ERRORS_KEY: "U předplacené lekce nelze měnit parametry platby"})
+            {api_settings.NON_FIELD_ERRORS_KEY: "U předplacené lekce nelze měnit parametry platby"}
+        )

@@ -5,49 +5,21 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0001_initial'),
-    ]
+    dependencies = [("admin", "0001_initial")]
 
     operations = [
         migrations.RenameField(
-            model_name='attendance',
-            old_name='attendancestateid',
-            new_name='attendancestate',
+            model_name="attendance", old_name="attendancestateid", new_name="attendancestate"
         ),
-        migrations.RenameField(
-            model_name='attendance',
-            old_name='clientid',
-            new_name='client',
-        ),
-        migrations.RenameField(
-            model_name='attendance',
-            old_name='lectureid',
-            new_name='lecture',
-        ),
-        migrations.RenameField(
-            model_name='lecture',
-            old_name='courseid',
-            new_name='course',
-        ),
-        migrations.RenameField(
-            model_name='lecture',
-            old_name='groupid',
-            new_name='group',
-        ),
-        migrations.RenameField(
-            model_name='memberof',
-            old_name='clientid',
-            new_name='client',
-        ),
-        migrations.RenameField(
-            model_name='memberof',
-            old_name='groupid',
-            new_name='group',
-        ),
+        migrations.RenameField(model_name="attendance", old_name="clientid", new_name="client"),
+        migrations.RenameField(model_name="attendance", old_name="lectureid", new_name="lecture"),
+        migrations.RenameField(model_name="lecture", old_name="courseid", new_name="course"),
+        migrations.RenameField(model_name="lecture", old_name="groupid", new_name="group"),
+        migrations.RenameField(model_name="memberof", old_name="clientid", new_name="client"),
+        migrations.RenameField(model_name="memberof", old_name="groupid", new_name="group"),
         migrations.AlterField(
-            model_name='lecture',
-            name='duration',
+            model_name="lecture",
+            name="duration",
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
     ]

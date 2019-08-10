@@ -21,9 +21,9 @@ class Bank:
 
     def generate_data(self):
         # serad od nejnovejsich transakci
-        self.json_data['accountStatement']['transactionList']['transaction'].reverse()
+        self.json_data["accountStatement"]["transactionList"]["transaction"].reverse()
         # timestamp dotazu (s prevodem na milisekundy)
-        self.json_data['fetch_timestamp'] = int(datetime.now().timestamp() * 1000)
+        self.json_data["fetch_timestamp"] = int(datetime.now().timestamp() * 1000)
         status_code = status.HTTP_200_OK
         return status_code
 
@@ -36,13 +36,15 @@ class Bank:
             status_info = "špatně zaslaný dotaz na banku"
         else:
             status_info = "neznámá chyba"
-        self.json_data = {'status_info': f"Data se nepodařilo stáhnout – {status_info}"}
+        self.json_data = {"status_info": f"Data se nepodařilo stáhnout – {status_info}"}
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return status_code
 
     def generate_error_blocked(self):
         status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        self.json_data = {'status_info': "Propojení s bankou je v této instanci aplikace administrátorem zakázáno."}
+        self.json_data = {
+            "status_info": "Propojení s bankou je v této instanci aplikace administrátorem zakázáno."
+        }
         return status_code
 
     def get_transactions(self):

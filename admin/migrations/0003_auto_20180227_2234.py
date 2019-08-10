@@ -5,24 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0002_auto_20180227_1101'),
-    ]
+    dependencies = [("admin", "0002_auto_20180227_1101")]
 
     operations = [
+        migrations.AlterField(model_name="client", name="email", field=models.TextField(null=True)),
         migrations.AlterField(
-            model_name='client',
-            name='email',
-            field=models.TextField(null=True),
+            model_name="client", name="note", field=models.TextField(blank=True, null=True)
         ),
-        migrations.AlterField(
-            model_name='client',
-            name='note',
-            field=models.TextField(blank=True, null=True),
-        ),
-        migrations.AlterField(
-            model_name='client',
-            name='phone',
-            field=models.TextField(null=True),
-        ),
+        migrations.AlterField(model_name="client", name="phone", field=models.TextField(null=True)),
     ]

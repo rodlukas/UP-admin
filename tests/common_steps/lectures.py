@@ -4,7 +4,7 @@ from admin.models import Client, Group, AttendanceState, Course, Lecture
 from .. import fixtures
 
 
-@given('the database with some clients, groups, courses and attendance states')
+@given("the database with some clients, groups, courses and attendance states")
 def step_impl(context):
     clients = fixtures.clients()
     courses = fixtures.courses()

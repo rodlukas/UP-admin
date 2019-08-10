@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0029_attendancestate_excused'),
-    ]
+    dependencies = [("admin", "0029_attendancestate_excused")]
 
     operations = [
         migrations.AddField(
-            model_name='membership',
-            name='prepaid_cnt',
+            model_name="membership",
+            name="prepaid_cnt",
             field=models.PositiveIntegerField(default=0),
-        ),
+        )
     ]

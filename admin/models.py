@@ -2,13 +2,17 @@ from django.db import models
 
 
 class AttendanceState(models.Model):
-    default = models.BooleanField(default=False)  # metoda save() osetruje, aby bylo jen jedno True v DB
-    excused = models.BooleanField(default=False)  # metoda save() osetruje, aby bylo jen jedno True v DB
+    default = models.BooleanField(
+        default=False
+    )  # metoda save() osetruje, aby bylo jen jedno True v DB
+    excused = models.BooleanField(
+        default=False
+    )  # metoda save() osetruje, aby bylo jen jedno True v DB
     name = models.TextField()
     visible = models.BooleanField()
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
     # zaridi unikatnost True pro atributy default, excused
     def save(self, *args, **kwargs):
@@ -43,7 +47,7 @@ class Client(models.Model):
     surname = models.TextField()
 
     class Meta:
-        ordering = ['surname', 'name']
+        ordering = ["surname", "name"]
 
     def save(self, *args, **kwargs):
         # odstraneni vsech mezer v telefonu
@@ -58,16 +62,16 @@ class Course(models.Model):
     visible = models.BooleanField()
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
 
 class Application(models.Model):
     note = models.TextField(blank=True)
-    client = models.ForeignKey(Client, related_name='applications', on_delete=models.CASCADE)
-    course = models.ForeignKey(Course, related_name='applications', on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, related_name="applications", on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name="applications", on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['client__surname', 'client__name']
+        ordering = ["client__surname", "client__name"]
 
 
 class Group(models.Model):
@@ -76,7 +80,7 @@ class Group(models.Model):
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]
 
 
 class Lecture(models.Model):
@@ -84,25 +88,25 @@ class Lecture(models.Model):
     duration = models.PositiveIntegerField()
     start = models.DateTimeField(null=True)
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
-    group = models.ForeignKey(Group, related_name='lectures', on_delete=models.CASCADE, null=True)
+    group = models.ForeignKey(Group, related_name="lectures", on_delete=models.CASCADE, null=True)
 
 
 class Attendance(models.Model):
     note = models.TextField(blank=True)
     paid = models.BooleanField()
     # on_delete: tedy lze smazat pouze klienta co nema zadne attendances
-    client = models.ForeignKey(Client, related_name='attendances', on_delete=models.PROTECT)
-    lecture = models.ForeignKey(Lecture, related_name='attendances', on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, related_name="attendances", on_delete=models.PROTECT)
+    lecture = models.ForeignKey(Lecture, related_name="attendances", on_delete=models.CASCADE)
     attendancestate = models.ForeignKey(AttendanceState, on_delete=models.PROTECT)
 
     class Meta:
-        ordering = ['client__surname', 'client__name']
+        ordering = ["client__surname", "client__name"]
 
 
 class Membership(models.Model):
     prepaid_cnt = models.PositiveIntegerField(default=0)
-    client = models.ForeignKey(Client, related_name='memberships', on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, related_name='memberships', on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, related_name="memberships", on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name="memberships", on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['client__surname', 'client__name']
+        ordering = ["client__surname", "client__name"]

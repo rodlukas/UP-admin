@@ -4,8 +4,10 @@ from behave import *
 from rest_framework import status
 
 from tests import common_helpers
+
 # noinspection PyUnresolvedReferences
 from tests.api_steps import helpers, login_logout  # lgtm [py/unused-import]
+
 # noinspection PyUnresolvedReferences
 from tests.common_steps import clients  # lgtm [py/unused-import]
 
@@ -24,12 +26,14 @@ def find_client(context):
 
 
 def client_equal_to_context(client, context):
-    return (client['name'] == context.name and
-            client['surname'] == context.surname and
-            client['phone'] == common_helpers.shrink_str(context.phone) and
-            client['email'] == context.email and
-            client['note'] == context.note and
-            client['active'] == context.active)
+    return (
+        client["name"] == context.name
+        and client["surname"] == context.surname
+        and client["phone"] == common_helpers.shrink_str(context.phone)
+        and client["email"] == context.email
+        and client["note"] == context.note
+        and client["active"] == context.active
+    )
 
 
 def find_client_with_id(context, client_id):
@@ -42,12 +46,14 @@ def find_client_with_id(context, client_id):
 
 
 def client_dict(context):
-    return {'name': context.name,
-            'surname': context.surname,
-            'phone': context.phone,
-            'email': context.email,
-            'note': context.note,
-            'active': context.active}
+    return {
+        "name": context.name,
+        "surname": context.surname,
+        "phone": context.phone,
+        "email": context.email,
+        "note": context.note,
+        "active": context.active,
+    }
 
 
 def load_data_to_context(context, name, surname, phone, email, note, active):
@@ -63,12 +69,12 @@ def save_old_clients_cnt_to_context(context):
     context.old_clients_cnt = clients_cnt(context.api_client)
 
 
-@then('the client is added')
+@then("the client is added")
 def step_impl(context):
     # vlozeni bylo uspesne
     assert context.resp.status_code == status.HTTP_201_CREATED
     # nacti udaje vlozeneho klienta
-    client_id = json.loads(context.resp.content)['id']
+    client_id = json.loads(context.resp.content)["id"]
     # podle ID klienta over, ze souhlasi jeho data
     find_client_with_id(context, client_id)
     # najdi klienta ve vsech klientech podle dat
@@ -76,12 +82,12 @@ def step_impl(context):
     assert clients_cnt(context.api_client) > context.old_clients_cnt
 
 
-@then('the client is updated')
+@then("the client is updated")
 def step_impl(context):
     # uprava byla uspesna
     assert context.resp.status_code == status.HTTP_200_OK
     # nacti udaje upravovaneho klienta
-    client_id = json.loads(context.resp.content)['id']
+    client_id = json.loads(context.resp.content)["id"]
     # podle ID klienta over, ze souhlasi jeho data
     find_client_with_id(context, client_id)
     # najdi klienta ve vsech klientech podle dat
@@ -89,7 +95,7 @@ def step_impl(context):
     assert clients_cnt(context.api_client) == context.old_clients_cnt
 
 
-@then('the client is deleted')
+@then("the client is deleted")
 def step_impl(context):
     # smazani bylo uspesne
     assert context.resp.status_code == status.HTTP_204_NO_CONTENT
@@ -110,13 +116,13 @@ def step_impl(context, full_name):
     context.resp = context.api_client.delete(f"{helpers.API_CLIENTS}{client_to_delete['id']}/")
 
 
-@then('the client is not added')
+@then("the client is not added")
 def step_impl(context):
     # vlozeni bylo neuspesne
     assert context.resp.status_code == status.HTTP_400_BAD_REQUEST
     # over, ze v odpovedi skutecne neni id klienta
     client = json.loads(context.resp.content)
-    assert 'id' not in client
+    assert "id" not in client
     assert not find_client(context)
     assert clients_cnt(context.api_client) == context.old_clients_cnt
 
@@ -125,7 +131,8 @@ use_step_matcher("re")
 
 
 @when(
-    'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)", note "(?P<note>.*)" and activity "(?P<active>.*)"')
+    'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)", note "(?P<note>.*)" and activity "(?P<active>.*)"'
+)
 def step_impl(context, name, surname, phone, email, note, active):
     # nacteni dat klienta do kontextu
     load_data_to_context(context, name, surname, phone, email, note, active)
@@ -136,8 +143,11 @@ def step_impl(context, name, surname, phone, email, note, active):
 
 
 @when(
-    'user updates the data of client "(?P<cur_full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)", note "(?P<new_note>.*)" and activity "(?P<new_active>.*)"')
-def step_impl(context, cur_full_name, new_name, new_surname, new_phone, new_email, new_note, new_active):
+    'user updates the data of client "(?P<cur_full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)", note "(?P<new_note>.*)" and activity "(?P<new_active>.*)"'
+)
+def step_impl(
+    context, cur_full_name, new_name, new_surname, new_phone, new_email, new_note, new_active
+):
     # nacteni dat klienta do kontextu
     load_data_to_context(context, new_name, new_surname, new_phone, new_email, new_note, new_active)
     # najdi klienta
@@ -146,4 +156,6 @@ def step_impl(context, cur_full_name, new_name, new_surname, new_phone, new_emai
     # uloz puvodni pocet klientu
     save_old_clients_cnt_to_context(context)
     # vlozeni klienta
-    context.resp = context.api_client.put(f"{helpers.API_CLIENTS}{client_to_update['id']}/", client_dict(context))
+    context.resp = context.api_client.put(
+        f"{helpers.API_CLIENTS}{client_to_update['id']}/", client_dict(context)
+    )

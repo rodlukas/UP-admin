@@ -5,19 +5,11 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0003_auto_20180227_2234'),
-    ]
+    dependencies = [("admin", "0003_auto_20180227_2234")]
 
     operations = [
         migrations.AddField(
-            model_name='attendance',
-            name='note',
-            field=models.TextField(blank=True, null=True),
+            model_name="attendance", name="note", field=models.TextField(blank=True, null=True)
         ),
-        migrations.AlterField(
-            model_name='attendance',
-            name='paid',
-            field=models.BooleanField(),
-        ),
+        migrations.AlterField(model_name="attendance", name="paid", field=models.BooleanField()),
     ]
