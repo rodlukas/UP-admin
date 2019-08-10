@@ -1,4 +1,4 @@
-import React, {Component, createContext} from "react"
+import React, { Component, createContext } from "react"
 import ClientService from "../api/services/client"
 
 const ClientsActiveContext = createContext({
@@ -18,26 +18,33 @@ export class ClientsActiveProvider extends Component {
     getClients = (callback = () => {}) => {
         // pokud jeste nikdo nepozadal o nacteni klientu, pozadej a nacti je
         if (!this.state.loadRequested)
-            this.setState({loadRequested: true}, () =>
-                ClientService.getActive()
-                    .then(clients => this.setState({
-                        clients,
-                        isLoaded: true
-                    }, callback)))
+            this.setState({ loadRequested: true }, () =>
+                ClientService.getActive().then(clients =>
+                    this.setState(
+                        {
+                            clients,
+                            isLoaded: true
+                        },
+                        callback
+                    )
+                )
+            )
     }
 
     hardRefreshClients = () => {
         // pokud uz je v pameti nactena stara verze klientu, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
         if (this.state.loadRequested)
-            this.setState({isLoaded: false}, () =>
-                ClientService.getActive()
-                    .then(clients => this.setState({
+            this.setState({ isLoaded: false }, () =>
+                ClientService.getActive().then(clients =>
+                    this.setState({
                         clients,
                         isLoaded: true
-                    })))
+                    })
+                )
+            )
     }
 
-    render = () =>
+    render = () => (
         <ClientsActiveContext.Provider
             value={{
                 clients: this.state.clients,
@@ -47,12 +54,15 @@ export class ClientsActiveProvider extends Component {
             }}>
             {this.props.children}
         </ClientsActiveContext.Provider>
+    )
 }
 
-const WithClientsActiveContext = WrappedComponent => props =>
+const WithClientsActiveContext = WrappedComponent => props => (
     <ClientsActiveContext.Consumer>
-        {clientsActiveContext => <WrappedComponent {...props} clientsActiveContext={clientsActiveContext}/>}
+        {clientsActiveContext => (
+            <WrappedComponent {...props} clientsActiveContext={clientsActiveContext} />
+        )}
     </ClientsActiveContext.Consumer>
+)
 
-
-export {WithClientsActiveContext, ClientsActiveContext}
+export { WithClientsActiveContext, ClientsActiveContext }

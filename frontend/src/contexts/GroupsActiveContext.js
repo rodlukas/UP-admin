@@ -1,4 +1,4 @@
-import React, {Component, createContext} from "react"
+import React, { Component, createContext } from "react"
 import GroupService from "../api/services/group"
 
 const GroupsActiveContext = createContext({
@@ -15,30 +15,36 @@ export class GroupsActiveProvider extends Component {
         groups: []
     }
 
-    getGroups = (callback = () => {
-    }) => {
+    getGroups = (callback = () => {}) => {
         // pokud jeste nikdo nepozadal o nacteni skupin, pozadej a nacti je
         if (!this.state.loadRequested)
-            this.setState({loadRequested: true}, () =>
-                GroupService.getActive()
-                    .then(groups => this.setState({
-                        groups,
-                        isLoaded: true
-                    }, callback)))
+            this.setState({ loadRequested: true }, () =>
+                GroupService.getActive().then(groups =>
+                    this.setState(
+                        {
+                            groups,
+                            isLoaded: true
+                        },
+                        callback
+                    )
+                )
+            )
     }
 
     hardRefreshGroups = () => {
         // pokud uz je v pameti nactena stara verze skupin, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
         if (this.state.loadRequested)
-            this.setState({isLoaded: false}, () =>
-                GroupService.getActive()
-                    .then(groups => this.setState({
+            this.setState({ isLoaded: false }, () =>
+                GroupService.getActive().then(groups =>
+                    this.setState({
                         groups,
                         isLoaded: true
-                    })))
+                    })
+                )
+            )
     }
 
-    render = () =>
+    render = () => (
         <GroupsActiveContext.Provider
             value={{
                 groups: this.state.groups,
@@ -48,12 +54,15 @@ export class GroupsActiveProvider extends Component {
             }}>
             {this.props.children}
         </GroupsActiveContext.Provider>
+    )
 }
 
-const WithGroupsActiveContext = WrappedComponent => props =>
+const WithGroupsActiveContext = WrappedComponent => props => (
     <GroupsActiveContext.Consumer>
-        {groupsActiveContext => <WrappedComponent {...props} groupsActiveContext={groupsActiveContext}/>}
+        {groupsActiveContext => (
+            <WrappedComponent {...props} groupsActiveContext={groupsActiveContext} />
+        )}
     </GroupsActiveContext.Consumer>
+)
 
-
-export {WithGroupsActiveContext, GroupsActiveContext}
+export { WithGroupsActiveContext, GroupsActiveContext }

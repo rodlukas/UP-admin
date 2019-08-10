@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
 import {
     Alert,
     Col,
@@ -19,45 +19,45 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
-import {WithClientsActiveContext} from "../contexts/ClientsActiveContext"
-import {prettyPhone} from "../global/utils"
+import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
+import { prettyPhone } from "../global/utils"
 
 class FormClients extends Component {
     constructor(props) {
         super(props)
         this.isClient = Boolean(Object.keys(props.client).length)
-        const {id, name, surname, email, phone, note, active} = props.client
+        const { id, name, surname, email, phone, note, active } = props.client
         this.state = {
-            id: id || '',
-            name: name || '',
-            surname: surname || '',
-            email: email || '',
-            phone: prettyPhone(phone) || '',
-            note: note || '',
+            id: id || "",
+            name: name || "",
+            surname: surname || "",
+            email: email || "",
+            phone: prettyPhone(phone) || "",
+            note: note || "",
             active: this.isClient ? active : true
         }
     }
 
     onChange = e => {
         const target = e.target
-        let value = target.type === 'checkbox' ? target.checked : target.value
+        let value = target.type === "checkbox" ? target.checked : target.value
         // pri psani rozdeluj cislo na trojice
-        if(target.id === 'phone')
-            value = value.replace(/([0-9]{3})([^\s])/, "$1 $2").replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
-        this.setState({[target.id]: value})
+        if (target.id === "phone")
+            value = value
+                .replace(/([0-9]{3})([^\s])/, "$1 $2")
+                .replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
+        this.setState({ [target.id]: value })
     }
 
     onSubmit = e => {
         // stopPropagation, aby nedoslo k propagaci submit na nadrazene formulare pri vnoreni modalnich oken
         e.stopPropagation()
         e.preventDefault()
-        const {id, name, surname, email, phone, note, active} = this.state
-        const data = {id, name, surname, email, phone, note, active}
+        const { id, name, surname, email, phone, note, active } = this.state
+        const data = { id, name, surname, email, phone, note, active }
         let request
-        if (this.isClient)
-            request = ClientService.update(data)
-        else
-            request = ClientService.create(data)
+        if (this.isClient) request = ClientService.update(data)
+        else request = ClientService.create(data)
         request.then(response => {
             this.close()
             this.refresh(response)
@@ -65,31 +65,26 @@ class FormClients extends Component {
         })
     }
 
-    close = () =>
-        this.props.funcClose()
+    close = () => this.props.funcClose()
 
     refresh = newClient => {
-        this.props.sendResult ?
-            this.props.funcRefresh(newClient) :
-            this.props.funcRefresh()
+        this.props.sendResult ? this.props.funcRefresh(newClient) : this.props.funcRefresh()
     }
 
     delete = id =>
-        ClientService.remove(id)
-            .then(() => {
-                this.close()
-                this.refresh()
-                this.props.clientsActiveContext.funcHardRefresh()
-            })
+        ClientService.remove(id).then(() => {
+            this.close()
+            this.refresh()
+            this.props.clientsActiveContext.funcHardRefresh()
+        })
 
     render() {
-        const {id, name, surname, email, phone, note, active} = this.state
+        const { id, name, surname, email, phone, note, active } = this.state
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_client">
                 <ModalHeader toggle={this.close}>
-                    {this.isClient ? 'Úprava' : 'Přidání'} klienta:
-                    {' '}
-                    <ClientName client={{name, surname}} bold/>
+                    {this.isClient ? "Úprava" : "Přidání"} klienta:{" "}
+                    <ClientName client={{ name, surname }} bold />
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
@@ -97,8 +92,16 @@ class FormClients extends Component {
                             Jméno
                         </Label>
                         <Col sm={10}>
-                            <Input type="text" id="name" value={name} onChange={this.onChange} required autoFocus
-                                   data-qa="client_field_name" spellCheck/>
+                            <Input
+                                type="text"
+                                id="name"
+                                value={name}
+                                onChange={this.onChange}
+                                required
+                                autoFocus
+                                data-qa="client_field_name"
+                                spellCheck
+                            />
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -106,8 +109,15 @@ class FormClients extends Component {
                             Příjmení
                         </Label>
                         <Col sm={10}>
-                            <Input type="text" id="surname" value={surname} onChange={this.onChange} required
-                                   data-qa="client_field_surname" spellCheck/>
+                            <Input
+                                type="text"
+                                id="surname"
+                                value={surname}
+                                onChange={this.onChange}
+                                required
+                                data-qa="client_field_surname"
+                                spellCheck
+                            />
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -115,8 +125,13 @@ class FormClients extends Component {
                             Email
                         </Label>
                         <Col sm={10}>
-                            <Input type="email" id="email" value={email} onChange={this.onChange}
-                                   data-qa="client_field_email"/>
+                            <Input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={this.onChange}
+                                data-qa="client_field_email"
+                            />
                         </Col>
                     </FormGroup>
                     <FormGroup row>
@@ -130,8 +145,15 @@ class FormClients extends Component {
                                         +420
                                     </Label>
                                 </InputGroupAddon>
-                                <Input type="tel" id="phone" value={phone} maxLength="11" onChange={this.onChange}
-                                       pattern="[0-9]{3} [0-9]{3} [0-9]{3}" data-qa="client_field_phone"/>
+                                <Input
+                                    type="tel"
+                                    id="phone"
+                                    value={phone}
+                                    maxLength="11"
+                                    onChange={this.onChange}
+                                    pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
+                                    data-qa="client_field_phone"
+                                />
                             </InputGroup>
                         </Col>
                     </FormGroup>
@@ -140,8 +162,14 @@ class FormClients extends Component {
                             Poznámka
                         </Label>
                         <Col sm={10}>
-                            <Input type="textarea" id="note" value={note} onChange={this.onChange}
-                                   data-qa="client_field_note" spellCheck/>
+                            <Input
+                                type="textarea"
+                                id="note"
+                                value={note}
+                                onChange={this.onChange}
+                                data-qa="client_field_note"
+                                spellCheck
+                            />
                         </Col>
                     </FormGroup>
                     <FormGroup row className="align-items-center">
@@ -149,39 +177,60 @@ class FormClients extends Component {
                             Aktivní
                         </Label>
                         <Col sm={10}>
-                            <CustomInput type="checkbox" id="active" checked={active} label="Je aktivní"
-                                         onChange={this.onChange} data-qa="client_checkbox_active"/>
-                            {' '}
-                            {!active &&
-                            <Tooltip postfix="active"
-                                     text="Neaktivním klientům nelze vytvořit lekci (ani skupinovou)."/>}
+                            <CustomInput
+                                type="checkbox"
+                                id="active"
+                                checked={active}
+                                label="Je aktivní"
+                                onChange={this.onChange}
+                                data-qa="client_checkbox_active"
+                            />{" "}
+                            {!active && (
+                                <Tooltip
+                                    postfix="active"
+                                    text="Neaktivním klientům nelze vytvořit lekci (ani skupinovou)."
+                                />
+                            )}
                         </Col>
                     </FormGroup>
-                    {this.isClient &&
-                    <FormGroup row className="border-top pt-3">
-                        <Label sm={2} className="text-muted">
-                            Smazání
-                        </Label>
-                        <Col sm={10}>
-                            <Alert color="warning">
-                                <p>Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také všechny jeho zájmy o kurzy</p>
-                                <DeleteButton
-                                    content="klienta"
-                                    onClick={() => {
-                                    if (window.confirm('Opravdu chcete smazat klienta ' + name + ' ' + surname + '?'))
-                                        this.delete(id)}}
-                                    data-qa="button_delete_client"
-                                />
-                            </Alert>
-                        </Col>
-                    </FormGroup>}
+                    {this.isClient && (
+                        <FormGroup row className="border-top pt-3">
+                            <Label sm={2} className="text-muted">
+                                Smazání
+                            </Label>
+                            <Col sm={10}>
+                                <Alert color="warning">
+                                    <p>
+                                        Klienta lze smazat pouze pokud nemá žádné lekce, smažou se
+                                        také všechny jeho zájmy o kurzy
+                                    </p>
+                                    <DeleteButton
+                                        content="klienta"
+                                        onClick={() => {
+                                            if (
+                                                window.confirm(
+                                                    "Opravdu chcete smazat klienta " +
+                                                        name +
+                                                        " " +
+                                                        surname +
+                                                        "?"
+                                                )
+                                            )
+                                                this.delete(id)
+                                        }}
+                                        data-qa="button_delete_client"
+                                    />
+                                </Alert>
+                            </Col>
+                        </FormGroup>
+                    )}
                 </ModalBody>
                 <ModalFooter>
-                    <CancelButton onClick={this.close}/>
-                    {' '}
+                    <CancelButton onClick={this.close} />{" "}
                     <SubmitButton
                         data-qa="button_submit_client"
-                        content={this.isClient ? 'Uložit' : 'Přidat'}/>
+                        content={this.isClient ? "Uložit" : "Přidat"}
+                    />
                 </ModalFooter>
             </Form>
         )

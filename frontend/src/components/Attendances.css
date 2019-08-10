@@ -1,6 +1,6 @@
 .Attendances {
     vertical-align: top;
-    padding: 0
+    padding: 0;
 }
 
 .Attendances li {
@@ -8,13 +8,13 @@
 }
 
 .Attendances p {
-    margin: 0
+    margin: 0;
 }
 
 .Attendances .clientName {
     font-size: 1.25rem;
     font-weight: 500;
-    margin-right: 0.2rem
+    margin-right: 0.2rem;
 }
 
 .AttendancesGroup .clientName {
@@ -23,19 +23,19 @@
 
 /* styly pro lekce, ktere obsahuji Attendances */
 .lecture-future {
-    background-color: #fff3cd !important
+    background-color: #fff3cd !important;
 }
 
 .lecture-prepaid {
-    background-color: #d4edda !important
+    background-color: #d4edda !important;
 }
 
 .lecture-canceled {
-    background-color: #f8d7da !important
+    background-color: #f8d7da !important;
 }
 
 .lecture {
-    padding: 0 0 .75rem 0 !important;
+    padding: 0 0 0.75rem 0 !important;
 }
 
 .lecture_dashboardday .lecture_heading {
@@ -52,7 +52,7 @@
     flex-flow: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: .1rem;
+    margin-bottom: 0.1rem;
 }
 
 @media (max-width: 575.98px) {
@@ -62,29 +62,29 @@
 }
 
 .lecture_content h5 {
-    margin-top: .4rem;
+    margin-top: 0.4rem;
 }
 
 .lecture .CourseName {
     flex-grow: 1;
-    line-height: .9;
+    line-height: 0.9;
 }
 
 .lecture .LectureNumber {
-    margin-right: .5rem;
+    margin-right: 0.5rem;
 }
 
 .lecture_heading .btn {
-    border-radius: .25rem 0 0 .25rem;
+    border-radius: 0.25rem 0 0 0.25rem;
 }
 
 .lecture_heading h4 {
     display: inline-block;
-    margin: 0
+    margin: 0;
 }
 
 .lecture_content {
-    padding: 0 1rem 0 1rem
+    padding: 0 1rem 0 1rem;
 }
 
 .lecture_free {
@@ -97,7 +97,7 @@
 }
 
 .lecture-canceled h4 span::after {
-    content: '';
+    content: "";
     width: 100%;
     position: absolute;
     right: 0;

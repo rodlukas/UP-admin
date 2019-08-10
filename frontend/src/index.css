@@ -1,5 +1,8 @@
-html, body, .content, .root {
-    background-color: #ECF0F5;
+html,
+body,
+.content,
+.root {
+    background-color: #ecf0f5;
 }
 
 /* aby tlacitka s odkazem nemely pointer */
@@ -31,7 +34,7 @@ label {
 }
 
 .pageContent {
-    clear: both
+    clear: both;
 }
 
 /*** TABLE ***/
@@ -68,7 +71,7 @@ label {
 
 /* aby notifikace neprekryvala menu */
 .Toastify__toast-container--top-right {
-   top: unset !important;
+    top: unset !important;
 }
 
 /*** DJANGO-DEBUG-TOOLBAR ***/

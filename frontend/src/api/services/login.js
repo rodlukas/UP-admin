@@ -1,5 +1,5 @@
 import request from "../request"
-import {API_DELIM, API_METHODS, API_URLS} from "../urls"
+import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 
 const baseUrl = API_URLS.Login
 
@@ -20,7 +20,8 @@ function authenticate(context) {
 }
 
 const LoginService = {
-    refresh, authenticate
+    refresh,
+    authenticate
 }
 
 export default LoginService

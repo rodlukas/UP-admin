@@ -2,14 +2,10 @@ export const WORK_DAYS_COUNT = 5
 export const DAYS_IN_WEEK = 7
 
 function convertDayToWords(date, callback) {
-    if(isToday(date))
-        return "dnes"
-    else if(isToday(addDays(date, 1)))
-        return "včera"
-    else if (isToday(addDays(date, -1)))
-        return "zítra"
-    else
-        return callback(date)
+    if (isToday(date)) return "dnes"
+    else if (isToday(addDays(date, 1))) return "včera"
+    else if (isToday(addDays(date, -1))) return "zítra"
+    else return callback(date)
 }
 
 export function prettyDate(date) {
@@ -17,7 +13,7 @@ export function prettyDate(date) {
 }
 
 export function prettyDateWithYear(date) {
-    return prettyDate(date) + " " + (date.getFullYear())
+    return prettyDate(date) + " " + date.getFullYear()
 }
 
 export function prettyDateTime(datetime) {
@@ -31,47 +27,63 @@ export function yearDiffs(date) {
 
 // vrati uzivatelsky privetivy datum, pokud je rok odlisny od aktualniho tak jej pripoji
 export function prettyDateWithYearIfDiff(date) {
-    if(!yearDiffs(date))
-        return prettyDate(date)
+    if (!yearDiffs(date)) return prettyDate(date)
     return prettyDateWithYear(date)
 }
 
 export function prettyDateWithLongDayYear(date) {
-    const day = date.toLocaleDateString('cs-CZ', {weekday: 'long'})
+    const day = date.toLocaleDateString("cs-CZ", { weekday: "long" })
     return day + " " + prettyDateWithYear(date)
 }
 
 export function prettyDateWithLongDayYearIfDiff(date) {
-    const day = date.toLocaleDateString('cs-CZ', {weekday: 'long'})
+    const day = date.toLocaleDateString("cs-CZ", { weekday: "long" })
     return day + " " + prettyDateWithYearIfDiff(date)
 }
 
 export function prettyDateWithDayYearIfDiff(date, convertToWords = false) {
-    const day = date.toLocaleDateString('cs-CZ', {weekday: 'short'})
-    if(convertToWords)
-        return convertDayToWords(date, prettyDateWithDayYearIfDiff)
+    const day = date.toLocaleDateString("cs-CZ", { weekday: "short" })
+    if (convertToWords) return convertDayToWords(date, prettyDateWithDayYearIfDiff)
     return day + " " + prettyDateWithYearIfDiff(date)
 }
 
 export function prettyDateWithDayYear(date) {
-    const day = date.toLocaleDateString('cs-CZ', {weekday: 'short'})
+    const day = date.toLocaleDateString("cs-CZ", { weekday: "short" })
     return day + " " + prettyDateWithYear(date)
 }
 
 export function toISODate(date) {
-    return date.getFullYear() + "-" + ((date.getMonth() + 1) < 10 ? '0' : '') + (date.getMonth() + 1) + "-" + (date.getDate() < 10 ? '0' : '') + date.getDate()
+    return (
+        date.getFullYear() +
+        "-" +
+        (date.getMonth() + 1 < 10 ? "0" : "") +
+        (date.getMonth() + 1) +
+        "-" +
+        (date.getDate() < 10 ? "0" : "") +
+        date.getDate()
+    )
 }
 
 export function prettyTime(datetime) {
-    return datetime.getHours() + ":" + (datetime.getMinutes() < 10 ? '0' : '') + datetime.getMinutes()
+    return (
+        datetime.getHours() + ":" + (datetime.getMinutes() < 10 ? "0" : "") + datetime.getMinutes()
+    )
 }
 
 export function prettyTimeWithSeconds(datetime) {
-    return prettyTime(datetime) + ":" + (datetime.getSeconds() < 10 ? '0' : '') + datetime.getSeconds()
+    return (
+        prettyTime(datetime) + ":" + (datetime.getSeconds() < 10 ? "0" : "") + datetime.getSeconds()
+    )
 }
 
 export function toISOTime(date) {
-    return (date.getHours() < 10 ? '0' : '') + date.getHours() + ":" + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
+    return (
+        (date.getHours() < 10 ? "0" : "") +
+        date.getHours() +
+        ":" +
+        (date.getMinutes() < 10 ? "0" : "") +
+        date.getMinutes()
+    )
 }
 
 export function isToday(date) {
@@ -81,9 +93,10 @@ export function isToday(date) {
 
 export function isEqualDate(date1, date2) {
     return (
-        date1.getDate()     === date2.getDate() &&
+        date1.getDate() === date2.getDate() &&
         date1.getFullYear() === date2.getFullYear() &&
-        date1.getMonth()    === date2.getMonth())
+        date1.getMonth() === date2.getMonth()
+    )
 }
 
 // zjisti datum nejblizsiho pondeli predchazejici datumu (pripadne tentyz datum pokud uz pondeli je)
@@ -100,7 +113,8 @@ export function addDays(date, days) {
 
 // priprav pole datumu pracovnich dnu v prislusnem tydnu
 export function getWeekSerializedFromMonday(monday) {
-    let week = [], dayToProcess = monday
+    let week = [],
+        dayToProcess = monday
     while (week.length < WORK_DAYS_COUNT) {
         week.push(toISODate(dayToProcess))
         dayToProcess = addDays(dayToProcess, 1)

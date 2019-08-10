@@ -1,5 +1,5 @@
 import request from "../request"
-import {API_DELIM, API_METHODS, API_URLS} from "../urls"
+import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 
 const baseUrl = API_URLS.Clients.url
 
@@ -55,7 +55,13 @@ function create(context) {
 }
 
 const ClientService = {
-    getAll, get, getActive, getInactive, create, update, remove
+    getAll,
+    get,
+    getActive,
+    getInactive,
+    create,
+    update,
+    remove
 }
 
 export default ClientService

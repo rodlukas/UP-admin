@@ -1,5 +1,5 @@
 import request from "../request"
-import {API_DELIM, API_METHODS, API_URLS} from "../urls"
+import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 
 const baseUrl = API_URLS.Courses.url
 
@@ -41,7 +41,11 @@ function create(context) {
 }
 
 const CourseService = {
-    getAll, create, update, remove, getVisible
+    getAll,
+    create,
+    update,
+    remove,
+    getVisible
 }
 
 export default CourseService

@@ -1,4 +1,4 @@
-import {useState} from "react"
+import { useState } from "react"
 
 const useModal = () => {
     const [isModal, setModal] = useState(false)
@@ -7,10 +7,7 @@ const useModal = () => {
         setModal(prevIsModal => !prevIsModal)
     }
 
-    return [
-        isModal,
-        toggleModal
-    ]
+    return [isModal, toggleModal]
 }
 
 export default useModal

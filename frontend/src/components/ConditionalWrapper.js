@@ -1,5 +1,5 @@
 // @flow
-import React, {Fragment} from "react"
+import React, { Fragment } from "react"
 
 type Props = {
     condition: boolean,
@@ -7,7 +7,7 @@ type Props = {
     children: any
 }
 
-const ConditionalWrapper = ({condition, wrapper, children}: Props) =>
+const ConditionalWrapper = ({ condition, wrapper, children }: Props) =>
     condition ? wrapper(children) : <Fragment>{children}</Fragment>
 
 export default ConditionalWrapper

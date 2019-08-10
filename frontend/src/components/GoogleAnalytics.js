@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
-import ReactGA from 'react-ga'
-import {Route} from 'react-router-dom'
-import {isEnvProduction} from "../global/funcEnvironments"
+import React, { Component } from "react"
+import ReactGA from "react-ga"
+import { Route } from "react-router-dom"
+import { isEnvProduction } from "../global/funcEnvironments"
 
 /*
 vychazi z: https://vanja.gavric.org/blog/integrate-google-analytics-with-react-router-v4/
@@ -9,14 +9,13 @@ vychazi z: https://vanja.gavric.org/blog/integrate-google-analytics-with-react-r
 
 class GoogleAnalytics extends Component {
     componentDidMount() {
-        this.logPageChange(
-            this.props.location.pathname,
-            this.props.location.search
-        )
+        this.logPageChange(this.props.location.pathname, this.props.location.search)
     }
 
-    componentDidUpdate({location: prevLocation}) {
-        const {location: {pathname, search}} = this.props
+    componentDidUpdate({ location: prevLocation }) {
+        const {
+            location: { pathname, search }
+        } = this.props
         const isDifferentPathname = pathname !== prevLocation.pathname
         const isDifferentSearch = search !== prevLocation.search
 
@@ -25,9 +24,9 @@ class GoogleAnalytics extends Component {
         }
     }
 
-    logPageChange(pathname, search = '') {
+    logPageChange(pathname, search = "") {
         const page = pathname + search
-        const {location} = window
+        const { location } = window
         ReactGA.set({
             page,
             location: `${location.origin}${page}`,
@@ -41,20 +40,17 @@ class GoogleAnalytics extends Component {
     }
 }
 
-const RouteTracker = () =>
-    <Route component={GoogleAnalytics}/>
+const RouteTracker = () => <Route component={GoogleAnalytics} />
 
 const init = (options = {}) => {
     const isProduction = isEnvProduction()
     if (isProduction) {
-        ReactGA.initialize(
-            "UA-53235943-3", {
-                gaOptions: {
-                    siteSpeedSampleRate: 100,
-                },
-                ...options
-            }
-        )
+        ReactGA.initialize("UA-53235943-3", {
+            gaOptions: {
+                siteSpeedSampleRate: 100
+            },
+            ...options
+        })
     }
     return isProduction
 }
