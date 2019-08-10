@@ -1,7 +1,7 @@
-import React, {Fragment} from "react"
-import {toast} from "react-toastify"
+import React, { Fragment } from "react"
+import { toast } from "react-toastify"
 
-const Notification = ({text = "", type}) => {
+const Notification = ({ text = "", type }) => {
     let heading = ""
     switch (type) {
         case toast.TYPE.ERROR:
@@ -17,11 +17,10 @@ const Notification = ({text = "", type}) => {
 
     return (
         <Fragment>
-            <h6 className="font-weight-bold">
-                {heading}
-            </h6>
+            <h6 className="font-weight-bold">{heading}</h6>
             {text}
-        </Fragment>)
+        </Fragment>
+    )
 }
 
 export default Notification

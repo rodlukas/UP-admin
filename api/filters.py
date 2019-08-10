@@ -20,7 +20,7 @@ class LectureFilter(filters.FilterSet):
 
     class Meta:
         model = Lecture
-        fields = 'date', 'group',
+        fields = "date", "group"
 
 
 class GroupFilter(filters.FilterSet):
@@ -28,4 +28,4 @@ class GroupFilter(filters.FilterSet):
 
     class Meta:
         model = Group
-        fields = 'client', 'active'
+        fields = "client", "active"

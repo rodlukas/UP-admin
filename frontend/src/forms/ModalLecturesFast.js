@@ -1,6 +1,6 @@
-import {faPlus} from "@fortawesome/pro-solid-svg-icons"
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import React, {Fragment} from "react"
+import { faPlus } from "@fortawesome/pro-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import React, { Fragment } from "react"
 import Select from "react-select"
 import {
     DropdownItem,
@@ -9,15 +9,15 @@ import {
     Modal,
     ModalBody,
     ModalHeader,
-    UncontrolledButtonDropdown,
+    UncontrolledButtonDropdown
 } from "reactstrap"
 import Loading from "../components/Loading"
-import {WithClientsActiveContext} from "../contexts/ClientsActiveContext"
-import {WithGroupsActiveContext} from "../contexts/GroupsActiveContext"
-import {TEXTS} from "../global/constants"
-import {prettyDate} from "../global/funcDateTime"
-import {getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses} from "../global/utils"
-import {react_select_ids} from "./helpers/func"
+import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
+import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
+import { TEXTS } from "../global/constants"
+import { prettyDate } from "../global/funcDateTime"
+import { getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses } from "../global/utils"
+import { react_select_ids } from "./helpers/func"
 import Or from "./helpers/Or"
 import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
@@ -35,10 +35,8 @@ class ModalLecturesFast extends React.Component {
     }
 
     setClient(IS_CLIENT) {
-        if (IS_CLIENT)
-            this.props.clientsActiveContext.funcRefresh()
-        else
-            this.props.groupsActiveContext.funcRefresh()
+        if (IS_CLIENT) this.props.clientsActiveContext.funcRefresh()
+        else this.props.groupsActiveContext.funcRefresh()
         this.setState({
             IS_CLIENT: IS_CLIENT
         })
@@ -53,38 +51,43 @@ class ModalLecturesFast extends React.Component {
 
     onSelectChange = (obj, name = null) => {
         // pokud se jedna o skupinu, jen ji uloz (je zbytecne resit defaultCourse, skupina ma kurz jasny)
-        if (!this.state.IS_CLIENT)
-            this.setState({object: obj})
+        if (!this.state.IS_CLIENT) this.setState({ object: obj })
         else {
             // jedna se o klienta, nejdriv zobraz nacitani, behem ktereho pro nej pripravis nejoptimalnejsi vychozi kurz,
             // pak klienta (a kurz) teprve uloz (diky tomu se az pak zobrazi formular) a nacitani skryj pro priste
-            this.setState({IS_LOADING: true}, () => {
+            this.setState({ IS_LOADING: true }, () => {
                 const request = getLecturesForGroupingByCourses(obj.id, this.state.IS_CLIENT)
                 request.then(lectures => {
                     const lecturesGroupedByCourses = groupByCourses(lectures)
-                    this.setState(prevState => (
-                            {defaultCourse: getDefaultCourse(lecturesGroupedByCourses, prevState.IS_CLIENT)}),
+                    this.setState(
+                        prevState => ({
+                            defaultCourse: getDefaultCourse(
+                                lecturesGroupedByCourses,
+                                prevState.IS_CLIENT
+                            )
+                        }),
                         () =>
                             this.setState({
                                 object: obj,
                                 IS_LOADING: false
-                            }))
+                            })
+                    )
                 })
             })
         }
     }
 
     toggleModalSelect = () => {
-        this.setState({IS_CLIENT: undefined})
+        this.setState({ IS_CLIENT: undefined })
     }
 
     getClientsAfterAddition = newClient => {
-        this.setState({object: newClient})
+        this.setState({ object: newClient })
         this.props.clientsActiveContext.funcHardRefresh()
     }
 
     getGroupsAfterAddition = newGroup => {
-        this.setState({object: newGroup})
+        this.setState({ object: newGroup })
         this.props.groupsActiveContext.funcHardRefresh()
     }
 
@@ -98,12 +101,16 @@ class ModalLecturesFast extends React.Component {
     }
 
     render() {
-        const title = "Přidat lekci na " + (this.props.date ? prettyDate(new Date(this.props.date)) : "jiný den")
+        const title =
+            "Přidat lekci na " +
+            (this.props.date ? prettyDate(new Date(this.props.date)) : "jiný den")
         return (
             <Fragment>
-                <UncontrolledButtonDropdown direction={this.props.direction} className={this.props.className}>
+                <UncontrolledButtonDropdown
+                    direction={this.props.direction}
+                    className={this.props.className}>
                     <DropdownToggle caret size={this.props.size} title={title} color="info">
-                        <FontAwesomeIcon icon={faPlus} size="lg"/>
+                        <FontAwesomeIcon icon={faPlus} size="lg" />
                     </DropdownToggle>
                     <DropdownMenu right>
                         <DropdownItem onClick={() => this.setClient(true)}>
@@ -114,27 +121,42 @@ class ModalLecturesFast extends React.Component {
                         </DropdownItem>
                     </DropdownMenu>
                 </UncontrolledButtonDropdown>
-                {this.state.IS_CLIENT !== undefined &&
-                <Modal isOpen={this.state.IS_MODAL_SELECT} toggle={this.toggleModalSelect} autoFocus={false}>
-                    <ModalHeader toggle={this.toggleModalSelect}>
-                        Výběr {this.state.IS_CLIENT ? 'klienta' : 'skupiny'}
-                    </ModalHeader>
-                    <ModalBody>
-                        {this.state.IS_LOADING ||
-                        (this.state.IS_CLIENT && !this.props.clientsActiveContext.isLoaded) ||
-                        (!this.state.IS_CLIENT && !this.props.groupsActiveContext.isLoaded) ?
-                            <Loading text={this.state.IS_LOADING && "Vypočítávám optimální kurz pro klienta"}/>
-                            :
-                            this.state.IS_CLIENT ?
+                {this.state.IS_CLIENT !== undefined && (
+                    <Modal
+                        isOpen={this.state.IS_MODAL_SELECT}
+                        toggle={this.toggleModalSelect}
+                        autoFocus={false}>
+                        <ModalHeader toggle={this.toggleModalSelect}>
+                            Výběr {this.state.IS_CLIENT ? "klienta" : "skupiny"}
+                        </ModalHeader>
+                        <ModalBody>
+                            {this.state.IS_LOADING ||
+                            (this.state.IS_CLIENT && !this.props.clientsActiveContext.isLoaded) ||
+                            (!this.state.IS_CLIENT && !this.props.groupsActiveContext.isLoaded) ? (
+                                <Loading
+                                    text={
+                                        this.state.IS_LOADING &&
+                                        "Vypočítávám optimální kurz pro klienta"
+                                    }
+                                />
+                            ) : this.state.IS_CLIENT ? (
                                 <Fragment>
                                     <SelectClient
                                         value={this.state.object}
                                         options={this.props.clientsActiveContext.clients}
-                                        onChangeCallback={this.onSelectChange}/>
-                                    <Or content={<ModalClients refresh={this.getClientsAfterAddition} sendResult
-                                                               inSentence/>}/>
+                                        onChangeCallback={this.onSelectChange}
+                                    />
+                                    <Or
+                                        content={
+                                            <ModalClients
+                                                refresh={this.getClientsAfterAddition}
+                                                sendResult
+                                                inSentence
+                                            />
+                                        }
+                                    />
                                 </Fragment>
-                                :
+                            ) : (
                                 <Fragment>
                                     <Select
                                         {...react_select_ids("group")}
@@ -146,22 +168,33 @@ class ModalLecturesFast extends React.Component {
                                         placeholder={"Vyberte existující skupinu..."}
                                         noOptionsMessage={() => TEXTS.NO_RESULTS}
                                         required
-                                        autoFocus/>
-                                    <Or content={<ModalGroups refresh={this.getGroupsAfterAddition} sendResult
-                                                              inSentence/>}/>
+                                        autoFocus
+                                    />
+                                    <Or
+                                        content={
+                                            <ModalGroups
+                                                refresh={this.getGroupsAfterAddition}
+                                                sendResult
+                                                inSentence
+                                            />
+                                        }
+                                    />
                                 </Fragment>
-                        }
-                    </ModalBody>
-                </Modal>}
-                {this.state.object !== null &&
-                <ModalLecturesPlain
-                    defaultCourse={this.state.defaultCourse}
-                    date={this.props.date || ''}
-                    object={this.state.object}
-                    isModal={this.state.IS_MODAL}
-                    toggleModal={this.toggleModal}
-                    refresh={this.refreshAfterSave}
-                    IS_CLIENT={this.state.IS_CLIENT}/>}
+                            )}
+                        </ModalBody>
+                    </Modal>
+                )}
+                {this.state.object !== null && (
+                    <ModalLecturesPlain
+                        defaultCourse={this.state.defaultCourse}
+                        date={this.props.date || ""}
+                        object={this.state.object}
+                        isModal={this.state.IS_MODAL}
+                        toggleModal={this.toggleModal}
+                        refresh={this.refreshAfterSave}
+                        IS_CLIENT={this.state.IS_CLIENT}
+                    />
+                )}
             </Fragment>
         )
     }

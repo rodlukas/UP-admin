@@ -1,4 +1,4 @@
-import React, {Component, createContext} from "react"
+import React, { Component, createContext } from "react"
 import AttendanceStateService from "../api/services/attendancestate"
 
 const AttendanceStatesContext = createContext({
@@ -18,14 +18,19 @@ export class AttendanceStatesProvider extends Component {
     }
 
     getAttendanceStates = (callback = () => {}) =>
-        this.setState({isLoaded: false}, () =>
-            AttendanceStateService.getAll()
-                .then(attendancestates => this.setState({
-                    attendancestates,
-                    isLoaded: true
-                }, callback)))
+        this.setState({ isLoaded: false }, () =>
+            AttendanceStateService.getAll().then(attendancestates =>
+                this.setState(
+                    {
+                        attendancestates,
+                        isLoaded: true
+                    },
+                    callback
+                )
+            )
+        )
 
-    render = () =>
+    render = () => (
         <AttendanceStatesContext.Provider
             value={{
                 attendancestates: this.state.attendancestates,
@@ -34,12 +39,15 @@ export class AttendanceStatesProvider extends Component {
             }}>
             {this.props.children}
         </AttendanceStatesContext.Provider>
+    )
 }
 
-const WithAttendanceStatesContext = WrappedComponent => props =>
+const WithAttendanceStatesContext = WrappedComponent => props => (
     <AttendanceStatesContext.Consumer>
-        {attendanceStatesContext => <WrappedComponent {...props} attendanceStatesContext={attendanceStatesContext}/>}
+        {attendanceStatesContext => (
+            <WrappedComponent {...props} attendanceStatesContext={attendanceStatesContext} />
+        )}
     </AttendanceStatesContext.Consumer>
+)
 
-
-export {WithAttendanceStatesContext, AttendanceStatesContext}
+export { WithAttendanceStatesContext, AttendanceStatesContext }

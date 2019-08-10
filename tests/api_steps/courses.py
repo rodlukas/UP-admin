@@ -4,8 +4,10 @@ from behave import *
 from rest_framework import status
 
 from tests import common_helpers
+
 # noinspection PyUnresolvedReferences
 from tests.api_steps import helpers, login_logout  # lgtm [py/unused-import]
+
 # noinspection PyUnresolvedReferences
 from tests.common_steps import courses  # lgtm [py/unused-import]
 
@@ -24,9 +26,11 @@ def find_course(context):
 
 
 def course_equal_to_context(course, context):
-    return (course['name'] == context.name and
-            course['visible'] == context.visible and
-            course['duration'] == int(context.duration))
+    return (
+        course["name"] == context.name
+        and course["visible"] == context.visible
+        and course["duration"] == int(context.duration)
+    )
 
 
 def find_course_with_id(context, course_id):
@@ -39,9 +43,7 @@ def find_course_with_id(context, course_id):
 
 
 def course_dict(context):
-    return {'name': context.name,
-            'visible': context.visible,
-            'duration': context.duration}
+    return {"name": context.name, "visible": context.visible, "duration": context.duration}
 
 
 def load_data_to_context(context, name, visible, duration):
@@ -58,12 +60,12 @@ def save_old_courses_cnt_to_context(context):
     context.old_courses_cnt = courses_cnt(context.api_client)
 
 
-@then('the course is added')
+@then("the course is added")
 def step_impl(context):
     # vlozeni bylo uspesne
     assert context.resp.status_code == status.HTTP_201_CREATED
     # nacti udaje vlozene kurzu
-    course_id = json.loads(context.resp.content)['id']
+    course_id = json.loads(context.resp.content)["id"]
     # podle ID kurzu over, ze souhlasi jeho data
     find_course_with_id(context, course_id)
     # najdi kurz ve vsech kurzech podle dat
@@ -71,12 +73,12 @@ def step_impl(context):
     assert courses_cnt(context.api_client) > context.old_courses_cnt
 
 
-@then('the course is updated')
+@then("the course is updated")
 def step_impl(context):
     # uprava byla uspesna
     assert context.resp.status_code == status.HTTP_200_OK
     # nacti udaje upravovane kurzu
-    course_id = json.loads(context.resp.content)['id']
+    course_id = json.loads(context.resp.content)["id"]
     # podle ID kurzu over, ze souhlasi jeho data
     find_course_with_id(context, course_id)
     # najdi kurz ve vsech kurzech podle dat
@@ -84,7 +86,7 @@ def step_impl(context):
     assert courses_cnt(context.api_client) == context.old_courses_cnt
 
 
-@then('the course is deleted')
+@then("the course is deleted")
 def step_impl(context):
     # smazani bylo uspesne
     assert context.resp.status_code == status.HTTP_204_NO_CONTENT
@@ -105,19 +107,20 @@ def step_impl(context, name):
     context.resp = context.api_client.delete(f"{helpers.API_COURSES}{course_to_delete['id']}/")
 
 
-@then('the course is not added')
+@then("the course is not added")
 def step_impl(context):
     # vlozeni bylo neuspesne
     assert context.resp.status_code == status.HTTP_400_BAD_REQUEST
     # over, ze v odpovedi skutecne neni id kurzu
     course = json.loads(context.resp.content)
-    assert 'id' not in course
+    assert "id" not in course
     assert not find_course(context)
     assert courses_cnt(context.api_client) == context.old_courses_cnt
 
 
 @when(
-    'user updates the data of course "{cur_name}" to name "{new_name}", visibility "{new_visible}" and duration "{new_duration}"')
+    'user updates the data of course "{cur_name}" to name "{new_name}", visibility "{new_visible}" and duration "{new_duration}"'
+)
 def step_impl(context, cur_name, new_name, new_visible, new_duration):
     # nacteni dat kurzu do kontextu
     load_data_to_context(context, new_name, new_visible, new_duration)
@@ -127,14 +130,17 @@ def step_impl(context, cur_name, new_name, new_visible, new_duration):
     # uloz puvodni pocet kurzu
     save_old_courses_cnt_to_context(context)
     # vlozeni kurzu
-    context.resp = context.api_client.put(f"{helpers.API_COURSES}{course_to_update['id']}/",
-                                          course_dict(context))
+    context.resp = context.api_client.put(
+        f"{helpers.API_COURSES}{course_to_update['id']}/", course_dict(context)
+    )
 
 
 use_step_matcher("re")
 
 
-@when('user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)" and duration "(?P<duration>.*)"')
+@when(
+    'user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)" and duration "(?P<duration>.*)"'
+)
 def step_impl(context, name, visible, duration):
     # nacteni dat kurzu do kontextu
     load_data_to_context(context, name, visible, duration)

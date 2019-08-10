@@ -5,19 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0037_auto_20190202_0956'),
-    ]
+    dependencies = [("admin", "0037_auto_20190202_0956")]
 
     operations = [
         migrations.AddField(
-            model_name='client',
-            name='active',
-            field=models.BooleanField(default=True),
+            model_name="client", name="active", field=models.BooleanField(default=True)
         ),
         migrations.AddField(
-            model_name='group',
-            name='active',
-            field=models.BooleanField(default=True),
+            model_name="group", name="active", field=models.BooleanField(default=True)
         ),
     ]

@@ -1,5 +1,5 @@
-import {useContext, useEffect} from "react"
-import {AuthContext} from "./AuthContext"
+import { useContext, useEffect } from "react"
+import { AuthContext } from "./AuthContext"
 
 // interval pro dotazovani na platnost tokenu (pripadne se obnovi jeho platnost)
 const REFRESH_TOKEN_INTERVAL = 210 * 60 * 1000 // milisekundy -> 3.5 hodiny (210*60*1000)

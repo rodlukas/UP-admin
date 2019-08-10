@@ -1,10 +1,9 @@
 import React from "react"
 
-const Or = ({content}) =>
+const Or = ({ content }) => (
     <p className="text-secondary form_or">
-        <span>nebo</span>
-        {' '}
-        {content}
+        <span>nebo</span> {content}
     </p>
+)
 
 export default Or

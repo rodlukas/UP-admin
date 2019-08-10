@@ -1,4 +1,4 @@
-import React, {Component, createContext} from "react"
+import React, { Component, createContext } from "react"
 import CourseService from "../api/services/course"
 
 const CoursesVisibleContext = createContext({
@@ -18,26 +18,33 @@ export class CoursesVisibleProvider extends Component {
     getCourses = (callback = () => {}) => {
         // pokud jeste nikdo nepozadal o nacteni kurzu, pozadej a nacti je
         if (!this.state.loadRequested)
-            this.setState({loadRequested: true}, () =>
-                CourseService.getVisible()
-                    .then(courses => this.setState({
-                        courses,
-                        isLoaded: true
-                    }, callback)))
+            this.setState({ loadRequested: true }, () =>
+                CourseService.getVisible().then(courses =>
+                    this.setState(
+                        {
+                            courses,
+                            isLoaded: true
+                        },
+                        callback
+                    )
+                )
+            )
     }
 
     hardRefreshCourses = () => {
         // pokud uz je v pameti nactena stara verze kurzu, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
         if (this.state.loadRequested)
-            this.setState({isLoaded: false}, () =>
-                CourseService.getVisible()
-                    .then(courses => this.setState({
+            this.setState({ isLoaded: false }, () =>
+                CourseService.getVisible().then(courses =>
+                    this.setState({
                         courses,
                         isLoaded: true
-                    })))
+                    })
+                )
+            )
     }
 
-    render = () =>
+    render = () => (
         <CoursesVisibleContext.Provider
             value={{
                 courses: this.state.courses,
@@ -47,12 +54,15 @@ export class CoursesVisibleProvider extends Component {
             }}>
             {this.props.children}
         </CoursesVisibleContext.Provider>
+    )
 }
 
-const WithCoursesVisibleContext = WrappedComponent => props =>
+const WithCoursesVisibleContext = WrappedComponent => props => (
     <CoursesVisibleContext.Consumer>
-        {coursesVisibleContext => <WrappedComponent {...props} coursesVisibleContext={coursesVisibleContext}/>}
+        {coursesVisibleContext => (
+            <WrappedComponent {...props} coursesVisibleContext={coursesVisibleContext} />
+        )}
     </CoursesVisibleContext.Consumer>
+)
 
-
-export {WithCoursesVisibleContext, CoursesVisibleContext}
+export { WithCoursesVisibleContext, CoursesVisibleContext }

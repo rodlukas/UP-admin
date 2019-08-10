@@ -23,14 +23,9 @@ export function isEnvProduction() {
 }
 
 export function getEnvName() {
-    return isEnvStaging() ? "staging"
-        : (isEnvTesting() ? "testing"
-            : process.env.NODE_ENV)
+    return isEnvStaging() ? "staging" : isEnvTesting() ? "testing" : process.env.NODE_ENV
 }
 
 export function getEnvNameShort() {
-    return isEnvStaging() ? "STAGE"
-        : (isEnvTesting() ? "TEST"
-            : (isEnvProduction() ? "PROD"
-            : "DEV"))
+    return isEnvStaging() ? "STAGE" : isEnvTesting() ? "TEST" : isEnvProduction() ? "PROD" : "DEV"
 }

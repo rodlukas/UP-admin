@@ -1,10 +1,10 @@
 import React from "react"
 import Select from "react-select"
-import {TEXTS} from "../../global/constants"
-import {clientName} from "../../global/utils"
-import {react_select_ids} from "./func"
+import { TEXTS } from "../../global/constants"
+import { clientName } from "../../global/utils"
+import { react_select_ids } from "./func"
 
-const SelectClient = ({value, onChangeCallback, options}) =>
+const SelectClient = ({ value, onChangeCallback, options }) => (
     <Select
         {...react_select_ids("client")}
         value={value}
@@ -15,6 +15,8 @@ const SelectClient = ({value, onChangeCallback, options}) =>
         placeholder={"Vyberte existujícího klienta..."}
         noOptionsMessage={() => TEXTS.NO_RESULTS}
         required
-        autoFocus/>
+        autoFocus
+    />
+)
 
 export default SelectClient

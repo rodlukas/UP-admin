@@ -6,14 +6,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0032_auto_20180925_2114'),
-    ]
+    dependencies = [("admin", "0032_auto_20180925_2114")]
 
     operations = [
         migrations.AlterField(
-            model_name='client',
-            name='phone',
-            field=models.TextField(blank=True, validators=[django.core.validators.MinLengthValidator(9)]),
-        ),
+            model_name="client",
+            name="phone",
+            field=models.TextField(
+                blank=True, validators=[django.core.validators.MinLengthValidator(9)]
+            ),
+        )
     ]

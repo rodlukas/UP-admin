@@ -79,8 +79,8 @@ Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těc
 * [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
 * [a další...](/Pipfile)
 
-V Djangu jsou pro mnohonásobné zrychlení pokročile optimalizované komplexní SQL dotazy (viz články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/), [[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
-Aplikace umožňuje pokročilé debugování na lokálním i vzdáleném prostředí díky [Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar) a jeho doplňku [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
+V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplexní SQL dotazy** (viz články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/), [[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
+Aplikace umožňuje **pokročilé debugování** na lokálním i vzdáleném prostředí díky **[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** a jeho doplňku [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
 #### Frontend
 Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
 * [React 16.8](https://reactjs.org/),
@@ -88,8 +88,9 @@ Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://
 * [React Router 4](https://reacttraining.com/react-router/),
 * [a další...](/frontend/package.json)
 
-Aplikace je odolná proti pádům JS díky [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
-Pro zrychlení načítání celé aplikace se používá lazy loading [`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html).
+Aplikace je **odolná proti pádům JS** díky **[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**.
+Pro **zrychlení načítání** celé aplikace se používá lazy loading **[`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)**.
+**Statickou typovou kontrolu** má na starost **[Flow](https://flow.org/)**.
 ### Informace o nasazených aplikacích
 Aplikace aktuálně běží na **4 prostředích** (3x PaaS [Heroku](https://www.heroku.com/)), které se liší příslušnou nasazenou verzí aplikace, 
 konkrétní instancí databáze, umožňují různé úrovně debugování a kosmeticky se liší také barvou menu. 
@@ -104,6 +105,7 @@ konkrétní instancí databáze, umožňují různé úrovně debugování a kos
 viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[2]](https://wsvincent.com/django-best-practices/)).
 * Na produkci se každý den ve 3:00 provádí 
 [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
+* Pro **automatické formátování kódů** se používá **[Black](https://github.com/psf/black)** (Python) a **[Prettier](https://prettier.io/)** (JS, JSX, CSS, HTML), oba nástroje jsou napojené na IDE a provádějí automatické úpravy.
 * **Aplikace jsou napojené na další služby:**
     * **CI a CD** má na starost [Travis](https://travis-ci.com/) – automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
     * **Automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání potenciálních chyb a 
@@ -117,7 +119,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
     * **Sledování chování a návštěv** umožňuje napojení na [Google Analytics](https://analytics.google.com/) (díky modulu [react-ga](https://github.com/react-ga/react-ga)).
     * [Slack](https://slack.com/)
 * Aplikace **respektuje standardy** [PEP 8](https://pep8.org), [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
-* Kompletní vývoj aplikace probíhá v IDE *[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)* (řeší například automatickou optimalizaci importů apod.).
+* Kompletní vývoj aplikace probíhá v IDE *[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)* (řeší například automatickou optimalizaci importů, automatické formátování kódů apod.).
 * Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a lze je spustit i na lokálním prostředí.
     * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.

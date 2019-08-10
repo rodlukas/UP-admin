@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0027_application'),
-    ]
+    dependencies = [("admin", "0027_application")]
 
-    operations = [
-        migrations.AlterModelOptions(
-            name='application',
-            options={},
-        ),
-    ]
+    operations = [migrations.AlterModelOptions(name="application", options={})]

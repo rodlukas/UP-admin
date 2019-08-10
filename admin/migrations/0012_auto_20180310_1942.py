@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('admin', '0011_auto_20180307_1942'),
-    ]
+    dependencies = [("admin", "0011_auto_20180307_1942")]
 
     operations = [
         migrations.AlterField(
-            model_name='membership',
-            name='start',
-            field=models.DateTimeField(auto_now_add=True),
-        ),
+            model_name="membership", name="start", field=models.DateTimeField(auto_now_add=True)
+        )
     ]

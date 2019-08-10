@@ -1,17 +1,17 @@
 @media (min-width: 768px) and (max-width: 992px) {
-    .diary-day:nth-of-type(n+3) {
-        padding-top: 15px
+    .diary-day:nth-of-type(n + 3) {
+        padding-top: 15px;
     }
 }
 
 @media (max-width: 767.98px) {
     .diary-day + .diary-day {
-        padding-top: 15px
+        padding-top: 15px;
     }
 }
 
 .arrowBtn {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .TitleDate {
@@ -20,5 +20,5 @@
 }
 
 .TitleDate-long {
-    width: 10ch
+    width: 10ch;
 }

@@ -32,4 +32,4 @@ def parse_django_datetime(datetime_str):
 
 
 def prepare_start(date, time):
-    return make_aware(datetime.strptime(f"{date} {time}", '%Y-%m-%d %H:%M'))
+    return make_aware(datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M"))

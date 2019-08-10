@@ -1,5 +1,5 @@
-import React, {Component, Fragment} from "react"
-import {Col, Container, ListGroup, ListGroupItem, Row} from "reactstrap"
+import React, { Component, Fragment } from "react"
+import { Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import Attendances from "../components/Attendances"
@@ -14,18 +14,22 @@ import Loading from "../components/Loading"
 import Note from "../components/Note"
 import Phone from "../components/Phone"
 import PrepaidCounters from "../components/PrepaidCounters"
-import {WithAttendanceStatesContext} from "../contexts/AttendanceStatesContext"
+import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
 import ModalLectures from "../forms/ModalLectures"
-import {prettyDateWithDayYear, prettyTime} from "../global/funcDateTime"
-import {courseDuration, getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses} from "../global/utils"
+import { prettyDateWithDayYear, prettyTime } from "../global/funcDateTime"
+import {
+    courseDuration,
+    getDefaultCourse,
+    getLecturesForGroupingByCourses,
+    groupByCourses
+} from "../global/utils"
 import APP_URLS from "../urls"
 import "./Card.css"
 
 class Card extends Component {
-    isClient = () =>
-        this.props.match.path.includes(APP_URLS.klienti.url)
+    isClient = () => this.props.match.path.includes(APP_URLS.klienti.url)
 
     state = {
         object: {},
@@ -36,52 +40,52 @@ class Card extends Component {
     }
 
     loadingStateIncrement = () =>
-        this.setState(prevState => ({LOADING_CNT: prevState.LOADING_CNT + 1}))
+        this.setState(prevState => ({ LOADING_CNT: prevState.LOADING_CNT + 1 }))
 
-    getId = () =>
-        this.props.match.params.id
-    getPrevId = (prevProps) =>
-        prevProps.match.params.id
-    wasClient = (prevProps) =>
-        prevProps.match.path.includes(APP_URLS.klienti.url)
+    getId = () => this.props.match.params.id
+    getPrevId = prevProps => prevProps.match.params.id
+    wasClient = prevProps => prevProps.match.path.includes(APP_URLS.klienti.url)
 
     componentDidMount() {
         this.getObject()
         this.getLectures()
-        if (this.isClient())
-            this.getMemberships()
+        if (this.isClient()) this.getMemberships()
     }
 
     refreshObject = () => {
         this.setState(
-            prevState => ({LOADING_CNT: prevState.LOADING_CNT - 1}),
-            () =>
-                this.getObject()
+            prevState => ({ LOADING_CNT: prevState.LOADING_CNT - 1 }),
+            () => this.getObject()
         )
     }
 
     refresh = (all = true) => {
         if (this.isClient() && all) {
             this.setState(
-                prevState => ({LOADING_CNT: prevState.LOADING_CNT - 3}),
+                prevState => ({ LOADING_CNT: prevState.LOADING_CNT - 3 }),
                 () => {
                     this.getObject()
                     this.getLectures()
                     this.getMemberships()
-                })
+                }
+            )
         } else {
             this.setState(
-                prevState => ({LOADING_CNT: prevState.LOADING_CNT - 2}),
+                prevState => ({ LOADING_CNT: prevState.LOADING_CNT - 2 }),
                 () => {
                     this.getObject()
                     this.getLectures()
-                })
+                }
+            )
         }
     }
 
     // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
     componentDidUpdate(prevProps) {
-        if (this.getId() !== this.getPrevId(prevProps) || this.isClient() !== this.wasClient(prevProps))
+        if (
+            this.getId() !== this.getPrevId(prevProps) ||
+            this.isClient() !== this.wasClient(prevProps)
+        )
             this.refresh()
     }
 
@@ -89,159 +93,206 @@ class Card extends Component {
         this.refresh(false)
     }
 
-    goBack = () =>
-        this.props.history.goBack()
+    goBack = () => this.props.history.goBack()
 
     getMemberships = (id = this.getId()) =>
-        GroupService.getAllFromClient(id)
-            .then(memberships => this.setState({memberships}, this.loadingStateIncrement))
+        GroupService.getAllFromClient(id).then(memberships =>
+            this.setState({ memberships }, this.loadingStateIncrement)
+        )
 
     getObject = (IS_CLIENT = this.isClient(), id = this.getId()) => {
-        let service = (IS_CLIENT ? ClientService : GroupService)
-        service.get(id)
-            .then(object => this.setState({object}, this.loadingStateIncrement))
+        let service = IS_CLIENT ? ClientService : GroupService
+        service.get(id).then(object => this.setState({ object }, this.loadingStateIncrement))
     }
 
     getLectures = () => {
         const request = getLecturesForGroupingByCourses(this.getId(), this.isClient())
         request.then(lectures => {
             const lecturesGroupedByCourses = groupByCourses(lectures)
-            this.setState({
-                lectures: lecturesGroupedByCourses,
-                defaultCourse: getDefaultCourse(lecturesGroupedByCourses, this.isClient()),
-            }, this.loadingStateIncrement)
+            this.setState(
+                {
+                    lectures: lecturesGroupedByCourses,
+                    defaultCourse: getDefaultCourse(lecturesGroupedByCourses, this.isClient())
+                },
+                this.loadingStateIncrement
+            )
         })
     }
 
     // uprava nadrazeneho objektu (tohoto) po uprave v synovi (prepaid_cnt)
     funcRefreshPrepaidCnt = (id, prepaid_cnt) => {
-        this.setState(
-            prevState => {
-                let success_update_cnt = 0
-                const memberships = prevState.object.memberships.map(membership => {
-                    if (membership.id === id) {
-                        success_update_cnt++
-                        return {...membership, prepaid_cnt: prepaid_cnt}
-                    } else {
-                        return membership
-                    }
-                })
-                if (success_update_cnt !== 1)
-                    throw new Error("Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě")
-                return ({
-                    object: {...prevState.object, memberships},
-                    LOADING_CNT: prevState.LOADING_CNT - 1
-                })
-            },
-            this.getLectures)
+        this.setState(prevState => {
+            let success_update_cnt = 0
+            const memberships = prevState.object.memberships.map(membership => {
+                if (membership.id === id) {
+                    success_update_cnt++
+                    return { ...membership, prepaid_cnt: prepaid_cnt }
+                } else {
+                    return membership
+                }
+            })
+            if (success_update_cnt !== 1)
+                throw new Error(
+                    "Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě"
+                )
+            return {
+                object: { ...prevState.object, memberships },
+                LOADING_CNT: prevState.LOADING_CNT - 1
+            }
+        }, this.getLectures)
     }
 
     render() {
-        const {object, lectures, defaultCourse, memberships, LOADING_CNT} = this.state
+        const { object, lectures, defaultCourse, memberships, LOADING_CNT } = this.state
         return (
             <Fragment>
                 <Container>
-                    <Heading content={
-                        <Fragment>
-                            <BackButton onClick={this.goBack}/>
-                            {' '}
-                            {"Karta " + (this.isClient() ? "klienta" : "skupiny")}:
-                            {' '}
-                            {this.isClient() ?
-                                <ClientName client={object} bold/>
-                                :
-                                <GroupName group={object} bold/>}
-                            <ModalLectures defaultCourse={defaultCourse} IS_CLIENT={this.isClient()}
-                                           object={object} refresh={this.refreshAfterLectureChanges}/>
-                            {this.isClient() &&
-                            <ModalClients currentClient={object} refresh={this.refreshObject}/>}
-                            {!this.isClient() &&
-                            <ModalGroups currentGroup={object} refresh={this.refreshObject}/>}
-                        </Fragment>
-                    }/>
+                    <Heading
+                        content={
+                            <Fragment>
+                                <BackButton onClick={this.goBack} />{" "}
+                                {"Karta " + (this.isClient() ? "klienta" : "skupiny")}:{" "}
+                                {this.isClient() ? (
+                                    <ClientName client={object} bold />
+                                ) : (
+                                    <GroupName group={object} bold />
+                                )}
+                                <ModalLectures
+                                    defaultCourse={defaultCourse}
+                                    IS_CLIENT={this.isClient()}
+                                    object={object}
+                                    refresh={this.refreshAfterLectureChanges}
+                                />
+                                {this.isClient() && (
+                                    <ModalClients
+                                        currentClient={object}
+                                        refresh={this.refreshObject}
+                                    />
+                                )}
+                                {!this.isClient() && (
+                                    <ModalGroups
+                                        currentGroup={object}
+                                        refresh={this.refreshObject}
+                                    />
+                                )}
+                            </Fragment>
+                        }
+                    />
                 </Container>
-                {(LOADING_CNT === 3 && this.props.attendanceStatesContext.isLoaded) ?
+                {LOADING_CNT === 3 && this.props.attendanceStatesContext.isLoaded ? (
                     <div className="pageContent">
                         <Container fluid>
                             <Row className="justify-content-center">
                                 <Col sm="9" md="7" lg="5" xl="3">
                                     <ListGroup>
-                                        {this.isClient() &&
-                                        <Fragment>
-                                            <ListGroupItem>
-                                                <b>Telefon:</b> <Phone phone={object.phone}/>
-                                            </ListGroupItem>
-                                            <ListGroupItem>
-                                                <b>E-mail:</b> <Email email={object.email}/>
-                                            </ListGroupItem>
-                                            <ListGroupItem>
-                                                <b>Skupiny:</b> <GroupsList groups={memberships}/>
-                                            </ListGroupItem>
-                                            <ListGroupItem>
-                                                <b>Poznámka:</b> <Note note={object.note}/>
-                                            </ListGroupItem>
-                                        </Fragment>}
+                                        {this.isClient() && (
+                                            <Fragment>
+                                                <ListGroupItem>
+                                                    <b>Telefon:</b> <Phone phone={object.phone} />
+                                                </ListGroupItem>
+                                                <ListGroupItem>
+                                                    <b>E-mail:</b> <Email email={object.email} />
+                                                </ListGroupItem>
+                                                <ListGroupItem>
+                                                    <b>Skupiny:</b>{" "}
+                                                    <GroupsList groups={memberships} />
+                                                </ListGroupItem>
+                                                <ListGroupItem>
+                                                    <b>Poznámka:</b> <Note note={object.note} />
+                                                </ListGroupItem>
+                                            </Fragment>
+                                        )}
                                     </ListGroup>
                                 </Col>
                             </Row>
-                            {!this.isClient() &&
-                            <PrepaidCounters memberships={object.memberships}
-                                             funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}/>}
-                            <br/>
+                            {!this.isClient() && (
+                                <PrepaidCounters
+                                    memberships={object.memberships}
+                                    funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}
+                                />
+                            )}
+                            <br />
                             <Row className="justify-content-center">
-                                {lectures.map(courseLectures =>
-                                    <Col key={courseLectures.course.id} sm="9" md="7" lg="5" xl="3"
-                                         data-qa="card_course">
+                                {lectures.map(courseLectures => (
+                                    <Col
+                                        key={courseLectures.course.id}
+                                        sm="9"
+                                        md="7"
+                                        lg="5"
+                                        xl="3"
+                                        data-qa="card_course">
                                         <ListGroup>
-                                            <ListGroupItem style={{background: courseLectures.course.color}}>
-                                                <h4 className="text-center mb-0 Card_courseHeading"
+                                            <ListGroupItem
+                                                style={{ background: courseLectures.course.color }}>
+                                                <h4
+                                                    className="text-center mb-0 Card_courseHeading"
                                                     data-qa="card_course_name">
                                                     {courseLectures.course.name}
                                                 </h4>
                                             </ListGroupItem>
                                             {courseLectures.lectures.map(lecture => {
                                                 const d = new Date(lecture.start)
-                                                let className = lecture.canceled ? "lecture-canceled" : ""
-                                                if (d > Date.now())
-                                                    className += " lecture-future"
+                                                let className = lecture.canceled
+                                                    ? "lecture-canceled"
+                                                    : ""
+                                                if (d > Date.now()) className += " lecture-future"
                                                 if (lecture.start === null)
                                                     className += " lecture-prepaid"
                                                 return (
-                                                    <ListGroupItem key={lecture.id}
-                                                                   className={className + " lecture lecture_card"}
-                                                                   data-qa="lecture">
+                                                    <ListGroupItem
+                                                        key={lecture.id}
+                                                        className={
+                                                            className + " lecture lecture_card"
+                                                        }
+                                                        data-qa="lecture">
                                                         <div className="lecture_heading">
                                                             <h4>
-                                                                <span data-qa="lecture_start"
-                                                                      title={courseDuration(lecture.duration)}>
-                                                                {lecture.start !== null ?
-                                                                    (prettyDateWithDayYear(d) + " – " + prettyTime(d))
-                                                                    :
-                                                                    "Předplacená lekce"}
+                                                                <span
+                                                                    data-qa="lecture_start"
+                                                                    title={courseDuration(
+                                                                        lecture.duration
+                                                                    )}>
+                                                                    {lecture.start !== null
+                                                                        ? prettyDateWithDayYear(d) +
+                                                                          " – " +
+                                                                          prettyTime(d)
+                                                                        : "Předplacená lekce"}
                                                                 </span>
                                                             </h4>
-                                                            <LectureNumber lecture={lecture}/>
-                                                            <ModalLectures IS_CLIENT={this.isClient()}
-                                                                           object={object} currentLecture={lecture}
-                                                                           refresh={this.refreshAfterLectureChanges}/>
+                                                            <LectureNumber lecture={lecture} />
+                                                            <ModalLectures
+                                                                IS_CLIENT={this.isClient()}
+                                                                object={object}
+                                                                currentLecture={lecture}
+                                                                refresh={
+                                                                    this.refreshAfterLectureChanges
+                                                                }
+                                                            />
                                                         </div>
                                                         <div className="lecture_content">
-                                                            <Attendances lecture={lecture}
-                                                                         funcRefresh={this.refreshAfterLectureChanges}
-                                                                         showClient={!this.isClient()}/>
+                                                            <Attendances
+                                                                lecture={lecture}
+                                                                funcRefresh={
+                                                                    this.refreshAfterLectureChanges
+                                                                }
+                                                                showClient={!this.isClient()}
+                                                            />
                                                         </div>
-                                                    </ListGroupItem>)
+                                                    </ListGroupItem>
+                                                )
                                             })}
                                         </ListGroup>
-                                    </Col>)}
-                                {!Boolean(lectures.length) &&
-                                <p className="text-muted text-center">
-                                    Žádné lekce
-                                </p>}
+                                    </Col>
+                                ))}
+                                {!Boolean(lectures.length) && (
+                                    <p className="text-muted text-center">Žádné lekce</p>
+                                )}
                             </Row>
                         </Container>
-                    </div> :
-                    <Loading/>}
+                    </div>
+                ) : (
+                    <Loading />
+                )}
             </Fragment>
         )
     }
