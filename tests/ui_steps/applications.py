@@ -45,8 +45,8 @@ def showed_applications_cnts_for_courses_matches(driver):
     return success
 
 
-def find_application(driver, client, course, **data):
-    all_found_courses_with_applications = driver.find_elements_by_css_selector(
+def find_application(context, client, course, **data):
+    all_found_courses_with_applications = context.browser.find_elements_by_css_selector(
         "[data-qa=applications_for_course]"
     )
     for course_with_applications in all_found_courses_with_applications:
@@ -61,20 +61,21 @@ def find_application(driver, client, course, **data):
             found_client = application.find_element_by_css_selector("[data-qa=client_name]").text
             # srovnej identifikatory
             if found_client == client and found_course == course:
+                found_note = application.find_element_by_css_selector(
+                    "[data-qa=application_note]"
+                ).text
                 # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-                if data:
-                    found_note = application.find_element_by_css_selector(
-                        "[data-qa=application_note]"
-                    ).text
-                    if found_note == data["note"]:
-                        return application
-                else:
+                if not data or (data and found_note == data["note"]):
+                    # uloz stara data do kontextu pro pripadne overeni spravnosti
+                    context.old_client = found_client
+                    context.old_course = found_course
+                    context.old_note = found_note
                     return application
     return False
 
 
 def find_application_with_context(context):
-    return find_application(context.browser, context.client, context.course, note=context.note)
+    return find_application(context, context.client, context.course, note=context.note)
 
 
 def wait_form_visible(driver):
@@ -83,13 +84,27 @@ def wait_form_visible(driver):
     )
 
 
-def insert_to_form(context):
+def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
-    # vloz vsechny udaje do formulare
+    # priprav pole z formulare
     client_field = context.browser.find_element_by_id("client")
     course_field = context.browser.find_element_by_id("course")
     note_field = context.browser.find_element_by_css_selector("[data-qa=application_field_note]")
+    # over, ze aktualne zobrazene udaje ve formulari jsou spravne
+    if verify_current_data:
+        # ziskej aktualni hodnoty z react-selectu
+        client_field_value = context.browser.find_element_by_css_selector(
+            ".client__single-value"
+        ).text
+        course_field_value = context.browser.find_element_by_css_selector(
+            ".course__single-value"
+        ).text
+        assert (
+            context.old_client == client_field_value
+            and context.old_course == course_field_value
+            and context.old_note == note_field
+        )
     # smaz vsechny udaje
     client_field.send_keys(Keys.BACK_SPACE)
     course_field.send_keys(Keys.BACK_SPACE)
@@ -142,7 +157,7 @@ def step_impl(context):
         lambda driver: applications_cnt(driver) < context.old_applications_cnt
     )
     # je zadost opravdu smazana?
-    assert not find_application(context.browser, context.client, context.course)
+    assert not find_application(context, context.client, context.course)
     assert showed_applications_cnts_for_courses_matches(context.browser)
 
 
@@ -156,7 +171,7 @@ def step_impl(context, full_name, course):
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi zadost
-    application_to_update = find_application(context.browser, context.client, context.course)
+    application_to_update = find_application(context, context.client, context.course)
     assert application_to_update
     # uloz puvodni pocet zadosti
     save_old_applications_cnt_to_context(context)
@@ -206,7 +221,7 @@ def step_impl(context, cur_full_name, cur_course, new_full_name, new_course, new
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi zadost a klikni u ni na Upravit
-    application_to_update = find_application(context.browser, cur_full_name, cur_course)
+    application_to_update = find_application(context, cur_full_name, cur_course)
     assert application_to_update
     button_edit_application = application_to_update.find_element_by_css_selector(
         "[data-qa=button_edit_application]"
@@ -214,8 +229,8 @@ def step_impl(context, cur_full_name, cur_course, new_full_name, new_course, new
     button_edit_application.click()
     # uloz puvodni pocet zadosti
     save_old_applications_cnt_to_context(context)
-    # vloz vsechny udaje do formulare
-    insert_to_form(context)
+    # over spravne zobrazene udaje ve formulari a vloz do nej vsechny udaje
+    insert_to_form(context, True)
     # odesli formular
     helpers.submit_form(context, "button_submit_application")
 

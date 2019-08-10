@@ -29,10 +29,16 @@ def submit_form(context, button_name):
     button.click()
 
 
+def convert_fa_bool(classes):
+    # preved zobrazenou FontAwesome ikonu na boolean
+    classes_list = classes.split()
+    return "fa-check" in classes_list  # jinak je ikona "fa-times"
+
+
 def check_fa_bool(visible, classes):
     # sedi hodnota visible se zobrazenou FontAwesome ikonou?
-    classes_list = classes.split()
-    if (visible and "fa-check" in classes_list) or (not visible and "fa-times" in classes_list):
+    fa_boolean = convert_fa_bool(classes)
+    if (visible and fa_boolean) or (not visible and not fa_boolean):
         return True
     return False
 
@@ -177,20 +183,26 @@ def _find_client_with_activity(activity, context, full_name, open_card, **data):
         found_client = None
         # srovnej identifikatory
         if found_name == full_name:
+            found_phone = client.find_element_by_css_selector("[data-qa=client_phone]").text
+            found_email = client.find_element_by_css_selector("[data-qa=client_email]").text
+            found_note = client.find_element_by_css_selector("[data-qa=client_note]").text
+            found_phone_value = common_helpers.shrink_str(found_phone)
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-            if data:
-                found_phone = client.find_element_by_css_selector("[data-qa=client_phone]").text
-                found_email = client.find_element_by_css_selector("[data-qa=client_email]").text
-                found_note = client.find_element_by_css_selector("[data-qa=client_note]").text
-                if (
-                    common_helpers.shrink_str(found_phone)
-                    == frontend_empty_str(common_helpers.shrink_str(data["phone"]))
-                    and found_email == frontend_empty_str(data["email"])
-                    and found_note == frontend_empty_str(data["note"])
-                    and activity == data["active"]
-                ):
-                    found_client = client
-            else:
+            if not data or (
+                data
+                and found_phone_value
+                == frontend_empty_str(common_helpers.shrink_str(data["phone"]))
+                and found_email == frontend_empty_str(data["email"])
+                and found_note == frontend_empty_str(data["note"])
+                and activity == data["active"]
+            ):
+                # uloz stara data do kontextu pro pripadne overeni spravnosti
+                context.old_client_name = found_name
+                context.old_client_phone = found_phone_value
+                context.old_client_email = found_email
+                context.old_client_note = found_note
+                context.old_client_activity = activity
+                # uloz nalezeneho klienta
                 found_client = client
         if found_client:
             if open_card:
