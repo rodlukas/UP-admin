@@ -2,4 +2,5 @@ path_classifiers:
   library:
     - frontend/flow-typed
 queries:
-  include: "*"
+  - include: "*"
+  - exclude: js/node/unused-npm-dependency
