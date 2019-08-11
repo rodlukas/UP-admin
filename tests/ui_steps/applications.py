@@ -103,7 +103,7 @@ def insert_to_form(context, verify_current_data=False):
         assert (
             context.old_client == client_field_value
             and context.old_course == course_field_value
-            and context.old_note == note_field
+            and context.old_note == note_field.get_attribute("value")
         )
     # smaz vsechny udaje
     client_field.send_keys(Keys.BACK_SPACE)
