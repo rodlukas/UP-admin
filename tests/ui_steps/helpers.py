@@ -154,9 +154,9 @@ def _find_group_with_activity(activity, context, name, open_card=False, validate
                 and activity == context.active
             ):
                 # uloz stara data do kontextu pro pripadne overeni spravnosti
-                context.old_name = found_name
-                context.old_course = found_course
-                context.old_memberships = found_memberships
+                context.old_group_name = found_name
+                context.old_group_course = found_course
+                context.old_group_memberships = found_memberships
                 context.old_group_activity = activity
                 # uloz nalezenou skupinu
                 found_group = group
