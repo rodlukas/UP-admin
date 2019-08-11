@@ -30,7 +30,7 @@ def course_equal_to_context(course, context):
         course["name"] == context.name
         and course["visible"] == context.visible
         and course["duration"] == int(context.duration)
-        and course["color"] == context.color
+        and course["color"] == common_helpers.color_transform(context.color)
     )
 
 
