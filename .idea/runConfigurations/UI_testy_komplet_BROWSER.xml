@@ -14,7 +14,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <WHAT_TO_RUN WHAT_TO_RUN="$PROJECT_DIR$/tests" />
-    <option name="ADDITIONAL_ARGS" value="--stage=ui" />
+    <option name="ADDITIONAL_ARGS" value="--stage=ui --format=progress3" />
     <method v="2" />
   </configuration>
 </component>
