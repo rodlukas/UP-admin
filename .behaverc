@@ -1,3 +1,3 @@
 [behave]
-paths=tests
-stdout_capture=false
+paths = tests
+stdout_capture = false
