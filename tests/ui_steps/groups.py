@@ -52,9 +52,9 @@ def insert_to_form(context, verify_current_data=False):
             ".course__single-value"
         ).text
         assert (
-            context.old_name == name_field.get_attribute("value")
-            and context.old_course == course_field_value
-            and set(context.old_memberships) == set(memberships_field_values)
+            context.old_group_name == name_field.get_attribute("value")
+            and context.old_group_course == course_field_value
+            and set(context.old_group_memberships) == set(memberships_field_values)
             and context.old_group_activity == active_checkbox.is_selected()
         )
     # smaz vsechny udaje
