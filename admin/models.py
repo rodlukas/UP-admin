@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.db import models
 
 
@@ -56,13 +57,27 @@ class Client(models.Model):
 
 
 class Course(models.Model):
-    color = models.CharField(max_length=7, default="#000")
+    color = models.CharField(
+        max_length=7,
+        default="#000000",
+        validators=[
+            RegexValidator(regex="^#(?:[0-9a-fA-F]{3}){1,2}$", message="Barva není v HEX formátu")
+        ],
+    )  # regex viz https://stackoverflow.com/a/1636354
     duration = models.PositiveIntegerField()
     name = models.TextField()
     visible = models.BooleanField()
 
     class Meta:
         ordering = ["name"]
+
+    def save(self, *args, **kwargs):
+        # prevod barvy na velka pismena
+        self.color = self.color.upper()
+        # barva se 3 cisly se prevede na 6 cisel
+        if len(self.color) != 7:
+            self.color = "#{}".format("".join(2 * c for c in self.color.lstrip("#")))
+        super().save(*args, **kwargs)
 
 
 class Application(models.Model):
