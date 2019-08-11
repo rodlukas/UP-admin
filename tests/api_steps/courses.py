@@ -30,6 +30,7 @@ def course_equal_to_context(course, context):
         course["name"] == context.name
         and course["visible"] == context.visible
         and course["duration"] == int(context.duration)
+        and course["color"] == context.color
     )
 
 
@@ -43,13 +44,19 @@ def find_course_with_id(context, course_id):
 
 
 def course_dict(context):
-    return {"name": context.name, "visible": context.visible, "duration": context.duration}
+    return {
+        "name": context.name,
+        "visible": context.visible,
+        "duration": context.duration,
+        "color": context.color,
+    }
 
 
-def load_data_to_context(context, name, visible, duration):
+def load_data_to_context(context, name, visible, duration, color):
     load_id_data_to_context(context, name)
     context.visible = common_helpers.to_bool(visible)
     context.duration = duration
+    context.color = color
 
 
 def load_id_data_to_context(context, name):
@@ -119,11 +126,11 @@ def step_impl(context):
 
 
 @when(
-    'user updates the data of course "{cur_name}" to name "{new_name}", visibility "{new_visible}" and duration "{new_duration}"'
+    'user updates the data of course "{cur_name}" to name "{new_name}", visibility "{new_visible}", duration "{new_duration}" and color "{new_color}"'
 )
-def step_impl(context, cur_name, new_name, new_visible, new_duration):
+def step_impl(context, cur_name, new_name, new_visible, new_duration, new_color):
     # nacteni dat kurzu do kontextu
-    load_data_to_context(context, new_name, new_visible, new_duration)
+    load_data_to_context(context, new_name, new_visible, new_duration, new_color)
     # najdi kurz
     course_to_update = helpers.find_course_with_name(context.api_client, cur_name)
     assert course_to_update
@@ -139,11 +146,11 @@ use_step_matcher("re")
 
 
 @when(
-    'user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)" and duration "(?P<duration>.*)"'
+    'user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)", duration "(?P<duration>.*)" and color "(?P<color>.*)"'
 )
-def step_impl(context, name, visible, duration):
+def step_impl(context, name, visible, duration, color):
     # nacteni dat kurzu do kontextu
-    load_data_to_context(context, name, visible, duration)
+    load_data_to_context(context, name, visible, duration, color)
     # uloz puvodni pocet kurzu
     save_old_courses_cnt_to_context(context)
     # vlozeni kurzu

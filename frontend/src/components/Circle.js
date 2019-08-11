@@ -6,6 +6,7 @@ const Circle = ({ color, size, showTitle = false }) => {
 
     return (
         <div
+            data-qa="course_color"
             className="circle"
             style={{
                 background: color,

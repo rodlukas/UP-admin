@@ -1,6 +1,7 @@
 from behave import *
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -32,22 +33,41 @@ def find_course(context, name, **data):
                 "[data-qa=course_visible]"
             ).get_attribute("class")
             found_duration = course.find_element_by_css_selector("[data-qa=course_duration]").text
+            found_color = course.find_element_by_css_selector(
+                "[data-qa=course_color]"
+            ).get_attribute("title")
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             if not data or (
                 data
                 and helpers.check_fa_bool(data["visible"], found_visible_classes)
                 and found_duration == data["duration"]
+                and found_color == common_helpers.color_transform(data["color"])
             ):
                 # uloz stara data do kontextu pro pripadne overeni spravnosti
                 context.old_name = found_name
-                context.old_duration = found_duration
                 context.old_visible = helpers.convert_fa_bool(found_visible_classes)
+                context.old_duration = found_duration
+                context.old_color = found_color
                 return course
     return False
 
 
 def find_course_with_context(context):
-    return find_course(context, context.name, visible=context.visible, duration=context.duration)
+    return find_course(
+        context,
+        context.name,
+        visible=context.visible,
+        duration=context.duration,
+        color=context.color,
+    )
+
+
+def course_color_prepare(context, color_button):
+    color_button.click()
+    color_field = context.browser.find_element_by_css_selector(
+        "[data-qa=course_color_picker] input"
+    )
+    return color_field
 
 
 def insert_to_form(context, verify_current_data=False):
@@ -62,12 +82,19 @@ def insert_to_form(context, verify_current_data=False):
     duration_field = context.browser.find_element_by_css_selector(
         "[data-qa=settings_field_duration]"
     )
+    color_button = context.browser.find_element_by_css_selector(
+        "[data-qa=course_button_color]"
+    )  # tlacitko pro otevreni okna s vyberem barvy
+    color_field = course_color_prepare(context, color_button)  # pole se zvolenou barvou
+    color_field_value = color_field.get_attribute("value")  # ziskani hodnoty barvy
+    color_field.send_keys(Keys.TAB)  # zavreni okna s vyberem barvy
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
         assert (
             context.old_name == name_field.get_attribute("value")
             and context.old_visible == visible_checkbox.is_selected()
             and context.old_duration == duration_field.get_attribute("value")
+            and context.old_color == color_field_value
         )
     # smaz vsechny udaje
     name_field.clear()
@@ -79,12 +106,19 @@ def insert_to_form(context, verify_current_data=False):
         visible_label.click()
     name_field.send_keys(context.name)
     duration_field.send_keys(context.duration)
+    # otevreni okna s vyberem barvy, smazani aktualni barvy, vlozeni nove a zavreni okna
+    # nejde pouzit .clear(), protoze vyvola onBlur (zrusi focus na element) a zavre se okno s vyberem barvy
+    color_field = course_color_prepare(context, color_button)
+    color_field.send_keys(Keys.CONTROL, "a", Keys.DELETE)
+    color_field.send_keys(context.color)
+    color_field.send_keys(Keys.TAB)
 
 
-def load_data_to_context(context, name, visible, duration):
+def load_data_to_context(context, name, visible, duration, color):
     load_id_data_to_context(context, name)
     context.visible = common_helpers.to_bool(visible)
     context.duration = duration
+    context.color = color
 
 
 def load_id_data_to_context(context, name):
@@ -167,11 +201,11 @@ def step_impl(context):
 
 
 @when(
-    'user updates the data of course "{cur_name}" to name "{new_name}", visibility "{new_visible}" and duration "{new_duration}"'
+    'user updates the data of course "{cur_name}" to name "{new_name}", visibility "{new_visible}", duration "{new_duration}" and color "{new_color}"'
 )
-def step_impl(context, cur_name, new_name, new_visible, new_duration):
+def step_impl(context, cur_name, new_name, new_visible, new_duration, new_color):
     # nacti data kurzu do kontextu
-    load_data_to_context(context, new_name, new_visible, new_duration)
+    load_data_to_context(context, new_name, new_visible, new_duration, new_color)
     # klikni v menu na nastaveni
     helpers.open_settings(context.browser)
     # pockej na nacteni
@@ -195,11 +229,11 @@ use_step_matcher("re")
 
 
 @when(
-    'user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)" and duration "(?P<duration>.*)"'
+    'user adds new course "(?P<name>.*)" with visibility "(?P<visible>.*)", duration "(?P<duration>.*)" and color "(?P<color>.*)"'
 )
-def step_impl(context, name, visible, duration):
+def step_impl(context, name, visible, duration, color):
     # nacteni dat kurzu do kontextu
-    load_data_to_context(context, name, visible, duration)
+    load_data_to_context(context, name, visible, duration, color)
     # klikni v menu na nastaveni
     helpers.open_settings(context.browser)
     # pockej na nacteni a pak klikni na Pridat kurz

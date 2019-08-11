@@ -64,7 +64,7 @@ export default class ColorPicker extends React.Component {
                         </InputGroupAddon>
                         <div
                             id="color"
-                            data-qa="settings_field_color"
+                            data-qa="course_button_color"
                             tabIndex="0"
                             onFocus={this.togglePicker}
                             className="ColorPickerInput"
@@ -75,6 +75,7 @@ export default class ColorPicker extends React.Component {
                         {this.state.isPickerVisible ? (
                             <div
                                 className="ColorPickerWindow"
+                                data-qa="course_color_picker"
                                 onMouseLeave={this.closePicker}
                                 onBlur={this.closePicker}>
                                 <ChromePicker

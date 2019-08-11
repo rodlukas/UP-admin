@@ -19,6 +19,13 @@ def shrink_str(phone):
     return phone.replace(" ", "")
 
 
+def color_transform(color):
+    color = color.upper()
+    if len(color) != 7:
+        color = "#{}".format("".join(2 * c for c in color.lstrip("#")))
+    return color
+
+
 def client_full_name(name, surname):
     return f"{surname} {name}"
 
