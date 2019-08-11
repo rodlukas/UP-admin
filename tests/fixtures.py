@@ -30,7 +30,7 @@ def clients():
 
 def courses():
     courses_list = [
-        Course(name="Kurz Slabika", visible=True, duration=20),
+        Course(name="Kurz Slabika", visible=True, duration=20, color="#446CB3"),
         Course(name="Předškolák s ADHD", visible=True, duration=30),
         Course(name="Máme doma leváka", visible=False, duration=40),
         Course(name="xyz", visible=True, duration=10),
