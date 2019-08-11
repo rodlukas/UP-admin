@@ -142,19 +142,23 @@ def _find_group_with_activity(activity, context, name, open_card=False, validate
         # srovnej identifikatory
         if found_name == name:
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-            if validate_context:
-                found_course = group.find_element_by_css_selector("[data-qa=course_name]").text
-                found_memberships_elements = group.find_elements_by_css_selector(
-                    "[data-qa=client_name]"
-                )
-                found_memberships = [element.text for element in found_memberships_elements]
-                if (
-                    set(found_memberships) == set(context.memberships)
-                    and found_course == context.course
-                    and activity == context.active
-                ):
-                    found_group = group
-            else:
+            found_course = group.find_element_by_css_selector("[data-qa=course_name]").text
+            found_memberships = [
+                element.text
+                for element in group.find_elements_by_css_selector("[data-qa=client_name]")
+            ]
+            if not validate_context or (
+                validate_context
+                and set(found_memberships) == set(context.memberships)
+                and found_course == context.course
+                and activity == context.active
+            ):
+                # uloz stara data do kontextu pro pripadne overeni spravnosti
+                context.old_name = found_name
+                context.old_course = found_course
+                context.old_memberships = found_memberships
+                context.old_group_activity = activity
+                # uloz nalezenou skupinu
                 found_group = group
         if found_group:
             if open_card:
