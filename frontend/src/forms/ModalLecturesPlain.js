@@ -12,17 +12,20 @@ const ModalLecturesPlain = ({
     defaultCourse,
     date = ""
 }) => {
+    // komponente muze prijit object=null (pri zavirani v ModalLecturesFast), proto osetreni "object &&"
     return (
         <Modal isOpen={isModal} toggle={toggleModal} size="lg" className="ModalFormLecture">
-            <FormLectures
-                lecture={Boolean(currentLecture) ? currentLecture : {}}
-                funcClose={toggleModal}
-                object={object}
-                funcRefresh={refresh}
-                IS_CLIENT={IS_CLIENT}
-                defaultCourse={defaultCourse}
-                date={date}
-            />
+            {object && (
+                <FormLectures
+                    lecture={Boolean(currentLecture) ? currentLecture : {}}
+                    funcClose={toggleModal}
+                    object={object}
+                    funcRefresh={refresh}
+                    IS_CLIENT={IS_CLIENT}
+                    defaultCourse={defaultCourse}
+                    date={date}
+                />
+            )}
         </Modal>
     )
 }

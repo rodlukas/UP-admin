@@ -26,9 +26,7 @@ import ModalLecturesPlain from "./ModalLecturesPlain"
 
 class ModalLecturesFast extends React.Component {
     state = {
-        IS_MODAL: true,
         IS_CLIENT: undefined,
-        IS_MODAL_SELECT: true,
         object: null,
         defaultCourse: null,
         IS_LOADING: false
@@ -94,8 +92,7 @@ class ModalLecturesFast extends React.Component {
     refreshAfterSave = () => {
         this.setState({
             IS_CLIENT: undefined,
-            object: null,
-            IS_MODAL_SELECT: true
+            object: null
         })
         this.props.refresh()
     }
@@ -121,80 +118,87 @@ class ModalLecturesFast extends React.Component {
                         </DropdownItem>
                     </DropdownMenu>
                 </UncontrolledButtonDropdown>
-                {this.state.IS_CLIENT !== undefined && (
-                    <Modal
-                        isOpen={this.state.IS_MODAL_SELECT}
-                        toggle={this.toggleModalSelect}
-                        autoFocus={false}>
-                        <ModalHeader toggle={this.toggleModalSelect}>
-                            Výběr {this.state.IS_CLIENT ? "klienta" : "skupiny"}
-                        </ModalHeader>
-                        <ModalBody>
-                            {this.state.IS_LOADING ||
-                            (this.state.IS_CLIENT && !this.props.clientsActiveContext.isLoaded) ||
-                            (!this.state.IS_CLIENT && !this.props.groupsActiveContext.isLoaded) ? (
-                                <Loading
-                                    text={
-                                        this.state.IS_LOADING &&
-                                        "Vypočítávám optimální kurz pro klienta"
-                                    }
-                                />
-                            ) : this.state.IS_CLIENT ? (
-                                <Fragment>
-                                    <SelectClient
-                                        value={this.state.object}
-                                        options={this.props.clientsActiveContext.clients}
-                                        onChangeCallback={this.onSelectChange}
-                                    />
-                                    <Or
-                                        content={
-                                            <ModalClients
-                                                refresh={this.getClientsAfterAddition}
-                                                sendResult
-                                                inSentence
-                                            />
+                <Modal
+                    isOpen={this.state.IS_CLIENT !== undefined}
+                    toggle={this.toggleModalSelect}
+                    autoFocus={false}>
+                    <ModalHeader toggle={this.toggleModalSelect}>
+                        Výběr{" "}
+                        {this.state.IS_CLIENT
+                            ? "klienta"
+                            : this.state.IS_CLIENT !== undefined
+                            ? "skupiny"
+                            : ""}
+                    </ModalHeader>
+                    <ModalBody>
+                        {this.state.IS_CLIENT !== undefined && (
+                            <Fragment>
+                                {this.state.IS_LOADING ||
+                                (this.state.IS_CLIENT &&
+                                    !this.props.clientsActiveContext.isLoaded) ||
+                                (this.state.IS_CLIENT === false &&
+                                    !this.props.groupsActiveContext.isLoaded) ? (
+                                    <Loading
+                                        text={
+                                            this.state.IS_LOADING &&
+                                            "Vypočítávám optimální kurz pro klienta"
                                         }
                                     />
-                                </Fragment>
-                            ) : (
-                                <Fragment>
-                                    <Select
-                                        {...react_select_ids("group")}
-                                        value={this.state.object}
-                                        getOptionLabel={option => option.name}
-                                        getOptionValue={option => option.id}
-                                        onChange={newValue => this.onSelectChange(newValue)}
-                                        options={this.props.groupsActiveContext.groups}
-                                        placeholder={"Vyberte existující skupinu..."}
-                                        noOptionsMessage={() => TEXTS.NO_RESULTS}
-                                        required
-                                        autoFocus
-                                    />
-                                    <Or
-                                        content={
-                                            <ModalGroups
-                                                refresh={this.getGroupsAfterAddition}
-                                                sendResult
-                                                inSentence
-                                            />
-                                        }
-                                    />
-                                </Fragment>
-                            )}
-                        </ModalBody>
-                    </Modal>
-                )}
-                {this.state.object !== null && (
-                    <ModalLecturesPlain
-                        defaultCourse={this.state.defaultCourse}
-                        date={this.props.date || ""}
-                        object={this.state.object}
-                        isModal={this.state.IS_MODAL}
-                        toggleModal={this.toggleModal}
-                        refresh={this.refreshAfterSave}
-                        IS_CLIENT={this.state.IS_CLIENT}
-                    />
-                )}
+                                ) : this.state.IS_CLIENT ? (
+                                    <Fragment>
+                                        <SelectClient
+                                            value={this.state.object}
+                                            options={this.props.clientsActiveContext.clients}
+                                            onChangeCallback={this.onSelectChange}
+                                        />
+                                        <Or
+                                            content={
+                                                <ModalClients
+                                                    refresh={this.getClientsAfterAddition}
+                                                    sendResult
+                                                    inSentence
+                                                />
+                                            }
+                                        />
+                                    </Fragment>
+                                ) : (
+                                    <Fragment>
+                                        <Select
+                                            {...react_select_ids("group")}
+                                            value={this.state.object}
+                                            getOptionLabel={option => option.name}
+                                            getOptionValue={option => option.id}
+                                            onChange={newValue => this.onSelectChange(newValue)}
+                                            options={this.props.groupsActiveContext.groups}
+                                            placeholder={"Vyberte existující skupinu..."}
+                                            noOptionsMessage={() => TEXTS.NO_RESULTS}
+                                            required
+                                            autoFocus
+                                        />
+                                        <Or
+                                            content={
+                                                <ModalGroups
+                                                    refresh={this.getGroupsAfterAddition}
+                                                    sendResult
+                                                    inSentence
+                                                />
+                                            }
+                                        />
+                                    </Fragment>
+                                )}
+                            </Fragment>
+                        )}
+                    </ModalBody>
+                </Modal>
+                <ModalLecturesPlain
+                    defaultCourse={this.state.defaultCourse}
+                    date={this.props.date || ""}
+                    object={this.state.object}
+                    isModal={this.state.object !== null}
+                    toggleModal={this.toggleModal}
+                    refresh={this.refreshAfterSave}
+                    IS_CLIENT={this.state.IS_CLIENT}
+                />
             </Fragment>
         )
     }
