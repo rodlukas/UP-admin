@@ -6,10 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from tests import common_helpers
-
 # noinspection PyUnresolvedReferences
 from tests.common_steps import lectures  # lgtm [py/unused-import]
-
 # noinspection PyUnresolvedReferences
 from tests.ui_steps import helpers, login_logout  # lgtm [py/unused-import]
 
@@ -46,6 +44,10 @@ def get_paid_button(driver):
     return driver.find_element_by_css_selector("[data-qa=lecture_attendance_paid]")
 
 
+def duration_title(duration):
+    return "Trvání: " + duration + " min."
+
+
 def get_select_attendancestates(driver):
     return Select(
         driver.find_element_by_css_selector("[data-qa=lecture_select_attendance_attendancestate]")
@@ -54,6 +56,7 @@ def get_select_attendancestates(driver):
 
 def find_lecture(context, date, time, validate_context=False):
     all_courses = context.browser.find_elements_by_css_selector("[data-qa=card_course]")
+    # hledej mezi vsemi kurzy
     for course in all_courses:
         found_course = course.find_element_by_css_selector("[data-qa=card_course_name]").text
         all_course_lectures = course.find_elements_by_css_selector("[data-qa=lecture]")
@@ -63,14 +66,18 @@ def find_lecture(context, date, time, validate_context=False):
             found_duration = lecture.find_element_by_css_selector(
                 "[data-qa=lecture_start]"
             ).get_attribute("title")
+            found_canceled = helpers.check_class_included(
+                lecture.get_attribute("class"), "lecture-canceled"
+            )
             # srovnej identifikatory
             start = common_helpers.prepare_start(date, time)
             start = f"{start.day}. {start.month}. {start.year} – {start.hour}:{start.minute:02}"
-            # je to substring?
+            # je to substring (v UI je pred datumem i nazev dne)?
             if start in found_start:
-                # identifikatory sedi, otestuj pripadna dalsi data z kontextu nebo rovnou vrat nalezeny prvek
-                if validate_context:
-                    found_attendances_cnt = 0
+                # prohledej a zvaliduj attendances (jen kdyz jsou k dispozici)
+                found_attendances_cnt = 0
+                found_old_attendances = []
+                if "attendances" in context:
                     for attendance in context.attendances:
                         # najdi attendance prislusici danemu klientovi
                         found_attendance = find_attendance_in_card(
@@ -79,6 +86,14 @@ def find_lecture(context, date, time, validate_context=False):
                         found_note = found_attendance.find_element_by_css_selector(
                             "[data-qa=lecture_attendance_note]"
                         ).text
+                        found_old_attendances.append(
+                            attendance_dict(
+                                attendance["client"],
+                                get_attendancestate_state(found_attendance),
+                                get_paid_state(found_attendance),
+                                found_note,
+                            )
+                        )
                         if (
                             found_note == attendance["note"]
                             and verify_paid(found_attendance, attendance["paid"])
@@ -87,29 +102,32 @@ def find_lecture(context, date, time, validate_context=False):
                             )
                         ):
                             found_attendances_cnt += 1
-                    if (
-                        found_attendances_cnt == len(context.attendances)
-                        and context.duration in found_duration
-                    ):
-                        # pro single lekce srovnej kurz
-                        if not context.is_group and found_course != context.course:
-                            return False
-                        # pro skupiny jeste over canceled
-                        canceled_classes = lecture.get_attribute("class")
-                        expected_canceled_class = "lecture-canceled"
-                        if (
-                            context.canceled
-                            and not helpers.check_class_included(
-                                canceled_classes, expected_canceled_class
-                            )
-                            or not context.canceled
-                            and helpers.check_class_included(
-                                canceled_classes, expected_canceled_class
-                            )
-                        ):
-                            return False
-                        return lecture
-                else:
+                # identifikatory sedi, otestuj pripadna dalsi data z kontextu (pokud nesedi, hledej dal)
+                # nebo rovnou vrat nalezeny prvek
+                if validate_context and (
+                    found_attendances_cnt != len(context.attendances)
+                    or duration_title(context.duration) != found_duration
+                ):
+                    continue
+                if (
+                    # poznamka: uz vime, ze se attendances i duration sedi (jinak predchozi podminka zaridi continue)
+                    not validate_context
+                    or validate_context
+                    and (
+                        # jeste over spravnou hodnotu canceled
+                        context.canceled == found_canceled
+                        # pro single lekce srovnej kurz, pro skupiny ho neres
+                        and (not context.is_group and found_course == context.course)
+                        or context.is_group
+                    )
+                ):
+                    # uloz stara data do kontextu pro pripadne overeni spravnosti
+                    context.old_attendances = found_old_attendances
+                    context.old_course = found_course
+                    context.old_date = date
+                    context.old_time = time
+                    context.old_duration = found_duration
+                    context.old_canceled = found_canceled
                     return lecture
     return False
 
@@ -146,10 +164,10 @@ def find_attendance_in_card(context, lecture, client):
     return None
 
 
-def insert_to_form(context):
+def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
-    # vloz vsechny udaje do formulare
+    # priprav pole z formulare
     date_field = context.browser.find_element_by_css_selector("[data-qa=lecture_field_date]")
     time_field = context.browser.find_element_by_css_selector("[data-qa=lecture_field_time]")
     duration_field = context.browser.find_element_by_css_selector(
@@ -161,9 +179,22 @@ def insert_to_form(context):
     canceled_label = context.browser.find_element_by_css_selector(
         "[data-qa=lecture_label_canceled]"
     )
+    course_field = context.browser.find_element_by_id("course")
+    # over, ze aktualne zobrazene udaje ve formulari jsou spravne (krome attendancestates - viz nize)
+    if verify_current_data:
+        # ziskej aktualni hodnoty z react-selectu
+        course_field_value = context.browser.find_element_by_css_selector(
+            ".course__single-value"
+        ).text
+        assert (
+            context.old_course == course_field_value
+            and context.old_date == date_field.get_attribute("value")
+            and context.old_time == time_field.get_attribute("value")
+            and context.old_duration == duration_title(duration_field.get_attribute("value"))
+            and context.old_canceled == canceled_checkbox.is_selected()
+        )
     # pokud se nejedna o skupinu, vloz i kurz
     if not context.is_group:
-        course_field = context.browser.find_element_by_id("course")
         course_field.send_keys(Keys.BACK_SPACE)
         helpers.react_select_insert(context.browser, course_field, context.course)
     # smaz vsechny udaje
@@ -182,14 +213,29 @@ def insert_to_form(context):
         # najdi attendance prislusici danemu klientovi
         found_attendance = find_attendance_in_form(context, attendance["client"])
         paid_checkbox = found_attendance.find_element_by_css_selector(
-            "[data-qa=lecture_checkbox_attendance_paid"
+            "[data-qa=lecture_checkbox_attendance_paid]"
         )
         paid_label = found_attendance.find_element_by_css_selector(
-            "[data-qa=lecture_label_attendance_paid"
+            "[data-qa=lecture_label_attendance_paid]"
         )
         note_field = found_attendance.find_element_by_css_selector(
-            "[data-qa=lecture_field_attendance_note"
+            "[data-qa=lecture_field_attendance_note]"
         )
+        # over, ze aktualne zobrazena attendances pro daneho klienta je spravna
+        if verify_current_data:
+            # najdi puvodni hodnoty prislusne attendance
+            old_attendance_of_client = next(
+                old_attendance
+                for old_attendance in context.old_attendances
+                if old_attendance["client"] == attendance["client"]
+            )
+            # srovnej puvodni attendance s aktualnimi hodnotami attendance
+            assert old_attendance_of_client == attendance_dict(
+                attendance["client"],
+                get_attendancestate_state(found_attendance),
+                paid_checkbox.is_selected(),
+                note_field.get_attribute("value"),
+            )
         # smazani stavajicich udaju
         note_field.clear()
         # vlozeni novych udaju
@@ -227,29 +273,32 @@ def attendance_dict(client, attendancestate, paid, note):
     return {
         "client": client,
         "attendancestate": attendancestate,
-        "paid": common_helpers.to_bool(paid),
+        "paid": common_helpers.to_bool(paid) if type(paid) != bool else paid,
         "note": note,
     }
 
 
-def verify_paid(found_attendance, new_paid):
-    found_paid_classes = get_paid_button(found_attendance).get_attribute("class")
-    expected_paid_class = "text-success" if new_paid else "text-danger"
-    return helpers.check_class_included(found_paid_classes, expected_paid_class)
+def get_paid_state(found_attendance):
+    return helpers.check_class_included(
+        get_paid_button(found_attendance).get_attribute("class"), "text-success"
+    )
 
 
-def verify_attendancestate(found_attendance, new_attendancestate):
+def get_attendancestate_state(found_attendance):
     # uloz si nalezene atributy ucasti
     found_attendancestate_selected_list = get_select_attendancestates(
         found_attendance
     ).all_selected_options
-    found_attendancestate_selected_list = [
-        elem.text for elem in found_attendancestate_selected_list
-    ]
-    return (
-        len(found_attendancestate_selected_list) == 1
-        and new_attendancestate in found_attendancestate_selected_list
-    )
+    assert len(found_attendancestate_selected_list) == 1
+    return found_attendancestate_selected_list[0].text
+
+
+def verify_paid(found_attendance, new_paid):
+    return get_paid_state(found_attendance) == new_paid
+
+
+def verify_attendancestate(found_attendance, new_attendancestate):
+    return new_attendancestate == get_attendancestate_state(found_attendance)
 
 
 def choose_attendancestate(found_attendance, new_attendancestate):
@@ -403,8 +452,8 @@ def step_impl(
     helpers.wait_loading_ends(context.browser)
     # uloz puvodni pocet skupin
     save_old_lectures_cnt_to_context(context)
-    # vloz vsechny udaje do formulare
-    insert_to_form(context)
+    # over spravne zobrazene udaje ve formulari a vloz do nej vsechny udaje
+    insert_to_form(context, True)
     # odesli formular
     helpers.submit_form(context, "button_submit_lecture")
 
