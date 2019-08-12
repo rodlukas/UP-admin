@@ -114,10 +114,10 @@ def step_impl(context):
 
 @then("the client is updated")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
-    wait_switching_available(context.browser)
     # pockej na update klientu
     helpers.wait_loading_cycle(context.browser)
+    # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
+    wait_switching_available(context.browser)
     # ma klient opravdu nove udaje?
     assert find_client_with_context(context)
     assert clients_cnt(context.browser) == context.old_clients_cnt
