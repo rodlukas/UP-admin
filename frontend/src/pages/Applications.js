@@ -19,7 +19,7 @@ class Applications extends Component {
         applications: [],
         IS_MODAL: false,
         currentApplication: {},
-        LOADING_CNT: 0
+        IS_LOADING: true
     }
 
     toggle = (application = {}) =>
@@ -28,18 +28,15 @@ class Applications extends Component {
             IS_MODAL: !prevState.IS_MODAL
         }))
 
-    refresh = () => {
-        this.setState(prevState => ({ LOADING_CNT: prevState.LOADING_CNT - 1 }))
-        this.getApplications()
-    }
+    refresh = () => this.setState({ IS_LOADING: true }, this.getApplications)
 
     getApplications = () =>
         ApplicationService.getAll().then(applications => {
             const grouppedByCourses = groupByCourses(applications)
-            this.setState(prevState => ({
+            this.setState({
                 applications: grouppedByCourses,
-                LOADING_CNT: prevState.LOADING_CNT + 1
-            }))
+                IS_LOADING: false
+            })
         })
 
     delete = id => ApplicationService.remove(id).then(() => this.refresh())
@@ -51,7 +48,7 @@ class Applications extends Component {
     }
 
     render() {
-        const { applications, currentApplication, IS_MODAL, LOADING_CNT } = this.state
+        const { applications, currentApplication, IS_MODAL, IS_LOADING } = this.state
         return (
             <Fragment>
                 <Container>
@@ -67,7 +64,7 @@ class Applications extends Component {
                             </Fragment>
                         }
                     />
-                    {LOADING_CNT !== 1 ? (
+                    {IS_LOADING ? (
                         <Loading />
                     ) : (
                         <div className="pageContent">
