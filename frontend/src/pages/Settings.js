@@ -13,6 +13,7 @@ import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
+import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import FormSettings from "../forms/FormSettings"
 import { EDIT_TYPE } from "../global/constants"
 import APP_URLS from "../urls"
@@ -64,6 +65,8 @@ class Settings extends Component {
             this.setState({ IS_LOADING: false }, () => {
                 this.getCourses()
                 this.props.coursesVisibleContext.funcHardRefresh()
+                // je potreba take projevit zmeny kurzu do seznamu aktivnich skupin
+                this.props.groupsActiveContext.funcHardRefresh()
             })
         else if (type === EDIT_TYPE.STATE) this.callAttendanceStatesFuncRefresh()
     }
@@ -329,4 +332,6 @@ class Settings extends Component {
     }
 }
 
-export default WithAttendanceStatesContext(WithCoursesVisibleContext(Settings))
+export default WithAttendanceStatesContext(
+    WithCoursesVisibleContext(WithGroupsActiveContext(Settings))
+)
