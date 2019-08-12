@@ -62,7 +62,7 @@ class Settings extends Component {
 
     refresh = type => {
         if (type === EDIT_TYPE.COURSE)
-            this.setState({ IS_LOADING: false }, () => {
+            this.setState({ IS_LOADING: true }, () => {
                 this.getCourses()
                 this.props.coursesVisibleContext.funcHardRefresh()
                 // je potreba take projevit zmeny kurzu do seznamu aktivnich skupin
