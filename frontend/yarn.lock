@@ -129,10 +129,10 @@
     humps "^2.0.1"
     prop-types "^15.5.10"
 
-"@hot-loader/react-dom@^16.9.0-4.12.11":
-  version "16.9.0-4.12.11"
-  resolved "https://registry.yarnpkg.com/@hot-loader/react-dom/-/react-dom-16.9.0-4.12.11.tgz#3fb882845d57fd3a249715a7bdeb65020bde8f25"
-  integrity sha512-gPRJA6hZGb9ZmGcLBxTK4GHjdf8One05cIw+gw92cLr9gasFWqS7xN/8xgURxTMD/5TWe8uZKCOekYvFjA6ZMw==
+"@hot-loader/react-dom@^16.9.0":
+  version "16.9.0"
+  resolved "https://registry.yarnpkg.com/@hot-loader/react-dom/-/react-dom-16.9.0.tgz#7782cec9d78172f3e4c86a317ba7a73bd0271acd"
+  integrity sha512-MsOdCBB7c5YNyB4iDDct+tS7AihvYyfwZVV+z/QnbTjPgxH98kqIDXO92nU7tLXp0OtYFErHZfcWjtszP/572w==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -3831,9 +3831,9 @@ find-up@^2.1.0:
     locate-path "^2.0.0"
 
 flow-bin@^0.105.1:
-  version "0.105.1"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.105.1.tgz#5ce4515b583e5fa6ea1b82bc849c354271f5b88d"
-  integrity sha512-wRI5ogu/+85fgftljAOtnDBx9+2JHToyq2XifzoMmXc5mmB9OE7osukzwi2PuOoEKtq9fu+APRD+MqbEJ8bUwQ==
+  version "0.105.2"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.105.2.tgz#9d03d5ae3e1d011e311f309cb8786b3b3695fec2"
+  integrity sha512-VCHt0SCjFPviv/Ze/W7AgkcE0uH4TocypSFA8wR3ZH1P7BSjny4l3uhHyOjzU3Qo1i0jO4NyaU6q3Y5IaQ6xng==
 
 flush-write-stream@^1.0.0:
   version "1.1.1"
