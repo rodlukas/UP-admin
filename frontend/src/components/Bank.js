@@ -185,7 +185,7 @@ export default class Bank extends React.PureComponent {
                                                 className={
                                                     isToday(date) ? "table-warning" : undefined
                                                 }>
-                                                <td colSpan={duplicates ? 2 : undefined}>
+                                                <td colSpan={duplicates ? 2 : undefined} data-gdpr>
                                                     {comment_obj ? (
                                                         comment_obj.value
                                                     ) : target_account_owner_obj ? (
@@ -196,7 +196,7 @@ export default class Bank extends React.PureComponent {
                                                     )}
                                                 </td>
                                                 {!duplicates && (
-                                                    <td>
+                                                    <td data-gdpr>
                                                         {message_obj ? (
                                                             message_obj.value
                                                         ) : (

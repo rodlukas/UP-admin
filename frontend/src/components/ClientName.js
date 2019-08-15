@@ -5,7 +5,7 @@ import APP_URLS from "../urls"
 import ConditionalWrapper from "./ConditionalWrapper"
 
 const PlainName = ({ client, bold }) => (
-    <span data-qa="client_name">
+    <span data-qa="client_name" data-gdpr>
         <span className="font-weight-bold">{getAttrSafe(client.surname)}</span>{" "}
         <ConditionalWrapper
             condition={bold}

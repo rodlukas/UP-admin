@@ -8,7 +8,7 @@ import "./Phone.css"
 const Phone = ({ phone, icon = false }) => {
     if (phone && phone !== "")
         return (
-            <a href={"tel:+420" + phone} data-qa="client_phone" className="Phone">
+            <a href={"tel:+420" + phone} data-qa="client_phone" className="Phone" data-gdpr>
                 {icon && (
                     <FontAwesomeIcon
                         flip="horizontal"
