@@ -22,6 +22,7 @@ import Or from "./helpers/Or"
 import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
 import ModalGroups from "./ModalGroups"
+import "./ModalLecturesFast.css"
 import ModalLecturesPlain from "./ModalLecturesPlain"
 
 class ModalLecturesFast extends React.Component {
@@ -103,21 +104,23 @@ class ModalLecturesFast extends React.Component {
             (this.props.date ? prettyDate(new Date(this.props.date)) : "jiný den")
         return (
             <Fragment>
-                <UncontrolledButtonDropdown
-                    direction={this.props.direction}
-                    className={this.props.className}>
-                    <DropdownToggle caret size={this.props.size} title={title} color="info">
-                        <FontAwesomeIcon icon={faPlus} size="lg" />
-                    </DropdownToggle>
-                    <DropdownMenu right>
-                        <DropdownItem onClick={() => this.setClient(true)}>
-                            přidat lekci <strong>klienta</strong>...
-                        </DropdownItem>
-                        <DropdownItem onClick={() => this.setClient(false)}>
-                            přidat lekci <strong>skupiny</strong>...
-                        </DropdownItem>
-                    </DropdownMenu>
-                </UncontrolledButtonDropdown>
+                <span className="ModalLecturesFast">
+                    <UncontrolledButtonDropdown
+                        direction={this.props.direction}
+                        className={this.props.className}>
+                        <DropdownToggle caret size={this.props.size} title={title} color="info">
+                            <FontAwesomeIcon icon={faPlus} size="lg" />
+                        </DropdownToggle>
+                        <DropdownMenu right>
+                            <DropdownItem onClick={() => this.setClient(true)}>
+                                přidat lekci <strong>klienta</strong>...
+                            </DropdownItem>
+                            <DropdownItem onClick={() => this.setClient(false)}>
+                                přidat lekci <strong>skupiny</strong>...
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </UncontrolledButtonDropdown>
+                </span>
                 <Modal
                     isOpen={this.state.IS_CLIENT !== undefined && this.state.object === null}
                     toggle={this.toggleModalSelect}

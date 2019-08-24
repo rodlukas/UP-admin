@@ -111,7 +111,7 @@ export default class Diary extends Component {
                                         this.getRequiredMonday()
                                     )}
                                     onClick={e => this.removeFocusAfterClick(e)}
-                                    className="float-none">
+                                    className="float-none align-top">
                                     Dnes
                                 </Button>
                             </Link>{" "}
