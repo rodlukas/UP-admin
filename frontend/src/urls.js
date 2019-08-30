@@ -1,17 +1,16 @@
-let page = function(url, title) {
-    this.url = url
-    this.title = title
+function page(url, title) {
+    return { url, title }
 }
 
 const APP_URLS = {
-    prihlasit: new page("/prihlasit", "Přihlášení"),
-    skupiny: new page("/skupiny", "Skupiny"),
-    diar: new page("/diar", "Diář"),
-    klienti: new page("/klienti", "Klienti"),
-    nastaveni: new page("/nastaveni", "Nastavení"),
-    zajemci: new page("/zajemci", "Zájemci"),
-    prehled: new page("/", "Přehled"),
-    nenalezeno: new page("/nenalezeno", "Nenalezeno") // smerovani ostatnich neznamych pozadavku, ktere zobrazi nenalezeno
+    prihlasit: page("/prihlasit", "Přihlášení"),
+    skupiny: page("/skupiny", "Skupiny"),
+    diar: page("/diar", "Diář"),
+    klienti: page("/klienti", "Klienti"),
+    nastaveni: page("/nastaveni", "Nastavení"),
+    zajemci: page("/zajemci", "Zájemci"),
+    prehled: page("/", "Přehled"),
+    nenalezeno: page("/nenalezeno", "Nenalezeno") // smerovani ostatnich neznamych pozadavku, ktere zobrazi nenalezeno
 }
 
 export default APP_URLS
