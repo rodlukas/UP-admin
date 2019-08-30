@@ -33,7 +33,7 @@ class Settings extends Component {
         courses: [],
         IS_MODAL: false,
         currentObject: {},
-        currentType: EDIT_TYPE.STATE,
+        currentType: undefined,
         IS_LOADING: true,
         state_default_id: undefined,
         state_excused_id: undefined
@@ -44,7 +44,7 @@ class Settings extends Component {
         // zde je potreba zavolat findStateIndexes, to ale obstara componentDidUpdate
         this.props.attendanceStatesContext.funcRefresh()
 
-    toggle = (type, object = {}) =>
+    toggle = (type = undefined, object = {}) =>
         this.setState(prevState => ({
             currentObject: object,
             currentType: type,
