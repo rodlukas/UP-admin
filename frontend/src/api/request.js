@@ -8,14 +8,12 @@ import axiosRequest from "./_axios"
 import { API_METHODS, API_URLS } from "./urls"
 
 class ErrorMessage extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            errMsg: ""
-        }
-        this.errorResponse = props.error.response
-        this.djangoError = props.error.request ? props.error.request.response : "null"
+    state = {
+        errMsg: ""
     }
+
+    errorResponse = this.props.error.response
+    djangoError = this.props.error.request ? this.props.error.request.response : "null"
 
     componentDidMount() {
         this.logToConsole()

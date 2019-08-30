@@ -38,50 +38,50 @@ import SelectCourse from "./helpers/SelectCourse"
 const GROUP_DURATION = 45
 
 class FormLectures extends Component {
-    constructor(props) {
-        super(props)
-        this.IS_LECTURE = Boolean(Object.keys(props.lecture).length)
-        this.IS_CLIENT = props.IS_CLIENT
-        const { id, start, course, duration, attendances, canceled } = props.lecture
-        const { object } = props
-        const isPrepaid = this.IS_LECTURE ? !Boolean(start) : false
-        this.members = []
-        if (this.IS_CLIENT) this.members = [object]
-        else if (this.IS_LECTURE) this.members = this.getMembers(attendances)
-        else this.members = this.getMembers(object.memberships)
+    IS_LECTURE = Boolean(Object.keys(this.props.lecture).length)
 
-        let date = new Date(start)
-        this.state = {
-            id: id || "",
-            at_state: this.createAttendanceStateObjects(),
-            at_paid: this.createPaidObjects(object),
-            at_note: this.createNoteObjects(),
-            prepaid: isPrepaid,
-            canceled: canceled || false,
-            canceled_previous: undefined,
-            date: this.IS_LECTURE && !isPrepaid ? toISODate(date) : this.props.date,
-            time: this.IS_LECTURE && !isPrepaid ? toISOTime(date) : "",
-            course: this.IS_LECTURE
-                ? course
-                : this.IS_CLIENT
-                ? this.props.defaultCourse
-                : object.course,
-            duration: duration || this.computeDuration(),
-            object: object,
-            prepaid_cnt: 1,
-            canceled_disabled: false
-        }
+    isPrepaid = this.IS_LECTURE ? !Boolean(this.props.lecture.start) : false
+
+    members = this.props.IS_CLIENT
+        ? [this.props.object]
+        : this.IS_LECTURE
+        ? this.getMembers(this.props.lecture.attendances)
+        : this.getMembers(this.props.object.memberships)
+
+    getAttendanceStatesData = () => this.props.attendanceStatesContext.attendancestates
+
+    state = {
+        id: this.props.lecture.id || "",
+        at_state: this.createAttendanceStateObjects(),
+        at_paid: this.createPaidObjects(this.props.object),
+        at_note: this.createNoteObjects(),
+        prepaid: this.isPrepaid,
+        canceled: this.props.lecture.canceled || false,
+        canceled_previous: undefined,
+        date:
+            this.IS_LECTURE && !this.isPrepaid
+                ? toISODate(new Date(this.props.lecture.start))
+                : this.props.date,
+        time:
+            this.IS_LECTURE && !this.isPrepaid ? toISOTime(new Date(this.props.lecture.start)) : "",
+        course: this.IS_LECTURE
+            ? this.props.lecture.course
+            : this.props.IS_CLIENT
+            ? this.props.defaultCourse
+            : this.props.object.course,
+        duration: this.props.lecture.duration || this.computeDuration(),
+        object: this.props.object,
+        prepaid_cnt: 1,
+        canceled_disabled: false
     }
 
-    computeDuration = () => {
+    computeDuration() {
         // pokud je to klient a mame vypocitany nejpravdepodobnejsi kurz, pouzij ho, jinak default
-        if (this.IS_CLIENT)
+        if (this.props.IS_CLIENT)
             return this.props.defaultCourse ? this.props.defaultCourse.duration : DEFAULT_DURATION
         // je to skupina
         return GROUP_DURATION
     }
-
-    getAttendanceStatesData = () => this.props.attendanceStatesContext.attendancestates
 
     getDefaultStateIndex() {
         if (this.getAttendanceStatesData().length) {
@@ -158,7 +158,7 @@ class FormLectures extends Component {
             if (this.IS_LECTURE) objects[client.id] = this.props.lecture.attendances[id].paid
             else {
                 objects[client.id] = false
-                if (!this.IS_CLIENT) {
+                if (!this.props.IS_CLIENT) {
                     const membership = object.memberships.find(elem => elem.client.id === client.id)
                     if (membership !== undefined && membership.prepaid_cnt > 0)
                         objects[client.id] = true
@@ -249,10 +249,10 @@ class FormLectures extends Component {
             attendances,
             duration,
             canceled,
-            group_id: !this.IS_CLIENT ? object.id : null,
+            group_id: !this.props.IS_CLIENT ? object.id : null,
             start: prepaid ? null : start
         }
-        if (this.IS_CLIENT) {
+        if (this.props.IS_CLIENT) {
             data = { ...data, course_id: course.id }
         }
 
@@ -313,8 +313,8 @@ class FormLectures extends Component {
             <Form onSubmit={this.onSubmit} data-qa="form_lecture">
                 <ModalHeader toggle={this.close}>
                     {this.IS_LECTURE ? "Úprava" : "Přidání"} lekce{" "}
-                    {this.IS_CLIENT ? "klienta" : "skupiny"}:{" "}
-                    {this.IS_CLIENT ? (
+                    {this.props.IS_CLIENT ? "klienta" : "skupiny"}:{" "}
+                    {this.props.IS_CLIENT ? (
                         <ClientName client={object} bold />
                     ) : (
                         <GroupName group={object} bold />
@@ -328,7 +328,7 @@ class FormLectures extends Component {
                         <Fragment>
                             <FormGroup row className="align-items-center">
                                 <Col sm={4}>
-                                    {this.IS_CLIENT && (
+                                    {this.props.IS_CLIENT && (
                                         <Fragment>
                                             <CustomInput
                                                 type="checkbox"
@@ -434,7 +434,7 @@ class FormLectures extends Component {
                                         value={course}
                                         onChangeCallback={this.onSelectChange}
                                         options={this.props.coursesVisibleContext.courses}
-                                        isDisabled={!this.IS_CLIENT}
+                                        isDisabled={!this.props.IS_CLIENT}
                                     />
                                 </Col>
                                 <Col sm={4}>
@@ -459,7 +459,9 @@ class FormLectures extends Component {
                             <hr />
                             {this.members.map(member => (
                                 <div key={member.id} data-qa="form_lecture_attendance">
-                                    <h5>{!this.IS_CLIENT && <ClientName client={member} />}</h5>
+                                    <h5>
+                                        {!this.props.IS_CLIENT && <ClientName client={member} />}
+                                    </h5>
                                     <FormGroup row className="align-items-center">
                                         <Col sm={4}>
                                             <InputGroup>
@@ -567,9 +569,9 @@ class FormLectures extends Component {
                                                     "Opravdu chcete smazat " +
                                                     (prepaid ? "předplacenou " : "") +
                                                     "lekci " +
-                                                    (this.IS_CLIENT ? "klienta" : "skupiny") +
+                                                    (this.props.IS_CLIENT ? "klienta" : "skupiny") +
                                                     " " +
-                                                    (this.IS_CLIENT
+                                                    (this.props.IS_CLIENT
                                                         ? object.surname + " " + object.name
                                                         : object.name) +
                                                     (!prepaid

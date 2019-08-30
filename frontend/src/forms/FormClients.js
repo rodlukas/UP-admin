@@ -23,19 +23,16 @@ import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { prettyPhone } from "../global/utils"
 
 class FormClients extends Component {
-    constructor(props) {
-        super(props)
-        this.isClient = Boolean(Object.keys(props.client).length)
-        const { id, name, surname, email, phone, note, active } = props.client
-        this.state = {
-            id: id || "",
-            name: name || "",
-            surname: surname || "",
-            email: email || "",
-            phone: prettyPhone(phone) || "",
-            note: note || "",
-            active: this.isClient ? active : true
-        }
+    isClient = Boolean(Object.keys(this.props.client).length)
+
+    state = {
+        id: this.props.client.id || "",
+        name: this.props.client.name || "",
+        surname: this.props.client.surname || "",
+        email: this.props.client.email || "",
+        phone: prettyPhone(this.props.client.phone) || "",
+        note: this.props.client.note || "",
+        active: this.isClient ? this.props.client.active : true
     }
 
     onChange = e => {

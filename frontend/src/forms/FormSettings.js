@@ -25,18 +25,14 @@ import "./FormSettings.css"
 import ColorPicker from "./helpers/ColorPicker"
 
 export default class FormSettings extends Component {
-    constructor(props) {
-        super(props)
-        this.isObject = Boolean(Object.keys(props.object).length)
-        this.TYPE = props.TYPE
-        const { id, name, visible, duration, color } = props.object
-        this.state = {
-            id: id || "",
-            name: name || "",
-            visible: this.isObject ? visible : true,
-            duration: duration || DEFAULT_DURATION,
-            color: color || DEFAULT_COLOR
-        }
+    isObject = Boolean(Object.keys(this.props.object).length)
+
+    state = {
+        id: this.props.object.id || "",
+        name: this.props.object.name || "",
+        visible: this.isObject ? this.props.object.visible : true,
+        duration: this.props.object.duration || DEFAULT_DURATION,
+        color: this.props.object.color || DEFAULT_COLOR
     }
 
     onChange = e => {
@@ -51,7 +47,7 @@ export default class FormSettings extends Component {
         e.preventDefault()
         const { id, name, visible, duration, color } = this.state
         let request, service, data
-        if (this.TYPE === EDIT_TYPE.COURSE) {
+        if (this.props.TYPE === EDIT_TYPE.COURSE) {
             service = CourseService
             data = { id, name, visible, duration, color }
         } else {
@@ -61,8 +57,10 @@ export default class FormSettings extends Component {
         if (this.isObject) request = service.update(data)
         else request = service.create(data)
         request.then(() => {
+            // ulozeni hodnoty TYPE, protoze close ji smaze
+            const curType = this.props.TYPE
             this.close()
-            this.refresh(this.TYPE)
+            this.refresh(curType)
         })
     }
 
@@ -71,16 +69,18 @@ export default class FormSettings extends Component {
     refresh = type => this.props.funcRefresh(type)
 
     delete = id => {
-        let service = this.TYPE === EDIT_TYPE.COURSE ? CourseService : AttendanceStateService
+        let service = this.props.TYPE === EDIT_TYPE.COURSE ? CourseService : AttendanceStateService
         service.remove(id).then(() => {
+            // ulozeni hodnoty TYPE, protoze close ji smaze
+            const curType = this.props.TYPE
             this.close()
-            this.refresh(this.TYPE)
+            this.refresh(curType)
         })
     }
 
     render() {
         const { id, name, visible, duration, color } = this.state
-        const type = this.TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav"
+        const type = this.props.TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav"
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_settings">
                 <ModalHeader toggle={this.close}>
@@ -119,7 +119,7 @@ export default class FormSettings extends Component {
                             />
                         </Col>
                     </FormGroup>
-                    {this.TYPE === EDIT_TYPE.COURSE && (
+                    {this.props.TYPE === EDIT_TYPE.COURSE && (
                         <Fragment>
                             <FormGroup row className="align-items-center">
                                 <Label for="duration" sm={3} className="FormSettings_labelDuration">
@@ -162,7 +162,7 @@ export default class FormSettings extends Component {
                                     <p>
                                         Lze smazat pouze pokud není příslušný {type} použit u žádné
                                         lekce
-                                        {this.TYPE === EDIT_TYPE.COURSE &&
+                                        {this.props.TYPE === EDIT_TYPE.COURSE &&
                                             ", smažou se také všichni zájemci o tento kurz"}
                                     </p>
                                     <DeleteButton

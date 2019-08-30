@@ -31,19 +31,16 @@ import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
 class FormGroups extends Component {
-    constructor(props) {
-        super(props)
-        this.isGroup = Boolean(Object.keys(props.group).length)
-        const { name, memberships, id, course, active } = props.group
-        this.state = {
-            id: id || "",
-            name: name || "",
-            active: this.isGroup ? active : true,
-            course: this.isGroup ? course : null,
-            memberships: this.isGroup ? this.getMembers(memberships) : [],
-            clients: [],
-            IS_LOADING: true
-        }
+    isGroup = Boolean(Object.keys(this.props.group).length)
+
+    state = {
+        id: this.props.group.id || "",
+        name: this.props.group.name || "",
+        active: this.isGroup ? this.props.group.active : true,
+        course: this.isGroup ? this.props.group.course : null,
+        memberships: this.isGroup ? this.getMembers(this.props.group.memberships) : [],
+        clients: [],
+        IS_LOADING: true
     }
 
     // pripravi pole se cleny ve spravnem formatu, aby fungoval react-select

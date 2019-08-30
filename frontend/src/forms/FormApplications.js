@@ -14,18 +14,15 @@ import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
 class FormApplications extends Component {
-    constructor(props) {
-        super(props)
-        this.isObject = Boolean(Object.keys(props.application).length)
-        const { id, course, client, note } = props.application
-        this.state = {
-            id: id || "",
-            course: this.isObject ? course : null,
-            client: this.isObject ? client : null,
-            note: note || "",
-            clients: [],
-            IS_LOADING: true
-        }
+    isObject = Boolean(Object.keys(this.props.application).length)
+
+    state = {
+        id: this.props.application.id || "",
+        course: this.isObject ? this.props.application.course : null,
+        client: this.isObject ? this.props.application.client : null,
+        note: this.props.application.note || "",
+        clients: [],
+        IS_LOADING: true
     }
 
     onChange = e => {

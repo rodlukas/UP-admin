@@ -9,13 +9,11 @@ import Notification from "../../components/Notification"
 import "./ColorPicker.css"
 
 export default class ColorPicker extends React.Component {
-    constructor(props) {
-        super(props)
-        this.customToastId = "ColorPicker"
-        this.state = {
-            isPickerVisible: false
-        }
+    state = {
+        isPickerVisible: false
     }
+
+    static customToastId = "ColorPicker"
 
     togglePicker = () => {
         if (!this.state.isPickerVisible) this.validateColor(this.props.color)
@@ -26,7 +24,7 @@ export default class ColorPicker extends React.Component {
 
     closePicker = () => {
         this.setState({ isPickerVisible: false })
-        toast.dismiss(this.customToastId)
+        toast.dismiss(ColorPicker.customToastId)
     }
 
     validateColor = color => {
@@ -38,12 +36,12 @@ export default class ColorPicker extends React.Component {
                     text="Zvolená barva je málo kontrastní k bílé a byla by špatně vidět, zvolte více kontrastnější."
                 />,
                 {
-                    toastId: this.customToastId,
+                    toastId: ColorPicker.customToastId,
                     autoClose: false,
                     type: toast.TYPE.WARNING
                 }
             )
-        } else toast.dismiss(this.customToastId)
+        } else toast.dismiss(ColorPicker.customToastId)
     }
 
     render() {

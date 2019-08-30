@@ -9,13 +9,14 @@ import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"
 
 class ErrorBoundary extends Component {
+    state = {
+        hasError: false,
+        error: null,
+        errorInfo: null
+    }
+
     constructor(props) {
         super(props)
-        this.state = {
-            hasError: false,
-            error: null,
-            errorInfo: null
-        }
         // aby fungoval react-router pri nejake chybe
         this.props.history.listen(() => {
             if (this.state.hasError) this.setState({ hasError: false })
