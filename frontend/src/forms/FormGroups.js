@@ -236,9 +236,7 @@ class FormGroups extends Component {
                                                 onClick={() => {
                                                     if (
                                                         window.confirm(
-                                                            "Opravdu chcete smazat skupinu " +
-                                                                name +
-                                                                "?"
+                                                            `Opravdu chcete smazat skupinu ${name}?`
                                                         )
                                                     )
                                                         this.delete(id)

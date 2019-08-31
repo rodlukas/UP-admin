@@ -168,9 +168,12 @@ export default class FormSettings extends Component {
                                     <DeleteButton
                                         content={type}
                                         onClick={() => {
-                                            let msg =
-                                                "Opravdu chcete smazat " + type + " " + name + "?"
-                                            if (window.confirm(msg)) this.delete(id)
+                                            if (
+                                                window.confirm(
+                                                    `Opravdu chcete smazat ${type} ${name}?`
+                                                )
+                                            )
+                                                this.delete(id)
                                         }}
                                         data-qa="settings_button_delete"
                                     />

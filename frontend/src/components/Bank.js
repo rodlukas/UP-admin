@@ -86,7 +86,7 @@ export default class Bank extends React.PureComponent {
                         Aktuální stav:{" "}
                         {balance ? (
                             <span className="font-weight-bold">
-                                {prettyAmount(balance) + " Kč"}
+                                {`${prettyAmount(balance)} Kč`}
                             </span>
                         ) : this.state.DATA_PROBLEM ? (
                             "neznámý"
@@ -176,9 +176,9 @@ export default class Bank extends React.PureComponent {
                                             comment_obj &&
                                             message_obj.value === comment_obj.value
                                         const target_account_owner_obj = transaction.column10
-                                        const amount_className =
-                                            "font-weight-bold text-right" +
-                                            (amount < 0 ? " text-danger" : "")
+                                        const amount_className = `font-weight-bold text-right ${
+                                            amount < 0 ? " text-danger" : ""
+                                        }`
                                         return (
                                             <tr
                                                 key={id}
@@ -189,8 +189,7 @@ export default class Bank extends React.PureComponent {
                                                     {comment_obj ? (
                                                         comment_obj.value
                                                     ) : target_account_owner_obj ? (
-                                                        "Vlastník protiúčtu: " +
-                                                        target_account_owner_obj.value
+                                                        `Vlastník protiúčtu: ${target_account_owner_obj.value}`
                                                     ) : (
                                                         <NoInfo />
                                                     )}

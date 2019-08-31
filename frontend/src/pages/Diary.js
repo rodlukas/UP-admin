@@ -20,7 +20,7 @@ import APP_URLS from "../urls"
 import "./Diary.css"
 
 const TitleDate = ({ date }) => (
-    <span className={"TitleDate font-weight-bold " + (yearDiffs(date) ? "TitleDate-long" : "")}>
+    <span className={`TitleDate font-weight-bold ${yearDiffs(date) ? "TitleDate-long" : ""}`}>
         {prettyDateWithYearIfDiff(date)}
     </span>
 )
@@ -61,15 +61,7 @@ export default class Diary extends Component {
     }
 
     static serializeDateUrl(date) {
-        return (
-            APP_URLS.diar.url +
-            "/" +
-            date.getFullYear() +
-            "/" +
-            (date.getMonth() + 1) +
-            "/" +
-            date.getDate()
-        )
+        return `${APP_URLS.diar.url}/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
     }
 
     // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)

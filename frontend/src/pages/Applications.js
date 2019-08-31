@@ -132,15 +132,12 @@ class Applications extends Component {
                                                         />{" "}
                                                         <DeleteButton
                                                             onClick={() => {
-                                                                let msg =
-                                                                    "Opravdu chcete smazat zájemce " +
-                                                                    application.client.surname +
-                                                                    " " +
-                                                                    application.client.name +
-                                                                    " o " +
-                                                                    application.course.name +
-                                                                    "?"
-                                                                if (window.confirm(msg))
+                                                                if (
+                                                                    window.confirm(
+                                                                        "Opravdu chcete smazat zájemce " +
+                                                                            `${application.client.surname} ${application.client.name} o ${application.course.name}?`
+                                                                    )
+                                                                )
                                                                     this.delete(application.id)
                                                             }}
                                                             data-qa="button_delete_application"

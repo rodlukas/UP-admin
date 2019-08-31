@@ -206,11 +206,7 @@ class FormClients extends Component {
                                         onClick={() => {
                                             if (
                                                 window.confirm(
-                                                    "Opravdu chcete smazat klienta " +
-                                                        name +
-                                                        " " +
-                                                        surname +
-                                                        "?"
+                                                    `Opravdu chcete smazat klienta ${name} ${surname}?`
                                                 )
                                             )
                                                 this.delete(id)

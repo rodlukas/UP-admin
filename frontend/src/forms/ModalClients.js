@@ -24,7 +24,7 @@ const ModalClients = ({
             )}
             {!Boolean(currentClient) && (
                 <AddButton
-                    content={(inSentence ? "přidejte nového" : "Přidat") + " klienta"}
+                    content={`${inSentence ? "přidejte nového" : "Přidat"} klienta`}
                     small={inSentence}
                     onClick={toggleModal}
                     data-qa="button_add_client"

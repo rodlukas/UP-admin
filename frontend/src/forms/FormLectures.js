@@ -565,24 +565,23 @@ class FormLectures extends Component {
                                         <DeleteButton
                                             content="lekci"
                                             onClick={() => {
-                                                let msg =
-                                                    "Opravdu chcete smazat " +
-                                                    (prepaid ? "předplacenou " : "") +
-                                                    "lekci " +
-                                                    (this.props.IS_CLIENT ? "klienta" : "skupiny") +
-                                                    " " +
+                                                const msg =
+                                                    `Opravdu chcete smazat ${
+                                                        prepaid ? "předplacenou " : ""
+                                                    }` +
+                                                    `lekci ${
+                                                        this.props.IS_CLIENT ? "klienta" : "skupiny"
+                                                    } ` +
                                                     (this.props.IS_CLIENT
-                                                        ? object.surname + " " + object.name
+                                                        ? `${object.surname} ${object.name}`
                                                         : object.name) +
-                                                    (!prepaid
-                                                        ? " v " +
-                                                          prettyDateWithLongDayYear(
-                                                              new Date(date)
-                                                          ) +
-                                                          " " +
-                                                          time
-                                                        : "") +
-                                                    "?"
+                                                    `${
+                                                        !prepaid
+                                                            ? ` v ${prettyDateWithLongDayYear(
+                                                                  new Date(date)
+                                                              )} ${time}`
+                                                            : ""
+                                                    }?`
                                                 if (window.confirm(msg)) this.delete(id)
                                             }}
                                             data-qa="button_delete_lecture"
