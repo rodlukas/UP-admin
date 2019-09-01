@@ -84,6 +84,7 @@ class Application(models.Model):
     note = models.TextField(blank=True)
     client = models.ForeignKey(Client, related_name="applications", on_delete=models.CASCADE)
     course = models.ForeignKey(Course, related_name="applications", on_delete=models.CASCADE)
+    created_at = models.DateField(auto_now_add=True)
 
     class Meta:
         ordering = ["client__surname", "client__name"]

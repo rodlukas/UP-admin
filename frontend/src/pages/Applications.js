@@ -10,6 +10,7 @@ import Loading from "../components/Loading"
 import Phone from "../components/Phone"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import FormApplications from "../forms/FormApplications"
+import { prettyDateWithYear } from "../global/funcDateTime"
 import { groupByCourses } from "../global/utils"
 import APP_URLS from "../urls"
 import "./Applications.css"
@@ -112,6 +113,19 @@ class Applications extends Component {
                                                             />
                                                         </h5>
                                                     </Col>
+                                                    <Col md="5">
+                                                        <Badge
+                                                            color="light"
+                                                            title="Datum přidání"
+                                                            data-qa="application_created_at">
+                                                            {prettyDateWithYear(
+                                                                new Date(application.created_at)
+                                                            )}
+                                                        </Badge>{" "}
+                                                        <span data-qa="application_note">
+                                                            {application.note}
+                                                        </span>
+                                                    </Col>
                                                     <Col md="2">
                                                         {application.client.phone && (
                                                             <Phone
@@ -120,12 +134,7 @@ class Applications extends Component {
                                                             />
                                                         )}
                                                     </Col>
-                                                    <Col md="4">
-                                                        <span data-qa="application_note">
-                                                            {application.note}
-                                                        </span>
-                                                    </Col>
-                                                    <Col className="text-right mt-1 mt-md-0" md="3">
+                                                    <Col className="text-right mt-1 mt-md-0" md="2">
                                                         <EditButton
                                                             onClick={() => this.toggle(application)}
                                                             data-qa="button_edit_application"

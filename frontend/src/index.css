@@ -85,3 +85,9 @@ label {
     background-color: currentColor !important;
     user-select: none;
 }
+
+/*** BOOTSTRAP ***/
+/* kontrastnejsi barva pozadi badge */
+.badge-light {
+    background-color: #eaeaea;
+}
