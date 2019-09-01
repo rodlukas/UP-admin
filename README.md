@@ -235,9 +235,9 @@ Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o tes
 ### Diář
 [![screenshot z diáře](docs/screenshots/diary.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
 ### Karta klienta
-[![screenshot z karty klienta](docs/screenshots/card.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
+[![screenshot z karty klienta](docs/screenshots/card.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card.png)
 ### Zájemci o kurzy
-[![screenshot ze zájemců o kurzy](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
+[![screenshot ze zájemců o kurzy](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png)
 
 ## Licence
 Licencováno pod [MIT](LICENSE).
