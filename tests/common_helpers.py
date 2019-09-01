@@ -1,5 +1,4 @@
 import datetime
-from datetime import datetime
 from distutils.util import strtobool
 
 from django.utils.dateparse import parse_datetime
@@ -40,7 +39,7 @@ def parse_django_datetime(datetime_str):
 
 
 def prepare_start(date, time):
-    return make_aware(datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M"))
+    return make_aware(datetime.datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M"))
 
 
 def prepare_created_at():
