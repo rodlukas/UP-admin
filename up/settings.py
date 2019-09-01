@@ -1,6 +1,6 @@
-import datetime
 import os
 import sys
+from datetime import timedelta
 
 import environ
 
@@ -74,8 +74,8 @@ REST_FRAMEWORK = {
 }
 SIMPLE_JWT = {
     # pouzivaji se Sliding tokens - 1 a tentyz token pro autentizaci i refresh
-    "SLIDING_TOKEN_LIFETIME": datetime.timedelta(minutes=CONST_AUTH_EXPIRATION),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": datetime.timedelta(days=2),
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=CONST_AUTH_EXPIRATION),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=2),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.SlidingToken",),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
