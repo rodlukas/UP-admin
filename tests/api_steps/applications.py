@@ -3,6 +3,8 @@ import json
 from behave import *
 from rest_framework import status
 
+from tests import common_helpers
+
 # noinspection PyUnresolvedReferences
 from tests.api_steps import helpers, login_logout  # lgtm [py/unused-import]
 
@@ -29,6 +31,7 @@ def application_equal_to_context(application, context):
         application["course"]["name"] == context.course.get("name")
         and helpers.client_full_names_equal(application["client"], context.client)
         and application["note"] == context.note
+        and application["created_at"] == common_helpers.date_today_string()
     )
 
 

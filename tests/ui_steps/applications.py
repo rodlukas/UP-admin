@@ -5,6 +5,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from tests import common_helpers
+
 # noinspection PyUnresolvedReferences
 from tests.common_steps import applications  # lgtm [py/unused-import]
 
@@ -64,8 +66,15 @@ def find_application(context, client, course, **data):
                 found_note = application.find_element_by_css_selector(
                     "[data-qa=application_note]"
                 ).text
+                found_created_at = application.find_element_by_css_selector(
+                    "[data-qa=application_created_at]"
+                ).text
+                created_at = common_helpers.prepare_created_at()
+                created_at = f"{created_at.day}. {created_at.month}. {created_at.year}"
                 # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-                if not data or (data and found_note == data["note"]):
+                if not data or (
+                    data and found_note == data["note"] and found_created_at == created_at
+                ):
                     # uloz stara data do kontextu pro pripadne overeni spravnosti
                     context.old_client = found_client
                     context.old_course = found_course
