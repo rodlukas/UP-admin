@@ -14,8 +14,9 @@ urlpatterns = [
         "open-api/",
         get_schema_view(
             title="ÚPadmin API",
-            description="...",
+            description="Dokumentace REST API pro aplikaci ÚPadmin.",
             authentication_classes=[authentication.BasicAuthentication],
+            version="1.0.0",
         ),
         name="openapi-schema",
     ),
