@@ -5,7 +5,7 @@ const Circle = ({ color, size, showTitle = false }) => {
     const sizeWithUnit = size + "rem"
 
     return (
-        <div
+        <span
             data-qa="course_color"
             className="circle"
             style={{
