@@ -132,18 +132,13 @@ export default class Bank extends React.PureComponent {
                                 />
                             }
                         />{" "}
-                        <a href="https://ib.fio.cz/" target="_blank" rel="noopener noreferrer">
-                            <CustomButton
-                                content={
-                                    <Fragment>
-                                        Bankovnictví{" "}
-                                        <FontAwesomeIcon
-                                            icon={faExternalLinkAlt}
-                                            transform="right-2"
-                                        />
-                                    </Fragment>
-                                }
-                            />
+                        <a
+                            href="https://ib.fio.cz/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-secondary">
+                            Bankovnictví{" "}
+                            <FontAwesomeIcon icon={faExternalLinkAlt} transform="right-2" />
                         </a>
                     </div>
                 </ListGroupItem>
