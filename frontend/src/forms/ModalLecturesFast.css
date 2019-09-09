@@ -1,3 +1,7 @@
 .ModalLecturesFast .btn-group {
     vertical-align: top !important;
 }
+
+.ModalLecturesFast {
+    display: inline;
+}

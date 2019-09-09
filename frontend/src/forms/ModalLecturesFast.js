@@ -104,7 +104,7 @@ class ModalLecturesFast extends React.Component {
             (this.props.date ? prettyDate(new Date(this.props.date)) : "jiný den")
         return (
             <Fragment>
-                <span className="ModalLecturesFast">
+                <div className="ModalLecturesFast">
                     <UncontrolledButtonDropdown
                         direction={this.props.direction}
                         className={this.props.className}>
@@ -120,7 +120,7 @@ class ModalLecturesFast extends React.Component {
                             </DropdownItem>
                         </DropdownMenu>
                     </UncontrolledButtonDropdown>
-                </span>
+                </div>
                 <Modal
                     isOpen={this.state.IS_CLIENT !== undefined && this.state.object === null}
                     toggle={this.toggleModalSelect}
