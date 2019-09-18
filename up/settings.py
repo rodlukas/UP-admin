@@ -90,6 +90,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_referrer_policy.middleware.ReferrerPolicyMiddleware",
 ]
 
 ROOT_URLCONF = "up.urls"
@@ -161,3 +162,9 @@ DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: True if DEBUG else False,
     "SHOW_COLLAPSED": True,
 }
+
+# Django konstanty pro bezpecnost
+REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True

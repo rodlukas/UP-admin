@@ -18,11 +18,8 @@ ALLOWED_HOSTS = [
 sentry_sdk.init(environment=ENVIRONMENT, integrations=[DjangoIntegration()])
 
 # Django konstanty pro bezpecnost
-SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_SECURE = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
 CSRF_COOKIE_SECURE = True
-X_FRAME_OPTIONS = "DENY"
 
 SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 63072000  # 2 roky
