@@ -24,19 +24,6 @@
             </h1>
         </noscript>
         <div id="root" class="loader"></div>
-        <script>
-            // funkce pro prepnuti modu skryti soukromych informaci klientu
-            function toggleGdpr() {
-                const gdpr_attr = "gdpr"
-                // zapni/vypni soukromy mod (pokud ma body prislusnou tridu, vypni mod - odstran ji, jinak zapni - pridej ji)
-                if (document.body.classList.contains(gdpr_attr)) {
-                    document.body.classList.remove(gdpr_attr)
-                    return "soukromy rezim VYPNUTY"
-                } else {
-                    document.body.classList.add(gdpr_attr)
-                    return "soukromy rezim ZAPNUTY"
-                }
-            }
-        </script>
+        <script src="{% static "admin/gdpr.js" %}"></script>
     </body>
 </html>
