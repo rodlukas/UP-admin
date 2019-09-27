@@ -101,7 +101,7 @@ class ModalLecturesFast extends React.Component {
     render() {
         const title =
             "Přidat lekci na " +
-            (this.props.date ? prettyDate(new Date(this.props.date)) : "jiný den")
+            (this.props.date ? prettyDate(new Date(this.props.date)) : "nějaký den")
         return (
             <Fragment>
                 <div className="ModalLecturesFast">
