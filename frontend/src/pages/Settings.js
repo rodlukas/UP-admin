@@ -1,3 +1,4 @@
+import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faCheck, faTimes } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
@@ -17,6 +18,7 @@ import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import FormSettings from "../forms/FormSettings"
 import { EDIT_TYPE } from "../global/constants"
 import APP_URLS from "../urls"
+import "./Settings.css"
 
 const Visible = ({ visible, ...props }) => (
     <FontAwesomeIcon
@@ -311,10 +313,23 @@ class Settings extends Component {
                                 </Col>
                             </Row>
                             <hr />
-                            <p className="text-center">
+                            <p className="text-center Settings_AppVersion">
                                 <span className="font-weight-bold">Verze aplikace:</span>{" "}
                                 <AppVersion />
-                                <AppRelease /> – <span className="text-nowrap">%GIT_DATETIME</span>
+                                <AppRelease /> – <span className="text-nowrap">
+                                    %GIT_DATETIME
+                                </span>{" "}
+                                <a
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href="https://github.com/rodlukas/UP-admin">
+                                    <FontAwesomeIcon
+                                        icon={faGithub}
+                                        size="lg"
+                                        title="GitHub repozitář ÚPadmin"
+                                        data-qa="lecture_attendance_paid"
+                                    />
+                                </a>
                             </p>
                         </div>
                     )}

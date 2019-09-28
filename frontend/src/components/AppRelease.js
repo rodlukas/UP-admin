@@ -1,5 +1,4 @@
 import React, { Fragment } from "react"
-import "./AppVersion.css"
 
 const AppRelease = () => {
     const version = "%GIT_RELEASE"
@@ -11,7 +10,7 @@ const AppRelease = () => {
                     href={"https://github.com/rodlukas/UP-admin/releases/tag/" + version}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="AppVersion">
+                    title="Poznámky k verzi (GitHub)">
                     {version}
                 </a>
                 {")"}
