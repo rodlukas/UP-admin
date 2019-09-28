@@ -140,7 +140,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Static files
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # debug toolbar
 DEBUG_TOOLBAR_PANELS = [

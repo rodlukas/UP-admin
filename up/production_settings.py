@@ -17,6 +17,8 @@ ALLOWED_HOSTS = [
 
 sentry_sdk.init(environment=ENVIRONMENT, integrations=[DjangoIntegration()])
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # Django konstanty pro bezpecnost
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
