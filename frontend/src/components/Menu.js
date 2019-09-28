@@ -5,6 +5,7 @@ import AuthChecking from "../auth/AuthChecking"
 import { AuthContext } from "../auth/AuthContext"
 import APP_URLS from "../urls"
 import "./Menu.css"
+import Search from "./Search"
 
 const Menu = props => {
     const authContext = useContext(AuthContext)
@@ -15,6 +16,11 @@ const Menu = props => {
         <Fragment>
             {authContext.IS_AUTH && (
                 <Fragment>
+                    <Search
+                        onSearchChange={props.onSearchChange}
+                        searchVal={props.searchVal}
+                        search={props.search}
+                    />
                     <Nav className="ml-auto" navbar>
                         <NavItem>
                             <MyNavLink exact activeClassName="active" to={APP_URLS.prehled.url}>

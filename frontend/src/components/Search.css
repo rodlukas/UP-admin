@@ -1,0 +1,20 @@
+.Search input,
+.Search .input-group-text {
+    background-color: rgba(0, 0, 0, 0.07);
+    border: 0;
+}
+
+.Search input:focus {
+    background-color: rgba(0, 0, 0, 0.11);
+    box-shadow: none;
+}
+
+.Search {
+    max-width: 25rem;
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
+.Search .input-group-prepend {
+    margin-right: 0;
+}

@@ -8,7 +8,7 @@
 
 @media (min-width: 576px) {
     /* pri klasickem menu pridej mezeru k odhlasovacimu tlacitku */
-    .navbar-expand-sm .btn {
+    .navbar-expand-lg .btn {
         margin-left: 0.5rem;
     }
 }

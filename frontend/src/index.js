@@ -6,6 +6,7 @@ import { hot } from "react-hot-loader/root"
 import { Router } from "react-router-dom"
 import { AuthProvider } from "./auth/AuthContext"
 import GA from "./components/GoogleAnalytics"
+import { ClientsActiveProvider } from "./contexts/ClientsActiveContext"
 import { getEnvName, isHosted } from "./global/funcEnvironments"
 import history from "./global/history"
 import "./index.css"
@@ -22,7 +23,9 @@ const App = () => (
     <Router history={history}>
         {GA.init() && <GA.RouteTracker />}
         <AuthProvider>
-            <Main />
+            <ClientsActiveProvider>
+                <Main />
+            </ClientsActiveProvider>
         </AuthProvider>
     </Router>
 )

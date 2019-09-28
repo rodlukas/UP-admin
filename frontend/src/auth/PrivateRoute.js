@@ -3,7 +3,6 @@ import { Redirect } from "react-router-dom"
 import { AuthContext } from "../auth/AuthContext"
 import Page from "../components/Page"
 import { AttendanceStatesProvider } from "../contexts/AttendanceStatesContext"
-import { ClientsActiveProvider } from "../contexts/ClientsActiveContext"
 import { CoursesVisibleProvider } from "../contexts/CoursesVisibleContext"
 import { GroupsActiveProvider } from "../contexts/GroupsActiveContext"
 import APP_URLS from "../urls"
@@ -18,11 +17,9 @@ const PrivateRoute = ({ component: WrappedComponent, ...rest }) => {
                 authContext.IS_AUTH ? (
                     <AttendanceStatesProvider>
                         <CoursesVisibleProvider>
-                            <ClientsActiveProvider>
-                                <GroupsActiveProvider>
-                                    <WrappedComponent {...props} />
-                                </GroupsActiveProvider>
-                            </ClientsActiveProvider>
+                            <GroupsActiveProvider>
+                                <WrappedComponent {...props} />
+                            </GroupsActiveProvider>
                         </CoursesVisibleProvider>
                     </AttendanceStatesProvider>
                 ) : (

@@ -1,5 +1,6 @@
 import React, { Component, createContext } from "react"
 import ClientService from "../api/services/client"
+import { clientName } from "../global/utils"
 
 const ClientsActiveContext = createContext({
     clients: [],
@@ -15,11 +16,26 @@ export class ClientsActiveProvider extends Component {
         clients: []
     }
 
+    // odstraneni zvlastnich znaku pro vyhledavani (viz https://github.com/krisk/Fuse/issues/181)
+    removeSpecialCharacters = str => {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    }
+
+    loadClients = () => {
+        return ClientService.getActive().then(clients => {
+            // pridani klice se zjednodusenym jmenem klienta
+            return clients.map(client => ({
+                ...client,
+                normalized: [clientName(client), this.removeSpecialCharacters(clientName(client))]
+            }))
+        })
+    }
+
     getClients = (callback = () => {}) => {
         // pokud jeste nikdo nepozadal o nacteni klientu, pozadej a nacti je
         if (!this.state.loadRequested)
             this.setState({ loadRequested: true }, () =>
-                ClientService.getActive().then(clients =>
+                this.loadClients().then(clients => {
                     this.setState(
                         {
                             clients,
@@ -27,7 +43,7 @@ export class ClientsActiveProvider extends Component {
                         },
                         callback
                     )
-                )
+                })
             )
     }
 
@@ -35,7 +51,7 @@ export class ClientsActiveProvider extends Component {
         // pokud uz je v pameti nactena stara verze klientu, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
         if (this.state.loadRequested)
             this.setState({ isLoaded: false }, () =>
-                ClientService.getActive().then(clients =>
+                this.loadClients().then(clients =>
                     this.setState({
                         clients,
                         isLoaded: true
