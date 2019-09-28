@@ -19,6 +19,7 @@
       <sourceFolder url="file://$MODULE_DIR$/admin" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/up" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/dist" />
       <excludeFolder url="file://$MODULE_DIR$/frontend/flow-typed" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
