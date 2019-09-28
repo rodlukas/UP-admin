@@ -15,9 +15,9 @@ import Main from "./Main"
 // CI provede substituci stringu za URL, promenna prostredi ale musi existovat, jinak nefunguje (proto podminka)
 if (isHosted())
     Sentry.init({
-        dsn: "SENTRY_DSN",
+        dsn: "%SENTRY_DSN",
         environment: getEnvName(),
-        release: "GIT_VERSION"
+        release: "%GIT_VERSION"
     })
 
 const App = () => (

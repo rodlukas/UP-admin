@@ -314,7 +314,7 @@ class Settings extends Component {
                             <p className="text-center">
                                 <span className="font-weight-bold">Verze aplikace:</span>{" "}
                                 <AppVersion />
-                                <AppRelease /> – <span className="text-nowrap">GIT_DATETIME</span>
+                                <AppRelease /> – <span className="text-nowrap">%GIT_DATETIME</span>
                             </p>
                         </div>
                     )}
