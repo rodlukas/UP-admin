@@ -84,6 +84,7 @@ Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těc
 
 V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplexní SQL dotazy** (viz články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/), [[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
 Aplikace umožňuje **pokročilé debugování** na lokálním i vzdáleném prostředí díky **[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** a jeho doplňku [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
+Pro **eliminaci mrtvého kódu** se používá **[vulture](https://github.com/jendrikseipp/vulture/)**.
 #### Frontend
 Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
 * [React 16.8](https://reactjs.org/),
