@@ -85,7 +85,7 @@ export default class Bank extends React.PureComponent {
                     <h4 className="text-center">
                         Aktuální stav:{" "}
                         {balance ? (
-                            <span className="font-weight-bold">
+                            <span className="font-weight-bold text-nowrap">
                                 {`${prettyAmount(balance)} Kč`}
                             </span>
                         ) : this.state.DATA_PROBLEM ? (
@@ -199,12 +199,12 @@ export default class Bank extends React.PureComponent {
                                                     </td>
                                                 )}
                                                 <td
-                                                    className="text-right"
+                                                    className="text-right text-nowrap"
                                                     style={{ minWidth: "6em" }}>
                                                     {prettyDateWithDayYearIfDiff(date, true)}
                                                 </td>
                                                 <td
-                                                    className={amount_className}
+                                                    className={amount_className + " text-nowrap"}
                                                     style={{ minWidth: "7em" }}>
                                                     {prettyAmount(amount)} Kč
                                                 </td>
