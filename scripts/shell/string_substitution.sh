@@ -29,7 +29,7 @@ substitute_folder() {
   substitute "$GIT_DATETIME_STRING" "$DATETIME"
   substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
 
-  cd "$HOME" || exit
+  cd "$TRAVIS_BUILD_DIR" || exit
 }
 
 substitute_folder frontend/src
