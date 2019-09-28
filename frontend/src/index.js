@@ -16,7 +16,8 @@ import Main from "./Main"
 if (isHosted())
     Sentry.init({
         dsn: "SENTRY_DSN",
-        environment: getEnvName()
+        environment: getEnvName(),
+        release: "GIT_VERSION"
     })
 
 const App = () => (

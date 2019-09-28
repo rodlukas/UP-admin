@@ -17,15 +17,20 @@ VERSION=$(git rev-parse --short HEAD)
 RELEASE=$TRAVIS_TAG
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
 
-# prikazy k provedeni
-cd frontend || {
-  echo "CHYBA - Substituce retezcu se nepodarila"
-  exit 1
+# provedeni subtituce ve slozce $1
+substitute_folder() {
+  cd "$1" || {
+    echo "CHYBA - Substituce retezcu ve slozce \"$1\" se nepodarila"
+    exit 1
+  }
+
+  substitute "$GIT_VERSION_STRING" "$VERSION"
+  substitute "$GIT_RELEASE_STRING" "$RELEASE"
+  substitute "$GIT_DATETIME_STRING" "$DATETIME"
+  substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
+
+  cd "$HOME" || exit
 }
 
-substitute "$GIT_VERSION_STRING" "$VERSION"
-substitute "$GIT_RELEASE_STRING" "$RELEASE"
-substitute "$GIT_DATETIME_STRING" "$DATETIME"
-substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
-
-cd ..
+substitute_folder frontend/src
+substitute_folder up
