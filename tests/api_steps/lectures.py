@@ -17,15 +17,6 @@ def lectures_cnt(api_client):
     return len(helpers.get_lectures(api_client))
 
 
-def parse_memberships(memberships_data):
-    return [
-        common_helpers.client_full_name(
-            membership["client"]["firstname"], membership["client"]["surname"]
-        )
-        for membership in memberships_data
-    ]
-
-
 def find_lecture(context):
     all_lectures = helpers.get_lectures(context.api_client)
     # najdi lekci s udaji v kontextu
