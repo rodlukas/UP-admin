@@ -63,6 +63,10 @@ const Main = () => {
         search()
     }, [searchVal])
 
+    useEffect(() => {
+        if (!isMenuOpened) resetSearch()
+    }, [isMenuOpened])
+
     function toggleNavbar() {
         setIsMenuOpened(prevIsMenuOpened => !prevIsMenuOpened)
     }
