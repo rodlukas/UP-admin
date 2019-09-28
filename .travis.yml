@@ -1,7 +1,7 @@
 language: python
 # xenial je potreba pro fungovani pythonu 3.7
 dist: xenial
-python: '3.7'
+python: '3.7.4'
 node_js: '10'
 services:
   - postgresql

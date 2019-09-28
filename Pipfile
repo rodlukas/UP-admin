@@ -30,7 +30,7 @@ codecov = "~=2.0.15"
 selenium = "~=3.141.0"
 
 [requires]
-python_version = "3.7.3"
+python_version = "3.7.4"
 
 [pipenv]
 allow_prereleases = true
