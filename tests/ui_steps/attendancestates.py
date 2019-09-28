@@ -57,7 +57,10 @@ def insert_to_form(context, verify_current_data=False):
     visible_label = context.browser.find_element_by_css_selector("[data-qa=settings_label_visible]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
-        assert context.old_visible == visible_checkbox.is_selected()
+        assert (
+            context.old_name == name_field.get_attribute("value")
+            and context.old_visible == visible_checkbox.is_selected()
+        )
     # smaz vsechny udaje
     name_field.clear()
     # vloz nove udaje
