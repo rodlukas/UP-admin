@@ -428,7 +428,7 @@ class LectureSerializer(serializers.ModelSerializer):
                         err_obj = f"skupina {elem.group.name}"
                     else:
                         client = elem.attendances.get().client
-                        err_obj = f"klient {client.surname} {client.name}"
+                        err_obj = f"klient {client.surname} {client.firstname}"
                     error_msg = f"Časový konflikt s jinou lekcí: {err_obj} ({err_datetime}, trvání {err_duration} min.)"
                     raise serializers.ValidationError(
                         {api_settings.NON_FIELD_ERRORS_KEY: [error_msg]}

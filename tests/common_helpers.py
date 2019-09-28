@@ -26,8 +26,8 @@ def color_transform(color):
     return color
 
 
-def client_full_name(name, surname):
-    return f"{surname} {name}"
+def client_full_name(firstname, surname):
+    return f"{surname} {firstname}"
 
 
 def filter_empty_strings_from_list(src_list):

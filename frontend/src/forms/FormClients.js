@@ -27,7 +27,7 @@ class FormClients extends Component {
 
     state = {
         id: this.props.client.id || "",
-        name: this.props.client.name || "",
+        firstname: this.props.client.firstname || "",
         surname: this.props.client.surname || "",
         email: this.props.client.email || "",
         phone: prettyPhone(this.props.client.phone) || "",
@@ -50,8 +50,8 @@ class FormClients extends Component {
         // stopPropagation, aby nedoslo k propagaci submit na nadrazene formulare pri vnoreni modalnich oken
         e.stopPropagation()
         e.preventDefault()
-        const { id, name, surname, email, phone, note, active } = this.state
-        const data = { id, name, surname, email, phone, note, active }
+        const { id, firstname, surname, email, phone, note, active } = this.state
+        const data = { id, firstname, surname, email, phone, note, active }
         let request
         if (this.isClient) request = ClientService.update(data)
         else request = ClientService.create(data)
@@ -76,27 +76,27 @@ class FormClients extends Component {
         })
 
     render() {
-        const { id, name, surname, email, phone, note, active } = this.state
+        const { id, firstname, surname, email, phone, note, active } = this.state
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_client">
                 <ModalHeader toggle={this.close}>
                     {this.isClient ? "Úprava" : "Přidání"} klienta:{" "}
-                    <ClientName client={{ name, surname }} bold />
+                    <ClientName client={{ firstname, surname }} bold />
                 </ModalHeader>
                 <ModalBody>
                     <FormGroup row>
-                        <Label for="name" sm={2}>
+                        <Label for="firstname" sm={2}>
                             Jméno
                         </Label>
                         <Col sm={10}>
                             <Input
                                 type="text"
-                                id="name"
-                                value={name}
+                                id="firstname"
+                                value={firstname}
                                 onChange={this.onChange}
                                 required
                                 autoFocus
-                                data-qa="client_field_name"
+                                data-qa="client_field_firstname"
                                 spellCheck
                             />
                         </Col>
@@ -206,7 +206,7 @@ class FormClients extends Component {
                                         onClick={() => {
                                             if (
                                                 window.confirm(
-                                                    `Opravdu chcete smazat klienta ${name} ${surname}?`
+                                                    `Opravdu chcete smazat klienta ${firstname} ${surname}?`
                                                 )
                                             )
                                                 this.delete(id)

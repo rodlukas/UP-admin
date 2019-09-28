@@ -42,13 +42,13 @@ class AttendanceState(models.Model):
 class Client(models.Model):
     active = models.BooleanField(default=True)
     email = models.EmailField(blank=True)
-    name = models.TextField()
+    firstname = models.TextField()
     note = models.TextField(blank=True)
     phone = models.TextField(blank=True)
     surname = models.TextField()
 
     class Meta:
-        ordering = ["surname", "name"]
+        ordering = ["surname", "firstname"]
 
     def save(self, *args, **kwargs):
         # odstraneni vsech mezer v telefonu
@@ -87,7 +87,7 @@ class Application(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-        ordering = ["client__surname", "client__name"]
+        ordering = ["client__surname", "client__firstname"]
 
 
 class Group(models.Model):
@@ -116,7 +116,7 @@ class Attendance(models.Model):
     attendancestate = models.ForeignKey(AttendanceState, on_delete=models.PROTECT)
 
     class Meta:
-        ordering = ["client__surname", "client__name"]
+        ordering = ["client__surname", "client__firstname"]
 
 
 class Membership(models.Model):
@@ -125,4 +125,4 @@ class Membership(models.Model):
     group = models.ForeignKey(Group, related_name="memberships", on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ["client__surname", "client__name"]
+        ordering = ["client__surname", "client__firstname"]

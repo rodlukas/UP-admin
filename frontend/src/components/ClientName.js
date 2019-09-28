@@ -10,7 +10,7 @@ const PlainName = ({ client, bold }) => (
         <ConditionalWrapper
             condition={bold}
             wrapper={children => <span className="font-weight-bold">{children}</span>}>
-            {getAttrSafe(client.name)}
+            {getAttrSafe(client.firstname)}
         </ConditionalWrapper>
     </span>
 )

@@ -573,7 +573,7 @@ class FormLectures extends Component {
                                                         this.props.IS_CLIENT ? "klienta" : "skupiny"
                                                     } ` +
                                                     (this.props.IS_CLIENT
-                                                        ? `${object.surname} ${object.name}`
+                                                        ? `${object.surname} ${object.firstname}`
                                                         : object.name) +
                                                     `${
                                                         !prepaid

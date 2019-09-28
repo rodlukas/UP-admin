@@ -21,7 +21,7 @@ def validate_client_is_active(client):
     """
     if not client.active:
         raise serializers.ValidationError(
-            f"Zadaný klient ({client.surname} {client.name}) není aktivní, pro další akce je potřeba nastavit jej jako aktivního."
+            f"Zadaný klient ({client.surname} {client.firstname}) není aktivní, pro další akce je potřeba nastavit jej jako aktivního."
         )
     return client
 

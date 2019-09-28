@@ -19,7 +19,7 @@ def groups_cnt(api_client):
 def parse_memberships(memberships_data):
     return [
         common_helpers.client_full_name(
-            membership["client"]["name"], membership["client"]["surname"]
+            membership["client"]["firstname"], membership["client"]["surname"]
         )
         for membership in memberships_data
     ]

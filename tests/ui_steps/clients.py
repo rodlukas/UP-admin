@@ -22,7 +22,7 @@ def open_clients(driver):
 
 
 def find_client_with_context(context):
-    full_name = common_helpers.client_full_name(context.name, context.surname)
+    full_name = common_helpers.client_full_name(context.firstname, context.surname)
     return helpers.find_client(
         context,
         full_name,
@@ -43,7 +43,9 @@ def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
     # priprav pole z formulare
-    name_field = context.browser.find_element_by_css_selector("[data-qa=client_field_name]")
+    firstname_field = context.browser.find_element_by_css_selector(
+        "[data-qa=client_field_firstname]"
+    )
     surname_field = context.browser.find_element_by_css_selector("[data-qa=client_field_surname]")
     phone_field = context.browser.find_element_by_css_selector("[data-qa=client_field_phone]")
     email_field = context.browser.find_element_by_css_selector("[data-qa=client_field_email]")
@@ -57,7 +59,7 @@ def insert_to_form(context, verify_current_data=False):
         assert (
             context.old_client_name
             == common_helpers.client_full_name(
-                name_field.get_attribute("value"), surname_field.get_attribute("value")
+                firstname_field.get_attribute("value"), surname_field.get_attribute("value")
             )
             and context.old_client_phone
             == common_helpers.shrink_str(phone_field.get_attribute("value"))
@@ -66,13 +68,13 @@ def insert_to_form(context, verify_current_data=False):
             and context.old_client_activity == active_checkbox.is_selected()
         )
     # smaz vsechny udaje
-    name_field.clear()
+    firstname_field.clear()
     surname_field.clear()
     phone_field.clear()
     email_field.clear()
     note_field.clear()
     # vloz nove udaje
-    name_field.send_keys(context.name)
+    firstname_field.send_keys(context.firstname)
     surname_field.send_keys(context.surname)
     phone_field.send_keys(context.phone)
     email_field.send_keys(context.email)
@@ -83,8 +85,8 @@ def insert_to_form(context, verify_current_data=False):
         active_label.click()
 
 
-def load_data_to_context(context, name, surname, phone, email, note, active):
-    context.name = name
+def load_data_to_context(context, firstname, surname, phone, email, note, active):
+    context.firstname = firstname
     context.surname = surname
     context.phone = phone
     context.email = email
@@ -186,11 +188,11 @@ use_step_matcher("re")
 
 
 @when(
-    'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)", note "(?P<note>.*)" and activity "(?P<active>.*)"'
+    'user adds new client "(?P<firstname>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)", note "(?P<note>.*)" and activity "(?P<active>.*)"'
 )
-def step_impl(context, name, surname, phone, email, note, active):
+def step_impl(context, firstname, surname, phone, email, note, active):
     # nacti data klienta do kontextu
-    load_data_to_context(context, name, surname, phone, email, note, active)
+    load_data_to_context(context, firstname, surname, phone, email, note, active)
     # klikni v menu na klienty
     open_clients(context.browser)
     # pockej na nacteni
@@ -207,13 +209,15 @@ def step_impl(context, name, surname, phone, email, note, active):
 
 
 @when(
-    'user updates the data of client "(?P<cur_full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)", note "(?P<new_note>.*)" and activity "(?P<new_active>.*)"'
+    'user updates the data of client "(?P<cur_full_name>.*)" to firstname "(?P<new_firstname>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)", note "(?P<new_note>.*)" and activity "(?P<new_active>.*)"'
 )
 def step_impl(
-    context, cur_full_name, new_name, new_surname, new_phone, new_email, new_note, new_active
+    context, cur_full_name, new_firstname, new_surname, new_phone, new_email, new_note, new_active
 ):
     # nacti data klienta do kontextu
-    load_data_to_context(context, new_name, new_surname, new_phone, new_email, new_note, new_active)
+    load_data_to_context(
+        context, new_firstname, new_surname, new_phone, new_email, new_note, new_active
+    )
     # klikni v menu na klienty
     open_clients(context.browser)
     # pockej na nacteni

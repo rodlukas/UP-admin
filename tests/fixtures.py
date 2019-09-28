@@ -17,11 +17,11 @@ from admin.models import (
 
 def clients():
     clients_list = [
-        Client(name="Petra", surname="Rodová"),
-        Client(name="Aneta", surname="Jirušková"),
-        Client(name="Lukáš", surname="Rod", phone="555555555", email="r@r.cz", note="test"),
-        Client(name="Jaroslav", surname="Uhlíř"),
-        Client(name="Pavel", surname="Neaktivní", active=False),
+        Client(firstname="Petra", surname="Rodová"),
+        Client(firstname="Aneta", surname="Jirušková"),
+        Client(firstname="Lukáš", surname="Rod", phone="555555555", email="r@r.cz", note="test"),
+        Client(firstname="Jaroslav", surname="Uhlíř"),
+        Client(firstname="Pavel", surname="Neaktivní", active=False),
     ]
     for client in clients_list:
         client.save()

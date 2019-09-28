@@ -27,7 +27,7 @@ def find_client(context):
 
 def client_equal_to_context(client, context):
     return (
-        client["name"] == context.name
+        client["firstname"] == context.firstname
         and client["surname"] == context.surname
         and client["phone"] == common_helpers.shrink_str(context.phone)
         and client["email"] == context.email
@@ -47,7 +47,7 @@ def find_client_with_id(context, client_id):
 
 def client_dict(context):
     return {
-        "name": context.name,
+        "firstname": context.firstname,
         "surname": context.surname,
         "phone": context.phone,
         "email": context.email,
@@ -56,8 +56,8 @@ def client_dict(context):
     }
 
 
-def load_data_to_context(context, name, surname, phone, email, note, active):
-    context.name = name
+def load_data_to_context(context, firstname, surname, phone, email, note, active):
+    context.firstname = firstname
     context.surname = surname
     context.phone = phone
     context.email = email
@@ -131,11 +131,11 @@ use_step_matcher("re")
 
 
 @when(
-    'user adds new client "(?P<name>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)", note "(?P<note>.*)" and activity "(?P<active>.*)"'
+    'user adds new client "(?P<firstname>.*)" "(?P<surname>.*)" with phone "(?P<phone>.*)", email "(?P<email>.*)", note "(?P<note>.*)" and activity "(?P<active>.*)"'
 )
-def step_impl(context, name, surname, phone, email, note, active):
+def step_impl(context, firstname, surname, phone, email, note, active):
     # nacteni dat klienta do kontextu
-    load_data_to_context(context, name, surname, phone, email, note, active)
+    load_data_to_context(context, firstname, surname, phone, email, note, active)
     # uloz puvodni pocet klientu
     save_old_clients_cnt_to_context(context)
     # vlozeni klienta
@@ -143,13 +143,15 @@ def step_impl(context, name, surname, phone, email, note, active):
 
 
 @when(
-    'user updates the data of client "(?P<cur_full_name>.*)" to name "(?P<new_name>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)", note "(?P<new_note>.*)" and activity "(?P<new_active>.*)"'
+    'user updates the data of client "(?P<cur_full_name>.*)" to firstname "(?P<new_firstname>.*)", surname "(?P<new_surname>.*)", phone "(?P<new_phone>.*)", email "(?P<new_email>.*)", note "(?P<new_note>.*)" and activity "(?P<new_active>.*)"'
 )
 def step_impl(
-    context, cur_full_name, new_name, new_surname, new_phone, new_email, new_note, new_active
+    context, cur_full_name, new_firstname, new_surname, new_phone, new_email, new_note, new_active
 ):
     # nacteni dat klienta do kontextu
-    load_data_to_context(context, new_name, new_surname, new_phone, new_email, new_note, new_active)
+    load_data_to_context(
+        context, new_firstname, new_surname, new_phone, new_email, new_note, new_active
+    )
     # najdi klienta
     client_to_update = helpers.find_client_with_full_name(context.api_client, cur_full_name)
     assert client_to_update

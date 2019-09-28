@@ -23,8 +23,8 @@ def parse_client_full_name(full_name):
     # POZOR - muze byt zaslan prazdny string
     full_name = full_name.split()
     if len(full_name) == 2:
-        return {"surname": full_name[0], "name": full_name[1]}
-    return {"surname": "", "name": ""}
+        return {"surname": full_name[0], "firstname": full_name[1]}
+    return {"surname": "", "firstname": ""}
 
 
 def find_client_with_full_name(api_client, full_name):
@@ -32,7 +32,7 @@ def find_client_with_full_name(api_client, full_name):
     full_name_parsed = parse_client_full_name(full_name)
     for client in all_clients:
         if (
-            client["name"] == full_name_parsed["name"]
+            client["firstname"] == full_name_parsed["firstname"]
             and client["surname"] == full_name_parsed["surname"]
         ):
             return client
@@ -72,8 +72,12 @@ def find_attendancestate_with_id(api_client, attendancestate_id):
 
 def client_full_names_equal(client1, client2):
     # POZOR - data v kontextu nemusi obsahovat dane klice
-    client1_full_name = common_helpers.client_full_name(client1.get("name"), client1.get("surname"))
-    client2_full_name = common_helpers.client_full_name(client2.get("name"), client2.get("surname"))
+    client1_full_name = common_helpers.client_full_name(
+        client1.get("firstname"), client1.get("surname")
+    )
+    client2_full_name = common_helpers.client_full_name(
+        client2.get("firstname"), client2.get("surname")
+    )
     return client1_full_name == client2_full_name
 
 

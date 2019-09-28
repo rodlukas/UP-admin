@@ -144,7 +144,7 @@ class Applications extends Component {
                                                                 if (
                                                                     window.confirm(
                                                                         "Opravdu chcete smazat zájemce " +
-                                                                            `${application.client.surname} ${application.client.name} o ${application.course.name}?`
+                                                                            `${application.client.surname} ${application.client.firstname} o ${application.course.name}?`
                                                                     )
                                                                 )
                                                                     this.delete(application.id)
