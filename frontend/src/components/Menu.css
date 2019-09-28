@@ -6,9 +6,16 @@
     background-color: white;
 }
 
-@media (min-width: 576px) {
-    /* pri klasickem menu pridej mezeru k odhlasovacimu tlacitku */
+@media (min-width: 992px) {
+    /* pri klasickem menu pridej levou mezeru k odhlasovacimu tlacitku */
     .navbar-expand-lg .btn {
         margin-left: 0.5rem;
+    }
+}
+
+@media (max-width: 991.98px) {
+    /* pri hamburger menu pridej horni mezeru k odhlasovacimu tlacitku */
+    .navbar-expand-lg .btn {
+        margin-top: 0.5rem;
     }
 }

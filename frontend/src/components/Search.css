@@ -12,9 +12,22 @@
 .Search {
     max-width: 25rem;
     margin-left: auto;
-    margin-right: 1rem;
 }
 
 .Search .input-group-prepend {
     margin-right: 0;
+}
+
+@media (max-width: 991.98px) {
+    /* pri hamburger menu pridej horni mezeru k vyhledavacimu poli a vycentruj ho */
+    .Search {
+        margin: 0.5rem auto;
+    }
+}
+
+@media (min-width: 992px) {
+    /* pri klasickem menu pridej pravou mezeru k vyhledavacimu poli */
+    .Search {
+        margin-right: 1rem;
+    }
 }
