@@ -81,7 +81,11 @@ label {
 }
 
 /* skryti osobnich udaju v pripade potreby */
-.gdpr [data-gdpr], .gdpr .memberships__option, .gdpr .client__option, .gdpr .memberships__multi-value__label, .gdpr .client__single-value {
+.gdpr [data-gdpr],
+.gdpr .memberships__option,
+.gdpr .client__option,
+.gdpr .memberships__multi-value__label,
+.gdpr .client__single-value {
     background-color: currentColor !important;
     user-select: none;
 }
