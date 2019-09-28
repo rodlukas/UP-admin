@@ -60,7 +60,7 @@ const SearchResults = ({ foundResults, searchVal, search, resetSearch }) => {
                                             <Col md="3">
                                                 {client.email && <Email email={client.email} />}
                                             </Col>
-                                            <Col md="1">
+                                            <Col className="text-right mt-1 mt-md-0" md="1">
                                                 <ModalClients
                                                     currentClient={client}
                                                     refresh={search}
