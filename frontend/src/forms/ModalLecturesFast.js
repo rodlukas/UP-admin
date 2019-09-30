@@ -1,7 +1,6 @@
 import { faPlus } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Fragment } from "react"
-import Select from "react-select"
 import {
     DropdownItem,
     DropdownMenu,
@@ -14,9 +13,9 @@ import {
 import Loading from "../components/Loading"
 import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
-import { TEXTS } from "../global/constants"
 import { prettyDate } from "../global/funcDateTime"
 import { getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses } from "../global/utils"
+import CustomReactSelect from "./helpers/CustomReactSelect"
 import { react_select_ids } from "./helpers/func"
 import Or from "./helpers/Or"
 import SelectClient from "./helpers/SelectClient"
@@ -166,7 +165,7 @@ class ModalLecturesFast extends React.Component {
                                     </Fragment>
                                 ) : (
                                     <Fragment>
-                                        <Select
+                                        <CustomReactSelect
                                             {...react_select_ids("group")}
                                             value={this.state.object}
                                             getOptionLabel={option => option.name}
@@ -174,7 +173,6 @@ class ModalLecturesFast extends React.Component {
                                             onChange={newValue => this.onSelectChange(newValue)}
                                             options={this.props.groupsActiveContext.groups}
                                             placeholder={"Vyberte existující skupinu..."}
-                                            noOptionsMessage={() => TEXTS.NO_RESULTS}
                                             required
                                             autoFocus
                                         />

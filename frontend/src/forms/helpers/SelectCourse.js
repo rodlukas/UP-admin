@@ -1,11 +1,10 @@
 import React from "react"
-import Select from "react-select"
-import { TEXTS } from "../../global/constants"
+import CustomReactSelect from "./CustomReactSelect"
 import { react_select_ids } from "./func"
 import { selectStyles } from "./selectCourseColors"
 
 const SelectCourse = ({ value, onChangeCallback, options, isDisabled = false }) => (
-    <Select
+    <CustomReactSelect
         {...react_select_ids("course")}
         value={value}
         getOptionLabel={option => option.name}
@@ -13,7 +12,6 @@ const SelectCourse = ({ value, onChangeCallback, options, isDisabled = false }) 
         onChange={newValue => onChangeCallback(newValue, "course")}
         options={options}
         placeholder={"Vyberte kurz..."}
-        noOptionsMessage={() => TEXTS.NO_RESULTS}
         styles={selectStyles}
         required
         isDisabled={isDisabled}

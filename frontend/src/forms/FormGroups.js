@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react"
-import Select from "react-select"
 import {
     Alert,
     Col,
@@ -22,9 +21,9 @@ import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
-import { TEXTS } from "../global/constants"
 import { alertRequired, clientName } from "../global/utils"
 import "./forms.css"
+import CustomReactSelect from "./helpers/CustomReactSelect"
 import { react_select_ids } from "./helpers/func"
 import Or from "./helpers/Or"
 import SelectCourse from "./helpers/SelectCourse"
@@ -176,7 +175,7 @@ class FormGroups extends Component {
                                     Členové
                                 </Label>
                                 <Col sm={10}>
-                                    <Select
+                                    <CustomReactSelect
                                         {...react_select_ids("memberships")}
                                         value={memberships}
                                         getOptionLabel={option => clientName(option)}
@@ -189,7 +188,6 @@ class FormGroups extends Component {
                                         options={clients}
                                         placeholder={"Vyberte členy z existujících klientů..."}
                                         isClearable={false}
-                                        noOptionsMessage={() => TEXTS.NO_RESULTS}
                                     />
                                     <Or
                                         content={
