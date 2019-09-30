@@ -489,7 +489,7 @@ class FormLectures extends Component {
                                                                     at_state[member.id]) && (
                                                                 <option
                                                                     key={attendancestate.id}
-                                                                    value={attendancestate.id.toString()}>
+                                                                    value={attendancestate.id}>
                                                                     {attendancestate.name}
                                                                 </option>
                                                             )
