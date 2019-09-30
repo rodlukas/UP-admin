@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
-import { CustomInput } from "reactstrap"
 import AttendanceService from "../api/services/attendance"
 import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
+import CustomCustomInput from "../forms/helpers/CustomCustomInput"
 
 const SelectAttendanceState = props => {
     const { attendancestates } = useContext(AttendanceStatesContext)
@@ -14,7 +14,7 @@ const SelectAttendanceState = props => {
     }
 
     return (
-        <CustomInput
+        <CustomCustomInput
             type="select"
             bsSize="sm"
             onChange={onChange}
@@ -30,7 +30,7 @@ const SelectAttendanceState = props => {
                         </option>
                     )
             )}
-        </CustomInput>
+        </CustomCustomInput>
     )
 }
 

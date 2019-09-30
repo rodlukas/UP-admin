@@ -33,6 +33,7 @@ import { DEFAULT_DURATION } from "../global/constants"
 import { prettyDateWithLongDayYear, toISODate, toISOTime } from "../global/funcDateTime"
 import { alertRequired } from "../global/utils"
 import "./FormLectures.css"
+import CustomCustomInput from "./helpers/CustomCustomInput"
 import SelectCourse from "./helpers/SelectCourse"
 
 const GROUP_DURATION = 45
@@ -472,7 +473,7 @@ class FormLectures extends Component {
                                                         účast
                                                     </Label>
                                                 </InputGroupAddon>
-                                                <CustomInput
+                                                <CustomCustomInput
                                                     type="select"
                                                     name="at_state"
                                                     id={"at_state" + member.id}
@@ -494,7 +495,7 @@ class FormLectures extends Component {
                                                                 </option>
                                                             )
                                                     )}
-                                                </CustomInput>
+                                                </CustomCustomInput>
                                             </InputGroup>
                                         </Col>
                                         <Col sm={2} className="text-sm-center">

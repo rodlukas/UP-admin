@@ -2,7 +2,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faCheck, faTimes } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
-import { Alert, Col, Container, CustomInput, Modal, Row, Table } from "reactstrap"
+import { Alert, Col, Container, Modal, Row, Table } from "reactstrap"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 import AppRelease from "../components/AppRelease"
@@ -16,6 +16,7 @@ import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import FormSettings from "../forms/FormSettings"
+import CustomCustomInput from "../forms/helpers/CustomCustomInput"
 import { EDIT_TYPE } from "../global/constants"
 import APP_URLS from "../urls"
 import "./Settings.css"
@@ -205,7 +206,7 @@ class Settings extends Component {
                                         </span>
                                         .
                                     </p>
-                                    <CustomInput
+                                    <CustomCustomInput
                                         type="select"
                                         id="state_default_id"
                                         value={state_default_id || "default"}
@@ -225,7 +226,7 @@ class Settings extends Component {
                                                     </option>
                                                 )
                                         )}
-                                    </CustomInput>
+                                    </CustomCustomInput>
                                     <h4 className="mt-3 text-center">Stav omluven</h4>
                                     <p className="mb-2">
                                         Pro správné fungování omluvených a zrušených lekcí je třeba
@@ -235,7 +236,7 @@ class Settings extends Component {
                                         </span>
                                         .
                                     </p>
-                                    <CustomInput
+                                    <CustomCustomInput
                                         type="select"
                                         id="state_excused_id"
                                         value={state_excused_id || "default"}
@@ -255,7 +256,7 @@ class Settings extends Component {
                                                     </option>
                                                 )
                                         )}
-                                    </CustomInput>
+                                    </CustomCustomInput>
                                 </Col>
                                 <Col>
                                     <h2 className="text-center">Kurzy</h2>
