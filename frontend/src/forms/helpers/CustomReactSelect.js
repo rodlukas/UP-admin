@@ -20,7 +20,8 @@ const Input = props => {
                 }
             }}
             onKeyDown={e => {
-                // pokud se stiskl ESC a menu bylo otevrene, pri keyUp je potreba zastavit propagaci eventu
+                // pokud se stiskl ESC a menu bylo otevrene - projev to do stavu,
+                // pri keyUp je potreba zastavit propagaci eventu
                 if (e.key === "Escape" && props.selectProps.menuIsOpen) {
                     setMenuWasOpen(true)
                 }
