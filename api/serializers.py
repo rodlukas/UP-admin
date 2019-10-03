@@ -266,13 +266,11 @@ class LectureSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # vytvoreni instance lekce
         attendances_data = validated_data.pop("attendances")
-        group_data = validated_data.get("group", None)
+        group_data = validated_data.pop("group", None)
         if group_data is not None:
             group = Group.objects.get(pk=group_data.pk)
         else:
             group = None
-        if "group" in validated_data:
-            del validated_data["group"]
         # pk kurzu vezmi z dat, pokud jde o skupinu tak primo z ni
         course_pk_obtain = (
             validated_data.pop("course").pk if "course" in validated_data else group.course.pk
@@ -295,11 +293,14 @@ class LectureSerializer(serializers.ModelSerializer):
                     pass
                 else:
                     # kdyz ma dorazit, lekce neni zrusena a ma nejake predplacene lekce, odecti jednu
-                    if not instance.canceled and attendance_data["attendancestate"].default:
-                        if membership.prepaid_cnt > 0:
-                            attendance_data.paid = True
-                            membership.prepaid_cnt = membership.prepaid_cnt - 1
-                            membership.save()
+                    if (
+                        not instance.canceled
+                        and attendance_data["attendancestate"].default
+                        and membership.prepaid_cnt > 0
+                    ):
+                        attendance_data.paid = True
+                        membership.prepaid_cnt = membership.prepaid_cnt - 1
+                        membership.save()
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
 
