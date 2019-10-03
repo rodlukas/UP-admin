@@ -231,6 +231,9 @@ class LectureSerializer(serializers.ModelSerializer):
         allow_null=True,
     )
     count = serializers.SerializerMethodField(read_only=True)
+    refresh_clients = serializers.BooleanField(
+        write_only=True, default=False
+    )  # pro aktualizaci ucastniku dane lekce vzhledem k aktualnim clenum skupiny
 
     class Meta:
         model = Lecture
@@ -264,6 +267,7 @@ class LectureSerializer(serializers.ModelSerializer):
         return cnt.count() + 1  # +1 aby prvni kurz nebyl jako 0.
 
     def create(self, validated_data):
+        validated_data.pop("refresh_clients", None)  # pro create se tento klic nepouziva
         # vytvoreni instance lekce
         attendances_data = validated_data.pop("attendances")
         group_data = validated_data.pop("group", None)
@@ -322,21 +326,51 @@ class LectureSerializer(serializers.ModelSerializer):
             # upravy jednotlivych ucasti
             attendances_data = validated_data["attendances"]
             attendances = instance.attendances.all()
+            refresh_clients = validated_data.get("refresh_clients")
             for attendance_data in attendances_data:
                 attendance = attendances.get(pk=attendance_data["id"])
-                prev_attendancestate = attendance.attendancestate
-                # uprava ucasti
-                attendance.paid = attendance_data["paid"]
-                attendance.client = Client.objects.get(pk=attendance_data["client"].pk)
-                attendance.note = attendance_data["note"]
-                attendance.attendancestate = AttendanceState.objects.get(
-                    pk=attendance_data["attendancestate"].pk
+                # projeveni zmen klientu skupiny (smazani)
+                if instance.group and refresh_clients:
+                    # pokud ucastnik uz neni clenem skupiny, smaz jeho ucast
+                    try:
+                        instance.group.memberships.get(client=attendance.client)
+                    except ObjectDoesNotExist:
+                        attendance.delete()
+                # jinak proved prislusne upravy
+                else:
+                    prev_attendancestate = attendance.attendancestate
+                    # uprava ucasti
+                    attendance.paid = attendance_data["paid"]
+                    attendance.client = Client.objects.get(pk=attendance_data["client"].pk)
+                    attendance.note = attendance_data["note"]
+                    attendance.attendancestate = AttendanceState.objects.get(
+                        pk=attendance_data["attendancestate"].pk
+                    )
+                    attendance.save()
+                    # proved korekce poctu predplacenych lekci
+                    serializers_helpers.lecture_corrections(
+                        instance, attendance, prev_canceled, prev_attendancestate
+                    )
+            # projeveni zmen klientu skupiny (pridani)
+            if instance.group and refresh_clients:
+                # clenove skupiny, kteri nemaji u teto lekce ucast
+                memberships = instance.group.memberships.exclude(
+                    client__pk__in=[client["client"].pk for client in attendances_data]
                 )
-                attendance.save()
-                # proved korekce poctu predplacenych lekci
-                serializers_helpers.lecture_corrections(
-                    instance, attendance, prev_canceled, prev_attendancestate
-                )
+                attendancestate_default = AttendanceState.objects.get(default=True)
+                for membership in memberships:
+                    lecture_paid = False
+                    # kdyz lekce neni zrusena a ma nejake predplacene lekce, odecti jednu
+                    if not instance.canceled and membership.prepaid_cnt > 0:
+                        lecture_paid = True
+                        membership.prepaid_cnt = membership.prepaid_cnt - 1
+                        membership.save()
+                    Attendance.objects.create(
+                        client=membership.client,
+                        lecture=instance,
+                        paid=lecture_paid,
+                        attendancestate=attendancestate_default,
+                    )
             # nastav lekci jako zrusenou pokud nikdo nema prijit
             serializers_helpers.lecture_cancellability(instance)
         return instance

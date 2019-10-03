@@ -7,6 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
 import {
+    Button,
     Col,
     CustomInput,
     Form,
@@ -74,6 +75,15 @@ class FormLectures extends Component {
         object: this.props.object,
         prepaid_cnt: 1,
         canceled_disabled: false
+    }
+
+    areAttendantsEqualToMembers() {
+        const idsAttendants = this.props.lecture.attendances.map(x => x.client.id)
+        const idsMembers = this.props.object.memberships.map(x => x.client.id)
+        return (
+            idsAttendants.length === idsMembers.length &&
+            idsAttendants.every(val => idsMembers.includes(val))
+        )
     }
 
     computeDuration() {
@@ -213,7 +223,7 @@ class FormLectures extends Component {
         }
     }
 
-    onSubmit = e => {
+    onSubmit = (e, refresh_clients = false) => {
         e.preventDefault()
         const {
             id,
@@ -251,7 +261,8 @@ class FormLectures extends Component {
             duration,
             canceled,
             group_id: !this.props.IS_CLIENT ? object.id : null,
-            start: prepaid ? null : start
+            start: prepaid ? null : start,
+            refresh_clients
         }
         if (this.props.IS_CLIENT) {
             data = { ...data, course_id: course.id }
@@ -600,6 +611,19 @@ class FormLectures extends Component {
                         data-qa="button_submit_lecture"
                         disabled={!this.props.coursesVisibleContext.isLoaded}
                     />
+                    {this.IS_LECTURE &&
+                        !this.props.IS_CLIENT &&
+                        !this.areAttendantsEqualToMembers() && (
+                            <Button
+                                color="primary"
+                                className="float-right"
+                                type="submit"
+                                onClick={e => this.onSubmit(e, true)}
+                                title="Uloží informace a zároveň upraví účastníky této lekce tak, aby byli v souladu se členy skupiny"
+                                disabled={!this.props.coursesVisibleContext.isLoaded}>
+                                Uložit + projevit změny v klientech
+                            </Button>
+                        )}
                 </ModalFooter>
             </Form>
         )
