@@ -331,26 +331,26 @@ class LectureSerializer(serializers.ModelSerializer):
                 attendance = attendances.get(pk=attendance_data["id"])
                 # projeveni zmen klientu skupiny (smazani)
                 if instance.group and refresh_clients:
-                    # pokud ucastnik uz neni clenem skupiny, smaz jeho ucast
+                    # pokud ucastnik uz neni clenem skupiny, smaz jeho ucast a prejdi na dalsiho ucastnika
                     try:
                         instance.group.memberships.get(client=attendance.client)
                     except ObjectDoesNotExist:
                         attendance.delete()
-                # jinak proved prislusne upravy
-                else:
-                    prev_attendancestate = attendance.attendancestate
-                    # uprava ucasti
-                    attendance.paid = attendance_data["paid"]
-                    attendance.client = Client.objects.get(pk=attendance_data["client"].pk)
-                    attendance.note = attendance_data["note"]
-                    attendance.attendancestate = AttendanceState.objects.get(
-                        pk=attendance_data["attendancestate"].pk
-                    )
-                    attendance.save()
-                    # proved korekce poctu predplacenych lekci
-                    serializers_helpers.lecture_corrections(
-                        instance, attendance, prev_canceled, prev_attendancestate
-                    )
+                        continue
+                # jedna se stale o clena skupiny (nebo neni pozadovano projeveni zmen klientu), proved prislusne upravy
+                prev_attendancestate = attendance.attendancestate
+                # uprava ucasti
+                attendance.paid = attendance_data["paid"]
+                attendance.client = Client.objects.get(pk=attendance_data["client"].pk)
+                attendance.note = attendance_data["note"]
+                attendance.attendancestate = AttendanceState.objects.get(
+                    pk=attendance_data["attendancestate"].pk
+                )
+                attendance.save()
+                # proved korekce poctu predplacenych lekci
+                serializers_helpers.lecture_corrections(
+                    instance, attendance, prev_canceled, prev_attendancestate
+                )
             # projeveni zmen klientu skupiny (pridani)
             if instance.group and refresh_clients:
                 # clenove skupiny, kteri nemaji u teto lekce ucast
