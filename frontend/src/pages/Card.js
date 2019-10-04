@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react"
-import { Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
+import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import Attendances from "../components/Attendances"
@@ -184,6 +184,16 @@ class Card extends Component {
                         <Container fluid>
                             <Row className="justify-content-center">
                                 <Col sm="9" md="7" lg="5" xl="3">
+                                    {!object.active && (
+                                        <Alert color="warning">
+                                            <strong>
+                                                {this.isClient() ? "Klient" : "Skupina"} není
+                                                aktivní
+                                            </strong>{" "}
+                                            &ndash; nelze {this.isClient() ? "mu" : "jí"} tedy
+                                            přidávat lekce.
+                                        </Alert>
+                                    )}
                                     <ListGroup>
                                         {this.isClient() && (
                                             <Fragment>
@@ -207,6 +217,7 @@ class Card extends Component {
                             </Row>
                             {!this.isClient() && (
                                 <PrepaidCounters
+                                    isGroupActive={object.active}
                                     memberships={object.memberships}
                                     funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}
                                 />

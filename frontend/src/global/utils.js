@@ -80,3 +80,8 @@ export function clientName(client) {
 export function courseDuration(duration) {
     return "Trvání: " + duration + " min."
 }
+
+// overi, ze zaslani clenove skupiny jsou vsichni aktivni
+export function areAllMembersActive(memberships) {
+    return memberships.every(membership => membership.client.active)
+}

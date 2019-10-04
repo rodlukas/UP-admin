@@ -1,3 +1,5 @@
+import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { useEffect, useState } from "react"
 import {
     Col,
@@ -57,7 +59,15 @@ const PrepaidCounters = props => {
                             <ListGroup>
                                 <ListGroupItem>
                                     <h5>
-                                        <ClientName client={membership.client} link />
+                                        <ClientName client={membership.client} link />{" "}
+                                        {props.isGroupActive && !membership.client.active && (
+                                            <FontAwesomeIcon
+                                                icon={faExclamationTriangle}
+                                                className={"text-danger"}
+                                                size="1x"
+                                                title="Tento klient není aktivní (přestože skupina aktivní je), není tedy možné přidávat této skupině lekce"
+                                            />
+                                        )}
                                     </h5>
                                     <InputGroup>
                                         <InputGroupAddon addonType="prepend">

@@ -1,3 +1,5 @@
+import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
 import { Container, Table } from "reactstrap"
 import GroupService from "../api/services/group"
@@ -10,6 +12,7 @@ import Loading from "../components/Loading"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
+import { areAllMembersActive } from "../global/utils"
 import APP_URLS from "../urls"
 
 class Groups extends Component {
@@ -76,7 +79,16 @@ class Groups extends Component {
                                 {this.getGroupsData().map(group => (
                                     <tr key={group.id} data-qa="group">
                                         <td>
-                                            <GroupName group={group} link />
+                                            <GroupName group={group} link />{" "}
+                                            {group.active &&
+                                                !areAllMembersActive(group.memberships) && (
+                                                    <FontAwesomeIcon
+                                                        icon={faExclamationTriangle}
+                                                        className={"text-danger"}
+                                                        size="1x"
+                                                        title="Ve skupině je neaktivní klient (přestože je skupina aktivní), není tedy možné přidávat lekce"
+                                                    />
+                                                )}
                                         </td>
                                         <td>
                                             <CourseName course={group.course} />
