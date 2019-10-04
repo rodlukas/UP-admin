@@ -87,7 +87,7 @@ Aplikace umožňuje **pokročilé debugování** na lokálním i vzdáleném pro
 Pro **eliminaci mrtvého kódu** se také používá **[vulture](https://github.com/jendrikseipp/vulture/)**.
 #### Frontend
 Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
-* [React 16.8](https://reactjs.org/),
+* [React 16](https://reactjs.org/),
 * [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 * [React Router 4](https://reacttraining.com/react-router/),
 * [a další...](/frontend/package.json)
