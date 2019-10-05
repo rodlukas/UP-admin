@@ -163,7 +163,7 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 # Django konstanty pro bezpecnost
-REFERRER_POLICY = "same-origin"
+REFERRER_POLICY = "strict-origin-when-cross-origin"  # Referer je potreba posilat na Sentry
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
