@@ -3,9 +3,7 @@ import ReactGA from "react-ga"
 import { Route } from "react-router-dom"
 import { isEnvProduction } from "../global/funcEnvironments"
 
-/*
-vychazi z: https://vanja.gavric.org/blog/integrate-google-analytics-with-react-router-v4/
- */
+// vychazi z: https://vanja.gavric.org/blog/integrate-google-analytics-with-react-router-v4/
 
 class GoogleAnalytics extends Component {
     componentDidMount() {

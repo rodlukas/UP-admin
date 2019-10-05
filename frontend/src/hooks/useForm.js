@@ -1,8 +1,6 @@
 import { useState } from "react"
 
-/*
-vychazi z: https://upmostly.com/tutorials/using-custom-react-hooks-simplify-forms/
- */
+// vychazi z: https://upmostly.com/tutorials/using-custom-react-hooks-simplify-forms/
 
 const useForm = (initState, callback) => {
     const [values, setValues] = useState(initState)
