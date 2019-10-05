@@ -63,13 +63,21 @@ class FormLectures extends Component {
         date:
             this.IS_LECTURE && !this.isPrepaid
                 ? toISODate(new Date(this.props.lecture.start))
-                : this.props.date,
+                : this.props.date !== ""
+                ? this.props.date
+                : this.props.defaultValuesForLecture.start !== ""
+                ? toISODate(this.props.defaultValuesForLecture.start)
+                : "",
         time:
-            this.IS_LECTURE && !this.isPrepaid ? toISOTime(new Date(this.props.lecture.start)) : "",
+            this.IS_LECTURE && !this.isPrepaid
+                ? toISOTime(new Date(this.props.lecture.start))
+                : this.props.defaultValuesForLecture.start !== ""
+                ? toISOTime(this.props.defaultValuesForLecture.start)
+                : "",
         course: this.IS_LECTURE
             ? this.props.lecture.course
             : this.props.IS_CLIENT
-            ? this.props.defaultCourse
+            ? this.props.defaultValuesForLecture.course
             : this.props.object.course,
         duration: this.props.lecture.duration || this.computeDuration(),
         object: this.props.object,
@@ -89,7 +97,9 @@ class FormLectures extends Component {
     computeDuration() {
         // pokud je to klient a mame vypocitany nejpravdepodobnejsi kurz, pouzij ho, jinak default
         if (this.props.IS_CLIENT)
-            return this.props.defaultCourse ? this.props.defaultCourse.duration : DEFAULT_DURATION
+            return this.props.defaultValuesForLecture
+                ? this.props.defaultValuesForLecture.duration
+                : DEFAULT_DURATION
         // je to skupina
         return GROUP_DURATION
     }

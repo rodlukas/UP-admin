@@ -4,7 +4,13 @@ import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
 import ModalLecturesPlain from "./ModalLecturesPlain"
 
-const ModalLectures = ({ currentLecture = null, refresh, object, IS_CLIENT, defaultCourse }) => {
+const ModalLectures = ({
+    currentLecture = null,
+    refresh,
+    object,
+    IS_CLIENT,
+    defaultValuesForLecture
+}) => {
     const [isModal, toggleModal] = useModal()
 
     return (
@@ -30,7 +36,7 @@ const ModalLectures = ({ currentLecture = null, refresh, object, IS_CLIENT, defa
                 refresh={refresh}
                 object={object}
                 IS_CLIENT={IS_CLIENT}
-                defaultCourse={defaultCourse}
+                defaultValuesForLecture={defaultValuesForLecture}
             />
         </Fragment>
     )

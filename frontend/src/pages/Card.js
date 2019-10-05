@@ -21,7 +21,7 @@ import ModalLectures from "../forms/ModalLectures"
 import { prettyDateWithDayYear, prettyTime } from "../global/funcDateTime"
 import {
     courseDuration,
-    getDefaultCourse,
+    getDefaultValuesForLecture,
     getLecturesForGroupingByCourses,
     groupByCourses
 } from "../global/utils"
@@ -36,7 +36,7 @@ class Card extends Component {
         lectures: [],
         memberships: [],
         LOADING_CNT: this.isClient() ? 0 : 1,
-        defaultCourse: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz pri pridavani lekce
+        defaultValuesForLecture: null // pro FormLecture, aby se vybral velmi pravdepodobny kurz/datum a cas pri pridavani lekce
     }
 
     loadingStateIncrement = () =>
@@ -112,7 +112,7 @@ class Card extends Component {
             this.setState(
                 {
                     lectures: lecturesGroupedByCourses,
-                    defaultCourse: getDefaultCourse(lecturesGroupedByCourses, this.isClient())
+                    defaultValuesForLecture: getDefaultValuesForLecture(lecturesGroupedByCourses)
                 },
                 this.loadingStateIncrement
             )
@@ -143,7 +143,7 @@ class Card extends Component {
     }
 
     render() {
-        const { object, lectures, defaultCourse, memberships, LOADING_CNT } = this.state
+        const { object, lectures, defaultValuesForLecture, memberships, LOADING_CNT } = this.state
         return (
             <Fragment>
                 <Container>
@@ -158,7 +158,7 @@ class Card extends Component {
                                     <GroupName group={object} bold />
                                 )}
                                 <ModalLectures
-                                    defaultCourse={defaultCourse}
+                                    defaultValuesForLecture={defaultValuesForLecture}
                                     IS_CLIENT={this.isClient()}
                                     object={object}
                                     refresh={this.refreshAfterLectureChanges}

@@ -9,7 +9,7 @@ const ModalLecturesPlain = ({
     refresh,
     object,
     IS_CLIENT,
-    defaultCourse,
+    defaultValuesForLecture,
     date = ""
 }) => {
     // komponente muze prijit object=null (pri zavirani v ModalLecturesFast), proto osetreni "object &&"
@@ -22,7 +22,7 @@ const ModalLecturesPlain = ({
                     object={object}
                     funcRefresh={refresh}
                     IS_CLIENT={IS_CLIENT}
-                    defaultCourse={defaultCourse}
+                    defaultValuesForLecture={defaultValuesForLecture}
                     date={date}
                 />
             )}

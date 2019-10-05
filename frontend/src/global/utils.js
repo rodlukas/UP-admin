@@ -1,4 +1,5 @@
 import LectureService from "../api/services/lecture"
+import { addDays } from "./funcDateTime"
 
 export function groupByCourses(data) {
     // seskup data podle kurzu ve formatu "nazev_kurzu":{course: objekt_s_kurzem, lectures: pole_lekci}
@@ -29,26 +30,38 @@ export function getLecturesForGroupingByCourses(id, isClient) {
     return LectureService.getAllFromGroupOrdered(id, false)
 }
 
-export function getDefaultCourse(lecturesGroupedByCourses, isClient) {
-    // vrat optimalni kurz, jehoz lekce bude s nejvyssi pravdepodobnosti pridavana
-    if (isClient) {
-        if (lecturesGroupedByCourses.length === 0) return null
-        else if (lecturesGroupedByCourses.length === 1)
-            // chodi na jeden jediny kurz, vyber ho
-            return lecturesGroupedByCourses[0].course
-        else if (lecturesGroupedByCourses.length > 1) {
-            // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
-            let latestLecturesOfEachCourse = []
-            lecturesGroupedByCourses.forEach(elem =>
-                latestLecturesOfEachCourse.push(elem.lectures[0])
-            )
-            const latestLecture = latestLecturesOfEachCourse.reduce((prev, current) =>
-                prev.start > current.start ? prev : current
-            )
-            return latestLecture.course
-        }
+export function getDefaultValuesForLecture(lecturesGroupedByCourses) {
+    let result = {
+        course: null,
+        start: ""
     }
-    return null
+    // vrat optimalni kurz, jehoz lekce bude s nejvyssi pravdepodobnosti pridavana
+    if (lecturesGroupedByCourses.length === 0) return result
+    else if (lecturesGroupedByCourses.length === 1) {
+        // chodi na jeden jediny kurz, vyber ho
+        result = lecturesGroupedByCourses[0]
+    } else if (lecturesGroupedByCourses.length > 1) {
+        // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
+        let latestLecturesOfEachCourse = []
+        lecturesGroupedByCourses.forEach(elem => latestLecturesOfEachCourse.push(elem.lectures[0]))
+        // pro porovnani se vyuziva lexicographical order
+        // (ISO pro datum a cas to podporuje, viz https://en.wikipedia.org/wiki/ISO_8601#General_principles)
+        let latestLecture = latestLecturesOfEachCourse[0]
+        for (const item of latestLecturesOfEachCourse) {
+            // uprednostnujeme predplacene lekce, pri jejich nalezeni ihned koncime
+            if (item.start === null) {
+                latestLecture = item
+                break
+            }
+            // nejedna se o predplacene lekce, srovname a vratime tu pozdejsi
+            latestLecture = latestLecture > item ? latestLecture : item
+        }
+        result = latestLecture
+    }
+    return {
+        course: result.course,
+        start: result.start === null ? "" : addDays(new Date(result.start), 7)
+    }
 }
 
 export function prettyAmount(amount) {

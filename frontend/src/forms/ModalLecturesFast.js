@@ -14,7 +14,11 @@ import Loading from "../components/Loading"
 import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { prettyDate } from "../global/funcDateTime"
-import { getDefaultCourse, getLecturesForGroupingByCourses, groupByCourses } from "../global/utils"
+import {
+    getDefaultValuesForLecture,
+    getLecturesForGroupingByCourses,
+    groupByCourses
+} from "../global/utils"
 import CustomReactSelect from "./helpers/CustomReactSelect"
 import { react_select_ids } from "./helpers/func"
 import Or from "./helpers/Or"
@@ -28,7 +32,7 @@ class ModalLecturesFast extends React.Component {
     state = {
         IS_CLIENT: undefined,
         object: null,
-        defaultCourse: null,
+        defaultValuesForLecture: null,
         IS_LOADING: false
     }
 
@@ -48,31 +52,27 @@ class ModalLecturesFast extends React.Component {
     }
 
     onSelectChange = (obj, name = null) => {
-        // pokud se jedna o skupinu, jen ji uloz (je zbytecne resit defaultCourse, skupina ma kurz jasny)
-        if (!this.state.IS_CLIENT) this.setState({ object: obj })
-        else {
-            // jedna se o klienta, nejdriv zobraz nacitani, behem ktereho pro nej pripravis nejoptimalnejsi vychozi kurz,
-            // pak klienta (a kurz) teprve uloz (diky tomu se az pak zobrazi formular) a nacitani skryj pro priste
-            this.setState({ IS_LOADING: true }, () => {
-                const request = getLecturesForGroupingByCourses(obj.id, this.state.IS_CLIENT)
-                request.then(lectures => {
-                    const lecturesGroupedByCourses = groupByCourses(lectures)
-                    this.setState(
-                        prevState => ({
-                            defaultCourse: getDefaultCourse(
-                                lecturesGroupedByCourses,
-                                prevState.IS_CLIENT
-                            )
-                        }),
-                        () =>
-                            this.setState({
-                                object: obj,
-                                IS_LOADING: false
-                            })
-                    )
-                })
+        // skupiny sice maji jasny kurz, ale lze u nich odhadovat datum a cas, proto zde pro ne neprizpusobujeme chovani
+        // nejdriv zobraz nacitani, behem ktereho pro vybraneho klienta/skupinu pripravis vychozi hodnoty kurzu, data a casu,
+        // pak klienta/skupinu (a tato data) teprve uloz (diky tomu se az pak zobrazi formular) a nacitani skryj pro priste
+        this.setState({ IS_LOADING: true }, () => {
+            const request = getLecturesForGroupingByCourses(obj.id, this.state.IS_CLIENT)
+            request.then(lectures => {
+                const lecturesGroupedByCourses = groupByCourses(lectures)
+                this.setState(
+                    prevState => ({
+                        defaultValuesForLecture: getDefaultValuesForLecture(
+                            lecturesGroupedByCourses
+                        )
+                    }),
+                    () =>
+                        this.setState({
+                            object: obj,
+                            IS_LOADING: false
+                        })
+                )
             })
-        }
+        })
     }
 
     toggleModalSelect = () => {
@@ -192,7 +192,7 @@ class ModalLecturesFast extends React.Component {
                     </ModalBody>
                 </Modal>
                 <ModalLecturesPlain
-                    defaultCourse={this.state.defaultCourse}
+                    defaultValuesForLecture={this.state.defaultValuesForLecture}
                     date={this.props.date || ""}
                     object={this.state.object}
                     isModal={this.state.object !== null}
