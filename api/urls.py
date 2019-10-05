@@ -1,8 +1,9 @@
 from django.urls import include, path
 from rest_framework import routers
-from rest_framework_simplejwt.views import TokenObtainSlidingView, TokenRefreshSlidingView
+from rest_framework_simplejwt.views import TokenRefreshSlidingView
 
 from api import views
+from .tokens import MyTokenObtainSlidingView
 
 router = routers.DefaultRouter()
 router.register("clients", views.ClientViewSet)
@@ -19,6 +20,6 @@ router.register("applications", views.ApplicationViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("bank/", views.BankView.as_view()),
-    path("jwt-auth/", TokenObtainSlidingView.as_view(), name="token_obtain"),
+    path("jwt-auth/", MyTokenObtainSlidingView.as_view(), name="token_obtain"),
     path("jwt-refresh/", TokenRefreshSlidingView.as_view(), name="token_refresh"),
 ]
