@@ -99,8 +99,8 @@ class FormLectures extends Component {
     computeDuration() {
         // pokud je to klient a mame vypocitany nejpravdepodobnejsi kurz, pouzij ho, jinak default
         if (this.props.IS_CLIENT)
-            return this.props.defaultValuesForLecture
-                ? this.props.defaultValuesForLecture.duration
+            return this.props.defaultValuesForLecture.course
+                ? this.props.defaultValuesForLecture.course.duration
                 : DEFAULT_DURATION
         // je to skupina
         return GROUP_DURATION

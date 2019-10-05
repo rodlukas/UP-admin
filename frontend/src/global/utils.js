@@ -31,15 +31,20 @@ export function getLecturesForGroupingByCourses(id, isClient) {
 }
 
 export function getDefaultValuesForLecture(lecturesGroupedByCourses) {
-    let result = {
-        course: null,
-        start: ""
+    function result(course = null, start = "") {
+        return {
+            course,
+            start: start === "" || start === null ? "" : addDays(new Date(start), 7)
+        }
     }
     // vrat optimalni kurz, jehoz lekce bude s nejvyssi pravdepodobnosti pridavana
-    if (lecturesGroupedByCourses.length === 0) return result
+    if (lecturesGroupedByCourses.length === 0) return result()
     else if (lecturesGroupedByCourses.length === 1) {
-        // chodi na jeden jediny kurz, vyber ho
-        result = lecturesGroupedByCourses[0]
+        // chodi na jeden jediny kurz, vyber ho + posledni lekci
+        return result(
+            lecturesGroupedByCourses[0].course,
+            lecturesGroupedByCourses[0].lectures[0].start
+        )
     } else if (lecturesGroupedByCourses.length > 1) {
         // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
         let latestLecturesOfEachCourse = []
@@ -56,11 +61,7 @@ export function getDefaultValuesForLecture(lecturesGroupedByCourses) {
             // nejedna se o predplacene lekce, srovname a vratime tu pozdejsi
             latestLecture = latestLecture > item ? latestLecture : item
         }
-        result = latestLecture
-    }
-    return {
-        course: result.course,
-        start: result.start === null ? "" : addDays(new Date(result.start), 7)
+        return result(latestLecture.course, latestLecture.start)
     }
 }
 
