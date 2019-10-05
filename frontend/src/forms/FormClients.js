@@ -20,6 +20,7 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
 import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
+import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { prettyPhone } from "../global/utils"
 
 class FormClients extends Component {
@@ -59,6 +60,8 @@ class FormClients extends Component {
             this.close()
             this.refresh(response)
             this.props.clientsActiveContext.funcHardRefresh()
+            // je potreba projevit zmeny i pro cleny skupin
+            this.props.groupsActiveContext.funcHardRefresh()
         })
     }
 
@@ -73,6 +76,8 @@ class FormClients extends Component {
             this.close()
             this.refresh()
             this.props.clientsActiveContext.funcHardRefresh()
+            // je potreba projevit zmeny i pro cleny skupin
+            this.props.groupsActiveContext.funcHardRefresh()
         })
 
     render() {
@@ -230,4 +235,4 @@ class FormClients extends Component {
     }
 }
 
-export default WithClientsActiveContext(FormClients)
+export default WithClientsActiveContext(WithGroupsActiveContext(FormClients))
