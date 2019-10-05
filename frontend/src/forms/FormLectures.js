@@ -65,13 +65,15 @@ class FormLectures extends Component {
                 ? toISODate(new Date(this.props.lecture.start))
                 : this.props.date !== ""
                 ? this.props.date
-                : this.props.defaultValuesForLecture.start !== ""
+                : this.props.defaultValuesForLecture &&
+                  this.props.defaultValuesForLecture.start !== ""
                 ? toISODate(this.props.defaultValuesForLecture.start)
                 : "",
         time:
             this.IS_LECTURE && !this.isPrepaid
                 ? toISOTime(new Date(this.props.lecture.start))
-                : this.props.defaultValuesForLecture.start !== ""
+                : this.props.defaultValuesForLecture &&
+                  this.props.defaultValuesForLecture.start !== ""
                 ? toISOTime(this.props.defaultValuesForLecture.start)
                 : "",
         course: this.IS_LECTURE
