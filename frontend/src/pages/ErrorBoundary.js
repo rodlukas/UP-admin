@@ -23,12 +23,12 @@ class ErrorBoundary extends Component {
         this.props.history.listen(() => {
             if (this.state.hasError) this.setState({ hasError: false })
         })
-        // v pripade, ze doslo k chybe pri otvirani formulare, odstran tento priznak z body
-        // jinak bude pro body nastaveno overflow: hidden a nepujde scrollovat
-        document.body.classList.remove("modal-open")
     }
 
     static getDerivedStateFromError(error) {
+        // v pripade, ze doslo k chybe pri otvirani formulare, odstran tento priznak z body
+        // jinak bude pro body nastaveno overflow: hidden a nepujde scrollovat
+        document.body.classList.remove("modal-open")
         return { hasError: true }
     }
 
@@ -73,7 +73,11 @@ class ErrorBoundary extends Component {
                                 eventId: this.state.eventId,
                                 subtitle: "Administrátor byl upozorněn na chybu.",
                                 subtitle2: "Pokud chcete pomoct, níže napište, co se stalo.",
-                                successMessage: "Vaše zpětná vazba byla odeslána. Díky!"
+                                successMessage: "Vaše zpětná vazba byla odeslána. Díky!",
+                                errorFormEntry:
+                                    "Některá pole nejsou validní. Opravte, prosím, chyby a odešlete formulář znovu.",
+                                errorGeneric:
+                                    "Při odesílání formuláře nastala neznámá chyba. Zkuste to znovu."
                             })
                         }
                         content={
