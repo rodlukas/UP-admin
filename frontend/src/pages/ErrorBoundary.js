@@ -10,7 +10,7 @@ import Heading from "../components/Heading"
 
 class ErrorBoundary extends Component {
     state = {
-        hasError: false,
+        eventId: null,
         error: null,
         errorInfo: null
     }
@@ -21,13 +21,20 @@ class ErrorBoundary extends Component {
         this.props.history.listen(() => {
             if (this.state.hasError) this.setState({ hasError: false })
         })
+        // v pripade, ze doslo k chybe pri otvirani formulare, odstran tento priznak z body
+        // jinak bude pro body nastaveno overflow: hidden a nepujde scrollovat
+        document.body.classList.remove("modal-open")
+    }
+
+    static getDerivedStateFromError(error) {
+        return { hasError: true }
     }
 
     componentDidCatch(error, errorInfo) {
-        this.setState({
-            hasError: true,
-            error: error,
-            errorInfo: errorInfo
+        Sentry.withScope(scope => {
+            scope.setExtras(errorInfo)
+            const eventId = Sentry.captureException(error)
+            this.setState({ eventId, error, errorInfo })
         })
     }
 
@@ -44,6 +51,7 @@ class ErrorBoundary extends Component {
     render() {
         const decodedToken = this.getToken()
         if (this.state.hasError) {
+            // render fallback UI
             return (
                 <div className="text-center">
                     <Heading content="Chyba aplikace" />
@@ -55,7 +63,15 @@ class ErrorBoundary extends Component {
                                 user: {
                                     email: decodedToken.email,
                                     name: decodedToken.username
-                                }
+                                },
+                                labelName: "Jméno",
+                                labelClose: "Zavřít",
+                                labelSubmit: "Odeslat",
+                                labelComments: "Co se stalo?",
+                                eventId: this.state.eventId,
+                                subtitle: "Administrátor byl upozorněn na chybu.",
+                                subtitle2: "Pokud chcete pomoct, níže napište, co se stalo.",
+                                successMessage: "Vaše zpětná vazba byla odeslána. Díky!"
                             })
                         }
                         content={
@@ -70,7 +86,9 @@ class ErrorBoundary extends Component {
                             <Col className="col-auto">
                                 <Alert color="danger">
                                     <h4 className="alert-heading">Popis chyby</h4>
-                                    <details className="text-left" style={{ whiteSpace: "pre" }}>
+                                    <details
+                                        className="text-left"
+                                        style={{ whiteSpace: "pre-wrap" }}>
                                         <summary className="font-weight-bold">
                                             {this.state.error && this.state.error.toString()}
                                         </summary>
