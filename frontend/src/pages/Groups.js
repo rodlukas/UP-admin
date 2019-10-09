@@ -28,8 +28,9 @@ class Groups extends Component {
     getGroupsData = () =>
         this.state.active ? this.props.groupsActiveContext.groups : this.state.groups
 
-    refresh = (active = this.state.active) => {
-        this.setState({ IS_LOADING: true, active: active }, () => this.getGroups(active, true))
+    refresh = (active = this.state.active, ignoreActiveRefresh = false) => {
+        if (active && ignoreActiveRefresh) this.setState({ active: active })
+        else this.setState({ IS_LOADING: true, active: active }, () => this.getGroups(active, true))
     }
 
     getGroups = (active = this.state.active, callFromRefresh = false) => {

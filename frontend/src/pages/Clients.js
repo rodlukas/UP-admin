@@ -25,8 +25,11 @@ class Clients extends Component {
     getClientsData = () =>
         this.state.active ? this.props.clientsActiveContext.clients : this.state.clients
 
-    refresh = (active = this.state.active) =>
-        this.setState({ IS_LOADING: true, active: active }, () => this.getClients(active, true))
+    refresh = (active = this.state.active, ignoreActiveRefresh = false) => {
+        if (active && ignoreActiveRefresh) this.setState({ active: active })
+        else
+            this.setState({ IS_LOADING: true, active: active }, () => this.getClients(active, true))
+    }
 
     getClients = (active = this.state.active, callFromRefresh = false) => {
         if (active)

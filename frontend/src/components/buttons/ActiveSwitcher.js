@@ -8,7 +8,7 @@ export default function ActiveSwitcher(props) {
         const target = e.target
         const value = target.dataset.value === "true"
         // pokud doslo ke zmene, propaguj vyse
-        if (props.active !== value) props.onChange(value)
+        if (props.active !== value) props.onChange(value, true)
     }
 
     return (
