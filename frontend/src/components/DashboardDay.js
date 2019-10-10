@@ -27,18 +27,18 @@ class DashboardDay extends Component {
     getDate = () => new Date(this.props.date)
 
     getLectures = () => {
-        LectureService.getAllFromDayOrdered(toISODate(this.getDate()), true).then(lectures =>
-            this.setState({
-                lectures,
-                IS_LOADING: false
-            })
+        this.setState({ IS_LOADING: true }, () =>
+            LectureService.getAllFromDayOrdered(toISODate(this.getDate()), true).then(lectures =>
+                this.setState({
+                    lectures,
+                    IS_LOADING: false
+                })
+            )
         )
     }
 
     componentDidMount() {
-        if (this.props.withoutWaiting) this.getLectures()
-        // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
-        else this.timeoutId = setTimeout(this.getLectures, 1000)
+        this.getLectures()
     }
 
     componentWillUnmount() {
@@ -46,7 +46,17 @@ class DashboardDay extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.shouldRefresh && !prevProps.shouldRefresh) this.getLectures()
+        if (this.props.shouldRefresh && !prevProps.shouldRefresh) {
+            if (this.props.withoutWaiting) this.getLectures()
+            // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
+            else {
+                clearTimeout(this.timeoutId)
+                this.setState(
+                    { IS_LOADING: true },
+                    () => (this.timeoutId = setTimeout(this.getLectures, 700))
+                )
+            }
+        }
     }
 
     render() {

@@ -26,19 +26,21 @@ const TitleDate = ({ date }) => (
 )
 
 export default class Diary extends Component {
+    getRequiredMonday = () => getMonday(Diary.parseDateFromParams(this.props.match.params))
+    getWeek = () => getWeekSerializedFromMonday(this.getRequiredMonday())
+
     state = {
-        shouldRefresh: false
+        shouldRefresh: false,
+        week: this.getWeek()
     }
 
-    getWeek = () => getWeekSerializedFromMonday(this.getRequiredMonday())
-    getFridayDate = () => new Date(this.getWeek()[4])
+    getFridayDate = () => new Date(this.state.week[4])
     getNextMondaySerialized = () =>
         Diary.serializeDateUrl(addDays(this.getRequiredMonday(), DAYS_IN_WEEK))
     getPrevMondaySerialized = () =>
         Diary.serializeDateUrl(addDays(this.getRequiredMonday(), -DAYS_IN_WEEK))
     getCurrentMonday = () => getMonday(new Date())
     getCurrentMondaySerialized = () => Diary.serializeDateUrl(this.getCurrentMonday())
-    getRequiredMonday = () => getMonday(Diary.parseDateFromParams(this.props.match.params))
 
     componentDidMount() {
         document.addEventListener("keydown", this.onKeyDown)
@@ -46,6 +48,15 @@ export default class Diary extends Component {
 
     componentWillUnmount() {
         document.removeEventListener("keydown", this.onKeyDown)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (
+            this.props.match.params.year !== prevProps.match.params.year ||
+            this.props.match.params.month !== prevProps.match.params.month ||
+            this.props.match.params.day !== prevProps.match.params.day
+        )
+            this.setState({ week: this.getWeek() }, this.setRefreshState)
     }
 
     onKeyDown = e => {
@@ -113,8 +124,8 @@ export default class Diary extends Component {
                 />
                 <Container fluid className="pageContent">
                     <Row>
-                        {this.getWeek().map(day => (
-                            <Col key={day} md="6" lg="" className="diary-day">
+                        {this.state.week.map((day, index) => (
+                            <Col key={index} md="6" lg="" className="diary-day">
                                 <DashboardDay
                                     date={day}
                                     setRefreshState={this.setRefreshState}
