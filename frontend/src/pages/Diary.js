@@ -51,6 +51,9 @@ export default class Diary extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        // pokud se datum ktery pozadujeme shoduje s tim ve stavu, nic neupdatuj
+        if (isEqualDate(new Date(prevState.week[0]), this.getRequiredMonday())) return
+        // pozadujeme jiny datum, nez jsme meli ve stavu
         if (
             this.props.match.params.year !== prevProps.match.params.year ||
             this.props.match.params.month !== prevProps.match.params.month ||
@@ -105,7 +108,7 @@ export default class Diary extends Component {
                                 />
                             </Link>{" "}
                             <Link
-                                to={this.getCurrentMondaySerialized()}
+                                to={APP_URLS.diar.url}
                                 title={prettyDateWithLongDayYear(new Date())}>
                                 <Button
                                     color="secondary"
