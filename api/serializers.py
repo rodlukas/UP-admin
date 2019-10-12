@@ -69,14 +69,15 @@ class GroupSerializer(serializers.ModelSerializer):
         memberships_data = validated_data.pop("memberships")
         instance = Group.objects.create(**validated_data)
         for membership_data in memberships_data:
-            client = Client.objects.get(pk=membership_data.pop("client").pk)
-            Membership.objects.create(client=client, group=instance, **membership_data)
+            Membership.objects.create(
+                client=membership_data.pop("client"), group=instance, **membership_data
+            )
         return instance
 
     def update(self, instance, validated_data):
         # vytvoreni instance skupiny
         instance.name = validated_data.get("name", instance.name)
-        instance.course = Course.objects.get(pk=validated_data.get("course", instance.course).pk)
+        instance.course = validated_data.get("course", instance.course)
         instance.active = validated_data.get("active", instance.active)
         instance.save()
         # upravy clenstvi
@@ -84,13 +85,13 @@ class GroupSerializer(serializers.ModelSerializer):
             memberships_data = validated_data["memberships"]
             memberships = instance.memberships.all()
             # smaz z DB ty co tam nemaj byt
-            current_members_ids = [membership.client.id for membership in memberships]
+            current_members_ids = [membership.client.pk for membership in memberships]
             new_members_ids = [membership_data["client"].pk for membership_data in memberships_data]
             memberships.exclude(client__pk__in=new_members_ids).delete()
             # dopln do DB zbyle
             for membership_data in memberships_data:
-                client = Client.objects.get(pk=membership_data.pop("client").pk)
-                if client.id not in current_members_ids:
+                client = membership_data.pop("client")
+                if client.pk not in current_members_ids:
                     Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
@@ -160,13 +161,9 @@ class AttendanceSerializer(serializers.ModelSerializer):
         prev_attendancestate = instance.attendancestate
         prev_canceled = instance.lecture.canceled
         # uprava ucasti
-        instance.client = Client.objects.get(pk=validated_data.get("client", instance.client).pk)
-        instance.lecture = Lecture.objects.get(
-            pk=validated_data.get("lecture", instance.lecture).pk
-        )
-        instance.attendancestate = AttendanceState.objects.get(
-            pk=validated_data.get("attendancestate", instance.attendancestate).pk
-        )
+        instance.client = validated_data.get("client", instance.client)
+        instance.lecture = validated_data.get("lecture", instance.lecture)
+        instance.attendancestate = validated_data.get("attendancestate", instance.attendancestate)
         instance.paid = validated_data.get("paid", instance.paid)
         instance.note = validated_data.get("note", instance.note)
         instance.save()
@@ -256,7 +253,7 @@ class LectureSerializer(serializers.ModelSerializer):
             except ObjectDoesNotExist:  # pokud neni zvoleny vychozi stav, vrat upozorneni
                 return "⚠ není zvolen výchozí stav účasti"
             cnt = Attendance.objects.filter(
-                client=obj.attendances.get().client.pk,
+                client=obj.attendances.get().client_id,
                 lecture__course=obj.course,
                 lecture__start__isnull=False,
                 lecture__group__isnull=True,
@@ -270,23 +267,16 @@ class LectureSerializer(serializers.ModelSerializer):
         validated_data.pop("refresh_clients", None)  # pro create se tento klic nepouziva
         # vytvoreni instance lekce
         attendances_data = validated_data.pop("attendances")
-        group_data = validated_data.pop("group", None)
-        if group_data is not None:
-            group = Group.objects.get(pk=group_data.pk)
-        else:
-            group = None
-        # pk kurzu vezmi z dat, pokud jde o skupinu tak primo z ni
-        course_pk_obtain = (
-            validated_data.pop("course").pk if "course" in validated_data else group.course.pk
-        )
-        course = Course.objects.get(pk=course_pk_obtain)
+        group = validated_data.pop("group", None)
+        # kurz vezmi z dat, pokud jde o skupinu tak primo z ni
+        course = validated_data.pop("course") if "course" in validated_data else group.course
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not validated_data["canceled"]:
             validated_data["canceled"] = serializers_helpers.should_be_canceled(attendances_data)
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
         # vytvoreni jednotlivych ucasti
         for attendance_data in attendances_data:
-            client = Client.objects.get(pk=attendance_data.pop("client").pk)
+            client = attendance_data.pop("client")
             # pokud se jedna o skupinu, proved korekce poctu predplacenych lekci
             if group is not None:
                 # najdi clenstvi nalezici klientovi v teto skupine
@@ -314,12 +304,8 @@ class LectureSerializer(serializers.ModelSerializer):
         instance.start = validated_data.get("start", instance.start)
         instance.duration = validated_data.get("duration", instance.duration)
         instance.canceled = validated_data.get("canceled", instance.canceled)
-        instance.course = Course.objects.get(pk=validated_data.get("course", instance.course).pk)
-        group_data = validated_data.get("group", instance.group)
-        if group_data is not None:
-            instance.group = Group.objects.get(pk=group_data.pk)
-        else:
-            instance.group = None
+        instance.course = validated_data.get("course", instance.course)
+        instance.group = validated_data.get("group", instance.group)
         instance.save()
 
         if "attendances" in validated_data:
@@ -341,11 +327,9 @@ class LectureSerializer(serializers.ModelSerializer):
                 prev_attendancestate = attendance.attendancestate
                 # uprava ucasti
                 attendance.paid = attendance_data["paid"]
-                attendance.client = Client.objects.get(pk=attendance_data["client"].pk)
+                attendance.client = attendance_data["client"]
                 attendance.note = attendance_data["note"]
-                attendance.attendancestate = AttendanceState.objects.get(
-                    pk=attendance_data["attendancestate"].pk
-                )
+                attendance.attendancestate = attendance_data["attendancestate"]
                 attendance.save()
                 # proved korekce poctu predplacenych lekci
                 serializers_helpers.lecture_corrections(
