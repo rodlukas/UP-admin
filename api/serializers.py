@@ -374,18 +374,26 @@ class LectureSerializer(serializers.ModelSerializer):
         return group
 
     def validate(self, data):
-        # validace kurzu - pro skupiny nepovinny, pro jednotlivce povinny
-        if not data.get("group", None) and "course" not in data:
+        # validujeme neco, co ma byt skupina?
+        # zkontrolujeme pritomnost atributu group a jeho hodnotu (bud neni, je None nebo obsahuje ID skupiny)
+        is_group = bool(data.get("group", False))
+        # pro skupiny nemusime ID skupiny pri uprave uvest, priznak skupiny tedy muzeme nastavit dle stavajicich dat
+        #   v DB prave tehdy, kdyz probiha uprava a nezasilame atribut group
+        if self.instance and not is_group and "group" not in data:
+            is_group = self.instance.group is not None
+
+        # validace kurzu - pro skupiny nezasilat, pro jednotlivce povinny
+        if not is_group and "course" not in data:
             raise serializers.ValidationError(
                 {"course_id": "Není uveden kurz, pro lekce jednotlivců je to povinné."}
             )
-        elif data.get("group", None) and "course" in data:
+        elif is_group and "course" in data:
             raise serializers.ValidationError(
                 {"course_id": "Pro skupiny se kurz neuvádí, protože se určí automaticky."}
             )
 
         # single lekce musi mit jen jednoho ucastnika
-        if not data.get("group", None) and "attendances" in data and len(data["attendances"]) != 1:
+        if not is_group and "attendances" in data and len(data["attendances"]) != 1:
             raise serializers.ValidationError(
                 {"attendances": "Lekce pro jednotlivce musí mít jen jednoho účastníka."}
             )
