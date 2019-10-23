@@ -80,7 +80,7 @@ class Groups extends Component {
                                 {this.getGroupsData().map(group => (
                                     <tr key={group.id} data-qa="group">
                                         <td>
-                                            <GroupName group={group} link />{" "}
+                                            <GroupName group={group} link noWrap />{" "}
                                             {group.active &&
                                                 !areAllMembersActive(group.memberships) && (
                                                     <FontAwesomeIcon

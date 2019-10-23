@@ -5,7 +5,7 @@ import GroupName from "./GroupName"
 const GroupsList = ({ groups = [] }) => {
     if (!groups.length) return <span className="text-muted">žádné skupiny</span>
     const groupComponents = groups.map(membership => (
-        <GroupName group={membership} key={membership.id} link showCircle />
+        <GroupName group={membership} key={membership.id} link showCircle noWrap />
     ))
     return <ComponentsList components={groupComponents} />
 }

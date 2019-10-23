@@ -16,13 +16,20 @@ const PlainName = ({ group, title, bold }) => (
     </span>
 )
 
-const GroupName = ({ group, link = false, title = false, showCircle = false, bold = false }) => (
+const GroupName = ({
+    group,
+    link = false,
+    title = false,
+    showCircle = false,
+    bold = false,
+    noWrap = false
+}) => (
     <span className="clientName GroupName">
         <ConditionalWrapper
             condition={link}
             wrapper={children => (
                 <Link to={APP_URLS.skupiny.url + "/" + group.id}>
-                    <span className="text-nowrap">
+                    <span className={noWrap ? "text-nowrap" : undefined}>
                         {showCircle && <Circle color={group.course.color} size={0.5} />}
                         {children}
                     </span>
