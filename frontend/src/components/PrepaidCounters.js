@@ -1,6 +1,6 @@
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import React, { useEffect, useState } from "react"
+import React, { Fragment, useEffect, useState } from "react"
 import {
     Col,
     Container,
@@ -10,7 +10,8 @@ import {
     Label,
     ListGroup,
     ListGroupItem,
-    Row
+    Row,
+    UncontrolledTooltip
 } from "reactstrap"
 import MembershipService from "../api/services/membership"
 import ClientName from "./ClientName"
@@ -61,12 +62,21 @@ const PrepaidCounters = props => {
                                     <h5>
                                         <ClientName client={membership.client} link />{" "}
                                         {props.isGroupActive && !membership.client.active && (
-                                            <FontAwesomeIcon
-                                                icon={faExclamationTriangle}
-                                                className={"text-danger"}
-                                                size="1x"
-                                                title="Tento klient není aktivní (přestože skupina aktivní je), není tedy možné přidávat této skupině lekce"
-                                            />
+                                            <Fragment>
+                                                <UncontrolledTooltip
+                                                    placement="right"
+                                                    target="inactive_client_alert">
+                                                    Tento klient není aktivní (přestože skupina
+                                                    aktivní je), není tedy možné přidávat této
+                                                    skupině lekce
+                                                </UncontrolledTooltip>
+                                                <FontAwesomeIcon
+                                                    icon={faExclamationTriangle}
+                                                    className={"text-danger"}
+                                                    size="1x"
+                                                    id="inactive_client_alert"
+                                                />
+                                            </Fragment>
                                         )}
                                     </h5>
                                     <InputGroup>

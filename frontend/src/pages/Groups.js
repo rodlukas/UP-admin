@@ -1,7 +1,7 @@
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
-import { Container, Table } from "reactstrap"
+import { Container, Table, UncontrolledTooltip } from "reactstrap"
 import GroupService from "../api/services/group"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 import ClientsList from "../components/ClientsList"
@@ -83,12 +83,21 @@ class Groups extends Component {
                                             <GroupName group={group} link noWrap />{" "}
                                             {group.active &&
                                                 !areAllMembersActive(group.memberships) && (
-                                                    <FontAwesomeIcon
-                                                        icon={faExclamationTriangle}
-                                                        className={"text-danger"}
-                                                        size="1x"
-                                                        title="Ve skupině je neaktivní klient (přestože je skupina aktivní), není tedy možné přidávat lekce"
-                                                    />
+                                                    <Fragment>
+                                                        <UncontrolledTooltip
+                                                            placement="right"
+                                                            target="active_group_with_inactive_client_alert">
+                                                            Ve skupině je neaktivní klient (přestože
+                                                            je skupina aktivní), není tedy možné
+                                                            přidávat lekce
+                                                        </UncontrolledTooltip>
+                                                        <FontAwesomeIcon
+                                                            icon={faExclamationTriangle}
+                                                            className={"text-danger"}
+                                                            size="1x"
+                                                            id="active_group_with_inactive_client_alert"
+                                                        />
+                                                    </Fragment>
                                                 )}
                                         </td>
                                         <td>
