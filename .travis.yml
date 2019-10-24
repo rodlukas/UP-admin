@@ -7,7 +7,7 @@ services:
   - postgresql
 addons:
   firefox: latest
-  postgresql: '10'
+  postgresql: '12'
 
 env:
   global:
@@ -21,6 +21,8 @@ cache:
     - $PIPENV_CACHE_DIR
 
 before_install:
+  # instalace postgresql 12
+  - source scripts/shell/postgresql_install.sh
   # pridani ceskeho balicku pro funkcni CZ v databazi
   - source scripts/shell/postgresql_cs.sh
 install:
@@ -40,10 +42,10 @@ install:
 
   # vypis konfigurace prostredi
   - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version && ls -la
+before_script:
+  # priprav DB
+  - source scripts/shell/postgresql_prepare.sh
 script:
-  # vytvor DB
-  - psql -c 'create database travis_ci_test;' -U postgres
-
   # priprav Django aplikaci
   - source scripts/shell/release_tasks.sh
 
