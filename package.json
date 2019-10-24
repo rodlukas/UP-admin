@@ -5,9 +5,9 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": "10.16.x",
-    "npm": "6.9.x",
-    "yarn": "1.19.x"
+    "node": "12",
+    "npm": "6",
+    "yarn": "1"
   },
   "scripts": {
     "postinstall": "cd frontend && yarn install && yarn build"
