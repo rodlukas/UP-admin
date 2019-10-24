@@ -44,7 +44,7 @@ install:
   - pipenv install --dev
 
   # vypis konfigurace prostredi
-  - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version && ls -la
+  - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version && pg_config --version && ls -la
 before_script:
   # priprav DB
   - source scripts/shell/postgresql_prepare.sh
