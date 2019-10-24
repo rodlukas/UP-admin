@@ -13,9 +13,6 @@ env:
   global:
     - MOZ_HEADLESS=1
     - PIPENV_CACHE_DIR=$HOME/.cache/pipenv
-    - PGUSER=postgres
-    - PGPASSWORD=postgres
-    - PGPORT=5432
 
 cache:
   yarn: true
