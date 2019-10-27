@@ -11,7 +11,9 @@ def validate_course_is_visible(course):
     overi, ze zaslany kurz je viditelny, jinak vyhodi vyjimku
     """
     if not course.visible:
-        raise serializers.ValidationError("Zadaný kurz není viditelný.")
+        raise serializers.ValidationError(
+            "Zadaný kurz není viditelný. Buď jej nastavte jako viditelný, nebo vyberte jiný viditelný kurz."
+        )
     return course
 
 

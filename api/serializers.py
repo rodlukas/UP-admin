@@ -251,7 +251,7 @@ class LectureSerializer(serializers.ModelSerializer):
                     "pk"
                 ]
             except ObjectDoesNotExist:  # pokud neni zvoleny vychozi stav, vrat upozorneni
-                return "⚠ není zvolen výchozí stav účasti"
+                return "⚠ není zvolen výchozí stav účasti – vizte nastavení"
             cnt = Attendance.objects.filter(
                 client=obj.attendances.get().client_id,
                 lecture__course=obj.course,
@@ -456,7 +456,7 @@ class LectureSerializer(serializers.ModelSerializer):
                     else:
                         client = elem.attendances.get().client
                         err_obj = f"klient {client.surname} {client.firstname}"
-                    error_msg = f"Časový konflikt s jinou lekcí: {err_obj} ({err_datetime}, trvání {err_duration} min.)"
+                    error_msg = f"Časový konflikt s jinou lekcí: {err_obj} ({err_datetime}, trvání {err_duration} min.). Upravte datum a čas konání."
                     raise serializers.ValidationError(
                         {api_settings.NON_FIELD_ERRORS_KEY: [error_msg]}
                     )
