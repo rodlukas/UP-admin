@@ -94,7 +94,7 @@ export default class FormSettings extends Component {
                     {this.isObject ? "Úprava" : "Přidání"} {type}u: {name}
                 </ModalHeader>
                 <ModalBody>
-                    <FormGroup row>
+                    <FormGroup row className="required">
                         <Label for="name" sm={3}>
                             Název
                         </Label>
@@ -128,7 +128,7 @@ export default class FormSettings extends Component {
                     </FormGroup>
                     {this.props.TYPE === EDIT_TYPE.COURSE && (
                         <Fragment>
-                            <FormGroup row className="align-items-center">
+                            <FormGroup row className="align-items-center required">
                                 <Label for="duration" sm={3} className="FormSettings_labelDuration">
                                     Trvání{" "}
                                     <small className="text-secondary text-nowrap">
@@ -154,7 +154,7 @@ export default class FormSettings extends Component {
                                     </InputGroup>
                                 </Col>
                             </FormGroup>
-                            <FormGroup row className="align-items-center">
+                            <FormGroup row className="align-items-center required">
                                 <ColorPicker color={color} onChange={this.onChangeColor} />
                             </FormGroup>
                         </Fragment>

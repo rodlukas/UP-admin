@@ -148,7 +148,7 @@ class FormGroups extends Component {
                         <Loading />
                     ) : (
                         <Fragment>
-                            <FormGroup row>
+                            <FormGroup row className="required">
                                 <Label for="name" sm={2}>
                                     Název
                                 </Label>
@@ -165,7 +165,7 @@ class FormGroups extends Component {
                                     />
                                 </Col>
                             </FormGroup>
-                            <FormGroup row>
+                            <FormGroup row className="required">
                                 <Label for="course" sm={2}>
                                     Kurz
                                 </Label>

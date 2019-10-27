@@ -96,7 +96,7 @@ class FormClients extends Component {
                     <ClientName client={{ firstname, surname }} bold />
                 </ModalHeader>
                 <ModalBody>
-                    <FormGroup row>
+                    <FormGroup row className="required">
                         <Label for="firstname" sm={2}>
                             Jméno
                         </Label>
@@ -113,7 +113,7 @@ class FormClients extends Component {
                             />
                         </Col>
                     </FormGroup>
-                    <FormGroup row>
+                    <FormGroup row className="required">
                         <Label for="surname" sm={2}>
                             Příjmení
                         </Label>

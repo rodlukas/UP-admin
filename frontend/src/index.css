@@ -37,6 +37,14 @@ label {
     clear: both;
 }
 
+/*** FORMS ***/
+/* hvezdicka oznacujici povinna pole */
+.form-group.required .col-form-label:after {
+    content: "*";
+    margin-left: 0.3em;
+    color: #dc3545;
+}
+
 /*** TABLE ***/
 .table {
     background-color: white !important;

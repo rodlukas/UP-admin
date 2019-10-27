@@ -88,7 +88,7 @@ class FormApplications extends Component {
                         <Loading />
                     ) : (
                         <Fragment>
-                            <FormGroup row>
+                            <FormGroup row className="required">
                                 <Label for="client" sm={3}>
                                     Klient
                                 </Label>
@@ -109,7 +109,7 @@ class FormApplications extends Component {
                                     />
                                 </Col>
                             </FormGroup>
-                            <FormGroup row>
+                            <FormGroup row className="required">
                                 <Label for="course" sm={3}>
                                     Kurz
                                 </Label>
