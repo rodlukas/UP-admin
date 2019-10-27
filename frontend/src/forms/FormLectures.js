@@ -468,7 +468,7 @@ class FormLectures extends Component {
                                     />
                                 </Col>
                                 <Col sm={4}>
-                                    <InputGroup title="Trvání">
+                                    <InputGroup title="Trvání (min.)">
                                         <InputGroupAddon addonType="prepend">
                                             <Label className="input-group-text" for="duration">
                                                 <FontAwesomeIcon icon={faHourglass} fixedWidth />

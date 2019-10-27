@@ -130,13 +130,13 @@ export default class FormSettings extends Component {
                         <Fragment>
                             <FormGroup row className="align-items-center required">
                                 <Label for="duration" sm={3} className="FormSettings_labelDuration">
-                                    Trvání{" "}
+                                    Trvání (min.){" "}
                                     <small className="text-secondary text-nowrap">
                                         (pro jednotlivce)
                                     </small>
                                 </Label>
                                 <Col sm={9}>
-                                    <InputGroup title="Trvání">
+                                    <InputGroup title="Trvání (min.)">
                                         <InputGroupAddon addonType="prepend">
                                             <Label className="input-group-text" for="duration">
                                                 <FontAwesomeIcon icon={faHourglass} fixedWidth />
