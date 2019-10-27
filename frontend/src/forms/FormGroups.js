@@ -39,7 +39,8 @@ class FormGroups extends Component {
         course: this.isGroup ? this.props.group.course : null,
         memberships: this.isGroup ? this.getMembers(this.props.group.memberships) : [],
         clients: [],
-        IS_LOADING: true
+        IS_LOADING: true,
+        IS_SUBMIT: false
     }
 
     // pripravi pole se cleny ve spravnem formatu, aby fungoval react-select
@@ -82,11 +83,17 @@ class FormGroups extends Component {
         let request
         if (this.isGroup) request = GroupService.update(data)
         else request = GroupService.create(data)
-        request.then(response => {
-            this.close()
-            this.refresh(response)
-            this.props.groupsActiveContext.funcHardRefresh()
-        })
+        this.setState({ IS_SUBMIT: true }, () =>
+            request
+                .then(response => {
+                    this.close()
+                    this.refresh(response)
+                    this.props.groupsActiveContext.funcHardRefresh()
+                })
+                .catch(() => {
+                    this.setState({ IS_SUBMIT: false })
+                })
+        )
     }
 
     close = () => this.props.funcClose()
@@ -251,6 +258,8 @@ class FormGroups extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close} />{" "}
                     <SubmitButton
+                        disabled={this.state.IS_LOADING}
+                        loading={this.state.IS_SUBMIT}
                         data-qa="button_submit_group"
                         content={this.isGroup ? "Uložit" : "Přidat"}
                     />

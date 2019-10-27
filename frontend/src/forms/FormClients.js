@@ -33,7 +33,8 @@ class FormClients extends Component {
         email: this.props.client.email || "",
         phone: prettyPhone(this.props.client.phone) || "",
         note: this.props.client.note || "",
-        active: this.isClient ? this.props.client.active : true
+        active: this.isClient ? this.props.client.active : true,
+        IS_SUBMIT: false
     }
 
     onChange = e => {
@@ -56,13 +57,19 @@ class FormClients extends Component {
         let request
         if (this.isClient) request = ClientService.update(data)
         else request = ClientService.create(data)
-        request.then(response => {
-            this.close()
-            this.refresh(response)
-            this.props.clientsActiveContext.funcHardRefresh()
-            // je potreba projevit zmeny i pro cleny skupin
-            this.props.groupsActiveContext.funcHardRefresh()
-        })
+        this.setState({ IS_SUBMIT: true }, () =>
+            request
+                .then(response => {
+                    this.close()
+                    this.refresh(response)
+                    this.props.clientsActiveContext.funcHardRefresh()
+                    // je potreba projevit zmeny i pro cleny skupin
+                    this.props.groupsActiveContext.funcHardRefresh()
+                })
+                .catch(() => {
+                    this.setState({ IS_SUBMIT: false })
+                })
+        )
     }
 
     close = () => this.props.funcClose()
@@ -226,6 +233,7 @@ class FormClients extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close} />{" "}
                     <SubmitButton
+                        loading={this.state.IS_SUBMIT}
                         data-qa="button_submit_client"
                         content={this.isClient ? "Uložit" : "Přidat"}
                     />

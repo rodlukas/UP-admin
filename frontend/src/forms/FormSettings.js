@@ -32,7 +32,8 @@ export default class FormSettings extends Component {
         name: this.props.object.name || "",
         visible: this.isObject ? this.props.object.visible : true,
         duration: this.props.object.duration || DEFAULT_DURATION,
-        color: this.props.object.color || DEFAULT_COLOR
+        color: this.props.object.color || DEFAULT_COLOR,
+        IS_SUBMIT: false
     }
 
     onChange = e => {
@@ -56,12 +57,18 @@ export default class FormSettings extends Component {
         }
         if (this.isObject) request = service.update(data)
         else request = service.create(data)
-        request.then(() => {
-            // ulozeni hodnoty TYPE, protoze close ji smaze
-            const curType = this.props.TYPE
-            this.close()
-            this.refresh(curType)
-        })
+        this.setState({ IS_SUBMIT: true }, () =>
+            request
+                .then(() => {
+                    // ulozeni hodnoty TYPE, protoze close ji smaze
+                    const curType = this.props.TYPE
+                    this.close()
+                    this.refresh(curType)
+                })
+                .catch(() => {
+                    this.setState({ IS_SUBMIT: false })
+                })
+        )
     }
 
     close = () => this.props.funcClose()
@@ -185,6 +192,7 @@ export default class FormSettings extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close} />{" "}
                     <SubmitButton
+                        loading={this.state.IS_SUBMIT}
                         data-qa="button_submit_settings"
                         content={this.isObject ? "Uložit" : "Přidat"}
                     />

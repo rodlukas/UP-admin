@@ -7,7 +7,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
 import {
-    Button,
     Col,
     CustomInput,
     Form,
@@ -84,7 +83,8 @@ class FormLectures extends Component {
         duration: this.props.lecture.duration || this.computeDuration(),
         object: this.props.object,
         prepaid_cnt: 1,
-        canceled_disabled: false
+        canceled_disabled: false,
+        IS_SUBMIT: false
     }
 
     areAttendantsEqualToMembers() {
@@ -296,10 +296,16 @@ class FormLectures extends Component {
             } // jinak posli pouze lekci
             else request = LectureService.create(data)
         }
-        request.then(() => {
-            this.close()
-            this.refresh()
-        })
+        this.setState({ IS_SUBMIT: true }, () =>
+            request
+                .then(() => {
+                    this.close()
+                    this.refresh()
+                })
+                .catch(() => {
+                    this.setState({ IS_SUBMIT: false })
+                })
+        )
     }
 
     close = () => this.props.funcClose()
@@ -619,6 +625,7 @@ class FormLectures extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close} />{" "}
                     <SubmitButton
+                        loading={this.state.IS_SUBMIT}
                         content={this.IS_LECTURE ? "Uložit" : "Přidat"}
                         data-qa="button_submit_lecture"
                         disabled={!this.props.coursesVisibleContext.isLoaded}
@@ -626,15 +633,13 @@ class FormLectures extends Component {
                     {this.IS_LECTURE &&
                         !this.props.IS_CLIENT &&
                         !this.areAttendantsEqualToMembers() && (
-                            <Button
-                                color="primary"
-                                className="float-right"
-                                type="submit"
+                            <SubmitButton
+                                loading={this.state.IS_SUBMIT}
                                 onClick={e => this.onSubmit(e, true)}
                                 title="Uloží informace a zároveň upraví účastníky této lekce tak, aby byli v souladu se členy skupiny"
-                                disabled={!this.props.coursesVisibleContext.isLoaded}>
-                                Uložit + projevit změny v klientech
-                            </Button>
+                                disabled={!this.props.coursesVisibleContext.isLoaded}
+                                content="Uložit + projevit změny v klientech"
+                            />
                         )}
                 </ModalFooter>
             </Form>
