@@ -11,7 +11,7 @@ const SubmitButton = ({ content, loading = false, disabled = false, ...props }) 
         {...props}
         disabled={loading || disabled}>
         {content}
-        {loading && <FontAwesomeIcon icon={faSpinnerThird} spin size="lg" pull="right" />}
+        {loading && <FontAwesomeIcon icon={faSpinnerThird} size="lg" spin className="ml-2" />}
     </Button>
 )
 
