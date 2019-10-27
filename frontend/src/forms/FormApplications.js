@@ -22,7 +22,8 @@ class FormApplications extends Component {
         client: this.isObject ? this.props.application.client : null,
         note: this.props.application.note || "",
         clients: [],
-        IS_LOADING: true
+        IS_LOADING: true,
+        IS_SUBMIT: false
     }
 
     onChange = e => {
@@ -41,10 +42,16 @@ class FormApplications extends Component {
         let request
         if (this.isObject) request = ApplicationService.update(data)
         else request = ApplicationService.create(data)
-        request.then(() => {
-            this.close()
-            this.refresh()
-        })
+        this.setState({ IS_SUBMIT: true }, () =>
+            request
+                .then(() => {
+                    this.close()
+                    this.refresh()
+                })
+                .catch(() => {
+                    this.setState({ IS_SUBMIT: false })
+                })
+        )
     }
 
     close = () => this.props.funcClose()
@@ -142,6 +149,7 @@ class FormApplications extends Component {
                 <ModalFooter>
                     <CancelButton onClick={this.close} />{" "}
                     <SubmitButton
+                        loading={this.state.IS_SUBMIT}
                         data-qa="button_submit_application"
                         content={this.isObject ? "Uložit" : "Přidat"}
                     />
