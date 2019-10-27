@@ -125,7 +125,7 @@ class ModalLecturesFast extends React.Component {
                     toggle={this.toggleModalSelect}
                     autoFocus={false}>
                     <ModalHeader toggle={this.toggleModalSelect}>
-                        Výběr{" "}
+                        Přidání lekce &ndash; výběr{" "}
                         {this.state.IS_CLIENT
                             ? "klienta"
                             : this.state.IS_CLIENT !== undefined
