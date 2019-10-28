@@ -4,14 +4,17 @@ import LectureService from "../api/services/lecture"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesFast from "../forms/ModalLecturesFast"
+import { USER_CELEBRATION } from "../global/constants"
 import {
     isToday,
+    isUserCelebrating,
     prettyDateWithLongDayYearIfDiff,
     prettyTime,
     toISODate
 } from "../global/funcDateTime"
 import { courseDuration } from "../global/utils"
 import Attendances from "./Attendances"
+import Celebration from "./Celebration"
 import CourseName from "./CourseName"
 import "./DashboardDay.css"
 import GroupName from "./GroupName"
@@ -62,12 +65,21 @@ class DashboardDay extends Component {
     render() {
         const { lectures, IS_LOADING } = this.state
         const title = prettyDateWithLongDayYearIfDiff(this.getDate())
+        const isUserCelebratingResult = isUserCelebrating(this.getDate())
         return (
             <ListGroup className="pageContent">
                 <ListGroupItem
                     color={isToday(this.getDate()) ? "primary" : ""}
                     className="text-center DashboardDay_date">
-                    <h4 className="mb-0 text-nowrap d-inline-block">{title}</h4>
+                    <h4
+                        className={
+                            "mb-0 text-nowrap d-inline-block " +
+                            (isUserCelebratingResult === USER_CELEBRATION.NOTHING
+                                ? "celebration_none"
+                                : "celebration")
+                        }>
+                        <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
+                    </h4>
                     <ModalLecturesFast
                         refresh={this.props.setRefreshState}
                         date={this.props.date}

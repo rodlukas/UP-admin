@@ -1,3 +1,5 @@
+import { USER_BIRTHDAY, USER_CELEBRATION, USER_NAMEDAY } from "./constants"
+
 export const WORK_DAYS_COUNT = 5
 export const DAYS_IN_WEEK = 7
 
@@ -120,4 +122,15 @@ export function getWeekSerializedFromMonday(monday) {
         dayToProcess = addDays(dayToProcess, 1)
     }
     return week
+}
+
+// zjisti, zda ma uzivatel narozeniny/svatek a vrat, co ma
+export function isUserCelebrating(date) {
+    const curMonth = date.getMonth(),
+        curDate = date.getDate()
+    if (curMonth === USER_BIRTHDAY.month && curDate === USER_BIRTHDAY.date)
+        return USER_CELEBRATION.BIRTHDAY
+    else if (curMonth === USER_NAMEDAY.month && curDate === USER_NAMEDAY.date)
+        return USER_CELEBRATION.NAMEDAY
+    return USER_CELEBRATION.NOTHING
 }

@@ -3,7 +3,7 @@
 }
 
 @media (min-width: 576px) {
-    .DashboardDay_date h4 {
+    .DashboardDay_date h4.celebration_none {
         padding-left: 2.86875rem;
     }
 }

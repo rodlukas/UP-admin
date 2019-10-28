@@ -18,3 +18,19 @@ export const DEFAULT_DURATION = 30
 export const DEFAULT_COLOR = "#000"
 
 export const RENT_PRICE = 3572
+
+export const USER_BIRTHDAY = {
+    date: 1,
+    month: 10
+}
+
+export const USER_NAMEDAY = {
+    date: 24,
+    month: 4
+}
+
+export const USER_CELEBRATION = {
+    NOTHING: 0,
+    BIRTHDAY: 1,
+    NAMEDAY: 2
+}
