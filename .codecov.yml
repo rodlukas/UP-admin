@@ -4,3 +4,4 @@ coverage:
       default:
         # Fail the status if coverage drops by >= 10%
         threshold: 10
+    patch: off
