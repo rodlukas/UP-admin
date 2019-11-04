@@ -2,7 +2,7 @@ import { faArrowAltCircleLeft, faArrowAltCircleRight } from "@fortawesome/pro-so
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
 import { Link } from "react-router-dom"
-import { Button, Col, Container, Row } from "reactstrap"
+import { Button, Col, Container, Row, UncontrolledTooltip } from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import ModalLecturesFast from "../forms/ModalLecturesFast"
@@ -93,23 +93,27 @@ export default class Diary extends Component {
                 <Heading
                     content={
                         <Fragment>
-                            <Link to={this.getPrevMondaySerialized()} title="Předchozí týden">
+                            <Link to={this.getPrevMondaySerialized()} id="Diary_PrevWeek">
                                 <FontAwesomeIcon
                                     icon={faArrowAltCircleLeft}
                                     className="arrowBtn text-muted"
                                 />
-                            </Link>{" "}
+                            </Link>
+                            <UncontrolledTooltip target="Diary_PrevWeek">
+                                Předchozí týden
+                            </UncontrolledTooltip>{" "}
                             Týden <TitleDate date={this.getRequiredMonday()} /> –{" "}
                             <TitleDate date={this.getFridayDate()} />{" "}
-                            <Link to={this.getNextMondaySerialized()} title="Další týden">
+                            <Link to={this.getNextMondaySerialized()} id="Diary_NextWeek">
                                 <FontAwesomeIcon
                                     icon={faArrowAltCircleRight}
                                     className="arrowBtn text-muted"
                                 />
-                            </Link>{" "}
-                            <Link
-                                to={APP_URLS.diar.url}
-                                title={prettyDateWithLongDayYear(new Date())}>
+                            </Link>
+                            <UncontrolledTooltip target="Diary_NextWeek">
+                                Další týden
+                            </UncontrolledTooltip>{" "}
+                            <Link to={APP_URLS.diar.url} id="Diary_Today">
                                 <Button
                                     color="secondary"
                                     disabled={isEqualDate(
@@ -120,7 +124,10 @@ export default class Diary extends Component {
                                     className="float-none align-top">
                                     Dnes
                                 </Button>
-                            </Link>{" "}
+                            </Link>
+                            <UncontrolledTooltip target="Diary_Today">
+                                {prettyDateWithLongDayYear(new Date())}
+                            </UncontrolledTooltip>{" "}
                             <ModalLecturesFast refresh={this.setRefreshState} />
                         </Fragment>
                     }
