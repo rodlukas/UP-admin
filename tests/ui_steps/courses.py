@@ -22,6 +22,10 @@ def courses_cnt(driver):
     return len(get_courses(driver))
 
 
+def color_title(color):
+    return "Kód barvy: " + color
+
+
 def find_course(context, name, **data):
     all_courses = get_courses(context.browser)
     # najdi kurz s udaji v parametrech
@@ -41,7 +45,7 @@ def find_course(context, name, **data):
                 data
                 and helpers.check_fa_bool(data["visible"], found_visible_classes)
                 and found_duration == data["duration"]
-                and found_color == common_helpers.color_transform(data["color"])
+                and found_color == color_title(common_helpers.color_transform(data["color"]))
             ):
                 # uloz stara data do kontextu pro pripadne overeni spravnosti
                 context.old_name = found_name
@@ -94,7 +98,7 @@ def insert_to_form(context, verify_current_data=False):
             context.old_name == name_field.get_attribute("value")
             and context.old_visible == visible_checkbox.is_selected()
             and context.old_duration == duration_field.get_attribute("value")
-            and context.old_color == color_field_value
+            and context.old_color == color_title(color_field_value)
         )
     # smaz vsechny udaje
     name_field.clear()
