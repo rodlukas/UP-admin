@@ -1,4 +1,5 @@
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -41,6 +42,21 @@ def check_fa_bool(visible, classes):
     if (visible and fa_boolean) or (not visible and not fa_boolean):
         return True
     return False
+
+
+def get_tooltip(driver, element):
+    # workaround (dvojite volani move_to) kvuli issue - viz:
+    # - https://github.com/mozilla/geckodriver/issues/1507,
+    # - https://bugzilla.mozilla.org/show_bug.cgi?id=1538486,
+    # - inspirace viz: https://github.com/teamcapybara/capybara/issues/2156
+    # najed mysi na element
+    ActionChains(driver).move_to_element_with_offset(element, 0, 0).move_to_element(
+        element
+    ).perform()
+    # az se zobrazi tooltip, vrat ho
+    return WebDriverWait(driver, WAIT_TIME).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".tooltip-inner"))
+    )
 
 
 def check_class_included(classes, class_to_search):
