@@ -17,7 +17,8 @@ import {
     Label,
     ModalBody,
     ModalFooter,
-    ModalHeader
+    ModalHeader,
+    UncontrolledTooltip
 } from "reactstrap"
 import LectureService from "../api/services/lecture"
 import CancelButton from "../components/buttons/CancelButton"
@@ -387,7 +388,7 @@ class FormLectures extends Component {
                                     )}
                                 </Col>
                                 <Col sm={4}>
-                                    <InputGroup title="Datum">
+                                    <InputGroup id="FormLectures_Date">
                                         <InputGroupAddon addonType="prepend">
                                             <Label className="input-group-text" for="date">
                                                 <FontAwesomeIcon icon={faCalendarAlt} fixedWidth />
@@ -407,9 +408,12 @@ class FormLectures extends Component {
                                             data-qa="lecture_field_date"
                                         />
                                     </InputGroup>
+                                    <UncontrolledTooltip target="FormLectures_Date">
+                                        Datum
+                                    </UncontrolledTooltip>
                                 </Col>
                                 <Col sm={4}>
-                                    <InputGroup title="Čas začátku">
+                                    <InputGroup id="FormLectures_Time">
                                         <InputGroupAddon addonType="prepend">
                                             <Label className="input-group-text" for="time">
                                                 <FontAwesomeIcon icon={faClock} fixedWidth />
@@ -426,6 +430,9 @@ class FormLectures extends Component {
                                             data-qa="lecture_field_time"
                                         />
                                     </InputGroup>
+                                    <UncontrolledTooltip target="FormLectures_Time">
+                                        Čas začátku
+                                    </UncontrolledTooltip>
                                 </Col>
                             </FormGroup>
                             <FormGroup row className="align-items-center">
@@ -468,7 +475,7 @@ class FormLectures extends Component {
                                     />
                                 </Col>
                                 <Col sm={4}>
-                                    <InputGroup title="Trvání (min.)">
+                                    <InputGroup id="FormLectures_Duration">
                                         <InputGroupAddon addonType="prepend">
                                             <Label className="input-group-text" for="duration">
                                                 <FontAwesomeIcon icon={faHourglass} fixedWidth />
@@ -484,6 +491,9 @@ class FormLectures extends Component {
                                             data-qa="lecture_field_duration"
                                         />
                                     </InputGroup>
+                                    <UncontrolledTooltip target="FormLectures_Duration">
+                                        Trvání (min.)
+                                    </UncontrolledTooltip>
                                 </Col>
                             </FormGroup>
                             <hr />
@@ -557,7 +567,7 @@ class FormLectures extends Component {
                                             )}
                                         </Col>
                                         <Col sm={6}>
-                                            <InputGroup title="Poznámka">
+                                            <InputGroup id={"FormLectures_Note_" + member.id}>
                                                 <InputGroupAddon addonType="prepend">
                                                     <Label
                                                         className="input-group-text"
@@ -579,6 +589,10 @@ class FormLectures extends Component {
                                                     spellCheck
                                                 />
                                             </InputGroup>
+                                            <UncontrolledTooltip
+                                                target={"FormLectures_Note_" + member.id}>
+                                                Poznámka
+                                            </UncontrolledTooltip>
                                         </Col>
                                     </FormGroup>
                                 </div>
@@ -633,13 +647,19 @@ class FormLectures extends Component {
                     {this.IS_LECTURE &&
                         !this.props.IS_CLIENT &&
                         !this.areAttendantsEqualToMembers() && (
-                            <SubmitButton
-                                loading={this.state.IS_SUBMIT}
-                                onClick={e => this.onSubmit(e, true)}
-                                title="Uloží informace a zároveň upraví účastníky této lekce tak, aby byli v souladu se členy skupiny"
-                                disabled={!this.props.coursesVisibleContext.isLoaded}
-                                content="Uložit + projevit změny v klientech"
-                            />
+                            <Fragment>
+                                <SubmitButton
+                                    loading={this.state.IS_SUBMIT}
+                                    onClick={e => this.onSubmit(e, true)}
+                                    id="FormLectures_SubmitWithClientChanges"
+                                    disabled={!this.props.coursesVisibleContext.isLoaded}
+                                    content="Uložit + projevit změny v klientech"
+                                />
+                                <UncontrolledTooltip target="FormLectures_SubmitWithClientChanges">
+                                    Uloží informace a zároveň upraví účastníky této lekce tak, aby
+                                    byli v souladu se členy skupiny
+                                </UncontrolledTooltip>
+                            </Fragment>
                         )}
                 </ModalFooter>
             </Form>
