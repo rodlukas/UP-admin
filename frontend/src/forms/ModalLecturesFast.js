@@ -116,6 +116,7 @@ class ModalLecturesFast extends React.Component {
                             <FontAwesomeIcon icon={faPlus} size="lg" />
                         </DropdownToggle>
                         <UncontrolledTooltip
+                            placement={this.props.direction === "up" ? "bottom" : "top"}
                             target={"ModalLecturesFast_" + (this.props.date || "")}>
                             {title}
                         </UncontrolledTooltip>
