@@ -99,3 +99,8 @@ export function courseDuration(duration) {
 export function areAllMembersActive(memberships) {
     return memberships.every(membership => membership.client.active)
 }
+
+// vrati string pouzitelny jako id elementu
+export function makeIdFromString(string) {
+    return string.replace(/\s+/g, "-")
+}

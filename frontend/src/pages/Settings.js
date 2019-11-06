@@ -165,6 +165,7 @@ class Settings extends Component {
                                                     </td>
                                                     <td>
                                                         <EditButton
+                                                            content_id={attendancestate.id}
                                                             content="Upravit stav účasti"
                                                             onClick={() =>
                                                                 this.toggle(
@@ -294,6 +295,7 @@ class Settings extends Component {
                                                     </td>
                                                     <td>
                                                         <EditButton
+                                                            content_id={course.id}
                                                             content="Upravit kurz"
                                                             onClick={() =>
                                                                 this.toggle(
