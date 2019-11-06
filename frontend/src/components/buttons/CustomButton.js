@@ -8,7 +8,7 @@ const CustomButton = ({
     title = "",
     ...props
 }) => (
-    <Button color="secondary" disabled={disabled} title={title} onClick={onClick} {...props}>
+    <Button color="secondary" disabled={disabled} onClick={onClick} {...props}>
         {content}
     </Button>
 )

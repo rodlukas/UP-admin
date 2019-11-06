@@ -65,7 +65,10 @@ const PrepaidCounters = props => {
                                             <Fragment>
                                                 <UncontrolledTooltip
                                                     placement="right"
-                                                    target="inactive_client_alert">
+                                                    target={
+                                                        "inactive_client_alert" +
+                                                        membership.client.id
+                                                    }>
                                                     Tento klient není aktivní (přestože skupina
                                                     aktivní je), není tedy možné přidávat této
                                                     skupině lekce
@@ -74,7 +77,10 @@ const PrepaidCounters = props => {
                                                     icon={faExclamationTriangle}
                                                     className={"text-danger"}
                                                     size="1x"
-                                                    id="inactive_client_alert"
+                                                    id={
+                                                        "inactive_client_alert" +
+                                                        membership.client.id
+                                                    }
                                                 />
                                             </Fragment>
                                         )}

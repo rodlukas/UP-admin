@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
+import { ListGroup, ListGroupItem, ListGroupItemHeading, UncontrolledTooltip } from "reactstrap"
 import LectureService from "../api/services/lecture"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
@@ -105,10 +105,14 @@ class DashboardDay extends Component {
                                     style={{ background: lecture.course.color }}>
                                     <h4>
                                         <span
-                                            title={courseDuration(lecture.duration)}
+                                            id={"Card_CourseDuration" + lecture.id}
                                             className="font-weight-bold">
                                             {prettyTime(new Date(lecture.start))}
                                         </span>
+                                        <UncontrolledTooltip
+                                            target={"Card_CourseDuration" + lecture.id}>
+                                            {courseDuration(lecture.duration)}
+                                        </UncontrolledTooltip>
                                     </h4>
                                     <CourseName course={lecture.course} />
                                     <LectureNumber lecture={lecture} colorize />
