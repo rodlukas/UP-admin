@@ -105,12 +105,12 @@ class DashboardDay extends Component {
                                     style={{ background: lecture.course.color }}>
                                     <h4>
                                         <span
-                                            id={"Card_CourseDuration" + lecture.id}
+                                            id={"Card_CourseDuration_" + lecture.id}
                                             className="font-weight-bold">
                                             {prettyTime(new Date(lecture.start))}
                                         </span>
                                         <UncontrolledTooltip
-                                            target={"Card_CourseDuration" + lecture.id}>
+                                            target={"Card_CourseDuration_" + lecture.id}>
                                             {courseDuration(lecture.duration)}
                                         </UncontrolledTooltip>
                                     </h4>

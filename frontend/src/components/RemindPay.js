@@ -11,9 +11,9 @@ const RemindPay = ({ attendance }) =>
                 size="lg"
                 className="text-secondary"
                 transform="up-4"
-                id={"RemindPay" + attendance.id}
+                id={"RemindPay_" + attendance.id}
             />
-            <UncontrolledTooltip placement="right" target={"RemindPay" + attendance.id}>
+            <UncontrolledTooltip placement="right" target={"RemindPay_" + attendance.id}>
                 Příště platit
             </UncontrolledTooltip>
         </Fragment>

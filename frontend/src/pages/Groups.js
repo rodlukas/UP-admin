@@ -87,7 +87,7 @@ class Groups extends Component {
                                                         <UncontrolledTooltip
                                                             placement="right"
                                                             target={
-                                                                "Group_ActiveGroupWithInactiveClientAlert" +
+                                                                "Group_ActiveGroupWithInactiveClientAlert_" +
                                                                 group.id
                                                             }>
                                                             Ve skupině je neaktivní klient (přestože
@@ -99,7 +99,7 @@ class Groups extends Component {
                                                             className={"text-danger"}
                                                             size="1x"
                                                             id={
-                                                                "Group_ActiveGroupWithInactiveClientAlert" +
+                                                                "Group_ActiveGroupWithInactiveClientAlert_" +
                                                                 group.id
                                                             }
                                                         />

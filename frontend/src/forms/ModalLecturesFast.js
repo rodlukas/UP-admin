@@ -111,11 +111,12 @@ class ModalLecturesFast extends React.Component {
                         <DropdownToggle
                             caret
                             size={this.props.size}
-                            id={"ModalLecturesFast" + (this.props.date || "")}
+                            id={"ModalLecturesFast_" + (this.props.date || "")}
                             color="info">
                             <FontAwesomeIcon icon={faPlus} size="lg" />
                         </DropdownToggle>
-                        <UncontrolledTooltip target={"ModalLecturesFast" + (this.props.date || "")}>
+                        <UncontrolledTooltip
+                            target={"ModalLecturesFast_" + (this.props.date || "")}>
                             {title}
                         </UncontrolledTooltip>
                         <DropdownMenu right>

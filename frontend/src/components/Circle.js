@@ -11,7 +11,7 @@ const Circle = ({ color, size, showTitle = false }) => {
             <span
                 data-qa="course_color"
                 className="circle"
-                id={"Circle" + colorWithoutHash}
+                id={"Circle_" + colorWithoutHash}
                 style={{
                     background: color,
                     width: sizeWithUnit,
@@ -19,7 +19,7 @@ const Circle = ({ color, size, showTitle = false }) => {
                 }}
             />
             {showTitle && (
-                <UncontrolledTooltip target={"Circle" + colorWithoutHash}>
+                <UncontrolledTooltip target={"Circle_" + colorWithoutHash}>
                     Kód barvy: {color}
                 </UncontrolledTooltip>
             )}

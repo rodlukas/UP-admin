@@ -269,7 +269,7 @@ class Card extends Component {
                                                                 <span
                                                                     data-qa="lecture_start"
                                                                     id={
-                                                                        "Card_CourseDuration" +
+                                                                        "Card_CourseDuration_" +
                                                                         lecture.id
                                                                     }>
                                                                     {lecture.start !== null
@@ -280,7 +280,7 @@ class Card extends Component {
                                                                 </span>
                                                                 <UncontrolledTooltip
                                                                     target={
-                                                                        "Card_CourseDuration" +
+                                                                        "Card_CourseDuration_" +
                                                                         lecture.id
                                                                     }>
                                                                     {courseDuration(

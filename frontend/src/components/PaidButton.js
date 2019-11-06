@@ -30,9 +30,9 @@ const PaidButton = (props: Props) => {
                 className={className}
                 onClick={onClick}
                 data-qa="lecture_attendance_paid"
-                id={"PaidButton" + props.attendanceId}
+                id={"PaidButton_" + props.attendanceId}
             />
-            <UncontrolledTooltip placement="right" target={"PaidButton" + props.attendanceId}>
+            <UncontrolledTooltip placement="right" target={"PaidButton_" + props.attendanceId}>
                 {title}
             </UncontrolledTooltip>
         </Fragment>
