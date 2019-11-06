@@ -4,7 +4,7 @@ import chroma from "chroma-js"
 import React, { Fragment } from "react"
 import { ChromePicker } from "react-color"
 import { toast } from "react-toastify"
-import { Col, InputGroup, InputGroupAddon, Label } from "reactstrap"
+import { Col, InputGroup, InputGroupAddon, Label, UncontrolledTooltip } from "reactstrap"
 import Notification from "../../components/Notification"
 import "./ColorPicker.css"
 
@@ -52,7 +52,7 @@ export default class ColorPicker extends React.Component {
                 </Label>
                 <Col sm={9}>
                     <InputGroup>
-                        <InputGroupAddon addonType="prepend" title="Barva">
+                        <InputGroupAddon addonType="prepend">
                             <Label
                                 className="input-group-text"
                                 for="color"
@@ -66,10 +66,12 @@ export default class ColorPicker extends React.Component {
                             tabIndex="0"
                             onFocus={this.togglePicker}
                             className="ColorPickerInput"
-                            onClick={this.togglePicker}
-                            title="Změnit barvu">
+                            onClick={this.togglePicker}>
                             <div style={{ background: this.props.color }} />
                         </div>
+                        <UncontrolledTooltip placement="right" target="color">
+                            Změnit barvu
+                        </UncontrolledTooltip>
                         {this.state.isPickerVisible ? (
                             <div
                                 className="ColorPickerWindow"
