@@ -66,7 +66,7 @@ const PrepaidCounters = props => {
                                                 <UncontrolledTooltip
                                                     placement="right"
                                                     target={
-                                                        "inactive_client_alert" +
+                                                        "PrepaidCounters_InactiveClientAlert" +
                                                         membership.client.id
                                                     }>
                                                     Tento klient není aktivní (přestože skupina
@@ -78,7 +78,7 @@ const PrepaidCounters = props => {
                                                     className={"text-danger"}
                                                     size="1x"
                                                     id={
-                                                        "inactive_client_alert" +
+                                                        "PrepaidCounters_InactiveClientAlert" +
                                                         membership.client.id
                                                     }
                                                 />

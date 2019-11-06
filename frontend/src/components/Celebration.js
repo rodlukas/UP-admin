@@ -5,12 +5,12 @@ import { USER_CELEBRATION } from "../global/constants"
 const Celebration = ({ isUserCelebratingResult }) =>
     isUserCelebratingResult !== USER_CELEBRATION.NOTHING && (
         <Fragment>
-            <UncontrolledTooltip placement="top" target="celebration">
+            <UncontrolledTooltip placement="top" target="Celebration">
                 Všechno nejlepší k{" "}
                 {isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozeninám" : "svátku"}!
                 😍
             </UncontrolledTooltip>
-            <span id="celebration">🎉</span>
+            <span id="Celebration">🎉</span>
         </Fragment>
     )
 

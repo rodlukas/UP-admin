@@ -95,14 +95,14 @@ export default class Bank extends React.PureComponent {
                         )}{" "}
                         {balance && balance < RENT_PRICE && (
                             <Fragment>
-                                <UncontrolledTooltip target="tooltip_rent">
+                                <UncontrolledTooltip target="Bank_RentWarning">
                                     Na účtu není dostatek peněz pro zaplacení nájmu!
                                 </UncontrolledTooltip>
                                 <FontAwesomeIcon
                                     icon={faExclamationCircle}
                                     className="text-danger"
                                     size="lg"
-                                    id="tooltip_rent"
+                                    id="Bank_RentWarning"
                                 />
                             </Fragment>
                         )}
