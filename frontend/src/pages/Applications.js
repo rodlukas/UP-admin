@@ -150,6 +150,7 @@ class Applications extends Component {
                                                     </Col>
                                                     <Col className="text-right mt-1 mt-md-0" md="2">
                                                         <EditButton
+                                                            content="Upravit zájemce"
                                                             content_id={application.id}
                                                             onClick={() => this.toggle(application)}
                                                             data-qa="button_edit_application"
