@@ -1,5 +1,5 @@
-// flow-typed signature: 352802157a1f368d7d6a4325afa44836
-// flow-typed version: c6154227d1/react-color_v2.x.x/flow_>=v0.104.x
+// flow-typed signature: 8caf4dfc1171164824954e1c7e9d0642
+// flow-typed version: b5454b8595/react-color_v2.x.x/flow_>=v0.104.x
 
 declare module "react-color" {
   import type { ComponentType, Component } from 'react';
@@ -167,9 +167,12 @@ declare module "react-color" {
   declare export var SwatchesPicker: Class<Component<SwatchesPickerProps>>;
   declare export var TwitterPicker: Class<Component<TwitterPickerProps>>;
 
-  declare export function CustomPicker<Props: {...}>(
-    Component: ComponentType<InjectedColorProps & $Supertype<Props>>
-  ): ComponentType<Props>;
+  declare export function CustomPicker<
+    Props: InjectedColorProps,
+    Comp: ComponentType<Props>,
+  >(
+    Component: Comp
+  ): ComponentType<$Diff<React$ElementConfig<Comp>, InjectedColorProps>>;
 }
 
 declare module "react-color/lib/components/common" {
