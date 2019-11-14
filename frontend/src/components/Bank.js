@@ -95,14 +95,14 @@ export default class Bank extends React.PureComponent {
                         )}{" "}
                         {balance && balance < RENT_PRICE && (
                             <Fragment>
-                                <UncontrolledTooltip placement="bottom" target="tooltip_rent">
+                                <UncontrolledTooltip target="Bank_RentWarning">
                                     Na účtu není dostatek peněz pro zaplacení nájmu!
                                 </UncontrolledTooltip>
                                 <FontAwesomeIcon
                                     icon={faExclamationCircle}
                                     className="text-danger"
                                     size="lg"
-                                    id="tooltip_rent"
+                                    id="Bank_RentWarning"
                                 />
                             </Fragment>
                         )}
@@ -119,11 +119,7 @@ export default class Bank extends React.PureComponent {
                         <CustomButton
                             onClick={this.onClick}
                             disabled={this.state.REFRESH_DISABLED}
-                            title={
-                                this.state.REFRESH_DISABLED
-                                    ? "Výpis lze obnovit jednou za minutu"
-                                    : "Obnovit výpis"
-                            }
+                            id="Bank"
                             content={
                                 <FontAwesomeIcon
                                     icon={faSyncAlt}
@@ -131,7 +127,12 @@ export default class Bank extends React.PureComponent {
                                     spin={this.state.IS_LOADING}
                                 />
                             }
-                        />{" "}
+                        />
+                        <UncontrolledTooltip target="Bank">
+                            {this.state.REFRESH_DISABLED
+                                ? "Výpis lze obnovit jednou za minutu"
+                                : "Obnovit výpis"}
+                        </UncontrolledTooltip>{" "}
                         <a
                             href="https://ib.fio.cz/"
                             target="_blank"

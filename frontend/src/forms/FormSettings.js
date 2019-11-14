@@ -136,7 +136,7 @@ export default class FormSettings extends Component {
                                     </small>
                                 </Label>
                                 <Col sm={9}>
-                                    <InputGroup title="Trvání (min.)">
+                                    <InputGroup>
                                         <InputGroupAddon addonType="prepend">
                                             <Label className="input-group-text" for="duration">
                                                 <FontAwesomeIcon icon={faHourglass} fixedWidth />

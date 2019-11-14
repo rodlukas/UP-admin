@@ -1,5 +1,13 @@
 import React, { Component, Fragment } from "react"
-import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
+import {
+    Alert,
+    Col,
+    Container,
+    ListGroup,
+    ListGroupItem,
+    Row,
+    UncontrolledTooltip
+} from "reactstrap"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import Attendances from "../components/Attendances"
@@ -260,15 +268,25 @@ class Card extends Component {
                                                             <h4>
                                                                 <span
                                                                     data-qa="lecture_start"
-                                                                    title={courseDuration(
-                                                                        lecture.duration
-                                                                    )}>
+                                                                    id={
+                                                                        "Card_CourseDuration_" +
+                                                                        lecture.id
+                                                                    }>
                                                                     {lecture.start !== null
                                                                         ? prettyDateWithDayYear(d) +
                                                                           " – " +
                                                                           prettyTime(d)
                                                                         : "Předplacená lekce"}
                                                                 </span>
+                                                                <UncontrolledTooltip
+                                                                    target={
+                                                                        "Card_CourseDuration_" +
+                                                                        lecture.id
+                                                                    }>
+                                                                    {courseDuration(
+                                                                        lecture.duration
+                                                                    )}
+                                                                </UncontrolledTooltip>
                                                             </h4>
                                                             <LectureNumber lecture={lecture} />
                                                             <ModalLectures

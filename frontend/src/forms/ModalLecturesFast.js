@@ -8,7 +8,8 @@ import {
     Modal,
     ModalBody,
     ModalHeader,
-    UncontrolledButtonDropdown
+    UncontrolledButtonDropdown,
+    UncontrolledTooltip
 } from "reactstrap"
 import Loading from "../components/Loading"
 import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
@@ -107,9 +108,18 @@ class ModalLecturesFast extends React.Component {
                     <UncontrolledButtonDropdown
                         direction={this.props.direction}
                         className={this.props.className}>
-                        <DropdownToggle caret size={this.props.size} title={title} color="info">
+                        <DropdownToggle
+                            caret
+                            size={this.props.size}
+                            id={"ModalLecturesFast_" + (this.props.date || "")}
+                            color="info">
                             <FontAwesomeIcon icon={faPlus} size="lg" />
                         </DropdownToggle>
+                        <UncontrolledTooltip
+                            placement={this.props.direction === "up" ? "bottom" : "top"}
+                            target={"ModalLecturesFast_" + (this.props.date || "")}>
+                            {title}
+                        </UncontrolledTooltip>
                         <DropdownMenu right>
                             <DropdownItem onClick={() => this.setClient(true)}>
                                 přidat lekci <strong>klienta</strong>...

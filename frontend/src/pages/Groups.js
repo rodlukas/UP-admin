@@ -86,7 +86,10 @@ class Groups extends Component {
                                                     <Fragment>
                                                         <UncontrolledTooltip
                                                             placement="right"
-                                                            target="active_group_with_inactive_client_alert">
+                                                            target={
+                                                                "Group_ActiveGroupWithInactiveClientAlert_" +
+                                                                group.id
+                                                            }>
                                                             Ve skupině je neaktivní klient (přestože
                                                             je skupina aktivní), není tedy možné
                                                             přidávat lekce
@@ -95,7 +98,10 @@ class Groups extends Component {
                                                             icon={faExclamationTriangle}
                                                             className={"text-danger"}
                                                             size="1x"
-                                                            id="active_group_with_inactive_client_alert"
+                                                            id={
+                                                                "Group_ActiveGroupWithInactiveClientAlert_" +
+                                                                group.id
+                                                            }
                                                         />
                                                     </Fragment>
                                                 )}

@@ -1,4 +1,5 @@
 import React, { Fragment } from "react"
+import { UncontrolledTooltip } from "reactstrap"
 
 const AppRelease = () => {
     const version = "%GIT_RELEASE"
@@ -10,9 +11,12 @@ const AppRelease = () => {
                     href={"https://github.com/rodlukas/UP-admin/releases/tag/" + version}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Poznámky k verzi (GitHub)">
+                    id="AppRelease">
                     {version}
                 </a>
+                <UncontrolledTooltip target="AppRelease">
+                    Poznámky k verzi (GitHub)
+                </UncontrolledTooltip>
                 {")"}
             </Fragment>
         )

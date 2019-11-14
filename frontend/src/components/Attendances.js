@@ -10,7 +10,7 @@ const Attendance = ({ attendance, showClient = false, funcRefresh }) => (
     <li data-qa="lecture_attendance">
         {showClient && <ClientName client={attendance.client} link />}{" "}
         <PaidButton paid={attendance.paid} attendanceId={attendance.id} funcRefresh={funcRefresh} />{" "}
-        <RemindPay remind_pay={attendance.remind_pay} /> <LectureNote attendance={attendance} />
+        <RemindPay attendance={attendance} /> <LectureNote attendance={attendance} />
         <SelectAttendanceState
             value={attendance.attendancestate}
             attendanceId={attendance.id}

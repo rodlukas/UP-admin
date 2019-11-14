@@ -17,6 +17,7 @@ const ModalClients = ({
         <Fragment>
             {Boolean(currentClient) && (
                 <EditButton
+                    content_id={currentClient.id}
                     content="Upravit klienta"
                     onClick={toggleModal}
                     data-qa="button_edit_client"

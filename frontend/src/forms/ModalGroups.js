@@ -12,6 +12,7 @@ const ModalGroups = ({ currentGroup = null, sendResult = false, inSentence = fal
         <Fragment>
             {Boolean(currentGroup) && (
                 <EditButton
+                    content_id={currentGroup.id}
                     content="Upravit skupinu"
                     onClick={toggleModal}
                     data-qa="button_edit_group"

@@ -2,7 +2,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faCheck, faTimes } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
-import { Alert, Col, Container, Modal, Row, Table } from "reactstrap"
+import { Alert, Col, Container, Modal, Row, Table, UncontrolledTooltip } from "reactstrap"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 import AppRelease from "../components/AppRelease"
@@ -165,6 +165,7 @@ class Settings extends Component {
                                                     </td>
                                                     <td>
                                                         <EditButton
+                                                            content_id={attendancestate.id}
                                                             content="Upravit stav účasti"
                                                             onClick={() =>
                                                                 this.toggle(
@@ -294,6 +295,7 @@ class Settings extends Component {
                                                     </td>
                                                     <td>
                                                         <EditButton
+                                                            content_id={course.id}
                                                             content="Upravit kurz"
                                                             onClick={() =>
                                                                 this.toggle(
@@ -327,9 +329,12 @@ class Settings extends Component {
                                     <FontAwesomeIcon
                                         icon={faGithub}
                                         size="lg"
-                                        title="GitHub repozitář ÚPadmin"
+                                        id="Settings_GHRepo"
                                         data-qa="lecture_attendance_paid"
                                     />
+                                    <UncontrolledTooltip target="Settings_GHRepo">
+                                        GitHub repozitář ÚPadmin
+                                    </UncontrolledTooltip>
                                 </a>
                             </p>
                         </div>

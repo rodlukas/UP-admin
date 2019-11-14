@@ -17,6 +17,7 @@ const ModalLectures = ({
         <Fragment>
             {Boolean(currentLecture) && (
                 <EditButton
+                    content_id={currentLecture.id}
                     content="Upravit lekci"
                     onClick={toggleModal}
                     data-qa="button_edit_lecture"

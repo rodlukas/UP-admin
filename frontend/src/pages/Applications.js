@@ -1,5 +1,14 @@
 import React, { Component, Fragment } from "react"
-import { Badge, Col, Container, ListGroup, ListGroupItem, Modal, Row } from "reactstrap"
+import {
+    Badge,
+    Col,
+    Container,
+    ListGroup,
+    ListGroupItem,
+    Modal,
+    Row,
+    UncontrolledTooltip
+} from "reactstrap"
 import ApplicationService from "../api/services/application"
 import AddButton from "../components/buttons/AddButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -69,6 +78,11 @@ class Applications extends Component {
                         <Loading />
                     ) : (
                         <div className="pageContent">
+                            {applications.length && (
+                                <UncontrolledTooltip target="Applications_DateAdded">
+                                    Datum přidání
+                                </UncontrolledTooltip>
+                            )}
                             {applications.map(courseApplications => {
                                 const cnt = courseApplications.lectures.length
                                 return (
@@ -116,7 +130,7 @@ class Applications extends Component {
                                                     <Col md="5">
                                                         <Badge
                                                             color="light"
-                                                            title="Datum přidání"
+                                                            id="Applications_DateAdded"
                                                             data-qa="application_created_at">
                                                             {prettyDateWithYear(
                                                                 new Date(application.created_at)
@@ -136,6 +150,8 @@ class Applications extends Component {
                                                     </Col>
                                                     <Col className="text-right mt-1 mt-md-0" md="2">
                                                         <EditButton
+                                                            content="Upravit zájemce"
+                                                            content_id={application.id}
                                                             onClick={() => this.toggle(application)}
                                                             data-qa="button_edit_application"
                                                         />{" "}

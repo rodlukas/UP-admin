@@ -5,14 +5,14 @@ import { UncontrolledTooltip } from "reactstrap"
 
 const Tooltip = ({ postfix, text }) => (
     <Fragment>
-        <UncontrolledTooltip placement="bottom" target={"tooltip_" + postfix}>
+        <UncontrolledTooltip placement="bottom" target={"Tooltip_" + postfix}>
             {text}
         </UncontrolledTooltip>
         <FontAwesomeIcon
             icon={faInfoCircle}
             className="text-warning"
             size="lg"
-            id={"tooltip_" + postfix}
+            id={"Tooltip_" + postfix}
         />
     </Fragment>
 )

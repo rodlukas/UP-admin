@@ -1,7 +1,8 @@
 // @flow
 import { faUsdCircle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import React from "react"
+import React, { Fragment } from "react"
+import { UncontrolledTooltip } from "reactstrap"
 import AttendanceService from "../api/services/attendance"
 import "./PaidButton.css"
 
@@ -22,14 +23,19 @@ const PaidButton = (props: Props) => {
     const className = "PaidButton " + (props.paid ? "text-success" : "text-danger")
     const title = "Označit lekci jako " + (props.paid ? "NE" : "") + "ZAPLACENOU"
     return (
-        <FontAwesomeIcon
-            icon={faUsdCircle}
-            size="2x"
-            className={className}
-            title={title}
-            onClick={onClick}
-            data-qa="lecture_attendance_paid"
-        />
+        <Fragment>
+            <FontAwesomeIcon
+                icon={faUsdCircle}
+                size="2x"
+                className={className}
+                onClick={onClick}
+                data-qa="lecture_attendance_paid"
+                id={"PaidButton_" + props.attendanceId}
+            />
+            <UncontrolledTooltip placement="right" target={"PaidButton_" + props.attendanceId}>
+                {title}
+            </UncontrolledTooltip>
+        </Fragment>
     )
 }
 
