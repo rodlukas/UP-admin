@@ -34,3 +34,5 @@ export const USER_CELEBRATION = {
     BIRTHDAY: 1,
     NAMEDAY: 2
 }
+
+export const CURRENCY = "Kč"

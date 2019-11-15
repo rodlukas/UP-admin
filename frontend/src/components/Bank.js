@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Fragment } from "react"
 import { ListGroup, ListGroupItem, Table, UncontrolledTooltip } from "reactstrap"
 import BankService from "../api/services/bank"
-import { RENT_PRICE } from "../global/constants"
+import { CURRENCY, RENT_PRICE } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"
 import CustomButton from "./buttons/CustomButton"
@@ -86,7 +86,7 @@ export default class Bank extends React.PureComponent {
                         Aktuální stav:{" "}
                         {balance ? (
                             <span className="font-weight-bold text-nowrap">
-                                {`${prettyAmount(balance)} Kč`}
+                                {`${prettyAmount(balance)} ${CURRENCY}`}
                             </span>
                         ) : this.state.DATA_PROBLEM ? (
                             "neznámý"
@@ -96,7 +96,11 @@ export default class Bank extends React.PureComponent {
                         {balance && balance < RENT_PRICE && (
                             <Fragment>
                                 <UncontrolledTooltip target="Bank_RentWarning">
-                                    Na účtu není dostatek peněz pro zaplacení nájmu!
+                                    Na účtu není dostatek peněz (alespoň{" "}
+                                    <span className="font-weight-bold text-nowrap">
+                                        {`${prettyAmount(RENT_PRICE)} ${CURRENCY}`}
+                                    </span>
+                                    ) pro zaplacení nájmu!
                                 </UncontrolledTooltip>
                                 <FontAwesomeIcon
                                     icon={faExclamationCircle}
@@ -207,7 +211,7 @@ export default class Bank extends React.PureComponent {
                                                 <td
                                                     className={amount_className + " text-nowrap"}
                                                     style={{ minWidth: "7em" }}>
-                                                    {prettyAmount(amount)} Kč
+                                                    {prettyAmount(amount)} {CURRENCY}
                                                 </td>
                                             </tr>
                                         )
