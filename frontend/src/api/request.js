@@ -5,6 +5,7 @@ import { NOTIFY_TEXT } from "../global/constants"
 import history from "../global/history"
 import APP_URLS from "../urls"
 import axiosRequest from "./_axios"
+import { parseDjangoError } from "./parseDjangoError"
 import { API_METHODS, API_URLS } from "./urls"
 
 class ErrorMessage extends Component {
@@ -13,7 +14,7 @@ class ErrorMessage extends Component {
     }
 
     errorResponse = this.props.error.response
-    djangoError = this.props.error.request ? this.props.error.request.response : "null"
+    djangoError = parseDjangoError(this.props.error)
 
     componentDidMount() {
         this.logToConsole()
@@ -45,53 +46,19 @@ class ErrorMessage extends Component {
             // uloz do errMsg neco konkretnejsiho
             if (this.errorResponse.status === 503) errMsg = NOTIFY_TEXT.ERROR_TIMEOUT
             else {
-                try {
-                    // rozparsuj JSON objekt
-                    let json = JSON.parse(this.djangoError)
-                    // pokud se pridava (neupdatuje) a chyba se vztahuje ke konkretnimu field, vraci se pole, vezmi z nej prvni chybu
-                    if (Array.isArray(json)) json = json[0]
-                    // obecna chyba nevztazena ke konkretnimu field || chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
-                    if ("non_field_errors" in json || "detail" in json) {
-                        errMsg = json["non_field_errors"] || json["detail"]
-                        // stringify, kdyz prijde objekt
-                        if (Array.isArray(errMsg) && errMsg.length !== 1)
-                            errMsg = JSON.stringify(errMsg)
-                    }
-                    // chyba vztazena ke konkretnimu field
-                    else if (json[Object.keys(json)[0]]) {
-                        errMsg = Object.keys(json).map((field, index) => (
-                            <Fragment key={"err" + index}>
-                                <span className="font-weight-bold">{field}:</span>
-                                <span className="font-italic">
-                                    {Array.isArray(json[field]) ? (
-                                        <ul>
-                                            {json[field].map((subField, index) => {
-                                                let errContent
-                                                if (typeof subField === "object")
-                                                    errContent = (
-                                                        <Fragment>
-                                                            <span className="font-weight-bold">
-                                                                {Object.keys(subField)[0] + ": "}
-                                                            </span>
-                                                            {subField[Object.keys(subField)[0]]}
-                                                        </Fragment>
-                                                    )
-                                                else if (typeof subField === "string")
-                                                    errContent = subField
-                                                else errContent = JSON.stringify(subField)
-                                                return <li key={"err_sub" + index}>{errContent}</li>
-                                            })}
-                                        </ul>
-                                    ) : (
-                                        <p>json[field]</p>
-                                    )}
-                                </span>
-                            </Fragment>
-                        ))
-                    }
-                } catch (error) {
-                    // nic nedelej
-                }
+                if (this.djangoError && typeof this.djangoError === "string")
+                    errMsg = this.djangoError
+                else if (this.djangoError)
+                    errMsg = (
+                        <ul>
+                            {Object.keys(this.djangoError).map((field, index) => (
+                                <li key={"err" + index}>
+                                    <span className="font-weight-bold">{field}: </span>
+                                    <span className="font-italic">{this.djangoError[field]}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )
             }
 
             // pokud je logovano do Sentry, pridej o tom na konec zpravy info
