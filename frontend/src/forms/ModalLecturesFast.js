@@ -16,6 +16,7 @@ import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { prettyDate } from "../global/funcDateTime"
 import {
+    defaultValuesForLecture,
     getDefaultValuesForLecture,
     getLecturesForGroupingByCourses,
     groupByCourses
@@ -33,7 +34,7 @@ class ModalLecturesFast extends React.Component {
     state = {
         IS_CLIENT: undefined,
         object: null,
-        defaultValuesForLecture: null,
+        defaultValuesForLecture: defaultValuesForLecture(),
         IS_LOADING: false
     }
 
@@ -61,11 +62,11 @@ class ModalLecturesFast extends React.Component {
             request.then(lectures => {
                 const lecturesGroupedByCourses = groupByCourses(lectures)
                 this.setState(
-                    prevState => ({
+                    {
                         defaultValuesForLecture: getDefaultValuesForLecture(
                             lecturesGroupedByCourses
                         )
-                    }),
+                    },
                     () =>
                         this.setState({
                             object: obj,
