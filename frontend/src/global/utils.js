@@ -39,7 +39,7 @@ export function defaultValuesForLecture(course = null, start = "") {
 
 export function getDefaultValuesForLecture(lecturesGroupedByCourses) {
     // vrat optimalni kurz, jehoz lekce bude s nejvyssi pravdepodobnosti pridavana
-    if (lecturesGroupedByCourses.length === 0) return result()
+    if (lecturesGroupedByCourses.length === 0) return defaultValuesForLecture()
     else if (lecturesGroupedByCourses.length === 1) {
         // chodi na jeden jediny kurz, vyber ho + posledni lekci
         return defaultValuesForLecture(
