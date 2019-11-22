@@ -26,10 +26,10 @@ Feature: Operations with groups
 
     Examples: Groups
       | name      | course           | active | member_full_name1 | member_full_name2 |
-      # chybi nazev skupiny
+      # chybejici nazev/kurz
       |           | Kurz Slabika     | True   |                   |                   |
-      # chybi kurz
       | Slabika 3 |                  | True   |                   |                   |
+      |           |                  | True   |                   |                   |
       # neexistujici kurz
       | Slabika 3 | blabla           | True   |                   |                   |
       # skryty kurz
