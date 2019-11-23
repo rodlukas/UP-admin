@@ -27,12 +27,16 @@ class FormApplications extends Component {
     }
 
     onChange = e => {
+        this.props.setFormDirty(true)
         const target = e.target
         const value = target.type === "checkbox" ? target.checked : target.value
         this.setState({ [target.id]: value })
     }
 
-    onSelectChange = (obj, name) => this.setState({ [name]: obj })
+    onSelectChange = (obj, name) => {
+        this.props.setFormDirty(true)
+        this.setState({ [name]: obj })
+    }
 
     onSubmit = e => {
         e.preventDefault()
@@ -45,7 +49,7 @@ class FormApplications extends Component {
         this.setState({ IS_SUBMIT: true }, () =>
             request
                 .then(() => {
-                    this.close()
+                    this.props.funcForceClose()
                     this.refresh()
                 })
                 .catch(() => {

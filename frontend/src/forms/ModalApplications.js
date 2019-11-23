@@ -2,42 +2,40 @@ import React, { Fragment } from "react"
 import { Modal } from "reactstrap"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
+import FormApplications from "../forms/FormApplications"
 import useModal from "../hooks/useModal"
-import FormGroups from "./FormGroups"
 
-const ModalGroups = ({ currentGroup = null, sendResult = false, inSentence = false, refresh }) => {
+const ModalApplications = ({ currentApplication = null, refresh }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty] = useModal()
 
     return (
         <Fragment>
-            {Boolean(currentGroup) && (
+            {Boolean(currentApplication) && (
                 <EditButton
-                    content_id={currentGroup.id}
-                    content="Upravit skupinu"
+                    content_id={currentApplication.id}
+                    content="Upravit zájemce"
                     onClick={toggleModal}
-                    data-qa="button_edit_group"
+                    data-qa="button_edit_application"
                 />
             )}
-            {!Boolean(currentGroup) && (
+            {!Boolean(currentApplication) && (
                 <AddButton
-                    content={`${inSentence ? "přidejte novou" : "Přidat"} skupinu`}
-                    small={inSentence}
+                    content="Přidat zájemce"
                     onClick={toggleModal}
-                    data-qa="button_add_group"
+                    data-qa="button_add_application"
                 />
             )}
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false}>
-                <FormGroups
-                    group={Boolean(currentGroup) ? currentGroup : {}}
+                <FormApplications
+                    application={Boolean(currentApplication) ? currentApplication : {}}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}
                     funcRefresh={refresh}
-                    sendResult={sendResult}
                 />
             </Modal>
         </Fragment>
     )
 }
 
-export default ModalGroups
+export default ModalApplications

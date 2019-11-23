@@ -2,12 +2,26 @@ import { useState } from "react"
 
 const useModal = () => {
     const [isModal, setModal] = useState(false)
+    const [isFormDirty, setFormDirty] = useState(false)
 
     const toggleModal = () => {
-        setModal(prevIsModal => !prevIsModal)
+        if (!isFormDirty) {
+            toggleModalForce()
+            return true
+        } else if (
+            isFormDirty &&
+            window.confirm("Opravdu chcete zavřít formulář bez uložení změn?")
+        ) {
+            setFormDirty(false)
+            toggleModalForce()
+            return true
+        }
+        return false
     }
 
-    return [isModal, toggleModal]
+    const toggleModalForce = () => setModal(prevIsModal => !prevIsModal)
+
+    return [isModal, toggleModal, toggleModalForce, setFormDirty, setModal]
 }
 
 export default useModal

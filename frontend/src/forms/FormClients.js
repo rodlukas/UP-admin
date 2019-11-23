@@ -38,6 +38,7 @@ class FormClients extends Component {
     }
 
     onChange = e => {
+        this.props.setFormDirty(true)
         const target = e.target
         let value = target.type === "checkbox" ? target.checked : target.value
         // pri psani rozdeluj cislo na trojice
@@ -60,7 +61,7 @@ class FormClients extends Component {
         this.setState({ IS_SUBMIT: true }, () =>
             request
                 .then(response => {
-                    this.close()
+                    this.props.funcForceClose()
                     this.refresh(response)
                     this.props.clientsActiveContext.funcHardRefresh()
                     // je potreba projevit zmeny i pro cleny skupin

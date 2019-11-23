@@ -131,7 +131,14 @@ def get_groups(driver, active):
 
 
 def close_modal(driver):
+    # zavri modalni okno
     driver.find_element_by_class_name("close").click()
+    # pokud se zobrazi alert s upozornenim na neulozene zmeny, zavri ho
+    try:
+        wait_for_alert_and_accept(driver)
+    except TimeoutException:
+        # alert se nezobrazil (zadne zmeny se neprovadely)
+        pass
 
 
 def wait_switching_available(driver, form_name):

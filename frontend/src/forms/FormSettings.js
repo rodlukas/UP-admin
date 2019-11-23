@@ -37,6 +37,7 @@ export default class FormSettings extends Component {
     }
 
     onChange = e => {
+        this.props.setFormDirty(true)
         const target = e.target
         const value = target.type === "checkbox" ? target.checked : target.value
         this.setState({ [target.id]: value })
@@ -62,7 +63,7 @@ export default class FormSettings extends Component {
                 .then(() => {
                     // ulozeni hodnoty TYPE, protoze close ji smaze
                     const curType = this.props.TYPE
-                    this.close()
+                    this.props.funcForceClose()
                     this.refresh(curType)
                 })
                 .catch(() => {

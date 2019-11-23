@@ -2,21 +2,19 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faCheck, faTimes } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
-import { Alert, Col, Container, Modal, Row, Table, UncontrolledTooltip } from "reactstrap"
+import { Alert, Col, Container, Row, Table, UncontrolledTooltip } from "reactstrap"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 import AppRelease from "../components/AppRelease"
 import AppVersion from "../components/AppVersion"
-import AddButton from "../components/buttons/AddButton"
-import EditButton from "../components/buttons/EditButton"
 import Circle from "../components/Circle"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
-import FormSettings from "../forms/FormSettings"
 import CustomCustomInput from "../forms/helpers/CustomCustomInput"
+import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
 import APP_URLS from "../urls"
 import "./Settings.css"
@@ -34,9 +32,6 @@ const Visible = ({ visible, ...props }) => (
 class Settings extends Component {
     state = {
         courses: [],
-        IS_MODAL: false,
-        currentObject: {},
-        currentType: undefined,
         IS_LOADING: true,
         state_default_id: undefined,
         state_excused_id: undefined
@@ -46,13 +41,6 @@ class Settings extends Component {
     callAttendanceStatesFuncRefresh = () =>
         // zde je potreba zavolat findStateIndexes, to ale obstara componentDidUpdate
         this.props.attendanceStatesContext.funcRefresh()
-
-    toggle = (type = undefined, object = {}) =>
-        this.setState(prevState => ({
-            currentObject: object,
-            currentType: type,
-            IS_MODAL: !prevState.IS_MODAL
-        }))
 
     onChange = e => {
         const target = e.target
@@ -106,14 +94,7 @@ class Settings extends Component {
     }
 
     render() {
-        const {
-            courses,
-            currentType,
-            currentObject,
-            state_excused_id,
-            state_default_id,
-            IS_MODAL
-        } = this.state
+        const { courses, state_excused_id, state_default_id } = this.state
         return (
             <Fragment>
                 <Container>
@@ -121,16 +102,8 @@ class Settings extends Component {
                         content={
                             <Fragment>
                                 {APP_URLS.nastaveni.title}
-                                <AddButton
-                                    content="Přidat kurz"
-                                    onClick={() => this.toggle(EDIT_TYPE.COURSE)}
-                                    data-qa="button_add_course"
-                                />
-                                <AddButton
-                                    content="Přidat stav účasti"
-                                    onClick={() => this.toggle(EDIT_TYPE.STATE)}
-                                    data-qa="button_add_attendancestate"
-                                />
+                                <ModalSettings refresh={this.refresh} TYPE={EDIT_TYPE.COURSE} />
+                                <ModalSettings refresh={this.refresh} TYPE={EDIT_TYPE.STATE} />
                             </Fragment>
                         }
                     />
@@ -164,16 +137,10 @@ class Settings extends Component {
                                                         />
                                                     </td>
                                                     <td>
-                                                        <EditButton
-                                                            content_id={attendancestate.id}
-                                                            content="Upravit stav účasti"
-                                                            onClick={() =>
-                                                                this.toggle(
-                                                                    EDIT_TYPE.STATE,
-                                                                    attendancestate
-                                                                )
-                                                            }
-                                                            data-qa="button_edit_attendancestate"
+                                                        <ModalSettings
+                                                            refresh={this.refresh}
+                                                            TYPE={EDIT_TYPE.STATE}
+                                                            currentObject={attendancestate}
                                                         />
                                                     </td>
                                                 </tr>
@@ -294,16 +261,10 @@ class Settings extends Component {
                                                         {course.duration}
                                                     </td>
                                                     <td>
-                                                        <EditButton
-                                                            content_id={course.id}
-                                                            content="Upravit kurz"
-                                                            onClick={() =>
-                                                                this.toggle(
-                                                                    EDIT_TYPE.COURSE,
-                                                                    course
-                                                                )
-                                                            }
-                                                            data-qa="button_edit_course"
+                                                        <ModalSettings
+                                                            refresh={this.refresh}
+                                                            TYPE={EDIT_TYPE.COURSE}
+                                                            currentObject={course}
                                                         />
                                                     </td>
                                                 </tr>
@@ -340,14 +301,6 @@ class Settings extends Component {
                         </div>
                     )}
                 </Container>
-                <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
-                    <FormSettings
-                        object={currentObject}
-                        funcClose={this.toggle}
-                        funcRefresh={this.refresh}
-                        TYPE={currentType}
-                    />
-                </Modal>
             </Fragment>
         )
     }

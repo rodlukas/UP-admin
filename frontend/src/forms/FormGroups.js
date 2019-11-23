@@ -58,12 +58,14 @@ class FormGroups extends Component {
     }
 
     onSelectChange = (obj, name) => {
+        this.props.setFormDirty(true)
         // pri smazani vsech clenu React-select automaticky nastavi null, pro korektni fungovani (napr. push) je potreba udrzovat prazdne pole
         if (name === "memberships" && obj === null) obj = []
         this.setState({ [name]: obj })
     }
 
     onChange = e => {
+        this.props.setFormDirty(true)
         const target = e.target
         const value = target.type === "checkbox" ? target.checked : target.value
         this.setState({ [target.id]: value })
@@ -86,7 +88,7 @@ class FormGroups extends Component {
         this.setState({ IS_SUBMIT: true }, () =>
             request
                 .then(response => {
-                    this.close()
+                    this.props.funcForceClose()
                     this.refresh(response)
                     this.props.groupsActiveContext.funcHardRefresh()
                 })

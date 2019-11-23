@@ -5,20 +5,17 @@ import {
     Container,
     ListGroup,
     ListGroupItem,
-    Modal,
     Row,
     UncontrolledTooltip
 } from "reactstrap"
 import ApplicationService from "../api/services/application"
-import AddButton from "../components/buttons/AddButton"
 import DeleteButton from "../components/buttons/DeleteButton"
-import EditButton from "../components/buttons/EditButton"
 import ClientName from "../components/ClientName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import Phone from "../components/Phone"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
-import FormApplications from "../forms/FormApplications"
+import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
 import { groupByCourses } from "../global/utils"
 import APP_URLS from "../urls"
@@ -27,16 +24,8 @@ import "./Applications.css"
 class Applications extends Component {
     state = {
         applications: [],
-        IS_MODAL: false,
-        currentApplication: {},
         IS_LOADING: true
     }
-
-    toggle = (application = {}) =>
-        this.setState(prevState => ({
-            currentApplication: application,
-            IS_MODAL: !prevState.IS_MODAL
-        }))
 
     refresh = () => this.setState({ IS_LOADING: true }, this.getApplications)
 
@@ -58,7 +47,7 @@ class Applications extends Component {
     }
 
     render() {
-        const { applications, currentApplication, IS_MODAL, IS_LOADING } = this.state
+        const { applications, IS_LOADING } = this.state
         return (
             <Fragment>
                 <Container>
@@ -66,11 +55,7 @@ class Applications extends Component {
                         content={
                             <Fragment>
                                 {APP_URLS.zajemci.title}
-                                <AddButton
-                                    content="Přidat zájemce"
-                                    onClick={() => this.toggle()}
-                                    data-qa="button_add_application"
-                                />
+                                <ModalApplications refresh={this.refresh} />
                             </Fragment>
                         }
                     />
@@ -149,11 +134,9 @@ class Applications extends Component {
                                                         )}
                                                     </Col>
                                                     <Col className="text-right mt-1 mt-md-0" md="2">
-                                                        <EditButton
-                                                            content="Upravit zájemce"
-                                                            content_id={application.id}
-                                                            onClick={() => this.toggle(application)}
-                                                            data-qa="button_edit_application"
+                                                        <ModalApplications
+                                                            currentApplication={application}
+                                                            refresh={this.refresh}
                                                         />{" "}
                                                         <DeleteButton
                                                             onClick={() => {
@@ -180,13 +163,6 @@ class Applications extends Component {
                         </div>
                     )}
                 </Container>
-                <Modal isOpen={IS_MODAL} toggle={this.toggle} autoFocus={false}>
-                    <FormApplications
-                        application={currentApplication}
-                        funcClose={this.toggle}
-                        funcRefresh={this.refresh}
-                    />
-                </Modal>
             </Fragment>
         )
     }

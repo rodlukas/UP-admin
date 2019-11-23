@@ -203,13 +203,13 @@ class ModalLecturesFast extends React.Component {
                     </ModalBody>
                 </Modal>
                 <ModalLecturesPlain
-                    defaultValuesForLecture={this.state.defaultValuesForLecture}
-                    date={this.props.date || ""}
-                    object={this.state.object}
-                    isModal={this.state.object !== null}
-                    toggleModal={this.toggleModal}
                     refresh={this.refreshAfterSave}
+                    object={this.state.object}
                     IS_CLIENT={this.state.IS_CLIENT}
+                    defaultValuesForLecture={this.state.defaultValuesForLecture}
+                    shouldModalOpen={this.state.object !== null}
+                    funcCloseCallback={this.toggleModal}
+                    date={this.props.date || ""}
                 />
             </Fragment>
         )

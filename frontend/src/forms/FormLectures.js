@@ -204,6 +204,7 @@ class FormLectures extends Component {
     }
 
     onChangeMultiple = e => {
+        this.props.setFormDirty(true)
         const target = e.target
         const id = target.dataset.id
         let value = target.type === "checkbox" ? target.checked : target.value
@@ -221,12 +222,16 @@ class FormLectures extends Component {
     }
 
     onChange = e => {
+        this.props.setFormDirty(true)
         const target = e.target
         const value = target.type === "checkbox" ? target.checked : target.value
         this.setState({ [target.id]: value })
     }
 
-    onSelectChange = (obj, name) => this.setState({ [name]: obj, duration: obj.duration })
+    onSelectChange = (obj, name) => {
+        this.props.setFormDirty(true)
+        this.setState({ [name]: obj, duration: obj.duration })
+    }
 
     onChangePrepaid = () => {
         if (!this.state.prepaid) {
@@ -300,7 +305,7 @@ class FormLectures extends Component {
         this.setState({ IS_SUBMIT: true }, () =>
             request
                 .then(() => {
-                    this.close()
+                    this.props.funcForceClose()
                     this.refresh()
                 })
                 .catch(() => {

@@ -11,7 +11,7 @@ const ModalClients = ({
     inSentence = false,
     refresh
 }) => {
-    const [isModal, toggleModal] = useModal()
+    const [isModal, toggleModal, toggleModalForce, setFormDirty] = useModal()
 
     return (
         <Fragment>
@@ -35,6 +35,8 @@ const ModalClients = ({
                 <FormClients
                     client={Boolean(currentClient) ? currentClient : {}}
                     funcClose={toggleModal}
+                    funcForceClose={toggleModalForce}
+                    setFormDirty={setFormDirty}
                     funcRefresh={refresh}
                     sendResult={sendResult}
                 />
