@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const useModal = () => {
     const [isModal, setModal] = useState(false)
@@ -20,6 +20,18 @@ const useModal = () => {
     }
 
     const toggleModalForce = () => setModal(prevIsModal => !prevIsModal)
+
+    // beforeunload listener, upozorni na neulozene zmeny pri opousteni stranky
+    useEffect(() => {
+        const beforeUnload = e => {
+            if (isFormDirty) {
+                e.preventDefault()
+                e.returnValue = ""
+            }
+        }
+        isFormDirty && window.addEventListener("beforeunload", beforeUnload)
+        return () => window.removeEventListener("beforeunload", beforeUnload)
+    }, [isFormDirty])
 
     return [isModal, toggleModal, toggleModalForce, setFormDirty, setModal]
 }
