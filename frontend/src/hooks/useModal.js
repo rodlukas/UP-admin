@@ -5,21 +5,21 @@ const useModal = () => {
     const [isFormDirty, setFormDirty] = useState(false)
 
     const toggleModal = () => {
-        if (!isFormDirty) {
-            toggleModalForce()
-            return true
-        } else if (
-            isFormDirty &&
-            window.confirm("Opravdu chcete zavřít formulář bez uložení změn?")
+        if (
+            !isFormDirty ||
+            (isFormDirty && window.confirm("Opravdu chcete zavřít formulář bez uložení změn?"))
         ) {
-            setFormDirty(false)
             toggleModalForce()
             return true
         }
         return false
     }
 
-    const toggleModalForce = () => setModal(prevIsModal => !prevIsModal)
+    const toggleModalForce = () => {
+        // pokud se zavira, zresetuj dirty indikator
+        isModal && setFormDirty(false)
+        setModal(prevIsModal => !prevIsModal)
+    }
 
     // beforeunload listener, upozorni na neulozene zmeny pri opousteni stranky
     useEffect(() => {
