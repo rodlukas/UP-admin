@@ -154,7 +154,9 @@ class ModalLecturesFast extends React.Component {
                                     <Loading
                                         text={
                                             this.state.IS_LOADING &&
-                                            "Vypočítávám optimální kurz pro klienta"
+                                            `Vypočítávám optimální datum${
+                                                this.state.IS_CLIENT ? ", čas a kurz" : " a čas"
+                                            } pro ${this.state.IS_CLIENT ? "klienta" : "skupinu"}`
                                         }
                                     />
                                 ) : this.state.IS_CLIENT ? (
