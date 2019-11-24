@@ -1,5 +1,3 @@
-import React from "react"
-
 export function parseDjangoError(error) {
     if (!error.request) return null
     error = error.request.response
