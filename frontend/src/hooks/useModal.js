@@ -19,6 +19,7 @@ const useModal = () => {
         // pokud se zavira, zresetuj dirty indikator
         isModal && setFormDirty(false)
         setModal(prevIsModal => !prevIsModal)
+        return true
     }
 
     // beforeunload listener, upozorni na neulozene zmeny pri opousteni stranky
