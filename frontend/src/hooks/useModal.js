@@ -5,13 +5,11 @@ const useModal = () => {
     const [isFormDirty, setFormDirty] = useState(false)
 
     const toggleModal = () => {
-        if (
-            !isFormDirty ||
-            (isFormDirty && window.confirm("Opravdu chcete zavřít formulář bez uložení změn?"))
-        ) {
-            toggleModalForce()
-            return true
-        }
+        // pokud neni formular upraveny NEBO je, ale uzivatel potvrdil, ze ho to nezajima, zavirame ho
+        // je potreba korektne vracet navratove hodnoty, zda byl formular zavren nebo nikoliv kvuli
+        //  kvuli chovani rodicovskych komponent
+        if (!isFormDirty || window.confirm("Opravdu chcete zavřít formulář bez uložení změn?"))
+            return toggleModalForce()
         return false
     }
 
@@ -19,6 +17,7 @@ const useModal = () => {
         // pokud se zavira, zresetuj dirty indikator
         isModal && setFormDirty(false)
         setModal(prevIsModal => !prevIsModal)
+        // zavira se - vrat true pro rodicovske komponenty
         return true
     }
 
