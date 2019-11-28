@@ -16,6 +16,7 @@ import {
     prettyDateWithYearIfDiff,
     yearDiffs
 } from "../global/funcDateTime"
+import { isModalShown } from "../global/utils"
 import APP_URLS from "../urls"
 import "./Diary.css"
 
@@ -63,9 +64,12 @@ export default class Diary extends Component {
     }
 
     onKeyDown = e => {
-        const key = e.key
-        if (key === "ArrowLeft") this.props.history.push(this.getPrevMondaySerialized())
-        else if (key === "ArrowRight") this.props.history.push(this.getNextMondaySerialized())
+        // akce provadej jen kdyz neni otevrene modalni okno
+        if (!isModalShown()) {
+            const key = e.key
+            if (key === "ArrowLeft") this.props.history.push(this.getPrevMondaySerialized())
+            else if (key === "ArrowRight") this.props.history.push(this.getNextMondaySerialized())
+        }
     }
 
     static parseDateFromParams(params) {

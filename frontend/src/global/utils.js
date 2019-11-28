@@ -105,3 +105,8 @@ export function areAllMembersActive(memberships) {
 export function makeIdFromString(string) {
     return string.replace(/\s+/g, "-")
 }
+
+// je otevrene nejake bootstrap modalni okno?
+export function isModalShown() {
+    return document.querySelectorAll(".modal-open").length
+}
