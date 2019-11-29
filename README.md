@@ -89,7 +89,7 @@ Pro **eliminaci mrtvého kódu** se také používá **[vulture](https://github.
 Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
 * [React 16](https://reactjs.org/),
 * [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
-* [React Router 4](https://reacttraining.com/react-router/),
+* [React Router 5](https://reacttraining.com/react-router/),
 * [a další...](/frontend/package.json)
 
 Aplikace je **odolná proti pádům JS** díky **[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**.
