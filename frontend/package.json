@@ -33,7 +33,7 @@
     },
     "devDependencies": {
         "cssnano": "^4.1.10",
-        "flow-bin": "^0.113.0",
+        "flow-bin": "^0.114.0",
         "html-webpack-harddisk-plugin": "^1.0.1",
         "nwb": "^0.23.0",
         "prettier": "1.19.1"
