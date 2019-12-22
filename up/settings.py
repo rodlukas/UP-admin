@@ -90,7 +90,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_referrer_policy.middleware.ReferrerPolicyMiddleware",
 ]
 
 ROOT_URLCONF = "up.urls"
@@ -163,7 +162,7 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 # Django konstanty pro bezpecnost
-REFERRER_POLICY = "strict-origin-when-cross-origin"  # Referer je potreba posilat na Sentry
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"  # Referer je potreba posilat na Sentry
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
