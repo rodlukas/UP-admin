@@ -4,8 +4,9 @@ import chroma from "chroma-js"
 import React, { Fragment } from "react"
 import { ChromePicker } from "react-color"
 import { toast } from "react-toastify"
-import { Col, InputGroup, InputGroupAddon, Label, UncontrolledTooltip } from "reactstrap"
+import { Col, InputGroup, InputGroupAddon, Label } from "reactstrap"
 import Notification from "../../components/Notification"
+import UncontrolledTooltipWrapper from "../../components/UncontrolledTooltipWrapper"
 import "./ColorPicker.css"
 
 export default class ColorPicker extends React.Component {
@@ -69,9 +70,9 @@ export default class ColorPicker extends React.Component {
                             onClick={this.togglePicker}>
                             <div style={{ background: this.props.color }} />
                         </div>
-                        <UncontrolledTooltip placement="right" target="color">
+                        <UncontrolledTooltipWrapper placement="right" target="color">
                             Změnit barvu
-                        </UncontrolledTooltip>
+                        </UncontrolledTooltipWrapper>
                         {this.state.isPickerVisible ? (
                             <div
                                 className="ColorPickerWindow"

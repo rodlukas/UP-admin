@@ -6,13 +6,14 @@ import {
 } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Fragment } from "react"
-import { ListGroup, ListGroupItem, Table, UncontrolledTooltip } from "reactstrap"
+import { ListGroup, ListGroupItem, Table } from "reactstrap"
 import BankService from "../api/services/bank"
 import { CURRENCY, RENT_PRICE } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"
 import CustomButton from "./buttons/CustomButton"
 import NoInfo from "./NoInfo"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const REFRESH_TIMEOUT = 60 // sekundy
 
@@ -95,13 +96,13 @@ export default class Bank extends React.PureComponent {
                         )}{" "}
                         {balance && balance < RENT_PRICE && (
                             <Fragment>
-                                <UncontrolledTooltip target="Bank_RentWarning">
+                                <UncontrolledTooltipWrapper target="Bank_RentWarning">
                                     Na účtu není dostatek peněz (alespoň{" "}
                                     <span className="font-weight-bold text-nowrap">
                                         {`${prettyAmount(RENT_PRICE)} ${CURRENCY}`}
                                     </span>
                                     ) pro zaplacení nájmu!
-                                </UncontrolledTooltip>
+                                </UncontrolledTooltipWrapper>
                                 <FontAwesomeIcon
                                     icon={faExclamationCircle}
                                     className="text-danger"
@@ -132,11 +133,11 @@ export default class Bank extends React.PureComponent {
                                 />
                             }
                         />
-                        <UncontrolledTooltip target="Bank">
+                        <UncontrolledTooltipWrapper target="Bank">
                             {this.state.REFRESH_DISABLED
                                 ? "Výpis lze obnovit jednou za minutu"
                                 : "Obnovit výpis"}
-                        </UncontrolledTooltip>{" "}
+                        </UncontrolledTooltipWrapper>{" "}
                         <a
                             href="https://ib.fio.cz/"
                             target="_blank"

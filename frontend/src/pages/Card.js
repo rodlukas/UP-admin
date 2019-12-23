@@ -1,13 +1,5 @@
 import React, { Component, Fragment } from "react"
-import {
-    Alert,
-    Col,
-    Container,
-    ListGroup,
-    ListGroupItem,
-    Row,
-    UncontrolledTooltip
-} from "reactstrap"
+import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import Attendances from "../components/Attendances"
@@ -22,6 +14,7 @@ import Loading from "../components/Loading"
 import Note from "../components/Note"
 import Phone from "../components/Phone"
 import PrepaidCounters from "../components/PrepaidCounters"
+import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
@@ -278,7 +271,7 @@ class Card extends Component {
                                                                           prettyTime(d)
                                                                         : "Předplacená lekce"}
                                                                 </span>
-                                                                <UncontrolledTooltip
+                                                                <UncontrolledTooltipWrapper
                                                                     target={
                                                                         "Card_CourseDuration_" +
                                                                         lecture.id
@@ -286,7 +279,7 @@ class Card extends Component {
                                                                     {courseDuration(
                                                                         lecture.duration
                                                                     )}
-                                                                </UncontrolledTooltip>
+                                                                </UncontrolledTooltipWrapper>
                                                             </h4>
                                                             <LectureNumber lecture={lecture} />
                                                             <ModalLectures

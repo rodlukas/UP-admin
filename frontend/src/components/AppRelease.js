@@ -1,5 +1,5 @@
 import React, { Fragment } from "react"
-import { UncontrolledTooltip } from "reactstrap"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const AppRelease = () => {
     const version = "%GIT_RELEASE"
@@ -14,9 +14,9 @@ const AppRelease = () => {
                     id="AppRelease">
                     {version}
                 </a>
-                <UncontrolledTooltip target="AppRelease">
+                <UncontrolledTooltipWrapper target="AppRelease">
                     Poznámky k verzi (GitHub)
-                </UncontrolledTooltip>
+                </UncontrolledTooltipWrapper>
                 {")"}
             </Fragment>
         )

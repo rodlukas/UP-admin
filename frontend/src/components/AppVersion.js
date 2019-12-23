@@ -1,6 +1,6 @@
 import React, { Fragment } from "react"
-import { UncontrolledTooltip } from "reactstrap"
 import "./AppVersion.css"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const AppVersion = () => (
     <Fragment>
@@ -12,7 +12,9 @@ const AppVersion = () => (
             id="AppVersion">
             %GIT_VERSION
         </a>
-        <UncontrolledTooltip target="AppVersion">Zobrazení commitu (GitHub)</UncontrolledTooltip>
+        <UncontrolledTooltipWrapper target="AppVersion">
+            Zobrazení commitu (GitHub)
+        </UncontrolledTooltipWrapper>
     </Fragment>
 )
 

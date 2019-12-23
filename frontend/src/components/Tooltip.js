@@ -1,13 +1,13 @@
 import { faInfoCircle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Fragment } from "react"
-import { UncontrolledTooltip } from "reactstrap"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const Tooltip = ({ postfix, text }) => (
     <Fragment>
-        <UncontrolledTooltip placement="bottom" target={"Tooltip_" + postfix}>
+        <UncontrolledTooltipWrapper placement="bottom" target={"Tooltip_" + postfix}>
             {text}
-        </UncontrolledTooltip>
+        </UncontrolledTooltipWrapper>
         <FontAwesomeIcon
             icon={faInfoCircle}
             className="text-warning"

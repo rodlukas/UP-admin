@@ -1,8 +1,9 @@
 import { faPencil } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Fragment } from "react"
-import { Button, UncontrolledTooltip } from "reactstrap"
+import { Button } from "reactstrap"
 import { makeIdFromString } from "../../global/utils"
+import UncontrolledTooltipWrapper from "../UncontrolledTooltipWrapper"
 
 const EditButton = ({ content = "Upravit", onClick, content_id, ...props }) => (
     <Fragment>
@@ -13,9 +14,10 @@ const EditButton = ({ content = "Upravit", onClick, content_id, ...props }) => (
             {...props}>
             <FontAwesomeIcon icon={faPencil} />
         </Button>
-        <UncontrolledTooltip target={`EditButton_${makeIdFromString(content)}_${content_id}`}>
+        <UncontrolledTooltipWrapper
+            target={`EditButton_${makeIdFromString(content)}_${content_id}`}>
             {content}
-        </UncontrolledTooltip>
+        </UncontrolledTooltipWrapper>
     </Fragment>
 )
 

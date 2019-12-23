@@ -1,7 +1,7 @@
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
-import { Container, Table, UncontrolledTooltip } from "reactstrap"
+import { Container, Table } from "reactstrap"
 import GroupService from "../api/services/group"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 import ClientsList from "../components/ClientsList"
@@ -9,6 +9,7 @@ import CourseName from "../components/CourseName"
 import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
+import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
@@ -84,7 +85,7 @@ class Groups extends Component {
                                             {group.active &&
                                                 !areAllMembersActive(group.memberships) && (
                                                     <Fragment>
-                                                        <UncontrolledTooltip
+                                                        <UncontrolledTooltipWrapper
                                                             placement="right"
                                                             target={
                                                                 "Group_ActiveGroupWithInactiveClientAlert_" +
@@ -93,7 +94,7 @@ class Groups extends Component {
                                                             Ve skupině je neaktivní klient (přestože
                                                             je skupina aktivní), není tedy možné
                                                             přidávat lekce
-                                                        </UncontrolledTooltip>
+                                                        </UncontrolledTooltipWrapper>
                                                         <FontAwesomeIcon
                                                             icon={faExclamationTriangle}
                                                             className={"text-danger"}

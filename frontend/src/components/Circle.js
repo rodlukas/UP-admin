@@ -1,6 +1,6 @@
 import React, { Fragment } from "react"
-import { UncontrolledTooltip } from "reactstrap"
 import "./Circle.css"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const Circle = ({ color, size, showTitle = false }) => {
     const sizeWithUnit = size + "rem"
@@ -19,9 +19,9 @@ const Circle = ({ color, size, showTitle = false }) => {
                 }}
             />
             {showTitle && (
-                <UncontrolledTooltip target={"Circle_" + colorWithoutHash}>
+                <UncontrolledTooltipWrapper target={"Circle_" + colorWithoutHash}>
                     Kód barvy: {color}
-                </UncontrolledTooltip>
+                </UncontrolledTooltipWrapper>
             )}
         </Fragment>
     )

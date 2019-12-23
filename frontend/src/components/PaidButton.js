@@ -2,9 +2,9 @@
 import { faUsdCircle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Fragment } from "react"
-import { UncontrolledTooltip } from "reactstrap"
 import AttendanceService from "../api/services/attendance"
 import "./PaidButton.css"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     paid: boolean,
@@ -32,9 +32,11 @@ const PaidButton = (props: Props) => {
                 data-qa="lecture_attendance_paid"
                 id={"PaidButton_" + props.attendanceId}
             />
-            <UncontrolledTooltip placement="right" target={"PaidButton_" + props.attendanceId}>
+            <UncontrolledTooltipWrapper
+                placement="right"
+                target={"PaidButton_" + props.attendanceId}>
                 {title}
-            </UncontrolledTooltip>
+            </UncontrolledTooltipWrapper>
         </Fragment>
     )
 }

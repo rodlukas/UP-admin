@@ -2,7 +2,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faCheck, faTimes } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
-import { Alert, Col, Container, Row, Table, UncontrolledTooltip } from "reactstrap"
+import { Alert, Col, Container, Row, Table } from "reactstrap"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 import AppRelease from "../components/AppRelease"
@@ -10,6 +10,7 @@ import AppVersion from "../components/AppVersion"
 import Circle from "../components/Circle"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
+import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
@@ -293,9 +294,9 @@ class Settings extends Component {
                                         id="Settings_GHRepo"
                                         data-qa="lecture_attendance_paid"
                                     />
-                                    <UncontrolledTooltip target="Settings_GHRepo">
+                                    <UncontrolledTooltipWrapper target="Settings_GHRepo">
                                         GitHub repozitář ÚPadmin
-                                    </UncontrolledTooltip>
+                                    </UncontrolledTooltipWrapper>
                                 </a>
                             </p>
                         </div>

@@ -1,19 +1,12 @@
 import React, { Component, Fragment } from "react"
-import {
-    Badge,
-    Col,
-    Container,
-    ListGroup,
-    ListGroupItem,
-    Row,
-    UncontrolledTooltip
-} from "reactstrap"
+import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 import ApplicationService from "../api/services/application"
 import DeleteButton from "../components/buttons/DeleteButton"
 import ClientName from "../components/ClientName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import Phone from "../components/Phone"
+import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
@@ -64,9 +57,9 @@ class Applications extends Component {
                     ) : (
                         <div className="pageContent">
                             {applications.length && (
-                                <UncontrolledTooltip target="Applications_DateAdded">
+                                <UncontrolledTooltipWrapper target="Applications_DateAdded">
                                     Datum přidání
-                                </UncontrolledTooltip>
+                                </UncontrolledTooltipWrapper>
                             )}
                             {applications.map(courseApplications => {
                                 const cnt = courseApplications.lectures.length

@@ -10,12 +10,12 @@ import {
     Label,
     ListGroup,
     ListGroupItem,
-    Row,
-    UncontrolledTooltip
+    Row
 } from "reactstrap"
 import MembershipService from "../api/services/membership"
 import ClientName from "./ClientName"
 import "./PrepaidCounters.css"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const PrepaidCounters = props => {
     function createPrepaidCntObjects() {
@@ -63,8 +63,7 @@ const PrepaidCounters = props => {
                                         <ClientName client={membership.client} link />{" "}
                                         {props.isGroupActive && !membership.client.active && (
                                             <Fragment>
-                                                <UncontrolledTooltip
-                                                    placement="right"
+                                                <UncontrolledTooltipWrapper
                                                     target={
                                                         "PrepaidCounters_InactiveClientAlert_" +
                                                         membership.client.id
@@ -72,7 +71,7 @@ const PrepaidCounters = props => {
                                                     Tento klient není aktivní (přestože skupina
                                                     aktivní je), není tedy možné přidávat této
                                                     skupině lekce
-                                                </UncontrolledTooltip>
+                                                </UncontrolledTooltipWrapper>
                                                 <FontAwesomeIcon
                                                     icon={faExclamationTriangle}
                                                     className={"text-danger"}

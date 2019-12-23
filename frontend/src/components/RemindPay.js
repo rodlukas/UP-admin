@@ -1,7 +1,7 @@
 import { faCommentAltDollar } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Fragment } from "react"
-import { UncontrolledTooltip } from "reactstrap"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const RemindPay = ({ attendance }) =>
     attendance.remind_pay && (
@@ -13,9 +13,9 @@ const RemindPay = ({ attendance }) =>
                 transform="up-4"
                 id={"RemindPay_" + attendance.id}
             />
-            <UncontrolledTooltip placement="right" target={"RemindPay_" + attendance.id}>
+            <UncontrolledTooltipWrapper target={"RemindPay_" + attendance.id}>
                 Příště platit
-            </UncontrolledTooltip>
+            </UncontrolledTooltipWrapper>
         </Fragment>
     )
 

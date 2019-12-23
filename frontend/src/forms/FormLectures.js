@@ -17,8 +17,7 @@ import {
     Label,
     ModalBody,
     ModalFooter,
-    ModalHeader,
-    UncontrolledTooltip
+    ModalHeader
 } from "reactstrap"
 import LectureService from "../api/services/lecture"
 import CancelButton from "../components/buttons/CancelButton"
@@ -28,6 +27,7 @@ import ClientName from "../components/ClientName"
 import GroupName from "../components/GroupName"
 import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
+import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { DEFAULT_DURATION } from "../global/constants"
@@ -413,9 +413,9 @@ class FormLectures extends Component {
                                             data-qa="lecture_field_date"
                                         />
                                     </InputGroup>
-                                    <UncontrolledTooltip target="FormLectures_Date">
+                                    <UncontrolledTooltipWrapper target="FormLectures_Date">
                                         Datum
-                                    </UncontrolledTooltip>
+                                    </UncontrolledTooltipWrapper>
                                 </Col>
                                 <Col sm={4}>
                                     <InputGroup id="FormLectures_Time">
@@ -435,9 +435,9 @@ class FormLectures extends Component {
                                             data-qa="lecture_field_time"
                                         />
                                     </InputGroup>
-                                    <UncontrolledTooltip target="FormLectures_Time">
+                                    <UncontrolledTooltipWrapper target="FormLectures_Time">
                                         Čas začátku
-                                    </UncontrolledTooltip>
+                                    </UncontrolledTooltipWrapper>
                                 </Col>
                             </FormGroup>
                             <FormGroup row className="align-items-center">
@@ -496,9 +496,9 @@ class FormLectures extends Component {
                                             data-qa="lecture_field_duration"
                                         />
                                     </InputGroup>
-                                    <UncontrolledTooltip target="FormLectures_Duration">
+                                    <UncontrolledTooltipWrapper target="FormLectures_Duration">
                                         Trvání (min.)
-                                    </UncontrolledTooltip>
+                                    </UncontrolledTooltipWrapper>
                                 </Col>
                             </FormGroup>
                             <hr />
@@ -594,10 +594,10 @@ class FormLectures extends Component {
                                                     spellCheck
                                                 />
                                             </InputGroup>
-                                            <UncontrolledTooltip
+                                            <UncontrolledTooltipWrapper
                                                 target={"FormLectures_Note_" + member.id}>
                                                 Poznámka
-                                            </UncontrolledTooltip>
+                                            </UncontrolledTooltipWrapper>
                                         </Col>
                                     </FormGroup>
                                 </div>
@@ -660,10 +660,10 @@ class FormLectures extends Component {
                                     disabled={!this.props.coursesVisibleContext.isLoaded}
                                     content="Uložit + projevit změny v klientech"
                                 />
-                                <UncontrolledTooltip target="FormLectures_SubmitWithClientChanges">
+                                <UncontrolledTooltipWrapper target="FormLectures_SubmitWithClientChanges">
                                     Uloží informace a zároveň upraví účastníky této lekce tak, aby
                                     byli v souladu se členy skupiny
-                                </UncontrolledTooltip>
+                                </UncontrolledTooltipWrapper>
                             </Fragment>
                         )}
                 </ModalFooter>
