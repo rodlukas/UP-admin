@@ -13,21 +13,22 @@ import Page from "./components/Page"
 import SearchResults from "./components/SearchResults"
 import { ClientsActiveContext } from "./contexts/ClientsActiveContext"
 import { getEnvName, isEnvDevelopment, isEnvStaging, isEnvTesting } from "./global/funcEnvironments"
+import lazySafe from "./global/lazyLoadingWrapper"
 import useKeyPress from "./hooks/useKeyPress"
 import "./Main.css"
 import ErrorBoundary from "./pages/ErrorBoundary"
 import APP_URLS from "./urls"
 
 // lazy nacitani pro jednotlive stranky
-const Dashboard = lazy(() => import("./pages/Dashboard"))
-const NotFound = lazy(() => import("./pages/NotFound"))
-const Settings = lazy(() => import("./pages/Settings"))
-const Applications = lazy(() => import("./pages/Applications"))
-const Groups = lazy(() => import("./pages/Groups"))
-const Login = lazy(() => import("./pages/Login"))
-const Clients = lazy(() => import("./pages/Clients"))
-const Card = lazy(() => import("./pages/Card"))
-const Diary = lazy(() => import("./pages/Diary"))
+const Dashboard = lazy(() => lazySafe(() => import("./pages/Dashboard")))
+const NotFound = lazy(() => lazySafe(() => import("./pages/NotFound")))
+const Settings = lazy(() => lazySafe(() => import("./pages/Settings")))
+const Applications = lazy(() => lazySafe(() => import("./pages/Applications")))
+const Groups = lazy(() => lazySafe(() => import("./pages/Groups")))
+const Login = lazy(() => lazySafe(() => import("./pages/Login")))
+const Clients = lazy(() => lazySafe(() => import("./pages/Clients")))
+const Card = lazy(() => lazySafe(() => import("./pages/Card")))
+const Diary = lazy(() => lazySafe(() => import("./pages/Diary")))
 
 const searchOptions = {
     shouldSort: true,
