@@ -50,7 +50,7 @@
 * [Licence](#licence)
 
 ## Základní informace o aplikaci
-Aplikaci jsem vytvořil v roce 2018 v rámci **bakalářské práce na FIT ČVUT** – vizte [repozitář s textem práce](https://github.com/rodlukas/bachelors-thesis).
+Aplikaci jsem vytvořil v roce 2018 v rámci **bakalářské práce na FIT ČVUT** – vizte [repozitář s textem bakalářské práce](https://github.com/rodlukas/bachelors-thesis).
 Od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) denně úspěšně používána a její rozšiřování a práce na ní stále pokračují ❤️.
 ### Klíčové funkce aplikace
 * **evidence klientů a skupin klientů docházejících na lekce kurzů**
@@ -70,14 +70,14 @@ Od té doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/)
 * *... (výčet není konečný)*
 ### Použité technologie
 Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **REST API** zabezpečené **[JWT](https://jwt.io/) autentizací**.
-Jako databáze se používá [PostgreSQL 11](https://www.postgresql.org/).
+Jako databáze se používá [PostgreSQL 11/12](https://www.postgresql.org/).
 
 > **Poznámka:** součástí repozitáře je také diagram nasazení a logický datový model – viz [`docs/README.md`](docs).
 
 #### Backend
 Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
-* [Python 3.7](https://www.python.org/),
-* [Django 2](https://www.djangoproject.com/),
+* [Python 3.8](https://www.python.org/),
+* [Django 3](https://www.djangoproject.com/),
 * [Django REST framework 3](https://www.django-rest-framework.org/),
 * [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
 * [a další...](/Pipfile)
@@ -128,7 +128,7 @@ viz [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/), [[
     * Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – 
     testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
     * Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
-    * **Podrobné informace o testech jsou v [`tests/README.md`](tests/)**.
+    * **Podrobné informace o testech jsou v [`tests/README.md`](tests)**.
 
 ## Struktura repozitáře
 ```bash
@@ -148,10 +148,10 @@ Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je k
 nástroje, spouští se Django vývojový server a také webpack-dev-server pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spuštění ve druhém režimu – **produkční verze aplikace**, tedy ta, která je nejblíže verzi u zákazníka.
 ### Požadavky
 Pro spuštění je potřeba mít v OS nainstalováno:
-* [Python 3.7](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
+* [Python 3.8](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
 * [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv),
 * [Git](https://git-scm.com/downloads),
-* [PostgreSQL 11](https://www.postgresql.org/download/).
+* [PostgreSQL 11/12](https://www.postgresql.org/download/).
 
 <a name="npmpro">
   
@@ -228,7 +228,7 @@ Můžeme také snadno spustit různé testy aplikace, například otestovat, jes
 ```bash
 $ python manage.py behave --stage=api --tags=clients
 ```
-Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o testech a možnostech spouštění](tests/).
+Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o testech a možnostech spouštění](tests).
 
 ## Screenshoty z aplikace
 > **Poznámka:** obdelníky (převážně modré) skrývají jména klientů.
@@ -243,4 +243,4 @@ Aplikace obsahuje rozsáhlé API a UI testy – vizte [podrobné informace o tes
 ## Licence
 Licencováno pod [MIT](LICENSE).
 
-Copyright (c) 2019 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2020 [Lukáš Rod](https://lukasrod.cz/)
