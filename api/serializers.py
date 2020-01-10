@@ -27,9 +27,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def validate_phone(phone):
-        if phone and (
-            not re.match(r"[0-9\s]+$", phone) or sum(c.isdigit() for c in phone) is not 9
-        ):
+        if phone and (not re.match(r"[0-9\s]+$", phone) or sum(c.isdigit() for c in phone) != 9):
             raise serializers.ValidationError("Telefonní číslo musí obsahovat 9 číslic")
         return phone
 
