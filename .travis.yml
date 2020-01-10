@@ -45,6 +45,9 @@ install:
 before_script:
   # priprav DB
   - source scripts/shell/postgresql_prepare.sh
+
+  # vytvor dummy .env soubor, at je spokojeny django-environ a nehulaka
+  - touch .env
 script:
   # priprav Django aplikaci
   - source scripts/shell/release_tasks.sh
