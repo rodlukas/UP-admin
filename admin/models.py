@@ -7,6 +7,7 @@ class AttendanceState(models.Model):
     Stav účasti klienta na lekci.
     Navázán ke klientovi a lekci prostřednictvím účasti (Attendance).
     MAZÁNÍ: Stav účasti lze smazat pouze pokud není používán v žádné účasti (Attendance).
+    ŘAZENÍ: Vzestupně dle názvu stavu účasti.
     """
 
     default = models.BooleanField(
@@ -61,6 +62,7 @@ class Client(models.Model):
     Může mít nějakou lekci (přes Attendance).
     OMEZENÍ: Neaktivním klientům nelze přiřadit nové lekce.
     MAZÁNÍ: Klienta lze smazat pouze pokud se neúčastní žádné lekce (prostřednictvím Attendance).
+    ŘAZENÍ: Vzestupně dle příjmení a křestního jména klienta.
     """
 
     active = models.BooleanField(default=True, help_text="Indikátor aktivity klienta")
@@ -91,6 +93,7 @@ class Course(models.Model):
     Patří ke každé lekci, má jej každá skupina a mohou k němu být (přes Application) přiřazováni zájemci.
     OMEZENÍ: K neviditelnému kurzu nelze přiřadit skupina nebo zájemce.
     MAZÁNÍ: Kurz lze smazat pouze pokud k němu neexistuje žádná lekce a není přiřazena žádná skupina.
+    ŘAZENÍ: Vzestupně dle názvu kurzu.
     """
 
     color = models.CharField(
@@ -127,6 +130,7 @@ class Application(models.Model):
     """
     Reprezentuje zájem klienta o kurz.
     OMEZENÍ: Každý klient může mít zájem o daný kurz nejvýše jednou.
+    ŘAZENÍ: Vzestupně dle příjmení a křestního jména klienta.
     """
 
     note = models.TextField(blank=True, help_text="Poznámka")
@@ -153,6 +157,7 @@ class Group(models.Model):
     Skupina klientů nějakého kurzu.
     Patří k ní její lekce, členové (prostřednictvím Membership).
     OMEZENÍ: Neaktivním skupinám nelze přiřadit nové lekce.
+    ŘAZENÍ: Vzestupně dle názvu skupiny.
     """
 
     active = models.BooleanField(default=True, help_text="Indikátor aktivity skupiny")
@@ -196,6 +201,7 @@ class Attendance(models.Model):
     Reprezentace účasti klienta na nějaké lekci.
     Váže se k nějaké lekci.
     OMEZENÍ: U předplacených lekcí nelze platba měnit a musí být u všech účastníků zaplaceno.
+    ŘAZENÍ: Vzestupně dle příjmení a křestního jména klienta.
     """
 
     note = models.TextField(blank=True, help_text="Poznámka")
@@ -226,6 +232,7 @@ class Membership(models.Model):
     """
     Reprezentuje členství klienta ve skupině.
     AUTOMATICKY: Provádí se korekce počtu předplacených lekcí (viz AttendanceSerializer, LectureSerializer).
+    ŘAZENÍ: Vzestupně dle příjmení a křestního jména klienta.
     """
 
     prepaid_cnt = models.PositiveIntegerField(
