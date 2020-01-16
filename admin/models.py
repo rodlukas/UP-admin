@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.core.validators import RegexValidator
 from django.db import models
 
@@ -49,7 +51,7 @@ class AttendanceState(models.Model):
         if not self.visible:
             self.default = self.excused = False
 
-    def save(self, *args, **kwargs) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         self.reset_attrs_when_set_non_visible()
         self.make_all_true_values_unique()
         super().save(*args, **kwargs)
@@ -82,7 +84,7 @@ class Client(models.Model):
         # odstraneni vsech mezer v telefonu
         self.phone = "".join(self.phone.split())
 
-    def save(self, *args, **kwargs) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         self.phone_transform()
         super().save(*args, **kwargs)
 
@@ -121,7 +123,7 @@ class Course(models.Model):
         if len(self.color) != 7:
             self.color = "#{}".format("".join(2 * c for c in self.color.lstrip("#")))
 
-    def save(self, *args, **kwargs) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         self.color_transform()
         super().save(*args, **kwargs)
 
