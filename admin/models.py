@@ -1,3 +1,6 @@
+"""
+Modely - reprezentují entity z databáze.
+"""
 from typing import Any
 
 from django.core.validators import RegexValidator
