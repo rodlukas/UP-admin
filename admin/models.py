@@ -130,7 +130,7 @@ class Course(models.Model):
 
 class Application(models.Model):
     """
-    Reprezentuje zájem klienta o kurz.
+    Žádost reprezentující zájem klienta o kurz.
     OMEZENÍ: Každý klient může mít zájem o daný kurz nejvýše jednou.
     ŘAZENÍ: Vzestupně dle příjmení a křestního jména klienta.
     """
