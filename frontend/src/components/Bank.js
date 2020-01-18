@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Fragment } from "react"
 import { ListGroup, ListGroupItem, Table } from "reactstrap"
 import BankService from "../api/services/bank"
-import { CURRENCY, RENT_PRICE } from "../global/constants"
+import { BANKING_URL, CURRENCY } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"
 import CustomButton from "./buttons/CustomButton"
@@ -52,7 +52,8 @@ export default class Bank extends React.PureComponent {
                     bankData: {
                         info: response.data.accountStatement.info,
                         transactions: response.data.accountStatement.transactionList.transaction,
-                        fetch_timestamp: response.data.fetch_timestamp
+                        fetch_timestamp: response.data.fetch_timestamp,
+                        rent_price: response.data.rent_price
                     },
                     IS_LOADING: false,
                     REFRESH_DISABLED: true,
@@ -80,6 +81,7 @@ export default class Bank extends React.PureComponent {
 
     render() {
         const balance = this.state.bankData.info.closingBalance
+        const RENT_PRICE = this.state.bankData.rent_price
         return (
             <ListGroup className="pageContent">
                 <ListGroupItem color={balance < RENT_PRICE ? "danger" : "success"}>
@@ -139,12 +141,16 @@ export default class Bank extends React.PureComponent {
                                 : "Obnovit výpis"}
                         </UncontrolledTooltipWrapper>{" "}
                         <a
-                            href="https://ib.fio.cz/"
+                            href={BANKING_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="btn btn-secondary">
                             Bankovnictví{" "}
-                            <FontAwesomeIcon icon={faExternalLinkAlt} transform="right-2" />
+                            <FontAwesomeIcon
+                                icon={faExternalLinkAlt}
+                                transform="right-2"
+                                size="sm"
+                            />
                         </a>
                     </div>
                 </ListGroupItem>
@@ -177,9 +183,7 @@ export default class Bank extends React.PureComponent {
                                             comment_obj &&
                                             message_obj.value === comment_obj.value
                                         const target_account_owner_obj = transaction.column10
-                                        const amount_className = `font-weight-bold text-right ${
-                                            amount < 0 ? " text-danger" : ""
-                                        }`
+                                        const amount_className = amount < 0 ? " text-danger" : ""
                                         return (
                                             <tr
                                                 key={id}
@@ -210,7 +214,10 @@ export default class Bank extends React.PureComponent {
                                                     {prettyDateWithDayYearIfDiff(date, true)}
                                                 </td>
                                                 <td
-                                                    className={amount_className + " text-nowrap"}
+                                                    className={
+                                                        amount_className +
+                                                        " font-weight-bold text-right text-nowrap"
+                                                    }
                                                     style={{ minWidth: "7em" }}>
                                                     {prettyAmount(amount)} {CURRENCY}
                                                 </td>
@@ -224,8 +231,20 @@ export default class Bank extends React.PureComponent {
                         </tbody>
                     </Table>
                     <div className="text-center text-muted font-italic">
-                        <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší 14 dnů lze zobrazit
-                        pouze v bankovnictví
+                        <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší{" "}
+                        <UncontrolledTooltipWrapper target="Bank_days">
+                            {this.state.bankData.info.dateStart
+                                ? prettyDateWithDayYearIfDiff(
+                                      new Date(this.state.bankData.info.dateStart.split("+")[0]),
+                                      true
+                                  )
+                                : "neznámý datum"}
+                        </UncontrolledTooltipWrapper>
+                        <strong id="Bank_days">14 dnů</strong> lze zobrazit pouze{" "}
+                        <a href={BANKING_URL} target="_blank" rel="noopener noreferrer">
+                            v bankovnictví <FontAwesomeIcon icon={faExternalLinkAlt} size="xs" />
+                        </a>
+                        .
                     </div>
                 </ListGroupItem>
             </ListGroup>

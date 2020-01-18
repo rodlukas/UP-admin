@@ -225,5 +225,4 @@ class BankView(APIView):
         """
         Vrátí výpis transakcí z bankovního účtu.
         """
-        status_code, json = Bank().get_transactions()
-        return Response(json, status=status_code)
+        return Bank().get_transactions()

@@ -1,61 +1,103 @@
 from datetime import datetime, timedelta
+from typing import Tuple, Dict
 
 import requests
 from django.conf import settings
 from rest_framework import status
+from rest_framework.response import Response
 
 
 class Bank:
+    """
+    Zprostředkovává komunikaci s Fio API pro získání seznamu posledních transakcí.
+    """
+
+    # URL adresa API Fio banky
     FIO_API_URL = "https://www.fio.cz/ib_api/rest/"
-    data = None
-    json_data = None
+    # minimalni zustatek v Kc na Fio uctu (odcita se od aktualniho zustatku)
+    FIO_MIN_BALANCE = 100
+    # vyse najmu (v Kc)
+    BANK_RENT_PRICE = 3595
+    # mozne chyby na Fio API a prislusne chybove hlasky
+    FIO_API_ERRORS = {
+        status.HTTP_409_CONFLICT: "překročení intervalu pro dotazování",
+        status.HTTP_500_INTERNAL_SERVER_ERROR: "neexistující/neplatný token",
+        status.HTTP_404_NOT_FOUND: "špatně zaslaný dotaz na banku",
+    }
 
-    def prepare_response(self):
-        # dekoduj JSON
-        try:
-            self.json_data = self.data.json()
-        except ValueError:  # kdyz se nepovede dekodovat JSON
-            return self.generate_error()
-        else:
-            return self.generate_data()
-
-    def generate_data(self):
-        # serad od nejnovejsich transakci
-        self.json_data["accountStatement"]["transactionList"]["transaction"].reverse()
-        # timestamp dotazu (s prevodem na milisekundy)
-        self.json_data["fetch_timestamp"] = int(datetime.now().timestamp() * 1000)
-        status_code = status.HTTP_200_OK
-        return status_code
-
-    def generate_error(self):
-        if self.data.status_code == status.HTTP_409_CONFLICT:
-            status_info = "překročení intervalu pro dotazování"
-        elif self.data.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR:
-            status_info = "neexistující/neplatný token"
-        elif self.data.status_code == status.HTTP_404_NOT_FOUND:
-            status_info = "špatně zaslaný dotaz na banku"
-        else:
-            status_info = "neznámá chyba"
-        self.json_data = {"status_info": f"Data se nepodařilo stáhnout – {status_info}"}
-        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        return status_code
-
-    def generate_error_blocked(self):
-        status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        self.json_data = {
-            "status_info": "Propojení s bankou je v této instanci aplikace administrátorem zakázáno."
-        }
-        return status_code
-
-    def get_transactions(self):
-        # pokud je povolena prace s bankou, proved pozadavek
+    def get_transactions(self) -> Response:
+        """
+        Vrátí seznam bankovních transakcí v posledních 14 dnech (nebo případně info o příslušné chybě).
+        V případě úspěšného požadavku na Fio API přidá do odpovědi také výši nájmu a timestamp dotazu.
+        """
         if settings.BANK_ACTIVE:
-            current_date_str = datetime.now().strftime("%Y-%m-%d")
-            history_date_str = (datetime.now() - timedelta(days=14)).strftime("%Y-%m-%d")
-            url_secret = f"{self.FIO_API_URL}periods/{settings.FIO_API_KEY}/{history_date_str}/{current_date_str}/transactions.json"
-            self.data = requests.get(url_secret)
-            # priprav odpoved
-            status_code = self.prepare_response()
+            date_format = "%Y-%m-%d"
+            current_date_str = datetime.now().strftime(date_format)
+            history_date_str = (datetime.now() - timedelta(days=14)).strftime(date_format)
+            url_secret = (
+                f"{self.FIO_API_URL}periods/{settings.FIO_API_KEY}/"
+                f"{history_date_str}/{current_date_str}/transactions.json"
+            )
+            output_data, output_status = self.perform_api_request(url_secret)
         else:
-            status_code = self.generate_error_blocked()
-        return status_code, self.json_data
+            output_data, output_status = self.generate_output_error(
+                "propojení s bankou je pro tuto doménu administrátorem zakázáno"
+            )
+        return Response(output_data, status=output_status)
+
+    def perform_api_request(self, url_secret: str) -> Tuple[dict, int]:
+        """
+        Provede požadavek na Fio API a zpracuje příchozí data nebo chybu.
+        """
+        try:
+            input_data = requests.get(url_secret)
+            input_data.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            return self.process_error(e.response.status_code)
+        else:
+            return self.process_data(input_data)
+
+    def process_data(self, req: requests.Response) -> Tuple[dict, int]:
+        """
+        Zpracuje příchozí data z Fio API - dekóduje JSON a transformuje data pro výstup.
+        """
+        try:
+            # dekoduj JSON
+            output_data = req.json()
+            # proved transformaci dat a vrat vysledek
+            return self.transform_data(output_data), req.status_code
+        except (ValueError, KeyError):
+            # nastala chyba pri dekodovani nebo naslednem zpracovani JSONu
+            return self.generate_output_error("neočekávaná struktura JSONu")
+
+    def transform_data(self, output_data: dict) -> dict:
+        """
+        Transformuje JSON z Fio API do požadované výstupní struktury.
+        """
+        # serad od nejnovejsich transakci
+        output_data["accountStatement"]["transactionList"]["transaction"].reverse()
+        # pridani timestamp dotazu (s prevodem na milisekundy)
+        output_data["fetch_timestamp"] = int(datetime.now().timestamp() * 1000)
+        # pridani vyse najmu (Kc)
+        output_data["rent_price"] = self.BANK_RENT_PRICE
+        # odstraneni nepotrebnych polozek z info o uctu
+        info_remove = ["yearList", "idList", "idFrom", "idTo", "idLastDownload"]
+        [output_data["accountStatement"]["info"].pop(key) for key in info_remove]
+        # vypocet realneho zustatku (po odecteni minimalniho zustatku na uctu)
+        output_data["accountStatement"]["info"]["closingBalance"] -= self.FIO_MIN_BALANCE
+        return output_data
+
+    def process_error(self, status_code: int):
+        """
+        Zpracuje chybu při neúspěšném požadavku na Fio API.
+        """
+        if status_code in self.FIO_API_ERRORS:
+            return self.generate_output_error(self.FIO_API_ERRORS[status_code])
+        return self.generate_output_error("neznámá chyba Fio API")
+
+    def generate_output_error(self, err_msg: str) -> Tuple[Dict[str, str], int]:
+        """
+        Generuje výstupní data o chybě.
+        """
+        output_data = {"status_info": f"Data se nepodařilo stáhnout – {err_msg}."}
+        return output_data, status.HTTP_500_INTERNAL_SERVER_ERROR
