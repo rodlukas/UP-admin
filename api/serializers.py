@@ -1,10 +1,21 @@
-import re
-from datetime import timedelta
+"""
+Serializery - převádějí modely/querysety do jednoduchých Python struktur (ty lze pak
+převést např. na JSON) a naopak včetně validace.
+
+Poznámka:
+ U polí serializerů se zde často použije kombinace např. client a client_id.
+ Toto umožňuje při čtení (GET) zasílat vnořené informace (např. client)
+ a při zápisu (PUT/POST/PATCH) přijímat pouze id (např. client_id), ke kterému se
+ ale na základě propojení přes source="client" DRF chová jako k příslušnému objektu.
+ Viz:   https://stackoverflow.com/a/33048798,
+        https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
+"""
+
+from typing import Union
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F, ExpressionWrapper, Q, DateTimeField
+from django.db.models import Q
 from rest_framework import serializers
-from rest_framework.settings import api_settings
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 
 from admin.models import (
@@ -17,22 +28,32 @@ from admin.models import (
     Lecture,
     Membership,
 )
-from api import serializers_helpers
+from api.serializers_helpers import LectureHelpers, BaseValidators
 
 
 class ClientSerializer(serializers.ModelSerializer):
+    """
+    Serializer pro klienta lektorky.
+    """
+
     class Meta:
         model = Client
         fields = "__all__"
 
     @staticmethod
-    def validate_phone(phone):
-        if phone and (not re.match(r"[0-9\s]+$", phone) or sum(c.isdigit() for c in phone) != 9):
-            raise serializers.ValidationError("Telefonní číslo musí obsahovat 9 číslic")
-        return phone
+    def validate_phone(phone: str) -> str:
+        """
+        Zvaliduj telefonní číslo klienta.
+        """
+        return BaseValidators.validate_phone(phone)
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    """
+    Serializer pro kurz, na který mohou klienti v rámci lekcí docházet.
+    """
+
+    # nazev kurzu (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(validators=[UniqueValidator(queryset=Course.objects.all())])
 
     class Meta:
@@ -41,7 +62,13 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class MembershipSerializer(serializers.ModelSerializer):
+    """
+    Serializer pro členství klienta ve skupině.
+    """
+
+    # vnorene informace o klientovi (jen pro cteni)
     client = ClientSerializer(read_only=True)
+    # ID klienta (jen pro zapis)
     client_id = serializers.PrimaryKeyRelatedField(
         queryset=Client.objects.all(), source="client", write_only=True
     )
@@ -52,9 +79,17 @@ class MembershipSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
+    """
+    Serializer skupiny klientů nějakého kurzu.
+    """
+
+    # nazev skupiny (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(validators=[UniqueValidator(queryset=Group.objects.all())])
+    # vnorene informace o clenstvich
     memberships = MembershipSerializer(many=True)
+    # vnorene informace o kurzu (jen pro cteni)
     course = CourseSerializer(read_only=True)
+    # ID kurzu (jen pro zapis)
     course_id = serializers.PrimaryKeyRelatedField(
         queryset=Course.objects.all(), source="course", write_only=True
     )
@@ -63,42 +98,51 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = "__all__"
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> Group:
+        """
+        Vytvoř skupinu a k ní příslušející členství klientů.
+        """
         memberships_data = validated_data.pop("memberships")
-        instance = Group.objects.create(**validated_data)
+        instance = super().create(validated_data)
         for membership_data in memberships_data:
-            Membership.objects.create(
-                client=membership_data.pop("client"), group=instance, **membership_data
-            )
+            Membership.objects.create(group=instance, **membership_data)
         return instance
 
-    def update(self, instance, validated_data):
-        # vytvoreni instance skupiny
-        instance.name = validated_data.get("name", instance.name)
-        instance.course = validated_data.get("course", instance.course)
-        instance.active = validated_data.get("active", instance.active)
-        instance.save()
+    def update(self, instance: Group, validated_data: dict) -> Group:
+        """
+        Uprav skupinu a k ní příslušející členství klientů.
+        """
+        memberships_data = validated_data.pop("memberships", None)
+        # uprava instance skupiny
+        instance = super().update(instance, validated_data)
         # upravy clenstvi
-        if "memberships" in validated_data:
-            memberships_data = validated_data["memberships"]
+        if memberships_data:
             memberships = instance.memberships.all()
-            # smaz z DB ty co tam nemaj byt
-            current_members_ids = [membership.client.pk for membership in memberships]
-            new_members_ids = [membership_data["client"].pk for membership_data in memberships_data]
-            memberships.exclude(client__pk__in=new_members_ids).delete()
-            # dopln do DB zbyle
+            # smaz z DB clenstvi, ktera tam nemaji byt
+            members_ids_old = [membership.client.pk for membership in memberships]
+            members_ids_new = [membership_data["client"].pk for membership_data in memberships_data]
+            memberships.exclude(client__pk__in=members_ids_new).delete()
+            # dopln do DB zbyla clenstvi
             for membership_data in memberships_data:
                 client = membership_data.pop("client")
-                if client.pk not in current_members_ids:
+                if client.pk not in members_ids_old:
                     Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
     @staticmethod
-    def validate_course_id(course):
-        return serializers_helpers.validate_course_is_visible(course)
+    def validate_course_id(course: Course) -> Course:
+        """
+        Ověř, že je kurz viditelný.
+        """
+        return BaseValidators.validate_course_is_visible(course)
 
 
 class AttendanceStateSerializer(serializers.ModelSerializer):
+    """
+    Serializer stavu účasti klienta na lekci.
+    """
+
+    # nazev stavu ucasti (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(
         validators=[UniqueValidator(queryset=AttendanceState.objects.all())]
     )
@@ -109,11 +153,19 @@ class AttendanceStateSerializer(serializers.ModelSerializer):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
+    """
+    Serializer žádosti reprezentující zájem klienta o kurz.
+    """
+
+    # vnorene informace o klientovi (jen pro cteni)
     client = ClientSerializer(read_only=True)
+    # ID klienta (jen pro zapis)
     client_id = serializers.PrimaryKeyRelatedField(
         queryset=Client.objects.all(), source="client", write_only=True
     )
+    # vnorene informace o kurzu (jen pro cteni)
     course = CourseSerializer(read_only=True)
+    # ID kurzu (jen pro zapis)
     course_id = serializers.PrimaryKeyRelatedField(
         queryset=Course.objects.all(), source="course", write_only=True
     )
@@ -130,68 +182,79 @@ class ApplicationSerializer(serializers.ModelSerializer):
         ]
 
     @staticmethod
-    def validate_course_id(course):
-        return serializers_helpers.validate_course_is_visible(course)
+    def validate_course_id(course: Course) -> Course:
+        """
+        Ověř, že je kurz viditelný.
+        """
+        return BaseValidators.validate_course_is_visible(course)
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    # client - pro GET, vypise vsechny informace o klientovi
-    # client_id - pro PUT/POST
-    #   -   source='client' spolu s queryset zarizuje, ze staci zaslat v pozadavku "client_id" : <id> a
-    #       serializer se bude k tomuto udaji chovat jako k objektu client (jako o radek vyse) bez nutnosti
-    #       jakkoliv prepisovat serializer a upravovat client na client_id apod.
-    #   -   podle:  https://stackoverflow.com/a/33048798,
-    #               https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
-    id = serializers.IntegerField(required=False)  # aby slo poslat pri updatu i ID attendance
+    """
+    Serializer pro účast klienta na nějaké lekci.
+    """
+
+    # ID attendance - aby slo poslat pri updatu a dale s nim pracovat
+    # (viz: https://stackoverflow.com/a/46525126/10045971)
+    id = serializers.IntegerField(required=False)
+    # vnorene informace o klientovi (jen pro cteni)
     client = ClientSerializer(read_only=True)
+    # ID klienta (jen pro zapis)
     client_id = serializers.PrimaryKeyRelatedField(
         queryset=Client.objects.all(), source="client", write_only=True
     )
+    # info, zda je potreba pripomenout klientovi platbu priste (jen pro cteni)
     remind_pay = serializers.SerializerMethodField(read_only=True)
-
     # + attendancestate vraci jen ID
 
     class Meta:
         model = Attendance
         exclude = ("lecture",)  # ochrana proti cykleni
 
-    def update(self, instance, validated_data):
-        prev_attendancestate = instance.attendancestate
-        prev_canceled = instance.lecture.canceled
-        # uprava ucasti
-        instance.client = validated_data.get("client", instance.client)
-        instance.lecture = validated_data.get("lecture", instance.lecture)
-        instance.attendancestate = validated_data.get("attendancestate", instance.attendancestate)
-        instance.paid = validated_data.get("paid", instance.paid)
-        instance.note = validated_data.get("note", instance.note)
-        instance.save()
+    def update(self, instance: Attendance, validated_data: dict) -> Attendance:
+        """
+        Uprav účast a proveď další nutné transformace dat.
+        """
+        attendancestate_old = instance.attendancestate
+        canceled_old = instance.lecture.canceled
+        # uprava instance ucasti
+        instance = super().update(instance, validated_data)
         # proved korekce poctu predplacenych lekci
-        serializers_helpers.lecture_corrections(
-            instance.lecture, instance, prev_canceled, prev_attendancestate
+        LectureHelpers.lecture_corrections(
+            instance.lecture, instance, canceled_old, attendancestate_old
         )
         # nastav lekci jako zrusenou pokud nikdo nema prijit
-        serializers_helpers.lecture_cancellability(instance.lecture)
+        LectureHelpers.cancel_lecture_if_nobody_arrives(instance.lecture)
         return instance
 
-    def validate(self, data):
+    def validate(self, data: dict) -> dict:
+        """
+        Zvaliduj účast.
+        """
         # u predplacene lekce nelze menit parametry platby
         if self.instance and self.instance.lecture.start is None:
-            serializers_helpers.validate_prepaid_non_changable_paid_state(data)
+            LectureHelpers.validate_prepaid_non_changable_paid_state(data)
         return data
 
     @staticmethod
-    def get_remind_pay(obj):
+    def get_remind_pay(obj: Attendance) -> bool:
+        """
+        Vypočítej, zda je potřeba připomenout klientovi platbu příště.
+        """
         # o predplacene a nezaplacene lekce se nezajimej
         if obj.lecture.start is None or obj.paid is False:
             return False
+        # v pripade skupiny zkus vyuzit pocitadla predplacenych lekci
         if obj.lecture.group is not None:
             try:
                 prepaid_cnt = obj.lecture.group.memberships.values("prepaid_cnt").get(
                     client=obj.client
                 )["prepaid_cnt"]
             except ObjectDoesNotExist:
+                # klient uz neni clenem skupiny, pocitadlo predplacenych lekci nelze vyuzit
                 pass
             else:
+                # klient uz ma neco predplaceno, nic nepripominat
                 if prepaid_cnt > 0:
                     return False
         # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu
@@ -212,12 +275,21 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
 
 class LectureSerializer(serializers.ModelSerializer):
+    """
+    Serializer pro lekci klienta či skupiny náležící nějakému kurzu.
+    """
+
+    # vnorene informace o ucastech na lekci
     attendances = AttendanceSerializer(many=True)
+    # vnorene informace o kurzu (jen pro cteni)
     course = CourseSerializer(read_only=True)
+    # ID kurzu (jen pro zapis)
     course_id = serializers.PrimaryKeyRelatedField(
         queryset=Course.objects.all(), source="course", write_only=True, required=False
     )
+    # vnorene informace o skupine (jen pro cteni)
     group = GroupSerializer(read_only=True)
+    # ID skupiny (jen pro zapis)
     group_id = serializers.PrimaryKeyRelatedField(
         queryset=Group.objects.all(),
         source="group",
@@ -225,32 +297,41 @@ class LectureSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True,
     )
-    count = serializers.SerializerMethodField(read_only=True)
-    refresh_clients = serializers.BooleanField(
-        write_only=True, default=False
-    )  # pro aktualizaci ucastniku dane lekce vzhledem k aktualnim clenum skupiny
+    # poradove cislo lekce (jen pro cteni)
+    number = serializers.SerializerMethodField(read_only=True)
+    # indikator, zda aktualizovat ucastniky dane lekce na (pouze) aktualni cleny skupiny
+    refresh_clients = serializers.BooleanField(write_only=True, default=False)
 
     class Meta:
         model = Lecture
         fields = "__all__"
 
     @staticmethod
-    def get_count(obj):
+    def get_number(obj: Lecture) -> Union[int, str, None]:
+        """
+        Vypočítej pořadové číslo lekce.
+        Pokud se jedná o předplacenou lekci, vrať None.
+        Pokud se nedá číslo dopočítat kvůli chybějícímu výchozímu stavu účasti, vrať upozornění.
+        """
         # vrat null pokud se jedna o predplacenou lekci
         if obj.start is None:
             return None
+        # proved jednoduchy vypocet poradoveho cisla pro skupinu
         if obj.group is not None:
-            cnt = Lecture.objects.filter(
+            prev_lectures_cnt = Lecture.objects.filter(
                 group=obj.group, start__isnull=False, start__lt=obj.start, canceled=False
             )
         else:
+            # proved vypocet poradoveho cisla pro jednotlivce
             try:
+                # je potreba najit vychozi stav
                 attendancestate_default_pk = AttendanceState.objects.values("pk").get(default=True)[
                     "pk"
                 ]
-            except ObjectDoesNotExist:  # pokud neni zvoleny vychozi stav, vrat upozorneni
+            except ObjectDoesNotExist:
+                # pokud neni vychozi stav zvoleny, vrat misto toho upozorneni
                 return "⚠ není zvolen výchozí stav účasti – vizte nastavení"
-            cnt = Attendance.objects.filter(
+            prev_lectures_cnt = Attendance.objects.filter(
                 client=obj.attendances.get().client_id,
                 lecture__course=obj.course,
                 lecture__start__isnull=False,
@@ -259,18 +340,25 @@ class LectureSerializer(serializers.ModelSerializer):
                 lecture__canceled=False,
                 attendancestate=attendancestate_default_pk,
             )
-        return cnt.count() + 1  # +1 aby prvni kurz nebyl jako 0.
+        # vrat poradove cislo aktualni lekce (tedy +1 k poctu minulych lekci)
+        return prev_lectures_cnt.count() + 1
 
-    def create(self, validated_data):
-        validated_data.pop("refresh_clients", None)  # pro create se tento klic nepouziva
+    def create(self, validated_data: dict) -> Lecture:
+        """
+        Vytvoř lekci a k ní příslušející účasti klientů, proveď další nutné transformace.
+        """
+        # pro create se refresh_clients nepouziva, muzeme smazat
+        validated_data.pop("refresh_clients")
         # vytvoreni instance lekce
         attendances_data = validated_data.pop("attendances")
         group = validated_data.pop("group", None)
-        # kurz vezmi z dat, pokud jde o skupinu tak primo z ni
+        # kurz vezmi z dat, v pripade skupiny primo z ni
         course = validated_data.pop("course") if "course" in validated_data else group.course
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not validated_data["canceled"]:
-            validated_data["canceled"] = serializers_helpers.should_be_canceled(attendances_data)
+            validated_data["canceled"] = LectureHelpers.find_if_lecture_should_be_canceled(
+                attendances_data
+            )
         instance = Lecture.objects.create(course=course, group=group, **validated_data)
         # vytvoreni jednotlivych ucasti
         for attendance_data in attendances_data:
@@ -284,7 +372,7 @@ class LectureSerializer(serializers.ModelSerializer):
                     # pokud uz klient neni clenem skupiny, nic nedelej
                     pass
                 else:
-                    # kdyz ma dorazit, lekce neni zrusena a ma nejake predplacene lekce, odecti jednu
+                    # pokud ma dorazit, lekce neni zrusena a ma nejake predplacene lekce, odecti jednu
                     if (
                         not instance.canceled
                         and attendance_data["attendancestate"].default
@@ -296,166 +384,86 @@ class LectureSerializer(serializers.ModelSerializer):
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
 
-    def update(self, instance, validated_data):
-        prev_canceled = instance.canceled
+    def update(self, instance: Lecture, validated_data: dict) -> Lecture:
+        """
+        Uprav lekci a k ní příslušející účasti klientů, proveď další nutné transformace.
+        """
+        canceled_old = instance.canceled
+        attendances_data = validated_data.pop("attendances", None)
         # uprava instance lekce
-        instance.start = validated_data.get("start", instance.start)
-        instance.duration = validated_data.get("duration", instance.duration)
-        instance.canceled = validated_data.get("canceled", instance.canceled)
-        instance.course = validated_data.get("course", instance.course)
-        instance.group = validated_data.get("group", instance.group)
-        instance.save()
-
-        if "attendances" in validated_data:
-            # upravy jednotlivych ucasti
-            attendances_data = validated_data["attendances"]
-            attendances = instance.attendances.all()
-            refresh_clients = validated_data.get("refresh_clients")
-            for attendance_data in attendances_data:
-                attendance = attendances.get(pk=attendance_data["id"])
-                # projeveni zmen klientu skupiny (smazani)
-                if instance.group and refresh_clients:
-                    # pokud ucastnik uz neni clenem skupiny, smaz jeho ucast a prejdi na dalsiho ucastnika
-                    try:
-                        instance.group.memberships.get(client=attendance.client)
-                    except ObjectDoesNotExist:
-                        attendance.delete()
-                        continue
-                # jedna se stale o clena skupiny (nebo neni pozadovano projeveni zmen klientu), proved prislusne upravy
-                prev_attendancestate = attendance.attendancestate
-                # uprava ucasti
-                attendance.paid = attendance_data["paid"]
-                attendance.client = attendance_data["client"]
-                attendance.note = attendance_data["note"]
-                attendance.attendancestate = attendance_data["attendancestate"]
-                attendance.save()
-                # proved korekce poctu predplacenych lekci
-                serializers_helpers.lecture_corrections(
-                    instance, attendance, prev_canceled, prev_attendancestate
-                )
-            # projeveni zmen klientu skupiny (pridani)
+        instance = super().update(instance, validated_data)
+        # pokud nejsou zaslany ucasti, update konci
+        if not attendances_data:
+            return instance
+        # upravy jednotlivych ucasti
+        attendances = instance.attendances.all()
+        refresh_clients = validated_data["refresh_clients"]
+        for attendance_data in attendances_data:
+            # najdi prislusnou ucast
+            attendance = attendances.get(pk=attendance_data["id"])
+            # projeveni zmen klientu skupiny (smazani ucasti)
             if instance.group and refresh_clients:
-                # clenove skupiny, kteri nemaji u teto lekce ucast
-                memberships = instance.group.memberships.exclude(
-                    client__pk__in=[client["client"].pk for client in attendances_data]
-                )
-                attendancestate_default = AttendanceState.objects.get(default=True)
-                for membership in memberships:
-                    lecture_paid = False
-                    # kdyz lekce neni zrusena a ma nejake predplacene lekce, odecti jednu
-                    if not instance.canceled and membership.prepaid_cnt > 0:
-                        lecture_paid = True
-                        membership.prepaid_cnt = membership.prepaid_cnt - 1
-                        membership.save()
-                    Attendance.objects.create(
-                        client=membership.client,
-                        lecture=instance,
-                        paid=lecture_paid,
-                        attendancestate=attendancestate_default,
-                    )
-            # nastav lekci jako zrusenou pokud nikdo nema prijit
-            serializers_helpers.lecture_cancellability(instance)
+                # pokud ucastnik uz neni clenem skupiny, smaz jeho ucast a prejdi na dalsiho ucastnika
+                try:
+                    instance.group.memberships.get(client=attendance.client)
+                except ObjectDoesNotExist:
+                    attendance.delete()
+                    continue
+            # jedna se stale o clena skupiny (nebo neni pozadovano projeveni zmen klientu), proved prislusne upravy
+            attendancestate_old = attendance.attendancestate
+            # uprava ucasti
+            attendance = super().update(attendance, attendance_data)
+            # proved korekce poctu predplacenych lekci
+            LectureHelpers.lecture_corrections(
+                instance, attendance, canceled_old, attendancestate_old
+            )
+        # projeveni zmen klientu skupiny (pridani ucasti)
+        if instance.group and refresh_clients:
+            LectureHelpers.refresh_clients_add(instance, attendances_data)
+        # nastav lekci jako zrusenou pokud nikdo nema prijit
+        LectureHelpers.cancel_lecture_if_nobody_arrives(instance)
         return instance
 
-    def validate_attendances(self, attendances):
-        # vsichni klienti musi byt aktivni, platne pouze pro vytvareni lekci
+    def validate_attendances(self, attendances: dict) -> dict:
+        """
+        Ověř, že všichni klienti učastnící se lekce jsou aktivní (jen když lekci vytváříme).
+        """
         if not self.instance:
             for attendance in attendances:
-                serializers_helpers.validate_client_is_active(attendance["client"])
+                BaseValidators.validate_client_is_active(attendance["client"])
         return attendances
 
     @staticmethod
-    def validate_group_id(group):
-        # pokud je zaslana skupina, zvaliduj ji
+    def validate_group_id(group: Group) -> Group:
+        """
+        Ověř, že v případě skupinové lekce je skupina aktivní.
+        """
         if group:
-            serializers_helpers.validate_group_is_active(group)
+            BaseValidators.validate_group_is_active(group)
         return group
 
-    def validate(self, data):
-        # validujeme neco, co ma byt skupina?
-        # zkontrolujeme pritomnost atributu group a jeho hodnotu (bud neni, je None nebo obsahuje ID skupiny)
-        is_group = bool(data.get("group", False))
-        # pro skupiny nemusime ID skupiny pri uprave uvest, priznak skupiny tedy muzeme nastavit dle stavajicich dat
-        #   v DB prave tehdy, kdyz probiha uprava a nezasilame atribut group
-        if self.instance and not is_group and "group" not in data:
-            is_group = self.instance.group is not None
+    def validate(self, data: dict) -> dict:
+        """
+        Zvaliduj lekci.
+        """
+        # skupina, ktere patri tato lekce
+        is_group = LectureHelpers.is_group(data, self.instance)
+        # validace kurzu
+        LectureHelpers.validate_course_presence(data, self.instance, is_group)
+        # validace poctu ucastniku lekce
+        LectureHelpers.validate_attendants_count(data, is_group)
+        # validace start & duration
+        LectureHelpers.validate_start_duration(data)
 
-        # validace kurzu - pro skupiny nezasilat, pro jednotlivce povinny
-        if not is_group and "course" not in data:
-            raise serializers.ValidationError(
-                {"course_id": "Není uveden kurz, pro lekce jednotlivců je to povinné."}
-            )
-        elif is_group and "course" in data:
-            raise serializers.ValidationError(
-                {"course_id": "Pro skupiny se kurz neuvádí, protože se určí automaticky."}
-            )
-
-        # single lekce musi mit jen jednoho ucastnika
-        if not is_group and "attendances" in data and len(data["attendances"]) != 1:
-            raise serializers.ValidationError(
-                {"attendances": "Lekce pro jednotlivce musí mít jen jednoho účastníka."}
-            )
-
-        # pro zrusene lekce nic nekontroluj
-        # tedy pokud je zaslana nova hodnota canceled a je True
-        # NEBO pokud neni zaslana nova hodnota a aktualni je True
-        if ("canceled" in data and data["canceled"]) or (
-            "canceled" not in data and self.instance.canceled
-        ):
-            return data
-        # pro nove predplacene lekce proved jednoduchou kontrolu (nelze menit parametry platby)
+        # pro nove predplacene lekce proved jen jednoduchou kontrolu (nelze menit parametry platby)
         if "start" in data and data["start"] is None:
             attendances = (
                 data["attendances"] if ("attendances" in data) else self.instance.attendances
             )
             for attendance in attendances:
-                serializers_helpers.validate_prepaid_non_changable_paid_state(attendance)
+                LectureHelpers.validate_prepaid_non_changable_paid_state(attendance)
             return data
-        # pokud se meni duration/start, je potreba znat obe hodnoty, aby sel spocitat casovy konflikt
-        if ("start" in data and "duration" not in data) or (
-            "start" not in data and "duration" in data
-        ):
-            raise serializers.ValidationError(
-                {
-                    api_settings.NON_FIELD_ERRORS_KEY: "Změnu počátku lekce a trvání je potřeba provádět naráz"
-                }
-            )
-        # pokud se meni canceled, je potreba znat i attendances pro dopocteni should_be_canceled (metoda update)
-        if "canceled" in data and "attendances" not in data:
-            raise serializers.ValidationError(
-                {
-                    api_settings.NON_FIELD_ERRORS_KEY: "Pro změnu zrušení lekce je potřeba zaslat zároveň i účasti"
-                }
-            )
+
         # kontrola casoveho konfliktu
-        elif "start" in data and "duration" in data:
-            end = data["start"] + timedelta(minutes=data["duration"])
-            # z atributu vytvor dotaz na end, pro funkcni operaci potreba pronasobit timedelta
-            expression = F("start") + (timedelta(minutes=1) * F("duration"))
-            # proved dotaz, vrat datetime
-            end_db = ExpressionWrapper(expression, output_field=DateTimeField())
-            # ke kazdemu zaznamu prirad hodnotu end_db ziskanou z vyrazu vyse a zjisti, zda existuji lekce v konfliktu
-            qs = Lecture.objects.annotate(end_db=end_db).filter(
-                start__lt=end, end_db__gt=data["start"]
-            )
-            # pokud updatuju, proveruji pouze ostatni lekce
-            if self.instance:
-                qs = qs.exclude(pk=self.instance.pk)
-            if qs.exists():
-                for elem in list(qs):
-                    # do konfliktu nezapocitavej zrusene lekce
-                    if elem.canceled:
-                        continue
-                    # tvorba errormsg
-                    err_datetime = serializers_helpers.datetime_str(elem.start)
-                    err_duration = str(elem.duration)
-                    if elem.group is not None:
-                        err_obj = f"skupina {elem.group.name}"
-                    else:
-                        client = elem.attendances.get().client
-                        err_obj = f"klient {client.surname} {client.firstname}"
-                    error_msg = f"Časový konflikt s jinou lekcí: {err_obj} ({err_datetime}, trvání {err_duration} min.). Upravte datum a čas konání."
-                    raise serializers.ValidationError(
-                        {api_settings.NON_FIELD_ERRORS_KEY: [error_msg]}
-                    )
+        LectureHelpers.validate_lecture_collision(data, self.instance)
         return data
