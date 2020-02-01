@@ -19,7 +19,7 @@ class BaseValidators:
     @staticmethod
     def validate_phone(phone: str) -> str:
         """
-        Ověř, že je telefonní číslo ve správném formátu, jinak vyhoď výjimku.
+        Ověří, že je telefonní číslo ve správném formátu, jinak vyhodí výjimku.
         """
         if phone and (not re.match(r"[0-9\s]+$", phone) or sum(c.isdigit() for c in phone) != 9):
             raise serializers.ValidationError("Telefonní číslo musí obsahovat 9 číslic")
@@ -28,7 +28,7 @@ class BaseValidators:
     @staticmethod
     def validate_course_is_visible(course: Course) -> Course:
         """
-        Ověř, že je kurz viditelný, jinak vyhoď výjimku.
+        Ověří, že je kurz viditelný, jinak vyhodí výjimku.
         """
         if not course.visible:
             raise serializers.ValidationError(
@@ -39,7 +39,7 @@ class BaseValidators:
     @staticmethod
     def validate_client_is_active(client: Client) -> Client:
         """
-        Ověř, že je klient aktivní, jinak vyhoď výjimku.
+        Ověří, že je klient aktivní, jinak vyhodí výjimku.
         """
         if not client.active:
             raise serializers.ValidationError(
@@ -51,7 +51,7 @@ class BaseValidators:
     @staticmethod
     def validate_group_is_active(group: Group) -> Group:
         """
-        Ověř, že je skupina aktivní, jinak vyhoď výjimku.
+        Ověří, že je skupina aktivní, jinak vyhodí výjimku.
         """
         if not group.active:
             raise serializers.ValidationError(
@@ -97,7 +97,7 @@ class LectureHelpers:
     @staticmethod
     def find_if_lecture_should_be_canceled(attendances: Union[dict, Attendance]) -> bool:
         """
-        Zjisti, zda má být lekce zrušená.
+        Zjistí, zda má být lekce zrušená.
         Lekce má být zrušená pokud jsou všichni omluveni.
         Lekce bez účastníků zrušená není.
         """
@@ -189,7 +189,7 @@ class LectureHelpers:
     @staticmethod
     def is_group(data: dict, lecture: Lecture) -> bool:
         """
-        Zjisti, zda se jedná o skupinovou lekci.
+        Zjistí, zda se jedná o skupinovou lekci.
         Vzhledem k tomu, že ID skupiny nemusí být udáno je potřeba jej případně dohledat v DB.
         """
         # zkontrolujeme pritomnost atributu group a jeho hodnotu (bud neni, je None nebo obsahuje ID skupiny)
@@ -203,7 +203,7 @@ class LectureHelpers:
     @staticmethod
     def cancel_lecture_if_nobody_arrives(lecture: Lecture) -> None:
         """
-        Nastav lekci jako zrušenou pokud nikdo nemá přijít.
+        Nastaví lekci jako zrušenou pokud nikdo nemá přijít.
         Netýká se lekce bez účastníků.
         """
         # probihaly upravy na relational fields (attendances), je tedy potreba nacist znovu
@@ -231,9 +231,9 @@ class LectureHelpers:
     @staticmethod
     def validate_course_presence(data: dict, lecture: Lecture, is_group: bool) -> None:
         """
-        Ověř, že pro skupinovou lekci není zadaný nový kurz v datech, respektive pro single lekci
+        Ověří, že pro skupinovou lekci není zadaný nový kurz v datech, respektive pro single lekci
         je buď zadaný nový korz, nebo už nějaký v DB je.
-        Jinak vyhoď výjimku.
+        Jinak vyhodí výjimku.
         """
         if not is_group and "course" not in data and not lecture.course:
             raise serializers.ValidationError(
@@ -247,7 +247,7 @@ class LectureHelpers:
     @staticmethod
     def validate_attendants_count(data: dict, is_group: bool) -> None:
         """
-        Zvaliduj počet účastníků lekce.
+        Zvaliduje počet účastníků lekce.
         """
         # single lekce musi mit jen jednoho ucastnika
         if not is_group and "attendances" in data and len(data["attendances"]) != 1:
@@ -258,7 +258,7 @@ class LectureHelpers:
     @staticmethod
     def validate_start_duration(data: dict) -> None:
         """
-        Ověř, že se neposílá začátek lekce bez trvání lekce nebo naopak.
+        Ověří, že se neposílá začátek lekce bez trvání lekce nebo naopak.
         Je potřeba mít oba údaje naráz pro výpočet časového konfliktu.
         """
         if ("start" in data and "duration" not in data) or (
@@ -286,7 +286,7 @@ class LectureHelpers:
     @staticmethod
     def validate_lecture_collision(data: dict, lecture: Lecture) -> None:
         """
-        Ověř, že lekce není v časovém konfliktu s ostatními lekcemi.
+        Ověří, že lekce není v časovém konfliktu s ostatními lekcemi.
         Časový konflikt mezi lekcí v DB (lekce "A") a přidávanou novou lekcí (lekce "B") znamená:
             1) A začíná před koncem B a zároveň
             2) B začíná před koncem A.

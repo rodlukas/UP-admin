@@ -43,7 +43,7 @@ class ClientSerializer(serializers.ModelSerializer):
     @staticmethod
     def validate_phone(phone: str) -> str:
         """
-        Zvaliduj telefonní číslo klienta.
+        Zvaliduje telefonní číslo klienta.
         """
         return BaseValidators.validate_phone(phone)
 
@@ -100,7 +100,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict) -> Group:
         """
-        Vytvoř skupinu a k ní příslušející členství klientů.
+        Vytvoří skupinu a k ní příslušející členství klientů.
         """
         memberships_data = validated_data.pop("memberships")
         instance = super().create(validated_data)
@@ -110,7 +110,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     def update(self, instance: Group, validated_data: dict) -> Group:
         """
-        Uprav skupinu a k ní příslušející členství klientů.
+        Upraví skupinu a k ní příslušející členství klientů.
         """
         memberships_data = validated_data.pop("memberships", None)
         # uprava instance skupiny
@@ -132,7 +132,7 @@ class GroupSerializer(serializers.ModelSerializer):
     @staticmethod
     def validate_course_id(course: Course) -> Course:
         """
-        Ověř, že je kurz viditelný.
+        Ověří, že je kurz viditelný.
         """
         return BaseValidators.validate_course_is_visible(course)
 
@@ -184,7 +184,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     @staticmethod
     def validate_course_id(course: Course) -> Course:
         """
-        Ověř, že je kurz viditelný.
+        Ověří, že je kurz viditelný.
         """
         return BaseValidators.validate_course_is_visible(course)
 
@@ -213,7 +213,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     def update(self, instance: Attendance, validated_data: dict) -> Attendance:
         """
-        Uprav účast a proveď další nutné transformace dat.
+        Upraví účast a provede další nutné transformace dat.
         """
         attendancestate_old = instance.attendancestate
         canceled_old = instance.lecture.canceled
@@ -229,7 +229,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 
     def validate(self, data: dict) -> dict:
         """
-        Zvaliduj účast.
+        Zvaliduje účast.
         """
         # u predplacene lekce nelze menit parametry platby
         if self.instance and self.instance.lecture.start is None:
@@ -239,7 +239,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_remind_pay(obj: Attendance) -> bool:
         """
-        Vypočítej, zda je potřeba připomenout klientovi platbu příště.
+        Vypočítá, zda je potřeba připomenout klientovi platbu příště.
         """
         # o predplacene a nezaplacene lekce se nezajimej
         if obj.lecture.start is None or obj.paid is False:
@@ -309,9 +309,9 @@ class LectureSerializer(serializers.ModelSerializer):
     @staticmethod
     def get_number(obj: Lecture) -> Union[int, str, None]:
         """
-        Vypočítej pořadové číslo lekce.
-        Pokud se jedná o předplacenou lekci, vrať None.
-        Pokud se nedá číslo dopočítat kvůli chybějícímu výchozímu stavu účasti, vrať upozornění.
+        Vypočítá pořadové číslo lekce.
+        Pokud se jedná o předplacenou lekci, vrátí None.
+        Pokud se nedá číslo dopočítat kvůli chybějícímu výchozímu stavu účasti, vrátí upozornění.
         """
         # vrat null pokud se jedna o predplacenou lekci
         if obj.start is None:
@@ -345,7 +345,7 @@ class LectureSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict) -> Lecture:
         """
-        Vytvoř lekci a k ní příslušející účasti klientů, proveď další nutné transformace.
+        Vytvoří lekci a k ní příslušející účasti klientů, provede další nutné transformace.
         """
         # pro create se refresh_clients nepouziva, muzeme smazat
         validated_data.pop("refresh_clients")
@@ -386,7 +386,7 @@ class LectureSerializer(serializers.ModelSerializer):
 
     def update(self, instance: Lecture, validated_data: dict) -> Lecture:
         """
-        Uprav lekci a k ní příslušející účasti klientů, proveď další nutné transformace.
+        Upraví lekci a k ní příslušející účasti klientů, provede další nutné transformace.
         """
         canceled_old = instance.canceled
         attendances_data = validated_data.pop("attendances", None)
@@ -426,7 +426,7 @@ class LectureSerializer(serializers.ModelSerializer):
 
     def validate_attendances(self, attendances: dict) -> dict:
         """
-        Ověř, že všichni klienti učastnící se lekce jsou aktivní (jen když lekci vytváříme).
+        Ověří, že všichni klienti učastnící se lekce jsou aktivní (jen když lekci vytváříme).
         """
         if not self.instance:
             for attendance in attendances:
@@ -436,7 +436,7 @@ class LectureSerializer(serializers.ModelSerializer):
     @staticmethod
     def validate_group_id(group: Group) -> Group:
         """
-        Ověř, že v případě skupinové lekce je skupina aktivní.
+        Ověří, že v případě skupinové lekce je skupina aktivní.
         """
         if group:
             BaseValidators.validate_group_is_active(group)
@@ -444,7 +444,7 @@ class LectureSerializer(serializers.ModelSerializer):
 
     def validate(self, data: dict) -> dict:
         """
-        Zvaliduj lekci.
+        Zvaliduje lekci.
         """
         # skupina, ktere patri tato lekce
         is_group = LectureHelpers.is_group(data, self.instance)
