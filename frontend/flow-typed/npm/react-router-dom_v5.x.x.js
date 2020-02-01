@@ -1,5 +1,5 @@
-// flow-typed signature: 61442766b80be7b4f6daba9b595c48ca
-// flow-typed version: 822e55b7ba/react-router-dom_v5.x.x/flow_>=v0.104.x
+// flow-typed signature: 5a959e600f16fdd755bffe764a262d15
+// flow-typed version: 45d63d67fa/react-router-dom_v5.x.x/flow_>=v0.104.x
 
 declare module "react-router-dom" {
   declare export var BrowserRouter: React$ComponentType<{|
@@ -44,8 +44,6 @@ declare module "react-router-dom" {
     pathname: string,
     search: string,
     hash: string,
-    state?: any,
-    key?: string,
     ...
   };
 
@@ -53,7 +51,6 @@ declare module "react-router-dom" {
     pathname?: string,
     search?: string,
     hash?: string,
-    state?: any,
     ...
   };
 
@@ -75,9 +72,6 @@ declare module "react-router-dom" {
     block(
       callback: string | (location: Location, action: HistoryAction) => ?string
     ): () => void,
-    // createMemoryHistory
-    index?: number,
-    entries?: Array<Location>,
     ...
   };
 
