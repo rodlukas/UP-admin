@@ -21,7 +21,7 @@ import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
 import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
-import { prettyPhone } from "../global/utils"
+import { capitalizeString, prettyPhone } from "../global/utils"
 
 class FormClients extends Component {
     isClient = Boolean(Object.keys(this.props.client).length)
@@ -46,6 +46,9 @@ class FormClients extends Component {
             value = value
                 .replace(/([0-9]{3})([^\s])/, "$1 $2")
                 .replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
+        // nastav velke pocatecni pismeno ve jmenu i prijmeni klienta
+        else if (target.id === "firstname" || target.id === "surname")
+            value = capitalizeString(value)
         this.setState({ [target.id]: value })
     }
 

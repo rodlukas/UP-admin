@@ -110,3 +110,8 @@ export function makeIdFromString(string) {
 export function isModalShown() {
     return document.querySelectorAll(".modal-open").length
 }
+
+// vrati string s velkym pocatecnim pismenem
+export function capitalizeString(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+}
