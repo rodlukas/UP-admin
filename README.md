@@ -162,7 +162,7 @@ Pro spuštění je potřeba mít v OS nainstalováno:
 </a>
 
 ### Instalace
-Nejdříve **naklonujeme repozitář**, otevřeme jeho složku a nahrajeme si **poslední produkční verzi** repozitáře
+Nejdříve **naklonujeme repozitář**, otevřeme jeho složku a nahrajeme si **poslední produkční verzi** repozitáře:
 ```bash
 $ git clone "https://github.com/rodlukas/UP-admin.git" && cd UP-admin
 
@@ -170,16 +170,16 @@ $ git fetch --tags
 $ latestRelease=$(git describe --tags `git rev-list --tags --max-count=1`)
 $ git checkout $latestRelease
 ```
-Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je přímo do repozitáře (a `frontend.zip` smažeme)
+Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je přímo do repozitáře (a `frontend.zip` smažeme):
 ```bash
 $ wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
 $ unzip frontend.zip && rm frontend.zip
 ```
-**Přejmenujeme vzorový konfigurační soubor `.env.template` v kořenovém adresáři na `.env`**
+**Přejmenujeme vzorový konfigurační soubor `.env.template`** v kořenovém adresáři na **`.env`**:
 ```bash
 $ mv .env.template .env
 ```
-Spustíme ***psql CLI***, kde pomocí dvou příkazů **vytvoříme databázi a uživatele** pro přístup do databáze, na závěr ukončíme CLI
+Spustíme ***psql CLI***, kde pomocí dvou příkazů **vytvoříme databázi a uživatele** pro přístup do databáze, na závěr ukončíme CLI:
 ```
 $ sudo -u postgres psql
 
@@ -187,30 +187,30 @@ postgres=# CREATE USER up WITH ENCRYPTED PASSWORD 'up';
 postgres=# CREATE DATABASE up WITH OWNER up;
 postgres=# exit
 ```
-Nahrajeme **český balíček pro databázi** (kvůli českému řazení podle abecedy)
+Nahrajeme **český balíček pro databázi** (kvůli českému řazení podle abecedy):
 ```bash
 $ source scripts/shell/postgresql_cs.sh
 ```
-Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu
+Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu:
 ```bash
 $ pipenv install --dev
 $ pipenv shell
 ```
-**Připravíme celou Django aplikaci na spuštění** (skript nastaví výchozí soubor s nastavením Djanga, připraví statické soubory frontendu pro nasazení a vytvoří databázové schéma)
+**Připravíme celou Django aplikaci na spuštění** ([skript](scripts/shell/release_tasks.sh) nastaví výchozí soubor s nastavením Djanga, připraví statické soubory frontendu pro nasazení a vytvoří databázové schéma):
 ```bash
 $ source scripts/shell/release_tasks.sh
 ```
-A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se poté budeme přihlašovat)
+A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se poté budeme přihlašovat):
 ```bash
 $ python manage.py createsuperuser
 ```
 💡 *(NEPOVINNÉ)* Na závěr můžeme ještě **naplnit naší databázi [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql)**, která ukážou fungování aplikace a usnadní první použití 
-(obsahují několik klientů, skupin, lekcí, zájemců, kurzů a stavů účasti) – po zadání příkazu je vyžadováno heslo databázového uživatele `up`, které jsme nastavili taktéž `up`
+(obsahují několik klientů, skupin, lekcí, zájemců, kurzů a stavů účasti) – po zadání příkazu je vyžadováno heslo databázového uživatele `up`, které jsme nastavili taktéž `up`:
 ```bash
 $ psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
 ```
 ### Spuštění
-**Spustíme vývojový server** 🚀
+**Spustíme vývojový server** 🚀:
 ```bash
 $ python manage.py runserver 0.0.0.0:8000
 ```
@@ -224,7 +224,7 @@ Obvykle je potřeba provést tyto 2 kroky:
 > 2. na mobilním zařízení zadat hostname nebo privátní IP adresu počítače, na kterém běží server.
 
 ### Testování
-Můžeme také snadno spustit různé testy aplikace, například otestovat, jestli správně funguje API pro klienty
+Můžeme také snadno spustit různé testy aplikace, například otestovat, jestli správně funguje API pro klienty:
 ```bash
 $ python manage.py behave --stage=api --tags=clients
 ```
