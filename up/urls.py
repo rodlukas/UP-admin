@@ -1,3 +1,6 @@
+"""
+Definice mapování URL na jednotlivá view.
+"""
 from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import include, path, re_path
@@ -7,9 +10,11 @@ from rest_framework import authentication
 from rest_framework.schemas import get_schema_view
 
 urlpatterns = [
+    # API mapovani
     path("api/v1/", include("api.urls")),
     # favicona pro starsi prohlizece
     path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("admin/favicon.ico"))),
+    # dynamicke OpenAPI schema
     path(
         "open-api/",
         get_schema_view(
@@ -20,6 +25,7 @@ urlpatterns = [
         ),
         name="openapi-schema",
     ),
+    # Swagger UI dokumentace API
     path(
         "docs/",
         TemplateView.as_view(
@@ -27,9 +33,11 @@ urlpatterns = [
         ),
         name="swagger-ui",
     ),
+    # vychozi stranka (serviruje React aplikaci)
     re_path(r"^", TemplateView.as_view(template_name="react-autogenerate.html")),
 ]
 
+# povoleni django-debug-toolbar stranek
 if settings.DEBUG or settings.MANUAL_PRODUCTION:
     import debug_toolbar
 

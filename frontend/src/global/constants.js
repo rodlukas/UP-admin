@@ -17,7 +17,7 @@ export const DEFAULT_DURATION = 30
 
 export const DEFAULT_COLOR = "#000"
 
-export const RENT_PRICE = 3572
+export const BANKING_URL = "https://ib.fio.cz/"
 
 export const USER_BIRTHDAY = {
     date: 1,

@@ -1,3 +1,6 @@
+"""
+Výchozí konfigurace Django projektu.
+"""
 import os
 import sys
 from datetime import timedelta
@@ -17,7 +20,7 @@ env = environ.Env(
     HEROKU=(bool, False),  # priznak nasazeni aplikace na Heroku
     ENVIRONMENT=str,  # nazev aktualniho prostredi, kde je aplikace spustena (pro Sentry)
     SENTRY_DSN=str,  # DSN klic pro Sentry
-    MANUAL_PRODUCTION=(bool, False),  # pro rucni spusteni produkcni verze nastavit True
+    MANUAL_PRODUCTION=(bool, False),  # pro simulaci produkcni verze nastavit: True
     BANK_ACTIVE=(bool, True),  # aktivace propojeni s bankou
     TESTS_RUNNING=(bool, False),  # indikace bezicich testu
     HEADLESS=(bool, True),  # indikace headless mode pro testy UI
@@ -53,9 +56,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "admin",
+    "admin.apps.AdminConfig",
     "rest_framework",
-    "api",
+    "api.apps.ApiConfig",
     "django_filters",
     "debug_toolbar",
 ]
@@ -116,7 +119,7 @@ CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"
 
 # Database
 DATABASES = {"default": env.db()}
-# v testech zpusobuje problemy, (neuzavrou se hned spojeni)
+# nastaveni persistentnich spojeni s DB (mimo testy - zpusobuje problemy)
 if not TESTS_RUNNING:
     DATABASES["default"]["CONN_MAX_AGE"] = CONST_DB_CON_AGE
 
