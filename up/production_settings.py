@@ -33,7 +33,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # pravidla pro manualni produkci (pro jeji simulaci na lokalu/build a fungovani Travisu)
 if MANUAL_PRODUCTION:
     STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "frontend", "dist")
+        os.path.join(BASE_DIR, "frontend", "build")
     ]  # jen na Travisu (zde se pak slozka smaze) / manualni produkci
     DEBUG = False
     ALLOWED_HOSTS.append("localhost")

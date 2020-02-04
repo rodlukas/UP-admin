@@ -61,7 +61,7 @@ after_success:
   - codecov --token=$CODECOV_TOKEN
 
   # vytvoreni souboru frontend.zip se sestavenym frontendem (vcetne template) pro nahrani na GH
-  - zip --must-match --recurse-paths frontend.zip frontend/dist admin/templates/react-autogenerate.html --exclude frontend/dist/react-autogenerate.html
+  - zip --must-match --recurse-paths frontend.zip frontend/build admin/templates/react-autogenerate.html --exclude frontend/build/assets/react-autogenerate.html
 
   # smazani dat z buildu, testovani a dokumentace
   - rm -rf geckodriver geckodriver.log coverage.xml docs frontend

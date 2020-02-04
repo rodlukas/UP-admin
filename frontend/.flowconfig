@@ -1,6 +1,5 @@
 [ignore]
-.*/node_modules/nwb/.*
-.*/dist/.*
+.*/build/.*
 
 [include]
 
