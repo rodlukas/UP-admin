@@ -108,7 +108,7 @@ const Main = () => {
             </Navbar>
             <ErrorBoundary>
                 <ToastContainer position={toast.POSITION.TOP_RIGHT} />
-                <main className="content">
+                <main className="content mb-4">
                     <SearchResults
                         foundResults={foundResults}
                         searchVal={searchVal}
