@@ -3,7 +3,7 @@
 # funkce pro nahrazeni retezcu (arg1: $1) retezcem (arg2: $2)
 substitute() {
   git grep -l "%$1" | xargs sed -i "s|%$1|$2|g"
-  echo "nahrazeni \"$1\" hodnotou \"$2\" probehlo uspesne"
+  echo "nahrazeni \"$1\" hodnotou \"$2\" bylo uspesne"
 }
 
 # nastaveni konstant, ktere budou nahrazeny
@@ -14,7 +14,8 @@ SENTRY_DSN_STRING='SENTRY_DSN'
 
 # nastaveni novych hodnot pro nahrazovane retezce
 VERSION=$(git rev-parse --short HEAD)
-RELEASE=$TRAVIS_TAG
+# viz https://docs.travis-ci.com/user/environment-variables/
+RELEASE=$TRAVIS_BRANCH
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
 
 # provedeni subtituce ve slozce $1
