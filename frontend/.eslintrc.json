@@ -15,12 +15,11 @@
         "ecmaVersion": 2018,
         "sourceType": "module"
     },
-    "plugins": ["react", "prettier", "react-hooks", "flowtype"],
+    "plugins": ["import", "flowtype", "jsx-a11y", "react", "react-hooks", "prettier"],
     "settings": {
         "react": {
             "version": "detect"
         }
     },
-    "rules": {
-    }
+    "rules": {}
 }
