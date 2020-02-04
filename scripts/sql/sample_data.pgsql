@@ -20,7 +20,7 @@ SET row_security = off;
 -- Data for Name: admin_client; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_client (id, name, surname, phone, email, note, active) FROM stdin;
+COPY public.admin_client (id, firstname, surname, phone, email, note, active) FROM stdin;
 1	Lukáš	Rod	777777777	test@test.cz	grafomotorika	t
 3	Vladimír	Novotný				t
 2	Jan	Novák				f
