@@ -24,7 +24,9 @@ module.exports = {
             version: "detect"
         }
     }
-    // TODO - vytvorit, pouzit pluginy a pripadne presety/CRA pristup + restrictedGlobals
+    // TODO - vytvorit, pouzit pluginy a pripadne presety/CRA pristup viz
+    //  https://github.com/facebook/create-react-app/blob/master/packages/eslint-config-react-app/index.js
+    //  + restrictedGlobals
     //extends: ["eslint:recommended", "plugin:react/recommended"],
     //rules: { "react/prop-types": 0 }
 }
