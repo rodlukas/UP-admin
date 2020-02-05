@@ -4,4 +4,7 @@
     <option name="languageLevel" value="FLOW" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Pipenv (up)" project-jdk-type="Python SDK" />
+  <component name="WebPackConfiguration">
+    <option name="path" value="$PROJECT_DIR$/frontend/webpack.config.js" />
+  </component>
 </project>
