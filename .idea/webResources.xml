@@ -10,6 +10,7 @@
             <path value="file://$PROJECT_DIR$/frontend/public" />
             <path value="file://$PROJECT_DIR$/admin/static" />
             <path value="file://$PROJECT_DIR$/admin/static/admin" />
+            <path value="file://$PROJECT_DIR$/frontend/build" />
           </resourceRoots>
         </entryData>
       </entry>
