@@ -85,16 +85,26 @@ Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těc
 V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplexní SQL dotazy** (viz články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/), [[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
 Aplikace umožňuje **pokročilé debugování** na lokálním i vzdáleném prostředí díky **[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** a jeho doplňku [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
 Pro **eliminaci mrtvého kódu** se také používá **[vulture](https://github.com/jendrikseipp/vulture/)**.
+
 #### Frontend
 Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
 * [React 16](https://reactjs.org/),
 * [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 * [React Router 5](https://reacttraining.com/react-router/),
+* [FontAwesome PRO](https://fontawesome.com/)
 * [a další...](/frontend/package.json)
+
+Vývoj frontendu je postaven především na:
+* [Webpack](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) + [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
+* [Babel](https://babeljs.io/),
+* [Flow](https://flow.org/) – pro statickou typovou kontrolu,
+* [ESlint](https://eslint.org/) – linter pro statickou analýzu kódu
+* a [React Hot Loader](https://github.com/gaearon/react-hot-loader) – pro [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 Aplikace je **odolná proti pádům JS** díky **[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**.
 Pro **zrychlení načítání** celé aplikace se používá lazy loading **[`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)**.
-**Statickou typovou kontrolu** má na starost **[Flow](https://flow.org/)**.
+[Webpack DevServer](https://webpack.js.org/configuration/dev-server/) je při vývoji propojený s [Django](https://www.djangoproject.com/) dev serverem a umožňuje tak jednoduchý vývoj bez kompromisů včetně [HMR](https://webpack.js.org/guides/hot-module-replacement/).
+
 ### Informace o nasazených aplikacích
 Aplikace aktuálně běží na **4 prostředích** (3x PaaS [Heroku](https://www.heroku.com/)), které se liší příslušnou nasazenou verzí aplikace, 
 konkrétní instancí databáze, umožňují různé úrovně debugování a kosmeticky se liší také barvou menu. 
