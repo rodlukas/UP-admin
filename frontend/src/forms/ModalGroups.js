@@ -1,12 +1,37 @@
-import React, { Fragment } from "react"
+import React, { Fragment, useContext } from "react"
 import { Modal } from "reactstrap"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
+import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
 import useModal from "../hooks/useModal"
 import FormGroups from "./FormGroups"
 
-const ModalGroups = ({ currentGroup = null, sendResult = false, inSentence = false, refresh }) => {
-    const [isModal, toggleModal, toggleModalForce, setFormDirty] = useModal()
+const ModalGroups = ({
+    currentGroup = null,
+    sendResult = false,
+    inSentence = false,
+    refresh,
+    processAdditionOfGroup
+}) => {
+    const [
+        isModal,
+        toggleModal,
+        toggleModalForce,
+        setFormDirty,
+        ,
+        processOnModalClose,
+        tempData
+    ] = useModal()
+
+    const groupsActiveContext = useContext(GroupsActiveContext)
+
+    function onModalClose() {
+        processOnModalClose(() => {
+            refresh(tempData)
+            // projeveni zmen do aktivnich skupin
+            groupsActiveContext.funcHardRefresh()
+        })
+    }
 
     return (
         <Fragment>
@@ -26,13 +51,13 @@ const ModalGroups = ({ currentGroup = null, sendResult = false, inSentence = fal
                     data-qa="button_add_group"
                 />
             )}
-            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false}>
+            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormGroups
                     group={Boolean(currentGroup) ? currentGroup : {}}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}
-                    funcRefresh={refresh}
+                    funcProcessAdditionOfGroup={processAdditionOfGroup}
                     sendResult={sendResult}
                 />
             </Modal>

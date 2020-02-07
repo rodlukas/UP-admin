@@ -112,6 +112,8 @@ def step_impl(context):
     )
     # je klient opravdu pridany?
     assert find_client_with_context(context)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the client is updated")
@@ -123,6 +125,8 @@ def step_impl(context):
     # ma klient opravdu nove udaje?
     assert find_client_with_context(context)
     assert clients_cnt(context.browser) == context.old_clients_cnt
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the client is deleted")
@@ -135,6 +139,8 @@ def step_impl(context):
     )
     # je klient opravdu smazany?
     assert not helpers.find_client(context, context.full_name)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the client "{full_name}"')

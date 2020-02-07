@@ -141,6 +141,8 @@ def step_impl(context):
     )
     # je kurz opravdu pridany?
     assert find_course_with_context(context)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the course is updated")
@@ -150,6 +152,8 @@ def step_impl(context):
     # ma kurz opravdu nove udaje?
     assert find_course_with_context(context)
     assert courses_cnt(context.browser) == context.old_courses_cnt
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the course is deleted")
@@ -160,6 +164,8 @@ def step_impl(context):
     )
     # je kurz opravdu smazany?
     assert not find_course(context, context.name)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the course "{name}"')

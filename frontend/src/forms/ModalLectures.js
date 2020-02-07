@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
-import ModalLecturesPlain from "./ModalLecturesPlain"
+import ModalLecturesCore from "./ModalLecturesCore"
 
 const ModalLectures = ({
     currentLecture = null,
@@ -28,7 +28,7 @@ const ModalLectures = ({
                     data-qa="button_add_lecture"
                 />
             )}
-            <ModalLecturesPlain
+            <ModalLecturesCore
                 currentLecture={currentLecture}
                 refresh={refresh}
                 object={object}

@@ -320,6 +320,8 @@ def step_impl(context):
     )
     # je lekce opravdu pridana?
     assert find_lecture_with_context(context)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the lecture is updated")
@@ -329,6 +331,8 @@ def step_impl(context):
     # ma lekce opravdu nove udaje?
     assert find_lecture_with_context(context)
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the paid state of the attendance is updated")
@@ -371,6 +375,8 @@ def step_impl(context):
     )
     # je lekce opravdu smazana?
     assert not find_lecture(context, context.date, context.time)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the lecture of the client "{client}" at "{date}", "{time}"')

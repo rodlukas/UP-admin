@@ -1,16 +1,5 @@
 import React, { Component, Fragment } from "react"
-import {
-    Alert,
-    Col,
-    CustomInput,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    ModalBody,
-    ModalFooter,
-    ModalHeader
-} from "reactstrap"
+import { Alert, Col, CustomInput, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import CancelButton from "../components/buttons/CancelButton"
@@ -20,7 +9,6 @@ import GroupName from "../components/GroupName"
 import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
-import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { alertRequired, clientName } from "../global/utils"
 import "./forms.css"
 import CustomReactSelect from "./helpers/CustomReactSelect"
@@ -58,14 +46,14 @@ class FormGroups extends Component {
     }
 
     onSelectChange = (obj, name) => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         // pri smazani vsech clenu React-select automaticky nastavi null, pro korektni fungovani (napr. push) je potreba udrzovat prazdne pole
         if (name === "memberships" && obj === null) obj = []
         this.setState({ [name]: obj })
     }
 
     onChange = e => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         const target = e.target
         const value = target.type === "checkbox" ? target.checked : target.value
         this.setState({ [target.id]: value })
@@ -88,9 +76,8 @@ class FormGroups extends Component {
         this.setState({ IS_SUBMIT: true }, () =>
             request
                 .then(response => {
-                    this.props.funcForceClose()
-                    this.refresh(response)
-                    this.props.groupsActiveContext.funcHardRefresh()
+                    this.props.sendResult && this.props.funcProcessAdditionOfGroup(response)
+                    this.props.funcForceClose(true, { active: response.active, isDeleted: false })
                 })
                 .catch(() => {
                     this.setState({ IS_SUBMIT: false })
@@ -100,28 +87,22 @@ class FormGroups extends Component {
 
     close = () => this.props.funcClose()
 
-    refresh = newGroup =>
-        this.props.sendResult ? this.props.funcRefresh(newGroup) : this.props.funcRefresh()
-
     delete = id =>
-        GroupService.remove(id).then(() => {
-            this.close()
-            this.refresh()
-            this.props.groupsActiveContext.funcHardRefresh()
-        })
+        GroupService.remove(id).then(() =>
+            this.props.funcForceClose(true, { active: this.state.active, isDeleted: true })
+        )
 
-    getClientsAfterAddition = newClient => {
-        this.setState({ IS_LOADING: true }, () => {
-            ClientService.getAll().then(clients =>
-                this.setState(prevState => {
-                    return {
-                        clients,
-                        memberships: [...prevState.memberships, newClient],
-                        IS_LOADING: false
-                    }
-                })
-            )
+    processAdditionOfClient = newClient => {
+        this.props.setFormDirty()
+        this.setState(prevState => {
+            return {
+                memberships: [...prevState.memberships, newClient]
+            }
         })
+    }
+
+    getClientsAfterAddition = () => {
+        this.setState({ IS_LOADING: true }, this.getClients)
     }
 
     getClients = () =>
@@ -202,6 +183,9 @@ class FormGroups extends Component {
                                         content={
                                             <ModalClients
                                                 refresh={this.getClientsAfterAddition}
+                                                processAdditionOfClient={
+                                                    this.processAdditionOfClient
+                                                }
                                                 sendResult
                                                 inSentence
                                             />
@@ -271,4 +255,4 @@ class FormGroups extends Component {
     }
 }
 
-export default WithCoursesVisibleContext(WithGroupsActiveContext(FormGroups))
+export default WithCoursesVisibleContext(FormGroups)

@@ -3,7 +3,7 @@ import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 import LectureService from "../api/services/lecture"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
-import ModalLecturesFast from "../forms/ModalLecturesFast"
+import ModalLecturesWizard from "../forms/ModalLecturesWizard"
 import { USER_CELEBRATION } from "../global/constants"
 import {
     isToday,
@@ -81,7 +81,7 @@ class DashboardDay extends Component {
                         }>
                         <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
                     </h4>
-                    <ModalLecturesFast
+                    <ModalLecturesWizard
                         refresh={this.props.setRefreshState}
                         date={this.props.date}
                         className="float-right"

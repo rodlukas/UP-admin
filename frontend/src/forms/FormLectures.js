@@ -1,9 +1,4 @@
-import {
-    faCalendarAlt,
-    faClipboardList,
-    faClock,
-    faHourglass
-} from "@fortawesome/pro-solid-svg-icons"
+import { faCalendarAlt, faClipboardList, faClock, faHourglass } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
 import {
@@ -204,7 +199,7 @@ class FormLectures extends Component {
     }
 
     onChangeMultiple = e => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         const target = e.target
         const id = target.dataset.id
         let value = target.type === "checkbox" ? target.checked : target.value
@@ -222,14 +217,14 @@ class FormLectures extends Component {
     }
 
     onChange = e => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         const target = e.target
         const value = target.type === "checkbox" ? target.checked : target.value
         this.setState({ [target.id]: value })
     }
 
     onSelectChange = (obj, name) => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         this.setState({ [name]: obj, duration: obj.duration })
     }
 
@@ -304,25 +299,14 @@ class FormLectures extends Component {
         }
         this.setState({ IS_SUBMIT: true }, () =>
             request
-                .then(() => {
-                    this.props.funcForceClose()
-                    this.refresh()
-                })
-                .catch(() => {
-                    this.setState({ IS_SUBMIT: false })
-                })
+                .then(() => this.props.funcForceClose())
+                .catch(() => this.setState({ IS_SUBMIT: false }))
         )
     }
 
     close = () => this.props.funcClose()
 
-    refresh = () => this.props.funcRefresh()
-
-    delete = id =>
-        LectureService.remove(id).then(() => {
-            this.close()
-            this.refresh()
-        })
+    delete = id => LectureService.remove(id).then(() => this.props.funcForceClose())
 
     componentDidMount() {
         this.checkDisabledCanceled()

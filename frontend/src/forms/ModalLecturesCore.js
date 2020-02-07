@@ -3,7 +3,7 @@ import { Modal } from "reactstrap"
 import useModal from "../hooks/useModal"
 import FormLectures from "./FormLectures"
 
-const ModalLecturesPlain = ({
+const ModalLecturesCore = ({
     currentLecture = null,
     refresh,
     object,
@@ -13,7 +13,18 @@ const ModalLecturesPlain = ({
     shouldModalOpen = false,
     date = ""
 }) => {
-    const [isModal, toggleModal, toggleModalForce, setFormDirty, setModal] = useModal()
+    const [
+        isModal,
+        toggleModal,
+        toggleModalForce,
+        setFormDirty,
+        setModal,
+        processOnModalClose
+    ] = useModal()
+
+    function onModalClose() {
+        processOnModalClose(refresh)
+    }
 
     function funcWrapper(func) {
         func() && funcCloseCallback()
@@ -23,28 +34,28 @@ const ModalLecturesPlain = ({
         setModal(shouldModalOpen)
     }, [shouldModalOpen])
 
-    // komponente muze prijit object=null (pri zavirani v ModalLecturesFast), proto osetreni "object &&"
+    // komponente muze prijit object=null (pri zavirani v ModalLecturesWizard), proto osetreni "object &&"
     return (
         <Modal
             isOpen={isModal}
             toggle={() => funcWrapper(toggleModal)}
             size="lg"
-            className="ModalFormLecture">
+            className="ModalFormLecture"
+            onClosed={onModalClose}>
             {object && (
                 <FormLectures
                     lecture={Boolean(currentLecture) ? currentLecture : {}}
-                    funcRefresh={refresh}
                     object={object}
+                    date={date}
                     IS_CLIENT={IS_CLIENT}
                     defaultValuesForLecture={defaultValuesForLecture}
                     funcClose={() => funcWrapper(toggleModal)}
                     funcForceClose={() => funcWrapper(toggleModalForce)}
                     setFormDirty={setFormDirty}
-                    date={date}
                 />
             )}
         </Modal>
     )
 }
 
-export default ModalLecturesPlain
+export default ModalLecturesCore

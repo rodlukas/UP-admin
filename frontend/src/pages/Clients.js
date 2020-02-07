@@ -25,6 +25,10 @@ class Clients extends Component {
     getClientsData = () =>
         this.state.active ? this.props.clientsActiveContext.clients : this.state.clients
 
+    refreshFromModal = data => {
+        this.refresh(data.active)
+    }
+
     refresh = (active = this.state.active, ignoreActiveRefresh = false) => {
         if (active && ignoreActiveRefresh) this.setState({ active: active })
         else
@@ -32,11 +36,8 @@ class Clients extends Component {
     }
 
     getClients = (active = this.state.active, callFromRefresh = false) => {
-        if (active)
-            callFromRefresh
-                ? this.props.clientsActiveContext.funcHardRefresh()
-                : this.props.clientsActiveContext.funcRefresh()
-        else
+        if (active && !callFromRefresh) this.props.clientsActiveContext.funcRefresh()
+        else if (!active)
             ClientService.getInactive().then(clients =>
                 this.setState({ clients, IS_LOADING: false })
             )
@@ -53,7 +54,7 @@ class Clients extends Component {
                     content={
                         <Fragment>
                             {APP_URLS.klienti.title}
-                            <ModalClients refresh={this.refresh} />
+                            <ModalClients refresh={this.refreshFromModal} />
                             <ActiveSwitcher onChange={this.refresh} active={this.state.active} />
                         </Fragment>
                     }
@@ -94,7 +95,7 @@ class Clients extends Component {
                                         <td>
                                             <ModalClients
                                                 currentClient={client}
-                                                refresh={this.refresh}
+                                                refresh={this.refreshFromModal}
                                             />
                                         </td>
                                     </tr>

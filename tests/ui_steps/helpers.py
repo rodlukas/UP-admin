@@ -141,6 +141,13 @@ def close_modal(driver):
         pass
 
 
+def is_modal_class_attr_present(driver):
+    # zjisti, zda je u body tag znacici otevrene modal okno
+    # pridano jak overeni kompletne zavreneho modalu, viz https://github.com/rodlukas/UP-admin/issues/95
+    body_class_attrs = driver.find_element_by_tag_name("body").get_attribute("class").split()
+    return "modal-open" in body_class_attrs
+
+
 def wait_switching_available(driver, form_name):
     WebDriverWait(driver, WAIT_TIME_SHORT).until_not(
         EC.visibility_of_element_located((By.CSS_SELECTOR, f"[data-qa={form_name}]"))

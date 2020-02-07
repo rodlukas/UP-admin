@@ -37,7 +37,7 @@ export default class FormSettings extends Component {
     }
 
     onChange = e => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         const target = e.target
         const value = target.type === "checkbox" ? target.checked : target.value
         this.setState({ [target.id]: value })
@@ -60,30 +60,16 @@ export default class FormSettings extends Component {
         else request = service.create(data)
         this.setState({ IS_SUBMIT: true }, () =>
             request
-                .then(() => {
-                    // ulozeni hodnoty TYPE, protoze close ji smaze
-                    const curType = this.props.TYPE
-                    this.props.funcForceClose()
-                    this.refresh(curType)
-                })
-                .catch(() => {
-                    this.setState({ IS_SUBMIT: false })
-                })
+                .then(() => this.props.funcForceClose())
+                .catch(() => this.setState({ IS_SUBMIT: false }))
         )
     }
 
     close = () => this.props.funcClose()
 
-    refresh = type => this.props.funcRefresh(type)
-
     delete = id => {
         let service = this.props.TYPE === EDIT_TYPE.COURSE ? CourseService : AttendanceStateService
-        service.remove(id).then(() => {
-            // ulozeni hodnoty TYPE, protoze close ji smaze
-            const curType = this.props.TYPE
-            this.close()
-            this.refresh(curType)
-        })
+        service.remove(id).then(() => this.props.funcForceClose())
     }
 
     render() {

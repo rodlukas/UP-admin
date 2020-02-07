@@ -19,11 +19,9 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
-import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
-import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { capitalizeString, prettyPhone } from "../global/utils"
 
-class FormClients extends Component {
+export default class FormClients extends Component {
     isClient = Boolean(Object.keys(this.props.client).length)
 
     state = {
@@ -38,7 +36,7 @@ class FormClients extends Component {
     }
 
     onChange = e => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         const target = e.target
         let value = target.type === "checkbox" ? target.checked : target.value
         // pri psani rozdeluj cislo na trojice
@@ -64,32 +62,19 @@ class FormClients extends Component {
         this.setState({ IS_SUBMIT: true }, () =>
             request
                 .then(response => {
-                    this.props.funcForceClose()
-                    this.refresh(response)
-                    this.props.clientsActiveContext.funcHardRefresh()
-                    // je potreba projevit zmeny i pro cleny skupin
-                    this.props.groupsActiveContext.funcHardRefresh()
+                    this.props.sendResult && this.props.funcProcessAdditionOfClient(response)
+                    this.props.funcForceClose(true, { active: response.active, isDeleted: false })
                 })
-                .catch(() => {
-                    this.setState({ IS_SUBMIT: false })
-                })
+                .catch(() => this.setState({ IS_SUBMIT: false }))
         )
     }
 
     close = () => this.props.funcClose()
 
-    refresh = newClient => {
-        this.props.sendResult ? this.props.funcRefresh(newClient) : this.props.funcRefresh()
-    }
-
     delete = id =>
-        ClientService.remove(id).then(() => {
-            this.close()
-            this.refresh()
-            this.props.clientsActiveContext.funcHardRefresh()
-            // je potreba projevit zmeny i pro cleny skupin
-            this.props.groupsActiveContext.funcHardRefresh()
-        })
+        ClientService.remove(id).then(() =>
+            this.props.funcForceClose(true, { active: this.state.active, isDeleted: true })
+        )
 
     render() {
         const { id, firstname, surname, email, phone, note, active } = this.state
@@ -246,5 +231,3 @@ class FormClients extends Component {
         )
     }
 }
-
-export default WithClientsActiveContext(WithGroupsActiveContext(FormClients))

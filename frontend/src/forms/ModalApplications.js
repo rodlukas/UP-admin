@@ -6,7 +6,11 @@ import FormApplications from "../forms/FormApplications"
 import useModal from "../hooks/useModal"
 
 const ModalApplications = ({ currentApplication = null, refresh }) => {
-    const [isModal, toggleModal, toggleModalForce, setFormDirty] = useModal()
+    const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose] = useModal()
+
+    function onModalClose() {
+        processOnModalClose(refresh)
+    }
 
     return (
         <Fragment>
@@ -25,13 +29,12 @@ const ModalApplications = ({ currentApplication = null, refresh }) => {
                     data-qa="button_add_application"
                 />
             )}
-            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false}>
+            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormApplications
                     application={Boolean(currentApplication) ? currentApplication : {}}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}
-                    funcRefresh={refresh}
                 />
             </Modal>
         </Fragment>

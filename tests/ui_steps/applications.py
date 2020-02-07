@@ -147,6 +147,8 @@ def step_impl(context):
     # je zadost opravdu pridana?
     assert find_application_with_context(context)
     assert showed_applications_cnts_for_courses_matches(context.browser)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the application is updated")
@@ -157,6 +159,8 @@ def step_impl(context):
     assert find_application_with_context(context)
     assert applications_cnt(context.browser) == context.old_applications_cnt
     assert showed_applications_cnts_for_courses_matches(context.browser)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the application is deleted")

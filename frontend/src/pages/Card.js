@@ -53,11 +53,13 @@ class Card extends Component {
         if (this.isClient()) this.getMemberships()
     }
 
-    refreshObject = () => {
-        this.setState(
-            prevState => ({ LOADING_CNT: prevState.LOADING_CNT - 1 }),
-            () => this.getObject()
-        )
+    refreshObjectFromModal = data => {
+        if (!data.isDeleted)
+            this.setState(
+                prevState => ({ LOADING_CNT: prevState.LOADING_CNT - 1 }),
+                () => this.getObject()
+            )
+        else this.props.history.push(this.isClient() ? APP_URLS.klienti.url : APP_URLS.skupiny.url)
     }
 
     refresh = (all = true) => {
@@ -167,13 +169,13 @@ class Card extends Component {
                                 {this.isClient() && (
                                     <ModalClients
                                         currentClient={object}
-                                        refresh={this.refreshObject}
+                                        refresh={this.refreshObjectFromModal}
                                     />
                                 )}
                                 {!this.isClient() && (
                                     <ModalGroups
                                         currentGroup={object}
-                                        refresh={this.refreshObject}
+                                        refresh={this.refreshObjectFromModal}
                                     />
                                 )}
                             </Fragment>

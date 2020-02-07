@@ -107,6 +107,8 @@ def step_impl(context):
     )
     # je skupina opravdu pridana?
     assert find_group_with_context(context)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the group is updated")
@@ -118,6 +120,8 @@ def step_impl(context):
     # ma skupina opravdu nove udaje?
     assert find_group_with_context(context)
     assert groups_cnt(context.browser) == context.old_groups_cnt
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the group is deleted")
@@ -130,6 +134,8 @@ def step_impl(context):
     )
     # je skupina opravdu smazana?
     assert not helpers.find_group(context, context.name)
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the group "{name}"')
@@ -187,6 +193,8 @@ def step_impl(context):
         # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
         wait_switching_available(context.browser)
         assert groups_cnt(context.browser) == context.old_groups_cnt
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when(

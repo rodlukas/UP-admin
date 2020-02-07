@@ -29,16 +29,17 @@ class Groups extends Component {
     getGroupsData = () =>
         this.state.active ? this.props.groupsActiveContext.groups : this.state.groups
 
+    refreshFromModal = data => {
+        this.refresh(data.active)
+    }
+
     refresh = (active = this.state.active, ignoreActiveRefresh = false) => {
         if (active && ignoreActiveRefresh) this.setState({ active: active })
         else this.setState({ IS_LOADING: true, active: active }, () => this.getGroups(active, true))
     }
 
     getGroups = (active = this.state.active, callFromRefresh = false) => {
-        if (active)
-            callFromRefresh
-                ? this.props.groupsActiveContext.funcHardRefresh()
-                : this.props.groupsActiveContext.funcRefresh()
+        if (active && !callFromRefresh) this.props.groupsActiveContext.funcRefresh()
         else GroupService.getInactive().then(groups => this.setState({ groups, IS_LOADING: false }))
     }
 
@@ -55,7 +56,7 @@ class Groups extends Component {
                     content={
                         <Fragment>
                             {APP_URLS.skupiny.title}
-                            <ModalGroups refresh={this.refresh} />
+                            <ModalGroups refresh={this.refreshFromModal} />
                             <ActiveSwitcher onChange={this.refresh} active={this.state.active} />
                         </Fragment>
                     }
@@ -116,7 +117,7 @@ class Groups extends Component {
                                         <td>
                                             <ModalGroups
                                                 currentGroup={group}
-                                                refresh={this.refresh}
+                                                refresh={this.refreshFromModal}
                                             />
                                         </td>
                                     </tr>

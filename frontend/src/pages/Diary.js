@@ -6,7 +6,7 @@ import { Button, Col, Container, Row } from "reactstrap"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
-import ModalLecturesFast from "../forms/ModalLecturesFast"
+import ModalLecturesWizard from "../forms/ModalLecturesWizard"
 import {
     addDays,
     DAYS_IN_WEEK,
@@ -133,7 +133,7 @@ export default class Diary extends Component {
                             <UncontrolledTooltipWrapper target="Diary_Today">
                                 {prettyDateWithLongDayYear(new Date())}
                             </UncontrolledTooltipWrapper>{" "}
-                            <ModalLecturesFast refresh={this.setRefreshState} />
+                            <ModalLecturesWizard refresh={this.setRefreshState} />
                         </Fragment>
                     }
                 />

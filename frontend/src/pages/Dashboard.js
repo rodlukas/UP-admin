@@ -3,7 +3,7 @@ import { Col, Container, Row } from "reactstrap"
 import Bank from "../components/Bank"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
-import ModalLecturesFast from "../forms/ModalLecturesFast"
+import ModalLecturesWizard from "../forms/ModalLecturesWizard"
 import { toISODate } from "../global/funcDateTime"
 
 export default class Dashboard extends Component {
@@ -25,7 +25,7 @@ export default class Dashboard extends Component {
                             content={
                                 <Fragment>
                                     Dnešní přehled{" "}
-                                    <ModalLecturesFast refresh={this.setRefreshState} />
+                                    <ModalLecturesWizard refresh={this.setRefreshState} />
                                 </Fragment>
                             }
                         />

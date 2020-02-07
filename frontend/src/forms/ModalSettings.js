@@ -1,15 +1,34 @@
-import React, { Fragment } from "react"
+import React, { Fragment, useContext } from "react"
 import { Modal } from "reactstrap"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
+import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
+import { CoursesVisibleContext } from "../contexts/CoursesVisibleContext"
+import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
 import FormSettings from "../forms/FormSettings"
 import { EDIT_TYPE } from "../global/constants"
 import useModal from "../hooks/useModal"
 
 const ModalSettings = ({ currentObject = null, TYPE, refresh }) => {
-    const [isModal, toggleModal, toggleModalForce, setFormDirty] = useModal()
+    const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose] = useModal()
     const type_buttons = TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav účasti"
     const type_qa = TYPE === EDIT_TYPE.COURSE ? "course" : "attendancestate"
+
+    const coursesVisibleContext = useContext(CoursesVisibleContext)
+    const groupsActiveContext = useContext(GroupsActiveContext)
+    const attendanceStatesContext = useContext(AttendanceStatesContext)
+
+    function onModalClose() {
+        processOnModalClose(() => {
+            // parametr TYPE oznacuje, s cim jsme pracoval ve formulari
+            refresh(TYPE)
+            if (TYPE === EDIT_TYPE.COURSE) {
+                coursesVisibleContext.funcHardRefresh()
+                // je potreba take projevit zmeny kurzu do seznamu aktivnich skupin
+                groupsActiveContext.funcHardRefresh()
+            } else if (TYPE === EDIT_TYPE.STATE) attendanceStatesContext.funcRefresh()
+        })
+    }
 
     return (
         <Fragment>
@@ -28,14 +47,13 @@ const ModalSettings = ({ currentObject = null, TYPE, refresh }) => {
                     data-qa={`button_add_${type_qa}`}
                 />
             )}
-            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false}>
+            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormSettings
                     object={Boolean(currentObject) ? currentObject : {}}
                     TYPE={TYPE}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}
-                    funcRefresh={refresh}
                 />
             </Modal>
         </Fragment>

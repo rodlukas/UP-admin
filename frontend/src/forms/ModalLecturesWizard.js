@@ -27,13 +27,14 @@ import Or from "./helpers/Or"
 import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
 import ModalGroups from "./ModalGroups"
-import "./ModalLecturesFast.css"
-import ModalLecturesPlain from "./ModalLecturesPlain"
+import ModalLecturesCore from "./ModalLecturesCore"
+import "./ModalLecturesWizard.css"
 
-class ModalLecturesFast extends React.Component {
+class ModalLecturesWizard extends React.Component {
     state = {
         IS_CLIENT: undefined,
         object: null,
+        modalSelectDone: false,
         defaultValuesForLecture: defaultValuesForLecture(),
         IS_LOADING: false
     }
@@ -49,6 +50,7 @@ class ModalLecturesFast extends React.Component {
     toggleModal = () => {
         this.setState({
             IS_CLIENT: undefined,
+            modalSelectDone: false,
             object: null
         })
     }
@@ -70,6 +72,7 @@ class ModalLecturesFast extends React.Component {
                     () =>
                         this.setState({
                             object: obj,
+                            modalSelectDone: true,
                             IS_LOADING: false
                         })
                 )
@@ -81,19 +84,18 @@ class ModalLecturesFast extends React.Component {
         this.setState({ IS_CLIENT: undefined })
     }
 
-    getClientsAfterAddition = newClient => {
-        this.setState({ object: newClient })
-        this.props.clientsActiveContext.funcHardRefresh()
+    processAdditionOfGroupOrClient = newObject => {
+        this.setState({ object: newObject })
     }
 
-    getGroupsAfterAddition = newGroup => {
-        this.setState({ object: newGroup })
-        this.props.groupsActiveContext.funcHardRefresh()
+    refreshAfterModalSelect = () => {
+        this.setState({ modalSelectDone: true })
     }
 
     refreshAfterSave = () => {
         this.setState({
             IS_CLIENT: undefined,
+            modalSelectDone: false,
             object: null
         })
         this.props.refresh()
@@ -105,20 +107,20 @@ class ModalLecturesFast extends React.Component {
             (this.props.date ? prettyDate(new Date(this.props.date)) : "nějaký den")
         return (
             <Fragment>
-                <div className="ModalLecturesFast">
+                <div className="ModalLecturesWizard">
                     <UncontrolledButtonDropdown
                         direction={this.props.direction}
                         className={this.props.className}>
                         <DropdownToggle
                             caret
                             size={this.props.size}
-                            id={"ModalLecturesFast_" + (this.props.date || "")}
+                            id={"ModalLecturesWizard_" + (this.props.date || "")}
                             color="info">
                             <FontAwesomeIcon icon={faPlus} size="lg" />
                         </DropdownToggle>
                         <UncontrolledTooltipWrapper
                             placement={this.props.direction === "up" ? "bottom" : "top"}
-                            target={"ModalLecturesFast_" + (this.props.date || "")}>
+                            target={"ModalLecturesWizard_" + (this.props.date || "")}>
                             {title}
                         </UncontrolledTooltipWrapper>
                         <DropdownMenu right>
@@ -132,9 +134,10 @@ class ModalLecturesFast extends React.Component {
                     </UncontrolledButtonDropdown>
                 </div>
                 <Modal
-                    isOpen={this.state.IS_CLIENT !== undefined && this.state.object === null}
+                    isOpen={this.state.IS_CLIENT !== undefined && !this.state.modalSelectDone}
                     toggle={this.toggleModalSelect}
-                    autoFocus={false}>
+                    autoFocus={false}
+                    onClosed={() => console.log("onClosed")}>
                     <ModalHeader toggle={this.toggleModalSelect}>
                         Přidání lekce &ndash; výběr{" "}
                         {this.state.IS_CLIENT
@@ -169,7 +172,10 @@ class ModalLecturesFast extends React.Component {
                                         <Or
                                             content={
                                                 <ModalClients
-                                                    refresh={this.getClientsAfterAddition}
+                                                    processAdditionOfClient={
+                                                        this.processAdditionOfGroupOrClient
+                                                    }
+                                                    refresh={this.refreshAfterModalSelect}
                                                     sendResult
                                                     inSentence
                                                 />
@@ -192,7 +198,10 @@ class ModalLecturesFast extends React.Component {
                                         <Or
                                             content={
                                                 <ModalGroups
-                                                    refresh={this.getGroupsAfterAddition}
+                                                    processAdditionOfGroup={
+                                                        this.processAdditionOfGroupOrClient
+                                                    }
+                                                    refresh={this.refreshAfterModalSelect}
                                                     sendResult
                                                     inSentence
                                                 />
@@ -204,12 +213,12 @@ class ModalLecturesFast extends React.Component {
                         )}
                     </ModalBody>
                 </Modal>
-                <ModalLecturesPlain
+                <ModalLecturesCore
                     refresh={this.refreshAfterSave}
                     object={this.state.object}
                     IS_CLIENT={this.state.IS_CLIENT}
                     defaultValuesForLecture={this.state.defaultValuesForLecture}
-                    shouldModalOpen={this.state.object !== null}
+                    shouldModalOpen={this.state.modalSelectDone}
                     funcCloseCallback={this.toggleModal}
                     date={this.props.date || ""}
                 />
@@ -218,4 +227,4 @@ class ModalLecturesFast extends React.Component {
     }
 }
 
-export default WithClientsActiveContext(WithGroupsActiveContext(ModalLecturesFast))
+export default WithClientsActiveContext(WithGroupsActiveContext(ModalLecturesWizard))

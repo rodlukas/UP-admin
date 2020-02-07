@@ -27,14 +27,14 @@ class FormApplications extends Component {
     }
 
     onChange = e => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         const target = e.target
         const value = target.type === "checkbox" ? target.checked : target.value
         this.setState({ [target.id]: value })
     }
 
     onSelectChange = (obj, name) => {
-        this.props.setFormDirty(true)
+        this.props.setFormDirty()
         this.setState({ [name]: obj })
     }
 
@@ -48,30 +48,22 @@ class FormApplications extends Component {
         else request = ApplicationService.create(data)
         this.setState({ IS_SUBMIT: true }, () =>
             request
-                .then(() => {
-                    this.props.funcForceClose()
-                    this.refresh()
-                })
-                .catch(() => {
-                    this.setState({ IS_SUBMIT: false })
-                })
+                .then(() => this.props.funcForceClose())
+                .catch(() => this.setState({ IS_SUBMIT: false }))
         )
     }
 
     close = () => this.props.funcClose()
 
-    refresh = () => this.props.funcRefresh()
-
-    getClientsAfterAddition = newClient => {
-        this.setState({ IS_LOADING: true }, () => {
-            ClientService.getAll().then(clients =>
-                this.setState({
-                    clients,
-                    client: newClient,
-                    IS_LOADING: false
-                })
-            )
+    processAdditionOfClient = newClient => {
+        this.props.setFormDirty()
+        this.setState({
+            client: newClient
         })
+    }
+
+    getClientsAfterAddition = () => {
+        this.setState({ IS_LOADING: true }, this.getClients)
     }
 
     getClients = () =>
@@ -113,6 +105,9 @@ class FormApplications extends Component {
                                         content={
                                             <ModalClients
                                                 refresh={this.getClientsAfterAddition}
+                                                processAdditionOfClient={
+                                                    this.processAdditionOfClient
+                                                }
                                                 sendResult
                                                 inSentence
                                             />
