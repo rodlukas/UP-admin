@@ -1,4 +1,9 @@
-import { faCalendarAlt, faClipboardList, faClock, faHourglass } from "@fortawesome/pro-solid-svg-icons"
+import {
+    faCalendarAlt,
+    faClipboardList,
+    faClock,
+    faHourglass
+} from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import React, { Component, Fragment } from "react"
 import {
@@ -489,7 +494,9 @@ class FormLectures extends Component {
                             {this.members.map(member => (
                                 <div key={member.id} data-qa="form_lecture_attendance">
                                     <h5>
-                                        {!this.props.IS_CLIENT && <ClientName client={member} />}
+                                        {!this.props.IS_CLIENT && (
+                                            <ClientName client={member} link />
+                                        )}
                                     </h5>
                                     <FormGroup row className="align-items-center">
                                         <Col sm={4}>
