@@ -200,7 +200,7 @@ export default class FormClients extends Component {
                                 <Alert color="warning">
                                     <p>
                                         Klienta lze smazat pouze pokud nemá žádné lekce, smažou se
-                                        také všechny jeho zájmy o kurzy
+                                        také všechny jeho zájmy o kurzy a členství ve skupinách
                                     </p>
                                     <DeleteButton
                                         content="klienta"
