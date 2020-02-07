@@ -1,5 +1,16 @@
 import React, { Component, Fragment } from "react"
-import { Alert, Col, CustomInput, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
+import {
+    Alert,
+    Col,
+    CustomInput,
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    ModalBody,
+    ModalFooter,
+    ModalHeader
+} from "reactstrap"
 import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import CancelButton from "../components/buttons/CancelButton"
@@ -10,7 +21,6 @@ import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { alertRequired, clientName } from "../global/utils"
-import "./forms.css"
 import CustomReactSelect from "./helpers/CustomReactSelect"
 import { react_select_ids } from "./helpers/func"
 import Or from "./helpers/Or"
