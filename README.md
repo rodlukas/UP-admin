@@ -91,7 +91,7 @@ Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://
 * [React 16](https://reactjs.org/),
 * [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 * [React Router 5](https://reacttraining.com/react-router/),
-* [FontAwesome PRO](https://fontawesome.com/)
+* [FontAwesome 5 PRO](https://fontawesome.com/)
 * [a další...](/frontend/package.json)
 
 Vývoj frontendu je postaven především na:
