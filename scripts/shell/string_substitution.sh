@@ -7,15 +7,17 @@ substitute() {
 }
 
 # nastaveni konstant, ktere budou nahrazeny
-GIT_VERSION_STRING='GIT_VERSION'
+GIT_COMMIT_STRING='GIT_COMMIT'
 GIT_RELEASE_STRING='GIT_RELEASE'
+GIT_BRANCH_STRING='GIT_BRANCH'
 GIT_DATETIME_STRING='GIT_DATETIME'
 SENTRY_DSN_STRING='SENTRY_DSN'
 
 # nastaveni novych hodnot pro nahrazovane retezce
-VERSION=$(git rev-parse --short HEAD)
+COMMIT=$(git rev-parse --short HEAD)
 # viz https://docs.travis-ci.com/user/environment-variables/
-RELEASE=$TRAVIS_BRANCH
+RELEASE=$TRAVIS_TAG
+BRANCH=$TRAVIS_BRANCH
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
 
 # provedeni subtituce ve slozce $1
@@ -25,8 +27,9 @@ substitute_folder() {
     exit 1
   }
 
-  substitute "$GIT_VERSION_STRING" "$VERSION"
+  substitute "$GIT_COMMIT_STRING" "$COMMIT"
   substitute "$GIT_RELEASE_STRING" "$RELEASE"
+  substitute "$GIT_BRANCH_STRING" "$BRANCH"
   substitute "$GIT_DATETIME_STRING" "$DATETIME"
   substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
 

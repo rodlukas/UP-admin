@@ -17,7 +17,7 @@ if (isHosted())
     Sentry.init({
         dsn: "%SENTRY_DSN",
         environment: getEnvName(),
-        release: "%GIT_VERSION"
+        release: "%GIT_COMMIT"
     })
 
 const App = () => (

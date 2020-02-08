@@ -36,3 +36,5 @@ export const USER_CELEBRATION = {
 }
 
 export const CURRENCY = "Kč"
+
+export const GITHUB_REPO_URL = "https://github.com/rodlukas/UP-admin"

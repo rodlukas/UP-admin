@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css"
 import { Badge, Collapse, Navbar, NavbarBrand, NavbarToggler } from "reactstrap"
 import { AuthContext } from "./auth/AuthContext"
 import PrivateRoute from "./auth/PrivateRoute"
-import AppVersion from "./components/AppVersion"
+import AppCommit from "./components/AppCommit"
 import Loading from "./components/Loading"
 import Menu from "./components/Menu"
 import Page from "./components/Page"
@@ -89,12 +89,12 @@ const Main = () => {
                 {isEnvDevelopment() && <Badge color="dark">Vývojová verze</Badge>}
                 {isEnvStaging() && (
                     <Badge color="success">
-                        Staging <AppVersion />
+                        Staging <AppCommit />
                     </Badge>
                 )}
                 {isEnvTesting() && (
                     <Badge color="primary">
-                        Testing <AppVersion />
+                        Testing <AppCommit />
                     </Badge>
                 )}
                 {authContext.IS_AUTH && <NavbarToggler onClick={toggleNavbar} />}

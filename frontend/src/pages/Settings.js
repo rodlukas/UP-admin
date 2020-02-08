@@ -5,8 +5,8 @@ import React, { Component, Fragment } from "react"
 import { Alert, Col, Container, Row, Table } from "reactstrap"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
+import AppCommit from "../components/AppCommit"
 import AppRelease from "../components/AppRelease"
-import AppVersion from "../components/AppVersion"
 import Circle from "../components/Circle"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
@@ -272,7 +272,7 @@ class Settings extends Component {
                             <hr />
                             <p className="text-center Settings_AppVersion">
                                 <span className="font-weight-bold">Verze aplikace:</span>{" "}
-                                <AppVersion />
+                                <AppCommit />
                                 <AppRelease /> – <span className="text-nowrap">
                                     %GIT_DATETIME
                                 </span>{" "}
