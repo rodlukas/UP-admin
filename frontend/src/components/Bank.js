@@ -231,7 +231,7 @@ export default class Bank extends React.PureComponent {
                         </tbody>
                     </Table>
                     <div className="text-center text-muted font-italic">
-                        <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší{" "}
+                        <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší než{" "}
                         <UncontrolledTooltipWrapper target="Bank_days">
                             {this.state.bankData.info.dateStart
                                 ? prettyDateWithDayYearIfDiff(
@@ -240,7 +240,7 @@ export default class Bank extends React.PureComponent {
                                   )
                                 : "neznámý datum"}
                         </UncontrolledTooltipWrapper>
-                        <strong id="Bank_days">14 dnů</strong> lze zobrazit pouze{" "}
+                        <strong id="Bank_days">3 týdny</strong> lze zobrazit pouze{" "}
                         <a href={BANKING_URL} target="_blank" rel="noopener noreferrer">
                             v bankovnictví <FontAwesomeIcon icon={faExternalLinkAlt} size="xs" />
                         </a>

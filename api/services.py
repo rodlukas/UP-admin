@@ -33,7 +33,7 @@ class Bank:
         if settings.BANK_ACTIVE:
             date_format = "%Y-%m-%d"
             current_date_str = datetime.now().strftime(date_format)
-            history_date_str = (datetime.now() - timedelta(days=14)).strftime(date_format)
+            history_date_str = (datetime.now() - timedelta(days=21)).strftime(date_format)
             url_secret = (
                 f"{self.FIO_API_URL}periods/{settings.FIO_API_KEY}/"
                 f"{history_date_str}/{current_date_str}/transactions.json"
