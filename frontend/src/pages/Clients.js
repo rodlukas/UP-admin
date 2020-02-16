@@ -104,7 +104,7 @@ class Clients extends Component {
                         )}
                     </tbody>
                 </Table>
-                {!Boolean(this.getClientsData().length) && !this.isLoading() && (
+                {this.getClientsData().length === 0 && !this.isLoading() && (
                     <p className="text-muted text-center">Žádní klienti</p>
                 )}
             </Container>

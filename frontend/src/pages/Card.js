@@ -308,7 +308,7 @@ class Card extends Component {
                                         </ListGroup>
                                     </Col>
                                 ))}
-                                {!Boolean(lectures.length) && (
+                                {lectures.length === 0 && (
                                     <p className="text-muted text-center">Žádné lekce</p>
                                 )}
                             </Row>

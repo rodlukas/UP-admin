@@ -43,7 +43,7 @@ const ModalGroups = ({
                     data-qa="button_edit_group"
                 />
             )}
-            {!Boolean(currentGroup) && (
+            {!currentGroup && (
                 <AddButton
                     content={`${inSentence ? "přidejte novou" : "Přidat"} skupinu`}
                     small={inSentence}
@@ -53,7 +53,7 @@ const ModalGroups = ({
             )}
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormGroups
-                    group={Boolean(currentGroup) ? currentGroup : {}}
+                    group={currentGroup ? currentGroup : {}}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}

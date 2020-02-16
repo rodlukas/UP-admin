@@ -55,7 +55,7 @@ class ModalLecturesWizard extends React.Component {
         })
     }
 
-    onSelectChange = (obj, name = null) => {
+    onSelectChange = obj => {
         // skupiny sice maji jasny kurz, ale lze u nich odhadovat datum a cas, proto zde pro ne neprizpusobujeme chovani
         // nejdriv zobraz nacitani, behem ktereho pro vybraneho klienta/skupinu pripravis vychozi hodnoty kurzu, data a casu,
         // pak klienta/skupinu (a tato data) teprve uloz (diky tomu se az pak zobrazi formular) a nacitani skryj pro priste

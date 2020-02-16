@@ -53,7 +53,7 @@ const ModalClients = ({
                     data-qa="button_edit_client"
                 />
             )}
-            {!Boolean(currentClient) && (
+            {!currentClient && (
                 <AddButton
                     content={`${inSentence ? "přidejte nového" : "Přidat"} klienta`}
                     small={inSentence}
@@ -63,7 +63,7 @@ const ModalClients = ({
             )}
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormClients
-                    client={Boolean(currentClient) ? currentClient : {}}
+                    client={currentClient ? currentClient : {}}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}

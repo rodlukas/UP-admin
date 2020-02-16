@@ -42,8 +42,9 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: "eslint-loader",
                 options: {
-                    // TODO povolit az se stabilizuji rules
-                    // viz https://github.com/webpack-contrib/eslint-loader/issues/214
+                    // vsechny errors/warnings od eslint interpretuj jako warning
+                    emitWarning: true
+                    // TODO povolit az se stabilizuji rules - viz https://github.com/webpack-contrib/eslint-loader/issues/214
                     //cache: true
                 }
             },

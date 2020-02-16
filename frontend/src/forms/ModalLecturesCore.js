@@ -44,7 +44,7 @@ const ModalLecturesCore = ({
             onClosed={onModalClose}>
             {object && (
                 <FormLectures
-                    lecture={Boolean(currentLecture) ? currentLecture : {}}
+                    lecture={currentLecture ? currentLecture : {}}
                     object={object}
                     date={date}
                     IS_CLIENT={IS_CLIENT}

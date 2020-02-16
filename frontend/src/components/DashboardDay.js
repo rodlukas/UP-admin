@@ -93,7 +93,7 @@ class DashboardDay extends Component {
                     <ListGroupItem className="lecture">
                         <Loading />
                     </ListGroupItem>
-                ) : Boolean(lectures.length) ? (
+                ) : lectures.length > 0 ? (
                     lectures.map(lecture => {
                         let className = lecture.group ? "LectureGroup" : ""
                         if (lecture.canceled) className = "lecture-canceled"

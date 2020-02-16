@@ -40,7 +40,7 @@ class AuthProvider extends Component {
     isAuthenticated = (refreshExpiringToken = true) => {
         const token = Token.get()
         this.setState({
-            IS_AUTH: !!token && !this.isTokenExpired(token, refreshExpiringToken)
+            IS_AUTH: token && !this.isTokenExpired(token, refreshExpiringToken)
         })
     }
 

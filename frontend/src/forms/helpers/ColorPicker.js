@@ -61,15 +61,15 @@ export default class ColorPicker extends React.Component {
                                 <FontAwesomeIcon icon={faPalette} fixedWidth />
                             </Label>
                         </InputGroupAddon>
-                        <div
+                        <button
                             id="color"
+                            type="button"
                             data-qa="course_button_color"
-                            tabIndex="0"
                             onFocus={this.togglePicker}
                             className="ColorPickerInput"
                             onClick={this.togglePicker}>
                             <div style={{ background: this.props.color }} />
-                        </div>
+                        </button>
                         <UncontrolledTooltipWrapper placement="right" target="color">
                             Změnit barvu
                         </UncontrolledTooltipWrapper>

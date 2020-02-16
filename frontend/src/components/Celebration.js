@@ -10,7 +10,9 @@ const Celebration = ({ isUserCelebratingResult }) =>
                 {isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozeninám" : "svátku"}!
                 😍
             </UncontrolledTooltipWrapper>
-            <span id="Celebration">🎉</span>
+            <span id="Celebration" role="img" aria-label="Konfety">
+                🎉
+            </span>
         </Fragment>
     )
 

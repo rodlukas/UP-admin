@@ -1,10 +1,12 @@
-//const restrictedGlobals = require("confusing-browser-globals")
+const restrictedGlobals = require("confusing-browser-globals")
 
+// castecne vychazi z: https://github.com/facebook/create-react-app/blob/master/packages/eslint-config-react-app/index.js
 module.exports = {
     root: true,
     parser: "babel-eslint",
     env: {
         browser: true,
+        node: true,
         es6: true
     },
     globals: {
@@ -23,10 +25,25 @@ module.exports = {
         react: {
             version: "detect"
         }
+    },
+    extends: [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:jsx-a11y/recommended",
+        "plugin:flowtype/recommended",
+        "plugin:prettier/recommended",
+        "prettier/babel",
+        "prettier/flowtype",
+        "prettier/react"
+    ],
+    rules: {
+        "react/prop-types": 0,
+        "no-restricted-globals": ["error"].concat(restrictedGlobals),
+        "jsx-a11y/no-autofocus": 0,
+        "react-hooks/rules-of-hooks": "error"
+        // TODO opravit v kodu problemy
+        //"react-hooks/exhaustive-deps": "warn"
     }
-    // TODO - vytvorit, pouzit pluginy a pripadne presety/CRA pristup viz
-    //  https://github.com/facebook/create-react-app/blob/master/packages/eslint-config-react-app/index.js
-    //  + restrictedGlobals
-    //extends: ["eslint:recommended", "plugin:react/recommended"],
-    //rules: { "react/prop-types": 0 }
 }

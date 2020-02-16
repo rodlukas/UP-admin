@@ -126,7 +126,7 @@ class Groups extends Component {
                         )}
                     </tbody>
                 </Table>
-                {!Boolean(this.getGroupsData().length) && !this.isLoading() && (
+                {this.getGroupsData().length === 0 && !this.isLoading() && (
                     <p className="text-muted text-center">Žádné skupiny</p>
                 )}
             </Container>

@@ -22,7 +22,7 @@ const ModalApplications = ({ currentApplication = null, refresh }) => {
                     data-qa="button_edit_application"
                 />
             )}
-            {!Boolean(currentApplication) && (
+            {!currentApplication && (
                 <AddButton
                     content="Přidat zájemce"
                     onClick={toggleModal}
@@ -31,7 +31,7 @@ const ModalApplications = ({ currentApplication = null, refresh }) => {
             )}
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormApplications
-                    application={Boolean(currentApplication) ? currentApplication : {}}
+                    application={currentApplication ? currentApplication : {}}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}

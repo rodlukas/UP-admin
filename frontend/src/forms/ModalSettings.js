@@ -40,7 +40,7 @@ const ModalSettings = ({ currentObject = null, TYPE, refresh }) => {
                     data-qa={`button_edit_${type_qa}`}
                 />
             )}
-            {!Boolean(currentObject) && (
+            {!currentObject && (
                 <AddButton
                     content={`Přidat ${type_buttons}`}
                     onClick={toggleModal}
@@ -49,7 +49,7 @@ const ModalSettings = ({ currentObject = null, TYPE, refresh }) => {
             )}
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormSettings
-                    object={Boolean(currentObject) ? currentObject : {}}
+                    object={currentObject ? currentObject : {}}
                     TYPE={TYPE}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}

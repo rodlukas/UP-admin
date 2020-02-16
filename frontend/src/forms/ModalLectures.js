@@ -21,7 +21,7 @@ const ModalLectures = ({
                     data-qa="button_edit_lecture"
                 />
             )}
-            {!Boolean(currentLecture) && (
+            {!currentLecture && (
                 <AddButton
                     content="Přidat lekci"
                     onClick={() => setShouldModalOpen(true)}

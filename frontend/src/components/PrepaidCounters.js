@@ -107,7 +107,7 @@ const PrepaidCounters = props => {
                             </ListGroup>
                         </Col>
                     ))}
-                {props.memberships && !Boolean(props.memberships.length) && (
+                {props.memberships && props.memberships.length === 0 && (
                     <p className="text-muted text-center">Žádní účastníci</p>
                 )}
             </Row>

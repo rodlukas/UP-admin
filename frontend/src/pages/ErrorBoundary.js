@@ -25,7 +25,7 @@ class ErrorBoundary extends Component {
         })
     }
 
-    static getDerivedStateFromError(error) {
+    static getDerivedStateFromError() {
         // v pripade, ze doslo k chybe pri otvirani formulare, odstran tento priznak z body
         // jinak bude pro body nastaveno overflow: hidden a nepujde scrollovat
         document.body.classList.remove("modal-open")
@@ -46,7 +46,7 @@ class ErrorBoundary extends Component {
             email: "",
             username: ""
         }
-        if (!!token) decodedToken = Token.decodeToken(token)
+        if (token) decodedToken = Token.decodeToken(token)
         return decodedToken
     }
 

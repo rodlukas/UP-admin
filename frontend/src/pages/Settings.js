@@ -140,7 +140,7 @@ class Settings extends Component {
                                             ))}
                                         </tbody>
                                     </Table>
-                                    {!Boolean(this.getAttendanceStatesData().length) && (
+                                    {this.getAttendanceStatesData().length === 0 && (
                                         <p className="text-muted text-center">Žádné stavy účasti</p>
                                     )}
                                     <hr />
@@ -264,7 +264,7 @@ class Settings extends Component {
                                             ))}
                                         </tbody>
                                     </Table>
-                                    {!Boolean(courses.length) && (
+                                    {courses.length === 0 && (
                                         <p className="text-muted text-center">Žádné kurzy</p>
                                     )}
                                 </Col>

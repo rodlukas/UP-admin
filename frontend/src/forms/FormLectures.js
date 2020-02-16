@@ -42,7 +42,7 @@ const GROUP_DURATION = 45
 class FormLectures extends Component {
     IS_LECTURE = Boolean(Object.keys(this.props.lecture).length)
 
-    isPrepaid = this.IS_LECTURE ? !Boolean(this.props.lecture.start) : false
+    isPrepaid = this.IS_LECTURE ? this.props.lecture.start === null : false
 
     members = this.props.IS_CLIENT
         ? [this.props.object]
@@ -593,7 +593,7 @@ class FormLectures extends Component {
                                     </FormGroup>
                                 </div>
                             ))}
-                            {!Boolean(this.members.length) && (
+                            {this.members.length === 0 && (
                                 <p className="text-muted text-center">Žádní účastníci</p>
                             )}
                             {this.IS_LECTURE && (

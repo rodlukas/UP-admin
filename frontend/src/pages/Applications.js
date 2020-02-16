@@ -150,7 +150,7 @@ class Applications extends Component {
                                     </ListGroup>
                                 )
                             })}
-                            {!Boolean(applications.length) && (
+                            {applications.length === 0 && (
                                 <p className="text-muted text-center">Žádní zájemci</p>
                             )}
                         </div>

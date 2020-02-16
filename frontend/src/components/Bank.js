@@ -166,7 +166,7 @@ export default class Bank extends React.PureComponent {
                         </thead>
                         <tbody>
                             {!this.state.DATA_PROBLEM ? (
-                                !Boolean(this.state.bankData.transactions.length) &&
+                                this.state.bankData.transactions.length === 0 &&
                                 !this.state.IS_LOADING ? (
                                     <TableInfo text="Žádné nedávné transakce" />
                                 ) : (
