@@ -6,6 +6,7 @@ import { Alert, Col, Container, Row, Table } from "reactstrap"
 import AttendanceStateService from "../api/services/attendancestate"
 import CourseService from "../api/services/course"
 import AppCommit from "../components/AppCommit"
+import AppDate from "../components/AppDate"
 import AppRelease from "../components/AppRelease"
 import Circle from "../components/Circle"
 import Heading from "../components/Heading"
@@ -273,9 +274,7 @@ class Settings extends Component {
                             <p className="text-center Settings_AppVersion">
                                 <span className="font-weight-bold">Verze aplikace:</span>{" "}
                                 <AppCommit />
-                                <AppRelease /> – <span className="text-nowrap">
-                                    %GIT_DATETIME
-                                </span>{" "}
+                                <AppRelease /> – <AppDate />
                                 <a
                                     target="_blank"
                                     rel="noopener noreferrer"
