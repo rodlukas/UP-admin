@@ -2,8 +2,8 @@
 
 # funkce pro nahrazeni retezcu (arg1: $1) retezcem (arg2: $2)
 substitute() {
-  git grep -l "%$1" | xargs sed -i "s|%$1|$2|g"
-  echo "nahrazeni \"$1\" hodnotou \"$2\" bylo uspesne"
+  git grep -l "%$1" | xargs --no-run-if-empty sed -i "s|%$1|$2|g"
+  echo "- nahrazeni \"$1\" hodnotou \"$2\" bylo uspesne"
 }
 
 # nastaveni konstant, ktere budou nahrazeny
@@ -27,6 +27,8 @@ substitute_folder() {
     exit 1
   }
 
+  echo "* Zacina substituce retezcu ve slozce \"$1\""
+
   substitute "$GIT_COMMIT_STRING" "$COMMIT"
   substitute "$GIT_RELEASE_STRING" "$RELEASE"
   substitute "$GIT_BRANCH_STRING" "$BRANCH"
@@ -34,6 +36,8 @@ substitute_folder() {
   substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
 
   cd "$TRAVIS_BUILD_DIR" || exit
+
+  echo "* Substituce retezcu ve slozce \"$1\" byla uspesna"
 }
 
 substitute_folder frontend/src
