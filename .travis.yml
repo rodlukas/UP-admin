@@ -60,8 +60,8 @@ after_success:
   # posli pokryti kodu do codecov
   - codecov --token=$CODECOV_TOKEN
 
-  # vytvoreni souboru frontend.zip se sestavenym frontendem (vcetne template) pro nahrani na GH
-  - zip --must-match --recurse-paths frontend.zip frontend/build admin/templates/react-autogenerate.html --exclude frontend/build/assets/react-autogenerate.html
+  # pro tagged commit: zabal frontend do zipu pro GH
+  - source scripts/shell/create_frontend_zip.sh
 
   # smazani dat z buildu, testovani a dokumentace
   - rm -rf geckodriver geckodriver.log coverage.xml docs frontend
@@ -99,5 +99,5 @@ deploy:
     on:
       tags: true
 after_deploy:
-  # po prvnim deploy (GH) smaz frontend.zip, po ostatnich deploy uz nic nedelej
-  - rm -f frontend.zip
+  # pro tagged commit: po prvnim deploy smaz frontend.zip
+  - source scripts/shell/remove_frontend_zip.sh
