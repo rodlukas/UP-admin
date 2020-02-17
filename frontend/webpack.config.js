@@ -12,6 +12,7 @@ const hostName = os.hostname().toLowerCase() + ".local"
 const port = 3000
 const urlLocal = `http://${hostName}:${port}/`
 const urlProduction = "/static/assets/"
+const pathBuild = path.resolve(__dirname, "build/assets/")
 const htmlFile = "react-autogenerate.html"
 const htmlSource = "src/index.html"
 const htmlTarget = path.resolve(__dirname + "/../", "admin", "templates")
@@ -43,9 +44,9 @@ module.exports = {
                 loader: "eslint-loader",
                 options: {
                     // vsechny errors/warnings od eslint interpretuj jako warning
-                    emitWarning: true
-                    // TODO povolit az se stabilizuji rules - viz https://github.com/webpack-contrib/eslint-loader/issues/214
-                    //cache: true
+                    emitWarning: true,
+                    // !! pri upravach eslint konfigurace deaktivovat, viz https://github.com/webpack-contrib/eslint-loader/issues/214
+                    cache: true
                 }
             },
             {
@@ -122,7 +123,7 @@ module.exports = {
         // nazvy souboru odpovidaji https://create-react-app.dev/docs/production-build/
         chunkFilename: isProduction ? "[name].[contenthash:8].chunk.js" : "[name].chunk.js",
         filename: isProduction ? "[name].[contenthash:8].js" : "[name].js",
-        path: path.resolve(__dirname, "build/assets"),
+        path: pathBuild,
         publicPath: isProduction ? urlProduction : urlLocal
     },
     devServer: {
