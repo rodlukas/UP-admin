@@ -16,11 +16,7 @@ const Menu = props => {
         <Fragment>
             {authContext.IS_AUTH && (
                 <Fragment>
-                    <Search
-                        onSearchChange={props.onSearchChange}
-                        searchVal={props.searchVal}
-                        search={props.search}
-                    />
+                    <Search onSearchChange={props.onSearchChange} searchVal={props.searchVal} />
                     <Nav className="ml-auto" navbar>
                         <NavItem>
                             <MyNavLink exact activeClassName="active" to={APP_URLS.prehled.url}>
