@@ -32,7 +32,7 @@ const ModalLecturesCore = ({
 
     useEffect(() => {
         setModal(shouldModalOpen)
-    }, [shouldModalOpen])
+    }, [shouldModalOpen, setModal])
 
     // komponente muze prijit object=null (pri zavirani v ModalLecturesWizard), proto osetreni "object &&"
     return (
