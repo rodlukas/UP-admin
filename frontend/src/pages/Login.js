@@ -17,20 +17,26 @@ export default function Login(props) {
         login
     )
 
-    const authContext = useContext(AuthContext)
+    // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
+    const {
+        IS_AUTH: authContext_IS_AUTH,
+        isAuthenticated: authContext_isAuthenticated,
+        login: authContext_login,
+        IS_LOADING: authContext_IS_LOADING
+    } = useContext(AuthContext)
 
     useEffect(() => {
         // pokud dojde k přesměrování po neúspěšném požadavku (401), je potřeba okamžitě zjistit, zda je potřeba upravit stav AuthContext (jinak cyklení)
-        authContext.isAuthenticated(false)
-    }, [authContext.IS_AUTH])
+        authContext_isAuthenticated(false)
+    }, [authContext_IS_AUTH, authContext_isAuthenticated])
 
     function login() {
-        authContext.login(values)
+        authContext_login(values)
     }
 
     const { from } = props.location.state || { from: { pathname: "/" } }
-    if (authContext.IS_AUTH) return <Redirect to={from} />
-    if (authContext.IS_LOADING) return <Loading text="Probíhá přihlašování" />
+    if (authContext_IS_AUTH) return <Redirect to={from} />
+    if (authContext_IS_LOADING) return <Loading text="Probíhá přihlašování" />
     return (
         <Container>
             <Heading content={APP_URLS.prihlasit.title} />
