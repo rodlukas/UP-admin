@@ -7,11 +7,12 @@ import "./Search.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const Search = props => {
-    const clientsActiveContext = useContext(ClientsActiveContext)
+    // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
+    const { funcRefresh: clientsActiveContext_funcRefresh } = useContext(ClientsActiveContext)
 
     useEffect(() => {
-        clientsActiveContext.funcRefresh()
-    }, [])
+        clientsActiveContext_funcRefresh()
+    }, [clientsActiveContext_funcRefresh])
 
     function onSearchChange(e) {
         props.onSearchChange(e.target.value)

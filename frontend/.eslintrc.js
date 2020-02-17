@@ -42,8 +42,7 @@ module.exports = {
         "react/prop-types": 0,
         "no-restricted-globals": ["error"].concat(restrictedGlobals),
         "jsx-a11y/no-autofocus": 0,
-        "react-hooks/rules-of-hooks": "error"
-        // TODO opravit v kodu problemy
-        //"react-hooks/exhaustive-deps": "warn"
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
     }
 }
