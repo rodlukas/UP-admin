@@ -14,7 +14,7 @@ const SearchResults = ({ foundResults, searchVal, search, resetSearch }) => {
 
     useEffect(() => {
         if (clientsActiveContext.isLoaded && searchVal !== "") search()
-    }, [clientsActiveContext.isLoaded])
+    }, [clientsActiveContext.isLoaded, search, searchVal])
 
     return (
         <Fragment>

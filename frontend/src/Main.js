@@ -1,5 +1,5 @@
 import Fuse from "fuse.js"
-import React, { lazy, Suspense, useContext, useEffect, useState } from "react"
+import React, { lazy, Suspense, useCallback, useContext, useEffect, useState } from "react"
 import { NavLink as RouterNavLink, Switch, useLocation } from "react-router-dom"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
@@ -47,9 +47,13 @@ const Main = () => {
     const location = useLocation()
     const escPress = useKeyPress("Escape")
 
-    function search() {
-        setFoundResults(new Fuse(clientsActiveContext.clients, searchOptions).search(searchVal))
-    }
+    const search = useCallback(
+        () =>
+            setFoundResults(
+                new Fuse(clientsActiveContext.clients, searchOptions).search(searchVal)
+            ),
+        [searchVal, clientsActiveContext.clients]
+    )
 
     function resetSearch() {
         setFoundResults([])
@@ -62,7 +66,7 @@ const Main = () => {
 
     useEffect(() => {
         search()
-    }, [searchVal])
+    }, [search])
 
     useEffect(() => {
         if (!isMenuOpened) resetSearch()
