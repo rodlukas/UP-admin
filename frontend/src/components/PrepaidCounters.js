@@ -1,6 +1,6 @@
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import React, { Fragment, useEffect, useState } from "react"
+import React, { Fragment, useCallback, useEffect, useState } from "react"
 import {
     Col,
     Container,
@@ -18,20 +18,20 @@ import "./PrepaidCounters.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 const PrepaidCounters = props => {
-    function createPrepaidCntObjects() {
+    const createPrepaidCntObjects = useCallback(() => {
         let objects = {}
         if (props.memberships)
             props.memberships.forEach(
                 membership => (objects[membership.id] = membership.prepaid_cnt)
             )
         return objects
-    }
+    }, [props.memberships])
 
     const [prepaidCnts, setPrepaidCnts] = useState(() => createPrepaidCntObjects())
 
     useEffect(() => {
-        createPrepaidCntObjects()
-    }, [props.memberships])
+        setPrepaidCnts(createPrepaidCntObjects())
+    }, [createPrepaidCntObjects])
 
     function onChange(e) {
         const target = e.target
