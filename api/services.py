@@ -17,7 +17,7 @@ class Bank:
     # minimalni zustatek v Kc na Fio uctu (odcita se od aktualniho zustatku)
     FIO_MIN_BALANCE = 100
     # vyse najmu (v Kc)
-    BANK_RENT_PRICE = 3595
+    BANK_RENT_PRICE = 3653
     # mozne chyby na Fio API a prislusne chybove hlasky
     FIO_API_ERRORS = {
         status.HTTP_409_CONFLICT: "překročení intervalu pro dotazování",
