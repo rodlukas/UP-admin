@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 
-// vychazi z: https://usehooks.com/useKeyPress/
+/**
+ * Hook pro detekování stisku klávesy uživatelem.
+ * Vychází z: https://usehooks.com/useKeyPress/
+ */
 export default function useKeyPress(targetKey) {
     // State for keeping track of whether key is pressed
     const [keyPressed, setKeyPressed] = useState(false)

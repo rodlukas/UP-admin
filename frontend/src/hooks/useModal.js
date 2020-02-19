@@ -6,6 +6,7 @@ const DIRTY_INDICATORS = {
     SUBMITTED_DIRTY: 3
 }
 
+/** Hook pro jednoduchou práci s modálním oknem. */
 const useModal = () => {
     const [isModal, setModal] = useState(false)
     const [formState, setFormState] = useState(DIRTY_INDICATORS.CLEAN)

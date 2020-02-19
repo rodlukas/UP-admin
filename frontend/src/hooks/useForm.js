@@ -1,7 +1,9 @@
 import { useState } from "react"
 
-// vychazi z: https://upmostly.com/tutorials/using-custom-react-hooks-simplify-forms/
-
+/**
+ * Hook pro jednoduchou práci s formulářem.
+ * Vychází z: https://upmostly.com/tutorials/using-custom-react-hooks-simplify-forms/
+ */
 const useForm = (initState, callback) => {
     const [values, setValues] = useState(initState)
 
