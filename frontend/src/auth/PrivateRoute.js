@@ -7,6 +7,10 @@ import { CoursesVisibleProvider } from "../contexts/CoursesVisibleContext"
 import { GroupsActiveProvider } from "../contexts/GroupsActiveContext"
 import APP_URLS from "../urls"
 
+/**
+ * Komponenta, která rozlišuje ne/přihlášeného uživatele.
+ * Na základě toho mu zobrazí příslušný obsah, případně přesměruje na přihlášení.
+ */
 const PrivateRoute = ({ component: WrappedComponent, ...rest }) => {
     const authContext = useContext(AuthContext)
 

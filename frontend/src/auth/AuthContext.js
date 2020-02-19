@@ -1,13 +1,13 @@
-import decode from "jwt-decode"
 import React, { Component, createContext } from "react"
 import LoginService from "../api/services/login"
-import { prettyDateTime } from "../global/funcDateTime"
 import history from "../global/history"
 import APP_URLS from "../urls"
+import Token from "./Token"
 
-const AUTH_REFRESH_THRESHOLD = 60 * 65 // sekundy -> 65 minut (60*65)
-const AUTH_STORAGE_KEY = "jwt"
+/** Hodnota zbývající platnosti tokenu, při které dojde k požadavku na jeho obnovení. */
+const AUTH_REFRESH_THRESHOLD = 60 * 65 // sekundy -> 65 minut
 
+/** Context pro správu přihlášení uživatele. */
 const AuthContext = createContext({
     logout: () => {},
     isAuthenticated: () => {},
@@ -110,42 +110,4 @@ class AuthProvider extends Component {
     )
 }
 
-class Token {
-    static remove() {
-        localStorage.clear()
-    }
-
-    static save(token) {
-        localStorage.setItem(AUTH_STORAGE_KEY, token)
-    }
-
-    static get() {
-        return localStorage.getItem(AUTH_STORAGE_KEY)
-    }
-
-    static decodeToken(token) {
-        return decode(token)
-    }
-
-    static logToConsole(token, decoded, dif) {
-        console.log(
-            "%c" +
-                "token:\t" +
-                token +
-                "\ncas:\t" +
-                prettyDateTime(new Date()) +
-                "\nvyprsi:\t" +
-                prettyDateTime(new Date(decoded.exp * 1000)) +
-                "\ndif:\t" +
-                dif +
-                " s (cca. " +
-                Math.round(dif / 60) +
-                " min; cca. " +
-                Math.round(dif / 3600) +
-                " h)",
-            "color: olive"
-        )
-    }
-}
-
-export { Token, AuthProvider, AuthContext }
+export { AuthProvider, AuthContext }

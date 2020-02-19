@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Token } from "../auth/AuthContext"
+import Token from "../auth/Token"
 import { API_URL, JWT_HEADER_PREFIX } from "../global/constants"
 
 /** Instance axiosu pro HTTP požadavky na API. */

@@ -1,9 +1,13 @@
 import { useContext, useEffect } from "react"
 import { AuthContext } from "./AuthContext"
 
-// interval pro dotazovani na platnost tokenu (pripadne se obnovi jeho platnost)
-const REFRESH_TOKEN_INTERVAL = 210 * 60 * 1000 // milisekundy -> 3.5 hodiny (210*60*1000)
+/** Interval pro dotazování na platnost tokenu (případně se obnoví jeho platnost). */
+const REFRESH_TOKEN_INTERVAL = 210 * 60 * 1000 // milisekundy -> 3.5 hodiny
 
+/**
+ * Komponenta pro automatickou opakovanou kontrolu přihlášení a platnosti tokenu.
+ * V pravidelném intervalu ověří platnost tokenu a pokud se blíží ke konci, obnoví ho.
+ */
 const AuthChecking = () => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
     const {
