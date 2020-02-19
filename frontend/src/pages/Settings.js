@@ -275,7 +275,9 @@ class Settings extends Component {
                             <p className="text-center Settings_AppVersion">
                                 <span className="font-weight-bold">Verze aplikace:</span>{" "}
                                 <AppCommit />
-                                <AppRelease /> – <AppDate />
+                                {" ("}
+                                <AppRelease />
+                                {")"} – <AppDate />{" "}
                                 <a
                                     target="_blank"
                                     rel="noopener noreferrer"

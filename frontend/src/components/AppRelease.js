@@ -10,7 +10,6 @@ const AppRelease = () => {
     }
     return (
         <Fragment>
-            {" ("}
             {!isTaggedCommit() && "větev "}
             <a
                 href={
@@ -26,7 +25,6 @@ const AppRelease = () => {
             <UncontrolledTooltipWrapper target="AppRelease">
                 {isTaggedCommit() ? "Poznámky k verzi" : "Přejít na větev"} (GitHub)
             </UncontrolledTooltipWrapper>
-            {")"}
         </Fragment>
     )
 }
