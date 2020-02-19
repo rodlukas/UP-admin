@@ -20,6 +20,7 @@ if (isHosted())
         release: "%GIT_COMMIT"
     })
 
+/** Základní kostra aplikace. */
 const App = () => (
     <Router history={history}>
         {GA.init() && <GA.RouteTracker />}

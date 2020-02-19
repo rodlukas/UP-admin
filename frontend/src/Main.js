@@ -30,6 +30,7 @@ const Clients = lazy(() => lazySafe(() => import("./pages/Clients")))
 const Card = lazy(() => lazySafe(() => import("./pages/Card")))
 const Diary = lazy(() => lazySafe(() => import("./pages/Diary")))
 
+// konfigurace Fuse vyhledavani
 const searchOptions = {
     shouldSort: true,
     threshold: 0.5,
@@ -38,6 +39,7 @@ const searchOptions = {
     keys: ["normalized", "phone", "email"]
 }
 
+/** Hlavní kostra aplikace. */
 const Main = () => {
     const [isMenuOpened, setIsMenuOpened] = useState(false)
     const [foundResults, setFoundResults] = useState([])

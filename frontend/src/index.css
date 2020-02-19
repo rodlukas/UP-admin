@@ -88,6 +88,7 @@ label {
     top: 380px !important;
 }
 
+/*** GDPR ***/
 /* skryti osobnich udaju v pripade potreby */
 .gdpr [data-gdpr],
 .gdpr .memberships__option,

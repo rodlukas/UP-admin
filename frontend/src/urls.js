@@ -1,7 +1,9 @@
+/** Vrátí objekt s danou url adresou a názvem stránky. */
 function page(url, title) {
     return { url, title }
 }
 
+/** URL adresy a názvy stránek v aplikaci. */
 const APP_URLS = {
     prihlasit: page("/prihlasit", "Přihlášení"),
     skupiny: page("/skupiny", "Skupiny"),
