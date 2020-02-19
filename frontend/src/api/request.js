@@ -8,6 +8,7 @@ import axiosRequest from "./_axios"
 import { parseDjangoError } from "./parseDjangoError"
 import { API_METHODS, API_URLS } from "./urls"
 
+/** Zařídí výpis chyby do notifikace a konzole. */
 class ErrorMessage extends Component {
     state = {
         errMsg: ""
@@ -83,6 +84,11 @@ class ErrorMessage extends Component {
     }
 }
 
+/**
+ * Wrapper požadavku na API.
+ * Prostřednictvím wrapperu axiosu provede a požadavek a zpracuje odpověď.
+ * V případě neúspěchu zařídí notifikaci o chybě, v případě úspěchu předá dál pouze získaná data pro další práci.
+ */
 const request = function(options, ignore_errors = false, return_data = true) {
     const onSuccess = response => {
         const responseUrl = response.request.responseURL

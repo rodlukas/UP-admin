@@ -1,9 +1,10 @@
+/** Rozparsuje pro frontend chybu vrácenou z API. */
 export function parseDjangoError(error) {
     if (!error.request) return null
-    error = error.request.response
+    let result = error.request.response
     try {
         // rozparsuj JSON objekt
-        let json = JSON.parse(error)
+        let json = JSON.parse(result)
         // pokud se pridava (neupdatuje) a chyba se vztahuje ke konkretnimu field
         // (napr. pridavani vice preplacenych lekci jednotlivci), vraci se pole,
         // vsechny prvky jsou stejne, vezmi z nej tedy prvni prvek s info o chybe
@@ -11,10 +12,10 @@ export function parseDjangoError(error) {
         // obecna chyba nevztazena ke konkretnimu field,
         // nebo chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
         if ("non_field_errors" in json || "detail" in json) {
-            error = json["non_field_errors"] || json["detail"]
+            result = json["non_field_errors"] || json["detail"]
             // stringify, kdyz prijde objekt
-            if (Array.isArray(error) && error.length !== 1) error = JSON.stringify(error)
-            if (Array.isArray(error) && error.length === 1) error = error[0]
+            if (Array.isArray(result) && result.length !== 1) result = JSON.stringify(result)
+            if (Array.isArray(result) && result.length === 1) result = result[0]
         }
         // chyba vztazena ke konkretnimu field
         else if (json[Object.keys(json)[0]]) {
@@ -35,10 +36,10 @@ export function parseDjangoError(error) {
                           .join(", ")
                     : json[field]
             })
-            error = json
+            result = json
         }
     } catch (error) {
         return null
     }
-    return error
+    return result
 }

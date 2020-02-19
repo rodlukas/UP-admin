@@ -1,7 +1,10 @@
+/** Oddělovač v URL na API. */
 export const API_DELIM = "/"
+/** Klíč query stringu používaný pro změnu řazení na API. */
 export const API_ORDERING = "ordering"
 
-export const API_URLS = {
+/** URL adresy API včetně možností řazení a filtrování. */
+export const API_URLS = Object.freeze({
     Applications: {
         url: "applications" + API_DELIM
     },
@@ -54,12 +57,13 @@ export const API_URLS = {
     Bank: {
         url: "bank" + API_DELIM
     }
-}
+})
 
-export const API_METHODS = {
+/** Metody, které poskytuje API. */
+export const API_METHODS = Object.freeze({
     get: "get",
     post: "post",
     patch: "patch",
     remove: "delete",
     put: "put"
-}
+})
