@@ -6,6 +6,7 @@ import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
 import useModal from "../hooks/useModal"
 import FormGroups from "./FormGroups"
 
+/** Modální okno s formulářem pro skupiny. Včetně tlačítek pro vyvolání přidání/úpravy. */
 const ModalGroups = ({
     currentGroup = null,
     sendResult = false,

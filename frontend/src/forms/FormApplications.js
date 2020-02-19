@@ -12,6 +12,7 @@ import SelectClient from "./helpers/SelectClient"
 import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
+/** Formulář pro zájemce o kurzy. */
 class FormApplications extends Component {
     isObject = Boolean(Object.keys(this.props.application).length)
 

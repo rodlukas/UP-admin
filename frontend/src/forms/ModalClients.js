@@ -7,6 +7,7 @@ import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
 import FormClients from "../forms/FormClients"
 import useModal from "../hooks/useModal"
 
+/** Modální okno s formulářem pro klienty. Včetně tlačítek pro vyvolání přidání/úpravy. */
 const ModalClients = ({
     currentClient = null,
     sendResult = false,

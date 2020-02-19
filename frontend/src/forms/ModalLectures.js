@@ -3,6 +3,10 @@ import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import ModalLecturesCore from "./ModalLecturesCore"
 
+/**
+ * Kostra modálního okna s formulářem pro lekce. Včetně tlačítek pro vyvolání přidání/úpravy.
+ * Práci s modálním oknem má na starosti potomek ModalLecturesCore.
+ */
 const ModalLectures = ({
     currentLecture = null,
     refresh,

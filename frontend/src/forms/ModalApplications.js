@@ -5,6 +5,7 @@ import EditButton from "../components/buttons/EditButton"
 import FormApplications from "../forms/FormApplications"
 import useModal from "../hooks/useModal"
 
+/** Modální okno s formulářem pro zájemce o kurzy. */
 const ModalApplications = ({ currentApplication = null, refresh }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose] = useModal()
 

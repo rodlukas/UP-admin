@@ -27,6 +27,7 @@ import Or from "./helpers/Or"
 import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
+/** Formulář pro skupiny. */
 class FormGroups extends Component {
     isGroup = Boolean(Object.keys(this.props.group).length)
 

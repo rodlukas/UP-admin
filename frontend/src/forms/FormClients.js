@@ -21,6 +21,7 @@ import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
 import { capitalizeString, prettyPhone } from "../global/utils"
 
+/** Formulář pro klienty. */
 export default class FormClients extends Component {
     isClient = Boolean(Object.keys(this.props.client).length)
 

@@ -3,6 +3,10 @@ import { Modal } from "reactstrap"
 import useModal from "../hooks/useModal"
 import FormLectures from "./FormLectures"
 
+/**
+ * Jádro modálního okna s formulářem pro lekce.
+ * Má na starosti samotnou práci s modálním oknem a je přepoužíváno v různých kontextech.
+ */
 const ModalLecturesCore = ({
     currentLecture = null,
     refresh,

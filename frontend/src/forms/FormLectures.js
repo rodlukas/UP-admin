@@ -30,15 +30,17 @@ import Tooltip from "../components/Tooltip"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { WithAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
-import { DEFAULT_DURATION } from "../global/constants"
+import {
+    DEFAULT_LECTURE_DURATION_GROUP,
+    DEFAULT_LECTURE_DURATION_SINGLE
+} from "../global/constants"
 import { prettyDateWithLongDayYear, toISODate, toISOTime } from "../global/funcDateTime"
 import { alertRequired } from "../global/utils"
 import "./FormLectures.css"
 import CustomCustomInput from "./helpers/CustomCustomInput"
 import SelectCourse from "./helpers/SelectCourse"
 
-const GROUP_DURATION = 45
-
+/** Formulář pro lekce. */
 class FormLectures extends Component {
     IS_LECTURE = Boolean(Object.keys(this.props.lecture).length)
 
@@ -102,9 +104,9 @@ class FormLectures extends Component {
         if (this.props.IS_CLIENT)
             return this.props.defaultValuesForLecture.course
                 ? this.props.defaultValuesForLecture.course.duration
-                : DEFAULT_DURATION
+                : DEFAULT_LECTURE_DURATION_SINGLE
         // je to skupina
-        return GROUP_DURATION
+        return DEFAULT_LECTURE_DURATION_GROUP
     }
 
     getDefaultStateIndex() {

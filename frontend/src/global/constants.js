@@ -21,8 +21,11 @@ export const TEXTS = Object.freeze({
     NO_RESULTS: "Nic nenalezeno"
 })
 
-/** Výchozí délka trvání lekce. */
-export const DEFAULT_DURATION = 30
+/** Výchozí délka trvání lekce jednotlivce. */
+export const DEFAULT_LECTURE_DURATION_SINGLE = 30
+
+/** Výchozí délka trvání skupinové lekce. */
+export const DEFAULT_LECTURE_DURATION_GROUP = 45
 
 /** Výchozí barva kurzu. */
 export const DEFAULT_COLOR = "#000"

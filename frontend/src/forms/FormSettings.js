@@ -20,7 +20,7 @@ import CourseService from "../api/services/course"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import { DEFAULT_COLOR, DEFAULT_DURATION, EDIT_TYPE } from "../global/constants"
+import { DEFAULT_COLOR, DEFAULT_LECTURE_DURATION_SINGLE, EDIT_TYPE } from "../global/constants"
 import "./FormSettings.css"
 import ColorPicker from "./helpers/ColorPicker"
 
@@ -31,7 +31,7 @@ export default class FormSettings extends Component {
         id: this.props.object.id || "",
         name: this.props.object.name || "",
         visible: this.isObject ? this.props.object.visible : true,
-        duration: this.props.object.duration || DEFAULT_DURATION,
+        duration: this.props.object.duration || DEFAULT_LECTURE_DURATION_SINGLE,
         color: this.props.object.color || DEFAULT_COLOR,
         IS_SUBMIT: false
     }

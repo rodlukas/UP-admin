@@ -9,6 +9,7 @@ import FormSettings from "../forms/FormSettings"
 import { EDIT_TYPE } from "../global/constants"
 import useModal from "../hooks/useModal"
 
+/** Modální okno s formulářem pro kurzy a stavy účasti. Včetně tlačítek pro vyvolání přidání/úpravy. */
 const ModalSettings = ({ currentObject = null, TYPE, refresh }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose] = useModal()
     const type_buttons = TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav účasti"

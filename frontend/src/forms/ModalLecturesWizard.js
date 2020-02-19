@@ -16,10 +16,9 @@ import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { prettyDate } from "../global/funcDateTime"
 import {
-    defaultValuesForLecture,
     getDefaultValuesForLecture,
-    getLecturesForGroupingByCourses,
-    groupByCourses
+    getLecturesgroupedByCourses,
+    prepareDefaultValuesForLecture
 } from "../global/utils"
 import CustomReactSelect from "./helpers/CustomReactSelect"
 import { react_select_ids } from "./helpers/func"
@@ -30,12 +29,16 @@ import ModalGroups from "./ModalGroups"
 import ModalLecturesCore from "./ModalLecturesCore"
 import "./ModalLecturesWizard.css"
 
+/**
+ * Modální okno s průvodcem pro přidání lekce.
+ * Umožní volbu/vytvoření konkrétního klienta/skupiny. Poté umožní přidání samotné lekce.
+ */
 class ModalLecturesWizard extends React.Component {
     state = {
         IS_CLIENT: undefined,
         object: null,
         modalSelectDone: false,
-        defaultValuesForLecture: defaultValuesForLecture(),
+        defaultValuesForLecture: prepareDefaultValuesForLecture(),
         IS_LOADING: false
     }
 
@@ -60,9 +63,8 @@ class ModalLecturesWizard extends React.Component {
         // nejdriv zobraz nacitani, behem ktereho pro vybraneho klienta/skupinu pripravis vychozi hodnoty kurzu, data a casu,
         // pak klienta/skupinu (a tato data) teprve uloz (diky tomu se az pak zobrazi formular) a nacitani skryj pro priste
         this.setState({ IS_LOADING: true }, () => {
-            const request = getLecturesForGroupingByCourses(obj.id, this.state.IS_CLIENT)
-            request.then(lectures => {
-                const lecturesGroupedByCourses = groupByCourses(lectures)
+            const request = getLecturesgroupedByCourses(obj.id, this.state.IS_CLIENT)
+            request.then(lecturesGroupedByCourses => {
                 this.setState(
                     {
                         defaultValuesForLecture: getDefaultValuesForLecture(
