@@ -2,6 +2,7 @@ import React, { Component, createContext } from "react"
 import ClientService from "../api/services/client"
 import { clientName } from "../global/utils"
 
+/** Context pro přístup a práci s aktivními klienty. */
 const ClientsActiveContext = createContext({
     clients: [],
     funcRefresh: () => {},

@@ -1,6 +1,7 @@
 import React, { Component, createContext } from "react"
 import AttendanceStateService from "../api/services/attendancestate"
 
+/** Context pro přístup a práci se stavy účasti. */
 const AttendanceStatesContext = createContext({
     attendancestates: [],
     funcRefresh: () => {},

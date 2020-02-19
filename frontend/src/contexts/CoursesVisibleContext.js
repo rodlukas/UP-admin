@@ -1,6 +1,7 @@
 import React, { Component, createContext } from "react"
 import CourseService from "../api/services/course"
 
+/** Context pro přístup a práci s viditelnými kurzy. */
 const CoursesVisibleContext = createContext({
     courses: [],
     funcRefresh: () => {},

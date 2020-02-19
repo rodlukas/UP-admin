@@ -1,6 +1,7 @@
 import React, { Component, createContext } from "react"
 import GroupService from "../api/services/group"
 
+/** Context pro přístup a práci s aktivními skupinami. */
 const GroupsActiveContext = createContext({
     groups: [],
     funcRefresh: () => {},
