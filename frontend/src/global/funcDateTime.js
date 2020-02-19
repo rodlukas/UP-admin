@@ -1,59 +1,86 @@
 import { USER_BIRTHDAY, USER_CELEBRATION, USER_NAMEDAY } from "./constants"
 
+/** Počet pracovních dní v týdnu. */
 export const WORK_DAYS_COUNT = 5
+
+/** Počet dní v týdnu. */
 export const DAYS_IN_WEEK = 7
 
-function convertDayToWords(date, callback) {
+/** Jazyk pro formátování datetime. */
+const LOCALE_CZ = "cs-CZ"
+
+/** Pokud je to možné, převede zadaný datum na slovní reprezentaci typu "včera", jinak vrátí null. */
+function convertDayToWords(date) {
     if (isToday(date)) return "dnes"
     else if (isToday(addDays(date, 1))) return "včera"
     else if (isToday(addDays(date, -1))) return "zítra"
-    else return callback(date)
+    return null
 }
 
+/** Vrátí zadaný datum ve srozumitelném formátu (den a měsíc nezarovnané nulami). */
 export function prettyDate(date) {
     return date.getDate() + ". " + (date.getMonth() + 1) + "."
 }
 
+/** Vrátí zadaný datum ve srozumitelném formátu (včetně roku, den a měsíc nezarovnané nulami). */
 export function prettyDateWithYear(date) {
     return prettyDate(date) + " " + date.getFullYear()
 }
 
+/** Vrátí zadaný datum a čas ve srozumitelném formátu (včetně roku, sekund a krátké slovní reprezentace dne). */
 export function prettyDateTime(datetime) {
     return prettyDateWithDayYear(datetime) + " " + prettyTimeWithSeconds(datetime)
 }
 
-// vrati, zda se rok zadaneho datumu lisi od aktualniho
+/** Zjistí, jestli se rok ze zadaného datumu liší od aktuálního. */
 export function yearDiffs(date) {
     return date.getFullYear() !== new Date().getFullYear()
 }
 
-// vrati uzivatelsky privetivy datum, pokud je rok odlisny od aktualniho tak jej pripoji
+/** Vrátí zadaný datum ve srozumitelném formátu (rok pouze odlišný od aktuálního, bez slovní reprezentace dne). */
 export function prettyDateWithYearIfDiff(date) {
     if (!yearDiffs(date)) return prettyDate(date)
     return prettyDateWithYear(date)
 }
 
+/** Vrátí zadaný datum ve srozumitelném formátu (včetně roku a nezkrácené slovní reprezentace dne). */
 export function prettyDateWithLongDayYear(date) {
-    const day = date.toLocaleDateString("cs-CZ", { weekday: "long" })
+    const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "long" })
     return day + " " + prettyDateWithYear(date)
 }
 
-export function prettyDateWithLongDayYearIfDiff(date) {
-    const day = date.toLocaleDateString("cs-CZ", { weekday: "long" })
-    return day + " " + prettyDateWithYearIfDiff(date)
-}
-
-export function prettyDateWithDayYearIfDiff(date, convertToWords = false) {
-    const day = date.toLocaleDateString("cs-CZ", { weekday: "short" })
-    if (convertToWords) return convertDayToWords(date, prettyDateWithDayYearIfDiff)
-    return day + " " + prettyDateWithYearIfDiff(date)
-}
-
+/** Vrátí zadaný datum ve srozumitelném formátu (včetně roku a krátké slovní reprezentace dne). */
 export function prettyDateWithDayYear(date) {
-    const day = date.toLocaleDateString("cs-CZ", { weekday: "short" })
+    const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "short" })
     return day + " " + prettyDateWithYear(date)
 }
 
+/**
+ * Vrátí zadaný datum ve srozumitelném formátu (rok pouze odlišný od aktuálního,
+ * nezkrácená slovní reprezentace dne).
+ */
+export function prettyDateWithLongDayYearIfDiff(date) {
+    const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "long" })
+    return day + " " + prettyDateWithYearIfDiff(date)
+}
+
+/**
+ * Vrátí zadaný datum ve srozumitelném formátu (rok pouze odlišný od aktuálního, krátká slovní reprezentace dne).
+ * Volba convertToWord umožňuje, pokud je to možné, převést datum např. na "včera".
+ */
+export function prettyDateWithDayYearIfDiff(date, convertToWord = false) {
+    if (convertToWord) {
+        const convertedDayToWords = convertDayToWords(date)
+        if (convertedDayToWords) return convertedDayToWords
+    }
+    const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "short" })
+    return day + " " + prettyDateWithYearIfDiff(date)
+}
+
+/**
+ * Vrátí zadaný datum v ISO formátu.
+ * Hodiny a minuty jsou zarovnány nulou, rok je čtyřmístný.
+ */
 export function toISODate(date) {
     return (
         date.getFullYear() +
@@ -66,33 +93,47 @@ export function toISODate(date) {
     )
 }
 
+/**
+ * Vrátí čas ve srozumitelném formátu (bez sekund).
+ * Minuty jsou zarovnány nulou.
+ */
 export function prettyTime(datetime) {
     return (
         datetime.getHours() + ":" + (datetime.getMinutes() < 10 ? "0" : "") + datetime.getMinutes()
     )
 }
 
+/**
+ * Vrátí čas ve srozumitelném formátu (včetně sekund).
+ * Minuty a sekundy jsou zarovnány nulou.
+ */
 export function prettyTimeWithSeconds(datetime) {
     return (
         prettyTime(datetime) + ":" + (datetime.getSeconds() < 10 ? "0" : "") + datetime.getSeconds()
     )
 }
 
-export function toISOTime(date) {
+/**
+ * Vrátí čas (hodiny a minuty) ze zadaného datetime v ISO formátu.
+ * Hodiny i minuty jsou zarovnány nulou.
+ */
+export function toISOTime(datetime) {
     return (
-        (date.getHours() < 10 ? "0" : "") +
-        date.getHours() +
+        (datetime.getHours() < 10 ? "0" : "") +
+        datetime.getHours() +
         ":" +
-        (date.getMinutes() < 10 ? "0" : "") +
-        date.getMinutes()
+        (datetime.getMinutes() < 10 ? "0" : "") +
+        datetime.getMinutes()
     )
 }
 
+/** Zjistí, jestli je zadaný datum dnešní. */
 export function isToday(date) {
     const currentDate = new Date()
     return isEqualDate(date, currentDate)
 }
 
+/** Zjistí, jestli jsou dva datumy stejné. */
 export function isEqualDate(date1, date2) {
     return (
         date1.getDate() === date2.getDate() &&
@@ -101,19 +142,19 @@ export function isEqualDate(date1, date2) {
     )
 }
 
-// zjisti datum nejblizsiho pondeli predchazejici datumu (pripadne tentyz datum pokud uz pondeli je)
+/** Vrátí datum nejbližšího pondělí předcházejícího danému datumu (případně tentýž datum, pokud už je pondělí). */
 export function getMonday(date) {
     date.setDate(date.getDate() + 1 - (date.getDay() || 7))
     return date
 }
 
-// prida k zadanemu datumu prislusny pocet dni a vrati takto navyseny datum
+/** Vrátí datum posunutý o zadaný počet dní. */
 export function addDays(date, days) {
     date.setDate(date.getDate() + days)
     return date
 }
 
-// priprav pole datumu pracovnich dnu v prislusnem tydnu
+/** Vrať pole datumů pracovních dnů v příslušném týdnu začínajícím daným pondělím. */
 export function getWeekSerializedFromMonday(monday) {
     let week = [],
         dayToProcess = monday
@@ -124,7 +165,7 @@ export function getWeekSerializedFromMonday(monday) {
     return week
 }
 
-// zjisti, zda ma uzivatel narozeniny/svatek a vrat, co ma
+/** Zjisti, zda má uživatel narozeniny/svátek a vrať, co má. */
 export function isUserCelebrating(date) {
     const curMonth = date.getMonth(),
         curDate = date.getDate()

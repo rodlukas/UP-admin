@@ -1,15 +1,18 @@
-// Pokud se nenajde chunk na serveru, proved PRAVE jednou reload cele aplikace -
-// pri deploy se muze stat, ze klient ma v cache stary manifest.json se starym hashem chunku,
-// ktery pak pozaduje, dojde k chybe, kterou odchytime a provedeme hard refresh cele aplikace.
-//
-// Pokud se ale chunk nenacetl z jineho duvodu, nastalo by zacykleni, proto pres localStorage
-// povolime jen jedno znovunacteni.
-
-// viz:
-// https://github.com/facebook/react/issues/14254,
-// https://medium.com/@kamrankhatti/angular-lazy-routes-loading-chunk-failed-42b16c22a377
-// https://blog.francium.tech/vue-lazy-routes-loading-chunk-failed-9ee407bbd58
+/**
+ * Pokud se nenajde chunk na serveru, proved PRAVE jednou reload cele aplikace -
+ * pri deploy se muze stat, ze klient ma v cache stary manifest.json se starym hashem chunku,
+ * ktery pak pozaduje, dojde k chybe, kterou odchytime a provedeme hard refresh cele aplikace.
+ *
+ * Pokud se ale chunk nenacetl z jineho duvodu, nastalo by zacykleni, proto pres localStorage
+ * povolime jen jedno znovunacteni.
+ *
+ * Viz:
+ * https://github.com/facebook/react/issues/14254,
+ * https://medium.com/@kamrankhatti/angular-lazy-routes-loading-chunk-failed-42b16c22a377,
+ * https://blog.francium.tech/vue-lazy-routes-loading-chunk-failed-9ee407bbd58
+ */
 export default function lazySafe(fn) {
+    const FIRST_RELOAD_KEY = "firstReload"
     return new Promise((resolve, reject) => {
         fn()
             .then(resolve)
@@ -17,11 +20,12 @@ export default function lazySafe(fn) {
                 // zjisti, jestli se nepodarilo nacist chunk
                 if (/loading chunk \d* failed./i.test(error.message)) {
                     // zjisti, zda uz doslo k prvnimu automatickemu reloadu
-                    if (!localStorage.getItem("firstReload")) {
-                        // pokud nedoslo k prvnimu reloadu, nastav firstReload=true a reloadni
-                        localStorage.setItem("firstReload", true)
+                    const curValue = localStorage.getItem(FIRST_RELOAD_KEY)
+                    if (curValue === null || curValue !== "true") {
+                        // pokud nedoslo k prvnimu reloadu, nastav firstReload="true" a reloadni
+                        localStorage.setItem(FIRST_RELOAD_KEY, "true")
                         window.location.reload()
-                    } else localStorage.removeItem("firstReload")
+                    } else localStorage.removeItem(FIRST_RELOAD_KEY)
                 }
                 // nejedna se o chybu s chunkem, posli dal
                 else reject(error)
