@@ -12,6 +12,7 @@ import { WithClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import APP_URLS from "../urls"
 
+/** Stránka s klienty. */
 class Clients extends Component {
     state = {
         clients: [],

@@ -8,6 +8,7 @@ import Loading from "../components/Loading"
 import useForm from "../hooks/useForm"
 import APP_URLS from "../urls"
 
+/** Stránka s přihlášením. */
 export default function Login(props) {
     const [values, handleChange, handleSubmit] = useForm(
         {

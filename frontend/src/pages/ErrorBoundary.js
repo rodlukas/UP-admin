@@ -8,8 +8,10 @@ import { Token } from "../auth/AuthContext"
 import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"
 
-// vychazi z: https://docs.sentry.io/platforms/javascript/react/#error-boundaries
-
+/**
+ * Stránka s diářem.
+ * Vychází z: https://docs.sentry.io/platforms/javascript/react/#error-boundaries
+ */
 class ErrorBoundary extends Component {
     state = {
         eventId: null,

@@ -29,6 +29,7 @@ const Visible = ({ visible, ...props }) => (
     />
 )
 
+/** Stránka s nastavením - správa kurzů, stavů účasti, info o aplikaci. */
 class Settings extends Component {
     state = {
         courses: [],

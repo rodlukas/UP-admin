@@ -16,6 +16,7 @@ import ModalGroups from "../forms/ModalGroups"
 import { areAllMembersActive } from "../global/utils"
 import APP_URLS from "../urls"
 
+/** Stránka se skupinami. */
 class Groups extends Component {
     state = {
         groups: [],

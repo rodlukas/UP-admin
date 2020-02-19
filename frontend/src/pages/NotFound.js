@@ -2,6 +2,7 @@ import React from "react"
 import Heading from "../components/Heading"
 import APP_URLS from "../urls"
 
+/** Stránka, na kterou se uživatel dostane při neexistující stránce/objektu. */
 const NotFound = () => (
     <div className="text-center">
         <Heading content={APP_URLS.nenalezeno.title} />

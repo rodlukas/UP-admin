@@ -6,6 +6,7 @@ import Heading from "../components/Heading"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
 import { toISODate } from "../global/funcDateTime"
 
+/** Stránka s hlavním přehledem - dnešní lekce a banka. */
 export default class Dashboard extends Component {
     state = {
         shouldRefresh: false

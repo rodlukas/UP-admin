@@ -27,6 +27,7 @@ const TitleDate = ({ date }) => (
     </span>
 )
 
+/** Stránka s diářem. */
 export default class Diary extends Component {
     getRequiredMonday = () => getMonday(Diary.parseDateFromParams(this.props.match.params))
     getWeek = () => getWeekSerializedFromMonday(this.getRequiredMonday())
@@ -101,7 +102,7 @@ export default class Diary extends Component {
                             <Link to={this.getPrevMondaySerialized()} id="Diary_PrevWeek">
                                 <FontAwesomeIcon
                                     icon={faArrowAltCircleLeft}
-                                    className="arrowBtn text-muted"
+                                    className="Diary_arrowBtn text-muted"
                                 />
                             </Link>
                             <UncontrolledTooltipWrapper target="Diary_PrevWeek">
@@ -112,7 +113,7 @@ export default class Diary extends Component {
                             <Link to={this.getNextMondaySerialized()} id="Diary_NextWeek">
                                 <FontAwesomeIcon
                                     icon={faArrowAltCircleRight}
-                                    className="arrowBtn text-muted"
+                                    className="Diary_arrowBtn text-muted"
                                 />
                             </Link>
                             <UncontrolledTooltipWrapper target="Diary_NextWeek">
@@ -140,7 +141,7 @@ export default class Diary extends Component {
                 <Container fluid className="pageContent">
                     <Row>
                         {this.state.week.map((day, index) => (
-                            <Col key={index} md="6" lg="" className="diary-day">
+                            <Col key={index} md="6" lg="" className="Diary_day">
                                 <DashboardDay
                                     date={day}
                                     setRefreshState={this.setRefreshState}

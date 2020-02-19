@@ -10,10 +10,11 @@ import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper
 import { WithCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
-import { groupByCourses } from "../global/utils"
+import { groupObjectsByCourses } from "../global/utils"
 import APP_URLS from "../urls"
 import "./Applications.css"
 
+/** Stránka se zájemci o kurzy. */
 class Applications extends Component {
     state = {
         applications: [],
@@ -24,7 +25,7 @@ class Applications extends Component {
 
     getApplications = () =>
         ApplicationService.getAll().then(applications => {
-            const grouppedByCourses = groupByCourses(applications)
+            const grouppedByCourses = groupObjectsByCourses(applications)
             this.setState({
                 applications: grouppedByCourses,
                 IS_LOADING: false
@@ -62,12 +63,12 @@ class Applications extends Component {
                                 </UncontrolledTooltipWrapper>
                             )}
                             {applications.map(courseApplications => {
-                                const cnt = courseApplications.lectures.length
+                                const cnt = courseApplications.objects.length
                                 return (
                                     <ListGroup
                                         key={courseApplications.course.id}
                                         data-qa="applications_for_course"
-                                        className="applications_course">
+                                        className="Applications_course">
                                         <ListGroupItem
                                             style={{ background: courseApplications.course.color }}>
                                             <h4 className="mb-0 Applications_courseHeading">
@@ -92,7 +93,7 @@ class Applications extends Component {
                                                 </Badge>
                                             </h4>
                                         </ListGroupItem>
-                                        {courseApplications.lectures.map(application => (
+                                        {courseApplications.objects.map(application => (
                                             <ListGroupItem
                                                 key={application.id}
                                                 data-qa="application">

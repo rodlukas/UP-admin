@@ -23,12 +23,12 @@ import { prettyDateWithDayYear, prettyTime } from "../global/funcDateTime"
 import {
     courseDuration,
     getDefaultValuesForLecture,
-    getLecturesForGroupingByCourses,
-    groupByCourses
+    getLecturesgroupedByCourses
 } from "../global/utils"
 import APP_URLS from "../urls"
 import "./Card.css"
 
+/** Stránka s kartou klienta nebo skupiny. */
 class Card extends Component {
     isClient = () => this.props.match.path.includes(APP_URLS.klienti.url)
 
@@ -109,9 +109,8 @@ class Card extends Component {
     }
 
     getLectures = () => {
-        const request = getLecturesForGroupingByCourses(this.getId(), this.isClient())
-        request.then(lectures => {
-            const lecturesGroupedByCourses = groupByCourses(lectures)
+        const request = getLecturesgroupedByCourses(this.getId(), this.isClient())
+        request.then(lecturesGroupedByCourses => {
             this.setState(
                 {
                     lectures: lecturesGroupedByCourses,
@@ -244,7 +243,7 @@ class Card extends Component {
                                                     {courseLectures.course.name}
                                                 </h4>
                                             </ListGroupItem>
-                                            {courseLectures.lectures.map(lecture => {
+                                            {courseLectures.objects.map(lecture => {
                                                 const d = new Date(lecture.start)
                                                 let className = lecture.canceled
                                                     ? "lecture-canceled"
