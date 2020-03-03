@@ -8,6 +8,7 @@ type Item = ClientType
 type List = Array<Item>
 export type ListWithActiveClients = Array<ClientActiveType>
 
+/** Získá klienta. */
 function get(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,

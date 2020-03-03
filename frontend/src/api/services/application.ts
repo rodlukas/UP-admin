@@ -7,6 +7,7 @@ const baseUrl = API_URLS.Applications.url
 type Item = ApplicationType
 type List = Array<Item>
 
+/** Získá všechny zájemce o kurzy. */
 function getAll(): Promise<List> {
     return requestData<List>({
         url: baseUrl,
@@ -14,6 +15,7 @@ function getAll(): Promise<List> {
     })
 }
 
+/** Aktualizuje (PUT) zájemce o kurz. */
 function update(context: ApplicationPutApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
@@ -22,6 +24,7 @@ function update(context: ApplicationPutApi): Promise<Item> {
     })
 }
 
+/** Smaže zájemce o kurz. */
 function remove(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,
@@ -29,6 +32,7 @@ function remove(id: Item["id"]): Promise<Item> {
     })
 }
 
+/** Přidá zájemce o kurz. */
 function create(context: ApplicationPostApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl,

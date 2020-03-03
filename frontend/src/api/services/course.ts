@@ -7,6 +7,7 @@ const baseUrl = API_URLS.Courses.url
 type Item = CourseType
 type List = Array<Item>
 
+/** Získá všechny kurzy. */
 function getAll(): Promise<List> {
     return requestData<List>({
         url: baseUrl,
@@ -14,6 +15,7 @@ function getAll(): Promise<List> {
     })
 }
 
+/** Získá viditelné kurzy. */
 function getVisible(): Promise<List> {
     return requestData<List>({
         url: baseUrl + "?" + API_URLS.Courses.filters.visible + "=true",
@@ -21,6 +23,7 @@ function getVisible(): Promise<List> {
     })
 }
 
+/** Aktualizuje (PUT) kurz. */
 function update(context: CoursePutApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
@@ -29,6 +32,7 @@ function update(context: CoursePutApi): Promise<Item> {
     })
 }
 
+/** Smaže kurz. */
 function remove(id: Item["id"]): Promise<CourseType> {
     return requestData<CourseType>({
         url: baseUrl + id + API_DELIM,
@@ -36,6 +40,7 @@ function remove(id: Item["id"]): Promise<CourseType> {
     })
 }
 
+/** Přidá kurz. */
 function create(context: CoursePostApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl,

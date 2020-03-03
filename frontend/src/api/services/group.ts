@@ -7,6 +7,7 @@ const baseUrl = API_URLS.Groups.url
 type Item = GroupType
 type List = Array<Item>
 
+/** Získá skupinu. */
 function get(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,
@@ -14,6 +15,7 @@ function get(id: Item["id"]): Promise<Item> {
     })
 }
 
+/** Získá všechny skupiny. */
 function getAll(): Promise<List> {
     return requestData<List>({
         url: baseUrl,
@@ -21,6 +23,7 @@ function getAll(): Promise<List> {
     })
 }
 
+/** Získá aktivní skupiny. */
 function getActive(): Promise<List> {
     return requestData<List>({
         url: baseUrl + "?" + API_URLS.Groups.filters.active + "=true",
@@ -28,6 +31,7 @@ function getActive(): Promise<List> {
     })
 }
 
+/** Získá neaktivní skupinÿ. */
 function getInactive(): Promise<List> {
     return requestData<List>({
         url: baseUrl + "?" + API_URLS.Groups.filters.active + "=false",
@@ -35,6 +39,7 @@ function getInactive(): Promise<List> {
     })
 }
 
+/** Získá skupiny zadaného klienta. */
 function getAllFromClient(clientId: ClientType["id"]): Promise<List> {
     const url = baseUrl + "?" + API_URLS.Groups.filters.client + "=" + clientId
     return requestData<List>({
@@ -43,6 +48,7 @@ function getAllFromClient(clientId: ClientType["id"]): Promise<List> {
     })
 }
 
+/** Aktualizuje (PUT) skupinu. */
 function update(context: GroupPutApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
@@ -51,13 +57,14 @@ function update(context: GroupPutApi): Promise<Item> {
     })
 }
 
+/** Smaže skupinu. */
 function remove(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,
         method: API_METHODS.remove
     })
 }
-
+/** Přidá skupinu. */
 function create(context: GroupPostApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl,

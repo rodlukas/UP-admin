@@ -6,6 +6,7 @@ const baseUrl = API_URLS.Attendances.url
 
 type Item = AttendanceType
 
+/** Upraví (PATCH) účast. */
 function patch(context: AttendancePatchApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,

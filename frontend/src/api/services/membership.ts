@@ -6,6 +6,7 @@ const baseUrl = API_URLS.Memberships.url
 
 type Item = MembershipType
 
+/** Aktualizuje (PATCH) členství ve skupině. */
 function patch(context: MembershipPatchApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,

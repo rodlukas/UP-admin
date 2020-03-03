@@ -12,6 +12,7 @@ const baseUrl = API_URLS.AttendanceStates.url
 type Item = AttendanceStateType
 type List = Array<Item>
 
+/** Získá všechny stavy účasti. */
 function getAll(): Promise<List> {
     return requestData<List>({
         url: baseUrl,
@@ -19,6 +20,7 @@ function getAll(): Promise<List> {
     })
 }
 
+/** Aktualizuje (PUT) stav účasti. */
 function update(context: AttendanceStatePutApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
@@ -27,6 +29,7 @@ function update(context: AttendanceStatePutApi): Promise<Item> {
     })
 }
 
+/** Aktualizuje (PATCH) stav účasti. */
 function patch(context: AttendanceStatePatchApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
@@ -35,6 +38,7 @@ function patch(context: AttendanceStatePatchApi): Promise<Item> {
     })
 }
 
+/** Smaže stav účasti. */
 function remove(id: Item["id"]): Promise<AttendanceStateType> {
     return requestData<AttendanceStateType>({
         url: baseUrl + id + API_DELIM,
@@ -42,6 +46,7 @@ function remove(id: Item["id"]): Promise<AttendanceStateType> {
     })
 }
 
+/** Přidá stav účasti. */
 function create(context: AttendanceStatePostApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl,

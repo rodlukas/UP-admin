@@ -5,6 +5,7 @@ import { API_METHODS, API_URLS } from "../urls"
 
 const baseUrl = API_URLS.Bank.url
 
+/** Získá výpisy z banky. */
 function getAll(): AxiosPromise<BankType> {
     return request<BankType>(
         {

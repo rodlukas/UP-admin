@@ -17,6 +17,7 @@ type Item = LectureType
 type List = Array<Item>
 type ListWithDate = Array<LectureTypeWithDate>
 
+/** Získá lekci. */
 function get(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,
@@ -24,6 +25,7 @@ function get(id: Item["id"]): Promise<Item> {
     })
 }
 
+/** Získá všechny lekce. */
 function getAll(): Promise<List> {
     return requestData<List>({
         url: baseUrl,
@@ -31,6 +33,7 @@ function getAll(): Promise<List> {
     })
 }
 
+/** Získá všechny lekce dané skupiny (umožňuje definovat řazení). */
 function getAllFromGroupOrdered(group: GroupType["id"], asc: boolean): Promise<List> {
     const url = baseUrl + "?" + API_URLS.Lectures.filters.group + "=" + group + ordering(asc)
     return requestData<List>({
@@ -39,6 +42,7 @@ function getAllFromGroupOrdered(group: GroupType["id"], asc: boolean): Promise<L
     })
 }
 
+/** Získá všechny lekce daného klienta (umožňuje definovat řazení). */
 function getAllFromClientOrdered(client: ClientType["id"], asc: boolean): Promise<List> {
     const url = baseUrl + "?" + API_URLS.Lectures.filters.client + "=" + client + ordering(asc)
     return requestData<List>({
@@ -47,6 +51,7 @@ function getAllFromClientOrdered(client: ClientType["id"], asc: boolean): Promis
     })
 }
 
+/** Získá všechny lekce v daném dni (umožňuje definovat řazení). */
 function getAllFromDayOrdered(date: string, asc: boolean): Promise<ListWithDate> {
     const url = baseUrl + "?" + API_URLS.Lectures.filters.date + "=" + date + ordering(asc)
     return requestData<ListWithDate>({
@@ -55,6 +60,7 @@ function getAllFromDayOrdered(date: string, asc: boolean): Promise<ListWithDate>
     })
 }
 
+/** Aktualizuje (PUT) lekci. */
 function update(context: LecturePutApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
@@ -63,6 +69,7 @@ function update(context: LecturePutApi): Promise<Item> {
     })
 }
 
+/** Smaže lekci. */
 function remove(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,
