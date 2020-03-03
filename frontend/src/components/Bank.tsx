@@ -48,11 +48,9 @@ export default class Bank extends React.PureComponent<{}, State> {
                 transaction: []
             }
         },
-        /* eslint-disable @typescript-eslint/camelcase */
         fetch_timestamp: null,
         rent_price: null,
         status_info: undefined
-        /* eslint-enable @typescript-eslint/camelcase */
     }
 
     timeoutId: TimeoutType
@@ -68,7 +66,8 @@ export default class Bank extends React.PureComponent<{}, State> {
         BankService.getAll().then(response => {
             if (response.status !== 200)
                 this.setState({
-                    bankDataApi: this.bankDataApiInit,
+                    // z API dorazi jen status_info, provedeme merge se zbytkem init hodnot
+                    bankDataApi: Object.assign(this.bankDataApiInit, response.data),
                     DATA_PROBLEM: true,
                     isLoading: false
                 })
