@@ -1,0 +1,18 @@
+import * as React from "react"
+import { GroupType } from "../types/models"
+import ComponentsList from "./ComponentsList"
+import GroupName from "./GroupName"
+
+type Props = {
+    groups: Array<GroupType>
+}
+
+const GroupsList: React.FunctionComponent<Props> = ({ groups = [] }) => {
+    if (!groups.length) return <span className="text-muted">žádné skupiny</span>
+    const groupComponents = groups.map(membership => (
+        <GroupName group={membership} key={membership.id} link showCircle noWrap />
+    ))
+    return <ComponentsList components={groupComponents} />
+}
+
+export default GroupsList

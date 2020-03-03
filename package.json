@@ -10,6 +10,7 @@
     "yarn": "1"
   },
   "scripts": {
-    "postinstall": "cd frontend && yarn install && yarn build"
+    "postinstall": "cd frontend && yarn install && yarn build",
+    "types": "cd frontend && yarn types"
   }
 }

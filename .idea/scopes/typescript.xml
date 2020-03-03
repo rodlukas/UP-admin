@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="typescript" pattern="file[up]:frontend/src/*" />
+</component>

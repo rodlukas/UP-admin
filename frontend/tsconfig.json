@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        // JSX neprevadej, to ma na starost Babel
+        "jsx": "preserve",
+        // kompilujeme pres Babel, takze neni treba mit nizsi target
+        "target": "ESNext",
+        // prevod TS na JS resi Babel, TS se vyuziva jako type-checker a nastroj pro IDE
+        "noEmit": true,
+        // aktivace vsech striktnich pravidel pro kontrolu
+        "strict": true,
+
+        //"checkJs": true,
+        //"allowJs": true,
+
+        // Linter Checks
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+
+        // Module Resolution
+        // moduleResolution musi byt "Node", viz https://github.com/DefinitelyTyped/DefinitelyTyped/issues/24788
+        "moduleResolution": "Node",
+        // esModuleInterop a allowSyntheticDefaultImports musi byt deaktivovane,
+        // viz https://github.com/alexgorbatchev/eslint-import-resolver-typescript/issues/33
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": false,
+
+        // aktivace isolatedModules pro zamezeni nekompatibilite s Babel, viz https://devblogs.microsoft.com/typescript/typescript-and-babel-7/
+        "isolatedModules": true
+    },
+    "include": ["./src/"],
+    "exclude": ["node_modules", "build", "webpack.config.js"]
+}

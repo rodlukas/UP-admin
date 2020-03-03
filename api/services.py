@@ -10,6 +10,8 @@ from rest_framework.response import Response
 class Bank:
     """
     Zprostředkovává komunikaci s Fio API pro získání seznamu posledních transakcí.
+    Postaveno na Fio API v1.6.21 (13. 2. 2020).
+    Dokumentace Fio API: https://www.fio.cz/docs/cz/API_Bankovnictvi.pdf
     """
 
     # URL adresa API Fio banky
