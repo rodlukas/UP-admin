@@ -24,7 +24,7 @@ type TableInfoProps = {
     color?: string
 }
 
-const TableInfo: React.FunctionComponent<TableInfoProps> = ({ text, color = "text-muted" }) => (
+const TableInfo: React.FC<TableInfoProps> = ({ text, color = "text-muted" }) => (
     <tr className={color + " text-center"}>
         <td colSpan={4}>{text}</td>
     </tr>

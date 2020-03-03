@@ -21,7 +21,7 @@ if (isHosted())
     })
 
 /** Základní kostra aplikace. */
-const App: React.FunctionComponent = () => (
+const App: React.FC = () => (
     <Router history={history}>
         {GA.init() && <GA.RouteTracker />}
         <AuthProvider>

@@ -9,7 +9,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující upozornění na fakt, že klient už bude muset příště platit za další lekce. */
-const AttendanceRemindPay: React.FunctionComponent<Props> = ({ attendance }) => {
+const AttendanceRemindPay: React.FC<Props> = ({ attendance }) => {
     if (!attendance.remind_pay) return null
     return (
         <>

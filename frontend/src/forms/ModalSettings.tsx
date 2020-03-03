@@ -18,7 +18,7 @@ type Props = {
 }
 
 /** Modální okno s formulářem pro kurzy a stavy účasti. Včetně tlačítek pro vyvolání přidání/úpravy. */
-const ModalSettings: React.FunctionComponent<Props> = ({ currentObject, TYPE, refresh }) => {
+const ModalSettings: React.FC<Props> = ({ currentObject, TYPE, refresh }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose] = useModal()
     const typeButtons = TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav účasti"
     const typeQa = TYPE === EDIT_TYPE.COURSE ? "course" : "attendancestate"

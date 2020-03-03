@@ -15,11 +15,7 @@ type AttendanceProps = {
 }
 
 /** Komponenta zobrazující jednotlivou účast klienta na dané lekci. */
-const Attendance: React.FunctionComponent<AttendanceProps> = ({
-    attendance,
-    showClient = false,
-    funcRefresh
-}) => (
+const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false, funcRefresh }) => (
     <li data-qa="lecture_attendance">
         {showClient && <ClientName client={attendance.client} link />}{" "}
         <AttendancePaidButton
@@ -43,11 +39,7 @@ type AttendancesProps = {
 }
 
 /** Komponenta zobrazující účasti všech klientů na dané lekci. */
-const Attendances: React.FunctionComponent<AttendancesProps> = ({
-    lecture,
-    showClient = false,
-    funcRefresh
-}) => {
+const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false, funcRefresh }) => {
     const className = "Attendances" + (lecture.group ? " AttendancesGroup" : "")
     return (
         <ul className={className}>

@@ -8,7 +8,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující pořadové číslo lekce. */
-const LectureNumber: React.FunctionComponent<Props> = ({ lecture, colorize = false }) => {
+const LectureNumber: React.FC<Props> = ({ lecture, colorize = false }) => {
     if (lecture.number === null) return null
     return (
         <Badge

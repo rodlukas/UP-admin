@@ -7,7 +7,7 @@ type Props = {
 }
 
 /** Obecná komponenta zajišťující obalení dané komponenty nějakým wrapperem za dané podmínky. */
-const ConditionalWrapper: React.FunctionComponent<Props> = ({ condition, wrapper, children }) =>
+const ConditionalWrapper: React.FC<Props> = ({ condition, wrapper, children }) =>
     condition ? <>{wrapper(children)}</> : <>{children}</>
 
 export default ConditionalWrapper

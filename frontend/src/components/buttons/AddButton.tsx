@@ -8,12 +8,7 @@ interface Props extends ButtonProps {
 }
 
 /** Tlačítko pro přidání objektu v aplikaci. */
-const AddButton: React.FunctionComponent<Props> = ({
-    content,
-    onClick,
-    small = false,
-    ...props
-}) => {
+const AddButton: React.FC<Props> = ({ content, onClick, small = false, ...props }) => {
     const className = "AddButton" + (small ? " small_button" : "")
     return (
         <Button color="info" className={className} onClick={onClick} {...props}>

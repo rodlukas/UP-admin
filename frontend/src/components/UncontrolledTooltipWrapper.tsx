@@ -2,7 +2,7 @@ import * as React from "react"
 import { UncontrolledTooltip, UncontrolledTooltipProps } from "reactstrap"
 
 /** Wrapper pro UncontrolledTooltip zajišťující vhodné výchozí hodnoty. */
-const UncontrolledTooltipWrapper: React.FunctionComponent<UncontrolledTooltipProps> = ({
+const UncontrolledTooltipWrapper: React.FC<UncontrolledTooltipProps> = ({
     placement = "auto",
     children,
     ...props

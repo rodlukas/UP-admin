@@ -12,7 +12,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující box pro výběr stavu účasti klienta na dané lekci. */
-const AttendanceSelectAttendanceState: React.FunctionComponent<Props> = props => {
+const AttendanceSelectAttendanceState: React.FC<Props> = props => {
     const { attendancestates } = React.useContext(AttendanceStatesContext)
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

@@ -10,7 +10,7 @@ type Props = {
 }
 
 /** Přepínač ne/aktivních skupin/klientů. */
-const ActiveSwitcher: React.FunctionComponent<Props> = props => {
+const ActiveSwitcher: React.FC<Props> = props => {
     function onSwitcherChange(e: React.MouseEvent<HTMLButtonElement>): void {
         const target = e.currentTarget
         const value = target.dataset.value === "true"

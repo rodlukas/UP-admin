@@ -7,12 +7,7 @@ interface Props extends ButtonProps {
 }
 
 /** Obecné tlačítko v rámci aplikace. */
-const CustomButton: React.FunctionComponent<Props> = ({
-    onClick = noop,
-    content = "",
-    disabled = false,
-    id
-}) => (
+const CustomButton: React.FC<Props> = ({ onClick = noop, content = "", disabled = false, id }) => (
     <Button color="secondary" disabled={disabled} onClick={onClick} id={id}>
         {content}
     </Button>

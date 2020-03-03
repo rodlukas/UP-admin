@@ -12,10 +12,7 @@ import { AuthContext } from "./AuthContext"
  * Komponenta, která rozlišuje ne/přihlášeného uživatele.
  * Na základě toho mu zobrazí příslušný obsah, případně přesměruje na přihlášení.
  */
-const PrivateRoute: React.FunctionComponent<CustomRouteProps> = ({
-    component: WrappedComponent,
-    ...rest
-}) => {
+const PrivateRoute: React.FC<CustomRouteProps> = ({ component: WrappedComponent, ...rest }) => {
     const authContext = React.useContext(AuthContext)
 
     if (!WrappedComponent) return null

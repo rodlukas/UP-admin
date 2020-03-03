@@ -8,7 +8,7 @@ const REFRESH_TOKEN_INTERVAL = 210 * 60 * 1000 // milisekundy -> 3.5 hodiny
  * Komponenta pro automatickou opakovanou kontrolu přihlášení a platnosti tokenu.
  * V pravidelném intervalu ověří platnost tokenu a pokud se blíží ke konci, obnoví ho.
  */
-const AuthChecking: React.FunctionComponent = () => {
+const AuthChecking: React.FC = () => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
     const {
         isAuth: authContextIsAuth,

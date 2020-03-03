@@ -7,7 +7,7 @@ import { TEXTS } from "../../global/constants"
  * Řeší problém, kdy po stisku ESC dojde jak ke zavření možností, tak celého modálního okna.
  * Viz https://github.com/rodlukas/UP-admin/issues/84
  */
-const Input: React.FunctionComponent<InputProps> = props => {
+const Input: React.FC<InputProps> = props => {
     const [menuWasOpen, setMenuWasOpen] = React.useState(false)
     const propsWithTypes = props
 

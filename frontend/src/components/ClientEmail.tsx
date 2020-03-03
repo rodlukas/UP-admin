@@ -7,7 +7,7 @@ type Props = {
 }
 
 /** Komponenta pro jednotné zobrazení e-mailu klienta napříč aplikací. */
-const ClientEmail: React.FunctionComponent<Props> = ({ email }) => {
+const ClientEmail: React.FC<Props> = ({ email }) => {
     if (email !== "")
         return (
             <a href={"mailto:" + email} data-qa="client_email" data-gdpr>

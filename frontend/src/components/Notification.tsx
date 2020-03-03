@@ -8,7 +8,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující úroveň upozornění v rámci notifikace. */
-const Notification: React.FunctionComponent<Props> = ({ text = "", type }) => {
+const Notification: React.FC<Props> = ({ text = "", type }) => {
     let heading = ""
     switch (type) {
         case toast.TYPE.ERROR:

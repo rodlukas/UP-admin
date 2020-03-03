@@ -18,7 +18,7 @@ type Props = {
 }
 
 /** Modální okno s formulářem pro klienty. Včetně tlačítek pro vyvolání přidání/úpravy. */
-const ModalClients: React.FunctionComponent<Props> = ({
+const ModalClients: React.FC<Props> = ({
     currentClient,
     inSentence = false,
     processAdditionOfClient,

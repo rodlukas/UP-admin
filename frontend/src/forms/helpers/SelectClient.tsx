@@ -10,11 +10,7 @@ type SelectClientProps = Props<ClientType> & {
 }
 
 /** Komponenta s react-select pro klienta. */
-const SelectClient: React.FunctionComponent<SelectClientProps> = ({
-    value,
-    onChangeCallback,
-    options
-}) => (
+const SelectClient: React.FC<SelectClientProps> = ({ value, onChangeCallback, options }) => (
     <ReactSelectWrapper<ClientType>
         {...reactSelectIds("client")}
         value={value}

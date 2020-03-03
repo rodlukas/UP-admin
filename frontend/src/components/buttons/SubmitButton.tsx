@@ -10,7 +10,7 @@ interface Props extends ButtonProps {
 }
 
 /** Tlačítko pro odeslání formuláře v aplikaci. */
-const SubmitButton: React.FunctionComponent<Props> = ({
+const SubmitButton: React.FC<Props> = ({
     content,
     loading = false,
     disabled = false,

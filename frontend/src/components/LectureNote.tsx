@@ -8,7 +8,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující poznámku k lekci. */
-const LectureNote: React.FunctionComponent<Props> = ({ attendance }) => (
+const LectureNote: React.FC<Props> = ({ attendance }) => (
     <Badge color="secondary" data-qa="lecture_attendance_note" className="LectureNote">
         {attendance.note}
     </Badge>

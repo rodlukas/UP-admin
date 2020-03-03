@@ -17,7 +17,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující načítání v aplikaci. */
-const Loading: React.FunctionComponent<Props> = ({ text = "Načítání" }) => {
+const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
     const [loadingState, setLoadingState] = React.useState(LOADING_STATE.NORMAL_LOADING)
 
     function setLoadingTimeout(loadingState: number): number {

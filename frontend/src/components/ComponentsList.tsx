@@ -5,7 +5,7 @@ type Props = {
 }
 
 /** Obecná komponenta zajišťující výpis pole komponent oddělených čárkami. */
-const ComponentsList: React.FunctionComponent<Props> = ({ components }) => (
+const ComponentsList: React.FC<Props> = ({ components }) => (
     <>{components.reduce((prev, curr) => [prev, ", ", curr])}</>
 )
 

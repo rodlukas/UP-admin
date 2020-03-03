@@ -32,7 +32,7 @@ type PrepaidCntObjectsType = {
 }
 
 /** Komponenta zobrazující počítadla předplacených lekcí pro členy skupiny. */
-const PrepaidCounters: React.FunctionComponent<Props> = props => {
+const PrepaidCounters: React.FC<Props> = props => {
     const createPrepaidCntObjects = React.useCallback(() => {
         const objects: PrepaidCntObjectsType = {}
         if (props.memberships)

@@ -17,7 +17,7 @@ type Props = {
 }
 
 /** Modální okno s formulářem pro skupiny. Včetně tlačítek pro vyvolání přidání/úpravy. */
-const ModalGroups: React.FunctionComponent<Props> = ({
+const ModalGroups: React.FC<Props> = ({
     currentGroup,
     inSentence = false,
     refresh,

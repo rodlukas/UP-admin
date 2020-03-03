@@ -12,7 +12,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující tlačítko pro platbu klienta za danou lekci. */
-const AttendancePaidButton: React.FunctionComponent<Props> = props => {
+const AttendancePaidButton: React.FC<Props> = props => {
     function onClick(): void {
         const newPaid = !props.paid
         const id = props.attendanceId
@@ -20,11 +20,11 @@ const AttendancePaidButton: React.FunctionComponent<Props> = props => {
         AttendanceService.patch(data).then(() => props.funcRefresh())
     }
 
-    const className = "PaidButton " + (props.paid ? "text-success" : "text-danger")
+    const className = "AttendancePaidButton " + (props.paid ? "text-success" : "text-danger")
     const title = "Označit lekci jako " + (props.paid ? "NE" : "") + "ZAPLACENOU"
     return (
         <>
-            <span id={"PaidButton_" + props.attendanceId}>
+            <span id={"AttendancePaidButton_" + props.attendanceId}>
                 <FontAwesomeIcon
                     icon={faUsdCircle}
                     size="2x"
@@ -35,7 +35,7 @@ const AttendancePaidButton: React.FunctionComponent<Props> = props => {
             </span>
             <UncontrolledTooltipWrapper
                 placement="right"
-                target={"PaidButton_" + props.attendanceId}>
+                target={"AttendancePaidButton_" + props.attendanceId}>
                 {title}
             </UncontrolledTooltipWrapper>
         </>

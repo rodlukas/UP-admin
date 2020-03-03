@@ -14,7 +14,7 @@ type Props = {
 }
 
 /** Modální okno s formulářem pro zájemce o kurzy. */
-const ModalApplications: React.FunctionComponent<Props> = ({ currentApplication, refresh }) => {
+const ModalApplications: React.FC<Props> = ({ currentApplication, refresh }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose] = useModal()
 
     function onModalClose(): void {

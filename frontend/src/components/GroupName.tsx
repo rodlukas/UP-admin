@@ -14,7 +14,7 @@ type PlainGroupNameProps = {
     bold: boolean
 }
 
-const PlainName: React.FunctionComponent<PlainGroupNameProps> = ({ group, title, bold }) => (
+const PlainName: React.FC<PlainGroupNameProps> = ({ group, title, bold }) => (
     <span data-qa="group_name">
         <ConditionalWrapper
             condition={bold}
@@ -37,7 +37,7 @@ type GroupNameProps = {
 }
 
 /** Komponenta pro jednotné zobrazení jména skupiny napříč aplikací. */
-const GroupName: React.FunctionComponent<GroupNameProps> = ({
+const GroupName: React.FC<GroupNameProps> = ({
     group,
     link = false,
     title = false,
@@ -45,7 +45,7 @@ const GroupName: React.FunctionComponent<GroupNameProps> = ({
     bold = false,
     noWrap = false
 }) => {
-    const PlainGroupNameComponent: React.FunctionComponent = () => (
+    const PlainGroupNameComponent: React.FC = () => (
         <PlainName group={group} title={title} bold={bold} />
     )
     return (

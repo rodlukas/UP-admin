@@ -4,7 +4,7 @@ import { QA } from "../types/types"
 type Props = QA
 
 /** Komponenta pro jednotné zobrazení nevyplněného údaje napříč aplikací. */
-const NoInfo: React.FunctionComponent<Props> = props => (
+const NoInfo: React.FC<Props> = props => (
     <span className="text-muted" {...props}>
         ---
     </span>

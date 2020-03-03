@@ -4,7 +4,7 @@ import "./AppCommit.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 /** Komponenta zobrazující hash commitu příslušné verze aplikace. */
-const AppCommit: React.FunctionComponent = () => (
+const AppCommit: React.FC = () => (
     <>
         <a
             href={GITHUB_REPO_URL + "/commit/%GIT_COMMIT"}

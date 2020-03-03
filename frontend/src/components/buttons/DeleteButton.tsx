@@ -6,7 +6,7 @@ interface Props extends ButtonProps {
 }
 
 /** Tlačítko pro smazání objektu v aplikaci. */
-const DeleteButton: React.FunctionComponent<Props> = ({ onClick, content = "", ...props }) => (
+const DeleteButton: React.FC<Props> = ({ onClick, content = "", ...props }) => (
     <Button color="danger" onClick={onClick} {...props}>
         Smazat {content}
     </Button>

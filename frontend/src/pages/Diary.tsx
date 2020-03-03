@@ -24,7 +24,7 @@ import "./Diary.css"
 
 type TitleDateProps = { date: Date }
 
-const TitleDate: React.FunctionComponent<TitleDateProps> = ({ date }) => (
+const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
     <span className={`TitleDate font-weight-bold ${yearDiffs(date) ? "TitleDate-long" : ""}`}>
         {prettyDateWithYearIfDiff(date)}
     </span>

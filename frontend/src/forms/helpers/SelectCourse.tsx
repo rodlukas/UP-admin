@@ -10,7 +10,7 @@ type SelectCourseProps = Props<CourseType> & {
 }
 
 /** Komponenta s react-select pro kurz. */
-const SelectCourse: React.FunctionComponent<SelectCourseProps> = ({
+const SelectCourse: React.FC<SelectCourseProps> = ({
     value,
     onChangeCallback,
     options,

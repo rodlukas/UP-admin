@@ -12,7 +12,7 @@ type PlainClientNameProps = {
     bold: boolean
 }
 
-const PlainClientName: React.FunctionComponent<PlainClientNameProps> = ({ client, bold }) => (
+const PlainClientName: React.FC<PlainClientNameProps> = ({ client, bold }) => (
     <span data-qa="client_name" data-gdpr>
         <span className="font-weight-bold">{getAttrSafe(client.surname)}</span>{" "}
         <ConditionalWrapper
@@ -32,14 +32,8 @@ type ClientNameProps = {
 }
 
 /** Komponenta pro jednotné zobrazení jména klienta napříč aplikací. */
-const ClientName: React.FunctionComponent<ClientNameProps> = ({
-    client,
-    link = false,
-    bold = false
-}) => {
-    const PlainClientNameComponent: React.FunctionComponent = () => (
-        <PlainClientName client={client} bold={bold} />
-    )
+const ClientName: React.FC<ClientNameProps> = ({ client, link = false, bold = false }) => {
+    const PlainClientNameComponent: React.FC = () => <PlainClientName client={client} bold={bold} />
     return (
         <span className="clientName">
             {"id" in client && link ? (

@@ -21,7 +21,7 @@ type Props = {
  * Jádro modálního okna s formulářem pro lekce.
  * Má na starosti samotnou práci s modálním oknem a je přepoužíváno v různých kontextech.
  */
-const ModalLecturesCore: React.FunctionComponent<Props> = ({
+const ModalLecturesCore: React.FC<Props> = ({
     currentLecture,
     refresh,
     object,

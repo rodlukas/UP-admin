@@ -6,7 +6,7 @@ type Props = {
 }
 
 /** Komponenta pro zobrazení alternativní možnosti přidání klienta místo volby stávajícího. */
-const Or: React.FunctionComponent<Props> = ({ content }) => (
+const Or: React.FC<Props> = ({ content }) => (
     <p className="text-secondary Or">
         <span>nebo</span> {content}
     </p>

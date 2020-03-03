@@ -19,12 +19,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující výsledky vyhledávání - seznam klientů. */
-const SearchResults: React.FunctionComponent<Props> = ({
-    foundResults,
-    searchVal,
-    search,
-    resetSearch
-}) => {
+const SearchResults: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch }) => {
     const clientsActiveContext = React.useContext(ClientsActiveContext)
 
     React.useEffect(() => {

@@ -11,7 +11,7 @@ import { CustomRouteComponentProps } from "../types/types"
 import APP_URLS from "../urls"
 
 /** Stránka s přihlášením. */
-const Login: React.FunctionComponent<CustomRouteComponentProps> = props => {
+const Login: React.FC<CustomRouteComponentProps> = props => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
     const {
         isAuth: authContextIsAuth,

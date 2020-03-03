@@ -28,7 +28,7 @@ interface VisibleProps extends QA {
     visible: boolean
 }
 
-const Visible: React.FunctionComponent<VisibleProps> = ({ visible, ...props }) => (
+const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
     <FontAwesomeIcon
         fixedWidth
         icon={visible ? faCheck : faTimes}
