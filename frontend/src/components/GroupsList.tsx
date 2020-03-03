@@ -7,6 +7,7 @@ type Props = {
     groups: Array<GroupType>
 }
 
+/** Komponenta zobrazující čárkami oddělený seznam všech skupin, ve kterých je daný klient. */
 const GroupsList: React.FunctionComponent<Props> = ({ groups = [] }) => {
     if (!groups.length) return <span className="text-muted">žádné skupiny</span>
     const groupComponents = groups.map(membership => (

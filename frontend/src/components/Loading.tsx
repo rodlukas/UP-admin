@@ -8,6 +8,7 @@ type Props = {
     text?: string
 }
 
+/** Komponenta zobrazující načítání v aplikaci. */
 const Loading: React.FunctionComponent<Props> = ({ text = "Načítání" }) => {
     const [longLoading, setLongLoading] = React.useState(false)
 

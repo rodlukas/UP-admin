@@ -12,6 +12,7 @@ type Props = {
     searchVal: string
 }
 
+/** Komponenta zobrazující pole pro vyhledávání. */
 const Search: React.FunctionComponent<Props> = props => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
     const { funcRefresh: clientsActiveContextFuncRefresh } = React.useContext(ClientsActiveContext)

@@ -3,6 +3,7 @@ import { GITHUB_REPO_URL } from "../global/constants"
 import "./AppCommit.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
+/** Komponenta zobrazující hash commitu příslušné verze aplikace. */
 const AppCommit: React.FunctionComponent = () => (
     <>
         <a

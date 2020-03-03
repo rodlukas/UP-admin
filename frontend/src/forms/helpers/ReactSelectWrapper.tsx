@@ -39,8 +39,8 @@ const Input: React.FunctionComponent<InputProps> = props => {
     /* eslint-enable @typescript-eslint/ban-ts-ignore */
 }
 
-/** Vlastní react-select komponenta pro použití nadefinovaného react-selectu napříč aplikací. */
-const CustomReactSelect = <OptionType,>(props: Props<OptionType>): JSX.Element => (
+/** Wrapper pro react-select komponentu pro použití nadefinovaného react-selectu napříč aplikací. */
+const ReactSelectWrapper = <OptionType,>(props: Props<OptionType>): JSX.Element => (
     <Select<OptionType>
         {...props}
         noOptionsMessage={(): string => TEXTS.NO_RESULTS}
@@ -50,4 +50,4 @@ const CustomReactSelect = <OptionType,>(props: Props<OptionType>): JSX.Element =
     />
 )
 
-export default CustomReactSelect
+export default ReactSelectWrapper

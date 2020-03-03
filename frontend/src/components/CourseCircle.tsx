@@ -1,5 +1,5 @@
 import * as React from "react"
-import "./Circle.css"
+import "./CourseCircle.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
@@ -8,7 +8,8 @@ type Props = {
     showTitle?: boolean
 }
 
-const Circle: React.FunctionComponent<Props> = ({ color, size, showTitle = false }) => {
+/** Komponenta zobrazující barevné kolečko s různou barvou a velikostí pro zobrazení barvy kurzu. */
+const CourseCircle: React.FunctionComponent<Props> = ({ color, size, showTitle = false }) => {
     const sizeWithUnit = size + "rem"
     const colorWithoutHash = color.substring(1)
 
@@ -33,4 +34,4 @@ const Circle: React.FunctionComponent<Props> = ({ color, size, showTitle = false
     )
 }
 
-export default Circle
+export default CourseCircle

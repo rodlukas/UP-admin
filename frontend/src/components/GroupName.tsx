@@ -2,8 +2,8 @@ import * as React from "react"
 import { Link } from "react-router-dom"
 import { GroupType } from "../types/models"
 import APP_URLS from "../urls"
-import Circle from "./Circle"
 import ConditionalWrapper from "./ConditionalWrapper"
+import CourseCircle from "./CourseCircle"
 import "./GroupName.css"
 
 type InputGroup = GroupType | Pick<GroupType, "name">
@@ -36,6 +36,7 @@ type GroupNameProps = {
     noWrap?: boolean
 }
 
+/** Komponenta pro jednotné zobrazení jména skupiny napříč aplikací. */
 const GroupName: React.FunctionComponent<GroupNameProps> = ({
     group,
     link = false,
@@ -52,7 +53,7 @@ const GroupName: React.FunctionComponent<GroupNameProps> = ({
             {"id" in group && link ? (
                 <Link to={APP_URLS.skupiny.url + "/" + group.id}>
                     <span className={noWrap ? "text-nowrap" : undefined}>
-                        {showCircle && <Circle color={group.course.color} size={0.5} />}
+                        {showCircle && <CourseCircle color={group.course.color} size={0.5} />}
                         <PlainGroupNameComponent />
                     </span>
                 </Link>

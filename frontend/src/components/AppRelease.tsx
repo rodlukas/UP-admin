@@ -2,6 +2,7 @@ import * as React from "react"
 import { GITHUB_REPO_URL } from "../global/constants"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
+/** Komponenta zobrazující číslo verze aplikace. */
 const AppRelease: React.FunctionComponent = () => {
     const version = "%GIT_RELEASE"
     const branchOrVersion = "%GIT_BRANCH"

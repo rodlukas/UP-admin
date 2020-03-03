@@ -7,6 +7,7 @@ type Props = {
     type: string
 }
 
+/** Komponenta zobrazující úroveň upozornění v rámci notifikace. */
 const Notification: React.FunctionComponent<Props> = ({ text = "", type }) => {
     let heading = ""
     switch (type) {

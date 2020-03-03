@@ -59,7 +59,7 @@ import {
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 import "./FormLectures.css"
-import CustomCustomInput from "./helpers/CustomCustomInput"
+import CustomInputWrapper from "./helpers/CustomInputWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 
 // klic je ClientType["id"]
@@ -592,7 +592,7 @@ class FormLectures extends React.Component<Props, State> {
                                                         účast
                                                     </Label>
                                                 </InputGroupAddon>
-                                                <CustomCustomInput
+                                                <CustomInputWrapper
                                                     type="select"
                                                     name="atState"
                                                     id={"atState" + member.id}
@@ -615,7 +615,7 @@ class FormLectures extends React.Component<Props, State> {
                                                                 </option>
                                                             )
                                                     )}
-                                                </CustomCustomInput>
+                                                </CustomInputWrapper>
                                             </InputGroup>
                                         </Col>
                                         <Col sm={2} className="text-sm-center">

@@ -7,6 +7,7 @@ interface Props extends ButtonProps {
     small?: boolean
 }
 
+/** Tlačítko pro přidání objektu v aplikaci. */
 const AddButton: React.FunctionComponent<Props> = ({
     content,
     onClick,

@@ -2,12 +2,12 @@ import * as React from "react"
 import { Container, Table } from "reactstrap"
 import ClientService from "../api/services/client"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
+import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
-import Email from "../components/Email"
+import ClientNote from "../components/ClientNote"
+import ClientPhone from "../components/ClientPhone"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
-import Note from "../components/Note"
-import Phone from "../components/Phone"
 import {
     ClientsActiveContextProps,
     WithClientsActiveContext
@@ -98,13 +98,13 @@ class Clients extends React.Component<Props, State> {
                                             <ClientName client={client} link />
                                         </td>
                                         <td style={{ minWidth: "7em" }}>
-                                            <Phone phone={client.phone} />
+                                            <ClientPhone phone={client.phone} />
                                         </td>
                                         <td>
-                                            <Email email={client.email} />
+                                            <ClientEmail email={client.email} />
                                         </td>
                                         <td>
-                                            <Note note={client.note} />
+                                            <ClientNote note={client.note} />
                                         </td>
                                         <td>
                                             <ModalClients

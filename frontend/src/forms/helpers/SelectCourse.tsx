@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Props } from "react-select"
 import { CourseType } from "../../types/models"
-import CustomReactSelect from "./CustomReactSelect"
 import { reactSelectIds } from "./func"
+import ReactSelectWrapper from "./ReactSelectWrapper"
 import { selectStyles } from "./selectCourseColors"
 
 type SelectCourseProps = Props<CourseType> & {
@@ -16,7 +16,7 @@ const SelectCourse: React.FunctionComponent<SelectCourseProps> = ({
     options,
     isDisabled = false
 }) => (
-    <CustomReactSelect<CourseType>
+    <ReactSelectWrapper<CourseType>
         {...reactSelectIds("course")}
         value={value}
         getOptionLabel={(option): string => option.name}

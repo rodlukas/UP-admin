@@ -8,7 +8,7 @@ import CourseService from "../api/services/course"
 import AppCommit from "../components/AppCommit"
 import AppDate from "../components/AppDate"
 import AppRelease from "../components/AppRelease"
-import Circle from "../components/Circle"
+import CourseCircle from "../components/CourseCircle"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
@@ -16,7 +16,7 @@ import {
     AttendanceStatesContextProps,
     WithAttendanceStatesContext
 } from "../contexts/AttendanceStatesContext"
-import CustomCustomInput from "../forms/helpers/CustomCustomInput"
+import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
 import { AttendanceStateType, CourseType } from "../types/models"
@@ -197,7 +197,7 @@ class Settings extends React.Component<Props, State> {
                                         </span>
                                         .
                                     </p>
-                                    <CustomCustomInput
+                                    <CustomInputWrapper
                                         type="select"
                                         id="state_default_id"
                                         value={attendanceStateDefaultId || "default"}
@@ -217,7 +217,7 @@ class Settings extends React.Component<Props, State> {
                                                     </option>
                                                 )
                                         )}
-                                    </CustomCustomInput>
+                                    </CustomInputWrapper>
                                     <h4 className="mt-3 text-center">Stav omluven</h4>
                                     <p className="mb-2">
                                         Pro správné fungování omluvených a zrušených lekcí je třeba
@@ -227,7 +227,7 @@ class Settings extends React.Component<Props, State> {
                                         </span>
                                         .
                                     </p>
-                                    <CustomCustomInput
+                                    <CustomInputWrapper
                                         type="select"
                                         id="state_excused_id"
                                         value={attendanceStateExcusedId || "default"}
@@ -247,7 +247,7 @@ class Settings extends React.Component<Props, State> {
                                                     </option>
                                                 )
                                         )}
-                                    </CustomCustomInput>
+                                    </CustomInputWrapper>
                                 </Col>
                                 <Col>
                                     <h2 className="text-center">Kurzy</h2>
@@ -272,7 +272,7 @@ class Settings extends React.Component<Props, State> {
                                                         />
                                                     </td>
                                                     <td className="text-center">
-                                                        <Circle
+                                                        <CourseCircle
                                                             color={course.color}
                                                             size={1.7}
                                                             showTitle

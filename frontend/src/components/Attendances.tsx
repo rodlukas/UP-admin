@@ -1,12 +1,12 @@
 import * as React from "react"
 import { AttendanceType, LectureType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+import AttendancePaidButton from "./AttendancePaidButton"
+import AttendanceRemindPay from "./AttendanceRemindPay"
 import "./Attendances.css"
+import AttendanceSelectAttendanceState from "./AttendanceSelectAttendanceState"
 import ClientName from "./ClientName"
 import LectureNote from "./LectureNote"
-import PaidButton from "./PaidButton"
-import RemindPay from "./RemindPay"
-import SelectAttendanceState from "./SelectAttendanceState"
 
 type AttendanceProps = {
     attendance: AttendanceType
@@ -14,6 +14,7 @@ type AttendanceProps = {
     funcRefresh: fEmptyVoid
 }
 
+/** Komponenta zobrazující jednotlivou účast klienta na dané lekci. */
 const Attendance: React.FunctionComponent<AttendanceProps> = ({
     attendance,
     showClient = false,
@@ -21,9 +22,13 @@ const Attendance: React.FunctionComponent<AttendanceProps> = ({
 }) => (
     <li data-qa="lecture_attendance">
         {showClient && <ClientName client={attendance.client} link />}{" "}
-        <PaidButton paid={attendance.paid} attendanceId={attendance.id} funcRefresh={funcRefresh} />{" "}
-        <RemindPay attendance={attendance} /> <LectureNote attendance={attendance} />
-        <SelectAttendanceState
+        <AttendancePaidButton
+            paid={attendance.paid}
+            attendanceId={attendance.id}
+            funcRefresh={funcRefresh}
+        />{" "}
+        <AttendanceRemindPay attendance={attendance} /> <LectureNote attendance={attendance} />
+        <AttendanceSelectAttendanceState
             value={attendance.attendancestate}
             attendanceId={attendance.id}
             funcRefresh={funcRefresh}
@@ -37,6 +42,7 @@ type AttendancesProps = {
     funcRefresh: AttendanceProps["funcRefresh"]
 }
 
+/** Komponenta zobrazující účasti všech klientů na dané lekci. */
 const Attendances: React.FunctionComponent<AttendancesProps> = ({
     lecture,
     showClient = false,

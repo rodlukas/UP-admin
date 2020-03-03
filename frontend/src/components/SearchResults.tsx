@@ -5,11 +5,11 @@ import ModalClients from "../forms/ModalClients"
 import { ClientActiveType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 import BackButton from "./buttons/BackButton"
+import ClientEmail from "./ClientEmail"
 import ClientName from "./ClientName"
-import Email from "./Email"
+import ClientPhone from "./ClientPhone"
 import Heading from "./Heading"
 import Loading from "./Loading"
-import Phone from "./Phone"
 
 type Props = {
     foundResults: Array<ClientActiveType>
@@ -18,6 +18,7 @@ type Props = {
     resetSearch: fEmptyVoid
 }
 
+/** Komponenta zobrazující výsledky vyhledávání - seznam klientů. */
 const SearchResults: React.FunctionComponent<Props> = ({
     foundResults,
     searchVal,
@@ -68,11 +69,13 @@ const SearchResults: React.FunctionComponent<Props> = ({
                                             </Col>
                                             <Col md="2">
                                                 {client.phone && (
-                                                    <Phone phone={client.phone} icon />
+                                                    <ClientPhone phone={client.phone} icon />
                                                 )}
                                             </Col>
                                             <Col md="3">
-                                                {client.email && <Email email={client.email} />}
+                                                {client.email && (
+                                                    <ClientEmail email={client.email} />
+                                                )}
                                             </Col>
                                             <Col className="text-right mt-1 mt-md-0" md="1">
                                                 <ModalClients

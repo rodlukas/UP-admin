@@ -7,6 +7,7 @@ interface Props extends ButtonProps {
     content?: string
 }
 
+/** Tlačítko pro krok zpět v aplikaci. */
 const BackButton: React.FunctionComponent<Props> = ({ onClick, content = "Jít zpět" }) => (
     <Button color="secondary" className="BackButton" onClick={onClick}>
         {content}

@@ -8,6 +8,7 @@ type Props = {
     text: React.ReactNode
 }
 
+/** Komponenta pro zobrazení titulku po najetí myší nad daný element. */
 const Tooltip: React.FunctionComponent<Props> = ({ postfix, text }) => (
     <>
         <UncontrolledTooltipWrapper placement="bottom" target={"Tooltip_" + postfix}>

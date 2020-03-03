@@ -39,6 +39,7 @@ type State = {
     isLoading: boolean
 }
 
+/** Komponenta zobrazující lekce pro jeden zadaný den. */
 class DashboardDay extends React.Component<Props, State> {
     state: State = {
         lectures: [],

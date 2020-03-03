@@ -3,6 +3,7 @@ import { Route } from "react-router-dom"
 import { getEnvNameShort, isEnvProduction } from "../global/funcEnvironments"
 import { CustomRouteProps } from "../types/types"
 
+/** Komponenta zajišťující zobrazení jakékoliv stránky aplikace spolu s příslušným title v prohlížeči. */
 const Page: React.FunctionComponent<CustomRouteProps> = ({ title, ...rest }) => {
     React.useEffect(() => {
         // nastav title stranky

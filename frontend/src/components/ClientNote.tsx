@@ -6,9 +6,10 @@ type Props = {
     note: ClientType["note"]
 }
 
-const Note: React.FunctionComponent<Props> = ({ note }) => {
+/** Komponenta pro jednotné zobrazení poznámky ke klientovi napříč aplikací. */
+const ClientNote: React.FunctionComponent<Props> = ({ note }) => {
     if (note !== "") return <span data-qa="client_note">{note}</span>
     return <NoInfo data-qa="client_note" />
 }
 
-export default Note
+export default ClientNote

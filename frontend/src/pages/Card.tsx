@@ -4,15 +4,15 @@ import ClientService from "../api/services/client"
 import GroupService from "../api/services/group"
 import Attendances from "../components/Attendances"
 import BackButton from "../components/buttons/BackButton"
+import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
-import Email from "../components/Email"
+import ClientNote from "../components/ClientNote"
+import ClientPhone from "../components/ClientPhone"
 import GroupName from "../components/GroupName"
 import GroupsList from "../components/GroupsList"
 import Heading from "../components/Heading"
 import LectureNumber from "../components/LectureNumber"
 import Loading from "../components/Loading"
-import Note from "../components/Note"
-import Phone from "../components/Phone"
 import PrepaidCounters from "../components/PrepaidCounters"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import {
@@ -243,17 +243,20 @@ class Card extends React.Component<Props, State> {
                                         {this.isClient(object) && (
                                             <>
                                                 <ListGroupItem>
-                                                    <b>Telefon:</b> <Phone phone={object.phone} />
+                                                    <b>Telefon:</b>{" "}
+                                                    <ClientPhone phone={object.phone} />
                                                 </ListGroupItem>
                                                 <ListGroupItem>
-                                                    <b>E-mail:</b> <Email email={object.email} />
+                                                    <b>E-mail:</b>{" "}
+                                                    <ClientEmail email={object.email} />
                                                 </ListGroupItem>
                                                 <ListGroupItem>
                                                     <b>Skupiny:</b>{" "}
                                                     <GroupsList groups={memberships} />
                                                 </ListGroupItem>
                                                 <ListGroupItem>
-                                                    <b>Poznámka:</b> <Note note={object.note} />
+                                                    <b>Poznámka:</b>{" "}
+                                                    <ClientNote note={object.note} />
                                                 </ListGroupItem>
                                             </>
                                         )}

@@ -31,6 +31,7 @@ type ClientNameProps = {
     bold?: boolean
 }
 
+/** Komponenta pro jednotné zobrazení jména klienta napříč aplikací. */
 const ClientName: React.FunctionComponent<ClientNameProps> = ({
     client,
     link = false,

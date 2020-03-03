@@ -2,8 +2,8 @@ import * as React from "react"
 import { Props } from "react-select"
 import { clientName } from "../../global/utils"
 import { ClientType } from "../../types/models"
-import CustomReactSelect from "./CustomReactSelect"
 import { reactSelectIds } from "./func"
+import ReactSelectWrapper from "./ReactSelectWrapper"
 
 type SelectClientProps = Props<ClientType> & {
     onChangeCallback: (name: "client", newValue: ClientType | undefined | null) => void
@@ -15,7 +15,7 @@ const SelectClient: React.FunctionComponent<SelectClientProps> = ({
     onChangeCallback,
     options
 }) => (
-    <CustomReactSelect<ClientType>
+    <ReactSelectWrapper<ClientType>
         {...reactSelectIds("client")}
         value={value}
         getOptionLabel={(option): string => clientName(option)}

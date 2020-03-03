@@ -16,6 +16,7 @@ type Props = {
 
 type MyNavLinkProps = QA & RouterNavLinkProps
 
+/** Komponenta zobrazující menu aplikace pro přihlášené uživatele. */
 const Menu: React.FunctionComponent<Props> = props => {
     const authContext = React.useContext(AuthContext)
     const MyNavLink: React.FunctionComponent<MyNavLinkProps> = otherProps => (

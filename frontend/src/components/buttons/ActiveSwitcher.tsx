@@ -9,6 +9,7 @@ type Props = {
     onChange: fArgVoid
 }
 
+/** Přepínač ne/aktivních skupin/klientů. */
 const ActiveSwitcher: React.FunctionComponent<Props> = props => {
     function onSwitcherChange(e: React.MouseEvent<HTMLButtonElement>): void {
         const target = e.currentTarget

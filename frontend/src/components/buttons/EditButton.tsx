@@ -9,6 +9,7 @@ interface Props extends ButtonProps {
     content?: string
 }
 
+/** Tlačítko pro úpravu objektu v aplikaci. */
 const EditButton: React.FunctionComponent<Props> = ({
     content = "Upravit",
     onClick,

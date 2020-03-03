@@ -1,7 +1,7 @@
 import * as React from "react"
 import AttendanceService from "../api/services/attendance"
 import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
-import CustomCustomInput from "../forms/helpers/CustomCustomInput"
+import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
 import { AttendanceStateType, AttendanceType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
@@ -11,7 +11,8 @@ type Props = {
     value: AttendanceStateType["id"]
 }
 
-const SelectAttendanceState: React.FunctionComponent<Props> = props => {
+/** Komponenta zobrazující box pro výběr stavu účasti klienta na dané lekci. */
+const AttendanceSelectAttendanceState: React.FunctionComponent<Props> = props => {
     const { attendancestates } = React.useContext(AttendanceStatesContext)
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -22,7 +23,7 @@ const SelectAttendanceState: React.FunctionComponent<Props> = props => {
     }
 
     return (
-        <CustomCustomInput
+        <CustomInputWrapper
             type="select"
             bsSize="sm"
             onChange={onChange}
@@ -38,8 +39,8 @@ const SelectAttendanceState: React.FunctionComponent<Props> = props => {
                         </option>
                     )
             )}
-        </CustomCustomInput>
+        </CustomInputWrapper>
     )
 }
 
-export default SelectAttendanceState
+export default AttendanceSelectAttendanceState

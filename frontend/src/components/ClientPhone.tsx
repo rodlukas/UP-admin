@@ -3,15 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { prettyPhone } from "../global/utils"
 import { ClientType } from "../types/models"
+import "./ClientPhone.css"
 import NoInfo from "./NoInfo"
-import "./Phone.css"
 
 type Props = {
     phone: ClientType["phone"]
     icon?: boolean
 }
 
-const Phone: React.FunctionComponent<Props> = ({ phone, icon = false }) => {
+/** Komponenta pro jednotné zobrazení telefonního čísla klienta napříč aplikací. */
+const ClientPhone: React.FunctionComponent<Props> = ({ phone, icon = false }) => {
     if (phone && phone !== "")
         return (
             <a href={"tel:+420" + phone} data-qa="client_phone" className="Phone" data-gdpr>
@@ -29,4 +30,4 @@ const Phone: React.FunctionComponent<Props> = ({ phone, icon = false }) => {
     return <NoInfo data-qa="client_phone" />
 }
 
-export default Phone
+export default ClientPhone

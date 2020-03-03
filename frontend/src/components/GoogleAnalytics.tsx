@@ -6,9 +6,12 @@ import { isEnvProduction } from "../global/funcEnvironments"
 
 type Props = RouteComponentProps & FieldsObject
 
-// vychazi z: https://vanja.gavric.org/blog/integrate-google-analytics-with-react-router-v4/ a
-// https://github.com/react-ga/react-ga/wiki/React-Router-v4-withTracker
-
+/**
+ * Komponenta zajišťující Google Analytics napříč aplikací.
+ *
+ * Vychází z: https://vanja.gavric.org/blog/integrate-google-analytics-with-react-router-v4/ a
+ * https://github.com/react-ga/react-ga/wiki/React-Router-v4-withTracker
+ */
 class GoogleAnalytics extends React.Component<Props> {
     componentDidMount(): void {
         const page = this.props.location.pathname + this.props.location.search

@@ -27,9 +27,9 @@ import {
 } from "../global/utils"
 import { ClientType, GroupType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
-import CustomReactSelect from "./helpers/CustomReactSelect"
 import { reactSelectIds } from "./helpers/func"
 import Or from "./helpers/Or"
+import ReactSelectWrapper from "./helpers/ReactSelectWrapper"
 import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
 import ModalGroups from "./ModalGroups"
@@ -217,7 +217,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                                     </>
                                 ) : (
                                     <>
-                                        <CustomReactSelect<GroupType>
+                                        <ReactSelectWrapper<GroupType>
                                             {...reactSelectIds("group")}
                                             value={this.state.object as GroupType}
                                             getOptionLabel={(option): string => option.name}

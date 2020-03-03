@@ -31,6 +31,7 @@ type PrepaidCntObjectsType = {
     [key: number]: MembershipType["prepaid_cnt"]
 }
 
+/** Komponenta zobrazující počítadla předplacených lekcí pro členy skupiny. */
 const PrepaidCounters: React.FunctionComponent<Props> = props => {
     const createPrepaidCntObjects = React.useCallback(() => {
         const objects: PrepaidCntObjectsType = {}

@@ -2,7 +2,7 @@ import { faUsdCircle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import AttendanceService from "../api/services/attendance"
-import "./PaidButton.css"
+import "./AttendancePaidButton.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
@@ -11,7 +11,8 @@ type Props = {
     funcRefresh: () => void
 }
 
-const PaidButton: React.FunctionComponent<Props> = props => {
+/** Komponenta zobrazující tlačítko pro platbu klienta za danou lekci. */
+const AttendancePaidButton: React.FunctionComponent<Props> = props => {
     function onClick(): void {
         const newPaid = !props.paid
         const id = props.attendanceId
@@ -41,4 +42,4 @@ const PaidButton: React.FunctionComponent<Props> = props => {
     )
 }
 
-export default PaidButton
+export default AttendancePaidButton

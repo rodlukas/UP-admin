@@ -6,7 +6,8 @@ type Props = {
     email: ClientType["email"]
 }
 
-const Email: React.FunctionComponent<Props> = ({ email }) => {
+/** Komponenta pro jednotné zobrazení e-mailu klienta napříč aplikací. */
+const ClientEmail: React.FunctionComponent<Props> = ({ email }) => {
     if (email !== "")
         return (
             <a href={"mailto:" + email} data-qa="client_email" data-gdpr>
@@ -16,4 +17,4 @@ const Email: React.FunctionComponent<Props> = ({ email }) => {
     return <NoInfo data-qa="client_email" />
 }
 
-export default Email
+export default ClientEmail

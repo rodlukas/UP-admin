@@ -7,6 +7,7 @@ type Props = {
     memberships: Array<MembershipType>
 }
 
+/** Komponenta zobrazující čárkami oddělený seznam všech členů skupiny. */
 const ClientsList: React.FunctionComponent<Props> = ({ memberships = [] }) => {
     if (!memberships.length) return <span className="text-muted">žádní členové</span>
     const clientComponents = memberships.map(membership => (

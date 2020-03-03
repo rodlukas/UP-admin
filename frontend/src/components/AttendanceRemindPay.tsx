@@ -8,7 +8,8 @@ type Props = {
     attendance: AttendanceType
 }
 
-const RemindPay: React.FunctionComponent<Props> = ({ attendance }) => {
+/** Komponenta zobrazující upozornění na fakt, že klient už bude muset příště platit za další lekce. */
+const AttendanceRemindPay: React.FunctionComponent<Props> = ({ attendance }) => {
     if (!attendance.remind_pay) return null
     return (
         <>
@@ -27,4 +28,4 @@ const RemindPay: React.FunctionComponent<Props> = ({ attendance }) => {
     )
 }
 
-export default RemindPay
+export default AttendanceRemindPay

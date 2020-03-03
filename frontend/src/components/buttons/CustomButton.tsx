@@ -6,6 +6,7 @@ interface Props extends ButtonProps {
     content: React.ReactNode
 }
 
+/** Obecné tlačítko v rámci aplikace. */
 const CustomButton: React.FunctionComponent<Props> = ({
     onClick = noop,
     content = "",

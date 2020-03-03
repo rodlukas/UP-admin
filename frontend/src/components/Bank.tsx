@@ -37,6 +37,7 @@ type State = {
     bankDataApi: BankType
 }
 
+/** Komponenta zobrazující přehled transakcí z banky. */
 export default class Bank extends React.PureComponent<{}, State> {
     bankDataApiInit = {
         accountStatement: {

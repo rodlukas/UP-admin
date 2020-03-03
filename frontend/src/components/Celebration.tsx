@@ -6,6 +6,7 @@ type Props = {
     isUserCelebratingResult: number
 }
 
+/** Komponenta zobrazující přání k svátku/narozeninám lektorky. */
 const Celebration: React.FunctionComponent<Props> = ({ isUserCelebratingResult }) => {
     if (isUserCelebratingResult === USER_CELEBRATION.NOTHING) return null
     return (

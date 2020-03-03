@@ -6,6 +6,7 @@ type Props = {
     course: CourseType
 }
 
+/** Komponenta pro jednotné zobrazení názvu kurzu napříč aplikací. */
 const CourseName: React.FunctionComponent<Props> = ({ course }) => (
     <Badge
         color="secondary"

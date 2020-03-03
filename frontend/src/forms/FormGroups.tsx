@@ -36,9 +36,9 @@ import {
     MembershipType
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
-import CustomReactSelect from "./helpers/CustomReactSelect"
 import { reactSelectIds } from "./helpers/func"
 import Or from "./helpers/Or"
+import ReactSelectWrapper from "./helpers/ReactSelectWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
@@ -229,7 +229,7 @@ class FormGroups extends React.Component<Props, State> {
                                     Členové
                                 </Label>
                                 <Col sm={10}>
-                                    <CustomReactSelect<ClientType>
+                                    <ReactSelectWrapper<ClientType>
                                         {...reactSelectIds<ClientType>("memberships")}
                                         value={memberships}
                                         getOptionLabel={(option): string => clientName(option)}

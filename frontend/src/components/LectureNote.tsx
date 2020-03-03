@@ -7,6 +7,7 @@ type Props = {
     attendance: AttendanceType
 }
 
+/** Komponenta zobrazující poznámku k lekci. */
 const LectureNote: React.FunctionComponent<Props> = ({ attendance }) => (
     <Badge color="secondary" data-qa="lecture_attendance_note" className="LectureNote">
         {attendance.note}
