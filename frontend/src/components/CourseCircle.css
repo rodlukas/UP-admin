@@ -4,3 +4,7 @@
     border-radius: 50%;
     vertical-align: middle;
 }
+
+.GroupName .CourseCircle {
+    margin-right: 0.25rem;
+}

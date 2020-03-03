@@ -49,7 +49,7 @@ const GroupName: React.FC<GroupNameProps> = ({
         <PlainName group={group} title={title} bold={bold} />
     )
     return (
-        <span className="clientName GroupName">
+        <span className="ClientName GroupName">
             {"id" in group && link ? (
                 <Link to={APP_URLS.skupiny.url + "/" + group.id}>
                     <span className={noWrap ? "text-nowrap" : undefined}>
