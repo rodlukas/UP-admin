@@ -9,6 +9,7 @@ type SelectCourseProps = Props<CourseType> & {
     onChangeCallback: (name: "course", newValue: CourseType | undefined | null) => void
 }
 
+/** Komponenta s react-select pro kurz. */
 const SelectCourse: React.FunctionComponent<SelectCourseProps> = ({
     value,
     onChangeCallback,

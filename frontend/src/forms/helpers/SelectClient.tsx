@@ -9,6 +9,7 @@ type SelectClientProps = Props<ClientType> & {
     onChangeCallback: (name: "client", newValue: ClientType | undefined | null) => void
 }
 
+/** Komponenta s react-select pro klienta. */
 const SelectClient: React.FunctionComponent<SelectClientProps> = ({
     value,
     onChangeCallback,

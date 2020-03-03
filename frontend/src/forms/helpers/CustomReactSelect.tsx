@@ -2,8 +2,10 @@ import * as React from "react"
 import Select, { components, InputProps, Props } from "react-select"
 import { TEXTS } from "../../global/constants"
 
-/* Input komponenta pro vlastni reseni chovani react-selectu pri stisku ESC
-    - viz https://github.com/rodlukas/UP-admin/issues/84
+/**
+ * Vlastní Input komponenta pro vlastní řešení chování react-select při stisku ESC.
+ * Řeší problém, kdy po stisku ESC dojde jak ke zavření možností, tak celého modálního okna.
+ * Viz https://github.com/rodlukas/UP-admin/issues/84
  */
 const Input: React.FunctionComponent<InputProps> = props => {
     const [menuWasOpen, setMenuWasOpen] = React.useState(false)
@@ -37,6 +39,7 @@ const Input: React.FunctionComponent<InputProps> = props => {
     /* eslint-enable @typescript-eslint/ban-ts-ignore */
 }
 
+/** Vlastní react-select komponenta pro použití nadefinovaného react-selectu napříč aplikací. */
 const CustomReactSelect = <OptionType,>(props: Props<OptionType>): JSX.Element => (
     <Select<OptionType>
         {...props}

@@ -2,12 +2,11 @@ import * as chroma from "chroma-js"
 import * as CSS from "csstype"
 import { StylesConfig } from "react-select"
 
-// vychazi z: https://react-select.com/home#custom-styles
-
 // typ viz https://github.com/frenic/csstype#usage
 type CSSTypes = { [key in CSS.Pseudos]?: CSS.Properties<string | number> } &
     CSS.Properties<string | number>
 
+// kolecko zobrazene v react-select
 const dot = (color = "#ccc"): CSSTypes => ({
     alignItems: "center",
     display: "flex",
@@ -22,6 +21,11 @@ const dot = (color = "#ccc"): CSSTypes => ({
     }
 })
 
+/**
+ * Konfigurace stylů pro react-select přidávající barevné kolečko k jednotlivým položkám.
+ *
+ * Vychází z: https://react-select.com/home#custom-styles
+ */
 export const selectStyles: StylesConfig = {
     control: styles => ({ ...styles, backgroundColor: "white" }),
     option: (styles: CSSTypes, { data, isFocused, isSelected }) => {

@@ -18,6 +18,7 @@ type State = {
     isPickerVisible: boolean
 }
 
+/** Komponenta pro pole s výběrem barvy kurzu. */
 export default class ColorPicker extends React.Component<Props, State> {
     state: State = {
         isPickerVisible: false
