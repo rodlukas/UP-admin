@@ -71,7 +71,8 @@ class Card extends React.Component<Props, State> {
 
     getId = (): Model["id"] => this.props.match.params.id
     getPrevId = (prevProps: Props): Model["id"] => prevProps.match.params.id
-    wasClient = (prevProps: Props): boolean => prevProps.match.path.includes(APP_URLS.klienti.url)
+    wasClientPage = (prevProps: Props): boolean =>
+        prevProps.match.path.includes(APP_URLS.klienti.url)
 
     componentDidMount(): void {
         this.getObject()
@@ -116,7 +117,7 @@ class Card extends React.Component<Props, State> {
     componentDidUpdate(prevProps: Readonly<Props>): void {
         if (
             this.getId() !== this.getPrevId(prevProps) ||
-            this.isClientPage() !== this.wasClient(prevProps)
+            this.isClientPage() !== this.wasClientPage(prevProps)
         )
             this.refresh()
     }
