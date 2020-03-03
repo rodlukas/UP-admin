@@ -52,6 +52,9 @@ script:
   # priprav Django aplikaci
   - source scripts/shell/release_tasks.sh
 
+  # otestuj typy ve frontendu pres TS kompilator
+  - yarn run types
+
   # proved testy a spocitej pokryti kodu
   - coverage run -a manage.py test
   - coverage run -a manage.py behave --stage=api --format=progress3

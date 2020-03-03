@@ -32,13 +32,14 @@ module.exports = {
         alias: {
             // react-hot-loader
             "react-dom": "@hot-loader/react-dom"
-        }
+        },
+        extensions: [".ts", ".tsx", ".js", ".jsx"]
     },
     entry: ["react-hot-loader/patch", "./src/index"],
     module: {
         rules: [
             {
-                test: /\.(js|mjs|jsx|ts|tsx)$/,
+                test: /\.(ts|js)x?$/,
                 enforce: "pre",
                 exclude: /node_modules/,
                 loader: "eslint-loader",
@@ -50,7 +51,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.(js|mjs)$/,
+                test: /\.(ts|js)x?$/,
                 exclude: /node_modules/,
                 loader: "babel-loader",
                 options: {

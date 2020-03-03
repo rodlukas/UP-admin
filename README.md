@@ -87,7 +87,7 @@ Aplikace umožňuje **pokročilé debugování** na lokálním i vzdáleném pro
 Pro **eliminaci mrtvého kódu** se také používá **[vulture](https://github.com/jendrikseipp/vulture/)**.
 
 #### Frontend
-Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
+Responzivní JS *([Typescript](https://www.typescriptlang.org/))* webová aplikace typu SPA ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto technologiích:
 * [React 16](https://reactjs.org/),
 * [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 * [React Router 5](https://reacttraining.com/react-router/),
@@ -95,10 +95,10 @@ Responzivní JS *(ES2018)* webová aplikace typu SPA ([Single-Page-App](https://
 * [a další...](/frontend/package.json)
 
 Vývoj frontendu je postaven především na:
-* [Webpack](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) + [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
-* [Babel](https://babeljs.io/),
-* [Flow](https://flow.org/) – pro statickou typovou kontrolu,
-* [ESlint](https://eslint.org/) – linter pro statickou analýzu kódu
+* [Webpack 4](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) + [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
+* [Babel 7](https://babeljs.io/),
+* [Typescript 3.8](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
+* [ESlint 6](https://eslint.org/) – linter pro statickou analýzu kódu
 * a [React Hot Loader](https://github.com/gaearon/react-hot-loader) – pro [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 Aplikace je **odolná proti pádům JS** díky **[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**.
