@@ -37,7 +37,7 @@ label {
     clear: both;
 }
 
-/*** FORMS ***/
+/**************************** FORMS ****************************/
 /* hvezdicka oznacujici povinna pole */
 .form-group.required .col-form-label:after {
     content: "*";
@@ -45,7 +45,7 @@ label {
     color: #dc3545;
 }
 
-/*** TABLE ***/
+/**************************** TABLE ****************************/
 .table {
     background-color: white !important;
 }
@@ -58,7 +58,7 @@ label {
     border-top: 0 !important;
 }
 
-/*** BADGE ***/
+/**************************** BADGE ****************************/
 .badge {
     white-space: normal; /* aby se text zalamoval a nepretekal */
     font-size: 1rem;
@@ -66,7 +66,7 @@ label {
     vertical-align: bottom;
 }
 
-/*** REACT-TOASTIFY ***/
+/**************************** REACT-TOASTIFY ****************************/
 /* vychozi zluta je spatne citelna s bilym textem */
 .Toastify__toast--warning {
     background: #e7b90f !important;
@@ -82,13 +82,13 @@ label {
     top: unset !important;
 }
 
-/*** DJANGO-DEBUG-TOOLBAR ***/
+/**************************** DJANGO-DEBUG-TOOLBAR ****************************/
 /* zaridi, aby tlacitko DDT nikdy neprekazelo notifikacim (to je dulezite predevsim pro UI testy) */
 #djDebugToolbarHandle {
     top: 380px !important;
 }
 
-/*** GDPR ***/
+/**************************** GDPR ****************************/
 /* skryti osobnich udaju v pripade potreby */
 .gdpr [data-gdpr],
 .gdpr .memberships__option,
@@ -99,8 +99,78 @@ label {
     user-select: none;
 }
 
-/*** BOOTSTRAP ***/
+/**************************** BOOTSTRAP ****************************/
 /* kontrastnejsi barva pozadi badge */
 .badge-light {
     background-color: #eaeaea;
+}
+
+/**************************** LEKCE (tam, kde se pouziva Attendances.tsx) ****************************/
+.lecture-future {
+    background-color: #fff3cd !important;
+}
+
+.lecture-prepaid {
+    background-color: #d4edda !important;
+}
+
+.lecture-canceled {
+    background-color: #f8d7da !important;
+}
+
+.lecture {
+    padding: 0 0 0.75rem 0 !important;
+}
+
+.lecture_heading {
+    padding: 0 0 0 1rem;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.1rem;
+}
+
+@media (max-width: 575.98px) {
+    .lecture_heading {
+        flex-wrap: wrap;
+    }
+}
+
+.lecture_content h5 {
+    margin-top: 0.4rem;
+}
+
+.lecture_heading .btn {
+    border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.lecture_heading h4 {
+    display: inline-block;
+    margin: 0;
+}
+
+.lecture_content {
+    padding: 0 1rem 0 1rem;
+}
+
+.lecture_free {
+    padding-top: 1rem !important;
+}
+
+.lecture-canceled h4 span {
+    position: relative;
+    display: inline-block;
+}
+
+.lecture-canceled h4 span::after {
+    content: "";
+    width: 100%;
+    position: absolute;
+    right: 0;
+    top: 50%;
+}
+
+.lecture-canceled h4 span::after {
+    border-bottom: 2px solid rgba(255, 0, 0, 0.6);
 }

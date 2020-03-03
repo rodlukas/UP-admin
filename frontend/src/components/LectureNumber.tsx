@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Badge } from "reactstrap"
 import { LectureType } from "../types/models"
+import "./LectureNumber.css"
 
 type Props = {
     lecture: LectureType

@@ -1,0 +1,4 @@
+.lecture .CourseName {
+    flex-grow: 1;
+    line-height: 0.9;
+}

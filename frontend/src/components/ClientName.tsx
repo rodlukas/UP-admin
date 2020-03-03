@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { getAttrSafe } from "../global/utils"
 import { ClientType } from "../types/models"
 import APP_URLS from "../urls"
+import "./ClientName.css"
 import ConditionalWrapper from "./ConditionalWrapper"
 
 type InputClient = ClientType | Pick<ClientType, "firstname" | "surname">

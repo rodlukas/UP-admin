@@ -4,7 +4,6 @@ import { GroupType } from "../types/models"
 import APP_URLS from "../urls"
 import ConditionalWrapper from "./ConditionalWrapper"
 import CourseCircle from "./CourseCircle"
-import "./GroupName.css"
 
 type InputGroup = GroupType | Pick<GroupType, "name">
 
