@@ -35,10 +35,7 @@ type PrepaidCntObjectsType = {
 const PrepaidCounters: React.FC<Props> = props => {
     const createPrepaidCntObjects = React.useCallback(() => {
         const objects: PrepaidCntObjectsType = {}
-        if (props.memberships)
-            props.memberships.forEach(
-                membership => (objects[membership.id] = membership.prepaid_cnt)
-            )
+        props.memberships.forEach(membership => (objects[membership.id] = membership.prepaid_cnt))
         return objects
     }, [props.memberships])
 
@@ -71,62 +68,60 @@ const PrepaidCounters: React.FC<Props> = props => {
     return (
         <Container fluid>
             <Row className="justify-content-center">
-                {props.memberships &&
-                    props.memberships.map(membership => (
-                        <Col sm="9" md="3" lg="2" xl="2" key={membership.id}>
-                            <ListGroup>
-                                <ListGroupItem>
-                                    <h5>
-                                        <ClientName client={membership.client} link />{" "}
-                                        {props.isGroupActive && !membership.client.active && (
-                                            <>
-                                                <UncontrolledTooltipWrapper
-                                                    target={
-                                                        "PrepaidCounters_InactiveClientAlert_" +
-                                                        membership.client.id
-                                                    }>
-                                                    Tento klient není aktivní (přestože skupina
-                                                    aktivní je), není tedy možné přidávat této
-                                                    skupině lekce
-                                                </UncontrolledTooltipWrapper>
-                                                <span
-                                                    id={
-                                                        "PrepaidCounters_InactiveClientAlert_" +
-                                                        membership.client.id
-                                                    }>
-                                                    <FontAwesomeIcon
-                                                        icon={faExclamationTriangle}
-                                                        className={"text-danger"}
-                                                        size="1x"
-                                                    />
-                                                </span>
-                                            </>
-                                        )}
-                                    </h5>
-                                    <InputGroup>
-                                        <InputGroupAddon addonType="prepend">
-                                            <Label
-                                                className="input-group-text"
-                                                for={"prepaid_cnt" + membership.id}>
-                                                předplaceno
-                                            </Label>
-                                        </InputGroupAddon>
-                                        <Input
-                                            type="number"
-                                            value={prepaidCnts[membership.id]}
-                                            min="0"
-                                            onChange={onChange}
-                                            data-id={membership.id}
-                                            onFocus={onFocus}
-                                            id={"prepaid_cnt" + membership.id}
-                                            className="PrepaidCountersInput"
-                                        />
-                                    </InputGroup>
-                                </ListGroupItem>
-                            </ListGroup>
-                        </Col>
-                    ))}
-                {props.memberships && props.memberships.length === 0 && (
+                {props.memberships.map(membership => (
+                    <Col sm="9" md="3" lg="2" xl="2" key={membership.id}>
+                        <ListGroup>
+                            <ListGroupItem>
+                                <h5>
+                                    <ClientName client={membership.client} link />{" "}
+                                    {props.isGroupActive && !membership.client.active && (
+                                        <>
+                                            <UncontrolledTooltipWrapper
+                                                target={
+                                                    "PrepaidCounters_InactiveClientAlert_" +
+                                                    membership.client.id
+                                                }>
+                                                Tento klient není aktivní (přestože skupina aktivní
+                                                je), není tedy možné přidávat této skupině lekce
+                                            </UncontrolledTooltipWrapper>
+                                            <span
+                                                id={
+                                                    "PrepaidCounters_InactiveClientAlert_" +
+                                                    membership.client.id
+                                                }>
+                                                <FontAwesomeIcon
+                                                    icon={faExclamationTriangle}
+                                                    className={"text-danger"}
+                                                    size="1x"
+                                                />
+                                            </span>
+                                        </>
+                                    )}
+                                </h5>
+                                <InputGroup>
+                                    <InputGroupAddon addonType="prepend">
+                                        <Label
+                                            className="input-group-text"
+                                            for={"prepaid_cnt" + membership.id}>
+                                            předplaceno
+                                        </Label>
+                                    </InputGroupAddon>
+                                    <Input
+                                        type="number"
+                                        value={prepaidCnts[membership.id]}
+                                        min="0"
+                                        onChange={onChange}
+                                        data-id={membership.id}
+                                        onFocus={onFocus}
+                                        id={"prepaid_cnt" + membership.id}
+                                        className="PrepaidCountersInput"
+                                    />
+                                </InputGroup>
+                            </ListGroupItem>
+                        </ListGroup>
+                    </Col>
+                ))}
+                {props.memberships.length === 0 && (
                     <p className="text-muted text-center">Žádní účastníci</p>
                 )}
             </Row>
