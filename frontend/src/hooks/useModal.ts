@@ -12,7 +12,7 @@ const DIRTY_INDICATORS = {
 type UseModal = readonly [
     boolean,
     () => boolean,
-    (modalSubmitted?: boolean, dataToStore?: any) => boolean,
+    (modalSubmitted?: boolean, dataToStore?: ModalTempData | null) => boolean,
     fEmptyVoid,
     (value: ((prevState: boolean) => boolean) | boolean) => void,
     (callback?: () => void) => void,
@@ -23,9 +23,12 @@ type UseModal = readonly [
 const useModal = (): UseModal => {
     const [isModal, setModal] = React.useState(false)
     const [formState, setFormState] = React.useState(DIRTY_INDICATORS.CLEAN)
-    const [tempData, setTempData] = React.useState(null)
+    const [tempData, setTempData] = React.useState<ModalTempData | null>(null)
 
-    const toggleModalForce = (modalSubmitted = true, dataToStore = null): boolean => {
+    const toggleModalForce = (
+        modalSubmitted = true,
+        dataToStore: ModalTempData | null = null
+    ): boolean => {
         // pokud se zavira a probehl submit formulare/smazani, zapamatuj si to
         // POZOR: na zaver je stejne potreba zresetovat stav na clean, toto ma na starost
         // funkce processOnModalClose, kterou musi komponenta zavolat

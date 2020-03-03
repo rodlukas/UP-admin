@@ -113,12 +113,9 @@ class ErrorBoundary extends React.Component<Props, State> {
                                         className="text-left"
                                         style={{ whiteSpace: "pre-wrap" }}>
                                         <summary className="font-weight-bold">
-                                            {this.state.error && this.state.error.toString()}
+                                            {this.state.error?.toString()}
                                         </summary>
-                                        <small>
-                                            {this.state.errorInfo &&
-                                                this.state.errorInfo.componentStack}
-                                        </small>
+                                        <small>{this.state.errorInfo?.componentStack}</small>
                                     </details>
                                 </Alert>
                             </Col>

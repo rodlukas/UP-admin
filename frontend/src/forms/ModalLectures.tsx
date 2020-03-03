@@ -21,7 +21,7 @@ const ModalLectures: React.FC<Props> = ({
     currentLecture,
     refresh,
     object,
-    defaultValuesForLecture = undefined
+    defaultValuesForLecture
 }) => {
     const [shouldModalOpen, setShouldModalOpen] = React.useState(false)
     return (

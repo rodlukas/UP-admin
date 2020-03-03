@@ -82,7 +82,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
         })
     }
 
-    onSelectChange = (_name: string, obj: ClientType | GroupType | null | undefined): void => {
+    onSelectChange = (_name: string, obj?: ClientType | GroupType | null): void => {
         const isClient = this.state.isClient
         if (!obj || isClient === undefined) return
         // skupiny sice maji jasny kurz, ale lze u nich odhadovat datum a cas, proto zde pro ne neprizpusobujeme

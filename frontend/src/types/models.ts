@@ -104,7 +104,7 @@ export type BankType = {
             /** konečný zůstatek na účtu na konci zvoleného období */
             closingBalance: number | null
             /** počátek zvoleného období ve tvaru rrrr-mm-dd+GMT */
-            dateStart: string | undefined
+            dateStart?: string
         }
         /** pohyby na účtu za dané období */
         transactionList: {

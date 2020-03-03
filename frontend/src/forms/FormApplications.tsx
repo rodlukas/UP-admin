@@ -66,10 +66,7 @@ class FormApplications extends React.Component<Props, State> {
         }))
     }
 
-    onSelectChange = (
-        name: "course" | "client",
-        obj: CourseType | ClientType | null | undefined
-    ): void => {
+    onSelectChange = (name: "course" | "client", obj?: CourseType | ClientType | null): void => {
         this.props.setFormDirty()
         if (obj === undefined) obj = null
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948

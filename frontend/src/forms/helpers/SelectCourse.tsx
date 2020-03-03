@@ -6,7 +6,7 @@ import ReactSelectWrapper from "./ReactSelectWrapper"
 import { selectStyles } from "./selectCourseColors"
 
 type SelectCourseProps = Props<CourseType> & {
-    onChangeCallback: (name: "course", newValue: CourseType | undefined | null) => void
+    onChangeCallback: (name: "course", newValue?: CourseType | null) => void
 }
 
 /** Komponenta s react-select pro kurz. */

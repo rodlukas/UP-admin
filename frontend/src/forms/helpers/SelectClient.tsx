@@ -6,7 +6,7 @@ import { reactSelectIds } from "./func"
 import ReactSelectWrapper from "./ReactSelectWrapper"
 
 type SelectClientProps = Props<ClientType> & {
-    onChangeCallback: (name: "client", newValue: ClientType | undefined | null) => void
+    onChangeCallback: (name: "client", newValue?: ClientType | null) => void
 }
 
 /** Komponenta s react-select pro klienta. */

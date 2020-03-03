@@ -81,7 +81,7 @@ class Card extends React.Component<Props, State> {
     }
 
     refreshObjectFromModal = (data: ModalClientsGroupsData): void => {
-        if (data && !data.isDeleted)
+        if (!data?.isDeleted)
             this.setState(
                 prevState => ({ loadingCnt: prevState.loadingCnt - 1 }),
                 () => this.getObject()

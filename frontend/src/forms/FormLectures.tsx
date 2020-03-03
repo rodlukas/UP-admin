@@ -165,7 +165,7 @@ class FormLectures extends React.Component<Props, State> {
     computeDuration(): LectureType["duration"] {
         // pokud je to klient a mame vypocitany nejpravdepodobnejsi kurz, pouzij ho, jinak default
         if (this.isClient(this.props.object))
-            return this.props.defaultValuesForLecture && this.props.defaultValuesForLecture.course
+            return this.props.defaultValuesForLecture?.course
                 ? this.props.defaultValuesForLecture.course.duration
                 : DEFAULT_LECTURE_DURATION_SINGLE
         // je to skupina
@@ -251,8 +251,7 @@ class FormLectures extends React.Component<Props, State> {
                 objects[client.id] = false
                 if (!this.isClient(object)) {
                     const membership = object.memberships.find(elem => elem.client.id === client.id)
-                    if (membership !== undefined && membership.prepaid_cnt > 0)
-                        objects[client.id] = true
+                    if (membership && membership.prepaid_cnt > 0) objects[client.id] = true
                 }
             }
         })
@@ -305,7 +304,7 @@ class FormLectures extends React.Component<Props, State> {
         }))
     }
 
-    onSelectChange = (name: "course", obj: CourseType | null | undefined): void => {
+    onSelectChange = (name: "course", obj?: CourseType | null): void => {
         this.props.setFormDirty()
         if (obj === undefined) obj = null
         this.setState({ [name]: obj })
