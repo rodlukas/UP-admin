@@ -1,6 +1,6 @@
-/** Oddělovač v URL na API. */
 import { Method } from "axios"
 
+/** Oddělovač v URL na API. */
 export const API_DELIM = "/"
 /** Klíč query stringu používaný pro změnu řazení na API. */
 export const API_ORDERING = "ordering"
