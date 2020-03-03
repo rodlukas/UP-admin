@@ -2,7 +2,7 @@ import * as React from "react"
 import AttendanceStateService from "../api/services/attendancestate"
 import { noop } from "../global/utils"
 import { AttendanceStateType } from "../types/models"
-import { fArgVoid } from "../types/types"
+import { fFunction } from "../types/types"
 
 interface StateContext {
     isLoaded: boolean
@@ -10,7 +10,7 @@ interface StateContext {
 }
 
 interface Context extends StateContext {
-    funcRefresh: fArgVoid
+    funcRefresh: (callback?: fFunction) => void
 }
 
 /** Context pro přístup a práci se stavy účasti. */

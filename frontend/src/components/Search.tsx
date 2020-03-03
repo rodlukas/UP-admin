@@ -3,12 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { Input, InputGroup, InputGroupAddon, Label } from "reactstrap"
 import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
-import { fArgVoid } from "../types/types"
 import "./Search.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
-    onSearchChange: fArgVoid
+    onSearchChange: (newSearchVal: string) => void
     searchVal: string
 }
 

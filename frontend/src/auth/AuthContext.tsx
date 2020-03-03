@@ -3,7 +3,7 @@ import LoginService from "../api/services/login"
 import history from "../global/history"
 import { noop } from "../global/utils"
 import { AuthorizationType, TokenCodedType } from "../types/models"
-import { fArgVoid, fEmptyVoid } from "../types/types"
+import { fEmptyVoid } from "../types/types"
 import APP_URLS from "../urls"
 import Token from "./Token"
 
@@ -16,9 +16,9 @@ interface State {
 }
 
 interface Context extends State {
-    login: fArgVoid
+    login: (credentials: AuthorizationType) => void
     logout: fEmptyVoid
-    isAuthenticated: fArgVoid
+    isAuthenticated: (refreshExpiringToken?: boolean) => void
 }
 
 /** Context pro správu přihlášení uživatele. */

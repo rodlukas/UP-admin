@@ -2,7 +2,7 @@ import * as React from "react"
 import ClientService, { ListWithActiveClients } from "../api/services/client"
 import { clientName, noop } from "../global/utils"
 import { ClientActiveType } from "../types/models"
-import { fArgVoid } from "../types/types"
+import { fEmptyVoid, fFunction } from "../types/types"
 
 interface StateContext {
     isLoaded: boolean
@@ -14,8 +14,8 @@ interface State extends StateContext {
 }
 
 interface Context extends StateContext {
-    funcRefresh: fArgVoid
-    funcHardRefresh: fArgVoid
+    funcRefresh: (callback?: fFunction) => void
+    funcHardRefresh: fEmptyVoid
 }
 
 /** Context pro přístup a práci s aktivními klienty. */

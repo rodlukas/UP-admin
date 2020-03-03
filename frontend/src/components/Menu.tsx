@@ -3,14 +3,14 @@ import { NavLink as RouterNavLink, NavLinkProps as RouterNavLinkProps } from "re
 import { Button, Nav, NavItem, NavLink } from "reactstrap"
 import AuthChecking from "../auth/AuthChecking"
 import { AuthContext } from "../auth/AuthContext"
-import { fArgVoid, fEmptyVoid, QA } from "../types/types"
+import { fEmptyVoid, QA } from "../types/types"
 import APP_URLS from "../urls"
 import "./Menu.css"
 import Search from "./Search"
 
 type Props = {
     closeNavbar: fEmptyVoid
-    onSearchChange: fArgVoid
+    onSearchChange: (newSearchVal: string) => void
     searchVal: string
 }
 

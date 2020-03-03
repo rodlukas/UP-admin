@@ -1,12 +1,11 @@
 import * as React from "react"
 import { Button, ButtonGroup } from "reactstrap"
-import { fArgVoid } from "../../types/types"
 import "./ActiveSwitcher.css"
 import "./buttons.css"
 
 type Props = {
     active: boolean
-    onChange: fArgVoid
+    onChange: (active: boolean, ignoreActiveRefresh: boolean) => void
 }
 
 /** Přepínač ne/aktivních skupin/klientů. */
