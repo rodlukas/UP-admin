@@ -22,10 +22,6 @@ type Props = {
 const SearchResults: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch }) => {
     const clientsActiveContext = React.useContext(ClientsActiveContext)
 
-    React.useEffect(() => {
-        if (clientsActiveContext.isLoaded && searchVal !== "") search()
-    }, [clientsActiveContext.isLoaded, search, searchVal])
-
     return (
         <>
             {searchVal !== "" && (
