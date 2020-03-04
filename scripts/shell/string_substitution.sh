@@ -11,6 +11,7 @@ GIT_COMMIT_STRING='GIT_COMMIT'
 GIT_RELEASE_STRING='GIT_RELEASE'
 GIT_BRANCH_STRING='GIT_BRANCH'
 GIT_DATETIME_STRING='GIT_DATETIME'
+GIT_YEAR_STRING='GIT_YEAR'
 SENTRY_DSN_STRING='SENTRY_DSN'
 
 # nastaveni novych hodnot pro nahrazovane retezce
@@ -19,6 +20,7 @@ COMMIT=$(git rev-parse --short HEAD)
 RELEASE=$TRAVIS_TAG
 BRANCH=$TRAVIS_BRANCH
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
+YEAR=$(git log -1 --format=%cd --date=format:"%Y")
 
 # provedeni subtituce ve slozce $1
 substitute_folder() {
@@ -33,6 +35,7 @@ substitute_folder() {
   substitute "$GIT_RELEASE_STRING" "$RELEASE"
   substitute "$GIT_BRANCH_STRING" "$BRANCH"
   substitute "$GIT_DATETIME_STRING" "$DATETIME"
+  substitute "$GIT_YEAR_STRING" "$YEAR"
   substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
 
   cd "$TRAVIS_BUILD_DIR" || exit

@@ -300,7 +300,7 @@ class Settings extends React.Component<Props, State> {
                                 </Col>
                             </Row>
                             <hr />
-                            <p className="text-center Settings_AppVersion">
+                            <p className="text-center Settings_Footer">
                                 <span className="font-weight-bold">Verze aplikace:</span>{" "}
                                 <AppCommit />
                                 {" ("}
@@ -309,7 +309,8 @@ class Settings extends React.Component<Props, State> {
                                 <a
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    href="https://github.com/rodlukas/UP-admin">
+                                    href="https://github.com/rodlukas/UP-admin"
+                                    className="ml-1">
                                     <span id="Settings_GHRepo">
                                         <FontAwesomeIcon
                                             icon={faGithub}
@@ -321,6 +322,16 @@ class Settings extends React.Component<Props, State> {
                                         GitHub repozitář ÚPadmin
                                     </UncontrolledTooltipWrapper>
                                 </a>
+                            </p>
+                            <p className="text-center Settings_Footer">
+                                S láskou vytvořil{" "}
+                                <a
+                                    href="http://lukasrod.cz/"
+                                    target="_blank"
+                                    rel="noopener noreferrer">
+                                    Lukáš Rod
+                                </a>
+                                , 2018&ndash;%GIT_YEAR
                             </p>
                         </div>
                     )}
