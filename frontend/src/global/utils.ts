@@ -1,11 +1,5 @@
 import LectureService from "../api/services/lecture"
-import {
-    ApplicationType,
-    ClientType,
-    CourseType,
-    LectureType,
-    MembershipType
-} from "../types/models"
+import { ApplicationType, ClientType, CourseType, LectureType, MembershipType } from "../types/models"
 import { LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
 
@@ -123,17 +117,9 @@ export function prettyPhone(phone: ClientType["phone"]): string {
     return numberParts ? numberParts.join(" ") : phone
 }
 
-/**
- * Vrátí value, pokud je undefined, vrátí prázdný string.
- * Value může být undefined např. než se načtou data z API do komponenty/rodiče.
- */
-export function getAttrSafe(value: string | void): string {
-    return value || ""
-}
-
 /** Vrátí celé jméno klienta. */
 export function clientName(client: ClientType): string {
-    return getAttrSafe(client.surname) + " " + getAttrSafe(client.firstname)
+    return client.surname + " " + client.firstname
 }
 
 /** Vrátí trvání kurzu ve srozumitelném formátu. */

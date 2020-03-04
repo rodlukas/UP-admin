@@ -1,6 +1,5 @@
 import * as React from "react"
 import { Link } from "react-router-dom"
-import { getAttrSafe } from "../global/utils"
 import { ClientType } from "../types/models"
 import APP_URLS from "../urls"
 import "./ClientName.css"
@@ -15,13 +14,13 @@ type PlainClientNameProps = {
 
 const PlainClientName: React.FC<PlainClientNameProps> = ({ client, bold }) => (
     <span data-qa="client_name" data-gdpr>
-        <span className="font-weight-bold">{getAttrSafe(client.surname)}</span>{" "}
+        <span className="font-weight-bold">{client.surname}</span>{" "}
         <ConditionalWrapper
             condition={bold}
             wrapper={(children): React.ReactNode => (
                 <span className="font-weight-bold">{children}</span>
             )}>
-            {getAttrSafe(client.firstname)}
+            {client.firstname}
         </ConditionalWrapper>
     </span>
 )
