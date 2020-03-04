@@ -144,13 +144,13 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                         <DropdownToggle
                             caret
                             size={this.props.size}
-                            id={"ModalLecturesWizard_" + (this.props.date || "")}
+                            id={"ModalLecturesWizard_" + (this.props.date ?? "")}
                             color="info">
                             <FontAwesomeIcon icon={faPlus} size="lg" />
                         </DropdownToggle>
                         <UncontrolledTooltipWrapper
                             placement={this.props.direction === "up" ? "bottom" : "top"}
-                            target={"ModalLecturesWizard_" + (this.props.date || "")}>
+                            target={"ModalLecturesWizard_" + (this.props.date ?? "")}>
                             {title}
                         </UncontrolledTooltipWrapper>
                         <DropdownMenu right>
@@ -258,7 +258,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                     defaultValuesForLecture={this.state.defaultValuesForLecture}
                     shouldModalOpen={this.state.modalSelectDone}
                     funcCloseCallback={this.toggleModal}
-                    date={this.props.date || ""}
+                    date={this.props.date ?? ""}
                 />
             </>
         )

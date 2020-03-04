@@ -146,7 +146,9 @@ class FormLectures extends React.Component<Props, State> {
             : !this.isClient(this.props.object)
             ? this.props.object.course
             : null,
-        duration: this.props.lecture.duration || this.computeDuration(),
+        duration: this.isLecture(this.props.lecture)
+            ? this.props.lecture.duration
+            : this.computeDuration(),
         prepaidCnt: 1,
         canceledDisabled: false,
         isSubmit: false

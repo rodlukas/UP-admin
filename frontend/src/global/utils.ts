@@ -1,5 +1,11 @@
 import LectureService from "../api/services/lecture"
-import { ApplicationType, ClientType, CourseType, LectureType, MembershipType } from "../types/models"
+import {
+    ApplicationType,
+    ClientType,
+    CourseType,
+    LectureType,
+    MembershipType
+} from "../types/models"
 import { LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
 

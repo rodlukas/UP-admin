@@ -132,7 +132,7 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
                 if (error.response.status === 401) history.push(APP_URLS.prihlasit.url)
                 else if (error.response.status === 404) history.push(APP_URLS.nenalezeno.url)
             }
-            return Promise.reject(error.response || error.message)
+            return Promise.reject(error.response ?? error.message)
         } else {
             return error.response
         }

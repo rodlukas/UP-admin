@@ -291,7 +291,8 @@ class Card extends React.Component<Props, State> {
                                                 </h4>
                                             </ListGroupItem>
                                             {courseLectures.objects.map(lecture => {
-                                                const date = new Date(lecture.start || 0)
+                                                // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
+                                                const date = new Date(lecture.start ?? 0)
                                                 let className = lecture.canceled
                                                     ? "lecture-canceled"
                                                     : ""

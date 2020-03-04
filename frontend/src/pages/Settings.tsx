@@ -200,7 +200,7 @@ class Settings extends React.Component<Props, State> {
                                     <CustomInputWrapper
                                         type="select"
                                         id="state_default_id"
-                                        value={attendanceStateDefaultId || "default"}
+                                        value={attendanceStateDefaultId ?? "default"}
                                         onChange={this.onChange}
                                         data-attribute="default">
                                         <option disabled value="default">
@@ -230,7 +230,7 @@ class Settings extends React.Component<Props, State> {
                                     <CustomInputWrapper
                                         type="select"
                                         id="state_excused_id"
-                                        value={attendanceStateExcusedId || "default"}
+                                        value={attendanceStateExcusedId ?? "default"}
                                         onChange={this.onChange}
                                         data-attribute="excused">
                                         <option disabled value="default">
