@@ -1,106 +1,107 @@
 language: python
 # pro python >= 3.7 je potreba >= xenial
 dist: bionic
-python: '3.8'
-node_js: '12'
+python: "3.8"
+node_js: "12"
 services:
-  - postgresql
+    - postgresql
 addons:
-  firefox: latest
-  postgresql: '12'
+    firefox: latest
+    postgresql: "12"
 
 env:
-  global:
-    - MOZ_HEADLESS=1
-    - PIPENV_CACHE_DIR=$HOME/.cache/pipenv
+    global:
+        - MOZ_HEADLESS=1
+        - PIPENV_CACHE_DIR=$HOME/.cache/pipenv
 
 cache:
-  yarn: true
-  directories:
-    - frontend/node_modules
-    - $PIPENV_CACHE_DIR
+    yarn: true
+    directories:
+        - frontend/node_modules
+        - $PIPENV_CACHE_DIR
 
 before_install:
-  # instalace postgresql 12
-  - source scripts/shell/postgresql_install.sh
-  # pridani ceskeho balicku pro funkcni CZ v databazi
-  - source scripts/shell/postgresql_cs.sh
+    # instalace postgresql 12
+    - source scripts/shell/postgresql_install.sh
+    # pridani ceskeho balicku pro funkcni CZ v databazi
+    - source scripts/shell/postgresql_cs.sh
 install:
-  # nainstaluj geckodriver pro selenium testovani
-  - source scripts/shell/install_geckodriver.sh
+    # nainstaluj geckodriver pro selenium testovani
+    - source scripts/shell/install_geckodriver.sh
 
-  # spust skripty pro upravu souboru
-  - source scripts/shell/create_npmrc.sh
-  - source scripts/shell/string_substitution.sh
+    # spust skripty pro upravu souboru
+    - source scripts/shell/create_npmrc.sh
+    - source scripts/shell/string_substitution.sh
 
-  # nainstaluj JS zavislosti
-  - source scripts/shell/js_install.sh
+    # nainstaluj JS zavislosti
+    - source scripts/shell/js_install.sh
 
-  # nainstaluj Python zavislosti
-  - pip install pipenv
-  - pipenv install --dev
+    # nainstaluj Python zavislosti
+    - pip install pipenv
+    - pipenv install --dev
 
-  # vypis konfigurace prostredi
-  - node --version && npm --version && yarn --version && python --version && pipenv --version && psql --version && pg_config --version && ls -la
+    # vypis konfigurace prostredi
+    - node --version && npm --version && yarn --version && python --version && pipenv --version &&
+      psql --version && pg_config --version && ls -la
 before_script:
-  # priprav DB
-  - source scripts/shell/postgresql_prepare.sh
+    # priprav DB
+    - source scripts/shell/postgresql_prepare.sh
 
-  # vytvor dummy .env soubor, at je spokojeny django-environ a nehulaka
-  - touch .env
+    # vytvor dummy .env soubor, at je spokojeny django-environ a nehulaka
+    - touch .env
 script:
-  # priprav Django aplikaci
-  - source scripts/shell/release_tasks.sh
+    # priprav Django aplikaci
+    - source scripts/shell/release_tasks.sh
 
-  # otestuj typy ve frontendu pres TS kompilator
-  - yarn run types
+    # otestuj typy ve frontendu pres TS kompilator
+    - yarn run types
 
-  # proved testy a spocitej pokryti kodu
-  - coverage run -a manage.py test
-  - coverage run -a manage.py behave --stage=api --format=progress3
-  - coverage run -a manage.py behave --stage=ui --format=progress3
+    # proved testy a spocitej pokryti kodu
+    - coverage run -a manage.py test
+    - coverage run -a manage.py behave --stage=api --format=progress3
+    - coverage run -a manage.py behave --stage=ui --format=progress3
 after_success:
-  # posli pokryti kodu do codecov
-  - codecov --token=$CODECOV_TOKEN
+    # posli pokryti kodu do codecov
+    - codecov --token=$CODECOV_TOKEN
 
-  # pro tagged commit: zabal frontend do zipu pro GH
-  - source scripts/shell/create_frontend_zip.sh
+    # pro tagged commit: zabal frontend do zipu pro GH
+    - source scripts/shell/create_frontend_zip.sh
 
-  # smazani dat z buildu, testovani a dokumentace
-  - rm -rf geckodriver geckodriver.log coverage.xml docs frontend
+    # smazani dat z buildu, testovani a dokumentace
+    - rm -rf geckodriver geckodriver.log coverage.xml docs frontend
 notifications:
-  email:
-    recipients:
-      - info@lukasrod.cz
-    on_success: change
-    on_failure: always
-  slack:
-    secure: kNfvnpEk/TDNyqA6ueJ4cjpAtHKhoDp1sGLuhbj2KHYy4kivA1gDcWiF/Hdp9hAGlCiYVoMrY+dETyFY+zdwJtHbAolAEY0KGeb+Nwy1frU2aFSywbxC/CrnOHNCboTiOEpPivWpX5NAhypAlT0FTN5IFnYfbAkl+u0bnWIXbtxMDDxcV8PnN1IucKAvJeC6FPa7l4dPVmpe8dc0lsDPLD8713O+UG+I2d8CPP4yoYIgqdzLjd9zr05/albSXCXz+MjSfoA2QVfYRIpw0NyegMNdwChdBOTP9xds2D7P0xjLYhPVz98y2i4SyBzZcj+JXRYeA6Voi4WPAKeQHUJunA/dpEUZ/Rt2jIeNBAQxOUmRH+vmhKq+c9OwzeOfNUk7gZHxMFs3MEwPtDy62O9KmazzDDzr5hOCOqKboiGQONWt7Rp1yv4jzxlVZ6OxvzDF/COWnQLOIjVBzjSFIQH6LO5Gz/01ZQAqmtaZoWBb8xr3aebXDbrsPO6YSJZMyfXl4mRcMUGmGpEn1600jACpOKWED5NheRqIZnkSHBT/EurjFSXm7O+GztrPB14m3mBFn4o9xaQrkx35Zop0ZFf33w/UA+CeJ1jMdmArXF7RcNNcWQcZG8KbkIVj2qYUNY7sPjx+3K4B604jaAIj/Iwyoa+xQud0dR4zGZjcNzjRRPk=
+    email:
+        recipients:
+            - info@lukasrod.cz
+        on_success: change
+        on_failure: always
+    slack:
+        secure: kNfvnpEk/TDNyqA6ueJ4cjpAtHKhoDp1sGLuhbj2KHYy4kivA1gDcWiF/Hdp9hAGlCiYVoMrY+dETyFY+zdwJtHbAolAEY0KGeb+Nwy1frU2aFSywbxC/CrnOHNCboTiOEpPivWpX5NAhypAlT0FTN5IFnYfbAkl+u0bnWIXbtxMDDxcV8PnN1IucKAvJeC6FPa7l4dPVmpe8dc0lsDPLD8713O+UG+I2d8CPP4yoYIgqdzLjd9zr05/albSXCXz+MjSfoA2QVfYRIpw0NyegMNdwChdBOTP9xds2D7P0xjLYhPVz98y2i4SyBzZcj+JXRYeA6Voi4WPAKeQHUJunA/dpEUZ/Rt2jIeNBAQxOUmRH+vmhKq+c9OwzeOfNUk7gZHxMFs3MEwPtDy62O9KmazzDDzr5hOCOqKboiGQONWt7Rp1yv4jzxlVZ6OxvzDF/COWnQLOIjVBzjSFIQH6LO5Gz/01ZQAqmtaZoWBb8xr3aebXDbrsPO6YSJZMyfXl4mRcMUGmGpEn1600jACpOKWED5NheRqIZnkSHBT/EurjFSXm7O+GztrPB14m3mBFn4o9xaQrkx35Zop0ZFf33w/UA+CeJ1jMdmArXF7RcNNcWQcZG8KbkIVj2qYUNY7sPjx+3K4B604jaAIj/Iwyoa+xQud0dR4zGZjcNzjRRPk=
 deploy:
-  - provider: releases
-    api_key: $GH_API_KEY
-    file: frontend.zip
-    skip_cleanup: true
-    on:
-      tags: true
-  - provider: heroku
-    api_key: $HEROKU_API_KEY
-    app: uspesnyprvnacek-testing
-    skip_cleanup: true
-    on:
-      all_branches: true
-  - provider: heroku
-    api_key: $HEROKU_API_KEY
-    app: uspesnyprvnacek-staging
-    skip_cleanup: true
-    on:
-      tags: true
-  - provider: heroku
-    api_key: $HEROKU_API_KEY
-    app: uspesnyprvnacek
-    skip_cleanup: true
-    on:
-      tags: true
+    - provider: releases
+      api_key: $GH_API_KEY
+      file: frontend.zip
+      skip_cleanup: true
+      on:
+          tags: true
+    - provider: heroku
+      api_key: $HEROKU_API_KEY
+      app: uspesnyprvnacek-testing
+      skip_cleanup: true
+      on:
+          all_branches: true
+    - provider: heroku
+      api_key: $HEROKU_API_KEY
+      app: uspesnyprvnacek-staging
+      skip_cleanup: true
+      on:
+          tags: true
+    - provider: heroku
+      api_key: $HEROKU_API_KEY
+      app: uspesnyprvnacek
+      skip_cleanup: true
+      on:
+          tags: true
 after_deploy:
-  # pro tagged commit: po prvnim deploy smaz frontend.zip
-  - source scripts/shell/remove_frontend_zip.sh
+    # pro tagged commit: po prvnim deploy smaz frontend.zip
+    - source scripts/shell/remove_frontend_zip.sh
