@@ -69,6 +69,9 @@ if not HEROKU:
 REST_FRAMEWORK = {
     # pouziva se JWTTokenUserAuthentication, aby se neprovadel pri kazdem req DB lookup na uzivatele
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        # BasicAuthentication pro OpenAPI dokumentaci a Browsable API
+        "rest_framework.authentication.BasicAuthentication",
+        # JWTTokenUserAuthentication pro pristup k API z frontendu
         "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),

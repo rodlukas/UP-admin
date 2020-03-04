@@ -6,7 +6,6 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
-from rest_framework import authentication
 from rest_framework.schemas import get_schema_view
 
 urlpatterns = [
@@ -16,18 +15,17 @@ urlpatterns = [
     path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("admin/favicon.ico"))),
     # dynamicke OpenAPI schema
     path(
-        "open-api/",
+        "api/open-api/",
         get_schema_view(
             title="ÚPadmin API",
             description="Dokumentace REST API pro aplikaci ÚPadmin.",
-            authentication_classes=[authentication.BasicAuthentication],
             version="1.0.0",
         ),
         name="openapi-schema",
     ),
     # Swagger UI dokumentace API
     path(
-        "docs/",
+        "api/docs/",
         TemplateView.as_view(
             template_name="swagger-ui.html", extra_context={"schema_url": "openapi-schema"}
         ),
