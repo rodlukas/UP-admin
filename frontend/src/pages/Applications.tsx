@@ -74,7 +74,7 @@ class Applications extends React.Component<Props, State> {
                         <Loading />
                     ) : (
                         <div className="pageContent">
-                            {applications.length && (
+                            {applications.length > 0 && (
                                 <UncontrolledTooltipWrapper target="Applications_DateAdded">
                                     Datum přidání
                                 </UncontrolledTooltipWrapper>
