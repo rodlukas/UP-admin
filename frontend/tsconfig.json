@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        // pro funkcni import() (a zaroven es6 import/export)
         "module": "ESNext",
         // JSX neprevadej, to ma na starost Babel
         "jsx": "preserve",
@@ -9,9 +10,6 @@
         "noEmit": true,
         // aktivace vsech striktnich pravidel pro kontrolu
         "strict": true,
-
-        //"checkJs": true,
-        //"allowJs": true,
 
         // Linter Checks
         "noImplicitReturns": true,
