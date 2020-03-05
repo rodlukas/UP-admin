@@ -340,7 +340,7 @@ Aplikace obsahuje rozsáhlé API a UI testy – vizte
 
 ## Screenshoty z aplikace
 
-> **Poznámka:** obdelníky (převážně modré) skrývají jména klientů.
+> **Poznámka:** modré/černé obdelníky skrývají citlivé údaje.
 
 ### Diář
 
