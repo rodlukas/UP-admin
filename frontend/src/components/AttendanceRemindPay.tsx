@@ -13,14 +13,13 @@ const AttendanceRemindPay: React.FC<Props> = ({ attendance }) => {
     if (!attendance.remind_pay) return null
     return (
         <>
-            <span id={"RemindPay_" + attendance.id}>
-                <FontAwesomeIcon
-                    icon={faCommentAltDollar}
-                    size="lg"
-                    className="text-secondary"
-                    transform="up-4"
-                />
-            </span>
+            <FontAwesomeIcon
+                id={"RemindPay_" + attendance.id}
+                icon={faCommentAltDollar}
+                size="lg"
+                className="text-secondary"
+                transform="up-4"
+            />
             <UncontrolledTooltipWrapper target={"RemindPay_" + attendance.id}>
                 Příště platit
             </UncontrolledTooltipWrapper>

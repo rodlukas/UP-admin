@@ -126,13 +126,12 @@ export default class Bank extends React.PureComponent<{}, State> {
                                     </span>
                                     ) pro zaplacení nájmu!
                                 </UncontrolledTooltipWrapper>
-                                <span id="Bank_RentWarning">
-                                    <FontAwesomeIcon
-                                        icon={faExclamationCircle}
-                                        className="text-danger"
-                                        size="lg"
-                                    />
-                                </span>
+                                <FontAwesomeIcon
+                                    id="Bank_RentWarning"
+                                    icon={faExclamationCircle}
+                                    className="text-danger"
+                                    size="lg"
+                                />
                             </>
                         )}
                     </h4>

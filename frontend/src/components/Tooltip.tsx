@@ -14,9 +14,12 @@ const Tooltip: React.FC<Props> = ({ postfix, text }) => (
         <UncontrolledTooltipWrapper placement="bottom" target={"Tooltip_" + postfix}>
             {text}
         </UncontrolledTooltipWrapper>
-        <span id={"Tooltip_" + postfix}>
-            <FontAwesomeIcon icon={faInfoCircle} className="text-warning" size="lg" />
-        </span>
+        <FontAwesomeIcon
+            id={"Tooltip_" + postfix}
+            icon={faInfoCircle}
+            className="text-warning"
+            size="lg"
+        />
     </>
 )
 

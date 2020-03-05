@@ -84,17 +84,15 @@ const PrepaidCounters: React.FC<Props> = props => {
                                                 Tento klient není aktivní (přestože skupina aktivní
                                                 je), není tedy možné přidávat této skupině lekce
                                             </UncontrolledTooltipWrapper>
-                                            <span
+                                            <FontAwesomeIcon
                                                 id={
                                                     "PrepaidCounters_InactiveClientAlert_" +
                                                     membership.client.id
-                                                }>
-                                                <FontAwesomeIcon
-                                                    icon={faExclamationTriangle}
-                                                    className={"text-danger"}
-                                                    size="1x"
-                                                />
-                                            </span>
+                                                }
+                                                icon={faExclamationTriangle}
+                                                className={"text-danger"}
+                                                size="1x"
+                                            />
                                         </>
                                     )}
                                 </h5>

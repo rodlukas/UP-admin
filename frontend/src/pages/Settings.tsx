@@ -311,13 +311,12 @@ class Settings extends React.Component<Props, State> {
                                     rel="noopener noreferrer"
                                     href="https://github.com/rodlukas/UP-admin"
                                     className="ml-1">
-                                    <span id="Settings_GHRepo">
-                                        <FontAwesomeIcon
-                                            icon={faGithub}
-                                            size="lg"
-                                            data-qa="lecture_attendance_paid"
-                                        />
-                                    </span>
+                                    <FontAwesomeIcon
+                                        id="Settings_GHRepo"
+                                        icon={faGithub}
+                                        size="lg"
+                                        data-qa="lecture_attendance_paid"
+                                    />
                                     <UncontrolledTooltipWrapper target="Settings_GHRepo">
                                         GitHub repozitář ÚPadmin
                                     </UncontrolledTooltipWrapper>

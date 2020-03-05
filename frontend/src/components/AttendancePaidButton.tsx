@@ -24,15 +24,14 @@ const AttendancePaidButton: React.FC<Props> = props => {
     const title = "Označit lekci jako " + (props.paid ? "NE" : "") + "ZAPLACENOU"
     return (
         <>
-            <span id={"AttendancePaidButton_" + props.attendanceId}>
-                <FontAwesomeIcon
-                    icon={faUsdCircle}
-                    size="2x"
-                    className={className}
-                    onClick={onClick}
-                    data-qa="lecture_attendance_paid"
-                />
-            </span>
+            <FontAwesomeIcon
+                id={"AttendancePaidButton_" + props.attendanceId}
+                icon={faUsdCircle}
+                size="2x"
+                className={className}
+                onClick={onClick}
+                data-qa="lecture_attendance_paid"
+            />
             <UncontrolledTooltipWrapper
                 placement="right"
                 target={"AttendancePaidButton_" + props.attendanceId}>

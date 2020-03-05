@@ -111,17 +111,15 @@ class Groups extends React.Component<Props, State> {
                                                             je skupina aktivní), není tedy možné
                                                             přidávat lekce
                                                         </UncontrolledTooltipWrapper>
-                                                        <span
+                                                        <FontAwesomeIcon
                                                             id={
                                                                 "Group_ActiveGroupWithInactiveClientAlert_" +
                                                                 group.id
-                                                            }>
-                                                            <FontAwesomeIcon
-                                                                icon={faExclamationTriangle}
-                                                                className={"text-danger"}
-                                                                size="1x"
-                                                            />
-                                                        </span>
+                                                            }
+                                                            icon={faExclamationTriangle}
+                                                            className={"text-danger"}
+                                                            size="1x"
+                                                        />
                                                     </>
                                                 )}
                                         </td>
