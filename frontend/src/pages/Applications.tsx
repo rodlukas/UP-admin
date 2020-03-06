@@ -123,7 +123,7 @@ class Applications extends React.Component<Props, State> {
                                                             />
                                                         </h5>
                                                     </Col>
-                                                    <Col md="5">
+                                                    <Col md="5" className="mt-md-0 mt-1">
                                                         <Badge
                                                             color="light"
                                                             id="Applications_DateAdded"
