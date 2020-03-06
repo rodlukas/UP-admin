@@ -24,7 +24,7 @@ export interface CourseType extends Model {
     name: string
     color: string
     duration: number
-    visible: true
+    visible: boolean
 }
 
 export interface MembershipType extends Model {
@@ -65,13 +65,13 @@ export interface AttendanceType extends Model {
 export interface GroupType extends Model {
     name: string
     memberships: Array<MembershipType>
-    active: true
+    active: boolean
     course: CourseType
 }
 
 export interface AttendanceStateType extends Model {
     name: string
-    visible: true
+    visible: boolean
     default?: boolean
     excused?: boolean
 }
