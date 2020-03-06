@@ -1,6 +1,7 @@
 import { AxiosError, AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios"
 import * as React from "react"
 import { toast } from "react-toastify"
+import Token from "../auth/Token"
 import Notification from "../components/Notification"
 import { NOTIFY_TEXT } from "../global/constants"
 import history from "../global/history"
@@ -129,8 +130,16 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
         if (!ignoreErrors) {
             notify(<ErrorMessage error={error} />, toast.TYPE.ERROR)
             if (error.response) {
-                if (error.response.status === 401) history.push(APP_URLS.prihlasit.url)
-                else if (error.response.status === 404) history.push(APP_URLS.nenalezeno.url)
+                if (error.response.status === 401) {
+                    // !! Je potreba odstranit token - mohla totiz nastat situace, kdy server oznacil token jako
+                    // nevalidni, ale frontend jej povazuje za "validni" (ale jeho validitu samozrejme v realu
+                    // overit nemuze, resi jen expiraci) - pak by doslo k presmerovani na prihlaseni, to ale povazuje
+                    // uzivatele za stale prihlaseneho (token neexpiroval, povazuje jej za "validni") a presmerovava
+                    // zpatky na puvodni stranku, tedy dojde k zacykleni. Odstranenim tokenu neschopnost frontendu
+                    // korektne validovat token vyresime.
+                    Token.remove()
+                    history.push(APP_URLS.prihlasit.url)
+                } else if (error.response.status === 404) history.push(APP_URLS.nenalezeno.url)
             }
             return Promise.reject(error.response ?? error.message)
         } else {
