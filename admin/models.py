@@ -22,7 +22,7 @@ class AttendanceState(models.Model):
         default=False, help_text="Označuje stav (právě jeden), který znamená omluven"
     )  # metoda save() osetruje, aby bylo jen jedno True v DB
     name = models.TextField(help_text="Název stavu účasti (unikátní)")
-    visible = models.BooleanField(help_text="Indikátor viditelnosti stavu")
+    visible = models.BooleanField(default=True, help_text="Indikátor viditelnosti stavu")
 
     class Meta:
         ordering = ["name"]
@@ -111,7 +111,7 @@ class Course(models.Model):
     )  # regex viz https://stackoverflow.com/a/1636354
     duration = models.PositiveIntegerField(help_text="Trvání kurzu (min.)")
     name = models.TextField(help_text="Název kurzu (unikátní)")
-    visible = models.BooleanField(help_text="Indikátor viditelnosti kurzu")
+    visible = models.BooleanField(default=True, help_text="Indikátor viditelnosti kurzu")
 
     class Meta:
         ordering = ["name"]

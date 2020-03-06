@@ -5,7 +5,7 @@ uveden v dřívější [bakalářské práci](https://github.com/rodlukas/bachel
 v kapitole `6. Návrh` (viz také [repozitář práce](https://github.com/rodlukas/bachelors-thesis)).
 
 > **Info:** modely jsou vytvořeny v programu
-> [Enterprise Architect 13.5](https://sparxsystems.com/products/ea/13.5/index.html), součástí tohoto
+> [Enterprise Architect 14](https://sparxsystems.com/products/ea/14/index.html), součástí tohoto
 > repozitáře je příslušný [soubor s modely](EA-models.EAP).
 
 ## Logický datový model
