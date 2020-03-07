@@ -111,7 +111,7 @@ Pro **eliminaci mrtvého kódu** se také používá
 
 #### Frontend
 
-Responzivní JS _([Typescript](https://www.typescriptlang.org/))_ webová aplikace typu SPA
+Responzivní JS _([TypeScript](https://www.typescriptlang.org/))_ webová aplikace typu SPA
 ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto
 technologiích:
 
