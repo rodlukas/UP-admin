@@ -41,7 +41,7 @@ export default class Diary extends React.Component<Props, State> {
     getRequiredMonday = (): Date => getMonday(Diary.parseDateFromParams(this.props.match.params))
     getWeek = (): Array<string> => getWeekSerializedFromMonday(this.getRequiredMonday())
 
-    state = {
+    state: State = {
         shouldRefresh: false,
         week: this.getWeek()
     }

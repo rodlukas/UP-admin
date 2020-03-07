@@ -33,7 +33,7 @@ const AuthContext = React.createContext<Context>({
 type Props = {}
 
 class AuthProvider extends React.Component<Props, State> {
-    state = {
+    state: State = {
         isLoading: false,
         isAuth: false
     }

@@ -15,7 +15,7 @@ type State = {
 
 /** Stránka s hlavním přehledem - dnešní lekce a banka. */
 export default class Dashboard extends React.Component<Props, State> {
-    state = {
+    state: State = {
         shouldRefresh: false
     }
 

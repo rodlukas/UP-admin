@@ -27,7 +27,7 @@ const CoursesVisibleContext = React.createContext<Context>({
 })
 
 export class CoursesVisibleProvider extends React.Component<{}, State> {
-    state = {
+    state: State = {
         loadRequested: false,
         isLoaded: false,
         courses: []
