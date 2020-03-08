@@ -25,6 +25,7 @@
     <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square">
     <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-staging?label=deploy%20%28staging%29&style=flat-square">
     <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square">
+    <img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-demo?label=deploy%20%28demo%29&style=flat-square">
 </p>
 
 <p align="center">
@@ -40,6 +41,7 @@
 
 ## Obsah
 
+-   [Demo](#demo)
 -   [Základní informace o aplikaci](#základní-informace-o-aplikaci)
     -   [Klíčové funkce aplikace](#klíčové-funkce-aplikace)
     -   [Použité technologie](#použité-technologie)
@@ -47,12 +49,21 @@
         -   [Frontend](#frontend)
     -   [Informace o nasazených aplikacích](#informace-o-nasazených-aplikacích)
 -   [Struktura repozitáře](#struktura-repozitáře)
--   [Jak spustit aplikaci](#jak-spustit-aplikaci)
+-   [Spuštění aplikace na lokálním prostředí](#spuštění-aplikace-na-lokálním-prostředí)
     -   [Instalace](#instalace)
     -   [Spuštění](#spuštění)
     -   [Testování](#testování)
 -   [Screenshoty z aplikace](#screenshoty-z-aplikace)
 -   [Licence](#licence)
+
+## Demo
+
+[**Nasazená demo verze aplikace na Heroku**](https://uspesnyprvnacek-demo.herokuapp.com/) – údaje
+pro přihlášení: už. jméno `test` / heslo `test`.
+
+> Aplikace po 30 minutách neaktivity usíná a chvíli trvá, než se probudí. Databáze v demo verzi je
+> každou noc (2:00 UTC) **automaticky smazána** a naplněna
+> [vzorovými daty](scripts/sql/sample_data.pgsql).
 
 ## Základní informace o aplikaci
 
@@ -205,7 +216,7 @@ debugování a kosmeticky se liší také barvou menu.
 └── up ........... celý Django projekt
 ```
 
-## Jak spustit aplikaci
+## Spuštění aplikace na lokálním prostředí
 
 Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je klasický vývojový – ten
 obsahuje pokročilé debugovací nástroje, spouští se Django vývojový server a také webpack-dev-server
