@@ -19,7 +19,7 @@ ALLOWED_HOSTS = [
     "uspesnyprvnacek-demo.herokuapp.com",
 ]
 
-sentry_sdk.init(environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_VERSION")
+sentry_sdk.init(environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_COMMIT")
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
