@@ -15,7 +15,7 @@ env = environ.Env(
     # nastaveni typu a pripadne vychozi hodnoty
     DATABASE_URL=str,  # url pouzivane DB (napr. postgresql://postgres:postgres@localhost:5432/up)
     SECRET_KEY=str,  # tajny klic pro Django
-    FIO_API_KEY=str,  # token pro pristup do Fia
+    FIO_API_KEY=(str, ""),  # token pro pristup do Fia
     DEBUG=(bool, False),  # aktivace debug prostredi
     HEROKU=(bool, False),  # priznak nasazeni aplikace na Heroku
     ENVIRONMENT=str,  # nazev aktualniho prostredi, kde je aplikace spustena (pro Sentry)
