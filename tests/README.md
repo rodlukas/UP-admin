@@ -12,7 +12,8 @@ Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/se
 jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa` (ve
 výjimečných případech toto nelze a používá se přímo `id` elementu – např. komponenty s
 [React Select](https://github.com/JedWatson/react-select) používají React props `inputId` a
-`classNamePrefix`).
+`classNamePrefix`). Testuje se v prohlížeči [Mozilla Firefox](https://www.firefox.cz/) s využitím
+[geckodriver](https://github.com/mozilla/geckodriver).
 
 ## Struktura adresářů
 
@@ -37,6 +38,12 @@ pro API i UI testy. **Soubory [`api_environment.py`](api_environment.py) a
 (např. nastavení prohlížeče, klienta...).
 
 ## Spouštění testů
+
+Pro fungování UI testů je třeba mít nainstalovaný
+[geckodriver](https://github.com/mozilla/geckodriver) a prohlížeč
+[Mozilla Firefox](https://www.firefox.cz/). Způsob instalace
+[geckodriver]([Mozilla Firefox](https://www.firefox.cz/)) lze najít v
+[tomto skriptu](/scripts/shell/install_geckodriver.sh).
 
 K dispozici jsou **dvě různé sady testů (tzv. _stage_): testy UI a testy API**. Pro spuštění
 konkrétní sady tedy stačí tyto příkazy:
