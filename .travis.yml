@@ -90,6 +90,7 @@ deploy:
       skip_cleanup: true
       on:
           all_branches: true
+          condition: $TRAVIS_BRANCH != demo
     - provider: heroku
       api_key: $HEROKU_API_KEY
       app: uspesnyprvnacek-staging
