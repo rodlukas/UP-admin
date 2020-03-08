@@ -22,7 +22,7 @@ cache:
 
 before_install:
     # instalace postgresql 12
-    - source scripts/shell/postgresql_install.sh
+    - source scripts/shell/travis/postgresql_install.sh
     # pridani ceskeho balicku pro funkcni CZ v databazi
     - source scripts/shell/postgresql_cs.sh
 install:
@@ -30,11 +30,11 @@ install:
     - source scripts/shell/install_geckodriver.sh
 
     # spust skripty pro upravu souboru
-    - source scripts/shell/create_npmrc.sh
-    - source scripts/shell/string_substitution.sh
+    - source scripts/shell/travis/create_npmrc.sh
+    - source scripts/shell/travis/string_substitution.sh
 
     # nainstaluj JS zavislosti
-    - source scripts/shell/js_install.sh
+    - source scripts/shell/travis/js_install.sh
 
     # nainstaluj Python zavislosti
     - pip install pipenv
@@ -45,7 +45,7 @@ install:
       psql --version && pg_config --version && ls -la
 before_script:
     # priprav DB
-    - source scripts/shell/postgresql_prepare.sh
+    - source scripts/shell/travis/postgresql_prepare.sh
 
     # vytvor dummy .env soubor, at je spokojeny django-environ a nehulaka
     - touch .env
@@ -65,7 +65,7 @@ after_success:
     - codecov --token=$CODECOV_TOKEN
 
     # pro tagged commit: zabal frontend do zipu pro GH
-    - source scripts/shell/create_frontend_zip.sh
+    - source scripts/shell/travis/create_frontend_zip.sh
 
     # smazani dat z buildu, testovani a dokumentace
     - rm -rf geckodriver geckodriver.log coverage.xml docs frontend
@@ -111,4 +111,4 @@ deploy:
           branch: demo
 after_deploy:
     # pro tagged commit: po prvnim deploy smaz frontend.zip
-    - source scripts/shell/remove_frontend_zip.sh
+    - source scripts/shell/travis/remove_frontend_zip.sh
