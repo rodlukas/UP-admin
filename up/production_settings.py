@@ -16,6 +16,7 @@ ALLOWED_HOSTS = [
     "uspesnyprvnacek.herokuapp.com",
     "uspesnyprvnacek-staging.herokuapp.com",
     "uspesnyprvnacek-testing.herokuapp.com",
+    "uspesnyprvnacek-demo.herokuapp.com",
 ]
 
 sentry_sdk.init(environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_VERSION")
