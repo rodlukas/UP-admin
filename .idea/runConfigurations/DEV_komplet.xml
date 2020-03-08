@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DEV komplet" type="Multirun" factoryName="Multirun" activateToolWindowBeforeRun="false" separateTabs="true" startOneByOne="true" markFailedProcess="true" hideSuccessProcess="false" delayTime="0">
+    <runConfiguration name="start" type="npm" />
+    <runConfiguration name="django DEV" type="Django server" />
+    <method v="2" />
+  </configuration>
+</component>

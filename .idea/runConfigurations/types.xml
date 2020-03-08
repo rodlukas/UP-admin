@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="start" type="js.build_tools.npm" activateToolWindowBeforeRun="false" nameIsGenerated="true">
+  <configuration default="false" name="types" type="js.build_tools.npm" nameIsGenerated="true">
     <package-json value="$PROJECT_DIR$/frontend/package.json" />
     <command value="run" />
     <scripts>
-      <script value="start" />
+      <script value="types" />
     </scripts>
     <node-interpreter value="project" />
     <envs />
