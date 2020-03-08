@@ -42,7 +42,7 @@ pro API i UI testy. **Soubory [`api_environment.py`](api_environment.py) a
 Pro fungování UI testů je třeba mít nainstalovaný
 [geckodriver](https://github.com/mozilla/geckodriver) a prohlížeč
 [Mozilla Firefox](https://www.firefox.cz/). Způsob instalace
-[geckodriver]([Mozilla Firefox](https://www.firefox.cz/)) lze najít v
+[geckodriver](https://github.com/mozilla/geckodriver) lze najít v
 [tomto skriptu](/scripts/shell/install_geckodriver.sh).
 
 K dispozici jsou **dvě různé sady testů (tzv. _stage_): testy UI a testy API**. Pro spuštění
