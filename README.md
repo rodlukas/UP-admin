@@ -250,10 +250,7 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
 
     ```bash
     $ git clone "https://github.com/rodlukas/UP-admin.git" && cd UP-admin
-
-    $ git fetch --tags
-    $ latestRelease=$(git describe --tags `git rev-list --tags --max-count=1`)
-    $ git checkout $latestRelease
+    $ git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
     ```
 
 2.  Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je
@@ -270,15 +267,11 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
     $ mv .env.template .env
     ```
 
-4.  Spustíme **_psql CLI_**, kde pomocí dvou příkazů **vytvoříme databázi a uživatele** pro přístup
-    do databáze, na závěr ukončíme CLI:
+4.  Pomocí **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **vytvoříme
+    databázi a uživatele** pro přístup do databáze:
 
     ```
-    $ sudo -u postgres psql
-
-    postgres=# CREATE USER up WITH ENCRYPTED PASSWORD 'up';
-    postgres=# CREATE DATABASE up WITH OWNER up;
-    postgres=# exit
+    $ sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
     ```
 
 5.  Nahrajeme **český balíček pro databázi** (kvůli českému řazení podle abecedy):
