@@ -13,6 +13,11 @@ export function isEnvTesting(): boolean {
     return getAppUrl() === "uspesnyprvnacek-testing"
 }
 
+/** Zjistí, jestli aktuální aplikace běží na demo prostředí. */
+export function isEnvDemo(): boolean {
+    return getAppUrl() === "uspesnyprvnacek-demo"
+}
+
 /** Zjistí, jestli aktuální aplikace běží na production prostředí. */
 export function isEnvProduction(): boolean {
     return getAppUrl() === "uspesnyprvnacek"
@@ -24,6 +29,8 @@ export function getEnvName(): string {
         ? "staging"
         : isEnvTesting()
         ? "testing"
+        : isEnvDemo()
+        ? "demo"
         : process.env.NODE_ENV
         ? process.env.NODE_ENV
         : "development"
@@ -36,10 +43,18 @@ export function isEnvDevelopment(): boolean {
 
 /** Zjistí krátký název prostředí, kde běží aktuální aplikace. */
 export function getEnvNameShort(): string {
-    return isEnvStaging() ? "STAGE" : isEnvTesting() ? "TEST" : isEnvProduction() ? "PROD" : "DEV"
+    return isEnvStaging()
+        ? "STAGE"
+        : isEnvTesting()
+        ? "TEST"
+        : isEnvDemo()
+        ? "DEMO"
+        : isEnvProduction()
+        ? "PROD"
+        : "DEV"
 }
 
 /** Zjistí, jestli je aktuální aplikace nasazená. */
 export function isHosted(): boolean {
-    return isEnvStaging() || isEnvTesting() || isEnvProduction()
+    return isEnvStaging() || isEnvTesting() || isEnvProduction() || isEnvDemo()
 }
