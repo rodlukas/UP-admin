@@ -152,7 +152,7 @@ včetně [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 ### Informace o nasazených aplikacích
 
-Aplikace aktuálně běží na **4 prostředích** (3x PaaS [Heroku](https://www.heroku.com/)), které se
+Aplikace aktuálně běží na **5 prostředích** (4x PaaS [Heroku](https://www.heroku.com/)), které se
 liší příslušnou nasazenou verzí aplikace, konkrétní instancí databáze, umožňují různé úrovně
 debugování a kosmeticky se liší také barvou menu.
 
@@ -162,7 +162,9 @@ debugování a kosmeticky se liší také barvou menu.
 > -   **testing** – umožňuje zapnout debugování, deploy každého commitu _(modré menu)_,
 > -   **staging** – stejná verze aplikace jako na produkci, deploy při release _(zelené menu)_,
 > -   **produkce** – produkční verze používaná zákazníkem, deploy při release (jako staging) _(bílé
->     menu)_.
+>     menu)_,
+> -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo verze aplikace, manuální deploy
+>     z větve `demo`.
 
 -   Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz
     [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
