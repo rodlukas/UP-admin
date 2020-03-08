@@ -102,6 +102,12 @@ deploy:
       skip_cleanup: true
       on:
           tags: true
+    - provider: heroku
+      api_key: $HEROKU_API_KEY
+      app: uspesnyprvnacek-demo
+      skip_cleanup: true
+      on:
+          branch: demo
 after_deploy:
     # pro tagged commit: po prvnim deploy smaz frontend.zip
     - source scripts/shell/remove_frontend_zip.sh
