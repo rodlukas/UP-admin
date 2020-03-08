@@ -346,11 +346,15 @@ Aplikace obsahuje rozsáhlé API a UI testy – vizte
 
 ## Screenshoty z aplikace
 
-> **Poznámka:** modré/černé obdelníky skrývají citlivé údaje.
+> **Poznámka:** údaje v aplikaci jsou smyšlené.
 
 ### Diář
 
 [![screenshot z diáře](docs/screenshots/diary.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
+
+### Přehled (hlavní stránka)
+
+[![screenshot z přehledu](docs/screenshots/dashboard.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png)
 
 ### Karta klienta
 
@@ -359,6 +363,10 @@ Aplikace obsahuje rozsáhlé API a UI testy – vizte
 ### Zájemci o kurzy
 
 [![screenshot ze zájemců o kurzy](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png)
+
+### Nastavení
+
+[![screenshot z nastavení](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
 
 ## Licence
 
