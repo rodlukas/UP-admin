@@ -68,7 +68,7 @@ after_success:
     - source scripts/shell/travis/create_frontend_zip.sh
 
     # smazani dat z buildu, testovani a dokumentace
-    - rm -rf geckodriver geckodriver.log coverage.xml docs frontend
+    - rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests
 notifications:
     email:
         recipients:
