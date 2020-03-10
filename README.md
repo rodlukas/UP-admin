@@ -50,6 +50,7 @@
     -   [Informace o nasazených aplikacích](#informace-o-nasazených-aplikacích)
 -   [Struktura repozitáře](#struktura-repozitáře)
 -   [Spuštění aplikace na lokálním prostředí](#spuštění-aplikace-na-lokálním-prostředí)
+    -   [Požadavky](#požadavky)
     -   [Instalace](#instalace)
     -   [Spuštění](#spuštění)
     -   [Testování](#testování)
