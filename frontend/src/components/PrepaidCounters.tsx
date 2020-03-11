@@ -1,5 +1,3 @@
-import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import {
     Col,
@@ -13,10 +11,11 @@ import {
     Row
 } from "reactstrap"
 import MembershipService from "../api/services/membership"
+import { TEXTS } from "../global/constants"
 import { MembershipType } from "../types/models"
 import ClientName from "./ClientName"
 import "./PrepaidCounters.css"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
+import Tooltip from "./Tooltip"
 
 type Props = {
     memberships: Array<MembershipType>
@@ -75,25 +74,14 @@ const PrepaidCounters: React.FC<Props> = props => {
                                 <h5>
                                     <ClientName client={membership.client} link />{" "}
                                     {props.isGroupActive && !membership.client.active && (
-                                        <>
-                                            <UncontrolledTooltipWrapper
-                                                target={
-                                                    "PrepaidCounters_InactiveClientAlert_" +
-                                                    membership.client.id
-                                                }>
-                                                Tento klient není aktivní (přestože skupina aktivní
-                                                je), není tedy možné přidávat této skupině lekce
-                                            </UncontrolledTooltipWrapper>
-                                            <FontAwesomeIcon
-                                                id={
-                                                    "PrepaidCounters_InactiveClientAlert_" +
-                                                    membership.client.id
-                                                }
-                                                icon={faExclamationTriangle}
-                                                className={"text-danger"}
-                                                size="1x"
-                                            />
-                                        </>
+                                        <Tooltip
+                                            postfix={
+                                                "PrepaidCounters_InactiveClientAlert_" +
+                                                membership.client.id
+                                            }
+                                            text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
+                                            size="1x"
+                                        />
                                     )}
                                 </h5>
                                 <InputGroup>

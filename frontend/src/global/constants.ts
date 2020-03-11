@@ -18,7 +18,15 @@ export const JWT_HEADER_PREFIX = "Bearer "
 
 /** Texty používané napříč aplikací. */
 export const TEXTS = Object.freeze({
-    NO_RESULTS: "Nic nenalezeno"
+    NO_RESULTS: "Nic nenalezeno",
+    WARNING_INACTIVE_CLIENT_GROUP:
+        "Klient není aktivní (přestože skupina aktivní je) – přidáním nové lekce se změní na aktivního.",
+    WARNING_INACTIVE_CLIENT_INFO: "Přidáním nové lekce se klient stane opět aktivním.",
+    WARNING_INACTIVE_CLIENT:
+        "Klient není aktivní – přidáním nové lekce se klient stane opět aktivním.",
+    WARNING_INACTIVE_GROUP: "Skupina není aktivní – nelze jí tedy přidávat nové lekce.",
+    WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS:
+        "Ve skupině jsou neaktivní klienti – přidáním nové lekce se změní na aktivní."
 })
 
 /** Výchozí délka trvání lekce jednotlivce. */

@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { ChangeEvent, FormEvent } from "react"
 import {
+    Alert,
     Col,
     CustomInput,
     Form,
@@ -39,7 +40,8 @@ import {
 } from "../contexts/CoursesVisibleContext"
 import {
     DEFAULT_LECTURE_DURATION_GROUP,
-    DEFAULT_LECTURE_DURATION_SINGLE
+    DEFAULT_LECTURE_DURATION_SINGLE,
+    TEXTS
 } from "../global/constants"
 import { prettyDateWithLongDayYear, toISODate, toISOTime } from "../global/funcDateTime"
 import { alertRequired, DefaultValuesForLecture } from "../global/utils"
@@ -578,11 +580,27 @@ class FormLectures extends React.Component<Props, State> {
                             <hr />
                             {this.members.map(member => (
                                 <div key={member.id} data-qa="form_lecture_attendance">
-                                    <h5>
-                                        {!this.isClient(this.props.object) && (
-                                            <ClientName client={member} link />
+                                    {!this.isClient(this.props.object) && (
+                                        <h5>
+                                            <ClientName client={member} link />{" "}
+                                            {!member.active && (
+                                                <Tooltip
+                                                    postfix={
+                                                        "FormLectures_InactiveClientAlert_" +
+                                                        member.id.toString()
+                                                    }
+                                                    text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
+                                                    size="1x"
+                                                />
+                                            )}
+                                        </h5>
+                                    )}
+                                    {this.isClient(this.props.object) &&
+                                        !this.props.object.active && (
+                                            <Alert color="warning">
+                                                {TEXTS.WARNING_INACTIVE_CLIENT}
+                                            </Alert>
                                         )}
-                                    </h5>
                                     <FormGroup row className="align-items-center">
                                         <Col sm={4}>
                                             <InputGroup>

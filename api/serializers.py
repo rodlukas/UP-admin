@@ -394,6 +394,10 @@ class LectureSerializer(serializers.ModelSerializer):
         # vytvoreni jednotlivych ucasti
         for attendance_data in attendances_data:
             client = attendance_data.pop("client")
+            # pokud klient neni aktivni, nastav ho jako aktivniho
+            if not client.active:
+                client.active = True
+                client.save()
             # pokud se jedna o skupinu, proved korekce poctu predplacenych lekci
             if group is not None:
                 # najdi clenstvi nalezici klientovi v teto skupine
@@ -454,15 +458,6 @@ class LectureSerializer(serializers.ModelSerializer):
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         LectureHelpers.cancel_lecture_if_nobody_arrives(instance)
         return instance
-
-    def validate_attendances(self, attendances: dict) -> dict:
-        """
-        Ověří, že všichni klienti učastnící se lekce jsou aktivní (jen když lekci vytváříme).
-        """
-        if not self.instance:
-            for attendance in attendances:
-                BaseValidators.validate_client_is_active(attendance["client"])
-        return attendances
 
     @staticmethod
     def validate_group_id(group: Group) -> Group:

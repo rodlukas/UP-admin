@@ -20,6 +20,7 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import Tooltip from "../components/Tooltip"
+import { TEXTS } from "../global/constants"
 import { capitalizeString, prettyPhone } from "../global/utils"
 import { ModalClientsData } from "../types/components"
 import { ClientPostApiDummy, ClientType } from "../types/models"
@@ -220,7 +221,7 @@ export default class FormClients extends React.Component<Props, State> {
                             {!active && (
                                 <Tooltip
                                     postfix="active"
-                                    text="Neaktivním klientům nelze vytvořit lekci (ani skupinovou)."
+                                    text={TEXTS.WARNING_INACTIVE_CLIENT_INFO}
                                 />
                             )}
                         </Col>

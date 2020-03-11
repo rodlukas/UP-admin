@@ -1,5 +1,3 @@
-import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { Container, Table } from "reactstrap"
 import GroupService from "../api/services/group"
@@ -9,13 +7,14 @@ import CourseName from "../components/CourseName"
 import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
-import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
+import Tooltip from "../components/Tooltip"
 import {
     CoursesVisibleContextProps,
     WithCoursesVisibleContext
 } from "../contexts/CoursesVisibleContext"
 import { GroupsActiveContextProps, WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
+import { TEXTS } from "../global/constants"
 import { areAllMembersActive } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
@@ -100,27 +99,17 @@ class Groups extends React.Component<Props, State> {
                                             <GroupName group={group} link noWrap />{" "}
                                             {group.active &&
                                                 !areAllMembersActive(group.memberships) && (
-                                                    <>
-                                                        <UncontrolledTooltipWrapper
-                                                            placement="right"
-                                                            target={
-                                                                "Group_ActiveGroupWithInactiveClientAlert_" +
-                                                                group.id
-                                                            }>
-                                                            Ve skupině je neaktivní klient (přestože
-                                                            je skupina aktivní), není tedy možné
-                                                            přidávat lekce
-                                                        </UncontrolledTooltipWrapper>
-                                                        <FontAwesomeIcon
-                                                            id={
-                                                                "Group_ActiveGroupWithInactiveClientAlert_" +
-                                                                group.id
-                                                            }
-                                                            icon={faExclamationTriangle}
-                                                            className={"text-danger"}
-                                                            size="1x"
-                                                        />
-                                                    </>
+                                                    <Tooltip
+                                                        postfix={
+                                                            "Group_ActiveGroupWithInactiveClientAlert_" +
+                                                            group.id
+                                                        }
+                                                        placement="right"
+                                                        size="1x"
+                                                        text={
+                                                            TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
+                                                        }
+                                                    />
                                                 )}
                                         </td>
                                         <td>

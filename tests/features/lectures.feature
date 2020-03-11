@@ -11,11 +11,13 @@ Feature: Operations with lectures
     Then the lecture is added
 
     Examples: Lectures
-      | group     | date       | time  | canceled | duration | client1      | attendancestate1 | paid1 | note1 | client2         | attendancestate2 | paid2 | note2 |
-      | Slabika 4 | 2018-05-07 | 15:00 | False    | 40       | Rodová Petra | abcd             | False | test  | Jirušková Aneta | OK               | True  | test  |
-      | Slabika 4 | 2018-05-07 | 16:00 | False    | 50       | Rodová Petra | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
-      | Slabika 4 | 2018-05-07 | 17:00 | False    | 10       | Rodová Petra | omluven          | False | test  | Jirušková Aneta | OK               | False | test  |
-      | Slabika 4 | 2018-05-07 | 17:10 | True     | 10       | Rodová Petra | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
+      | group     | date       | time  | canceled | duration | client1        | attendancestate1 | paid1 | note1 | client2         | attendancestate2 | paid2 | note2 |
+      | Slabika 4 | 2018-05-07 | 15:00 | False    | 40       | Rodová Petra   | abcd             | False | test  | Jirušková Aneta | OK               | True  | test  |
+      | Slabika 4 | 2018-05-07 | 16:00 | False    | 50       | Rodová Petra   | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
+      | Slabika 4 | 2018-05-07 | 17:00 | False    | 10       | Rodová Petra   | omluven          | False | test  | Jirušková Aneta | OK               | False | test  |
+      | Slabika 4 | 2018-05-07 | 17:10 | True     | 10       | Rodová Petra   | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
+      # neaktivni klient
+      | Slabika 2 | 2018-05-09 | 20:00 | False    | 10       | Uhlíř Jaroslav | OK               | False | test  | Neaktivní Pavel | OK               | False | test  |
 
 
   @add @lectures @fast.row<row.id>
@@ -24,10 +26,12 @@ Feature: Operations with lectures
     Then the lecture is added
 
     Examples: Lectures
-      | client    | date       | time  | canceled | course       | attendancestate | paid  | note | duration |
-      | Rod Lukáš | 2018-05-07 | 15:00 | False    | Kurz Slabika | OK              | True  |      | 50       |
-      | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | abcd            | False | test | 40       |
-      | Rod Lukáš | 2018-05-07 | 17:00 | True     | Kurz Slabika | OK              | False | test | 10       |
+      | client          | date       | time  | canceled | course       | attendancestate | paid  | note | duration |
+      | Rod Lukáš       | 2018-05-07 | 15:00 | False    | Kurz Slabika | OK              | True  |      | 50       |
+      | Rod Lukáš       | 2018-05-07 | 16:00 | False    | Kurz Slabika | abcd            | False | test | 40       |
+      | Rod Lukáš       | 2018-05-07 | 17:00 | True     | Kurz Slabika | OK              | False | test | 10       |
+      # neaktivni klient
+      | Neaktivní Pavel | 2018-05-09 | 20:00 | False    | Kurz Slabika | OK              | False | test | 40       |
 
 
   @add @lectures
@@ -36,15 +40,13 @@ Feature: Operations with lectures
     Then the lecture is not added
 
     Examples: Lectures
-      | group     | date       | time  | canceled | duration | client1        | attendancestate1 | paid1 | note1 | client2         | attendancestate2 | paid2 | note2 |
+      | group     | date       | time  | canceled | duration | client1      | attendancestate1 | paid1 | note1 | client2         | attendancestate2 | paid2 | note2 |
       # chybi trvani
-      | Slabika 4 | 2018-05-07 | 15:00 | False    |          | Rodová Petra   | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
+      | Slabika 4 | 2018-05-07 | 15:00 | False    |          | Rodová Petra | OK               | True  |       | Jirušková Aneta | OK               | True  |       |
       # casovy konflikt
-      | Slabika 4 | 2018-05-07 | 20:00 | False    | 10       | Rodová Petra   | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
-      # neaktivni klient
-      | Slabika 2 | 2018-05-09 | 20:00 | False    | 10       | Uhlíř Jaroslav | OK               | False | test  | Neaktivní Pavel | OK               | False | test  |
+      | Slabika 4 | 2018-05-07 | 20:00 | False    | 10       | Rodová Petra | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
       # neaktivni skupina
-      | Slabika 5 | 2018-05-07 | 17:10 | True     | 10       | Rodová Petra   | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
+      | Slabika 5 | 2018-05-07 | 17:10 | True     | 10       | Rodová Petra | OK               | False | test  | Jirušková Aneta | OK               | False | test  |
 
 
   @add @lectures
@@ -53,13 +55,11 @@ Feature: Operations with lectures
     Then the lecture is not added
 
     Examples: Lectures
-      | client          | date       | time  | canceled | course       | attendancestate | paid  | note | duration |
+      | client    | date       | time  | canceled | course       | attendancestate | paid  | note | duration |
       # chybi trvani
-      | Rod Lukáš       | 2018-05-07 | 16:00 | False    | Kurz Slabika | OK              | False | test |          |
+      | Rod Lukáš | 2018-05-07 | 16:00 | False    | Kurz Slabika | OK              | False | test |          |
       # casovy konflikt
-      | Rod Lukáš       | 2018-05-07 | 20:00 | False    | Kurz Slabika | OK              | False | test | 40       |
-      # neaktivni klient
-      | Neaktivní Pavel | 2018-05-09 | 20:00 | False    | Kurz Slabika | OK              | False | test | 40       |
+      | Rod Lukáš | 2018-05-07 | 20:00 | False    | Kurz Slabika | OK              | False | test | 40       |
 
 
   @edit @lectures

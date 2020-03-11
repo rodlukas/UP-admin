@@ -22,6 +22,7 @@ import {
 import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
 import ModalLectures from "../forms/ModalLectures"
+import { TEXTS } from "../global/constants"
 import { prettyDateWithDayYear, prettyTime } from "../global/funcDateTime"
 import {
     courseDuration,
@@ -232,12 +233,9 @@ class Card extends React.Component<Props, State> {
                                 <Col sm="9" md="7" lg="5" xl="3">
                                     {object && !object.active && (
                                         <Alert color="warning">
-                                            <strong>
-                                                {this.isClient(object) ? "Klient" : "Skupina"} není
-                                                aktivní
-                                            </strong>{" "}
-                                            &ndash; nelze {this.isClient(object) ? "mu" : "jí"} tedy
-                                            přidávat lekce.
+                                            {this.isClient(object)
+                                                ? TEXTS.WARNING_INACTIVE_CLIENT
+                                                : TEXTS.WARNING_INACTIVE_GROUP}
                                         </Alert>
                                     )}
                                     <ListGroup>
