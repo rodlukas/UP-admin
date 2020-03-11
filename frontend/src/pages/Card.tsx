@@ -197,7 +197,7 @@ class Card extends React.Component<Props, State> {
                         content={
                             <>
                                 <BackButton onClick={this.goBack} />{" "}
-                                {"Karta " + (this.isClient(object) ? "klienta" : "skupiny")}:{" "}
+                                {"Karta " + (this.isClientPage() ? "klienta" : "skupiny")}:{" "}
                                 {this.isClient(object) ? (
                                     <ClientName client={object} bold />
                                 ) : (
