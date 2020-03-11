@@ -27,8 +27,8 @@ def find_client(context):
 
 def client_equal_to_context(client, context):
     return (
-        client["firstname"] == context.firstname
-        and client["surname"] == context.surname
+        client["firstname"] == context.firstname.capitalize()
+        and client["surname"] == context.surname.capitalize()
         and client["phone"] == common_helpers.shrink_str(context.phone)
         and client["email"] == context.email
         and client["note"] == context.note

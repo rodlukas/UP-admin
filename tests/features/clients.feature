@@ -15,6 +15,8 @@ Feature: Operations with clients
       | Drahomíra | Novotná |             |                      |      | True   |
       | Lukáš     | Rod     | 123 456 789 | bla.bla@centrum22.cz |      | True   |
       | Lukáš     | Rod     | 123 456 789 | bla.bla@centrum22.cz |      | False  |
+      # mala pocatecni pismena
+      | lukáš     | rod     | 123 456 789 | bla.bla@centrum22.cz |      | True   |
 
 
   @add @clients
@@ -61,7 +63,9 @@ Feature: Operations with clients
       | Rod Lukáš     | Pavel         | Rod         | 555555555 | r@r.cz    | test     | True       |
       # zmena prijmeni
       | Rod Lukáš     | Lukáš         | Rodd        | 555555555 | r@r.cz    | test     | True       |
-      # zadna aktivity
+      # zmena celeho jmena (mala pismena)
+      | Rod Lukáš     | milan         | novák       | 555555555 | r@r.cz    | test     | True       |
+      # zmena aktivity
       | Rod Lukáš     | Lukáš         | Rod         | 555555555 | r@r.cz    | test     | False      |
 
 

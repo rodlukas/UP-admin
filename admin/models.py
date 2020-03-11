@@ -3,7 +3,6 @@ Modely - reprezentují entity z databáze.
 """
 from typing import Any
 
-from django.core.validators import RegexValidator
 from django.db import models
 
 
@@ -80,17 +79,6 @@ class Client(models.Model):
     class Meta:
         ordering = ["surname", "firstname"]
 
-    def phone_transform(self) -> None:
-        """
-        Sjednotí formát telefonního čísla - odstraní mezery.
-        """
-        # odstraneni vsech mezer v telefonu
-        self.phone = "".join(self.phone.split())
-
-    def save(self, *args: Any, **kwargs: Any) -> None:
-        self.phone_transform()
-        super().save(*args, **kwargs)
-
 
 class Course(models.Model):
     """
@@ -101,34 +89,13 @@ class Course(models.Model):
     ŘAZENÍ: Vzestupně dle názvu kurzu.
     """
 
-    color = models.CharField(
-        max_length=7,
-        default="#000000",
-        validators=[
-            RegexValidator(regex="^#(?:[0-9a-fA-F]{3}){1,2}$", message="Barva není v HEX formátu")
-        ],
-        help_text="Kód barvy kurzu",
-    )  # regex viz https://stackoverflow.com/a/1636354
+    color = models.CharField(max_length=7, default="#000000", help_text="Kód barvy kurzu")
     duration = models.PositiveIntegerField(help_text="Trvání kurzu (min.)")
     name = models.TextField(help_text="Název kurzu (unikátní)")
     visible = models.BooleanField(default=True, help_text="Indikátor viditelnosti kurzu")
 
     class Meta:
         ordering = ["name"]
-
-    def color_transform(self) -> None:
-        """
-        Sjednotí formát barvy - velká písmena, 6 čísel.
-        """
-        # prevod barvy na velka pismena
-        self.color = self.color.upper()
-        # barva se 3 cisly se prevede na 6 cisel
-        if len(self.color) != 7:
-            self.color = "#{}".format("".join(2 * c for c in self.color.lstrip("#")))
-
-    def save(self, *args: Any, **kwargs: Any) -> None:
-        self.color_transform()
-        super().save(*args, **kwargs)
 
 
 class Application(models.Model):

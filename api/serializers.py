@@ -14,6 +14,7 @@ Poznámka:
 from typing import Union
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import RegexValidator
 from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
@@ -40,6 +41,18 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = "__all__"
 
+    def to_internal_value(self, data: dict) -> dict:
+        """
+        Sjednotí formát hodnot klienta:
+            - odstraní mezery z telefonního čísla,
+            - nastaví velké první písmeno křestního jména a příjmení klienta.
+        """
+        values = super().to_internal_value(data)
+        values["firstname"] = values["firstname"].capitalize()
+        values["surname"] = values["surname"].capitalize()
+        values["phone"] = "".join(values["phone"].split())
+        return values
+
     @staticmethod
     def validate_phone(phone: str) -> str:
         """
@@ -55,10 +68,28 @@ class CourseSerializer(serializers.ModelSerializer):
 
     # nazev kurzu (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(validators=[UniqueValidator(queryset=Course.objects.all())])
+    # barva kurzu (znovuuvedeni kvuli validaci formatu)
+    color = serializers.CharField(
+        validators=[
+            RegexValidator(regex="^#(?:[0-9a-fA-F]{3}){1,2}$", message="Barva není v HEX formátu")
+        ]
+    )  # regex viz https://stackoverflow.com/a/1636354
 
     class Meta:
         model = Course
         fields = "__all__"
+
+    def to_internal_value(self, data: dict) -> dict:
+        """
+        Sjednotí formát barvy - velká písmena, 6 čísel.
+        """
+        values = super().to_internal_value(data)
+        # prevod barvy na velka pismena
+        values["color"] = values["color"].upper()
+        # barva se 3 cisly se prevede na 6 cisel
+        if len(values["color"]) != 7:
+            values["color"] = "#{}".format("".join(2 * c for c in values["color"].lstrip("#")))
+        return values
 
 
 class MembershipSerializer(serializers.ModelSerializer):

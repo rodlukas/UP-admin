@@ -22,7 +22,9 @@ def open_clients(driver):
 
 
 def find_client_with_context(context):
-    full_name = common_helpers.client_full_name(context.firstname, context.surname)
+    full_name = common_helpers.client_full_name(
+        context.firstname.capitalize(), context.surname.capitalize()
+    )
     return helpers.find_client(
         context,
         full_name,
