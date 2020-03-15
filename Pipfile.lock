@@ -18,10 +18,10 @@
     "default": {
         "asgiref": {
             "hashes": [
-                "sha256:7e06d934a7718bf3975acbf87780ba678957b87c7adc056f13b6215d610695a0",
-                "sha256:ea448f92fc35a0ef4b1508f53a04c4670255a3f33d22a81c8fc9c872036adbe5"
+                "sha256:3e4192eaec0758b99722f0b0666d5fbfaa713054d92e8de5b58ba84ec5ce696f",
+                "sha256:c8f49dd3b42edcc51d09dd2eea8a92b3cfc987ff7e6486be734b4d0cbfd5d315"
             ],
-            "version": "==3.2.3"
+            "version": "==3.2.5"
         },
         "certifi": {
             "hashes": [
@@ -55,7 +55,8 @@
         },
         "django-debug-toolbar-request-history": {
             "hashes": [
-                "sha256:79013b50ba59d93d998b6f168ca4325eb5be3a9b859d48fb14aae80819f3a734"
+                "sha256:79013b50ba59d93d998b6f168ca4325eb5be3a9b859d48fb14aae80819f3a734",
+                "sha256:b4e53f1da523d6fe7d2a9cb1b0cf4ce7c83c8a02fad56555ec041911371e62cd"
             ],
             "index": "pypi",
             "version": "==0.1.1"
@@ -286,10 +287,10 @@
         },
         "click": {
             "hashes": [
-                "sha256:2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13",
-                "sha256:5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"
+                "sha256:8a18b4ea89d8820c5d0c7da8a64b2c324b4dabb695804dbfea19b9be9d88c0cc",
+                "sha256:e345d143d80bf5ee7534056164e5e112ea5e22716bbb1ce727941f4c8b471b9a"
             ],
-            "version": "==7.0"
+            "version": "==7.1.1"
         },
         "codecov": {
             "hashes": [
