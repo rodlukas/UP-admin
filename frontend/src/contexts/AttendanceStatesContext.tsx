@@ -4,12 +4,12 @@ import { noop } from "../global/utils"
 import { AttendanceStateType } from "../types/models"
 import { fFunction } from "../types/types"
 
-interface StateContext {
+type StateContext = {
     isLoaded: boolean
     attendancestates: Array<AttendanceStateType>
 }
 
-interface Context extends StateContext {
+type Context = StateContext & {
     funcRefresh: (callback?: fFunction) => void
 }
 

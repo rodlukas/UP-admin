@@ -4,16 +4,16 @@ import { noop } from "../global/utils"
 import { GroupType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
-interface StateContext {
+type StateContext = {
     isLoaded: boolean
     groups: Array<GroupType>
 }
 
-interface State extends StateContext {
+type State = StateContext & {
     loadRequested: boolean
 }
 
-interface Context extends StateContext {
+type Context = StateContext & {
     funcRefresh: (callback?: fFunction) => void
     funcHardRefresh: fEmptyVoid
 }

@@ -3,7 +3,7 @@ import { Button, ButtonProps } from "reactstrap"
 import "./BackButton.css"
 import "./buttons.css"
 
-interface Props extends ButtonProps {
+type Props = ButtonProps & {
     content?: string
 }
 

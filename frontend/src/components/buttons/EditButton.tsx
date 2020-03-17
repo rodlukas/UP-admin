@@ -5,7 +5,7 @@ import { Button, ButtonProps } from "reactstrap"
 import { makeIdFromString } from "../../global/utils"
 import UncontrolledTooltipWrapper from "../UncontrolledTooltipWrapper"
 
-interface Props extends ButtonProps {
+type Props = ButtonProps & {
     content?: string
 }
 

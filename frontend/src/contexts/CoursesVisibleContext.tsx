@@ -4,16 +4,16 @@ import { noop } from "../global/utils"
 import { CourseType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
-interface StateContext {
+type StateContext = {
     isLoaded: boolean
     courses: Array<CourseType>
 }
 
-interface State extends StateContext {
+type State = StateContext & {
     loadRequested: boolean
 }
 
-interface Context extends StateContext {
+type Context = StateContext & {
     funcRefresh: (callback?: fFunction) => void
     funcHardRefresh: fEmptyVoid
 }

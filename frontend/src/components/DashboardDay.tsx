@@ -27,7 +27,7 @@ import LectureNumber from "./LectureNumber"
 import Loading from "./Loading"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
-interface Props extends AttendanceStatesContextProps {
+type Props = AttendanceStatesContextProps & {
     withoutWaiting?: boolean
     date: string
     shouldRefresh: boolean

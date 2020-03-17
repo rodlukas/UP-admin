@@ -2,7 +2,7 @@ import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
 import "./buttons.css"
 
-interface Props extends ButtonProps {
+type Props = ButtonProps & {
     content: string
     small?: boolean
 }

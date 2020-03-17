@@ -10,12 +10,12 @@ import Token from "./Token"
 /** Hodnota zbývající platnosti tokenu, při které dojde k požadavku na jeho obnovení. */
 const AUTH_REFRESH_THRESHOLD = 60 * 65 // sekundy -> 65 minut
 
-interface State {
+type State = {
     isLoading: boolean
     isAuth: boolean
 }
 
-interface Context extends State {
+type Context = State & {
     login: (credentials: AuthorizationType) => void
     logout: fEmptyVoid
     isAuthenticated: (refreshExpiringToken?: boolean) => void

@@ -2,7 +2,7 @@ import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
 import { noop } from "../../global/utils"
 
-interface Props extends ButtonProps {
+type Props = ButtonProps & {
     content: React.ReactNode
 }
 

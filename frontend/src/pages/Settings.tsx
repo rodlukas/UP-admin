@@ -24,7 +24,7 @@ import { CustomRouteComponentProps, QA } from "../types/types"
 import APP_URLS from "../urls"
 import "./Settings.css"
 
-interface VisibleProps extends QA {
+type VisibleProps = QA & {
     visible: boolean
 }
 

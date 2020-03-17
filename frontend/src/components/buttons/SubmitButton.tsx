@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
 
-interface Props extends ButtonProps {
+type Props = ButtonProps & {
     content?: string
     loading?: boolean
     disabled?: boolean

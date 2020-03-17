@@ -7,7 +7,7 @@ Reprezentují data tak, jak je obdržíme z API.
 Respektují způsoby vnoření dat a všechny možnosti API.
 ************************************************************************************************* */
 
-export interface ClientType extends Model {
+export type ClientType = Model & {
     active: boolean
     email: string
     note: string
@@ -16,34 +16,34 @@ export interface ClientType extends Model {
     surname: string
 }
 
-export interface ClientActiveType extends ClientType {
+export type ClientActiveType = ClientType & {
     normalized: Array<string>
 }
 
-export interface CourseType extends Model {
+export type CourseType = Model & {
     name: string
     color: string
     duration: number
     visible: boolean
 }
 
-export interface MembershipType extends Model {
+export type MembershipType = Model & {
     prepaid_cnt: number
     client: ClientType
 }
 
-export interface ApplicationType extends Model {
+export type ApplicationType = Model & {
     note: string
     created_at: string
     client: ClientType
     course: CourseType
 }
 
-export interface LectureTypeWithDate extends LectureType {
+export type LectureTypeWithDate = LectureType & {
     start: string
 }
 
-export interface LectureType extends Model {
+export type LectureType = Model & {
     course: CourseType
     start: string | null
     group: null | GroupType
@@ -53,7 +53,7 @@ export interface LectureType extends Model {
     attendances: Array<AttendanceType>
 }
 
-export interface AttendanceType extends Model {
+export type AttendanceType = Model & {
     client: ClientType
     remind_pay: boolean
     note: string
@@ -62,14 +62,14 @@ export interface AttendanceType extends Model {
     attendancestate: AttendanceStateType["id"]
 }
 
-export interface GroupType extends Model {
+export type GroupType = Model & {
     name: string
     memberships: Array<MembershipType>
     active: boolean
     course: CourseType
 }
 
-export interface AttendanceStateType extends Model {
+export type AttendanceStateType = Model & {
     name: string
     visible: boolean
     default?: boolean

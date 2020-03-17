@@ -3,17 +3,17 @@ import * as React from "react"
 import { RouteProps, StaticContext } from "react-router"
 import { RouteComponentProps } from "react-router-dom"
 
-export interface Model {
+export type Model = {
     id: number
 }
 
 export type ErrMsg = React.ReactElement | string
 
-export interface CustomRouteProps extends RouteProps {
+export type CustomRouteProps = RouteProps & {
     title: string
 }
 
-export interface QA {
+export type QA = {
     "data-qa"?: string
 }
 
