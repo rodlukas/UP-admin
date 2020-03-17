@@ -7,8 +7,9 @@ import { Alert, Col, Container, Row } from "reactstrap"
 import Token from "../auth/Token"
 import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"
+import { noop } from "../global/utils"
 import { TokenDecodedType } from "../types/models"
-import { CustomRouteComponentProps } from "../types/types"
+import { CustomRouteComponentProps, fEmptyVoid } from "../types/types"
 
 type Props = CustomRouteComponentProps
 
@@ -31,12 +32,17 @@ class ErrorBoundary extends React.Component<Props, State> {
         errorInfo: undefined
     }
 
-    constructor(props: Props) {
-        super(props)
+    unlisten: fEmptyVoid = noop
+
+    componentDidMount(): void {
         // aby fungoval react-router pri nejake chybe
-        this.props.history.listen(() => {
+        this.unlisten = this.props.history.listen(() => {
             if (this.state.hasError) this.setState({ hasError: false })
         })
+    }
+
+    componentWillUnmount(): void {
+        this.unlisten()
     }
 
     static getDerivedStateFromError(): Partial<State> {
