@@ -137,12 +137,12 @@ class Settings extends React.Component<Props, State> {
                             <Row>
                                 <Col>
                                     <h2 className="text-center">Stavy účasti</h2>
-                                    <Table striped size="sm">
-                                        <thead className="thead-dark">
+                                    <Table striped size="sm" className="table-custom">
+                                        <thead className="thead-light">
                                             <tr>
                                                 <th>Název</th>
                                                 <th className="text-center">Viditelný</th>
-                                                <th>Akce</th>
+                                                <th className="text-right text-md-right">Akce</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -159,7 +159,7 @@ class Settings extends React.Component<Props, State> {
                                                             data-qa="attendancestate_visible"
                                                         />
                                                     </td>
-                                                    <td>
+                                                    <td className="text-right text-md-right">
                                                         <ModalSettings
                                                             refresh={this.refresh}
                                                             TYPE={EDIT_TYPE.STATE}
@@ -251,14 +251,14 @@ class Settings extends React.Component<Props, State> {
                                 </Col>
                                 <Col>
                                     <h2 className="text-center">Kurzy</h2>
-                                    <Table striped size="sm">
-                                        <thead className="thead-dark">
+                                    <Table striped size="sm" className="table-custom">
+                                        <thead className="thead-light">
                                             <tr>
                                                 <th>Název</th>
                                                 <th className="text-center">Viditelný</th>
                                                 <th className="text-center">Barva</th>
                                                 <th className="text-center">Trvání</th>
-                                                <th>Akce</th>
+                                                <th className="text-right text-md-right">Akce</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -283,7 +283,7 @@ class Settings extends React.Component<Props, State> {
                                                         className="text-center">
                                                         {course.duration}
                                                     </td>
-                                                    <td>
+                                                    <td className="text-right text-md-right">
                                                         <ModalSettings
                                                             refresh={this.refresh}
                                                             TYPE={EDIT_TYPE.COURSE}

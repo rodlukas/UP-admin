@@ -73,14 +73,18 @@ class Clients extends React.Component<Props, State> {
                         </>
                     }
                 />
-                <Table striped size="sm" responsive className="pageContent">
-                    <thead className="thead-dark">
+                <Table striped size="sm" responsive className="pageContent table-custom">
+                    <thead className="thead-light">
                         <tr>
                             <th>Příjmení a jméno</th>
-                            <th>Telefon</th>
-                            <th style={{ wordBreak: "keep-all" }}>E-mail</th>
-                            <th>Poznámka</th>
-                            <th>Akce</th>
+                            <th className="d-none d-md-table-cell">Telefon</th>
+                            <th
+                                style={{ wordBreak: "keep-all" }}
+                                className="d-none d-md-table-cell">
+                                E-mail
+                            </th>
+                            <th className="d-none d-sm-table-cell">Poznámka</th>
+                            <th className="text-right text-md-right">Akce</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,16 +101,18 @@ class Clients extends React.Component<Props, State> {
                                         <td style={{ minWidth: "13em", width: "13em" }}>
                                             <ClientName client={client} link />
                                         </td>
-                                        <td style={{ minWidth: "7em" }}>
+                                        <td
+                                            style={{ minWidth: "7em" }}
+                                            className="d-none d-md-table-cell">
                                             <ClientPhone phone={client.phone} />
                                         </td>
-                                        <td>
+                                        <td className="d-none d-md-table-cell">
                                             <ClientEmail email={client.email} />
                                         </td>
-                                        <td>
+                                        <td className="d-none d-sm-table-cell">
                                             <ClientNote note={client.note} />
                                         </td>
-                                        <td>
+                                        <td className="text-right text-md-right">
                                             <ModalClients
                                                 currentClient={client}
                                                 refresh={this.refreshFromModal}

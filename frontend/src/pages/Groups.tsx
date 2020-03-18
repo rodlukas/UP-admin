@@ -75,13 +75,13 @@ class Groups extends React.Component<Props, State> {
                         </>
                     }
                 />
-                <Table striped size="sm" responsive className="pageContent">
-                    <thead className="thead-dark">
+                <Table striped size="sm" responsive className="pageContent table-custom">
+                    <thead className="thead-light">
                         <tr>
                             <th>Název</th>
-                            <th>Kurz</th>
+                            <th className="d-none d-sm-table-cell">Kurz</th>
                             <th>Členové</th>
-                            <th>Akce</th>
+                            <th className="text-right text-md-right">Akce</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,13 +112,13 @@ class Groups extends React.Component<Props, State> {
                                                     />
                                                 )}
                                         </td>
-                                        <td>
+                                        <td className="d-none d-sm-table-cell">
                                             <CourseName course={group.course} />
                                         </td>
                                         <td>
                                             <ClientsList memberships={group.memberships} />
                                         </td>
-                                        <td>
+                                        <td className="text-right text-md-right">
                                             <ModalGroups
                                                 currentGroup={group}
                                                 refresh={this.refreshFromModal}

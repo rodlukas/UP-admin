@@ -58,6 +58,17 @@ label {
     border-top: 0 !important;
 }
 
+.table-custom th,
+.table-custom td {
+    padding: 0.3rem 0.6rem;
+}
+
+.table .thead-light th {
+    color: #41464b;
+    background-color: #d7d6d6;
+    border-color: #bbbec2;
+}
+
 /**************************** BADGE ****************************/
 .badge {
     white-space: normal; /* aby se text zalamoval a nepretekal */
