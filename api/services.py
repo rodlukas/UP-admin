@@ -24,6 +24,7 @@ class Bank:
     FIO_API_ERRORS = {
         status.HTTP_409_CONFLICT: "překročení intervalu pro dotazování",
         status.HTTP_500_INTERNAL_SERVER_ERROR: "neexistující/neplatný token",
+        status.HTTP_503_SERVICE_UNAVAILABLE: "API banky nefunguje",
         status.HTTP_404_NOT_FOUND: "špatně zaslaný dotaz na banku",
     }
 
@@ -52,8 +53,10 @@ class Bank:
         Provede požadavek na Fio API a zpracuje příchozí data nebo chybu.
         """
         try:
-            input_data = requests.get(url_secret)
+            input_data = requests.get(url_secret, timeout=25)
             input_data.raise_for_status()
+        except requests.exceptions.Timeout:
+            return self.process_error(503)
         except requests.exceptions.RequestException as e:
             return self.process_error(e.response.status_code)
         else:
