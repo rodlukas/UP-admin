@@ -87,7 +87,8 @@ class Bank:
         output_data["rent_price"] = self.BANK_RENT_PRICE
         # odstraneni nepotrebnych polozek z info o uctu
         info_remove = ["yearList", "idList", "idFrom", "idTo", "idLastDownload"]
-        [output_data["accountStatement"]["info"].pop(key) for key in info_remove]
+        for key in info_remove:
+            output_data["accountStatement"]["info"].pop(key)
         # vypocet realneho zustatku (po odecteni minimalniho zustatku na uctu)
         output_data["accountStatement"]["info"]["closingBalance"] -= self.FIO_MIN_BALANCE
         return output_data
