@@ -48,8 +48,8 @@ Pro fungování UI testů je třeba mít nainstalovaný
 K dispozici jsou **dvě různé sady testů (tzv. _stage_): testy UI a testy API**. Pro spuštění
 konkrétní sady tedy stačí tyto příkazy:
 
--   spuštění **UI testů:** `$ python manage.py behave --stage=ui`,
--   spuštění **API testů:** `$ python manage.py behave --stage=api`.
+-   spuštění **UI testů:** `python manage.py behave --stage=ui`,
+-   spuštění **API testů:** `python manage.py behave --stage=api`.
 
 > **Tip pro UI testy:** ve výchozím nastavení běží UI testy v tzv. _headless_ módu prohlížeče, tedy
 > bez GUI (prohlížeč není vidět), pokud chcete průběh UI testů (postupné proklikávání a psaní v
@@ -78,13 +78,13 @@ Příklad spuštění testů API pro klienty a lekce – tedy testů ze _stage_ 
 (testovanými částmi) `clients`:
 
 ```bash
-$ python manage.py behave --stage=api --tags=clients,lectures
+python manage.py behave --stage=api --tags=clients,lectures
 ```
 
 Příklad spuštění testů UI jen pro skupiny:
 
 ```bash
-$ python manage.py behave --stage=ui --tags=groups
+python manage.py behave --stage=ui --tags=groups
 ```
 
 > **Tip pro spouštění velkého množství testů:** pro jednodušší a přehlednější výpis informací o

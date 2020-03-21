@@ -254,42 +254,42 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
     verzi** repozitáře:
 
     ```bash
-    $ git clone "https://github.com/rodlukas/UP-admin.git" && cd UP-admin
-    $ git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+    git clone "https://github.com/rodlukas/UP-admin.git" && cd UP-admin
+    git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
     ```
 
 2.  Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je
     přímo do repozitáře (a `frontend.zip` smažeme):
 
     ```bash
-    $ wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
-    $ unzip frontend.zip && rm frontend.zip
+    wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
+    unzip frontend.zip && rm frontend.zip
     ```
 
 3.  **Přejmenujeme vzorový konfigurační soubor `.env.template`** v kořenovém adresáři na **`.env`**:
 
     ```bash
-    $ mv .env.template .env
+    mv .env.template .env
     ```
 
 4.  Pomocí **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **vytvoříme
     databázi a uživatele** pro přístup do databáze:
 
     ```
-    $ sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
+    sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
     ```
 
 5.  Nahrajeme **český balíček pro databázi** (kvůli českému řazení podle abecedy):
 
     ```bash
-    $ source scripts/shell/postgresql_cs.sh
+    source scripts/shell/postgresql_cs.sh
     ```
 
 6.  Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu:
 
     ```bash
-    $ pipenv install --dev
-    $ pipenv shell
+    pipenv install --dev
+    pipenv shell
     ```
 
 7.  **Připravíme celou Django aplikaci na spuštění** ([skript](scripts/shell/release_tasks.sh)
@@ -297,14 +297,14 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
     vytvoří databázové schéma):
 
     ```bash
-    $ source scripts/shell/release_tasks.sh
+    source scripts/shell/release_tasks.sh
     ```
 
 8.  A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se
     poté budeme přihlašovat):
 
     ```bash
-    $ python manage.py createsuperuser
+    python manage.py createsuperuser
     ```
 
 9.  💡 _(NEPOVINNÉ)_ Na závěr můžeme ještě **naplnit naší databázi
@@ -314,7 +314,7 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
     nastavili taktéž `up`:
 
     ```bash
-    $ psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
+    psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
     ```
 
 ### Spuštění
@@ -322,7 +322,7 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
 **Spustíme vývojový server** 🚀:
 
 ```bash
-$ python manage.py runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8000
 ```
 
 **✅ Aplikace je nyní dostupná na adrese http://localhost:8000/.**
@@ -341,7 +341,7 @@ Můžeme také snadno spustit různé testy aplikace, například otestovat, jes
 klienty:
 
 ```bash
-$ python manage.py behave --stage=api --tags=clients
+python manage.py behave --stage=api --tags=clients
 ```
 
 Aplikace obsahuje rozsáhlé API a UI testy – vizte
