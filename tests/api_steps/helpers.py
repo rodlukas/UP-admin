@@ -100,8 +100,8 @@ def find_course_with_name(api_client, name):
     return {}
 
 
-def get_api_response(api_client, API_URL):
-    resp = api_client.get(API_URL)
+def get_api_response(api_client, url):
+    resp = api_client.get(url)
     assert resp.status_code == status.HTTP_200_OK
     return json.loads(resp.content)
 
