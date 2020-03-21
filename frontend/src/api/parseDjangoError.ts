@@ -21,7 +21,7 @@ export function parseDjangoError(error: AxiosError): null | { [key: string]: any
         }
         // chyba vztazena ke konkretnimu field
         else if (json[Object.keys(json)[0]]) {
-            Object.keys(json).map(field => {
+            Object.keys(json).forEach(field => {
                 json[field] = Array.isArray(json[field])
                     ? json[field]
                           .map((subField: { [key: string]: any } | string | []) => {
