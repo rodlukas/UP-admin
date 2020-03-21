@@ -66,8 +66,8 @@ def groups(courses_list, clients_list):
 
 def user():
     user_model = get_user_model()
-    username = "test-username"
-    password = "test-password"
+    username = "test-username"  # lgtm [py/hardcoded-credentials]
+    password = "test-password"  # lgtm [py/hardcoded-credentials]
     user_model.objects.create_user(username=username, email="testuser@test.cz", password=password)
     return {"username": username, "password": password}
 

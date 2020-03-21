@@ -1,4 +1,4 @@
-from behave import *
+from behave import given
 
 from admin.models import AttendanceState
 from .. import fixtures

@@ -1,4 +1,4 @@
-from behave import *
+from behave import when, then, use_step_matcher
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys

@@ -1,7 +1,7 @@
 import json
 from copy import deepcopy
 
-from behave import *
+from behave import when, then, use_step_matcher
 from rest_framework import status
 
 from tests import common_helpers

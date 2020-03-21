@@ -1,4 +1,4 @@
-from behave import *
+from behave import when, then
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -53,31 +53,31 @@ def login(context, username, password):
     helpers.submit_form(context, "button_submit_login")
 
 
-@When("user logs into app with correct credentials")
+@when("user logs into app with correct credentials")
 def step_impl(context):
     login(context, context.user["username"], context.user["password"])
 
 
-@When("user logs into app with wrong credentials")
+@when("user logs into app with wrong credentials")
 def step_impl(context):
     login(context, context.user["username"], "wrongPassword")
 
 
-@Then("user is logged into app")
+@then("user is logged into app")
 def step_impl(context):
     button_logout_visible, jwt = check_login(context)
     assert button_logout_visible
     assert jwt is not None
 
 
-@Then("user is not logged into app")
+@then("user is not logged into app")
 def step_impl(context):
     button_logout_visible, jwt = check_login(context)
     assert not button_logout_visible
     assert jwt is None
 
 
-@When("user logs out of app")
+@when("user logs out of app")
 def step_impl(context):
     # pockej na nacteni hlavni stranky
     helpers.wait_loading_ends(context.browser)
@@ -85,7 +85,7 @@ def step_impl(context):
     context.button_logout.click()
 
 
-@Then("user is logged out of app")
+@then("user is logged out of app")
 def step_impl(context):
     # pokud neni viditelne tlacitko pro odhlaseni, doslo k uspesnemu odhlaseni
     try:

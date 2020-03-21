@@ -1,4 +1,4 @@
-from behave import *
+from behave import given
 
 from admin.models import Client, Group, AttendanceState, Course, Lecture
 from .. import fixtures
