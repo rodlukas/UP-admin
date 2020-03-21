@@ -76,16 +76,12 @@ class FormGroups extends React.Component<Props, State> {
 
     // pripravi pole se cleny ve spravnem formatu, aby fungoval react-select
     getMembers(memberships: Array<MembershipType>): Array<ClientType> {
-        const members: Array<ClientType> = []
-        memberships.map(membership => members.push(membership.client))
-        return members
+        return memberships.map(membership => membership.client)
     }
 
     // pripravi pole se cleny ve spravnem formatu, aby slo poslat do API
     prepareMembersForSubmit(memberships: State["memberships"]): GroupPutApi["memberships"] {
-        const members: GroupPutApi["memberships"] = []
-        memberships.map(membership => members.push({ client_id: membership.id }))
-        return members
+        return memberships.map(membership => ({ client_id: membership.id }))
     }
 
     onSelectChange = (
