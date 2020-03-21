@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Container, Table } from "reactstrap"
-import ClientService from "../api/services/client"
+import ClientService from "../api/services/ClientService"
+import APP_URLS from "../APP_URLS"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
@@ -16,7 +17,6 @@ import ModalClients from "../forms/ModalClients"
 import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
-import APP_URLS from "../urls"
 
 type Props = CustomRouteComponentProps & ClientsActiveContextProps
 

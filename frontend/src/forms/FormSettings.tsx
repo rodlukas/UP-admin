@@ -16,8 +16,8 @@ import {
     ModalFooter,
     ModalHeader
 } from "reactstrap"
-import AttendanceStateService from "../api/services/attendancestate"
-import CourseService from "../api/services/course"
+import AttendanceStateService from "../api/services/AttendanceStateService"
+import CourseService from "../api/services/CourseService"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"

@@ -1,10 +1,10 @@
 import * as React from "react"
-import LoginService from "../api/services/login"
+import LoginService from "../api/services/LoginService"
+import APP_URLS from "../APP_URLS"
 import history from "../global/history"
 import { noop } from "../global/utils"
 import { AuthorizationType, TokenCodedType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
-import APP_URLS from "../urls"
 import Token from "./Token"
 
 /** Hodnota zbývající platnosti tokenu, při které dojde k požadavku na jeho obnovení. */

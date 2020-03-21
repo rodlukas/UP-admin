@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Container, Table } from "reactstrap"
-import GroupService from "../api/services/group"
+import GroupService from "../api/services/GroupService"
+import APP_URLS from "../APP_URLS"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 import ClientsList from "../components/ClientsList"
 import CourseName from "../components/CourseName"
@@ -19,7 +20,6 @@ import { areAllMembersActive } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
-import APP_URLS from "../urls"
 
 type Props = CustomRouteComponentProps & GroupsActiveContextProps & CoursesVisibleContextProps
 

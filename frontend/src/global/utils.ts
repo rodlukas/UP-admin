@@ -1,4 +1,4 @@
-import LectureService from "../api/services/lecture"
+import LectureService from "../api/services/LectureService"
 import {
     ApplicationType,
     ClientType,

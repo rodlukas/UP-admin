@@ -1,5 +1,5 @@
 import * as React from "react"
-import AttendanceStateService from "../api/services/attendancestate"
+import AttendanceStateService from "../api/services/AttendanceStateService"
 import { noop } from "../global/utils"
 import { AttendanceStateType } from "../types/models"
 import { fFunction } from "../types/types"

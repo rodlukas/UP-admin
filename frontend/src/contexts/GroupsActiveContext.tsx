@@ -1,5 +1,5 @@
 import * as React from "react"
-import GroupService from "../api/services/group"
+import GroupService from "../api/services/GroupService"
 import { noop } from "../global/utils"
 import { GroupType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"

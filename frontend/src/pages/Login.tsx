@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Redirect } from "react-router-dom"
 import { Card, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap"
+import APP_URLS from "../APP_URLS"
 import { AuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Heading from "../components/Heading"
@@ -8,7 +9,6 @@ import Loading from "../components/Loading"
 import useForm from "../hooks/useForm"
 import { AuthorizationType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
-import APP_URLS from "../urls"
 
 /** Stránka s přihlášením. */
 const Login: React.FC<CustomRouteComponentProps> = props => {

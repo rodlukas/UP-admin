@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { ListGroup, ListGroupItem, Table } from "reactstrap"
-import BankService from "../api/services/bank"
+import BankService from "../api/services/BankService"
 import { BANKING_URL, CURRENCY } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"

@@ -12,8 +12,8 @@ import {
     ModalFooter,
     ModalHeader
 } from "reactstrap"
-import ClientService from "../api/services/client"
-import GroupService from "../api/services/group"
+import ClientService from "../api/services/ClientService"
+import GroupService from "../api/services/GroupService"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"

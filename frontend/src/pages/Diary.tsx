@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { Link } from "react-router-dom"
 import { Button, Col, Container, Row } from "reactstrap"
+import APP_URLS from "../APP_URLS"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
@@ -19,7 +20,6 @@ import {
 } from "../global/funcDateTime"
 import { isModalShown } from "../global/utils"
 import { CustomRouteComponentProps } from "../types/types"
-import APP_URLS from "../urls"
 import "./Diary.css"
 
 type TitleDateProps = { date: Date }

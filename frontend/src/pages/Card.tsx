@@ -1,7 +1,8 @@
 import * as React from "react"
 import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
-import ClientService from "../api/services/client"
-import GroupService from "../api/services/group"
+import ClientService from "../api/services/ClientService"
+import GroupService from "../api/services/GroupService"
+import APP_URLS from "../APP_URLS"
 import Attendances from "../components/Attendances"
 import BackButton from "../components/buttons/BackButton"
 import ClientEmail from "../components/ClientEmail"
@@ -34,7 +35,6 @@ import {
 import { ModalClientsGroupsData } from "../types/components"
 import { ClientType, GroupType, LectureType, MembershipType } from "../types/models"
 import { CustomRouteComponentProps, Model } from "../types/types"
-import APP_URLS from "../urls"
 import "./Card.css"
 
 type ParamProps = { id: Model["id"] }

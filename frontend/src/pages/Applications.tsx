@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
-import ApplicationService from "../api/services/application"
+import ApplicationService from "../api/services/ApplicationService"
+import APP_URLS from "../APP_URLS"
 import DeleteButton from "../components/buttons/DeleteButton"
 import ClientName from "../components/ClientName"
 import ClientPhone from "../components/ClientPhone"
@@ -16,7 +17,6 @@ import { prettyDateWithYear } from "../global/funcDateTime"
 import { GroupedObjectsByCourses, groupObjectsByCourses } from "../global/utils"
 import { ApplicationType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
-import APP_URLS from "../urls"
 import "./Applications.css"
 
 type Props = CustomRouteComponentProps & CoursesVisibleContextProps

@@ -1,6 +1,6 @@
 import * as React from "react"
+import APP_URLS from "../APP_URLS"
 import Heading from "../components/Heading"
-import APP_URLS from "../urls"
 
 /** Stránka, na kterou se uživatel dostane při neexistující stránce/objektu. */
 const NotFound: React.FC = () => (

@@ -1,5 +1,5 @@
 import * as React from "react"
-import ClientService, { ListWithActiveClients } from "../api/services/client"
+import ClientService, { ListWithActiveClients } from "../api/services/ClientService"
 import { clientName, noop } from "../global/utils"
 import { ClientActiveType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"

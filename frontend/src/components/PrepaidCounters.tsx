@@ -10,7 +10,7 @@ import {
     ListGroupItem,
     Row
 } from "reactstrap"
-import MembershipService from "../api/services/membership"
+import MembershipService from "../api/services/MembershipService"
 import { TEXTS } from "../global/constants"
 import { MembershipType } from "../types/models"
 import ClientName from "./ClientName"

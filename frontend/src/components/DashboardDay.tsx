@@ -1,6 +1,6 @@
 import * as React from "react"
 import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
-import LectureService from "../api/services/lecture"
+import LectureService from "../api/services/LectureService"
 import {
     AttendanceStatesContextProps,
     WithAttendanceStatesContext

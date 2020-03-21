@@ -1,7 +1,7 @@
 import { faUsdCircle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
-import AttendanceService from "../api/services/attendance"
+import AttendanceService from "../api/services/AttendanceService"
 import "./AttendancePaidButton.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 

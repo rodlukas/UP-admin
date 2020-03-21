@@ -21,7 +21,7 @@ import {
     ModalFooter,
     ModalHeader
 } from "reactstrap"
-import LectureService from "../api/services/lecture"
+import LectureService from "../api/services/LectureService"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"

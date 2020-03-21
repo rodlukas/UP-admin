@@ -1,5 +1,5 @@
 import * as React from "react"
-import CourseService from "../api/services/course"
+import CourseService from "../api/services/CourseService"
 import { noop } from "../global/utils"
 import { CourseType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
