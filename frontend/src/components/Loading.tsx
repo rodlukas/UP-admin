@@ -20,10 +20,10 @@ type Props = {
 const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
     const [loadingState, setLoadingState] = React.useState(LOADING_STATE.NORMAL_LOADING)
 
-    function setLoadingTimeout(loadingState: number): number {
+    function setLoadingTimeout(newLoadingState: number): number {
         return window.setTimeout(
-            () => setLoadingState(loadingState),
-            (loadingState === LOADING_STATE.LONG_LOADING
+            () => setLoadingState(newLoadingState),
+            (newLoadingState === LOADING_STATE.LONG_LOADING
                 ? LONG_LOADING_THRESHOLD
                 : OVERLONG_LOADING_THRESHOLD) * 1000
         )

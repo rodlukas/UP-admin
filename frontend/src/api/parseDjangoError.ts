@@ -41,7 +41,7 @@ export function parseDjangoError(error: AxiosError): null | { [key: string]: any
             })
             result = json
         }
-    } catch (error) {
+    } catch {
         return null
     }
     return result

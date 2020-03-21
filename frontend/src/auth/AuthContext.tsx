@@ -82,8 +82,8 @@ class AuthProvider extends React.Component<Props, State> {
         }
     }
 
-    refreshToken = (token: TokenCodedType): void => {
-        const data = { token }
+    refreshToken = (oldToken: TokenCodedType): void => {
+        const data = { token: oldToken }
         LoginService.refresh(data)
             .then(({ token }) => {
                 Token.save(token)
