@@ -327,10 +327,8 @@ python manage.py runserver 0.0.0.0:8000
 
 **✅ Aplikace je nyní dostupná na adrese <http://localhost:8000/>.**
 
-> **Poznámka: otevření aplikace na jiném zařízení v síti**
->
-> Aplikace je připravena také na zobrazení z dalších zařízeních v síti (např. z mobilního telefonu).
-> Obvykle je potřeba provést tyto 2 kroky:
+> **Poznámka: otevření aplikace na jiném zařízení v síti** – aplikace je připravena pro použití i z
+> dalších zařízeních v síti (např. z mobilního telefonu), obvykle je potřeba provést tyto 2 kroky:
 >
 > 1.  povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
 > 2.  na mobilním zařízení zadat hostname nebo privátní IP adresu počítače, na kterém běží server.
