@@ -275,7 +275,7 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
 4.  Pomocí **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **vytvoříme
     databázi a uživatele** pro přístup do databáze:
 
-    ```
+    ```bash
     sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
     ```
 
