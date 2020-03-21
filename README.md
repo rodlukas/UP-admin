@@ -325,7 +325,7 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
 python manage.py runserver 0.0.0.0:8000
 ```
 
-**✅ Aplikace je nyní dostupná na adrese http://localhost:8000/.**
+**✅ Aplikace je nyní dostupná na adrese <http://localhost:8000/>.**
 
 > **Poznámka: otevření aplikace na jiném zařízení v síti**
 >
