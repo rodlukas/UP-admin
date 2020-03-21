@@ -332,8 +332,8 @@ python manage.py runserver 0.0.0.0:8000
 > Aplikace je připravena také na zobrazení z dalších zařízeních v síti (např. z mobilního telefonu).
 > Obvykle je potřeba provést tyto 2 kroky:
 >
-> 1. povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
-> 2. na mobilním zařízení zadat hostname nebo privátní IP adresu počítače, na kterém běží server.
+> 1.  povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
+> 2.  na mobilním zařízení zadat hostname nebo privátní IP adresu počítače, na kterém běží server.
 
 ### Testování
 
