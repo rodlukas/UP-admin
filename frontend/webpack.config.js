@@ -12,10 +12,10 @@ const hostName = os.hostname().toLowerCase() + ".local"
 const port = 3000
 const urlLocal = `http://${hostName}:${port}/`
 const urlProduction = "/static/assets/"
-const pathBuild = path.resolve(__dirname, "build/assets/")
+const pathBuild = path.resolve(__dirname, "build", "assets")
 const htmlFile = "react-autogenerate.html"
-const htmlSource = "src/index.html"
-const htmlTarget = path.resolve(__dirname + "/../", "admin", "templates")
+const htmlSource = path.resolve(__dirname, "src", "index.html")
+const htmlTarget = path.resolve(__dirname, "..", "admin", "templates")
 
 // pouziva se cross-env pro crossplatform nastaveni env promenne
 // napr. kvuli https://github.com/gaearon/react-hot-loader#what-about-production
