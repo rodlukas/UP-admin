@@ -23,14 +23,14 @@ const ClientsActiveContext = React.createContext<Context>({
     clients: [],
     funcRefresh: noop,
     funcHardRefresh: noop,
-    isLoaded: false
+    isLoaded: false,
 })
 
 export class ClientsActiveProvider extends React.Component<{}, State> {
     state: State = {
         loadRequested: false,
         isLoaded: false,
-        clients: []
+        clients: [],
     }
 
     // odstraneni zvlastnich znaku pro vyhledavani (viz https://github.com/krisk/Fuse/issues/181)
@@ -39,11 +39,11 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
     }
 
     loadClients = (): Promise<ListWithActiveClients> => {
-        return ClientService.getActive().then(clients => {
+        return ClientService.getActive().then((clients) => {
             // pridani klice se zjednodusenym jmenem klienta
-            return clients.map(client => ({
+            return clients.map((client) => ({
                 ...client,
-                normalized: [clientName(client), this.removeSpecialCharacters(clientName(client))]
+                normalized: [clientName(client), this.removeSpecialCharacters(clientName(client))],
             }))
         })
     }
@@ -52,11 +52,11 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
         // pokud jeste nikdo nepozadal o nacteni klientu, pozadej a nacti je
         if (!this.state.loadRequested)
             this.setState({ loadRequested: true }, () => {
-                this.loadClients().then(clients => {
+                this.loadClients().then((clients) => {
                     this.setState(
                         {
                             clients,
-                            isLoaded: true
+                            isLoaded: true,
                         },
                         callback
                     )
@@ -68,10 +68,10 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
         // pokud uz je v pameti nactena stara verze klientu, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
         if (this.state.loadRequested)
             this.setState({ isLoaded: false }, () => {
-                this.loadClients().then(clients =>
+                this.loadClients().then((clients) =>
                     this.setState({
                         clients,
-                        isLoaded: true
+                        isLoaded: true,
                     })
                 )
             })
@@ -83,7 +83,7 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
                 clients: this.state.clients,
                 funcRefresh: this.getClients,
                 funcHardRefresh: this.hardRefreshClients,
-                isLoaded: this.state.isLoaded
+                isLoaded: this.state.isLoaded,
             }}>
             {this.props.children}
         </ClientsActiveContext.Provider>

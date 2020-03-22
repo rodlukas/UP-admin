@@ -27,7 +27,7 @@ const AuthContext = React.createContext<Context>({
     isAuth: false,
     isAuthenticated: noop,
     login: noop,
-    logout: noop
+    logout: noop,
 })
 
 type Props = {}
@@ -35,7 +35,7 @@ type Props = {}
 class AuthProvider extends React.Component<Props, State> {
     state: State = {
         isLoading: false,
-        isAuth: false
+        isAuth: false,
     }
 
     componentDidMount(): void {
@@ -58,7 +58,7 @@ class AuthProvider extends React.Component<Props, State> {
     isAuthenticated = (refreshExpiringToken = true): void => {
         const token = Token.get()
         this.setState({
-            isAuth: token !== null && !this.isTokenExpired(token, refreshExpiringToken)
+            isAuth: token !== null && !this.isTokenExpired(token, refreshExpiringToken),
         })
     }
 
@@ -122,7 +122,7 @@ class AuthProvider extends React.Component<Props, State> {
                 isLoading: this.state.isLoading,
                 isAuthenticated: this.isAuthenticated,
                 logout: this.logout,
-                login: this.login
+                login: this.login,
             }}>
             {this.props.children}
         </AuthContext.Provider>

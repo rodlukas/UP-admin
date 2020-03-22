@@ -26,7 +26,7 @@ type State = {
 /** Zařídí výpis chyby do notifikace a konzole. */
 class ErrorMessage extends React.Component<Props, State> {
     state: State = {
-        errMsg: ""
+        errMsg: "",
     }
 
     errorResponse = this.props.error.response
@@ -108,7 +108,7 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
     const notify = (message: React.ReactNode, level: TypeOptions): void => {
         const options: ToastOptions = {
             type: level,
-            autoClose: level === toast.TYPE.ERROR ? 15000 : 4000
+            autoClose: level === toast.TYPE.ERROR ? 15000 : 4000,
         }
         toast(message, options)
     }
@@ -148,11 +148,11 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
     }
 
     return axiosRequest<T>(options)
-        .then(response => onSuccess<T>(response))
+        .then((response) => onSuccess<T>(response))
         .catch(onError)
 }
 
 /** Wrapper požadavku na API, který předá dál pouze získaná data (ne celou Response). */
 export const requestData = <T,>(options: AxiosRequestConfig, ignoreErrors = false): Promise<T> => {
-    return request<T>(options, ignoreErrors).then(response => response.data)
+    return request<T>(options, ignoreErrors).then((response) => response.data)
 }

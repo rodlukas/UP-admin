@@ -12,7 +12,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující box pro výběr stavu účasti klienta na dané lekci. */
-const AttendanceSelectAttendanceState: React.FC<Props> = props => {
+const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
     const { attendancestates } = React.useContext(AttendanceStatesContext)
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -31,7 +31,7 @@ const AttendanceSelectAttendanceState: React.FC<Props> = props => {
             value={props.value}
             data-qa="lecture_select_attendance_attendancestate">
             {attendancestates.map(
-                attendancestate =>
+                (attendancestate) =>
                     // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                     (attendancestate.visible || attendancestate.id === props.value) && (
                         <option key={attendancestate.id} value={attendancestate.id}>

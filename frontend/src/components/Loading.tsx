@@ -9,7 +9,7 @@ const OVERLONG_LOADING_THRESHOLD = 25 // sekundy
 const LOADING_STATE = Object.freeze({
     NORMAL_LOADING: 0,
     LONG_LOADING: 1,
-    OVERLONG_LOADING: 2
+    OVERLONG_LOADING: 2,
 })
 
 type Props = {

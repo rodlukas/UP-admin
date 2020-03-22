@@ -6,7 +6,7 @@ import {
     ClientPostApiDummy,
     CoursePostApiDummy,
     GroupPostApiDummy,
-    LecturePostApiDummy
+    LecturePostApiDummy,
 } from "../../types/models"
 
 export const DummyClient: ClientPostApiDummy = {
@@ -15,35 +15,35 @@ export const DummyClient: ClientPostApiDummy = {
     note: "",
     phone: "",
     firstname: "",
-    surname: ""
+    surname: "",
 }
 
 export const DummyCourse: CoursePostApiDummy = {
     color: DEFAULT_COLOR,
     duration: DEFAULT_LECTURE_DURATION_SINGLE,
     name: "",
-    visible: true
+    visible: true,
 }
 
 export const DummyAttendanceState: AttendanceStatePostApiDummy = {
     name: "",
     visible: true,
     default: true,
-    excused: true
+    excused: true,
 }
 
 export const DummyGroup: GroupPostApiDummy = {
     active: true,
     name: "",
     memberships: [],
-    course: null
+    course: null,
 }
 
 export const DummyApplication: ApplicationPostApiDummy = {
     client: null,
     course: null,
     note: "",
-    created_at: ""
+    created_at: "",
 }
 
 export const DummyLecture: LecturePostApiDummy = {
@@ -53,5 +53,5 @@ export const DummyLecture: LecturePostApiDummy = {
     canceled: false,
     duration: 0,
     attendances: [],
-    number: 0
+    number: 0,
 }

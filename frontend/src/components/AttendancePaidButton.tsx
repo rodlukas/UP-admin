@@ -12,7 +12,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující tlačítko pro platbu klienta za danou lekci. */
-const AttendancePaidButton: React.FC<Props> = props => {
+const AttendancePaidButton: React.FC<Props> = (props) => {
     function onClick(): void {
         const newPaid = !props.paid
         const id = props.attendanceId

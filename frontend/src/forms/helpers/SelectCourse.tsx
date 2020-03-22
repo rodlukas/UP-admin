@@ -14,7 +14,7 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
     value,
     onChangeCallback,
     options,
-    isDisabled = false
+    isDisabled = false,
 }) => (
     <ReactSelectWrapper<CourseType>
         {...reactSelectIds("course")}

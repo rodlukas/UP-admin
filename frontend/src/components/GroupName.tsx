@@ -42,7 +42,7 @@ const GroupName: React.FC<GroupNameProps> = ({
     title = false,
     showCircle = false,
     bold = false,
-    noWrap = false
+    noWrap = false,
 }) => {
     const PlainGroupNameComponent: React.FC = () => (
         <PlainName group={group} title={title} bold={bold} />

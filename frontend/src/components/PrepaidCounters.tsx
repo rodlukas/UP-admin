@@ -8,7 +8,7 @@ import {
     Label,
     ListGroup,
     ListGroupItem,
-    Row
+    Row,
 } from "reactstrap"
 import MembershipService from "../api/services/MembershipService"
 import { TEXTS } from "../global/constants"
@@ -31,10 +31,10 @@ type PrepaidCntObjectsType = {
 }
 
 /** Komponenta zobrazující počítadla předplacených lekcí pro členy skupiny. */
-const PrepaidCounters: React.FC<Props> = props => {
+const PrepaidCounters: React.FC<Props> = (props) => {
     const createPrepaidCntObjects = React.useCallback(() => {
         const objects: PrepaidCntObjectsType = {}
-        props.memberships.forEach(membership => (objects[membership.id] = membership.prepaid_cnt))
+        props.memberships.forEach((membership) => (objects[membership.id] = membership.prepaid_cnt))
         return objects
     }, [props.memberships])
 
@@ -48,7 +48,7 @@ const PrepaidCounters: React.FC<Props> = props => {
         const target = e.currentTarget
         const value = Number(target.value)
         const id = Number(target.dataset.id as string)
-        setPrepaidCnts(prevPrepaidCnts => {
+        setPrepaidCnts((prevPrepaidCnts) => {
             // vytvorime kopii prepaidCnts (ma jen jednu uroven -> staci melka kopie)
             const newPrepaidCnts = { ...prevPrepaidCnts }
             newPrepaidCnts[id] = value
@@ -67,7 +67,7 @@ const PrepaidCounters: React.FC<Props> = props => {
     return (
         <Container fluid>
             <Row className="justify-content-center">
-                {props.memberships.map(membership => (
+                {props.memberships.map((membership) => (
                     <Col sm="9" md="3" lg="2" xl="2" key={membership.id}>
                         <ListGroup>
                             <ListGroupItem>

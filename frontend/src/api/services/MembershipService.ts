@@ -11,12 +11,12 @@ function patch(context: MembershipPatchApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
         method: API_METHODS.patch,
-        data: context
+        data: context,
     })
 }
 
 const MembershipService = {
-    patch
+    patch,
 }
 
 export default MembershipService

@@ -14,7 +14,7 @@ import {
     Label,
     ModalBody,
     ModalFooter,
-    ModalHeader
+    ModalHeader,
 } from "reactstrap"
 import AttendanceStateService from "../api/services/AttendanceStateService"
 import CourseService from "../api/services/CourseService"
@@ -29,7 +29,7 @@ import {
     CoursePostApi,
     CoursePostApiDummy,
     CoursePutApi,
-    CourseType
+    CourseType,
 } from "../types/models"
 import { fEmptyVoid, Model } from "../types/types"
 import "./FormSettings.css"
@@ -62,7 +62,7 @@ export default class FormSettings extends React.Component<Props, State> {
         visible: this.props.object.visible,
         duration: this.isCourse(this.props.object) ? this.props.object.duration : undefined,
         color: this.isCourse(this.props.object) ? this.props.object.color : undefined,
-        isSubmit: false
+        isSubmit: false,
     }
 
     onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -70,9 +70,9 @@ export default class FormSettings extends React.Component<Props, State> {
         const target = e.currentTarget
         const value = target.type === "checkbox" ? target.checked : target.value
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
-            [target.id]: value
+            [target.id]: value,
         }))
     }
 
@@ -89,7 +89,7 @@ export default class FormSettings extends React.Component<Props, State> {
                 name,
                 visible,
                 duration: durationCourse,
-                color: colorCourse
+                color: colorCourse,
             }
             if (this.isObject(this.props.object)) {
                 const dataPut: CoursePutApi = { ...dataPost, id: this.props.object.id }

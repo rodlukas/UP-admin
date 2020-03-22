@@ -7,16 +7,16 @@ module.exports = {
     env: {
         browser: true,
         node: true,
-        es6: true
+        es6: true,
     },
     globals: {
         Atomics: "readonly",
-        SharedArrayBuffer: "readonly"
+        SharedArrayBuffer: "readonly",
     },
     ignorePatterns: ["webpack.config.js"],
     parserOptions: {
         ecmaFeatures: {
-            jsx: true
+            jsx: true,
         },
         ecmaVersion: 2018,
         sourceType: "module",
@@ -24,20 +24,20 @@ module.exports = {
         // nastaveni potrebna pro type-aware typescript-eslint
         // viz https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/TYPED_LINTING.md
         tsconfigRootDir: __dirname,
-        project: "./tsconfig.json"
+        project: "./tsconfig.json",
     },
     plugins: ["import", "jsx-a11y", "react", "react-hooks", "prettier", "@typescript-eslint"],
     settings: {
         react: {
-            version: "detect"
+            version: "detect",
         },
         // resolver eslint-import-resolver-typescript zaridi spravne chovani k @types
         // viz https://github.com/benmosher/eslint-plugin-import/issues/1341
         "import/resolver": {
-            typescript: { alwaysTryTypes: true }
+            typescript: { alwaysTryTypes: true },
         },
         // kvuli false positives "ESLint: 'contrast' not found in imported namespace 'chroma'.(import/namespace)"
-        "import/ignore": ["chroma"]
+        "import/ignore": ["chroma"],
     },
     extends: [
         "eslint:recommended",
@@ -59,7 +59,7 @@ module.exports = {
         "plugin:prettier/recommended",
         "prettier/@typescript-eslint",
         "prettier/babel",
-        "prettier/react"
+        "prettier/react",
     ],
     rules: {
         "react/prop-types": 0,
@@ -81,6 +81,6 @@ module.exports = {
         // deaktivace pro properties kvuli DRF API
         "@typescript-eslint/camelcase": ["warn", { properties: "never" }],
 
-        "import/namespace": [2, { allowComputed: true }]
-    }
+        "import/namespace": [2, { allowComputed: true }],
+    },
 }

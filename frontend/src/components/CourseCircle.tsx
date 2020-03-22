@@ -22,7 +22,7 @@ const CourseCircle: React.FC<Props> = ({ color, size, showTitle = false }) => {
                 style={{
                     background: color,
                     width: sizeWithUnit,
-                    height: sizeWithUnit
+                    height: sizeWithUnit,
                 }}
             />
             {showTitle && (

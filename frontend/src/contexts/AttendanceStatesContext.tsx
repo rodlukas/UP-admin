@@ -17,13 +17,13 @@ type Context = StateContext & {
 const AttendanceStatesContext = React.createContext<Context>({
     attendancestates: [],
     funcRefresh: noop,
-    isLoaded: false
+    isLoaded: false,
 })
 
 export class AttendanceStatesProvider extends React.Component<{}, StateContext> {
     state: StateContext = {
         isLoaded: false,
-        attendancestates: []
+        attendancestates: [],
     }
 
     componentDidMount(): void {
@@ -32,11 +32,11 @@ export class AttendanceStatesProvider extends React.Component<{}, StateContext> 
 
     getAttendanceStates = (callback = noop): void =>
         this.setState({ isLoaded: false }, () => {
-            AttendanceStateService.getAll().then(attendancestates =>
+            AttendanceStateService.getAll().then((attendancestates) =>
                 this.setState(
                     {
                         attendancestates,
-                        isLoaded: true
+                        isLoaded: true,
                     },
                     callback
                 )
@@ -48,7 +48,7 @@ export class AttendanceStatesProvider extends React.Component<{}, StateContext> 
             value={{
                 attendancestates: this.state.attendancestates,
                 funcRefresh: this.getAttendanceStates,
-                isLoaded: this.state.isLoaded
+                isLoaded: this.state.isLoaded,
             }}>
             {this.props.children}
         </AttendanceStatesContext.Provider>

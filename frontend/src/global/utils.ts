@@ -4,7 +4,7 @@ import {
     ClientType,
     CourseType,
     LectureType,
-    MembershipType
+    MembershipType,
 } from "../types/models"
 import { LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
@@ -22,16 +22,16 @@ export function groupObjectsByCourses<O extends ApplicationType | LectureType>(
         if (!obj[item.course.name])
             obj[item.course.name] = {
                 course: item.course,
-                objects: []
+                objects: [],
             }
         obj[item.course.name].objects.push(item)
         return obj
     }, {})
     // aby se daly kurzy seradit podle abecedy, je potreba prevest strukturu na pole,
     // kazda polozka bude obsahovat objekt z predchozi struktury (hodnotu klice)
-    const arrayOfObjects = Object.keys(groupByCourses).map(key => ({
+    const arrayOfObjects = Object.keys(groupByCourses).map((key) => ({
         course: groupByCourses[key].course,
-        objects: groupByCourses[key].objects
+        objects: groupByCourses[key].objects,
     }))
     // serad kurzy podle abecedy
     arrayOfObjects.sort((a, b) => {
@@ -50,7 +50,7 @@ export function getLecturesgroupedByCourses(
     const requestLectures = isClient
         ? LectureService.getAllFromClientOrdered(id, false)
         : LectureService.getAllFromGroupOrdered(id, false)
-    return requestLectures.then(lectures => groupObjectsByCourses(lectures))
+    return requestLectures.then((lectures) => groupObjectsByCourses(lectures))
 }
 
 export type DefaultValuesForLecture = {
@@ -65,7 +65,7 @@ export function prepareDefaultValuesForLecture(
 ): DefaultValuesForLecture {
     return {
         course,
-        start: start === "" || start === null ? "" : addDays(new Date(start), 7)
+        start: start === "" || start === null ? "" : addDays(new Date(start), 7),
     }
 }
 
@@ -85,7 +85,7 @@ export function getDefaultValuesForLecture(
     // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
     else {
         const latestLecturesOfEachCourse: Array<LectureType> = []
-        lecturesGroupedByCourses.forEach(elem => latestLecturesOfEachCourse.push(elem.objects[0]))
+        lecturesGroupedByCourses.forEach((elem) => latestLecturesOfEachCourse.push(elem.objects[0]))
         // pro porovnani se vyuziva lexicographical order
         // (ISO pro datum a cas to podporuje, viz https://en.wikipedia.org/wiki/ISO_8601#General_principles)
         let latestLecture = latestLecturesOfEachCourse[0]
@@ -109,7 +109,7 @@ export function prettyAmount(amount: number): string {
 
 /** Workaround dokud nebude fungovat required v react-selectu - TODO. */
 export function alertRequired(object: string, ...inputVals: Array<object | null>): boolean {
-    if (inputVals.some(e => e === null)) {
+    if (inputVals.some((e) => e === null)) {
         alert("Není zvolen žádný " + object + "!")
         return true
     }
@@ -135,7 +135,7 @@ export function courseDuration(duration: LectureType["duration"]): string {
 
 /** Zjistí, jestli jsou všichni členové skupiny aktivní. */
 export function areAllMembersActive(memberships: Array<MembershipType>): boolean {
-    return memberships.every(membership => membership.client.active)
+    return memberships.every((membership) => membership.client.active)
 }
 
 /** Vrátí string validní pro použití jako ID elementu. */

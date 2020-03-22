@@ -2,7 +2,7 @@ import {
     faExclamationCircle,
     faExternalLinkAlt,
     faInfoCircle,
-    faSyncAlt
+    faSyncAlt,
 } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
@@ -43,15 +43,15 @@ export default class Bank extends React.PureComponent<{}, State> {
         accountStatement: {
             info: {
                 closingBalance: null,
-                dateStart: undefined
+                dateStart: undefined,
             },
             transactionList: {
-                transaction: []
-            }
+                transaction: [],
+            },
         },
         fetch_timestamp: null,
         rent_price: null,
-        status_info: undefined
+        status_info: undefined,
     }
 
     timeoutId: TimeoutType
@@ -60,24 +60,24 @@ export default class Bank extends React.PureComponent<{}, State> {
         bankDataApi: this.bankDataApiInit,
         isLoading: true,
         REFRESH_DISABLED: true,
-        DATA_PROBLEM: false
+        DATA_PROBLEM: false,
     }
 
     getBankData = (): void => {
-        BankService.getAll().then(response => {
+        BankService.getAll().then((response) => {
             if (response.status !== 200)
                 this.setState({
                     // z API dorazi jen status_info, provedeme merge se zbytkem init hodnot
                     bankDataApi: Object.assign(this.bankDataApiInit, response.data),
                     DATA_PROBLEM: true,
-                    isLoading: false
+                    isLoading: false,
                 })
             else
                 this.setState({
                     bankDataApi: response.data,
                     isLoading: false,
                     REFRESH_DISABLED: true,
-                    DATA_PROBLEM: false
+                    DATA_PROBLEM: false,
                 })
             // po zadanem poctu sekund povol tlacitko refresh
             this.timeoutId = window.setTimeout(
@@ -192,7 +192,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                                     <TableInfo text="Žádné nedávné transakce" />
                                 ) : (
                                     this.state.bankDataApi.accountStatement.transactionList.transaction.map(
-                                        transaction => {
+                                        (transaction) => {
                                             const date = new Date(
                                                 transaction.column0.value.split("+")[0]
                                             )

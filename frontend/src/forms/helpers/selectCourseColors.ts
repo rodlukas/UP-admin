@@ -17,8 +17,8 @@ const dot = (color = "#ccc"): CSSTypes => ({
         display: "block",
         marginRight: 8,
         height: 14,
-        width: 14
-    }
+        width: 14,
+    },
 })
 
 /**
@@ -27,7 +27,7 @@ const dot = (color = "#ccc"): CSSTypes => ({
  * Vychází z: https://react-select.com/home#custom-styles
  */
 export const selectStyles: StylesConfig = {
-    control: styles => ({ ...styles, backgroundColor: "white" }),
+    control: (styles) => ({ ...styles, backgroundColor: "white" }),
     option: (styles: CSSTypes, { data, isFocused, isSelected }) => {
         const color = chroma(data.color)
         return {
@@ -40,11 +40,11 @@ export const selectStyles: StylesConfig = {
                 : data.color,
             ":active": {
                 ...styles[":active"],
-                backgroundColor: isSelected ? data.color : color.alpha(0.3).css()
-            }
+                backgroundColor: isSelected ? data.color : color.alpha(0.3).css(),
+            },
         }
     },
-    input: styles => ({ ...styles, ...dot() }),
-    placeholder: styles => ({ ...styles, ...dot() }),
-    singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) })
+    input: (styles) => ({ ...styles, ...dot() }),
+    placeholder: (styles) => ({ ...styles, ...dot() }),
+    singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) }),
 }

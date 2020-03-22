@@ -32,7 +32,7 @@ class GoogleAnalytics extends React.Component<Props> {
         ReactGA.set({
             page,
             location: `${location.origin}${page}`,
-            ...this.props.options
+            ...this.props.options,
         })
         ReactGA.pageview(page)
     }
@@ -49,9 +49,9 @@ const init = (options: FieldsObject = {}): boolean => {
     if (isProduction) {
         ReactGA.initialize("UA-53235943-3", {
             gaOptions: {
-                siteSpeedSampleRate: 100
+                siteSpeedSampleRate: 100,
             },
-            ...options
+            ...options,
         })
     }
     return isProduction
@@ -60,5 +60,5 @@ const init = (options: FieldsObject = {}): boolean => {
 export default {
     GoogleAnalytics,
     RouteTracker,
-    init
+    init,
 }

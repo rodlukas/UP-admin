@@ -29,7 +29,7 @@ class ErrorBoundary extends React.Component<Props, State> {
         hasError: false,
         eventId: undefined,
         error: undefined,
-        errorInfo: undefined
+        errorInfo: undefined,
     }
 
     unlisten: fEmptyVoid = noop
@@ -53,7 +53,7 @@ class ErrorBoundary extends React.Component<Props, State> {
     }
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-        Sentry.withScope(scope => {
+        Sentry.withScope((scope) => {
             scope.setExtras(errorInfo)
             const eventId = Sentry.captureException(error)
             this.setState({ eventId, error, errorInfo })
@@ -87,7 +87,7 @@ class ErrorBoundary extends React.Component<Props, State> {
                                 title: "Došlo k chybě v aplikaci",
                                 user: {
                                     email: decodedToken.email,
-                                    name: decodedToken.username
+                                    name: decodedToken.username,
                                 },
                                 labelName: "Jméno",
                                 labelClose: "Zavřít",
@@ -100,7 +100,7 @@ class ErrorBoundary extends React.Component<Props, State> {
                                 errorFormEntry:
                                     "Některá pole nejsou validní. Opravte, prosím, chyby a odešlete formulář znovu.",
                                 errorGeneric:
-                                    "Při odesílání formuláře nastala neznámá chyba. Zkuste to znovu."
+                                    "Při odesílání formuláře nastala neznámá chyba. Zkuste to znovu.",
                             })
                         }
                         content={

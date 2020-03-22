@@ -8,14 +8,14 @@ import {
     Modal,
     ModalBody,
     ModalHeader,
-    UncontrolledButtonDropdown
+    UncontrolledButtonDropdown,
 } from "reactstrap"
 import { Direction } from "reactstrap/lib/Dropdown"
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import {
     ClientsActiveContextProps,
-    WithClientsActiveContext
+    WithClientsActiveContext,
 } from "../contexts/ClientsActiveContext"
 import { GroupsActiveContextProps, WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { prettyDate } from "../global/funcDateTime"
@@ -23,7 +23,7 @@ import {
     DefaultValuesForLecture,
     getDefaultValuesForLecture,
     getLecturesgroupedByCourses,
-    prepareDefaultValuesForLecture
+    prepareDefaultValuesForLecture,
 } from "../global/utils"
 import { ClientType, GroupType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
@@ -63,14 +63,14 @@ class ModalLecturesWizard extends React.Component<Props, State> {
         object: null,
         modalSelectDone: false,
         defaultValuesForLecture: prepareDefaultValuesForLecture(),
-        isLoading: false
+        isLoading: false,
     }
 
     setClient = (isClient: boolean): void => {
         if (isClient) this.props.clientsActiveContext.funcRefresh()
         else this.props.groupsActiveContext.funcRefresh()
         this.setState({
-            isClient: isClient
+            isClient: isClient,
         })
     }
 
@@ -78,7 +78,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
         this.setState({
             isClient: undefined,
             modalSelectDone: false,
-            object: null
+            object: null,
         })
     }
 
@@ -92,18 +92,18 @@ class ModalLecturesWizard extends React.Component<Props, State> {
         // pro priste
         this.setState({ isLoading: true }, () => {
             const request = getLecturesgroupedByCourses(obj.id, isClient)
-            request.then(lecturesGroupedByCourses => {
+            request.then((lecturesGroupedByCourses) => {
                 this.setState(
                     {
                         defaultValuesForLecture: getDefaultValuesForLecture(
                             lecturesGroupedByCourses
-                        )
+                        ),
                     },
                     () =>
                         this.setState({
                             object: obj,
                             modalSelectDone: true,
-                            isLoading: false
+                            isLoading: false,
                         })
                 )
             })
@@ -126,7 +126,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
         this.setState({
             isClient: undefined,
             modalSelectDone: false,
-            object: null
+            object: null,
         })
         this.props.refresh()
     }

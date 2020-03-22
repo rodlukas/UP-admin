@@ -10,7 +10,7 @@ import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import {
     CoursesVisibleContextProps,
-    WithCoursesVisibleContext
+    WithCoursesVisibleContext,
 } from "../contexts/CoursesVisibleContext"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
@@ -30,19 +30,19 @@ type State = {
 class Applications extends React.Component<Props, State> {
     state: State = {
         applications: [],
-        isLoading: true
+        isLoading: true,
     }
 
     refresh = (): void => this.setState({ isLoading: true }, this.getApplications)
 
     getApplications = (): void => {
-        ApplicationService.getAll().then(applications => {
+        ApplicationService.getAll().then((applications) => {
             const grouppedApplicationsByCourses = groupObjectsByCourses<ApplicationType>(
                 applications
             )
             this.setState({
                 applications: grouppedApplicationsByCourses,
-                isLoading: false
+                isLoading: false,
             })
         })
     }
@@ -79,7 +79,7 @@ class Applications extends React.Component<Props, State> {
                                     Datum přidání
                                 </UncontrolledTooltipWrapper>
                             )}
-                            {applications.map(courseApplications => {
+                            {applications.map((courseApplications) => {
                                 const cnt = courseApplications.objects.length
                                 return (
                                     <ListGroup
@@ -95,7 +95,7 @@ class Applications extends React.Component<Props, State> {
                                                 <Badge
                                                     pill
                                                     style={{
-                                                        color: courseApplications.course.color
+                                                        color: courseApplications.course.color,
                                                     }}
                                                     className="font-weight-bold">
                                                     <span data-qa="applications_for_course_cnt">
@@ -110,7 +110,7 @@ class Applications extends React.Component<Props, State> {
                                                 </Badge>
                                             </h4>
                                         </ListGroupItem>
-                                        {courseApplications.objects.map(application => (
+                                        {courseApplications.objects.map((application) => (
                                             <ListGroupItem
                                                 key={application.id}
                                                 data-qa="application">

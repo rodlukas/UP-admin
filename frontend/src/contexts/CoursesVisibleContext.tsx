@@ -23,25 +23,25 @@ const CoursesVisibleContext = React.createContext<Context>({
     courses: [],
     funcRefresh: noop,
     funcHardRefresh: noop,
-    isLoaded: false
+    isLoaded: false,
 })
 
 export class CoursesVisibleProvider extends React.Component<{}, State> {
     state: State = {
         loadRequested: false,
         isLoaded: false,
-        courses: []
+        courses: [],
     }
 
     getCourses = (callback = noop): void => {
         // pokud jeste nikdo nepozadal o nacteni kurzu, pozadej a nacti je
         if (!this.state.loadRequested)
             this.setState({ loadRequested: true }, () => {
-                CourseService.getVisible().then(courses =>
+                CourseService.getVisible().then((courses) =>
                     this.setState(
                         {
                             courses,
-                            isLoaded: true
+                            isLoaded: true,
                         },
                         callback
                     )
@@ -53,10 +53,10 @@ export class CoursesVisibleProvider extends React.Component<{}, State> {
         // pokud uz je v pameti nactena stara verze kurzu, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
         if (this.state.loadRequested)
             this.setState({ isLoaded: false }, () => {
-                CourseService.getVisible().then(courses =>
+                CourseService.getVisible().then((courses) =>
                     this.setState({
                         courses,
-                        isLoaded: true
+                        isLoaded: true,
                     })
                 )
             })
@@ -68,7 +68,7 @@ export class CoursesVisibleProvider extends React.Component<{}, State> {
                 courses: this.state.courses,
                 funcRefresh: this.getCourses,
                 funcHardRefresh: this.hardRefreshCourses,
-                isLoaded: this.state.isLoaded
+                isLoaded: this.state.isLoaded,
             }}>
             {this.props.children}
         </CoursesVisibleContext.Provider>

@@ -10,14 +10,14 @@ function getAll(): AxiosPromise<BankType> {
     return request<BankType>(
         {
             url: baseUrl,
-            method: API_METHODS.get
+            method: API_METHODS.get,
         },
         true
     )
 }
 
 const BankService = {
-    getAll
+    getAll,
 }
 
 export default BankService

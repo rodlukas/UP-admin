@@ -37,7 +37,7 @@ const searchOptions: Fuse.FuseOptions<ClientActiveType> = {
     threshold: 0.5,
     tokenize: true,
     matchAllTokens: true,
-    keys: ["normalized", "phone", "email"]
+    keys: ["normalized", "phone", "email"],
 }
 
 /** Hlavní kostra aplikace. */
@@ -77,7 +77,7 @@ const Main: React.FC = () => {
     }, [isMenuOpened])
 
     function toggleNavbar(): void {
-        setIsMenuOpened(prevIsMenuOpened => !prevIsMenuOpened)
+        setIsMenuOpened((prevIsMenuOpened) => !prevIsMenuOpened)
     }
 
     function closeNavbar(): void {

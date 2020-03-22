@@ -10,7 +10,7 @@ import {
     Label,
     ModalBody,
     ModalFooter,
-    ModalHeader
+    ModalHeader,
 } from "reactstrap"
 import ClientService from "../api/services/ClientService"
 import GroupService from "../api/services/GroupService"
@@ -22,7 +22,7 @@ import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import {
     CoursesVisibleContextProps,
-    WithCoursesVisibleContext
+    WithCoursesVisibleContext,
 } from "../contexts/CoursesVisibleContext"
 import { alertRequired, clientName } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
@@ -33,7 +33,7 @@ import {
     GroupPostApiDummy,
     GroupPutApi,
     GroupType,
-    MembershipType
+    MembershipType,
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 import { reactSelectIds } from "./helpers/func"
@@ -71,17 +71,17 @@ class FormGroups extends React.Component<Props, State> {
         memberships: this.getMembers(this.props.group.memberships),
         clients: [],
         isLoading: true,
-        isSubmit: false
+        isSubmit: false,
     }
 
     // pripravi pole se cleny ve spravnem formatu, aby fungoval react-select
     getMembers(memberships: Array<MembershipType>): Array<ClientType> {
-        return memberships.map(membership => membership.client)
+        return memberships.map((membership) => membership.client)
     }
 
     // pripravi pole se cleny ve spravnem formatu, aby slo poslat do API
     prepareMembersForSubmit(memberships: State["memberships"]): GroupPutApi["memberships"] {
-        return memberships.map(membership => ({ client_id: membership.id }))
+        return memberships.map((membership) => ({ client_id: membership.id }))
     }
 
     onSelectChange = (
@@ -93,9 +93,9 @@ class FormGroups extends React.Component<Props, State> {
         if (name === "memberships" && !obj) obj = []
         else if (name === "course" && !obj) obj = null
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
-            [name]: obj
+            [name]: obj,
         }))
     }
 
@@ -104,9 +104,9 @@ class FormGroups extends React.Component<Props, State> {
         const target = e.currentTarget
         const value = target.type === "checkbox" ? target.checked : target.value
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
-            [target.id]: value
+            [target.id]: value,
         }))
     }
 
@@ -120,7 +120,7 @@ class FormGroups extends React.Component<Props, State> {
             name,
             memberships: this.prepareMembersForSubmit(memberships),
             course_id: courseId,
-            active
+            active,
         }
         if (this.isGroup(this.props.group)) {
             const dataPut: GroupPutApi = { ...dataPost, id: this.props.group.id }
@@ -130,7 +130,7 @@ class FormGroups extends React.Component<Props, State> {
         }
         this.setState({ isSubmit: true }, (): void => {
             request
-                .then(response => {
+                .then((response) => {
                     this.props.funcProcessAdditionOfGroup &&
                         this.props.funcProcessAdditionOfGroup(response)
                     this.props.funcForceClose(true, { active: response.active, isDeleted: false })
@@ -153,9 +153,9 @@ class FormGroups extends React.Component<Props, State> {
 
     processAdditionOfClient = (newClient: ClientType): void => {
         this.props.setFormDirty()
-        this.setState(prevState => {
+        this.setState((prevState) => {
             return {
-                memberships: [...prevState.memberships, newClient]
+                memberships: [...prevState.memberships, newClient],
             }
         })
     }
@@ -165,10 +165,10 @@ class FormGroups extends React.Component<Props, State> {
     }
 
     getClients = (): void => {
-        ClientService.getAll().then(clients =>
+        ClientService.getAll().then((clients) =>
             this.setState({
                 clients,
-                isLoading: false
+                isLoading: false,
             })
         )
     }

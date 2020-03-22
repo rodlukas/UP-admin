@@ -12,7 +12,7 @@ import {
     Label,
     ModalBody,
     ModalFooter,
-    ModalHeader
+    ModalHeader,
 } from "reactstrap"
 import ClientService from "../api/services/ClientService"
 import CancelButton from "../components/buttons/CancelButton"
@@ -55,7 +55,7 @@ export default class FormClients extends React.Component<Props, State> {
         phone: prettyPhone(this.props.client.phone),
         note: this.props.client.note,
         active: this.props.client.active,
-        isSubmit: false
+        isSubmit: false,
     }
 
     onChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -71,9 +71,9 @@ export default class FormClients extends React.Component<Props, State> {
         else if (target.id === "firstname" || target.id === "surname")
             value = capitalizeString(value as string)
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
-            [target.id]: value
+            [target.id]: value,
         }))
     }
 
@@ -92,7 +92,7 @@ export default class FormClients extends React.Component<Props, State> {
         }
         this.setState({ isSubmit: true }, (): void => {
             request
-                .then(response => {
+                .then((response) => {
                     this.props.funcProcessAdditionOfClient &&
                         this.props.funcProcessAdditionOfClient(response)
                     this.props.funcForceClose(true, { active: response.active, isDeleted: false })

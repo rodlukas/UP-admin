@@ -6,7 +6,7 @@ import { fEmptyVoid } from "../types/types"
 const DIRTY_INDICATORS = {
     CLEAN: 1,
     DIRTY: 2,
-    SUBMITTED_DIRTY: 3
+    SUBMITTED_DIRTY: 3,
 }
 
 type UseModal = readonly [
@@ -36,7 +36,7 @@ const useModal = (): UseModal => {
         // uloz docasna data potrebna pro dalsi praci v aplikaci
         dataToStore && setTempData(dataToStore)
 
-        setModal(prevIsModal => !prevIsModal)
+        setModal((prevIsModal) => !prevIsModal)
         // zavira se - vrat true pro rodicovske komponenty
         return true
     }
@@ -83,7 +83,7 @@ const useModal = (): UseModal => {
         setFormDirty,
         setModal,
         processOnModalClose,
-        tempData
+        tempData,
     ] as const
 }
 

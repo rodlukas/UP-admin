@@ -22,7 +22,7 @@ const ModalClients: React.FC<Props> = ({
     currentClient,
     inSentence = false,
     processAdditionOfClient,
-    refresh
+    refresh,
 }) => {
     const [
         isModal,
@@ -31,7 +31,7 @@ const ModalClients: React.FC<Props> = ({
         setFormDirty,
         ,
         processOnModalClose,
-        tempData
+        tempData,
     ] = useModal()
 
     const clientsActiveContext = React.useContext(ClientsActiveContext)

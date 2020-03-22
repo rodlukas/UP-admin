@@ -23,7 +23,7 @@ export default class Token {
         return {
             email: "",
             username: "",
-            exp: 0
+            exp: 0,
         }
     }
 

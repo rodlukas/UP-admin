@@ -31,9 +31,9 @@ module.exports = {
     resolve: {
         alias: {
             // react-hot-loader
-            "react-dom": "@hot-loader/react-dom"
+            "react-dom": "@hot-loader/react-dom",
         },
-        extensions: [".ts", ".tsx", ".js", ".jsx"]
+        extensions: [".ts", ".tsx", ".js", ".jsx"],
     },
     entry: ["react-hot-loader/patch", "./src/index"],
     module: {
@@ -47,8 +47,8 @@ module.exports = {
                     // vsechny errors/warnings od eslint interpretuj jako warning
                     emitWarning: true,
                     // !! pri upravach eslint konfigurace deaktivovat, viz https://github.com/webpack-contrib/eslint-loader/issues/214
-                    cache: true
-                }
+                    cache: true,
+                },
             },
             {
                 test: /\.(ts|js)x?$/,
@@ -59,8 +59,8 @@ module.exports = {
                     cacheCompression: false,
                     compact: isProduction,
                     sourceMaps: true,
-                    inputSourceMap: true
-                }
+                    inputSourceMap: true,
+                },
             },
             {
                 test: /\.css$/i,
@@ -70,30 +70,30 @@ module.exports = {
                               loader: MiniCssExtractPlugin.loader,
                               options: {
                                   hmr: !isProduction,
-                                  sourceMap: true
-                              }
+                                  sourceMap: true,
+                              },
                           }
                         : "style-loader",
                     {
                         loader: "css-loader",
-                        options: { importLoaders: 1, sourceMap: true }
+                        options: { importLoaders: 1, sourceMap: true },
                     },
                     {
                         loader: "postcss-loader",
                         options: {
                             sourceMap: true,
                             ident: "postcss",
-                            plugins: [require("postcss-preset-env")(), require("cssnano")()]
-                        }
-                    }
-                ]
-            }
-        ]
+                            plugins: [require("postcss-preset-env")(), require("cssnano")()],
+                        },
+                    },
+                ],
+            },
+        ],
     },
     plugins: [
         new MiniCssExtractPlugin({
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
-            chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css"
+            chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",
         }),
         new CleanWebpackPlugin(),
         new HtmlWebPackPlugin({
@@ -110,14 +110,14 @@ module.exports = {
                       removeStyleLinkTypeAttributes: true,
                       useShortDoctype: true,
                       // ignoruj Django sablonovaci jazyk
-                      ignoreCustomFragments: [/{%[\s\S]*?%}/]
+                      ignoreCustomFragments: [/{%[\s\S]*?%}/],
                   }
-                : false
+                : false,
         }),
         // automaticke generovani html souboru do templates slozky s injected odkazy na zdrojove soubory
         new HtmlWebpackHarddiskPlugin({
-            outputPath: htmlTarget
-        })
+            outputPath: htmlTarget,
+        }),
     ],
 
     output: {
@@ -125,7 +125,7 @@ module.exports = {
         chunkFilename: isProduction ? "[name].[contenthash:8].chunk.js" : "[name].chunk.js",
         filename: isProduction ? "[name].[contenthash:8].js" : "[name].js",
         path: pathBuild,
-        publicPath: isProduction ? urlProduction : urlLocal
+        publicPath: isProduction ? urlProduction : urlLocal,
     },
     devServer: {
         // pro povoleni pristupu odkudkoliv (a z Djanga)
@@ -139,8 +139,8 @@ module.exports = {
         overlay: true,
         port: port,
         stats: {
-            modules: false
-        }
+            modules: false,
+        },
     },
     stats: { children: false, modules: false },
     devtool: isProduction ? "source-map" : "cheap-module-source-map",
@@ -148,26 +148,26 @@ module.exports = {
         minimize: isProduction,
         splitChunks: {
             chunks: "all",
-            name: !isProduction
+            name: !isProduction,
         },
         runtimeChunk: {
-            name: entrypoint => `runtime-${entrypoint.name}`
+            name: (entrypoint) => `runtime-${entrypoint.name}`,
         },
         minimizer: [
             new TerserPlugin({
-                sourceMap: true
+                sourceMap: true,
             }),
             new OptimizeCSSAssetsPlugin({
                 cssProcessorOptions: {
                     map: {
                         inline: false,
-                        annotation: true
-                    }
+                        annotation: true,
+                    },
                 },
                 cssProcessorPluginOptions: {
-                    preset: ["default", { minifyFontValues: { removeQuotes: false } }]
-                }
-            })
-        ]
-    }
+                    preset: ["default", { minifyFontValues: { removeQuotes: false } }],
+                },
+            }),
+        ],
+    },
 }

@@ -15,7 +15,7 @@ import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import {
     AttendanceStatesContextProps,
-    WithAttendanceStatesContext
+    WithAttendanceStatesContext,
 } from "../contexts/AttendanceStatesContext"
 import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
 import ModalSettings from "../forms/ModalSettings"
@@ -53,7 +53,7 @@ class Settings extends React.Component<Props, State> {
         courses: [],
         isLoading: true,
         attendanceStateDefaultId: undefined,
-        attendanceStateExcusedId: undefined
+        attendanceStateExcusedId: undefined,
     }
 
     getAttendanceStatesData = (): Array<AttendanceStateType> =>
@@ -67,9 +67,9 @@ class Settings extends React.Component<Props, State> {
         const target = e.currentTarget
         const value = Number(target.value)
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
-            [target.id]: value
+            [target.id]: value,
         }))
         const attrApi = target.dataset.attribute
         if (attrApi) {
@@ -85,7 +85,7 @@ class Settings extends React.Component<Props, State> {
     }
 
     getCourses = (): void => {
-        CourseService.getAll().then(courses =>
+        CourseService.getAll().then((courses) =>
             this.setState({ courses }, () => this.setState({ isLoading: false }))
         )
     }
@@ -97,13 +97,13 @@ class Settings extends React.Component<Props, State> {
     }
 
     findStateIndexes = (): void => {
-        const defaultElem = this.getAttendanceStatesData().find(elem => elem.default)
+        const defaultElem = this.getAttendanceStatesData().find((elem) => elem.default)
         const attendanceStateDefaultId = defaultElem !== undefined ? defaultElem.id : undefined
-        const excusedElem = this.getAttendanceStatesData().find(elem => elem.excused)
+        const excusedElem = this.getAttendanceStatesData().find((elem) => elem.excused)
         const attendanceStateExcusedId = excusedElem !== undefined ? excusedElem.id : undefined
         this.setState({
             attendanceStateDefaultId,
-            attendanceStateExcusedId
+            attendanceStateExcusedId,
         })
     }
 
@@ -146,28 +146,30 @@ class Settings extends React.Component<Props, State> {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {this.getAttendanceStatesData().map(attendancestate => (
-                                                <tr
-                                                    key={attendancestate.id}
-                                                    data-qa="attendancestate">
-                                                    <td data-qa="attendancestate_name">
-                                                        {attendancestate.name}
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <Visible
-                                                            visible={attendancestate.visible}
-                                                            data-qa="attendancestate_visible"
-                                                        />
-                                                    </td>
-                                                    <td className="text-right text-md-right">
-                                                        <ModalSettings
-                                                            refresh={this.refresh}
-                                                            TYPE={EDIT_TYPE.STATE}
-                                                            currentObject={attendancestate}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            {this.getAttendanceStatesData().map(
+                                                (attendancestate) => (
+                                                    <tr
+                                                        key={attendancestate.id}
+                                                        data-qa="attendancestate">
+                                                        <td data-qa="attendancestate_name">
+                                                            {attendancestate.name}
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <Visible
+                                                                visible={attendancestate.visible}
+                                                                data-qa="attendancestate_visible"
+                                                            />
+                                                        </td>
+                                                        <td className="text-right text-md-right">
+                                                            <ModalSettings
+                                                                refresh={this.refresh}
+                                                                TYPE={EDIT_TYPE.STATE}
+                                                                currentObject={attendancestate}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            )}
                                         </tbody>
                                     </Table>
                                     {this.getAttendanceStatesData().length === 0 && (
@@ -207,7 +209,7 @@ class Settings extends React.Component<Props, State> {
                                             Vyberte stav...
                                         </option>
                                         {this.getAttendanceStatesData().map(
-                                            attendancestate =>
+                                            (attendancestate) =>
                                                 // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
                                                 attendancestate.visible && (
                                                     <option
@@ -237,7 +239,7 @@ class Settings extends React.Component<Props, State> {
                                             Vyberte stav...
                                         </option>
                                         {this.getAttendanceStatesData().map(
-                                            attendancestate =>
+                                            (attendancestate) =>
                                                 // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
                                                 attendancestate.visible && (
                                                     <option
@@ -262,7 +264,7 @@ class Settings extends React.Component<Props, State> {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {courses.map(course => (
+                                            {courses.map((course) => (
                                                 <tr key={course.id} data-qa="course">
                                                     <td data-qa="course_name">{course.name}</td>
                                                     <td className="text-center">

@@ -23,25 +23,25 @@ const GroupsActiveContext = React.createContext<Context>({
     groups: [],
     funcRefresh: noop,
     funcHardRefresh: noop,
-    isLoaded: false
+    isLoaded: false,
 })
 
 export class GroupsActiveProvider extends React.Component<{}, State> {
     state: State = {
         loadRequested: false,
         isLoaded: false,
-        groups: []
+        groups: [],
     }
 
     getGroups = (callback = noop): void => {
         // pokud jeste nikdo nepozadal o nacteni skupin, pozadej a nacti je
         if (!this.state.loadRequested)
             this.setState({ loadRequested: true }, () => {
-                GroupService.getActive().then(groups =>
+                GroupService.getActive().then((groups) =>
                     this.setState(
                         {
                             groups,
-                            isLoaded: true
+                            isLoaded: true,
                         },
                         callback
                     )
@@ -53,10 +53,10 @@ export class GroupsActiveProvider extends React.Component<{}, State> {
         // pokud uz je v pameti nactena stara verze skupin, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
         if (this.state.loadRequested)
             this.setState({ isLoaded: false }, () => {
-                GroupService.getActive().then(groups =>
+                GroupService.getActive().then((groups) =>
                     this.setState({
                         groups,
-                        isLoaded: true
+                        isLoaded: true,
                     })
                 )
             })
@@ -68,7 +68,7 @@ export class GroupsActiveProvider extends React.Component<{}, State> {
                 groups: this.state.groups,
                 funcRefresh: this.getGroups,
                 funcHardRefresh: this.hardRefreshGroups,
-                isLoaded: this.state.isLoaded
+                isLoaded: this.state.isLoaded,
             }}>
             {this.props.children}
         </GroupsActiveContext.Provider>

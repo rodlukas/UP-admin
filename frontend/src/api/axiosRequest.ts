@@ -6,7 +6,7 @@ import { API_URL, JWT_HEADER_PREFIX } from "../global/constants"
 const axiosInstance = axios.create({
     baseURL: API_URL,
     xsrfCookieName: "csrftoken",
-    xsrfHeaderName: "X-CSRFToken"
+    xsrfHeaderName: "X-CSRFToken",
 })
 
 // funkce pro simulaci dlouheho pozadavku

@@ -9,7 +9,7 @@ function refresh(context: TokenApiType): Promise<TokenApiType> {
     return requestData<TokenApiType>({
         url: baseUrl.url + baseUrl.action.refresh + API_DELIM,
         method: API_METHODS.post,
-        data: context
+        data: context,
     })
 }
 
@@ -18,13 +18,13 @@ function authenticate(context: AuthorizationType): Promise<TokenApiType> {
     return requestData<TokenApiType>({
         url: baseUrl.url + baseUrl.action.authenticate + API_DELIM,
         method: API_METHODS.post,
-        data: context
+        data: context,
     })
 }
 
 const LoginService = {
     refresh,
-    authenticate
+    authenticate,
 }
 
 export default LoginService

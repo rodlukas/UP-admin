@@ -11,12 +11,12 @@ function patch(context: AttendancePatchApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
         method: API_METHODS.patch,
-        data: context
+        data: context,
     })
 }
 
 const AttendanceService = {
-    patch
+    patch,
 }
 
 export default AttendanceService

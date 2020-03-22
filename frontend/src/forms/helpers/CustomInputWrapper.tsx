@@ -8,7 +8,7 @@ import { CustomInput, CustomInputProps } from "reactstrap"
  *
  * Viz https://github.com/rodlukas/UP-admin/issues/84
  */
-const CustomInputWrapper: React.FC<CustomInputProps> = props => {
+const CustomInputWrapper: React.FC<CustomInputProps> = (props) => {
     const [menuIsOpen, setMenuIsOpen] = React.useState(false)
     return (
         <CustomInput
@@ -23,7 +23,7 @@ const CustomInputWrapper: React.FC<CustomInputProps> = props => {
             }}
             onClick={(): void => {
                 // uzivatel otevrel dropdown menu, projev to do stavu
-                setMenuIsOpen(prevMenuIsOpen => !prevMenuIsOpen)
+                setMenuIsOpen((prevMenuIsOpen) => !prevMenuIsOpen)
             }}
         />
     )

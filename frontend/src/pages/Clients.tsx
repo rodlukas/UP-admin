@@ -11,7 +11,7 @@ import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import {
     ClientsActiveContextProps,
-    WithClientsActiveContext
+    WithClientsActiveContext,
 } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { ModalClientsData } from "../types/components"
@@ -31,7 +31,7 @@ class Clients extends React.Component<Props, State> {
     state: State = {
         clients: [],
         isLoading: true,
-        active: true
+        active: true,
     }
 
     isLoading = (): boolean =>
@@ -52,7 +52,7 @@ class Clients extends React.Component<Props, State> {
     getClients = (active = this.state.active, callFromRefresh = false): void => {
         if (active && !callFromRefresh) this.props.clientsActiveContext.funcRefresh()
         else if (!active)
-            ClientService.getInactive().then(clients =>
+            ClientService.getInactive().then((clients) =>
                 this.setState({ clients, isLoading: false })
             )
     }
@@ -96,7 +96,7 @@ class Clients extends React.Component<Props, State> {
                             </tr>
                         ) : (
                             <>
-                                {this.getClientsData().map(client => (
+                                {this.getClientsData().map((client) => (
                                     <tr key={client.id} data-qa="client">
                                         <td style={{ minWidth: "13em", width: "13em" }}>
                                             <ClientName client={client} link />

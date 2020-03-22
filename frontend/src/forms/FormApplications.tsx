@@ -8,7 +8,7 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import Loading from "../components/Loading"
 import {
     CoursesVisibleContextProps,
-    WithCoursesVisibleContext
+    WithCoursesVisibleContext,
 } from "../contexts/CoursesVisibleContext"
 import { alertRequired } from "../global/utils"
 import {
@@ -17,7 +17,7 @@ import {
     ApplicationPutApi,
     ApplicationType,
     ClientType,
-    CourseType
+    CourseType,
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 import Or from "./helpers/Or"
@@ -52,7 +52,7 @@ class FormApplications extends React.Component<Props, State> {
         note: this.props.application.note,
         clients: [],
         isLoading: true,
-        isSubmit: false
+        isSubmit: false,
     }
 
     onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -60,9 +60,9 @@ class FormApplications extends React.Component<Props, State> {
         const target = e.currentTarget
         const value = target.type === "checkbox" ? target.checked : target.value
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
-            [target.id]: value
+            [target.id]: value,
         }))
     }
 
@@ -70,9 +70,9 @@ class FormApplications extends React.Component<Props, State> {
         this.props.setFormDirty()
         if (obj === undefined) obj = null
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
-            [name]: obj
+            [name]: obj,
         }))
     }
 
@@ -104,7 +104,7 @@ class FormApplications extends React.Component<Props, State> {
     processAdditionOfClient = (newClient: ClientType): void => {
         this.props.setFormDirty()
         this.setState({
-            client: newClient
+            client: newClient,
         })
     }
 
@@ -113,10 +113,10 @@ class FormApplications extends React.Component<Props, State> {
     }
 
     getClients = (): void => {
-        ClientService.getAll().then(clients =>
+        ClientService.getAll().then((clients) =>
             this.setState({
                 clients,
-                isLoading: false
+                isLoading: false,
             })
         )
     }

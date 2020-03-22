@@ -11,7 +11,7 @@ import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import {
     CoursesVisibleContextProps,
-    WithCoursesVisibleContext
+    WithCoursesVisibleContext,
 } from "../contexts/CoursesVisibleContext"
 import { GroupsActiveContextProps, WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
@@ -34,7 +34,7 @@ class Groups extends React.Component<Props, State> {
     state: State = {
         groups: [],
         isLoading: true,
-        active: true
+        active: true,
     }
 
     isLoading = (): boolean =>
@@ -54,7 +54,8 @@ class Groups extends React.Component<Props, State> {
 
     getGroups = (active = this.state.active, callFromRefresh = false): void => {
         if (active && !callFromRefresh) this.props.groupsActiveContext.funcRefresh()
-        else GroupService.getInactive().then(groups => this.setState({ groups, isLoading: false }))
+        else
+            GroupService.getInactive().then((groups) => this.setState({ groups, isLoading: false }))
     }
 
     componentDidMount(): void {
@@ -93,7 +94,7 @@ class Groups extends React.Component<Props, State> {
                             </tr>
                         ) : (
                             <>
-                                {this.getGroupsData().map(group => (
+                                {this.getGroupsData().map((group) => (
                                     <tr key={group.id} data-qa="group">
                                         <td>
                                             <GroupName group={group} link noWrap />{" "}

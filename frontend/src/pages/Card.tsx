@@ -18,7 +18,7 @@ import PrepaidCounters from "../components/PrepaidCounters"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import {
     AttendanceStatesContextProps,
-    WithAttendanceStatesContext
+    WithAttendanceStatesContext,
 } from "../contexts/AttendanceStatesContext"
 import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
@@ -30,7 +30,7 @@ import {
     DefaultValuesForLecture,
     getDefaultValuesForLecture,
     getLecturesgroupedByCourses,
-    GroupedObjectsByCourses
+    GroupedObjectsByCourses,
 } from "../global/utils"
 import { ModalClientsGroupsData } from "../types/components"
 import { ClientType, GroupType, LectureType, MembershipType } from "../types/models"
@@ -63,12 +63,12 @@ class Card extends React.Component<Props, State> {
         lectures: [],
         memberships: [],
         loadingCnt: this.isClientPage() ? 0 : 1,
-        defaultValuesForLecture: undefined // pro FormLecture, aby se vybral velmi pravdepodobny kurz/datum a cas pri
+        defaultValuesForLecture: undefined, // pro FormLecture, aby se vybral velmi pravdepodobny kurz/datum a cas pri
         // pridavani lekce
     }
 
     loadingStateIncrement = (): void =>
-        this.setState(prevState => ({ loadingCnt: prevState.loadingCnt + 1 }))
+        this.setState((prevState) => ({ loadingCnt: prevState.loadingCnt + 1 }))
 
     getId = (): Model["id"] => this.props.match.params.id
     getPrevId = (prevProps: Props): Model["id"] => prevProps.match.params.id
@@ -84,7 +84,7 @@ class Card extends React.Component<Props, State> {
     refreshObjectFromModal = (data: ModalClientsGroupsData): void => {
         if (!data?.isDeleted)
             this.setState(
-                prevState => ({ loadingCnt: prevState.loadingCnt - 1 }),
+                (prevState) => ({ loadingCnt: prevState.loadingCnt - 1 }),
                 () => this.getObject()
             )
         else
@@ -96,7 +96,7 @@ class Card extends React.Component<Props, State> {
     refresh = (all = true): void => {
         if (this.isClientPage() && all) {
             this.setState(
-                prevState => ({ loadingCnt: prevState.loadingCnt - 3 }),
+                (prevState) => ({ loadingCnt: prevState.loadingCnt - 3 }),
                 () => {
                     this.getObject()
                     this.getLectures()
@@ -105,7 +105,7 @@ class Card extends React.Component<Props, State> {
             )
         } else {
             this.setState(
-                prevState => ({ loadingCnt: prevState.loadingCnt - 2 }),
+                (prevState) => ({ loadingCnt: prevState.loadingCnt - 2 }),
                 () => {
                     this.getObject()
                     this.getLectures()
@@ -130,7 +130,7 @@ class Card extends React.Component<Props, State> {
     goBack = (): void => this.props.history.goBack()
 
     getMemberships = (id = this.getId()): void => {
-        GroupService.getAllFromClient(id).then(memberships =>
+        GroupService.getAllFromClient(id).then((memberships) =>
             this.setState({ memberships }, this.loadingStateIncrement)
         )
     }
@@ -138,16 +138,16 @@ class Card extends React.Component<Props, State> {
     getObject = (isClient = this.isClientPage(), id = this.getId()): void => {
         const service = isClient ? ClientService : GroupService
         const request: Promise<ClientType | GroupType> = service.get(id)
-        request.then(object => this.setState({ object }, this.loadingStateIncrement))
+        request.then((object) => this.setState({ object }, this.loadingStateIncrement))
     }
 
     getLectures = (): void => {
         const request = getLecturesgroupedByCourses(this.getId(), this.isClientPage())
-        request.then(lecturesGroupedByCourses => {
+        request.then((lecturesGroupedByCourses) => {
             this.setState(
                 {
                     lectures: lecturesGroupedByCourses,
-                    defaultValuesForLecture: getDefaultValuesForLecture(lecturesGroupedByCourses)
+                    defaultValuesForLecture: getDefaultValuesForLecture(lecturesGroupedByCourses),
                 },
                 this.loadingStateIncrement
             )
@@ -159,18 +159,18 @@ class Card extends React.Component<Props, State> {
         id: MembershipType["id"],
         prepaidCnt: MembershipType["prepaid_cnt"]
     ): void => {
-        this.setState(prevState => {
+        this.setState((prevState) => {
             const newLoadingState = {
-                loadingCnt: prevState.loadingCnt - 1
+                loadingCnt: prevState.loadingCnt - 1,
             }
             if (this.isClient(prevState.object) || prevState.object === null)
                 // ...prevState kvuli https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18365
                 return {
                     ...prevState,
-                    ...newLoadingState
+                    ...newLoadingState,
                 }
             let successUpdateCnt = 0
-            const memberships = prevState.object.memberships.map(membership => {
+            const memberships = prevState.object.memberships.map((membership) => {
                 if (membership.id === id) {
                     successUpdateCnt++
                     return { ...membership, prepaid_cnt: prepaidCnt }
@@ -184,7 +184,7 @@ class Card extends React.Component<Props, State> {
                 )
             return {
                 object: { ...prevState.object, memberships },
-                ...newLoadingState
+                ...newLoadingState,
             }
         }, this.getLectures)
     }
@@ -271,7 +271,7 @@ class Card extends React.Component<Props, State> {
                             )}
                             <br />
                             <Row className="justify-content-center">
-                                {lectures.map(courseLectures => (
+                                {lectures.map((courseLectures) => (
                                     <Col
                                         key={courseLectures.course.id}
                                         sm="9"
@@ -288,7 +288,7 @@ class Card extends React.Component<Props, State> {
                                                     {courseLectures.course.name}
                                                 </h4>
                                             </ListGroupItem>
-                                            {courseLectures.objects.map(lecture => {
+                                            {courseLectures.objects.map((lecture) => {
                                                 // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
                                                 const date = new Date(lecture.start ?? 0)
                                                 let className = lecture.canceled

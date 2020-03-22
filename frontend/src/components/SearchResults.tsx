@@ -43,7 +43,7 @@ const SearchResults: React.FC<Props> = ({ foundResults, searchVal, search, reset
                             <Loading />
                         ) : (
                             <>
-                                {foundResults.map(client => (
+                                {foundResults.map((client) => (
                                     <ListGroupItem key={client.id}>
                                         <Row className="align-items-center">
                                             {" "}

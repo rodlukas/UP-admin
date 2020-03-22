@@ -17,7 +17,7 @@ const APP_URLS = Object.freeze({
     nastaveni: page("/nastaveni", "Nastavení"),
     zajemci: page("/zajemci", "Zájemci"),
     prehled: page("/", "Přehled"),
-    nenalezeno: page("/nenalezeno", "Nenalezeno") // smerovani ostatnich neznamych pozadavku, ktere zobrazi nenalezeno
+    nenalezeno: page("/nenalezeno", "Nenalezeno"), // smerovani ostatnich neznamych pozadavku, ktere zobrazi nenalezeno
 })
 
 export default APP_URLS

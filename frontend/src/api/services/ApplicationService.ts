@@ -11,7 +11,7 @@ type List = Array<Item>
 function getAll(): Promise<List> {
     return requestData<List>({
         url: baseUrl,
-        method: API_METHODS.get
+        method: API_METHODS.get,
     })
 }
 
@@ -20,7 +20,7 @@ function update(context: ApplicationPutApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
         method: API_METHODS.put,
-        data: context
+        data: context,
     })
 }
 
@@ -28,7 +28,7 @@ function update(context: ApplicationPutApi): Promise<Item> {
 function remove(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,
-        method: API_METHODS.remove
+        method: API_METHODS.remove,
     })
 }
 
@@ -37,7 +37,7 @@ function create(context: ApplicationPostApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl,
         method: API_METHODS.post,
-        data: context
+        data: context,
     })
 }
 
@@ -45,7 +45,7 @@ const ApplicationService = {
     getAll,
     create,
     update,
-    remove
+    remove,
 }
 
 export default ApplicationService

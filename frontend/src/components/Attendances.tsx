@@ -43,7 +43,7 @@ const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false, 
     const className = "Attendances" + (lecture.group ? " AttendancesGroup" : "")
     return (
         <ul className={className}>
-            {lecture.attendances.map(attendance => (
+            {lecture.attendances.map((attendance) => (
                 <Attendance
                     attendance={attendance}
                     key={attendance.id}

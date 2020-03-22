@@ -3,7 +3,7 @@ import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 import LectureService from "../api/services/LectureService"
 import {
     AttendanceStatesContextProps,
-    WithAttendanceStatesContext
+    WithAttendanceStatesContext,
 } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
@@ -13,7 +13,7 @@ import {
     isUserCelebrating,
     prettyDateWithLongDayYearIfDiff,
     prettyTime,
-    toISODate
+    toISODate,
 } from "../global/funcDateTime"
 import { courseDuration } from "../global/utils"
 import { LectureTypeWithDate } from "../types/models"
@@ -43,7 +43,7 @@ type State = {
 class DashboardDay extends React.Component<Props, State> {
     state: State = {
         lectures: [],
-        isLoading: true
+        isLoading: true,
     }
 
     timeoutId: TimeoutType
@@ -52,10 +52,10 @@ class DashboardDay extends React.Component<Props, State> {
 
     getLectures = (): void => {
         this.setState({ isLoading: true }, () => {
-            LectureService.getAllFromDayOrdered(toISODate(this.getDate()), true).then(lectures =>
+            LectureService.getAllFromDayOrdered(toISODate(this.getDate()), true).then((lectures) =>
                 this.setState({
                     lectures,
-                    isLoading: false
+                    isLoading: false,
                 })
             )
         })
@@ -114,7 +114,7 @@ class DashboardDay extends React.Component<Props, State> {
                         <Loading />
                     </ListGroupItem>
                 ) : lectures.length > 0 ? (
-                    lectures.map(lecture => {
+                    lectures.map((lecture) => {
                         let className = lecture.group ? "LectureGroup" : ""
                         if (lecture.canceled) className = "lecture-canceled"
                         return (

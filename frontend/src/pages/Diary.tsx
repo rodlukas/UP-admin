@@ -16,7 +16,7 @@ import {
     isEqualDate,
     prettyDateWithLongDayYear,
     prettyDateWithYearIfDiff,
-    yearDiffs
+    yearDiffs,
 } from "../global/funcDateTime"
 import { isModalShown } from "../global/utils"
 import { CustomRouteComponentProps } from "../types/types"
@@ -43,7 +43,7 @@ export default class Diary extends React.Component<Props, State> {
 
     state: State = {
         shouldRefresh: false,
-        week: this.getWeek()
+        week: this.getWeek(),
     }
 
     getFridayDate = (): Date => new Date(this.state.week[4])

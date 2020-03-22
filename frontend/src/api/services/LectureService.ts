@@ -4,7 +4,7 @@ import {
     LecturePostApi,
     LecturePutApi,
     LectureType,
-    LectureTypeWithDate
+    LectureTypeWithDate,
 } from "../../types/models"
 import { requestData } from "../request"
 import { API_DELIM, API_METHODS, API_ORDERING, API_URLS } from "../urls"
@@ -21,7 +21,7 @@ type ListWithDate = Array<LectureTypeWithDate>
 function get(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,
-        method: API_METHODS.get
+        method: API_METHODS.get,
     })
 }
 
@@ -29,7 +29,7 @@ function get(id: Item["id"]): Promise<Item> {
 function getAll(): Promise<List> {
     return requestData<List>({
         url: baseUrl,
-        method: API_METHODS.get
+        method: API_METHODS.get,
     })
 }
 
@@ -38,7 +38,7 @@ function getAllFromGroupOrdered(group: GroupType["id"], asc: boolean): Promise<L
     const url = baseUrl + "?" + API_URLS.Lectures.filters.group + "=" + group + ordering(asc)
     return requestData<List>({
         url: url,
-        method: API_METHODS.get
+        method: API_METHODS.get,
     })
 }
 
@@ -47,7 +47,7 @@ function getAllFromClientOrdered(client: ClientType["id"], asc: boolean): Promis
     const url = baseUrl + "?" + API_URLS.Lectures.filters.client + "=" + client + ordering(asc)
     return requestData<List>({
         url: url,
-        method: API_METHODS.get
+        method: API_METHODS.get,
     })
 }
 
@@ -56,7 +56,7 @@ function getAllFromDayOrdered(date: string, asc: boolean): Promise<ListWithDate>
     const url = baseUrl + "?" + API_URLS.Lectures.filters.date + "=" + date + ordering(asc)
     return requestData<ListWithDate>({
         url: url,
-        method: API_METHODS.get
+        method: API_METHODS.get,
     })
 }
 
@@ -65,7 +65,7 @@ function update(context: LecturePutApi): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + context.id + API_DELIM,
         method: API_METHODS.put,
-        data: context
+        data: context,
     })
 }
 
@@ -73,7 +73,7 @@ function update(context: LecturePutApi): Promise<Item> {
 function remove(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl + id + API_DELIM,
-        method: API_METHODS.remove
+        method: API_METHODS.remove,
     })
 }
 
@@ -81,7 +81,7 @@ function create(context: LecturePostApi | Array<LecturePostApi>): Promise<Item> 
     return requestData<Item>({
         url: baseUrl,
         method: API_METHODS.post,
-        data: context
+        data: context,
     })
 }
 
@@ -93,7 +93,7 @@ const LectureService = {
     remove,
     getAllFromDayOrdered,
     getAllFromGroupOrdered,
-    getAllFromClientOrdered
+    getAllFromClientOrdered,
 }
 
 export default LectureService

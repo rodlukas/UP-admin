@@ -17,9 +17,9 @@ type Props = {
 type MyNavLinkProps = QA & RouterNavLinkProps
 
 /** Komponenta zobrazující menu aplikace pro přihlášené uživatele. */
-const Menu: React.FC<Props> = props => {
+const Menu: React.FC<Props> = (props) => {
     const authContext = React.useContext(AuthContext)
-    const MyNavLink: React.FC<MyNavLinkProps> = otherProps => (
+    const MyNavLink: React.FC<MyNavLinkProps> = (otherProps) => (
         <NavLink onClick={props.closeNavbar} tag={RouterNavLink} {...otherProps} />
     )
     return (

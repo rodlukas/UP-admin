@@ -2,7 +2,7 @@ import {
     faCalendarAlt,
     faClipboardList,
     faClock,
-    faHourglass
+    faHourglass,
 } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
@@ -19,7 +19,7 @@ import {
     Label,
     ModalBody,
     ModalFooter,
-    ModalHeader
+    ModalHeader,
 } from "reactstrap"
 import LectureService from "../api/services/LectureService"
 import CancelButton from "../components/buttons/CancelButton"
@@ -32,16 +32,16 @@ import Tooltip from "../components/Tooltip"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import {
     AttendanceStatesContextProps,
-    WithAttendanceStatesContext
+    WithAttendanceStatesContext,
 } from "../contexts/AttendanceStatesContext"
 import {
     CoursesVisibleContextProps,
-    WithCoursesVisibleContext
+    WithCoursesVisibleContext,
 } from "../contexts/CoursesVisibleContext"
 import {
     DEFAULT_LECTURE_DURATION_GROUP,
     DEFAULT_LECTURE_DURATION_SINGLE,
-    TEXTS
+    TEXTS,
 } from "../global/constants"
 import { prettyDateWithLongDayYear, toISODate, toISOTime } from "../global/funcDateTime"
 import { alertRequired, DefaultValuesForLecture } from "../global/utils"
@@ -57,7 +57,7 @@ import {
     LecturePostApiDummy,
     LecturePutApi,
     LectureType,
-    LectureTypeWithDate
+    LectureTypeWithDate,
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 import "./FormLectures.css"
@@ -153,16 +153,16 @@ class FormLectures extends React.Component<Props, State> {
             : this.computeDuration(),
         prepaidCnt: 1,
         canceledDisabled: false,
-        isSubmit: false
+        isSubmit: false,
     }
 
     areAttendantsEqualToMembers(): boolean {
         if (this.isClient(this.props.object)) return true
-        const idsAttendants = this.props.lecture.attendances.map(x => x.client.id)
-        const idsMembers = this.props.object.memberships.map(x => x.client.id)
+        const idsAttendants = this.props.lecture.attendances.map((x) => x.client.id)
+        const idsMembers = this.props.object.memberships.map((x) => x.client.id)
         return (
             idsAttendants.length === idsMembers.length &&
-            idsAttendants.every(val => idsMembers.includes(val))
+            idsAttendants.every((val) => idsMembers.includes(val))
         )
     }
 
@@ -178,7 +178,7 @@ class FormLectures extends React.Component<Props, State> {
 
     getDefaultStateIndex(): AttendanceStateType["id"] | undefined {
         if (this.getAttendanceStatesData().length) {
-            const res = this.getAttendanceStatesData().find(elem => elem.default === true)
+            const res = this.getAttendanceStatesData().find((elem) => elem.default === true)
             if (res !== undefined) return res.id
             // pokud pole neni prazdne, ale zadny stav neni vychozi, vrat prvni prvek
             else return this.getAttendanceStatesData()[0].id
@@ -188,7 +188,7 @@ class FormLectures extends React.Component<Props, State> {
 
     getExcusedStateIndex(): AttendanceStateType["id"] | undefined {
         if (this.getAttendanceStatesData().length) {
-            const res = this.getAttendanceStatesData().find(elem => elem.excused === true)
+            const res = this.getAttendanceStatesData().find((elem) => elem.excused === true)
             if (res !== undefined) return res.id
         }
         return undefined
@@ -211,17 +211,17 @@ class FormLectures extends React.Component<Props, State> {
                 excusedCnt++
         if (clientCnt === excusedCnt)
             // vsichni jsou omluveni, lekce nejde zrusit
-            this.setState(prevState => ({
+            this.setState((prevState) => ({
                 canceledPrevious: prevState.canceled,
                 canceled: true,
-                canceledDisabled: true
+                canceledDisabled: true,
             }))
         else {
             if (this.state.canceledDisabled)
                 // vsichni uz nejsou omluveni (ale byli), hodnotu checkboxu vrat na puvodni
-                this.setState(prevState => ({
+                this.setState((prevState) => ({
                     canceled: Boolean(prevState.canceledPrevious),
-                    canceledPrevious: undefined
+                    canceledPrevious: undefined,
                 }))
             this.setState({ canceledDisabled: false }) // uz neni potreba aby byl checkbox Zruseno disabled
         }
@@ -230,7 +230,7 @@ class FormLectures extends React.Component<Props, State> {
     getMembers(memberships: Array<{ client: ClientType }>): Array<ClientType> {
         const members: Array<ClientType> = []
         // map se provadi nad hodnotami MembershipType | AttendanceType
-        memberships.map(member => members.push(member.client))
+        memberships.map((member) => members.push(member.client))
         return members
     }
 
@@ -254,7 +254,9 @@ class FormLectures extends React.Component<Props, State> {
             else {
                 objects[client.id] = false
                 if (!this.isClient(object)) {
-                    const membership = object.memberships.find(elem => elem.client.id === client.id)
+                    const membership = object.memberships.find(
+                        (elem) => elem.client.id === client.id
+                    )
                     if (membership && membership.prepaid_cnt > 0) objects[client.id] = true
                 }
             }
@@ -282,10 +284,10 @@ class FormLectures extends React.Component<Props, State> {
         if (target.name === "atState") value = Number(value)
         const nameStateAttr = target.name as keyof State
         this.setState(
-            prevState => {
+            (prevState) => {
                 // as object - ve state jsou hodnoty co nejsou objekty
                 const newStateVal: AtNote | AtPaid | AtState = {
-                    ...(prevState[nameStateAttr] as object)
+                    ...(prevState[nameStateAttr] as object),
                 }
                 newStateVal[id] = value
                 // ...prevState kvuli https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18365
@@ -302,9 +304,9 @@ class FormLectures extends React.Component<Props, State> {
         const target = e.currentTarget
         const value = target.type === "checkbox" ? target.checked : target.value
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
             ...prevState,
-            [target.id]: value
+            [target.id]: value,
         }))
     }
 
@@ -318,7 +320,7 @@ class FormLectures extends React.Component<Props, State> {
     onChangePrepaid = (): void => {
         if (!this.state.prepaid) {
             const paid = this.state.atPaid
-            this.members.map(member => (paid[member.id] = true))
+            this.members.map((member) => (paid[member.id] = true))
             this.setState({ date: "", time: "", atPaid: paid })
         }
     }
@@ -327,21 +329,21 @@ class FormLectures extends React.Component<Props, State> {
         const { atNote, atPaid, atState } = this.state
         const attendances: Array<T> = []
         if (this.isAtStateWithoutEmpty(atState)) {
-            this.members.forEach(member => {
+            this.members.forEach((member) => {
                 const attendancesDataPost = {
                     client_id: member.id,
                     attendancestate: atState[member.id],
                     paid: atPaid[member.id],
-                    note: atNote[member.id]
+                    note: atNote[member.id],
                 }
                 if (this.isLecture(this.props.lecture)) {
                     const attendanceId = this.props.lecture.attendances.find(
-                        elem => elem.client.id === member.id
+                        (elem) => elem.client.id === member.id
                     )
                     if (attendanceId === undefined) throw "Nepodařilo se dohledat ID účasti"
                     const attendancesDataPut = {
                         ...attendancesDataPost,
-                        id: attendanceId.id
+                        id: attendanceId.id,
                     }
                     attendances.push(attendancesDataPut as T)
                 } else attendances.push(attendancesDataPost as T)
@@ -363,7 +365,7 @@ class FormLectures extends React.Component<Props, State> {
             group_id: !this.isClient(this.props.object) ? this.props.object.id : null,
             start: prepaid ? null : start,
             refresh_clients,
-            ...(this.isClient(this.props.object) && { course_id: courseId })
+            ...(this.isClient(this.props.object) && { course_id: courseId }),
         }
         let request: Promise<LectureType>
         if (this.isLecture(this.props.lecture)) {
@@ -419,7 +421,7 @@ class FormLectures extends React.Component<Props, State> {
             atState,
             atNote,
             atPaid,
-            prepaidCnt
+            prepaidCnt,
         } = this.state
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_lecture">
@@ -578,7 +580,7 @@ class FormLectures extends React.Component<Props, State> {
                                 </Col>
                             </FormGroup>
                             <hr />
-                            {this.members.map(member => (
+                            {this.members.map((member) => (
                                 <div key={member.id} data-qa="form_lecture_attendance">
                                     {!this.isClient(this.props.object) && (
                                         <h5>
@@ -621,7 +623,7 @@ class FormLectures extends React.Component<Props, State> {
                                                     required
                                                     data-qa="lecture_select_attendance_attendancestate">
                                                     {this.getAttendanceStatesData().map(
-                                                        attendancestate =>
+                                                        (attendancestate) =>
                                                             // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz
                                                             // ho take
                                                             (attendancestate.visible ||

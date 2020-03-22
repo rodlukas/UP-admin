@@ -17,9 +17,9 @@ const useForm = <T>(initState: T, callback: fFunction): UseForm<T> => {
 
     const handleChange = (e: ChangeEventType): void => {
         const target = e.currentTarget
-        setValues(prevValues => ({
+        setValues((prevValues) => ({
             ...prevValues,
-            [target.id]: target.value
+            [target.id]: target.value,
         }))
     }
 

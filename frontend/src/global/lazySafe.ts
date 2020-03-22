@@ -20,7 +20,7 @@ export default function lazySafe(
     return new Promise((resolve, reject) => {
         fn()
             .then(resolve)
-            .catch(error => {
+            .catch((error) => {
                 // zjisti, jestli se nepodarilo nacist chunk
                 if (/loading chunk \d* failed./i.test(error.message)) {
                     // zjisti, zda uz doslo k prvnimu automatickemu reloadu

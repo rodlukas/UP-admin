@@ -12,7 +12,7 @@ const AuthChecking: React.FC = () => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
     const {
         isAuth: authContextIsAuth,
-        isAuthenticated: authContextIsAuthenticated
+        isAuthenticated: authContextIsAuthenticated,
     } = React.useContext(AuthContext)
 
     React.useEffect(() => {

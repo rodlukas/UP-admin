@@ -12,7 +12,7 @@ type Props = {
 }
 
 /** Komponenta zobrazující pole pro vyhledávání. */
-const Search: React.FC<Props> = props => {
+const Search: React.FC<Props> = (props) => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
     const { funcRefresh: clientsActiveContextFuncRefresh } = React.useContext(ClientsActiveContext)
 

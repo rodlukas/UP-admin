@@ -11,19 +11,19 @@ import { AuthorizationType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
 
 /** Stránka s přihlášením. */
-const Login: React.FC<CustomRouteComponentProps> = props => {
+const Login: React.FC<CustomRouteComponentProps> = (props) => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
     const {
         isAuth: authContextIsAuth,
         isAuthenticated: authContextIsAuthenticated,
         login: authContextLogin,
-        isLoading: authContextIsLoading
+        isLoading: authContextIsLoading,
     } = React.useContext(AuthContext)
 
     const [values, handleChange, handleSubmit] = useForm<AuthorizationType>(
         {
             username: "",
-            password: ""
+            password: "",
         },
         login
     )

@@ -33,7 +33,7 @@ const PrivateRoute: React.FC<CustomRouteProps> = ({ component: WrappedComponent,
                     <Redirect
                         to={{
                             pathname: APP_URLS.prihlasit.url,
-                            state: { from: props.location }
+                            state: { from: props.location },
                         }}
                     />
                 )

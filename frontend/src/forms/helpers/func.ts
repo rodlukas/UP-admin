@@ -4,6 +4,6 @@ import { Props } from "react-select"
 export function reactSelectIds<OptionType>(id: string): Props<OptionType> {
     return {
         inputId: id,
-        classNamePrefix: id
+        classNamePrefix: id,
     }
 }

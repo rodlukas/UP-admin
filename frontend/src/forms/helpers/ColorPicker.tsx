@@ -21,15 +21,15 @@ type State = {
 /** Komponenta pro pole s výběrem barvy kurzu. */
 export default class ColorPicker extends React.Component<Props, State> {
     state: State = {
-        isPickerVisible: false
+        isPickerVisible: false,
     }
 
     static customToastId = "ColorPicker"
 
     togglePicker = (): void => {
         if (!this.state.isPickerVisible) this.validateColor(this.props.color)
-        this.setState(prevState => ({
-            isPickerVisible: !prevState.isPickerVisible
+        this.setState((prevState) => ({
+            isPickerVisible: !prevState.isPickerVisible,
         }))
     }
 
@@ -49,7 +49,7 @@ export default class ColorPicker extends React.Component<Props, State> {
                 {
                     toastId: ColorPicker.customToastId,
                     autoClose: false,
-                    type: toast.TYPE.WARNING
+                    type: toast.TYPE.WARNING,
                 }
             )
         } else toast.dismiss(ColorPicker.customToastId)
