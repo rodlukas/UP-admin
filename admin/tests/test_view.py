@@ -11,12 +11,12 @@ class ViewTest(SimpleTestCase):
         Zkontroluje, zda se podařilo načíst úvodní stránku (neřeší funkčnost JS).
         """
         response = self.client.get("/", secure=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self) -> None:
         """
         Zkontroluje, zda načtená stránka používá správnou šablonu.
         """
         response = self.client.get("/", secure=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "react-autogenerate.html")
