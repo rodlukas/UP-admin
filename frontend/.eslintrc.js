@@ -75,6 +75,7 @@ module.exports = {
 
         "@typescript-eslint/no-explicit-any": 0,
         "@typescript-eslint/no-use-before-define": ["error", { functions: false }],
+        "@typescript-eslint/consistent-type-definitions": ["error", "type"],
 
         // vlastni pravidla camelCase, viz https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/camelcase.md
         camelcase: "off",
