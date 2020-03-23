@@ -68,6 +68,8 @@ module.exports = {
         // zakaz console.log
         "no-console": ["error", { allow: ["warn", "debug", "error", "info"] }],
         curly: "error",
+        "no-useless-concat": "error",
+        "prefer-template": "error",
 
         "jsx-a11y/no-autofocus": 0,
 

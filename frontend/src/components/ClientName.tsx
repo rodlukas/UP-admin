@@ -37,7 +37,7 @@ const ClientName: React.FC<ClientNameProps> = ({ client, link = false, bold = fa
     return (
         <span className="ClientName">
             {"id" in client && link ? (
-                <Link to={APP_URLS.klienti.url + "/" + client.id}>
+                <Link to={`${APP_URLS.klienti.url}/${client.id}`}>
                     <PlainClientNameComponent />
                 </Link>
             ) : (

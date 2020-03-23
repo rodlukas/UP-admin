@@ -32,19 +32,17 @@ export function addDays(date: Date, days: number): Date {
  * Minuty jsou zarovnány nulou.
  */
 export function prettyTime(datetime: Date): string {
-    return (
-        datetime.getHours() + ":" + (datetime.getMinutes() < 10 ? "0" : "") + datetime.getMinutes()
-    )
+    return `${datetime.getHours()}:${datetime.getMinutes() < 10 ? "0" : ""}${datetime.getMinutes()}`
 }
 
 /** Vrátí zadaný datum ve srozumitelném formátu (den a měsíc nezarovnané nulami). */
 export function prettyDate(date: Date): string {
-    return date.getDate() + ". " + (date.getMonth() + 1) + "."
+    return `${date.getDate()}. ${date.getMonth() + 1}.`
 }
 
 /** Vrátí zadaný datum ve srozumitelném formátu (včetně roku, den a měsíc nezarovnané nulami). */
 export function prettyDateWithYear(date: Date): string {
-    return prettyDate(date) + " " + date.getFullYear()
+    return `${prettyDate(date)} ${date.getFullYear()}`
 }
 
 /** Zjistí, jestli se rok ze zadaného datumu liší od aktuálního. */
@@ -63,13 +61,13 @@ export function prettyDateWithYearIfDiff(date: Date): string {
 /** Vrátí zadaný datum ve srozumitelném formátu (včetně roku a nezkrácené slovní reprezentace dne). */
 export function prettyDateWithLongDayYear(date: Date): string {
     const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "long" })
-    return day + " " + prettyDateWithYear(date)
+    return `${day} ${prettyDateWithYear(date)}`
 }
 
 /** Vrátí zadaný datum ve srozumitelném formátu (včetně roku a krátké slovní reprezentace dne). */
 export function prettyDateWithDayYear(date: Date): string {
     const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "short" })
-    return day + " " + prettyDateWithYear(date)
+    return `${day} ${prettyDateWithYear(date)}`
 }
 
 /**
@@ -78,7 +76,7 @@ export function prettyDateWithDayYear(date: Date): string {
  */
 export function prettyDateWithLongDayYearIfDiff(date: Date): string {
     const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "long" })
-    return day + " " + prettyDateWithYearIfDiff(date)
+    return `${day} ${prettyDateWithYearIfDiff(date)}`
 }
 
 /** Pokud je to možné, převede zadaný datum na slovní reprezentaci typu "včera", jinak vrátí null. */
@@ -105,7 +103,7 @@ export function prettyDateWithDayYearIfDiff(date: Date, convertToWord = false): 
         }
     }
     const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "short" })
-    return day + " " + prettyDateWithYearIfDiff(date)
+    return `${day} ${prettyDateWithYearIfDiff(date)}`
 }
 
 /**
@@ -113,14 +111,14 @@ export function prettyDateWithDayYearIfDiff(date: Date, convertToWord = false): 
  * Minuty a sekundy jsou zarovnány nulou.
  */
 export function prettyTimeWithSeconds(datetime: Date): string {
-    return (
-        prettyTime(datetime) + ":" + (datetime.getSeconds() < 10 ? "0" : "") + datetime.getSeconds()
-    )
+    return `${prettyTime(datetime)}:${
+        datetime.getSeconds() < 10 ? "0" : ""
+    }${datetime.getSeconds()}`
 }
 
 /** Vrátí zadaný datum a čas ve srozumitelném formátu (včetně roku, sekund a krátké slovní reprezentace dne). */
 export function prettyDateTime(datetime: Date): string {
-    return prettyDateWithDayYear(datetime) + " " + prettyTimeWithSeconds(datetime)
+    return `${prettyDateWithDayYear(datetime)} ${prettyTimeWithSeconds(datetime)}`
 }
 
 /**
@@ -128,15 +126,9 @@ export function prettyDateTime(datetime: Date): string {
  * Hodiny a minuty jsou zarovnány nulou, rok je čtyřmístný.
  */
 export function toISODate(date: Date): string {
-    return (
-        date.getFullYear() +
-        "-" +
-        (date.getMonth() + 1 < 10 ? "0" : "") +
-        (date.getMonth() + 1) +
-        "-" +
-        (date.getDate() < 10 ? "0" : "") +
-        date.getDate()
-    )
+    return `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? "0" : ""}${date.getMonth() + 1}-${
+        date.getDate() < 10 ? "0" : ""
+    }${date.getDate()}`
 }
 
 /**
@@ -144,13 +136,9 @@ export function toISODate(date: Date): string {
  * Hodiny i minuty jsou zarovnány nulou.
  */
 export function toISOTime(datetime: Date): string {
-    return (
-        (datetime.getHours() < 10 ? "0" : "") +
-        datetime.getHours() +
-        ":" +
-        (datetime.getMinutes() < 10 ? "0" : "") +
-        datetime.getMinutes()
-    )
+    return `${(datetime.getHours() < 10 ? "0" : "") + datetime.getHours()}:${
+        datetime.getMinutes() < 10 ? "0" : ""
+    }${datetime.getMinutes()}`
 }
 
 /** Vrátí datum nejbližšího pondělí předcházejícího danému datumu (případně tentýž datum, pokud už je pondělí). */

@@ -20,12 +20,12 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
         AttendanceService.patch(data).then(() => props.funcRefresh())
     }
 
-    const className = "AttendancePaidButton " + (props.paid ? "text-success" : "text-danger")
-    const title = "Označit lekci jako " + (props.paid ? "NE" : "") + "ZAPLACENOU"
+    const className = `AttendancePaidButton ${props.paid ? "text-success" : "text-danger"}`
+    const title = `Označit lekci jako ${props.paid ? "NE" : ""}ZAPLACENOU`
     return (
         <>
             <FontAwesomeIcon
-                id={"AttendancePaidButton_" + props.attendanceId}
+                id={`AttendancePaidButton_${props.attendanceId}`}
                 icon={faUsdCircle}
                 size="2x"
                 className={className}
@@ -34,7 +34,7 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
             />
             <UncontrolledTooltipWrapper
                 placement="right"
-                target={"AttendancePaidButton_" + props.attendanceId}>
+                target={`AttendancePaidButton_${props.attendanceId}`}>
                 {title}
             </UncontrolledTooltipWrapper>
         </>

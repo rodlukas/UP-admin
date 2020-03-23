@@ -390,7 +390,7 @@ class FormLectures extends React.Component<Props, State> {
             return
         }
 
-        const start = date + " " + time
+        const start = `${date} ${time}`
         const courseId = (course as LectureType["course"]).id
         const data = {
             duration,
@@ -622,10 +622,7 @@ class FormLectures extends React.Component<Props, State> {
                                             <ClientName client={member} link />{" "}
                                             {!member.active && (
                                                 <Tooltip
-                                                    postfix={
-                                                        "FormLectures_InactiveClientAlert_" +
-                                                        member.id.toString()
-                                                    }
+                                                    postfix={`FormLectures_InactiveClientAlert_${member.id.toString()}`}
                                                     text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
                                                     size="1x"
                                                 />
@@ -644,14 +641,14 @@ class FormLectures extends React.Component<Props, State> {
                                                 <InputGroupAddon addonType="prepend">
                                                     <Label
                                                         className="input-group-text"
-                                                        for={"atState" + member.id}>
+                                                        for={`atState${member.id}`}>
                                                         účast
                                                     </Label>
                                                 </InputGroupAddon>
                                                 <CustomInputWrapper
                                                     type="select"
                                                     name="atState"
-                                                    id={"atState" + member.id}
+                                                    id={`atState${member.id}`}
                                                     value={atState[member.id]}
                                                     onChange={this.onChangeMultiple}
                                                     data-id={member.id}
@@ -677,7 +674,7 @@ class FormLectures extends React.Component<Props, State> {
                                         <Col sm={2} className="text-sm-center">
                                             <CustomInput
                                                 type="checkbox"
-                                                id={"atPaid" + member.id}
+                                                id={`atPaid${member.id}`}
                                                 name="atPaid"
                                                 checked={atPaid[member.id]}
                                                 disabled={prepaid}
@@ -686,14 +683,13 @@ class FormLectures extends React.Component<Props, State> {
                                                 data-qa="lecture_checkbox_attendance_paid"
                                             />
                                             <Label
-                                                for={"atPaid" + member.id}
+                                                for={`atPaid${member.id}`}
                                                 data-qa="lecture_label_attendance_paid"
-                                                className={
-                                                    "mb-0 font-weight-bold " +
-                                                    (atPaid[member.id]
+                                                className={`mb-0 font-weight-bold ${
+                                                    atPaid[member.id]
                                                         ? "text-success"
-                                                        : "text-danger")
-                                                }>
+                                                        : "text-danger"
+                                                }`}>
                                                 Platba
                                             </Label>{" "}
                                             {prepaid && (
@@ -704,11 +700,11 @@ class FormLectures extends React.Component<Props, State> {
                                             )}
                                         </Col>
                                         <Col sm={6}>
-                                            <InputGroup id={"FormLectures_Note_" + member.id}>
+                                            <InputGroup id={`FormLectures_Note_${member.id}`}>
                                                 <InputGroupAddon addonType="prepend">
                                                     <Label
                                                         className="input-group-text"
-                                                        for={"atNote" + member.id}>
+                                                        for={`atNote${member.id}`}>
                                                         <FontAwesomeIcon
                                                             icon={faClipboardList}
                                                             fixedWidth
@@ -718,7 +714,7 @@ class FormLectures extends React.Component<Props, State> {
                                                 <Input
                                                     type="text"
                                                     name="atNote"
-                                                    id={"atNote" + member.id}
+                                                    id={`atNote${member.id}`}
                                                     value={atNote[member.id]}
                                                     onChange={this.onChangeMultiple}
                                                     data-id={member.id}
@@ -727,7 +723,7 @@ class FormLectures extends React.Component<Props, State> {
                                                 />
                                             </InputGroup>
                                             <UncontrolledTooltipWrapper
-                                                target={"FormLectures_Note_" + member.id}>
+                                                target={`FormLectures_Note_${member.id}`}>
                                                 Poznámka
                                             </UncontrolledTooltipWrapper>
                                         </Col>
@@ -746,7 +742,7 @@ class FormLectures extends React.Component<Props, State> {
                                         <DeleteButton
                                             content="lekci"
                                             onClick={(): void => {
-                                                const msg =
+                                                const msg = `${
                                                     `Opravdu chcete smazat ${
                                                         prepaid ? "předplacenou " : ""
                                                     }` +
@@ -754,17 +750,18 @@ class FormLectures extends React.Component<Props, State> {
                                                         this.isClient(this.props.object)
                                                             ? "klienta"
                                                             : "skupiny"
-                                                    } ` +
-                                                    (this.isClient(this.props.object)
+                                                    } `
+                                                }${
+                                                    this.isClient(this.props.object)
                                                         ? `${this.props.object.surname} ${this.props.object.firstname}`
-                                                        : this.props.object.name) +
-                                                    `${
-                                                        !prepaid
-                                                            ? ` v ${prettyDateWithLongDayYear(
-                                                                  new Date(date)
-                                                              )} ${time}`
-                                                            : ""
-                                                    }?`
+                                                        : this.props.object.name
+                                                }${
+                                                    !prepaid
+                                                        ? ` v ${prettyDateWithLongDayYear(
+                                                              new Date(date)
+                                                          )} ${time}`
+                                                        : ""
+                                                }?`
                                                 if (
                                                     this.isLecture(this.props.lecture) &&
                                                     window.confirm(msg)

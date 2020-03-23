@@ -106,10 +106,7 @@ class Groups extends React.Component<Props, State> {
                                             {group.active &&
                                                 !areAllMembersActive(group.memberships) && (
                                                     <Tooltip
-                                                        postfix={
-                                                            "Group_ActiveGroupWithInactiveClientAlert_" +
-                                                            group.id
-                                                        }
+                                                        postfix={`Group_ActiveGroupWithInactiveClientAlert_${group.id}`}
                                                         placement="right"
                                                         size="1x"
                                                         text={

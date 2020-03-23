@@ -18,7 +18,7 @@ function getAll(): Promise<List> {
 /** Získá viditelné kurzy. */
 function getVisible(): Promise<List> {
     return requestData<List>({
-        url: baseUrl + "?" + API_URLS.Courses.filters.visible + "=true",
+        url: `${baseUrl}?${API_URLS.Courses.filters.visible}=true`,
         method: API_METHODS.get,
     })
 }

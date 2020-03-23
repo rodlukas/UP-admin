@@ -71,7 +71,7 @@ class ErrorMessage extends React.Component<Props, State> {
                     errMsg = (
                         <ul>
                             {Object.keys(djangoError).map((field, index) => (
-                                <li key={"err" + index}>
+                                <li key={`err${index}`}>
                                     <span className="font-weight-bold">{field}: </span>
                                     <span className="font-italic">{djangoError[field]}</span>
                                 </li>
@@ -120,7 +120,7 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
 
     const onSuccess = <T,>(response: AxiosResponse<T>): AxiosResponse<T> => {
         const responseUrl = response.request.responseURL
-        console.debug("%cÚspěch: " + responseUrl, "color: green", response)
+        console.debug(`%cÚspěch: ${responseUrl}`, "color: green", response)
         if (options.method !== API_METHODS.get) {
             if (
                 (responseUrl && !responseUrl.match(API_URLS.Login.url)) ||

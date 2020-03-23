@@ -146,7 +146,7 @@ const Main: React.FC = () => {
                                     exact
                                 />
                                 <PrivateRoute
-                                    path={APP_URLS.diar.url + "/:year?/:month?/:day?"}
+                                    path={`${APP_URLS.diar.url}/:year?/:month?/:day?`}
                                     component={Diary}
                                     title={APP_URLS.diar.title}
                                 />
@@ -157,12 +157,12 @@ const Main: React.FC = () => {
                                     exact
                                 />
                                 <PrivateRoute
-                                    path={APP_URLS.klienti.url + "/:id"}
+                                    path={`${APP_URLS.klienti.url}/:id`}
                                     component={Card}
                                     title={APP_URLS.klienti.title}
                                 />
                                 <PrivateRoute
-                                    path={APP_URLS.skupiny.url + "/:id"}
+                                    path={`${APP_URLS.skupiny.url}/:id`}
                                     component={Card}
                                     title={APP_URLS.skupiny.title}
                                 />

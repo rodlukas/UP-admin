@@ -15,7 +15,7 @@ type Props = {
 const ClientPhone: React.FC<Props> = ({ phone, icon = false }) => {
     if (phone !== "") {
         return (
-            <a href={"tel:+420" + phone} data-qa="client_phone" className="ClientPhone" data-gdpr>
+            <a href={`tel:+420${phone}`} data-qa="client_phone" className="ClientPhone" data-gdpr>
                 {icon && (
                     <FontAwesomeIcon
                         flip="horizontal"

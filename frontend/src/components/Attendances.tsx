@@ -40,7 +40,7 @@ type AttendancesProps = {
 
 /** Komponenta zobrazující účasti všech klientů na dané lekci. */
 const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false, funcRefresh }) => {
-    const className = "Attendances" + (lecture.group ? " AttendancesGroup" : "")
+    const className = `Attendances${lecture.group ? " AttendancesGroup" : ""}`
     return (
         <ul className={className}>
             {lecture.attendances.map((attendance) => (

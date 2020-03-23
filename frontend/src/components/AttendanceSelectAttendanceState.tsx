@@ -27,7 +27,7 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
             type="select"
             bsSize="sm"
             onChange={onChange}
-            id={"select" + props.attendanceId}
+            id={`select${props.attendanceId}`}
             value={props.value}
             data-qa="lecture_select_attendance_attendancestate">
             {attendancestates.map(

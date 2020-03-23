@@ -137,9 +137,9 @@ class ModalLecturesWizard extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        const title =
-            "Přidat lekci na " +
-            (this.props.date ? prettyDate(new Date(this.props.date)) : "nějaký den")
+        const title = `Přidat lekci na ${
+            this.props.date ? prettyDate(new Date(this.props.date)) : "nějaký den"
+        }`
         return (
             <>
                 <div className="ModalLecturesWizard">
@@ -149,13 +149,13 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                         <DropdownToggle
                             caret
                             size={this.props.size}
-                            id={"ModalLecturesWizard_" + (this.props.date ?? "")}
+                            id={`ModalLecturesWizard_${this.props.date ?? ""}`}
                             color="info">
                             <FontAwesomeIcon icon={faPlus} size="lg" />
                         </DropdownToggle>
                         <UncontrolledTooltipWrapper
                             placement={this.props.direction === "up" ? "bottom" : "top"}
-                            target={"ModalLecturesWizard_" + (this.props.date ?? "")}>
+                            target={`ModalLecturesWizard_${this.props.date ?? ""}`}>
                             {title}
                         </UncontrolledTooltipWrapper>
                         <DropdownMenu right>

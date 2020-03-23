@@ -10,7 +10,7 @@ type Props = {
 
 /** Komponenta zobrazující barevné kolečko s různou barvou a velikostí pro zobrazení barvy kurzu. */
 const CourseCircle: React.FC<Props> = ({ color, size, showTitle = false }) => {
-    const sizeWithUnit = size + "rem"
+    const sizeWithUnit = `${size}rem`
     const colorWithoutHash = color.substring(1)
 
     return (
@@ -18,7 +18,7 @@ const CourseCircle: React.FC<Props> = ({ color, size, showTitle = false }) => {
             <span
                 data-qa="course_color"
                 className="CourseCircle"
-                id={"CourseCircle_" + colorWithoutHash}
+                id={`CourseCircle_${colorWithoutHash}`}
                 style={{
                     background: color,
                     width: sizeWithUnit,
@@ -26,7 +26,7 @@ const CourseCircle: React.FC<Props> = ({ color, size, showTitle = false }) => {
                 }}
             />
             {showTitle && (
-                <UncontrolledTooltipWrapper target={"CourseCircle_" + colorWithoutHash}>
+                <UncontrolledTooltipWrapper target={`CourseCircle_${colorWithoutHash}`}>
                     Kód barvy: {color}
                 </UncontrolledTooltipWrapper>
             )}

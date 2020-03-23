@@ -25,7 +25,7 @@ type TableInfoProps = {
 }
 
 const TableInfo: React.FC<TableInfoProps> = ({ text, color = "text-muted" }) => (
-    <tr className={color + " text-center"}>
+    <tr className={`${color} text-center`}>
         <td colSpan={4}>{text}</td>
     </tr>
 )
@@ -239,10 +239,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                                                         {prettyDateWithDayYearIfDiff(date, true)}
                                                     </td>
                                                     <td
-                                                        className={
-                                                            amountClassName +
-                                                            " font-weight-bold text-right text-nowrap"
-                                                        }
+                                                        className={`${amountClassName} font-weight-bold text-right text-nowrap`}
                                                         style={{ minWidth: "7em" }}>
                                                         {prettyAmount(amount)} {CURRENCY}
                                                     </td>

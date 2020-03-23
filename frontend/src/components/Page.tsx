@@ -7,8 +7,8 @@ import { CustomRouteProps } from "../types/types"
 const Page: React.FC<CustomRouteProps> = ({ title, ...rest }) => {
     React.useEffect(() => {
         // nastav title stranky
-        const envTitle = !isEnvProduction() ? getEnvNameShort() + " | " : ""
-        document.title = envTitle + title + " – ÚPadmin"
+        const envTitle = !isEnvProduction() ? `${getEnvNameShort()} | ` : ""
+        document.title = `${envTitle + title} – ÚPadmin`
     }, [title])
 
     return <Route {...rest} />

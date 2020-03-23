@@ -204,7 +204,7 @@ class Card extends React.Component<Props, State> {
                         content={
                             <>
                                 <BackButton onClick={this.goBack} />{" "}
-                                {"Karta " + (this.isClientPage() ? "klienta" : "skupiny")}:{" "}
+                                {`Karta ${this.isClientPage() ? "klienta" : "skupiny"}`}:{" "}
                                 {this.isClient(object) ? (
                                     <ClientName client={object} bold />
                                 ) : (
@@ -309,31 +309,21 @@ class Card extends React.Component<Props, State> {
                                                 return (
                                                     <ListGroupItem
                                                         key={lecture.id}
-                                                        className={
-                                                            className + " lecture lecture_card"
-                                                        }
+                                                        className={`${className} lecture lecture_card`}
                                                         data-qa="lecture">
                                                         <div className="lecture_heading">
                                                             <h4>
                                                                 <span
                                                                     data-qa="lecture_start"
-                                                                    id={
-                                                                        "Card_CourseDuration_" +
-                                                                        lecture.id
-                                                                    }>
+                                                                    id={`Card_CourseDuration_${lecture.id}`}>
                                                                     {lecture.start !== null
-                                                                        ? prettyDateWithDayYear(
+                                                                        ? `${prettyDateWithDayYear(
                                                                               date
-                                                                          ) +
-                                                                          " – " +
-                                                                          prettyTime(date)
+                                                                          )} – ${prettyTime(date)}`
                                                                         : "Předplacená lekce"}
                                                                 </span>
                                                                 <UncontrolledTooltipWrapper
-                                                                    target={
-                                                                        "Card_CourseDuration_" +
-                                                                        lecture.id
-                                                                    }>
+                                                                    target={`Card_CourseDuration_${lecture.id}`}>
                                                                     {courseDuration(
                                                                         lecture.duration
                                                                     )}

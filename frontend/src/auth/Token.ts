@@ -33,20 +33,11 @@ export default class Token {
 
     static logToConsole(token: TokenCodedType, decoded: TokenDecodedType, dif: number): void {
         console.info(
-            "%c" +
-                "token:\t" +
-                token +
-                "\ncas:\t" +
-                prettyDateTime(new Date()) +
-                "\nvyprsi:\t" +
-                prettyDateTime(new Date(decoded.exp * 1000)) +
-                "\ndif:\t" +
-                dif +
-                " s (cca. " +
-                Math.round(dif / 60) +
-                " min; cca. " +
-                Math.round(dif / 3600) +
-                " h)",
+            `%ctoken:\t${token}\ncas:\t${prettyDateTime(new Date())}\nvyprsi:\t${prettyDateTime(
+                new Date(decoded.exp * 1000)
+            )}\ndif:\t${dif} s (cca. ${Math.round(dif / 60)} min; cca. ${Math.round(
+                dif / 3600
+            )} h)`,
             "color: olive"
         )
     }

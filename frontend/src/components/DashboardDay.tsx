@@ -95,12 +95,11 @@ class DashboardDay extends React.Component<Props, State> {
                     color={isToday(this.getDate()) ? "primary" : ""}
                     className="text-center DashboardDay_date">
                     <h4
-                        className={
-                            "mb-0 text-nowrap d-inline-block " +
-                            (isUserCelebratingResult === USER_CELEBRATION.NOTHING
+                        className={`mb-0 text-nowrap d-inline-block ${
+                            isUserCelebratingResult === USER_CELEBRATION.NOTHING
                                 ? "celebration_none"
-                                : "celebration")
-                        }>
+                                : "celebration"
+                        }`}>
                         <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
                     </h4>
                     <ModalLecturesWizard
@@ -124,18 +123,18 @@ class DashboardDay extends React.Component<Props, State> {
                         return (
                             <ListGroupItem
                                 key={lecture.id}
-                                className={className + " lecture lecture_dashboardday"}>
+                                className={`${className} lecture lecture_dashboardday`}>
                                 <div
                                     className="lecture_heading"
                                     style={{ background: lecture.course.color }}>
                                     <h4>
                                         <span
-                                            id={"Card_CourseDuration_" + lecture.id}
+                                            id={`Card_CourseDuration_${lecture.id}`}
                                             className="font-weight-bold">
                                             {prettyTime(new Date(lecture.start))}
                                         </span>
                                         <UncontrolledTooltipWrapper
-                                            target={"Card_CourseDuration_" + lecture.id}>
+                                            target={`Card_CourseDuration_${lecture.id}`}>
                                             {courseDuration(lecture.duration)}
                                         </UncontrolledTooltipWrapper>
                                     </h4>

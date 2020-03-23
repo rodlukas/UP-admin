@@ -75,10 +75,7 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                     <ClientName client={membership.client} link />{" "}
                                     {props.isGroupActive && !membership.client.active && (
                                         <Tooltip
-                                            postfix={
-                                                "PrepaidCounters_InactiveClientAlert_" +
-                                                membership.client.id
-                                            }
+                                            postfix={`PrepaidCounters_InactiveClientAlert_${membership.client.id}`}
                                             text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
                                             size="1x"
                                         />
@@ -88,7 +85,7 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                     <InputGroupAddon addonType="prepend">
                                         <Label
                                             className="input-group-text"
-                                            for={"prepaid_cnt" + membership.id}>
+                                            for={`prepaid_cnt${membership.id}`}>
                                             předplaceno
                                         </Label>
                                     </InputGroupAddon>
@@ -99,7 +96,7 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                         onChange={onChange}
                                         data-id={membership.id}
                                         onFocus={onFocus}
-                                        id={"prepaid_cnt" + membership.id}
+                                        id={`prepaid_cnt${membership.id}`}
                                         className="PrepaidCountersInput"
                                     />
                                 </InputGroup>

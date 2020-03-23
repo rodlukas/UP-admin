@@ -117,7 +117,7 @@ export function prettyAmount(amount: number): string {
 /** Workaround dokud nebude fungovat required v react-selectu - TODO. */
 export function alertRequired(object: string, ...inputVals: Array<object | null>): boolean {
     if (inputVals.some((e) => e === null)) {
-        alert("Není zvolen žádný " + object + "!")
+        alert(`Není zvolen žádný ${object}!`)
         return true
     }
     return false
@@ -134,12 +134,12 @@ export function prettyPhone(phone: ClientType["phone"]): string {
 
 /** Vrátí celé jméno klienta. */
 export function clientName(client: ClientType): string {
-    return client.surname + " " + client.firstname
+    return `${client.surname} ${client.firstname}`
 }
 
 /** Vrátí trvání kurzu ve srozumitelném formátu. */
 export function courseDuration(duration: LectureType["duration"]): string {
-    return "Trvání: " + duration + " min."
+    return `Trvání: ${duration} min.`
 }
 
 /** Zjistí, jestli jsou všichni členové skupiny aktivní. */

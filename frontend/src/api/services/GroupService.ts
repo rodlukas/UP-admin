@@ -26,7 +26,7 @@ function getAll(): Promise<List> {
 /** Získá aktivní skupiny. */
 function getActive(): Promise<List> {
     return requestData<List>({
-        url: baseUrl + "?" + API_URLS.Groups.filters.active + "=true",
+        url: `${baseUrl}?${API_URLS.Groups.filters.active}=true`,
         method: API_METHODS.get,
     })
 }
@@ -34,14 +34,14 @@ function getActive(): Promise<List> {
 /** Získá neaktivní skupinÿ. */
 function getInactive(): Promise<List> {
     return requestData<List>({
-        url: baseUrl + "?" + API_URLS.Groups.filters.active + "=false",
+        url: `${baseUrl}?${API_URLS.Groups.filters.active}=false`,
         method: API_METHODS.get,
     })
 }
 
 /** Získá skupiny zadaného klienta. */
 function getAllFromClient(clientId: ClientType["id"]): Promise<List> {
-    const url = baseUrl + "?" + API_URLS.Groups.filters.client + "=" + clientId
+    const url = `${baseUrl}?${API_URLS.Groups.filters.client}=${clientId}`
     return requestData<List>({
         url: url,
         method: API_METHODS.get,

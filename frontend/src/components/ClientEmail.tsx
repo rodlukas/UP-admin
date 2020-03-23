@@ -10,7 +10,7 @@ type Props = {
 const ClientEmail: React.FC<Props> = ({ email }) => {
     if (email !== "") {
         return (
-            <a href={"mailto:" + email} data-qa="client_email" data-gdpr>
+            <a href={`mailto:${email}`} data-qa="client_email" data-gdpr>
                 {email}
             </a>
         )

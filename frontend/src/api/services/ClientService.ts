@@ -25,14 +25,14 @@ function getAll(): Promise<List> {
 
 function getActive(): Promise<ListWithActiveClients> {
     return requestData<ListWithActiveClients>({
-        url: baseUrl + "?" + API_URLS.Clients.filters.active + "=true",
+        url: `${baseUrl}?${API_URLS.Clients.filters.active}=true`,
         method: API_METHODS.get,
     })
 }
 
 function getInactive(): Promise<List> {
     return requestData<List>({
-        url: baseUrl + "?" + API_URLS.Clients.filters.active + "=false",
+        url: `${baseUrl}?${API_URLS.Clients.filters.active}=false`,
         method: API_METHODS.get,
     })
 }

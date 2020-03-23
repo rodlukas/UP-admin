@@ -7,7 +7,7 @@ import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 const AppCommit: React.FC = () => (
     <>
         <a
-            href={GITHUB_REPO_URL + "/commit/%GIT_COMMIT"}
+            href={`${GITHUB_REPO_URL}/commit/%GIT_COMMIT`}
             target="_blank"
             className="AppCommit"
             rel="noopener noreferrer"

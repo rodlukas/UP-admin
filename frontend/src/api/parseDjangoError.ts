@@ -35,10 +35,9 @@ export function parseDjangoError(error: AxiosError): null | { [key: string]: any
                           .map((subField: { [key: string]: any } | string | []) => {
                               let errContent
                               if (typeof subField === "object" && !Array.isArray(subField)) {
-                                  errContent =
-                                      Object.keys(subField)[0] +
-                                      ": " +
+                                  errContent = `${Object.keys(subField)[0]}: ${
                                       subField[Object.keys(subField)[0]]
+                                  }`
                               } else if (typeof subField === "string") {
                                   errContent = subField
                               } else if (Array.isArray(subField)) {

@@ -14,11 +14,11 @@ type Props = {
 /** Komponenta pro zobrazení titulku po najetí myší nad daný element. */
 const Tooltip: React.FC<Props> = ({ postfix, text, size = "lg", placement = "bottom" }) => (
     <>
-        <UncontrolledTooltipWrapper placement={placement} target={"Tooltip_" + postfix}>
+        <UncontrolledTooltipWrapper placement={placement} target={`Tooltip_${postfix}`}>
             {text}
         </UncontrolledTooltipWrapper>
         <FontAwesomeIcon
-            id={"Tooltip_" + postfix}
+            id={`Tooltip_${postfix}`}
             icon={faInfoCircle}
             className="text-warning"
             size={size}

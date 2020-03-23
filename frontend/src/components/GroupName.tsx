@@ -50,7 +50,7 @@ const GroupName: React.FC<GroupNameProps> = ({
     return (
         <span className="ClientName GroupName">
             {"id" in group && link ? (
-                <Link to={APP_URLS.skupiny.url + "/" + group.id}>
+                <Link to={`${APP_URLS.skupiny.url}/${group.id}`}>
                     <span className={noWrap ? "text-nowrap" : undefined}>
                         {showCircle && <CourseCircle color={group.course.color} size={0.5} />}
                         <PlainGroupNameComponent />
