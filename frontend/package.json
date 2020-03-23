@@ -11,8 +11,11 @@
     "build:ci": "cross-env NODE_ENV=production webpack",
     "start": "cross-env NODE_ENV=development webpack-dev-server --progress",
     "lint:js": "eslint --ext js,jsx,ts,tsx src",
-    "lint:css": "stylelint **/*.css --fix",
+    "lint!:js": "eslint --ext js,jsx,ts,tsx src --fix",
+    "lint:css": "stylelint **/*.css",
+    "lint!:css": "stylelint **/*.css --fix",
     "lint:all": "yarn run lint:js && yarn run lint:css",
+    "lint!:all": "yarn run lint!:js && yarn run lint!:css",
     "test": "yarn run types && yarn run lint:all"
   },
   "devDependencies": {
