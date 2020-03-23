@@ -741,26 +741,21 @@ class FormLectures extends React.Component<Props, State> {
                                         <DeleteButton
                                             content="lekci"
                                             onClick={(): void => {
-                                                const msg = `${
-                                                    `Opravdu chcete smazat ${
-                                                        prepaid ? "předplacenou " : ""
-                                                    }` +
-                                                    `lekci ${
-                                                        this.isClient(this.props.object)
-                                                            ? "klienta"
-                                                            : "skupiny"
-                                                    } `
-                                                }${
-                                                    this.isClient(this.props.object)
-                                                        ? `${this.props.object.surname} ${this.props.object.firstname}`
-                                                        : this.props.object.name
-                                                }${
-                                                    !prepaid
-                                                        ? ` v ${prettyDateWithLongDayYear(
-                                                              new Date(date)
-                                                          )} ${time}`
-                                                        : ""
-                                                }?`
+                                                const msgDateTime = !prepaid
+                                                    ? ` v ${prettyDateWithLongDayYear(
+                                                          new Date(date)
+                                                      )} ${time}`
+                                                    : ""
+                                                const msgObjectName = this.isClient(
+                                                    this.props.object
+                                                )
+                                                    ? `${this.props.object.surname} ${this.props.object.firstname}`
+                                                    : this.props.object.name
+                                                const msgObject = this.isClient(this.props.object)
+                                                    ? "klienta"
+                                                    : "skupiny"
+                                                const msgPrepaid = prepaid ? "předplacenou " : ""
+                                                const msg = `Opravdu chcete smazat ${msgPrepaid}lekci ${msgObject} ${msgObjectName}${msgDateTime}?`
                                                 if (
                                                     this.isLecture(this.props.lecture) &&
                                                     window.confirm(msg)
