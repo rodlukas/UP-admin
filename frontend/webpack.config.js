@@ -101,6 +101,7 @@ module.exports = {
         new HtmlWebPackPlugin({
             // diky teto moznosti muze pak pracovat HtmlWebpackHarddiskPlugin
             alwaysWriteToDisk: true,
+            scriptLoading: "defer",
             template: htmlSource,
             filename: htmlFile,
             minify: isProduction
