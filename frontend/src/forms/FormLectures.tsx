@@ -365,7 +365,7 @@ class FormLectures extends React.Component<Props, State> {
                         (elem) => elem.client.id === member.id
                     )
                     if (attendanceId === undefined) {
-                        throw "Nepodařilo se dohledat ID účasti"
+                        throw Error("Nepodařilo se dohledat ID účasti")
                     }
                     const attendancesDataPut = {
                         ...attendancesDataPost,
@@ -377,7 +377,7 @@ class FormLectures extends React.Component<Props, State> {
                 }
             })
         } else {
-            throw "Některý z účastníků nemá definovaný stav účasti"
+            throw Error("Některý z účastníků nemá definovaný stav účasti")
         }
         return attendances
     }

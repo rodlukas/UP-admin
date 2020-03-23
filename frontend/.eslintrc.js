@@ -72,6 +72,7 @@ module.exports = {
         "prefer-template": "error",
         "no-template-curly-in-string": "error",
         "no-shadow": "error",
+        "no-throw-literal": "error",
 
         "jsx-a11y/no-autofocus": 0,
 
