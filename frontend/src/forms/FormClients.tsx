@@ -1,5 +1,4 @@
 import * as React from "react"
-import { ChangeEvent, FormEvent } from "react"
 import {
     Alert,
     Col,
@@ -58,7 +57,7 @@ export default class FormClients extends React.Component<Props, State> {
         isSubmit: false,
     }
 
-    onChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         this.props.setFormDirty()
         const target = e.currentTarget
         let value = target.type === "checkbox" ? target.checked : target.value
@@ -79,7 +78,7 @@ export default class FormClients extends React.Component<Props, State> {
         }))
     }
 
-    onSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         // stopPropagation, aby nedoslo k propagaci submit na nadrazene formulare pri vnoreni modalnich oken
         e.stopPropagation()
         e.preventDefault()

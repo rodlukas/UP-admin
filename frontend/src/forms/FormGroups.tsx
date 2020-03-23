@@ -1,5 +1,4 @@
 import * as React from "react"
-import { FormEvent } from "react"
 import {
     Alert,
     Col,
@@ -113,7 +112,7 @@ class FormGroups extends React.Component<Props, State> {
         }))
     }
 
-    onSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
         const { name, memberships, course, active } = this.state
         if (alertRequired("kurz", course)) {

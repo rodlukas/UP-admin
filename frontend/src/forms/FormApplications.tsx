@@ -1,5 +1,4 @@
 import * as React from "react"
-import { FormEvent } from "react"
 import { Col, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 import ApplicationService from "../api/services/ApplicationService"
 import ClientService from "../api/services/ClientService"
@@ -78,7 +77,7 @@ class FormApplications extends React.Component<Props, State> {
         }))
     }
 
-    onSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
         const { course, client, note } = this.state
         if (alertRequired("kurz nebo klient", course, client)) {

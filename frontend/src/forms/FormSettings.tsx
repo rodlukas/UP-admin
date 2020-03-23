@@ -1,7 +1,6 @@
 import { faHourglass } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
-import { FormEvent } from "react"
 import {
     Alert,
     Col,
@@ -78,7 +77,7 @@ export default class FormSettings extends React.Component<Props, State> {
 
     onChangeColor = (newColor: string): void => this.setState({ color: newColor })
 
-    onSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
         const { name, visible, duration, color } = this.state
         let request: Promise<CourseType | AttendanceStateType>

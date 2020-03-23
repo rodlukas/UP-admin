@@ -6,7 +6,6 @@ import {
 } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
-import { ChangeEvent, FormEvent } from "react"
 import {
     Alert,
     Col,
@@ -294,7 +293,7 @@ class FormLectures extends React.Component<Props, State> {
         return objects
     }
 
-    onChangeMultiple = (e: ChangeEvent<HTMLInputElement>): void => {
+    onChangeMultiple = (e: React.ChangeEvent<HTMLInputElement>): void => {
         this.props.setFormDirty()
         const target = e.currentTarget
         const id = Number(target.dataset.id)
@@ -322,7 +321,7 @@ class FormLectures extends React.Component<Props, State> {
         )
     }
 
-    onChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         this.props.setFormDirty()
         const target = e.currentTarget
         const value = target.type === "checkbox" ? target.checked : target.value
@@ -383,7 +382,7 @@ class FormLectures extends React.Component<Props, State> {
         return attendances
     }
 
-    onSubmit = (e: FormEvent<HTMLFormElement>, refresh_clients = false): void => {
+    onSubmit = (e: React.FormEvent<HTMLFormElement>, refresh_clients = false): void => {
         e.preventDefault()
         const { prepaid, canceled, course, time, date, duration, prepaidCnt } = this.state
         if (alertRequired("kurz", course)) {
