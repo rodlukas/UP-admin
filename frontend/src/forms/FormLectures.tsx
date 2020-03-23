@@ -228,16 +228,14 @@ class FormLectures extends React.Component<Props, State> {
     }
 
     getMembers(memberships: Array<{ client: ClientType }>): Array<ClientType> {
-        const members: Array<ClientType> = []
         // map se provadi nad hodnotami MembershipType | AttendanceType
-        memberships.map((member) => members.push(member.client))
-        return members
+        return memberships.map((member) => member.client)
     }
 
     createAttendanceStateObjects(): AtStateWithEmpty {
         const objects: AtStateWithEmpty = {}
         const defaultStateIndex = this.getDefaultStateIndex()
-        this.members.map(
+        this.members.forEach(
             (client, id) =>
                 (objects[client.id] = this.isLecture(this.props.lecture)
                     ? this.props.lecture.attendances[id].attendancestate
@@ -266,7 +264,7 @@ class FormLectures extends React.Component<Props, State> {
 
     createNoteObjects(): AtNote {
         const objects: AtNote = {}
-        this.members.map(
+        this.members.forEach(
             (client, id) =>
                 (objects[client.id] = this.isLecture(this.props.lecture)
                     ? this.props.lecture.attendances[id].note
@@ -320,7 +318,7 @@ class FormLectures extends React.Component<Props, State> {
     onChangePrepaid = (): void => {
         if (!this.state.prepaid) {
             const paid = this.state.atPaid
-            this.members.map((member) => (paid[member.id] = true))
+            this.members.forEach((member) => (paid[member.id] = true))
             this.setState({ date: "", time: "", atPaid: paid })
         }
     }
