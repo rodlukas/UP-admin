@@ -91,5 +91,8 @@
     "react-select": "^3.0.3",
     "react-toastify": "^5.1.0",
     "reactstrap": "^8.4.1"
+  },
+  "resolutions": {
+    "remark": "11.0.2"
   }
 }
