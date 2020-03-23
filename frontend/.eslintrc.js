@@ -70,6 +70,8 @@ module.exports = {
         curly: "error",
         "no-useless-concat": "error",
         "prefer-template": "error",
+        "no-template-curly-in-string": "error",
+        "no-shadow": "error",
 
         "jsx-a11y/no-autofocus": 0,
 

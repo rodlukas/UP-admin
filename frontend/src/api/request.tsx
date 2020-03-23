@@ -111,11 +111,11 @@ class ErrorMessage extends React.Component<Props, State> {
  */
 export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): AxiosPromise<T> => {
     const notify = (message: React.ReactNode, level: TypeOptions): void => {
-        const options: ToastOptions = {
+        const toastOptions: ToastOptions = {
             type: level,
             autoClose: level === toast.TYPE.ERROR ? 15000 : 4000,
         }
-        toast(message, options)
+        toast(message, toastOptions)
     }
 
     const onSuccess = <T,>(response: AxiosResponse<T>): AxiosResponse<T> => {
