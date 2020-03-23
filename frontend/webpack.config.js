@@ -9,7 +9,7 @@ const TerserPlugin = require("terser-webpack-plugin")
 const StylelintPlugin = require("stylelint-webpack-plugin")
 
 // bez .local by nefungovalo na iOS
-const hostName = os.hostname().toLowerCase() + ".local"
+const hostName = `${os.hostname().toLowerCase()}.local`
 const port = 3000
 const urlLocal = `http://${hostName}:${port}/`
 const urlProduction = "/static/assets/"
