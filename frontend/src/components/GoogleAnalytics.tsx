@@ -1,10 +1,9 @@
 import * as React from "react"
 import * as ReactGA from "react-ga"
-import { FieldsObject } from "react-ga"
 import { Route, RouteComponentProps } from "react-router-dom"
 import { isEnvProduction } from "../global/funcEnvironments"
 
-type Props = RouteComponentProps & FieldsObject
+type Props = RouteComponentProps & ReactGA.FieldsObject
 
 /**
  * Komponenta zajišťující Google Analytics napříč aplikací.
@@ -44,7 +43,7 @@ class GoogleAnalytics extends React.Component<Props> {
 
 const RouteTracker = (): React.ReactElement => <Route component={GoogleAnalytics} />
 
-const init = (options: FieldsObject = {}): boolean => {
+const init = (options: ReactGA.FieldsObject = {}): boolean => {
     const isProduction = isEnvProduction()
     if (isProduction) {
         ReactGA.initialize("UA-53235943-3", {
