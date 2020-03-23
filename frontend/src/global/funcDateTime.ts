@@ -54,7 +54,9 @@ export function yearDiffs(date: Date): boolean {
 
 /** Vrátí zadaný datum ve srozumitelném formátu (rok pouze odlišný od aktuálního, bez slovní reprezentace dne). */
 export function prettyDateWithYearIfDiff(date: Date): string {
-    if (!yearDiffs(date)) return prettyDate(date)
+    if (!yearDiffs(date)) {
+        return prettyDate(date)
+    }
     return prettyDateWithYear(date)
 }
 
@@ -81,9 +83,13 @@ export function prettyDateWithLongDayYearIfDiff(date: Date): string {
 
 /** Pokud je to možné, převede zadaný datum na slovní reprezentaci typu "včera", jinak vrátí null. */
 function convertDayToWords(date: Date): string | null {
-    if (isToday(date)) return "dnes"
-    else if (isToday(addDays(date, 1))) return "včera"
-    else if (isToday(addDays(date, -1))) return "zítra"
+    if (isToday(date)) {
+        return "dnes"
+    } else if (isToday(addDays(date, 1))) {
+        return "včera"
+    } else if (isToday(addDays(date, -1))) {
+        return "zítra"
+    }
     return null
 }
 
@@ -94,7 +100,9 @@ function convertDayToWords(date: Date): string | null {
 export function prettyDateWithDayYearIfDiff(date: Date, convertToWord = false): string {
     if (convertToWord) {
         const convertedDayToWords = convertDayToWords(date)
-        if (convertedDayToWords) return convertedDayToWords
+        if (convertedDayToWords) {
+            return convertedDayToWords
+        }
     }
     const day = date.toLocaleDateString(LOCALE_CZ, { weekday: "short" })
     return day + " " + prettyDateWithYearIfDiff(date)
@@ -166,9 +174,10 @@ export function getWeekSerializedFromMonday(monday: Date): Array<string> {
 export function isUserCelebrating(date: Date): number {
     const curMonth = date.getMonth(),
         curDate = date.getDate()
-    if (curMonth === USER_BIRTHDAY.month && curDate === USER_BIRTHDAY.date)
+    if (curMonth === USER_BIRTHDAY.month && curDate === USER_BIRTHDAY.date) {
         return USER_CELEBRATION.BIRTHDAY
-    else if (curMonth === USER_NAMEDAY.month && curDate === USER_NAMEDAY.date)
+    } else if (curMonth === USER_NAMEDAY.month && curDate === USER_NAMEDAY.date) {
         return USER_CELEBRATION.NAMEDAY
+    }
     return USER_CELEBRATION.NOTHING
 }

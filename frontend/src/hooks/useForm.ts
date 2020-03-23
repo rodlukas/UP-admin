@@ -24,7 +24,9 @@ const useForm = <T>(initState: T, callback: fFunction): UseForm<T> => {
     }
 
     const handleSubmit = (e: FormEventType): void => {
-        if (e) e.preventDefault()
+        if (e) {
+            e.preventDefault()
+        }
         callback()
     }
 

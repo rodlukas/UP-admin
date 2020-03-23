@@ -27,7 +27,9 @@ export default class ColorPicker extends React.Component<Props, State> {
     static customToastId = "ColorPicker"
 
     togglePicker = (): void => {
-        if (!this.state.isPickerVisible) this.validateColor(this.props.color)
+        if (!this.state.isPickerVisible) {
+            this.validateColor(this.props.color)
+        }
         this.setState((prevState) => ({
             isPickerVisible: !prevState.isPickerVisible,
         }))
@@ -52,7 +54,9 @@ export default class ColorPicker extends React.Component<Props, State> {
                     type: toast.TYPE.WARNING,
                 }
             )
-        } else toast.dismiss(ColorPicker.customToastId)
+        } else {
+            toast.dismiss(ColorPicker.customToastId)
+        }
     }
 
     render(): React.ReactNode {

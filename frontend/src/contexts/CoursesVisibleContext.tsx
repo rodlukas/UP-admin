@@ -35,7 +35,7 @@ export class CoursesVisibleProvider extends React.Component<{}, State> {
 
     getCourses = (callback = noop): void => {
         // pokud jeste nikdo nepozadal o nacteni kurzu, pozadej a nacti je
-        if (!this.state.loadRequested)
+        if (!this.state.loadRequested) {
             this.setState({ loadRequested: true }, () => {
                 CourseService.getVisible().then((courses) =>
                     this.setState(
@@ -47,11 +47,12 @@ export class CoursesVisibleProvider extends React.Component<{}, State> {
                     )
                 )
             })
+        }
     }
 
     hardRefreshCourses = (): void => {
         // pokud uz je v pameti nactena stara verze kurzu, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
-        if (this.state.loadRequested)
+        if (this.state.loadRequested) {
             this.setState({ isLoaded: false }, () => {
                 CourseService.getVisible().then((courses) =>
                     this.setState({
@@ -60,6 +61,7 @@ export class CoursesVisibleProvider extends React.Component<{}, State> {
                     })
                 )
             })
+        }
     }
 
     render = (): React.ReactNode => (

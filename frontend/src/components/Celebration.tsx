@@ -8,7 +8,9 @@ type Props = {
 
 /** Komponenta zobrazující přání k svátku/narozeninám lektorky. */
 const Celebration: React.FC<Props> = ({ isUserCelebratingResult }) => {
-    if (isUserCelebratingResult === USER_CELEBRATION.NOTHING) return null
+    if (isUserCelebratingResult === USER_CELEBRATION.NOTHING) {
+        return null
+    }
     return (
         <>
             <UncontrolledTooltipWrapper placement="top" target="Celebration">

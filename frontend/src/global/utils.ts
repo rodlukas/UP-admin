@@ -19,11 +19,12 @@ export function groupObjectsByCourses<O extends ApplicationType | LectureType>(
 ): GroupedObjectsByCourses<O> {
     // seskup data podle kurzu ve formatu "nazev_kurzu": {course: objekt_s_kurzem, objects: pole_objektu}
     const groupByCourses = objects.reduce((obj: GroupedObjectsByCoursesReduce<O>, item: O) => {
-        if (!obj[item.course.name])
+        if (!obj[item.course.name]) {
             obj[item.course.name] = {
                 course: item.course,
                 objects: [],
             }
+        }
         obj[item.course.name].objects.push(item)
         return obj
     }, {})
@@ -35,8 +36,12 @@ export function groupObjectsByCourses<O extends ApplicationType | LectureType>(
     }))
     // serad kurzy podle abecedy
     arrayOfObjects.sort((a, b) => {
-        if (a.course.name < b.course.name) return -1
-        if (a.course.name > b.course.name) return 1
+        if (a.course.name < b.course.name) {
+            return -1
+        }
+        if (a.course.name > b.course.name) {
+            return 1
+        }
         return 0
     })
     return arrayOfObjects
@@ -74,7 +79,9 @@ export function getDefaultValuesForLecture(
     lecturesGroupedByCourses: GroupedObjectsByCourses<LectureType>
 ): DefaultValuesForLecture {
     // nemame co vratit
-    if (lecturesGroupedByCourses.length === 0) return prepareDefaultValuesForLecture()
+    if (lecturesGroupedByCourses.length === 0) {
+        return prepareDefaultValuesForLecture()
+    }
     // chodi na jeden jediny kurz, vyber ho + start posledni lekce
     else if (lecturesGroupedByCourses.length === 1) {
         return prepareDefaultValuesForLecture(
@@ -118,7 +125,9 @@ export function alertRequired(object: string, ...inputVals: Array<object | null>
 
 /** Vrátí telefonní číslo ve srozumitelném formátu. */
 export function prettyPhone(phone: ClientType["phone"]): string {
-    if (!phone) return ""
+    if (!phone) {
+        return ""
+    }
     const numberParts = phone.match(/.{3}/g)
     return numberParts ? numberParts.join(" ") : phone
 }

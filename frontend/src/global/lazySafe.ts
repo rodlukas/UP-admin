@@ -29,10 +29,14 @@ export default function lazySafe(
                         // pokud nedoslo k prvnimu reloadu, nastav firstReload="true" a reloadni
                         localStorage.setItem(FIRST_RELOAD_KEY, "true")
                         window.location.reload()
-                    } else localStorage.removeItem(FIRST_RELOAD_KEY)
+                    } else {
+                        localStorage.removeItem(FIRST_RELOAD_KEY)
+                    }
                 }
                 // nejedna se o chybu s chunkem, posli dal
-                else reject(error)
+                else {
+                    reject(error)
+                }
             })
     })
 }

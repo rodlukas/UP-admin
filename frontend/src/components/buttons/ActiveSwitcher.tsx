@@ -14,7 +14,9 @@ const ActiveSwitcher: React.FC<Props> = (props) => {
         const target = e.currentTarget
         const value = target.dataset.value === "true"
         // pokud doslo ke zmene, propaguj vyse
-        if (props.active !== value) props.onChange(value, true)
+        if (props.active !== value) {
+            props.onChange(value, true)
+        }
     }
 
     return (

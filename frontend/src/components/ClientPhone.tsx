@@ -13,7 +13,7 @@ type Props = {
 
 /** Komponenta pro jednotné zobrazení telefonního čísla klienta napříč aplikací. */
 const ClientPhone: React.FC<Props> = ({ phone, icon = false }) => {
-    if (phone !== "")
+    if (phone !== "") {
         return (
             <a href={"tel:+420" + phone} data-qa="client_phone" className="ClientPhone" data-gdpr>
                 {icon && (
@@ -27,6 +27,7 @@ const ClientPhone: React.FC<Props> = ({ phone, icon = false }) => {
                 {prettyPhone(phone)}
             </a>
         )
+    }
     return <NoInfo data-qa="client_phone" />
 }
 

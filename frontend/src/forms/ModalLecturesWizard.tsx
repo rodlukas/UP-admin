@@ -67,8 +67,11 @@ class ModalLecturesWizard extends React.Component<Props, State> {
     }
 
     setClient = (isClient: boolean): void => {
-        if (isClient) this.props.clientsActiveContext.funcRefresh()
-        else this.props.groupsActiveContext.funcRefresh()
+        if (isClient) {
+            this.props.clientsActiveContext.funcRefresh()
+        } else {
+            this.props.groupsActiveContext.funcRefresh()
+        }
         this.setState({
             isClient: isClient,
         })
@@ -84,7 +87,9 @@ class ModalLecturesWizard extends React.Component<Props, State> {
 
     onSelectChange = (_name: string, obj?: ClientType | GroupType | null): void => {
         const isClient = this.state.isClient
-        if (!obj || isClient === undefined) return
+        if (!obj || isClient === undefined) {
+            return
+        }
         // skupiny sice maji jasny kurz, ale lze u nich odhadovat datum a cas, proto zde pro ne neprizpusobujeme
         // chovani
         // nejdriv zobraz nacitani, behem ktereho pro vybraneho klienta/skupinu pripravis vychozi hodnoty kurzu, data a

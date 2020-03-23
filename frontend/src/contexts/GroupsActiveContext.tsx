@@ -35,7 +35,7 @@ export class GroupsActiveProvider extends React.Component<{}, State> {
 
     getGroups = (callback = noop): void => {
         // pokud jeste nikdo nepozadal o nacteni skupin, pozadej a nacti je
-        if (!this.state.loadRequested)
+        if (!this.state.loadRequested) {
             this.setState({ loadRequested: true }, () => {
                 GroupService.getActive().then((groups) =>
                     this.setState(
@@ -47,11 +47,12 @@ export class GroupsActiveProvider extends React.Component<{}, State> {
                     )
                 )
             })
+        }
     }
 
     hardRefreshGroups = (): void => {
         // pokud uz je v pameti nactena stara verze skupin, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
-        if (this.state.loadRequested)
+        if (this.state.loadRequested) {
             this.setState({ isLoaded: false }, () => {
                 GroupService.getActive().then((groups) =>
                     this.setState({
@@ -60,6 +61,7 @@ export class GroupsActiveProvider extends React.Component<{}, State> {
                     })
                 )
             })
+        }
     }
 
     render = (): React.ReactNode => (

@@ -45,16 +45,21 @@ class Clients extends React.Component<Props, State> {
     }
 
     refresh = (active = this.state.active, ignoreActiveRefresh = false): void => {
-        if (active && ignoreActiveRefresh) this.setState({ active: active })
-        else this.setState({ isLoading: true, active: active }, () => this.getClients(active, true))
+        if (active && ignoreActiveRefresh) {
+            this.setState({ active: active })
+        } else {
+            this.setState({ isLoading: true, active: active }, () => this.getClients(active, true))
+        }
     }
 
     getClients = (active = this.state.active, callFromRefresh = false): void => {
-        if (active && !callFromRefresh) this.props.clientsActiveContext.funcRefresh()
-        else if (!active)
+        if (active && !callFromRefresh) {
+            this.props.clientsActiveContext.funcRefresh()
+        } else if (!active) {
             ClientService.getInactive().then((clients) =>
                 this.setState({ clients, isLoading: false })
             )
+        }
     }
 
     componentDidMount(): void {

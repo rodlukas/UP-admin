@@ -10,7 +10,9 @@ type Props = {
 
 /** Komponenta zobrazující pořadové číslo lekce. */
 const LectureNumber: React.FC<Props> = ({ lecture, colorize = false }) => {
-    if (lecture.number === null) return null
+    if (lecture.number === null) {
+        return null
+    }
     return (
         <Badge
             color="secondary"

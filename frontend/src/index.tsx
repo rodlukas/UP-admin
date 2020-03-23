@@ -13,12 +13,13 @@ import "./index.css"
 import Main from "./Main"
 
 // CI provede substituci stringu za URL, promenna prostredi ale musi existovat, jinak nefunguje (proto podminka)
-if (isHosted())
+if (isHosted()) {
     Sentry.init({
         dsn: "%SENTRY_DSN",
         environment: getEnvName(),
         release: "%GIT_COMMIT",
     })
+}
 
 /** Základní kostra aplikace. */
 const App: React.FC = () => (

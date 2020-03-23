@@ -9,7 +9,9 @@ type Props = {
 
 /** Komponenta zobrazující čárkami oddělený seznam všech členů skupiny. */
 const ClientsList: React.FC<Props> = ({ memberships = [] }) => {
-    if (!memberships.length) return <span className="text-muted">žádní členové</span>
+    if (!memberships.length) {
+        return <span className="text-muted">žádní členové</span>
+    }
     const clientComponents = memberships.map((membership) => (
         <ClientName client={membership.client} key={membership.client.id} link />
     ))

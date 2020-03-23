@@ -47,8 +47,9 @@ class ErrorMessage extends React.Component<Props, State> {
             console.error("Headers: ", this.errorResponse.headers)
             console.error("DJANGO/DRF CHYBA: ", this.djangoError)
             console.error("DALŠÍ INFORMACE: ", this.props.error)
-            if ("x-sentry-id" in this.errorResponse.headers)
+            if ("x-sentry-id" in this.errorResponse.headers) {
                 console.info("SENTRY ID: ", this.errorResponse.headers["x-sentry-id"])
+            }
         } else {
             // stalo se neco jineho pri priprave requestu
             console.error("Při přípravě requestu nastala chyba: ", this.props.error.message)
@@ -60,11 +61,13 @@ class ErrorMessage extends React.Component<Props, State> {
         // request proveden, ale neprislo 2xx
         if (this.errorResponse) {
             // uloz do errMsg neco konkretnejsiho
-            if (this.errorResponse.status === 503) errMsg = NOTIFY_TEXT.ERROR_TIMEOUT
-            else {
+            if (this.errorResponse.status === 503) {
+                errMsg = NOTIFY_TEXT.ERROR_TIMEOUT
+            } else {
                 const djangoError = this.djangoError
-                if (typeof djangoError === "string") errMsg = djangoError
-                else if (djangoError && typeof djangoError === "object")
+                if (typeof djangoError === "string") {
+                    errMsg = djangoError
+                } else if (djangoError && typeof djangoError === "object") {
                     errMsg = (
                         <ul>
                             {Object.keys(djangoError).map((field, index) => (
@@ -75,10 +78,11 @@ class ErrorMessage extends React.Component<Props, State> {
                             ))}
                         </ul>
                     )
+                }
             }
 
             // pokud je logovano do Sentry, pridej o tom na konec zpravy info
-            if ("x-sentry-id" in this.errorResponse.headers)
+            if ("x-sentry-id" in this.errorResponse.headers) {
                 errMsg = (
                     <>
                         {errMsg}
@@ -87,6 +91,7 @@ class ErrorMessage extends React.Component<Props, State> {
                         {this.errorResponse.headers["x-sentry-id"]}).
                     </>
                 )
+            }
         } else {
             // stalo se neco jineho pri priprave requestu
             errMsg = this.props.error.message
@@ -116,13 +121,15 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
     const onSuccess = <T,>(response: AxiosResponse<T>): AxiosResponse<T> => {
         const responseUrl = response.request.responseURL
         console.debug("%cÚspěch: " + responseUrl, "color: green", response)
-        if (options.method !== API_METHODS.get)
+        if (options.method !== API_METHODS.get) {
             if (
                 (responseUrl && !responseUrl.match(API_URLS.Login.url)) ||
                 responseUrl === undefined
-            )
+            ) {
                 // responseURL neni definovana v IE, tedy v IE se zobrazi vice notifikaci, ale aspon bude appka fungovat
                 notify(<Notification type={toast.TYPE.SUCCESS} />, toast.TYPE.SUCCESS)
+            }
+        }
         return response
     }
 
@@ -139,7 +146,9 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
                     // korektne validovat token vyresime.
                     Token.remove()
                     history.push(APP_URLS.prihlasit.url)
-                } else if (error.response.status === 404) history.push(APP_URLS.nenalezeno.url)
+                } else if (error.response.status === 404) {
+                    history.push(APP_URLS.nenalezeno.url)
+                }
             }
             return Promise.reject(error.response ?? error.message)
         } else {

@@ -8,7 +8,9 @@ type Props = {
 
 /** Komponenta pro jednotné zobrazení poznámky ke klientovi napříč aplikací. */
 const ClientNote: React.FC<Props> = ({ note }) => {
-    if (note !== "") return <span data-qa="client_note">{note}</span>
+    if (note !== "") {
+        return <span data-qa="client_note">{note}</span>
+    }
     return <NoInfo data-qa="client_note" />
 }
 

@@ -50,7 +50,7 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
 
     getClients = (callback = noop): void => {
         // pokud jeste nikdo nepozadal o nacteni klientu, pozadej a nacti je
-        if (!this.state.loadRequested)
+        if (!this.state.loadRequested) {
             this.setState({ loadRequested: true }, () => {
                 this.loadClients().then((clients) => {
                     this.setState(
@@ -62,11 +62,12 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
                     )
                 })
             })
+        }
     }
 
     hardRefreshClients = (): void => {
         // pokud uz je v pameti nactena stara verze klientu, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
-        if (this.state.loadRequested)
+        if (this.state.loadRequested) {
             this.setState({ isLoaded: false }, () => {
                 this.loadClients().then((clients) =>
                     this.setState({
@@ -75,6 +76,7 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
                     })
                 )
             })
+        }
     }
 
     render = (): React.ReactNode => (

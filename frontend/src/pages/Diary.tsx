@@ -66,29 +66,37 @@ export default class Diary extends React.Component<Props, State> {
 
     componentDidUpdate(prevProps: Props, prevState: State): void {
         // pokud se datum ktery pozadujeme shoduje s tim ve stavu, nic neupdatuj
-        if (isEqualDate(new Date(prevState.week[0]), this.getRequiredMonday())) return
+        if (isEqualDate(new Date(prevState.week[0]), this.getRequiredMonday())) {
+            return
+        }
         // pozadujeme jiny datum, nez jsme meli ve stavu
         if (
             this.props.match.params.year !== prevProps.match.params.year ||
             this.props.match.params.month !== prevProps.match.params.month ||
             this.props.match.params.day !== prevProps.match.params.day
-        )
+        ) {
             this.setState({ week: this.getWeek() }, this.setRefreshState)
+        }
     }
 
     onKeyDown = (e: KeyboardEvent): void => {
         // akce provadej jen kdyz neni otevrene modalni okno
         if (!isModalShown()) {
             const key = e.key
-            if (key === "ArrowLeft") this.props.history.push(this.getPrevMondaySerialized())
-            else if (key === "ArrowRight") this.props.history.push(this.getNextMondaySerialized())
+            if (key === "ArrowLeft") {
+                this.props.history.push(this.getPrevMondaySerialized())
+            } else if (key === "ArrowRight") {
+                this.props.history.push(this.getNextMondaySerialized())
+            }
         }
     }
 
     static parseDateFromParams(params: ParamsProps): Date {
-        if (params.month != null && params.year != null && params.day != null)
+        if (params.month != null && params.year != null && params.day != null) {
             return new Date(Number(params.year), Number(params.month) - 1, Number(params.day))
-        else return new Date()
+        } else {
+            return new Date()
+        }
     }
 
     static serializeDateUrl(date: Date): string {

@@ -35,7 +35,9 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE, refresh }) => {
                 coursesVisibleContext.funcHardRefresh()
                 // je potreba take projevit zmeny kurzu do seznamu aktivnich skupin
                 groupsActiveContext.funcHardRefresh()
-            } else if (TYPE === EDIT_TYPE.STATE) attendanceStatesContext.funcRefresh()
+            } else if (TYPE === EDIT_TYPE.STATE) {
+                attendanceStatesContext.funcRefresh()
+            }
         })
     }
 

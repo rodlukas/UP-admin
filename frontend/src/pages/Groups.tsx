@@ -48,14 +48,19 @@ class Groups extends React.Component<Props, State> {
     }
 
     refresh = (active = this.state.active, ignoreActiveRefresh = false): void => {
-        if (active && ignoreActiveRefresh) this.setState({ active: active })
-        else this.setState({ isLoading: true, active: active }, () => this.getGroups(active, true))
+        if (active && ignoreActiveRefresh) {
+            this.setState({ active: active })
+        } else {
+            this.setState({ isLoading: true, active: active }, () => this.getGroups(active, true))
+        }
     }
 
     getGroups = (active = this.state.active, callFromRefresh = false): void => {
-        if (active && !callFromRefresh) this.props.groupsActiveContext.funcRefresh()
-        else
+        if (active && !callFromRefresh) {
+            this.props.groupsActiveContext.funcRefresh()
+        } else {
             GroupService.getInactive().then((groups) => this.setState({ groups, isLoading: false }))
+        }
     }
 
     componentDidMount(): void {

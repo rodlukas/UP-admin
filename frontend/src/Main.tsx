@@ -73,7 +73,9 @@ const Main: React.FC = () => {
     }, [search])
 
     React.useEffect(() => {
-        if (!isMenuOpened) resetSearch()
+        if (!isMenuOpened) {
+            resetSearch()
+        }
     }, [isMenuOpened])
 
     function toggleNavbar(): void {

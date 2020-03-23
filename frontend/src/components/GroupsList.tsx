@@ -9,7 +9,9 @@ type Props = {
 
 /** Komponenta zobrazující čárkami oddělený seznam všech skupin, ve kterých je daný klient. */
 const GroupsList: React.FC<Props> = ({ groups = [] }) => {
-    if (!groups.length) return <span className="text-muted">žádné skupiny</span>
+    if (!groups.length) {
+        return <span className="text-muted">žádné skupiny</span>
+    }
     const groupComponents = groups.map((membership) => (
         <GroupName group={membership} key={membership.id} link showCircle noWrap />
     ))

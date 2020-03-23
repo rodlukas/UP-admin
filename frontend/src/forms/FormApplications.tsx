@@ -68,7 +68,9 @@ class FormApplications extends React.Component<Props, State> {
 
     onSelectChange = (name: "course" | "client", obj?: CourseType | ClientType | null): void => {
         this.props.setFormDirty()
-        if (obj === undefined) obj = null
+        if (obj === undefined) {
+            obj = null
+        }
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
         this.setState((prevState) => ({
             ...prevState,
@@ -79,7 +81,9 @@ class FormApplications extends React.Component<Props, State> {
     onSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
         const { course, client, note } = this.state
-        if (alertRequired("kurz nebo klient", course, client)) return
+        if (alertRequired("kurz nebo klient", course, client)) {
+            return
+        }
         const courseId = (course as ApplicationType["course"]).id
         const clientId = (client as ApplicationType["client"]).id
         let request: Promise<ApplicationType>

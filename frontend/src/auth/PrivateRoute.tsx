@@ -15,7 +15,9 @@ import { AuthContext } from "./AuthContext"
 const PrivateRoute: React.FC<CustomRouteProps> = ({ component: WrappedComponent, ...rest }) => {
     const authContext = React.useContext(AuthContext)
 
-    if (!WrappedComponent) return null
+    if (!WrappedComponent) {
+        return null
+    }
 
     return (
         <Page

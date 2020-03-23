@@ -63,13 +63,15 @@ export default class FormClients extends React.Component<Props, State> {
         const target = e.currentTarget
         let value = target.type === "checkbox" ? target.checked : target.value
         // pri psani rozdeluj cislo na trojice
-        if (target.id === "phone")
+        if (target.id === "phone") {
             value = (value as string)
                 .replace(/([0-9]{3})([^\s])/, "$1 $2")
                 .replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
+        }
         // nastav velke pocatecni pismeno ve jmenu i prijmeni klienta
-        else if (target.id === "firstname" || target.id === "surname")
+        else if (target.id === "firstname" || target.id === "surname") {
             value = capitalizeString(value as string)
+        }
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
         this.setState((prevState) => ({
             ...prevState,
@@ -245,8 +247,9 @@ export default class FormClients extends React.Component<Props, State> {
                                                 window.confirm(
                                                     `Opravdu chcete smazat klienta ${firstname} ${surname}?`
                                                 )
-                                            )
+                                            ) {
                                                 this.delete(this.props.client.id)
+                                            }
                                         }}
                                         data-qa="button_delete_client"
                                     />

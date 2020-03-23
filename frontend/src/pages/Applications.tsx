@@ -156,8 +156,9 @@ class Applications extends React.Component<Props, State> {
                                                                         "Opravdu chcete smazat zájemce " +
                                                                             `${application.client.surname} ${application.client.firstname} o ${application.course.name}?`
                                                                     )
-                                                                )
+                                                                ) {
                                                                     this.delete(application.id)
+                                                                }
                                                             }}
                                                             data-qa="button_delete_application"
                                                         />

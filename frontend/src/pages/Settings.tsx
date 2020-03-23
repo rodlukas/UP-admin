@@ -80,7 +80,9 @@ class Settings extends React.Component<Props, State> {
     }
 
     refresh = (type: number): void => {
-        if (type === EDIT_TYPE.COURSE) this.setState({ isLoading: true }, () => this.getCourses())
+        if (type === EDIT_TYPE.COURSE) {
+            this.setState({ isLoading: true }, () => this.getCourses())
+        }
         // jine zmeny (v contextu, napr. stavu ucasti) neni treba provadet, to ma na starost ModalSettings
     }
 
@@ -93,7 +95,9 @@ class Settings extends React.Component<Props, State> {
     componentDidMount(): void {
         this.getCourses()
         // kdyz uz mas data z kontextu, proved hledani, jinak se o zavolani hledani postara componentDidUpdate
-        if (this.props.attendanceStatesContext.isLoaded) this.findStateIndexes()
+        if (this.props.attendanceStatesContext.isLoaded) {
+            this.findStateIndexes()
+        }
     }
 
     findStateIndexes = (): void => {
@@ -112,8 +116,9 @@ class Settings extends React.Component<Props, State> {
         if (
             this.props.attendanceStatesContext.isLoaded &&
             !prevProps.attendanceStatesContext.isLoaded
-        )
+        ) {
             this.findStateIndexes()
+        }
     }
 
     render(): React.ReactNode {

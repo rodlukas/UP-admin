@@ -78,19 +78,22 @@ class Card extends React.Component<Props, State> {
     componentDidMount(): void {
         this.getObject()
         this.getLectures()
-        if (this.isClientPage()) this.getMemberships()
+        if (this.isClientPage()) {
+            this.getMemberships()
+        }
     }
 
     refreshObjectFromModal = (data: ModalClientsGroupsData): void => {
-        if (!data?.isDeleted)
+        if (!data?.isDeleted) {
             this.setState(
                 (prevState) => ({ loadingCnt: prevState.loadingCnt - 1 }),
                 () => this.getObject()
             )
-        else
+        } else {
             this.props.history.push(
                 this.isClientPage() ? APP_URLS.klienti.url : APP_URLS.skupiny.url
             )
+        }
     }
 
     refresh = (all = true): void => {
@@ -119,8 +122,9 @@ class Card extends React.Component<Props, State> {
         if (
             this.getId() !== this.getPrevId(prevProps) ||
             this.isClientPage() !== this.wasClientPage(prevProps)
-        )
+        ) {
             this.refresh()
+        }
     }
 
     refreshAfterLectureChanges = (): void => {
@@ -163,12 +167,13 @@ class Card extends React.Component<Props, State> {
             const newLoadingState = {
                 loadingCnt: prevState.loadingCnt - 1,
             }
-            if (this.isClient(prevState.object) || prevState.object === null)
+            if (this.isClient(prevState.object) || prevState.object === null) {
                 // ...prevState kvuli https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18365
                 return {
                     ...prevState,
                     ...newLoadingState,
                 }
+            }
             let successUpdateCnt = 0
             const memberships = prevState.object.memberships.map((membership) => {
                 if (membership.id === id) {
@@ -178,10 +183,11 @@ class Card extends React.Component<Props, State> {
                     return membership
                 }
             })
-            if (successUpdateCnt !== 1)
+            if (successUpdateCnt !== 1) {
                 throw new Error(
                     "Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě"
                 )
+            }
             return {
                 object: { ...prevState.object, memberships },
                 ...newLoadingState,
@@ -294,10 +300,12 @@ class Card extends React.Component<Props, State> {
                                                 let className = lecture.canceled
                                                     ? "lecture-canceled"
                                                     : ""
-                                                if (date > new Date(Date.now()))
+                                                if (date > new Date(Date.now())) {
                                                     className += " lecture-future"
-                                                if (lecture.start === null)
+                                                }
+                                                if (lecture.start === null) {
                                                     className += " lecture-prepaid"
+                                                }
                                                 return (
                                                     <ListGroupItem
                                                         key={lecture.id}

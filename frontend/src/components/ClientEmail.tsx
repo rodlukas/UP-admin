@@ -8,12 +8,13 @@ type Props = {
 
 /** Komponenta pro jednotné zobrazení e-mailu klienta napříč aplikací. */
 const ClientEmail: React.FC<Props> = ({ email }) => {
-    if (email !== "")
+    if (email !== "") {
         return (
             <a href={"mailto:" + email} data-qa="client_email" data-gdpr>
                 {email}
             </a>
         )
+    }
     return <NoInfo data-qa="client_email" />
 }
 

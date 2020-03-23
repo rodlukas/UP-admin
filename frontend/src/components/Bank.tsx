@@ -65,20 +65,21 @@ export default class Bank extends React.PureComponent<{}, State> {
 
     getBankData = (): void => {
         BankService.getAll().then((response) => {
-            if (response.status !== 200)
+            if (response.status !== 200) {
                 this.setState({
                     // z API dorazi jen status_info, provedeme merge se zbytkem init hodnot
                     bankDataApi: Object.assign(this.bankDataApiInit, response.data),
                     DATA_PROBLEM: true,
                     isLoading: false,
                 })
-            else
+            } else {
                 this.setState({
                     bankDataApi: response.data,
                     isLoading: false,
                     REFRESH_DISABLED: true,
                     DATA_PROBLEM: false,
                 })
+            }
             // po zadanem poctu sekund povol tlacitko refresh
             this.timeoutId = window.setTimeout(
                 () => this.setState({ REFRESH_DISABLED: false }),

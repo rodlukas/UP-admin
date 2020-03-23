@@ -37,7 +37,9 @@ class ErrorBoundary extends React.Component<Props, State> {
     componentDidMount(): void {
         // aby fungoval react-router pri nejake chybe
         this.unlisten = this.props.history.listen(() => {
-            if (this.state.hasError) this.setState({ hasError: false })
+            if (this.state.hasError) {
+                this.setState({ hasError: false })
+            }
         })
     }
 

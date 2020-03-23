@@ -67,6 +67,7 @@ module.exports = {
         "no-restricted-globals": ["error"].concat(restrictedGlobals),
         // zakaz console.log
         "no-console": ["error", { allow: ["warn", "debug", "error", "info"] }],
+        curly: "error",
 
         "jsx-a11y/no-autofocus": 0,
 

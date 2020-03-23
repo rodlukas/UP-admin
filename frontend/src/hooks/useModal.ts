@@ -48,8 +48,9 @@ const useModal = (): UseModal => {
         if (
             formState === DIRTY_INDICATORS.CLEAN ||
             window.confirm("Opravdu chcete zavřít formulář bez uložení změn?")
-        )
+        ) {
             return toggleModalForce(false)
+        }
         return false
     }
 
@@ -58,7 +59,9 @@ const useModal = (): UseModal => {
     const processOnModalClose = (callback = noop): void => {
         // funkce, kterou musi zavolat komponenta pouzivajici hook pri zavirani modalu,
         // provede pripadny zaslany callback pokud byl formular submitnuty/probehlo smazani
-        if (formState === DIRTY_INDICATORS.SUBMITTED_DIRTY) callback()
+        if (formState === DIRTY_INDICATORS.SUBMITTED_DIRTY) {
+            callback()
+        }
         // zresetuj dirty indikator
         setFormState(DIRTY_INDICATORS.CLEAN)
     }

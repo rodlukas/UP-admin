@@ -39,8 +39,12 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
     }, [authContextIsAuth, authContextIsAuthenticated])
 
     const redirectedFrom = props.location.state ? props.location.state.from : "/"
-    if (authContextIsAuth) return <Redirect to={redirectedFrom} />
-    if (authContextIsLoading) return <Loading text="Probíhá přihlašování" />
+    if (authContextIsAuth) {
+        return <Redirect to={redirectedFrom} />
+    }
+    if (authContextIsLoading) {
+        return <Loading text="Probíhá přihlašování" />
+    }
     return (
         <Container>
             <Heading content={APP_URLS.prihlasit.title} />

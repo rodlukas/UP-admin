@@ -109,7 +109,11 @@ class FormLectures extends React.Component<Props, State> {
     isLecture = (lecture: Props["lecture"]): lecture is LectureType => "id" in lecture
 
     isAtStateWithoutEmpty = (atState: State["atState"]): atState is AtState => {
-        for (const [, value] of Object.entries(atState)) if (value === null) return false
+        for (const [, value] of Object.entries(atState)) {
+            if (value === null) {
+                return false
+            }
+        }
         return true
     }
 
@@ -157,7 +161,9 @@ class FormLectures extends React.Component<Props, State> {
     }
 
     areAttendantsEqualToMembers(): boolean {
-        if (this.isClient(this.props.object)) return true
+        if (this.isClient(this.props.object)) {
+            return true
+        }
         const idsAttendants = this.props.lecture.attendances.map((x) => x.client.id)
         const idsMembers = this.props.object.memberships.map((x) => x.client.id)
         return (
@@ -168,10 +174,11 @@ class FormLectures extends React.Component<Props, State> {
 
     computeDuration(): LectureType["duration"] {
         // pokud je to klient a mame vypocitany nejpravdepodobnejsi kurz, pouzij ho, jinak default
-        if (this.isClient(this.props.object))
+        if (this.isClient(this.props.object)) {
             return this.props.defaultValuesForLecture?.course
                 ? this.props.defaultValuesForLecture.course.duration
                 : DEFAULT_LECTURE_DURATION_SINGLE
+        }
         // je to skupina
         return DEFAULT_LECTURE_DURATION_GROUP
     }
@@ -179,9 +186,13 @@ class FormLectures extends React.Component<Props, State> {
     getDefaultStateIndex(): AttendanceStateType["id"] | undefined {
         if (this.getAttendanceStatesData().length) {
             const res = this.getAttendanceStatesData().find((elem) => elem.default === true)
-            if (res !== undefined) return res.id
+            if (res !== undefined) {
+                return res.id
+            }
             // pokud pole neni prazdne, ale zadny stav neni vychozi, vrat prvni prvek
-            else return this.getAttendanceStatesData()[0].id
+            else {
+                return this.getAttendanceStatesData()[0].id
+            }
         }
         return undefined
     }
@@ -189,40 +200,48 @@ class FormLectures extends React.Component<Props, State> {
     getExcusedStateIndex(): AttendanceStateType["id"] | undefined {
         if (this.getAttendanceStatesData().length) {
             const res = this.getAttendanceStatesData().find((elem) => elem.excused === true)
-            if (res !== undefined) return res.id
+            if (res !== undefined) {
+                return res.id
+            }
         }
         return undefined
     }
 
     componentDidUpdate(prevProps: Readonly<Props>): void {
-        if (this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates)
+        if (this.getAttendanceStatesData() !== prevProps.attendanceStatesContext.attendancestates) {
             this.setState({ atState: this.createAttendanceStateObjects() })
+        }
     }
 
     // zaridi, ze se nastavi disabled checkbox Zruseno pokud jsou vsichni omluveni a pripadne zpet vrati puvodni hodnotu
     checkDisabledCanceled = (): void => {
         const clientCnt = Object.keys(this.state.atState).length
-        if (clientCnt === 0) return
+        if (clientCnt === 0) {
+            return
+        }
         let excusedCnt = 0
         const excusedId = this.getExcusedStateIndex()
-        for (const [, val] of Object.entries(this.state.atState))
-            if (val === excusedId)
+        for (const [, val] of Object.entries(this.state.atState)) {
+            if (val === excusedId) {
                 // ve state je String
                 excusedCnt++
-        if (clientCnt === excusedCnt)
+            }
+        }
+        if (clientCnt === excusedCnt) {
             // vsichni jsou omluveni, lekce nejde zrusit
             this.setState((prevState) => ({
                 canceledPrevious: prevState.canceled,
                 canceled: true,
                 canceledDisabled: true,
             }))
-        else {
-            if (this.state.canceledDisabled)
+        } else {
+            if (this.state.canceledDisabled) {
                 // vsichni uz nejsou omluveni (ale byli), hodnotu checkboxu vrat na puvodni
                 this.setState((prevState) => ({
                     canceled: Boolean(prevState.canceledPrevious),
                     canceledPrevious: undefined,
                 }))
+            }
             this.setState({ canceledDisabled: false }) // uz neni potreba aby byl checkbox Zruseno disabled
         }
     }
@@ -247,15 +266,17 @@ class FormLectures extends React.Component<Props, State> {
     createPaidObjects(object: ClientType | GroupType): AtPaid {
         const objects: AtPaid = {}
         this.members.forEach((client, id) => {
-            if (this.isLecture(this.props.lecture))
+            if (this.isLecture(this.props.lecture)) {
                 objects[client.id] = this.props.lecture.attendances[id].paid
-            else {
+            } else {
                 objects[client.id] = false
                 if (!this.isClient(object)) {
                     const membership = object.memberships.find(
                         (elem) => elem.client.id === client.id
                     )
-                    if (membership && membership.prepaid_cnt > 0) objects[client.id] = true
+                    if (membership && membership.prepaid_cnt > 0) {
+                        objects[client.id] = true
+                    }
                 }
             }
         })
@@ -279,7 +300,9 @@ class FormLectures extends React.Component<Props, State> {
         const id = Number(target.dataset.id)
         let value: boolean | string | number =
             target.type === "checkbox" ? target.checked : target.value
-        if (target.name === "atState") value = Number(value)
+        if (target.name === "atState") {
+            value = Number(value)
+        }
         const nameStateAttr = target.name as keyof State
         this.setState(
             (prevState) => {
@@ -292,7 +315,9 @@ class FormLectures extends React.Component<Props, State> {
                 return { ...prevState, [nameStateAttr]: newStateVal }
             },
             () => {
-                if (nameStateAttr === "atState") this.checkDisabledCanceled()
+                if (nameStateAttr === "atState") {
+                    this.checkDisabledCanceled()
+                }
             }
         )
     }
@@ -310,7 +335,9 @@ class FormLectures extends React.Component<Props, State> {
 
     onSelectChange = (name: "course", obj?: CourseType | null): void => {
         this.props.setFormDirty()
-        if (obj === undefined) obj = null
+        if (obj === undefined) {
+            obj = null
+        }
         this.setState({ [name]: obj })
         obj && this.setState({ duration: obj.duration })
     }
@@ -338,22 +365,30 @@ class FormLectures extends React.Component<Props, State> {
                     const attendanceId = this.props.lecture.attendances.find(
                         (elem) => elem.client.id === member.id
                     )
-                    if (attendanceId === undefined) throw "Nepodařilo se dohledat ID účasti"
+                    if (attendanceId === undefined) {
+                        throw "Nepodařilo se dohledat ID účasti"
+                    }
                     const attendancesDataPut = {
                         ...attendancesDataPost,
                         id: attendanceId.id,
                     }
                     attendances.push(attendancesDataPut as T)
-                } else attendances.push(attendancesDataPost as T)
+                } else {
+                    attendances.push(attendancesDataPost as T)
+                }
             })
-        } else throw "Některý z účastníků nemá definovaný stav účasti"
+        } else {
+            throw "Některý z účastníků nemá definovaný stav účasti"
+        }
         return attendances
     }
 
     onSubmit = (e: FormEvent<HTMLFormElement>, refresh_clients = false): void => {
         e.preventDefault()
         const { prepaid, canceled, course, time, date, duration, prepaidCnt } = this.state
-        if (alertRequired("kurz", course)) return
+        if (alertRequired("kurz", course)) {
+            return
+        }
 
         const start = date + " " + time
         const courseId = (course as LectureType["course"]).id
@@ -385,7 +420,9 @@ class FormLectures extends React.Component<Props, State> {
                 }
                 request = LectureService.create(dataArray)
             } // jinak posli pouze lekci
-            else request = LectureService.create(dataPost)
+            else {
+                request = LectureService.create(dataPost)
+            }
         }
         this.setState({ isSubmit: true }, (): void => {
             request
@@ -731,8 +768,9 @@ class FormLectures extends React.Component<Props, State> {
                                                 if (
                                                     this.isLecture(this.props.lecture) &&
                                                     window.confirm(msg)
-                                                )
+                                                ) {
                                                     this.delete(this.props.lecture.id)
+                                                }
                                             }}
                                             data-qa="button_delete_lecture"
                                         />

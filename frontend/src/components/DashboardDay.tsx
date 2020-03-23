@@ -71,7 +71,9 @@ class DashboardDay extends React.Component<Props, State> {
 
     componentDidUpdate(prevProps: Props): void {
         if (this.props.shouldRefresh && !prevProps.shouldRefresh) {
-            if (this.props.withoutWaiting) this.getLectures()
+            if (this.props.withoutWaiting) {
+                this.getLectures()
+            }
             // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
             else {
                 window.clearTimeout(this.timeoutId)
@@ -116,7 +118,9 @@ class DashboardDay extends React.Component<Props, State> {
                 ) : lectures.length > 0 ? (
                     lectures.map((lecture) => {
                         let className = lecture.group ? "LectureGroup" : ""
-                        if (lecture.canceled) className = "lecture-canceled"
+                        if (lecture.canceled) {
+                            className = "lecture-canceled"
+                        }
                         return (
                             <ListGroupItem
                                 key={lecture.id}

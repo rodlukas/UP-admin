@@ -90,8 +90,11 @@ class FormGroups extends React.Component<Props, State> {
     ): void => {
         this.props.setFormDirty()
         // react-select muze vratit null (napr. pri smazani vsech) nebo undefined, udrzujme tedy stav konzistentni
-        if (name === "memberships" && !obj) obj = []
-        else if (name === "course" && !obj) obj = null
+        if (name === "memberships" && !obj) {
+            obj = []
+        } else if (name === "course" && !obj) {
+            obj = null
+        }
         // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
         this.setState((prevState) => ({
             ...prevState,
@@ -113,7 +116,9 @@ class FormGroups extends React.Component<Props, State> {
     onSubmit = (e: FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
         const { name, memberships, course, active } = this.state
-        if (alertRequired("kurz", course)) return
+        if (alertRequired("kurz", course)) {
+            return
+        }
         const courseId = (course as GroupType["course"]).id
         let request: Promise<GroupType>
         const dataPost: GroupPostApi = {
@@ -289,8 +294,9 @@ class FormGroups extends React.Component<Props, State> {
                                                         window.confirm(
                                                             `Opravdu chcete smazat skupinu ${name}?`
                                                         )
-                                                    )
+                                                    ) {
                                                         this.delete(this.props.group.id)
+                                                    }
                                                 }}
                                                 data-qa="button_delete_group"
                                             />

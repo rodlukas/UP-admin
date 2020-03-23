@@ -221,8 +221,9 @@ export default class FormSettings extends React.Component<Props, State> {
                                                 window.confirm(
                                                     `Opravdu chcete smazat ${type} ${name}?`
                                                 )
-                                            )
+                                            ) {
                                                 this.delete(this.props.object.id)
+                                            }
                                         }}
                                         data-qa="settings_button_delete"
                                     />
