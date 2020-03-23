@@ -10,8 +10,8 @@
 }
 
 .Search {
-    max-width: 25rem;
     margin-left: auto;
+    max-width: 25rem;
 }
 
 .Search .input-group-prepend {

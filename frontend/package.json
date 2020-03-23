@@ -10,8 +10,10 @@
     "build": "cross-env NODE_ENV=production webpack --progress",
     "build:ci": "cross-env NODE_ENV=production webpack",
     "start": "cross-env NODE_ENV=development webpack-dev-server --progress",
-    "lint": "eslint --ext js,jsx,ts,tsx src",
-    "test": "yarn run types && yarn run lint"
+    "lint:js": "eslint --ext js,jsx,ts,tsx src",
+    "lint:css": "stylelint **/*.css --fix",
+    "lint:all": "yarn run lint:js && yarn run lint:css",
+    "test": "yarn run types && yarn run lint:all"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -55,6 +57,12 @@
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.0.0",
     "style-loader": "^1.1.3",
+    "stylelint": "^13.2.1",
+    "stylelint-config-prettier": "^8.0.1",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-order": "^4.0.0",
+    "stylelint-prettier": "^1.1.2",
+    "stylelint-webpack-plugin": "^1.2.3",
     "terser-webpack-plugin": "^2.3.4",
     "typescript": "^3.8.2",
     "webpack": "^4.41.5",

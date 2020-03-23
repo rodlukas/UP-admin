@@ -1,7 +1,7 @@
 .FormLectures_prepaidLectureCnt {
-    width: 5rem !important;
     display: inline-block !important;
     margin-left: 0.7rem !important;
+    width: 5rem !important;
 }
 
 @media (max-width: 575.98px) {

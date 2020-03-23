@@ -38,16 +38,22 @@ label {
 }
 
 /**************************** FORMS ****************************/
+
 /* hvezdicka oznacujici povinna pole */
-.form-group.required .col-form-label:after {
+.form-group.required .col-form-label::after {
+    color: #dc3545;
     content: "*";
     margin-left: 0.3em;
-    color: #dc3545;
 }
 
 /**************************** TABLE ****************************/
 .table {
     background-color: white !important;
+}
+
+.table-custom th,
+.table-custom td {
+    padding: 0.3rem 0.6rem;
 }
 
 .table > tbody > tr > td {
@@ -58,26 +64,22 @@ label {
     border-top: 0 !important;
 }
 
-.table-custom th,
-.table-custom td {
-    padding: 0.3rem 0.6rem;
-}
-
 .table .thead-light th {
-    color: #41464b;
     background-color: #d7d6d6;
     border-color: #bbbec2;
+    color: #41464b;
 }
 
 /**************************** BADGE ****************************/
 .badge {
-    white-space: normal; /* aby se text zalamoval a nepretekal */
     font-size: 1rem;
     font-weight: 600;
     vertical-align: bottom;
+    white-space: normal; /* aby se text zalamoval a nepretekal */
 }
 
 /**************************** REACT-TOASTIFY ****************************/
+
 /* vychozi zluta je spatne citelna s bilym textem */
 .Toastify__toast--warning {
     background: #e7b90f !important;
@@ -94,12 +96,14 @@ label {
 }
 
 /**************************** DJANGO-DEBUG-TOOLBAR ****************************/
+
 /* zaridi, aby tlacitko DDT nikdy neprekazelo notifikacim (to je dulezite predevsim pro UI testy) */
 #djDebugToolbarHandle {
     top: 380px !important;
 }
 
 /**************************** GDPR ****************************/
+
 /* skryti osobnich udaju v pripade potreby */
 .gdpr [data-gdpr],
 .gdpr .memberships__option,
@@ -111,6 +115,7 @@ label {
 }
 
 /**************************** BOOTSTRAP ****************************/
+
 /* kontrastnejsi barva pozadi badge */
 .badge-light {
     background-color: #eaeaea;
@@ -134,12 +139,12 @@ label {
 }
 
 .lecture_heading {
-    padding: 0 0 0 1rem;
+    align-items: center;
     display: flex;
     flex-flow: row;
     justify-content: space-between;
-    align-items: center;
     margin-bottom: 0.1rem;
+    padding: 0 0 0 1rem;
 }
 
 @media (max-width: 575.98px) {
@@ -170,15 +175,16 @@ label {
 }
 
 .lecture-canceled h4 span {
-    position: relative;
     display: inline-block;
+    position: relative;
 }
 
 .lecture-canceled h4 span::after {
+    border-bottom: 2px solid rgba(255, 0, 0, 0.6);
+    color: #fff;
     content: "";
-    width: 100%;
     position: absolute;
     right: 0;
     top: 50%;
-    border-bottom: 2px solid rgba(255, 0, 0, 0.6);
+    width: 100%;
 }

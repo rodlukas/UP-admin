@@ -15,8 +15,8 @@
 }
 
 .TitleDate {
-    width: 6ch; /* aby mely dny v tydennim prehledu vzdy stejnou sirku */
     display: inline-block;
+    width: 6ch; /* aby mely dny v tydennim prehledu vzdy stejnou sirku */
 }
 
 .TitleDate-long {

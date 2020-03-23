@@ -6,6 +6,7 @@ const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
+const StylelintPlugin = require("stylelint-webpack-plugin")
 
 // bez .local by nefungovalo na iOS
 const hostName = os.hostname().toLowerCase() + ".local"
@@ -91,6 +92,7 @@ module.exports = {
         ],
     },
     plugins: [
+        new StylelintPlugin({ emitWarning: true, files: "**/*.css", fix: true }),
         new MiniCssExtractPlugin({
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
             chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",
