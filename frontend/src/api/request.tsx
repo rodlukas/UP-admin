@@ -47,9 +47,6 @@ class ErrorMessage extends React.Component<Props, State> {
             console.error("Headers: ", this.errorResponse.headers)
             console.error("DJANGO/DRF CHYBA: ", this.djangoError)
             console.error("DALŠÍ INFORMACE: ", this.props.error)
-            if ("x-sentry-id" in this.errorResponse.headers) {
-                console.info("SENTRY ID: ", this.errorResponse.headers["x-sentry-id"])
-            }
         } else {
             // stalo se neco jineho pri priprave requestu
             console.error("Při přípravě requestu nastala chyba: ", this.props.error.message)
@@ -79,18 +76,6 @@ class ErrorMessage extends React.Component<Props, State> {
                         </ul>
                     )
                 }
-            }
-
-            // pokud je logovano do Sentry, pridej o tom na konec zpravy info
-            if ("x-sentry-id" in this.errorResponse.headers) {
-                errMsg = (
-                    <>
-                        {errMsg}
-                        <hr />
-                        Chyba byla zaznamenána v systému (
-                        {this.errorResponse.headers["x-sentry-id"]}).
-                    </>
-                )
             }
         } else {
             // stalo se neco jineho pri priprave requestu
