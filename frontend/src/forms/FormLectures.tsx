@@ -382,7 +382,7 @@ class FormLectures extends React.Component<Props, State> {
         return attendances
     }
 
-    onSubmit = (e: React.FormEvent<HTMLFormElement>, refresh_clients = false): void => {
+    onSubmit = (e: React.FormEvent<HTMLFormElement>, refreshClients = false): void => {
         e.preventDefault()
         const { prepaid, canceled, course, time, date, duration, prepaidCnt } = this.state
         if (alertRequired("kurz", course)) {
@@ -396,7 +396,7 @@ class FormLectures extends React.Component<Props, State> {
             canceled,
             group_id: !this.isClient(this.props.object) ? this.props.object.id : null,
             start: prepaid ? null : start,
-            refresh_clients,
+            refresh_clients: refreshClients,
             ...(this.isClient(this.props.object) && { course_id: courseId }),
         }
         let request: Promise<LectureType>
