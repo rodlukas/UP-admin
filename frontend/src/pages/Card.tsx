@@ -39,7 +39,7 @@ import "./Card.css"
 
 type ParamProps = { id: Model["id"] }
 
-type Props = CustomRouteComponentProps<ParamProps> & AttendanceStatesContextProps & {}
+type Props = CustomRouteComponentProps<ParamProps> & AttendanceStatesContextProps
 
 type State = {
     object: ClientType | GroupType | null

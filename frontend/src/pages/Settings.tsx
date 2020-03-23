@@ -38,7 +38,7 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
     />
 )
 
-type Props = CustomRouteComponentProps & AttendanceStatesContextProps & {}
+type Props = CustomRouteComponentProps & AttendanceStatesContextProps
 
 type State = {
     courses: Array<CourseType>
