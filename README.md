@@ -186,7 +186,8 @@ debugování a kosmeticky se liší také barvou menu.
         automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do
         assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
     -   **Automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání
-        potenciálních chyb a zranitelností má na starost [LGTM](https://lgtm.com/).
+        potenciálních chyb a zranitelností má na starost [LGTM](https://lgtm.com/),
+        [SonarCloud](https://sonarcloud.io/) a [DeepScan](https://deepscan.io/).
     -   **Logování** z Heroku se zasílá do [Logentries](https://logentries.com/) (logy se uchovávají
         po 7 dnů, tříděné podle typu prostředí).
     -   **Odchytávání chyb na backendu i frontendu** včetně následné evidence, notifikací a
