@@ -346,7 +346,7 @@ klienty:
 python manage.py behave --stage=api --tags=clients
 ```
 
-Aplikace obsahuje rozsáhlé API a UI testy – vizte
+Aplikace obsahuje **rozsáhlé API a UI testy** – vizte
 [podrobné informace o testech a možnostech spouštění](tests).
 
 ## Screenshoty z aplikace
