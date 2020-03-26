@@ -232,7 +232,7 @@ class LectureHelpers:
     def validate_course_presence(data: dict, lecture: Lecture, is_group: bool) -> None:
         """
         Ověří, že pro skupinovou lekci není zadaný nový kurz v datech, respektive pro single lekci
-        je buď zadaný nový korz, nebo už nějaký v DB je.
+        je buď zadaný nový kurz, nebo už nějaký v DB je.
         Jinak vyhodí výjimku.
         """
         if not is_group and "course" not in data and not lecture.course:
