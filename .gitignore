@@ -1,13 +1,20 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Moje
+
+## staticfiles
 /staticfiles/*
 !/staticfiles/.gitkeep
-
 /admin/templates/react-autogenerate.html
 
+# mypy
+.dmypy.json
+.idea/MypyConfig.xml
+
+# sonarlint
 .idea/sonarlint-state.xml
 .idea/sonarlint/
 
+# frontend
 node_modules
 /frontend/coverage
 /frontend/build

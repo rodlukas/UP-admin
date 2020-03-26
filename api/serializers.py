@@ -11,7 +11,7 @@ Poznámka:
         https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
 """
 
-from typing import Union
+from typing import Union, cast
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
@@ -139,7 +139,7 @@ class GroupSerializer(serializers.ModelSerializer):
             Membership.objects.create(group=instance, **membership_data)
         return instance
 
-    def update(self, instance: Group, validated_data: dict) -> Group:
+    def update(self, instance: Group, validated_data: dict) -> Group:  # type: ignore
         """
         Upraví skupinu a k ní příslušející členství klientů.
         """
@@ -242,7 +242,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         exclude = ("lecture",)  # ochrana proti cykleni
 
-    def update(self, instance: Attendance, validated_data: dict) -> Attendance:
+    def update(self, instance: Attendance, validated_data: dict) -> Attendance:  # type: ignore
         """
         Upraví účast a provede další nutné transformace dat.
         """
@@ -278,9 +278,12 @@ class AttendanceSerializer(serializers.ModelSerializer):
         # v pripade skupiny zkus vyuzit pocitadla predplacenych lekci
         if obj.lecture.group is not None:
             try:
-                prepaid_cnt = obj.lecture.group.memberships.values("prepaid_cnt").get(
-                    client=obj.client
-                )["prepaid_cnt"]
+                prepaid_cnt = cast(
+                    int,
+                    obj.lecture.group.memberships.values("prepaid_cnt").get(client=obj.client)[
+                        "prepaid_cnt"
+                    ],
+                )
             except ObjectDoesNotExist:
                 # klient uz neni clenem skupiny, pocitadlo predplacenych lekci nelze vyuzit
                 pass
@@ -288,19 +291,22 @@ class AttendanceSerializer(serializers.ModelSerializer):
                 # klient uz ma neco predplaceno, nic nepripominat
                 if prepaid_cnt > 0:
                     return False
-        # najdi vsechny lekce klienta, ktere se tykaji prislusneho kurzu
-        # a zjisti, zda existuje datumove po teto lekci dalsi zaplacena lekce
-        res = Attendance.objects.filter(
-            client=obj.client,
-            lecture__course=obj.lecture.course,
-            paid=True,
-            lecture__group=obj.lecture.group,
-            lecture__canceled=False,
+        # najdi pocet lekci pro kurz daneho klienta, ktere se konaji po teto lekci a jsou zaplacene
+        res = (
+            Attendance.objects.filter(
+                client=obj.client,
+                lecture__course=obj.lecture.course,
+                paid=True,
+                lecture__group=obj.lecture.group,
+                lecture__canceled=False,
+            )
+            .filter(
+                # ber v uvahu nejen budouci lekce ale take predplacene lekce
+                Q(lecture__start__gt=obj.lecture.start)
+                | Q(lecture__start__isnull=True)
+            )
+            .count()
         )
-        # ber v uvahu nejen budouci lekce ale take predplacene lekce
-        res = res.filter(
-            Q(lecture__start__gt=obj.lecture.start) | Q(lecture__start__isnull=True)
-        ).count()
         # pokud je pocet dalsich zaplacenych lekci 0, vrat True, jinak False
         return not bool(res)
 
@@ -351,7 +357,7 @@ class LectureSerializer(serializers.ModelSerializer):
         if obj.group is not None:
             prev_lectures_cnt = Lecture.objects.filter(
                 group=obj.group, start__isnull=False, start__lt=obj.start, canceled=False
-            )
+            ).count()
         else:
             # proved vypocet poradoveho cisla pro jednotlivce
             try:
@@ -370,9 +376,9 @@ class LectureSerializer(serializers.ModelSerializer):
                 lecture__start__lt=obj.start,
                 lecture__canceled=False,
                 attendancestate=attendancestate_default_pk,
-            )
+            ).count()
         # vrat poradove cislo aktualni lekce (tedy +1 k poctu minulych lekci)
-        return prev_lectures_cnt.count() + 1
+        return prev_lectures_cnt + 1
 
     def create(self, validated_data: dict) -> Lecture:
         """
@@ -419,7 +425,7 @@ class LectureSerializer(serializers.ModelSerializer):
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
 
-    def update(self, instance: Lecture, validated_data: dict) -> Lecture:
+    def update(self, instance: Lecture, validated_data: dict) -> Lecture:  # type: ignore
         """
         Upraví lekci a k ní příslušející účasti klientů, provede další nutné transformace.
         """
@@ -483,9 +489,11 @@ class LectureSerializer(serializers.ModelSerializer):
 
         # pro nove predplacene lekce proved jen jednoduchou kontrolu (nelze menit parametry platby)
         if "start" in data and data["start"] is None:
-            attendances = (
-                data["attendances"] if ("attendances" in data) else self.instance.attendances
-            )
+            attendances = []
+            if "attendances" in data:
+                attendances = data["attendances"]
+            elif self.instance:
+                attendances = self.instance.attendances
             for attendance in attendances:
                 LectureHelpers.validate_prepaid_non_changable_paid_state(attendance)
             return data

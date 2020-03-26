@@ -93,7 +93,7 @@ class Bank:
         output_data["accountStatement"]["info"]["closingBalance"] -= self.FIO_MIN_BALANCE
         return output_data
 
-    def process_error(self, status_code: int):
+    def process_error(self, status_code: int) -> Tuple[Dict[str, str], int]:
         """
         Zpracuje chybu při neúspěšném požadavku na Fio API.
         """

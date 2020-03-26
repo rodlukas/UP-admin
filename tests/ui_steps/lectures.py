@@ -275,7 +275,7 @@ def attendance_dict(client, attendancestate, paid, note):
     return {
         "client": client,
         "attendancestate": attendancestate,
-        "paid": common_helpers.to_bool(paid) if type(paid) != bool else paid,
+        "paid": paid if isinstance(paid, bool) else common_helpers.to_bool(paid),
         "note": note,
     }
 

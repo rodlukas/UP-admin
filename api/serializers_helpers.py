@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timedelta
-from typing import Union
+from typing import Union, Optional, List
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, ExpressionWrapper, DateTimeField
@@ -66,7 +66,7 @@ class BaseHelpers:
     """
 
     @staticmethod
-    def datetime_zone(datetime_obj: datetime):
+    def datetime_zone(datetime_obj: Union[datetime, None]) -> datetime:
         """
         Převede datum a čas na výchozí časovou zónu v nastavení Djanga.
         """
@@ -81,7 +81,7 @@ class BaseHelpers:
         return f"{dt.day}. {dt.month}. {dt.year} – {dt.hour}:{dt.minute:02}"
 
     @staticmethod
-    def date_str(datetime_obj: datetime) -> str:
+    def date_str(datetime_obj: Union[datetime, None]) -> str:
         """
         Vrátí řetězec se srozumitelným formátem datumu.
         """
@@ -95,7 +95,7 @@ class LectureHelpers:
     """
 
     @staticmethod
-    def find_if_lecture_should_be_canceled(attendances: Union[dict, Attendance]) -> bool:
+    def find_if_lecture_should_be_canceled(attendances: Union[dict, List[Attendance]]) -> bool:
         """
         Zjistí, zda má být lekce zrušená.
         Lekce má být zrušená pokud jsou všichni omluveni.
@@ -108,8 +108,8 @@ class LectureHelpers:
         for attendance in attendances:
             # muze prijit queryset i slovnik
             # pokud attendancestate znamena omluven, pricti jednicku k poctu omluvenych
-            if (type(attendance) != Attendance and attendance["attendancestate"].excused) or (
-                type(attendance) == Attendance and attendance.attendancestate.excused
+            if (isinstance(attendance, dict) and attendance["attendancestate"].excused) or (
+                isinstance(attendance, Attendance) and attendance.attendancestate.excused
             ):
                 excused_cnt += 1
         return client_cnt == excused_cnt
@@ -167,6 +167,8 @@ class LectureHelpers:
         To znamená, že pokud do skupiny přibyl člen, který se ale nějaké lekce neúčastní,
         bude mu tato účast vytvořena.
         """
+        if not instance.group:
+            return
         # clenove skupiny, kteri nemaji u teto lekce ucast
         memberships = instance.group.memberships.exclude(
             client__pk__in=[client["client"].pk for client in attendances_data]
@@ -187,7 +189,7 @@ class LectureHelpers:
             )
 
     @staticmethod
-    def is_group(data: dict, lecture: Lecture) -> bool:
+    def is_group(data: dict, lecture: Optional[Lecture]) -> bool:
         """
         Zjistí, zda se jedná o skupinovou lekci.
         Vzhledem k tomu, že ID skupiny nemusí být udáno je potřeba jej případně dohledat v DB.
@@ -211,7 +213,7 @@ class LectureHelpers:
         # nastav lekci jako zrusenou pokud nikdo nema prijit
         if not lecture.canceled:
             lecture.canceled = LectureHelpers.find_if_lecture_should_be_canceled(
-                lecture.attendances.all()
+                list(lecture.attendances.all())
             )
             lecture.save()
 
@@ -229,13 +231,13 @@ class LectureHelpers:
             )
 
     @staticmethod
-    def validate_course_presence(data: dict, lecture: Lecture, is_group: bool) -> None:
+    def validate_course_presence(data: dict, lecture: Optional[Lecture], is_group: bool) -> None:
         """
         Ověří, že pro skupinovou lekci není zadaný nový kurz v datech, respektive pro single lekci
         je buď zadaný nový kurz, nebo už nějaký v DB je.
         Jinak vyhodí výjimku.
         """
-        if not is_group and "course" not in data and not lecture.course:
+        if not is_group and "course" not in data and not lecture:
             raise serializers.ValidationError(
                 {"course_id": "Není uveden kurz, pro lekce jednotlivců je to povinné."}
             )
@@ -284,7 +286,7 @@ class LectureHelpers:
             )
 
     @staticmethod
-    def validate_lecture_collision(data: dict, lecture: Lecture) -> None:
+    def validate_lecture_collision(data: dict, lecture: Optional[Lecture]) -> None:
         """
         Ověří, že lekce není v časovém konfliktu s ostatními lekcemi.
         Časový konflikt mezi lekcí v DB (lekce "A") a přidávanou novou lekcí (lekce "B") znamená:
@@ -297,14 +299,14 @@ class LectureHelpers:
         # kdyz neni zacatek lekce a trvani NEBO se jedna o zrusenou lekci, casovy konflikt neresime
         if not ("start" in data and "duration" in data) or (
             ("canceled" in data and data["canceled"])
-            or ("canceled" not in data and lecture.canceled)
+            or ("canceled" not in data and lecture and lecture.canceled)
         ):
             return
 
         # cas konce lekce
         end = data["start"] + timedelta(minutes=data["duration"])
         # z atributu vytvor dotaz na end, pro funkcni operaci potreba pronasobit timedelta
-        expression = F("start") + (timedelta(minutes=1) * F("duration"))
+        expression = F("start") + (timedelta(minutes=1) * F("duration"))  # type: ignore
         # proved dotaz, vrat datetime
         end_db = ExpressionWrapper(expression, output_field=DateTimeField())
         # ke kazdemu zaznamu prirad hodnotu end_db ziskanou z vyrazu vyse a zjisti, zda existuji lekce v konfliktu
