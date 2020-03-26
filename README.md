@@ -122,8 +122,11 @@ V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplex
 Aplikace umožňuje **pokročilé debugování** na lokálním i vzdáleném prostředí díky
 **[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** a jeho doplňku
 [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
-Pro **eliminaci mrtvého kódu** se také používá
-**[vulture](https://github.com/jendrikseipp/vulture/)**.
+
+Pro **statickou typovou kontrolu** se napříč celým kódem používají typové anotace s použitím modulu
+[typing](https://docs.python.org/3/library/typing.html), pro kontrolu typů se používá
+**[mypy](http://mypy-lang.org/)** a [Pycharm](https://www.jetbrains.com/pycharm/). Pro **eliminaci
+mrtvého kódu** se také používá **[vulture](https://github.com/jendrikseipp/vulture/)**.
 
 #### Frontend
 
