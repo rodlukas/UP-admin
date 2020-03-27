@@ -56,6 +56,9 @@ script:
     # otestuj typy ve frontendu pres TS kompilator
     - yarn run types
 
+    # otestuj typy v backendu pres mypy
+    - mypy .
+
     # proved testy a spocitej pokryti kodu
     - coverage run -a manage.py test
     - coverage run -a manage.py behave --stage=api --format=progress3
