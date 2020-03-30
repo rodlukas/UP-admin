@@ -91,8 +91,9 @@ export function getDefaultValuesForLecture(
     }
     // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (preferuj ten s predplacenymi lekcemi)
     else {
-        const latestLecturesOfEachCourse: Array<LectureType> = []
-        lecturesGroupedByCourses.forEach((elem) => latestLecturesOfEachCourse.push(elem.objects[0]))
+        const latestLecturesOfEachCourse: Array<LectureType> = lecturesGroupedByCourses.map(
+            (elem) => elem.objects[0]
+        )
         // pro porovnani se vyuziva lexicographical order
         // (ISO pro datum a cas to podporuje, viz https://en.wikipedia.org/wiki/ISO_8601#General_principles)
         let latestLecture = latestLecturesOfEachCourse[0]
