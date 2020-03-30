@@ -8,7 +8,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.settings import api_settings
 
-from admin.models import Attendance, AttendanceState, Lecture, Course, Client, Group
+from admin.models import Attendance, AttendanceState, Lecture, Course, Group
 
 
 class BaseValidators:
@@ -19,7 +19,7 @@ class BaseValidators:
     @staticmethod
     def validate_phone(phone: str) -> str:
         """
-        Ověří, že je telefonní číslo ve správném formátu, jinak vyhodí výjimku.
+        OMEZENÍ O11: Ověří, že je telefonní číslo ve správném formátu, jinak vyhodí výjimku.
         """
         if phone and (not re.match(r"[0-9\s]+$", phone) or sum(c.isdigit() for c in phone) != 9):
             raise serializers.ValidationError("Telefonní číslo musí obsahovat 9 číslic")
@@ -28,7 +28,7 @@ class BaseValidators:
     @staticmethod
     def validate_course_is_visible(course: Course) -> Course:
         """
-        Ověří, že je kurz viditelný, jinak vyhodí výjimku.
+        OMEZENÍ O9: Ověří, že je kurz viditelný, jinak vyhodí výjimku.
         """
         if not course.visible:
             raise serializers.ValidationError(
@@ -37,21 +37,9 @@ class BaseValidators:
         return course
 
     @staticmethod
-    def validate_client_is_active(client: Client) -> Client:
-        """
-        Ověří, že je klient aktivní, jinak vyhodí výjimku.
-        """
-        if not client.active:
-            raise serializers.ValidationError(
-                f"Zadaný klient ({client.surname} {client.firstname}) není aktivní, "
-                "pro další akce je potřeba nastavit jej jako aktivního."
-            )
-        return client
-
-    @staticmethod
     def validate_group_is_active(group: Group) -> Group:
         """
-        Ověří, že je skupina aktivní, jinak vyhodí výjimku.
+        OMEZENÍ O8: Ověří, že je skupina aktivní, jinak vyhodí výjimku.
         """
         if not group.active:
             raise serializers.ValidationError(
@@ -100,6 +88,7 @@ class LectureHelpers:
         Zjistí, zda má být lekce zrušená.
         Lekce má být zrušená pokud jsou všichni omluveni.
         Lekce bez účastníků zrušená není.
+        Má na starost OMEZENÍ O6.
         """
         client_cnt = len(attendances)
         if client_cnt == 0:
@@ -122,9 +111,9 @@ class LectureHelpers:
         prev_attendancestate: AttendanceState,
     ) -> None:
         """
-        Zařídí vyrovnání předplacených lekcí vzhledem k platbám při omluvě/zrušení lekce ze strny lektorky.
-        Pro skupinu se lekce přičítají k počítadlům předplacených lekcí,
-        pro single lekce se vytváří speciální náhradní předplacená lekce.
+        OMEZENÍ O7: Zařídí vyrovnání předplacených lekcí vzhledem k platbám při omluvě/zrušení lekce ze strany lektorky.
+         Pro skupinu se lekce přičítají k počítadlům předplacených lekcí,
+         pro single lekce se vytváří speciální náhradní předplacená lekce.
         """
         # kdyz se zmenil stav ucasti na OMLUVEN a ma zaplaceno
         # NEBO pokud se lekce prave RUCNE zrusila, ale mel dorazit a ma zaplaceno, pricti mu jednu lekci
@@ -205,8 +194,8 @@ class LectureHelpers:
     @staticmethod
     def cancel_lecture_if_nobody_arrives(lecture: Lecture) -> None:
         """
-        Nastaví lekci jako zrušenou pokud nikdo nemá přijít.
-        Netýká se lekce bez účastníků.
+        OMEZENÍ O6: Nastaví lekci jako zrušenou pokud nikdo nemá přijít.
+         Netýká se lekce bez účastníků.
         """
         # probihaly upravy na relational fields (attendances), je tedy potreba nacist znovu
         lecture.refresh_from_db()
@@ -220,8 +209,8 @@ class LectureHelpers:
     @staticmethod
     def validate_prepaid_non_changable_paid_state(attendance: dict) -> None:
         """
-        Ověří, že se v účasti nemění platba na nezaplaceno.
-        Používá se pro předplacené lekce.
+        OMEZENÍ O5: Ověří, že se v účasti nemění platba na nezaplaceno.
+         Používá se pro předplacené lekce.
         """
         if "paid" in attendance and not attendance["paid"]:
             raise serializers.ValidationError(
@@ -233,7 +222,7 @@ class LectureHelpers:
     @staticmethod
     def validate_course_presence(data: dict, lecture: Optional[Lecture], is_group: bool) -> None:
         """
-        Ověří, že pro skupinovou lekci není zadaný nový kurz v datech, respektive pro single lekci
+        OMEZENÍ O4: Ověří, že pro skupinovou lekci není zadaný nový kurz v datech, respektive pro single lekci
         je buď zadaný nový kurz, nebo už nějaký v DB je.
         Jinak vyhodí výjimku.
         """
@@ -249,7 +238,7 @@ class LectureHelpers:
     @staticmethod
     def validate_attendants_count(data: dict, is_group: bool) -> None:
         """
-        Zvaliduje počet účastníků lekce.
+        OMEZENÍ O2: Zvaliduje počet účastníků neskupinové lekce - musí být jen 1.
         """
         # single lekce musi mit jen jednoho ucastnika
         if not is_group and "attendances" in data and len(data["attendances"]) != 1:
@@ -258,10 +247,11 @@ class LectureHelpers:
             )
 
     @staticmethod
-    def validate_start_duration(data: dict) -> None:
+    def validate_start_duration(data: dict, is_group: bool) -> None:
         """
-        Ověří, že se neposílá začátek lekce bez trvání lekce nebo naopak.
-        Je potřeba mít oba údaje naráz pro výpočet časového konfliktu.
+        OMEZENÍ O4: Ověří, že se neposílá začátek lekce bez trvání lekce nebo naopak.
+        OMEZENÍ O1: Pokud se jedná o skupinovou lekci a je zaslán start, nesmí být None.
+        U jednotlivce v případě, že jeden z údajů chybí, by nešlo vypočítat časový konflikt.
         """
         if ("start" in data and "duration" not in data) or (
             "start" not in data and "duration" in data
@@ -271,12 +261,18 @@ class LectureHelpers:
                     api_settings.NON_FIELD_ERRORS_KEY: "Změnu počátku lekce a trvání je potřeba provádět naráz."
                 }
             )
+        if "start" not in data and is_group:
+            raise serializers.ValidationError(
+                {
+                    "start": "Skupinová lekce musí být definovaný začátek lekce (předplacené lekce se nastavují přes Membership)."
+                }
+            )
 
     @staticmethod
     def validate_canceled_attendances(data: dict) -> None:
         """
         Ověří, že se canceled vyskytuje spolu s attendances.
-        Toto je potřeba pro dopočtení cancel_lecture_if_nobody_arrives při update.
+        Toto je potřeba pro dopočtení cancel_lecture_if_nobody_arrives při update (OMEZENÍ O6).
         """
         if "canceled" in data and "attendances" not in data:
             raise serializers.ValidationError(
@@ -288,11 +284,11 @@ class LectureHelpers:
     @staticmethod
     def validate_lecture_collision(data: dict, lecture: Optional[Lecture]) -> None:
         """
-        Ověří, že lekce není v časovém konfliktu s ostatními lekcemi.
-        Časový konflikt mezi lekcí v DB (lekce "A") a přidávanou novou lekcí (lekce "B") znamená:
+        OMEZENÍ O4: Ověří, že lekce není v časovém konfliktu s ostatními lekcemi.
+         Časový konflikt mezi lekcí v DB (lekce "A") a přidávanou novou lekcí (lekce "B") znamená:
             1) A začíná před koncem B a zároveň
             2) B začíná před koncem A.
-        Při časovém konfliktu nebereme v úvahu zrušené lekce.
+         Při časovém konfliktu nebereme v úvahu zrušené lekce.
 
         Algoritmus vychází z: https://makandracards.com/makandra/984-test-if-two-date-ranges-overlap-in-ruby-or-rails.
         """

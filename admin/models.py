@@ -29,6 +29,7 @@ class AttendanceState(models.Model):
     def make_true_value_unique_for_attr(self, value: bool, attr: str) -> None:
         """
         Zařídí unikátnost hodnoty True (v proměnné value) pro daný atribut attr.
+        Má na starost OMEZENÍ O12.
         """
         if value:
             # vyber ostatni polozky s attr=True
@@ -41,14 +42,14 @@ class AttendanceState(models.Model):
 
     def make_all_true_values_unique(self) -> None:
         """
-        Zařídí unikátnost True pro všechny potřebné boolean atributy.
+        OMEZENÍ O12: Zařídí unikátnost True pro všechny potřebné boolean atributy.
         """
         self.make_true_value_unique_for_attr(self.default, "default")
         self.make_true_value_unique_for_attr(self.excused, "excused")
 
     def reset_attrs_when_set_non_visible(self) -> None:
         """
-        Vyresetuje všechny potřebné boolean atributy když je účast neviditelná.
+        OMEZENÍ O12: Vyresetuje všechny potřebné boolean atributy když je účast neviditelná.
         """
         if not self.visible:
             self.default = self.excused = False
@@ -70,7 +71,7 @@ class Client(models.Model):
     """
 
     active = models.BooleanField(default=True, help_text="Indikátor aktivity klienta")
-    email = models.EmailField(blank=True, help_text="Email klienta")
+    email = models.EmailField(blank=True, help_text="Email klienta")  # OMEZENÍ O10 (EmailField)
     firstname = models.TextField(help_text="Křestní jméno klienta")
     note = models.TextField(blank=True, help_text="Poznámka")
     phone = models.TextField(blank=True, help_text="Telefonní číslo klienta")
@@ -134,7 +135,9 @@ class Group(models.Model):
 
     active = models.BooleanField(default=True, help_text="Indikátor aktivity skupiny")
     name = models.TextField(help_text="Název skupiny (unikátní)")
-    course = models.ForeignKey(Course, on_delete=models.PROTECT, help_text="Kurz skupiny")
+    course = models.ForeignKey(
+        Course, on_delete=models.PROTECT, help_text="Kurz skupiny"
+    )  # OMEZENÍ O15
 
     class Meta:
         ordering = ["name"]
@@ -158,7 +161,7 @@ class Lecture(models.Model):
     )
     course = models.ForeignKey(
         Course, on_delete=models.PROTECT, help_text="Kurz, ke kterému patří lekce"
-    )
+    )  # OMEZENÍ O15
     group = models.ForeignKey(
         Group,
         related_name="lectures",
@@ -183,7 +186,7 @@ class Attendance(models.Model):
         related_name="attendances",
         on_delete=models.PROTECT,
         help_text="Klient, který se účastní dané lekce",
-    )  # on_delete: tedy lze smazat pouze klienta co nema zadne attendances
+    )  # OMEZENÍ O13 (on_delete): tedy lze smazat pouze klienta co nema zadne attendances
     lecture = models.ForeignKey(
         Lecture,
         related_name="attendances",
@@ -194,7 +197,7 @@ class Attendance(models.Model):
         AttendanceState,
         on_delete=models.PROTECT,
         help_text="Stav účasti daného klienta na dané lekci",
-    )
+    )  # OMEZENÍ O14
 
     class Meta:
         ordering = ["client__surname", "client__firstname"]

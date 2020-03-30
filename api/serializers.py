@@ -45,7 +45,7 @@ class ClientSerializer(serializers.ModelSerializer):
         """
         Sjednotí formát hodnot klienta:
             - odstraní mezery z telefonního čísla,
-            - nastaví velké první písmeno křestního jména a příjmení klienta.
+            - OMEZENÍ O19: nastaví velké první písmeno křestního jména a příjmení klienta.
         """
         values = super().to_internal_value(data)
         values["firstname"] = values["firstname"].capitalize()
@@ -67,13 +67,15 @@ class CourseSerializer(serializers.ModelSerializer):
     """
 
     # nazev kurzu (znovuuvedeni kvuli validaci unikatnosti)
-    name = serializers.CharField(validators=[UniqueValidator(queryset=Course.objects.all())])
+    name = serializers.CharField(
+        validators=[UniqueValidator(queryset=Course.objects.all())]
+    )  # OMEZENÍ O17
     # barva kurzu (znovuuvedeni kvuli validaci formatu)
     color = serializers.CharField(
         validators=[
             RegexValidator(regex="^#(?:[0-9a-fA-F]{3}){1,2}$", message="Barva není v HEX formátu")
-        ]
-    )  # regex viz https://stackoverflow.com/a/1636354
+        ]  # OMEZENÍ O18: regex viz https://stackoverflow.com/a/1636354
+    )
 
     class Meta:
         model = Course
@@ -115,7 +117,9 @@ class GroupSerializer(serializers.ModelSerializer):
     """
 
     # nazev skupiny (znovuuvedeni kvuli validaci unikatnosti)
-    name = serializers.CharField(validators=[UniqueValidator(queryset=Group.objects.all())])
+    name = serializers.CharField(
+        validators=[UniqueValidator(queryset=Group.objects.all())]
+    )  # OMEZENÍ O17
     # vnorene informace o clenstvich
     memberships = MembershipSerializer(many=True)
     # vnorene informace o kurzu (jen pro cteni)
@@ -175,7 +179,7 @@ class AttendanceStateSerializer(serializers.ModelSerializer):
 
     # nazev stavu ucasti (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(
-        validators=[UniqueValidator(queryset=AttendanceState.objects.all())]
+        validators=[UniqueValidator(queryset=AttendanceState.objects.all())]  # OMEZENÍ O17
     )
 
     class Meta:
@@ -209,7 +213,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 queryset=Application.objects.all(),
                 fields=("course", "client"),
                 message="Zájem klienta o zadaný kurz je již evidován.",
-            )
+            )  # OMEZENÍ O17
         ]
 
     @staticmethod
@@ -400,11 +404,11 @@ class LectureSerializer(serializers.ModelSerializer):
         # vytvoreni jednotlivych ucasti
         for attendance_data in attendances_data:
             client = attendance_data.pop("client")
-            # pokud klient neni aktivni, nastav ho jako aktivniho
+            # OMEZENÍ O8: pokud klient neni aktivni, nastav ho jako aktivniho
             if not client.active:
                 client.active = True
                 client.save()
-            # pokud se jedna o skupinu, proved korekce poctu predplacenych lekci
+            # OMEZENÍ O7: pokud se jedna o skupinu, proved korekce poctu predplacenych lekci
             if group is not None:
                 # najdi clenstvi nalezici klientovi v teto skupine
                 try:
@@ -485,7 +489,7 @@ class LectureSerializer(serializers.ModelSerializer):
         # validace poctu ucastniku lekce
         LectureHelpers.validate_attendants_count(data, is_group)
         # validace start & duration
-        LectureHelpers.validate_start_duration(data)
+        LectureHelpers.validate_start_duration(data, is_group)
 
         # pro nove predplacene lekce proved jen jednoduchou kontrolu (nelze menit parametry platby)
         if "start" in data and data["start"] is None:
