@@ -89,7 +89,7 @@ export function getDefaultValuesForLecture(
             lecturesGroupedByCourses[0].objects[0].start
         )
     }
-    // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (predplacene jen kdyz neni jina moznost)
+    // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (preferuj ten s predplacenymi lekcemi)
     else {
         const latestLecturesOfEachCourse: Array<LectureType> = []
         lecturesGroupedByCourses.forEach((elem) => latestLecturesOfEachCourse.push(elem.objects[0]))
