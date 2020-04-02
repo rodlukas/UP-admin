@@ -18,5 +18,5 @@ v kapitole `6. Návrh` (viz také [repozitář práce](https://github.com/rodluk
 
 ## Další soubory
 
--   k dispozici je [několik wireframů](wireframes.epgz) použitých v začátcích bakalářské práce,
-    vytvořené jsou v programu [Pencil 3.0.4](https://pencil.evolus.vn/)
+-   k dispozici je [několik wireframů](wireframes.epgz) použitých v bakalářské nebo diplomové práci,
+    vytvořené jsou v programu [Pencil 3.1.0](https://pencil.evolus.vn/)
