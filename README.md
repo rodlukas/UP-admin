@@ -161,9 +161,10 @@ včetně [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 ### Informace o nasazených aplikacích
 
-Aplikace aktuálně běží na **5 prostředích** (4x PaaS [Heroku](https://www.heroku.com/)), které se
-liší příslušnou nasazenou verzí aplikace, konkrétní instancí databáze, umožňují různé úrovně
-debugování a kosmeticky se liší také barvou menu.
+Aplikace je nasazena do **4 prostředí na PaaS [Heroku](https://www.heroku.com/)**, které se liší
+příslušnou nasazenou verzí aplikace, konkrétní instancí databáze, umožňují různé úrovně debugování a
+kosmeticky se liší také barvou menu. Mimo to lze samozřejmě aplikaci spustit i v prostředí lokálním
+u vývojáře.
 
 > **Seznam prostředí:**
 >
