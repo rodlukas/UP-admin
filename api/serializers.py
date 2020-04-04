@@ -96,7 +96,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class MembershipSerializer(serializers.ModelSerializer):
     """
-    Serializer pro členství klienta ve skupině.
+    Serializer pro členství klienta ve skupině - používá se pro vnořené členství ve skupině.
     """
 
     # vnorene informace o klientovi (jen pro cteni)
@@ -109,6 +109,16 @@ class MembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = Membership
         exclude = ("group",)
+
+
+class MembershipPlainSerializer(serializers.ModelSerializer):
+    """
+    Serializer pro členství klienta ve skupině - používá se pro samostatné operace se členstvím.
+    """
+
+    class Meta:
+        model = Membership
+        exclude = ("group", "client")
 
 
 class GroupSerializer(serializers.ModelSerializer):

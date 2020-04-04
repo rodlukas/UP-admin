@@ -36,7 +36,7 @@ from .serializers import (
     ClientSerializer,
     GroupSerializer,
     LectureSerializer,
-    MembershipSerializer,
+    MembershipPlainSerializer,
 )
 from .services import Bank
 
@@ -86,7 +86,7 @@ class MembershipViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
     """
 
     queryset = Membership.objects.all()
-    serializer_class = MembershipSerializer
+    serializer_class = MembershipPlainSerializer
 
 
 class AttendanceStateViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
