@@ -26,11 +26,13 @@ import ModalLectures from "../forms/ModalLectures"
 import { TEXTS } from "../global/constants"
 import { prettyDateWithDayYear, prettyTime } from "../global/funcDateTime"
 import {
+    clientName,
     courseDuration,
     DefaultValuesForLecture,
     getDefaultValuesForLecture,
     getLecturesgroupedByCourses,
     GroupedObjectsByCourses,
+    pageTitle,
 } from "../global/utils"
 import { ModalClientsGroupsData } from "../types/components"
 import { ClientType, GroupType, LectureType, MembershipType } from "../types/models"
@@ -142,7 +144,14 @@ class Card extends React.Component<Props, State> {
     getObject = (isClient = this.isClientPage(), id = this.getId()): void => {
         const service = isClient ? ClientService : GroupService
         const request: Promise<ClientType | GroupType> = service.get(id)
-        request.then((object) => this.setState({ object }, this.loadingStateIncrement))
+        request.then((object) => {
+            const titleName = this.isClient(object) ? clientName(object) : object.name
+            const pageName = this.isClient(object)
+                ? APP_URLS.klienti_karta.title
+                : APP_URLS.skupiny_karta.title
+            document.title = pageTitle(`${titleName} – ${pageName}`)
+            this.setState({ object }, this.loadingStateIncrement)
+        })
     }
 
     getLectures = (): void => {

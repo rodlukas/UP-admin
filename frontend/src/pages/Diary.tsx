@@ -18,7 +18,7 @@ import {
     prettyDateWithYearIfDiff,
     yearDiffs,
 } from "../global/funcDateTime"
-import { isModalShown } from "../global/utils"
+import { isModalShown, pageTitle } from "../global/utils"
 import { CustomRouteComponentProps } from "../types/types"
 import "./Diary.css"
 
@@ -58,10 +58,19 @@ export default class Diary extends React.Component<Props, State> {
 
     componentDidMount(): void {
         document.addEventListener("keydown", this.onKeyDown)
+        this.refreshTitle()
     }
 
     componentWillUnmount(): void {
         document.removeEventListener("keydown", this.onKeyDown)
+    }
+
+    refreshTitle(): void {
+        document.title = pageTitle(
+            `${APP_URLS.diar.title} (${prettyDateWithYearIfDiff(
+                this.getRequiredMonday()
+            )} – ${prettyDateWithYearIfDiff(this.getFridayDate())})`
+        )
     }
 
     componentDidUpdate(prevProps: Props, prevState: State): void {
@@ -75,7 +84,10 @@ export default class Diary extends React.Component<Props, State> {
             this.props.match.params.month !== prevProps.match.params.month ||
             this.props.match.params.day !== prevProps.match.params.day
         ) {
-            this.setState({ week: this.getWeek() }, this.setRefreshState)
+            this.setState({ week: this.getWeek() }, () => {
+                this.refreshTitle()
+                this.setRefreshState()
+            })
         }
     }
 

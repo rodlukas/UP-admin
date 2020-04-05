@@ -157,14 +157,14 @@ const Main: React.FC = () => {
                                     exact
                                 />
                                 <PrivateRoute
-                                    path={`${APP_URLS.klienti.url}/:id`}
+                                    path={APP_URLS.klienti_karta.url}
                                     component={Card}
-                                    title={APP_URLS.klienti.title}
+                                    title={APP_URLS.klienti_karta.title}
                                 />
                                 <PrivateRoute
-                                    path={`${APP_URLS.skupiny.url}/:id`}
+                                    path={APP_URLS.skupiny_karta.url}
                                     component={Card}
-                                    title={APP_URLS.skupiny.title}
+                                    title={APP_URLS.skupiny_karta.title}
                                 />
                                 <PrivateRoute
                                     path={APP_URLS.zajemci.url}

@@ -8,6 +8,7 @@ import {
 } from "../types/models"
 import { LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
+import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
 
 export type GroupedObjectsByCourses<O> = Array<{ course: CourseType; objects: Array<O> }>
 
@@ -166,3 +167,9 @@ export function capitalizeString(string: string): string {
 /** Prázdná funkce. */
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export const noop = (): void => {}
+
+/** Vrátí title pro stránku. */
+export function pageTitle(title: string): string {
+    const envTitle = !isEnvProduction() ? `${getEnvNameShort()} | ` : ""
+    return `${envTitle + title} – ÚPadmin`
+}
