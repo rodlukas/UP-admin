@@ -6,11 +6,13 @@ import { CustomRouteProps } from "../types/types"
 /** Komponenta zajišťující zobrazení jakékoliv stránky aplikace spolu s příslušným title v prohlížeči. */
 const Page: React.FC<CustomRouteProps> = ({ title, ...rest }) => {
     React.useEffect(() => {
-        // nastav title stranky
-        document.title = pageTitle(title)
+        // nastav title stranky, pokud je pozadovan (jinak si jej potomek resi sam)
+        if (title) {
+            document.title = pageTitle(title)
+        }
     }, [title])
 
-    return <Route {...rest} title={title} />
+    return <Route {...rest} />
 }
 
 export default Page

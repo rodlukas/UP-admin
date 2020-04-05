@@ -10,7 +10,7 @@ export type Model = {
 export type ErrMsg = React.ReactElement | string
 
 export type CustomRouteProps = RouteProps & {
-    title: string
+    title?: string
 }
 
 export type QA = {

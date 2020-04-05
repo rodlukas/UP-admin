@@ -145,13 +145,17 @@ class Card extends React.Component<Props, State> {
         const service = isClient ? ClientService : GroupService
         const request: Promise<ClientType | GroupType> = service.get(id)
         request.then((object) => {
-            const titleName = this.isClient(object) ? clientName(object) : object.name
-            const pageName = this.isClient(object)
-                ? APP_URLS.klienti_karta.title
-                : APP_URLS.skupiny_karta.title
-            document.title = pageTitle(`${titleName} – ${pageName}`)
+            this.refreshTitle(object)
             this.setState({ object }, this.loadingStateIncrement)
         })
+    }
+
+    refreshTitle = (object: GroupType | ClientType): void => {
+        const titleName = this.isClient(object) ? clientName(object) : object.name
+        const pageName = this.isClient(object)
+            ? APP_URLS.klienti_karta.title
+            : APP_URLS.skupiny_karta.title
+        document.title = pageTitle(`${titleName} – ${pageName}`)
     }
 
     getLectures = (): void => {
