@@ -182,11 +182,6 @@ class Settings extends React.Component<Props, State> {
                                     )}
                                     <hr />
                                     <h3 className="text-center">Konfigurace stavů účasti</h3>
-                                    <p className="mb-2">
-                                        Pro správné fungování aplikace je třeba některým
-                                        (viditelným) stavům účasti přiřadit zvláštní vlastnosti
-                                        podle jejich významu:
-                                    </p>
                                     {attendanceStateDefaultId === undefined && (
                                         <Alert color="danger">
                                             Není vybraný výchozí stav, aplikace nemůže správně
@@ -199,6 +194,11 @@ class Settings extends React.Component<Props, State> {
                                             fungovat!
                                         </Alert>
                                     )}
+                                    <p className="mb-2">
+                                        Pro správné fungování aplikace je třeba některým
+                                        (viditelným) stavům účasti přiřadit zvláštní vlastnosti
+                                        podle jejich významu:
+                                    </p>
                                     <ListGroup>
                                         <ListGroupItem>
                                             <Row>
@@ -237,7 +237,7 @@ class Settings extends React.Component<Props, State> {
                                         </ListGroupItem>
                                         <ListGroupItem>
                                             <Row>
-                                                <Label for="state_default_id" sm={7}>
+                                                <Label for="state_excused_id" sm={7}>
                                                     <span className="font-weight-bold">
                                                         „klient je omluven“
                                                     </span>
