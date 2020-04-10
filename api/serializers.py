@@ -161,7 +161,7 @@ class GroupSerializer(serializers.ModelSerializer):
         # uprava instance skupiny
         instance = super().update(instance, validated_data)
         # upravy clenstvi
-        if memberships_data:
+        if memberships_data is not None:
             memberships = instance.memberships.all()
             # smaz z DB clenstvi, ktera tam nemaji byt
             members_ids_old = [membership.client.pk for membership in memberships]
