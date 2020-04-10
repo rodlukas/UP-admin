@@ -2,7 +2,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { faCheck, faTimes } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
-import { Alert, Col, Container, Row, Table } from "reactstrap"
+import { Alert, Col, Container, Label, ListGroup, ListGroupItem, Row, Table } from "reactstrap"
 import AttendanceStateService from "../api/services/AttendanceStateService"
 import CourseService from "../api/services/CourseService"
 import APP_URLS from "../APP_URLS"
@@ -182,6 +182,11 @@ class Settings extends React.Component<Props, State> {
                                     )}
                                     <hr />
                                     <h3 className="text-center">Konfigurace stavů účasti</h3>
+                                    <p className="mb-2">
+                                        Pro správné fungování aplikace je třeba některým
+                                        (viditelným) stavům účasti přiřadit zvláštní vlastnosti
+                                        podle jejich významu:
+                                    </p>
                                     {attendanceStateDefaultId === undefined && (
                                         <Alert color="danger">
                                             Není vybraný výchozí stav, aplikace nemůže správně
@@ -194,67 +199,77 @@ class Settings extends React.Component<Props, State> {
                                             fungovat!
                                         </Alert>
                                     )}
-                                    <h4 className="text-center">Výchozí stav</h4>
-                                    <p className="mb-2">
-                                        Pro správné fungování aplikace je třeba zvolit{" "}
-                                        <span className="font-weight-bold">výchozí</span> stav
-                                        účasti (viditelný), ten zároveň{" "}
-                                        <span className="font-weight-bold">
-                                            musí reprezentovat stav „klient se zúčastní/zúčastnil“
-                                        </span>
-                                        .
-                                    </p>
-                                    <CustomInputWrapper
-                                        type="select"
-                                        id="state_default_id"
-                                        value={attendanceStateDefaultId ?? "default"}
-                                        onChange={this.onChange}
-                                        data-attribute="default">
-                                        <option disabled value="default">
-                                            Vyberte stav...
-                                        </option>
-                                        {this.getAttendanceStatesData().map(
-                                            (attendancestate) =>
-                                                // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
-                                                attendancestate.visible && (
-                                                    <option
-                                                        key={attendancestate.id}
-                                                        value={attendancestate.id}>
-                                                        {attendancestate.name}
-                                                    </option>
-                                                )
-                                        )}
-                                    </CustomInputWrapper>
-                                    <h4 className="mt-3 text-center">Stav omluven</h4>
-                                    <p className="mb-2">
-                                        Pro správné fungování omluvených a zrušených lekcí je třeba
-                                        zvolit stav účasti (viditelný), který{" "}
-                                        <span className="font-weight-bold">
-                                            reprezentuje stav „klient je omluven“
-                                        </span>
-                                        .
-                                    </p>
-                                    <CustomInputWrapper
-                                        type="select"
-                                        id="state_excused_id"
-                                        value={attendanceStateExcusedId ?? "default"}
-                                        onChange={this.onChange}
-                                        data-attribute="excused">
-                                        <option disabled value="default">
-                                            Vyberte stav...
-                                        </option>
-                                        {this.getAttendanceStatesData().map(
-                                            (attendancestate) =>
-                                                // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
-                                                attendancestate.visible && (
-                                                    <option
-                                                        key={attendancestate.id}
-                                                        value={attendancestate.id}>
-                                                        {attendancestate.name}
-                                                    </option>
-                                                )
-                                        )}
-                                    </CustomInputWrapper>
+                                    <ListGroup>
+                                        <ListGroupItem>
+                                            <Row>
+                                                <Label for="state_default_id" sm={7}>
+                                                    <span className="font-weight-bold">
+                                                        „klient se zúčastní“
+                                                    </span>{" "}
+                                                    (výchozí stav)
+                                                </Label>
+                                                <Col sm={5}>
+                                                    <CustomInputWrapper
+                                                        type="select"
+                                                        id="state_default_id"
+                                                        value={
+                                                            attendanceStateDefaultId ?? "default"
+                                                        }
+                                                        onChange={this.onChange}
+                                                        data-attribute="default">
+                                                        <option disabled value="default">
+                                                            Vyberte stav...
+                                                        </option>
+                                                        {this.getAttendanceStatesData().map(
+                                                            (attendancestate) =>
+                                                                // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
+                                                                attendancestate.visible && (
+                                                                    <option
+                                                                        key={attendancestate.id}
+                                                                        value={attendancestate.id}>
+                                                                        {attendancestate.name}
+                                                                    </option>
+                                                                )
+                                                        )}
+                                                    </CustomInputWrapper>
+                                                </Col>
+                                            </Row>
+                                        </ListGroupItem>
+                                        <ListGroupItem>
+                                            <Row>
+                                                <Label for="state_default_id" sm={7}>
+                                                    <span className="font-weight-bold">
+                                                        „klient je omluven“
+                                                    </span>
+                                                </Label>
+                                                <Col sm={5}>
+                                                    <CustomInputWrapper
+                                                        type="select"
+                                                        id="state_excused_id"
+                                                        value={
+                                                            attendanceStateExcusedId ?? "default"
+                                                        }
+                                                        onChange={this.onChange}
+                                                        data-attribute="excused">
+                                                        <option disabled value="default">
+                                                            Vyberte stav...
+                                                        </option>
+                                                        {this.getAttendanceStatesData().map(
+                                                            (attendancestate) =>
+                                                                // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
+                                                                attendancestate.visible && (
+                                                                    <option
+                                                                        key={attendancestate.id}
+                                                                        value={attendancestate.id}>
+                                                                        {attendancestate.name}
+                                                                    </option>
+                                                                )
+                                                        )}
+                                                    </CustomInputWrapper>
+                                                </Col>
+                                            </Row>
+                                        </ListGroupItem>
+                                    </ListGroup>
                                 </Col>
                                 <Col>
                                     <h2 className="text-center">Kurzy</h2>
