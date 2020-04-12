@@ -71,7 +71,8 @@ class DashboardDay extends React.Component<Props, State> {
 
     componentDidUpdate(prevProps: Props): void {
         if (this.props.shouldRefresh && !prevProps.shouldRefresh) {
-            if (this.props.withoutWaiting) {
+            // pokud se nema uplatnit prodleva nebo se nemeni den (napr. se upravil jen stav ucasti)
+            if (this.props.withoutWaiting || this.props.date === prevProps.date) {
                 this.getLectures()
             }
             // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
