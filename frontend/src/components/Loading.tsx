@@ -1,7 +1,8 @@
-import { faSpinnerThird } from "@fortawesome/pro-solid-svg-icons"
+import { faSpinnerThird, faSyncAlt } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { Alert } from "reactstrap"
+import CustomButton from "./buttons/CustomButton"
 
 const LONG_LOADING_THRESHOLD = 5 // sekundy
 const OVERLONG_LOADING_THRESHOLD = 25 // sekundy
@@ -47,7 +48,21 @@ const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
             {loadingState === LOADING_STATE.LONG_LOADING && " Stále pracuji 😎"}
             {loadingState === LOADING_STATE.OVERLONG_LOADING && (
                 <Alert color="warning" className="mt-1">
-                    ⚠ Načítání trvá příliš dlouho, mohlo dojít k chybě. Zkuste stránku načíst znovu.
+                    <p>
+                        ⚠ Načítání trvá příliš dlouho, mohlo dojít k chybě. Zkuste stránku načíst
+                        znovu.
+                    </p>
+                    <CustomButton
+                        content={
+                            <>
+                                <FontAwesomeIcon icon={faSyncAlt} transform="left-2" /> Načíst
+                                stránku znovu
+                            </>
+                        }
+                        onClick={(): void => {
+                            window.location.reload()
+                        }}
+                    />
                 </Alert>
             )}
         </div>
