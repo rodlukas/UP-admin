@@ -8,7 +8,7 @@ from .base import *  # lgtm [py/polluting-import]
 ALLOWED_HOSTS = ["*"]
 
 # CSP
-CSPURL_LOCALHOST = ("*:3000",)
+CSPURL_LOCALHOST = ("http://*:3000",)
 
 CSP_STYLE_SRC = CSP_STYLE_SRC + CSPURL_LOCALHOST
 CSP_CONNECT_SRC = CSP_CONNECT_SRC + CSPURL_LOCALHOST + ("ws://*:3000",)
