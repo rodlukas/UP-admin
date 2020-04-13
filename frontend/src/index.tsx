@@ -1,3 +1,5 @@
+import { config } from "@fortawesome/fontawesome-svg-core"
+import "@fortawesome/fontawesome-svg-core/styles.css"
 import * as Sentry from "@sentry/browser"
 import "bootstrap/dist/css/bootstrap.css"
 import * as React from "react"
@@ -11,6 +13,9 @@ import { getEnvName, isHosted } from "./global/funcEnvironments"
 import history from "./global/history"
 import "./index.css"
 import Main from "./Main"
+
+// opatreni kvuli CSP pro FontAwesome, viz https://fontawesome.com/how-to-use/on-the-web/other-topics/security
+config.autoAddCss = false
 
 // CI provede substituci stringu za URL, promenna prostredi ale musi existovat, jinak nefunguje (proto podminka)
 if (isHosted()) {

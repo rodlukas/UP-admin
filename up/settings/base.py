@@ -1,5 +1,6 @@
 """
-Výchozí konfigurace Django projektu.
+Základní konfigurace Django projektu.
+Je základem pro konfigurace v souborech local.py a production.py.
 """
 import os
 import sys
@@ -8,7 +9,7 @@ from datetime import timedelta
 import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # env promenne
 env = environ.Env(
@@ -46,7 +47,6 @@ TESTS_RUNNING = env("TESTS_RUNNING") or (len(sys.argv) > 1 and sys.argv[1] in ["
 # Django konstanty
 DEBUG = env("DEBUG")
 SECRET_KEY = env("SECRET_KEY")
-ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -88,6 +88,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "csp.middleware.CSPMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -172,3 +173,27 @@ SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"  # Referer je potreba
 X_FRAME_OPTIONS = "DENY"
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
+
+# CSP
+# CSP pro Google Analytics, viz https://developers.google.com/tag-manager/web/csp#universal_analytics_google_analytics
+CSPURL_GOOGLE_ANALYTICS = "https://www.google-analytics.com"
+CSPURL_GOOGLE_ANALYTICS_SSL = "https://ssl.google-analytics.com"
+# CSP pro Google Fonts
+CSPURL_GOOGLE_FONTS_STYLE = "fonts.googleapis.com"
+CSPURL_GOOGLE_FONTS_FONT = "fonts.gstatic.com"
+# CSP pro Sentry
+CSPURL_SENTRY = "https://sentry.io"
+
+CSP_SELF = "'self'"
+
+# CSP konfigurace
+CSP_DEFAULT_SRC = ("'none'",)
+CSP_STYLE_SRC = (
+    CSP_SELF,
+    "'unsafe-inline'",
+    CSPURL_GOOGLE_FONTS_STYLE,
+)  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari
+CSP_CONNECT_SRC = (CSP_SELF, CSPURL_GOOGLE_ANALYTICS, CSPURL_SENTRY)
+CSP_SCRIPT_SRC = (CSP_SELF, CSPURL_SENTRY, CSPURL_GOOGLE_ANALYTICS, CSPURL_GOOGLE_ANALYTICS_SSL)
+CSP_FONT_SRC = (CSP_SELF, CSPURL_GOOGLE_FONTS_FONT)
+CSP_IMG_SRC = (CSP_SELF, CSPURL_GOOGLE_ANALYTICS, "data:")

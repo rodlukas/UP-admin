@@ -1,12 +1,12 @@
 """
 Produkční konfigurace Django projektu.
 Používá se pro nasazené aplikace, případně pro simulaci nasazené aplikace na lokálu (MANUAL_PRODUCTION).
-Rozšiřuje výchozí konfiguraci ze souboru settings.py.
+Rozšiřuje základní konfiguraci ze souboru base.py.
 """
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from .settings import *  # lgtm [py/polluting-import]
+from .base import *  # lgtm [py/polluting-import]
 
 # pro korektni build a fungovani na Travisu
 if os.getenv("TRAVIS"):

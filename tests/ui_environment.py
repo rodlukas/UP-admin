@@ -1,8 +1,8 @@
+from django.conf import settings
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
 from tests import fixtures
-from up.settings import HEADLESS
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
@@ -10,7 +10,7 @@ SCREEN_HEIGHT = 1080
 
 def before_all(context):
     options = Options()
-    options.headless = HEADLESS
+    options.headless = settings.HEADLESS
     context.browser = webdriver.Firefox(options=options)
     context.browser.set_window_size(SCREEN_WIDTH, SCREEN_HEIGHT)
 
