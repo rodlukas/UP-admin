@@ -14,7 +14,7 @@ type Props = {
     /** Klient. */
     currentClient?: ClientType
     /** Tlačítka pro otevření modálního okna jsou součástí vět (pro použití s komponentou Or). */
-    inSentence?: boolean
+    withOr?: boolean
     /** Funkce, která se zavolá po úspěšném přidání klienta (spolu s daty o klientovi). */
     processAdditionOfClient?: (newClient: ClientType) => void
     /** Funkce, která se zavolá po zavření modálního okna. */
@@ -24,7 +24,7 @@ type Props = {
 /** Modální okno s formulářem pro klienty. Včetně tlačítek pro vyvolání přidání/úpravy. */
 const ModalClients: React.FC<Props> = ({
     currentClient,
-    inSentence = false,
+    withOr = false,
     processAdditionOfClient,
     refresh,
 }) => {
@@ -68,8 +68,8 @@ const ModalClients: React.FC<Props> = ({
                 />
             ) : (
                 <AddButton
-                    content={`${inSentence ? "přidejte nového" : "Přidat"} klienta`}
-                    small={inSentence}
+                    content={`${withOr ? "přidejte nového" : "Přidat"} klienta`}
+                    small={withOr}
                     onClick={toggleModal}
                     data-qa="button_add_client"
                 />

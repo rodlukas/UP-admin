@@ -13,7 +13,7 @@ type Props = {
     /** Skupina. */
     currentGroup?: GroupType
     /** Tlačítka pro otevření modálního okna jsou součástí vět (pro použití s komponentou Or). */
-    inSentence?: boolean
+    withOr?: boolean
     /** Funkce, která se zavolá po úspěšném přidání skupiny (spolu s daty o skupině). */
     processAdditionOfGroup?: (newGroup: GroupType) => void
     /** Funkce, která se zavolá po zavření modálního okna. */
@@ -23,7 +23,7 @@ type Props = {
 /** Modální okno s formulářem pro skupiny. Včetně tlačítek pro vyvolání přidání/úpravy. */
 const ModalGroups: React.FC<Props> = ({
     currentGroup,
-    inSentence = false,
+    withOr = false,
     refresh,
     processAdditionOfGroup,
 }) => {
@@ -58,8 +58,8 @@ const ModalGroups: React.FC<Props> = ({
                 />
             ) : (
                 <AddButton
-                    content={`${inSentence ? "přidejte novou" : "Přidat"} skupinu`}
-                    small={inSentence}
+                    content={`${withOr ? "přidejte novou" : "Přidat"} skupinu`}
+                    small={withOr}
                     onClick={toggleModal}
                     data-qa="button_add_group"
                 />

@@ -169,7 +169,7 @@ class FormApplications extends React.Component<Props, State> {
                                                 processAdditionOfClient={
                                                     this.processAdditionOfClient
                                                 }
-                                                inSentence
+                                                withOr
                                             />
                                         }
                                     />

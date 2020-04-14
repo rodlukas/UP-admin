@@ -215,7 +215,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                                                         this.processAdditionOfGroupOrClient
                                                     }
                                                     refresh={this.refreshAfterModalSelect}
-                                                    inSentence
+                                                    withOr
                                                 />
                                             }
                                         />
@@ -247,7 +247,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                                                         this.processAdditionOfGroupOrClient
                                                     }
                                                     refresh={this.refreshAfterModalSelect}
-                                                    inSentence
+                                                    withOr
                                                 />
                                             }
                                         />
