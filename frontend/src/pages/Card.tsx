@@ -50,8 +50,8 @@ type State = {
     lectures: GroupedObjectsByCourses<LectureType>
     /** Skupiny, ve kterých je klient členem. */
     groupsOfClient: Array<GroupType>
-    /** TODO. */
-    loadingCnt: number
+    /** Počet zbývajících požadavků na načtení. */
+    pendingLoadingCnt: number
     /** Předpočítané výchozí hodnoty pro přidávanou lekci. */
     defaultValuesForLecture?: DefaultValuesForLecture
 }
@@ -69,13 +69,12 @@ class Card extends React.Component<Props, State> {
         object: null,
         lectures: [],
         groupsOfClient: [],
-        loadingCnt: this.isClientPage() ? 0 : 1,
-        defaultValuesForLecture: undefined, // pro FormLecture, aby se vybral velmi pravdepodobny kurz/datum a cas pri
-        // pridavani lekce
+        pendingLoadingCnt: this.isClientPage() ? 3 : 2,
+        defaultValuesForLecture: undefined, // pro FormLecture, aby se vybral velmi pravdepodobny kurz/datum a cas pri pridavani lekce
     }
 
-    loadingStateIncrement = (): void =>
-        this.setState((prevState) => ({ loadingCnt: prevState.loadingCnt + 1 }))
+    loadingDone = (): void =>
+        this.setState((prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt - 1 }))
 
     getId = (): Model["id"] => this.props.match.params.id
     getPrevId = (prevProps: Props): Model["id"] => prevProps.match.params.id
@@ -93,7 +92,7 @@ class Card extends React.Component<Props, State> {
     refreshObjectFromModal = (data: ModalClientsGroupsData): void => {
         if (!data?.isDeleted) {
             this.setState(
-                (prevState) => ({ loadingCnt: prevState.loadingCnt - 1 }),
+                (prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt + 1 }),
                 () => this.getObject()
             )
         } else {
@@ -106,7 +105,7 @@ class Card extends React.Component<Props, State> {
     refresh = (all = true): void => {
         if (this.isClientPage() && all) {
             this.setState(
-                (prevState) => ({ loadingCnt: prevState.loadingCnt - 3 }),
+                (prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt + 3 }),
                 () => {
                     this.getObject()
                     this.getLectures()
@@ -115,7 +114,7 @@ class Card extends React.Component<Props, State> {
             )
         } else {
             this.setState(
-                (prevState) => ({ loadingCnt: prevState.loadingCnt - 2 }),
+                (prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt + 2 }),
                 () => {
                     this.getObject()
                     this.getLectures()
@@ -142,7 +141,7 @@ class Card extends React.Component<Props, State> {
 
     getGroupsOfClient = (id = this.getId()): void => {
         GroupService.getAllFromClient(id).then((groupsOfClient) =>
-            this.setState({ groupsOfClient }, this.loadingStateIncrement)
+            this.setState({ groupsOfClient }, this.loadingDone)
         )
     }
 
@@ -151,7 +150,7 @@ class Card extends React.Component<Props, State> {
         const request: Promise<ClientType | GroupType> = service.get(id)
         request.then((object) => {
             this.refreshTitle(object)
-            this.setState({ object }, this.loadingStateIncrement)
+            this.setState({ object }, this.loadingDone)
         })
     }
 
@@ -171,7 +170,7 @@ class Card extends React.Component<Props, State> {
                     lectures: lecturesGroupedByCourses,
                     defaultValuesForLecture: getDefaultValuesForLecture(lecturesGroupedByCourses),
                 },
-                this.loadingStateIncrement
+                this.loadingDone
             )
         })
     }
@@ -183,7 +182,7 @@ class Card extends React.Component<Props, State> {
     ): void => {
         this.setState((prevState) => {
             const newLoadingState = {
-                loadingCnt: prevState.loadingCnt - 1,
+                pendingLoadingCnt: prevState.pendingLoadingCnt + 1,
             }
             if (this.isClient(prevState.object) || prevState.object === null) {
                 // ...prevState kvuli https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18365
@@ -214,7 +213,13 @@ class Card extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        const { object, lectures, defaultValuesForLecture, groupsOfClient, loadingCnt } = this.state
+        const {
+            object,
+            lectures,
+            defaultValuesForLecture,
+            groupsOfClient,
+            pendingLoadingCnt,
+        } = this.state
         return (
             <>
                 <Container>
@@ -250,7 +255,7 @@ class Card extends React.Component<Props, State> {
                         }
                     />
                 </Container>
-                {loadingCnt === 3 && this.props.attendanceStatesContext.isLoaded ? (
+                {pendingLoadingCnt === 0 && this.props.attendanceStatesContext.isLoaded ? (
                     <div className="pageContent">
                         <Container fluid>
                             <Row className="justify-content-center">
