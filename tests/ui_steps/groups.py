@@ -34,7 +34,7 @@ def insert_to_form(context, verify_current_data=False):
     # priprav pole z formulare
     name_field = context.browser.find_element_by_css_selector("[data-qa=group_field_name]")
     course_field = context.browser.find_element_by_id("course")
-    memberships_field = context.browser.find_element_by_id("memberships")
+    members_field = context.browser.find_element_by_id("members")
     active_checkbox = context.browser.find_element_by_css_selector(
         "[data-qa=group_checkbox_active]"
     )
@@ -42,11 +42,9 @@ def insert_to_form(context, verify_current_data=False):
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
         # ziskej aktualni hodnoty z react-selectu
-        memberships_field_values = [
+        members_field_values = [
             element.text
-            for element in context.browser.find_elements_by_css_selector(
-                ".memberships__multi-value"
-            )
+            for element in context.browser.find_elements_by_css_selector(".members__multi-value")
         ]
         course_field_value = context.browser.find_element_by_css_selector(
             ".course__single-value"
@@ -54,20 +52,20 @@ def insert_to_form(context, verify_current_data=False):
         assert (
             context.old_group_name == name_field.get_attribute("value")
             and context.old_group_course == course_field_value
-            and set(context.old_group_memberships) == set(memberships_field_values)
+            and set(context.old_group_members) == set(members_field_values)
             and context.old_group_activity == active_checkbox.is_selected()
         )
     # smaz vsechny udaje
     name_field.clear()
     course_field.send_keys(Keys.BACK_SPACE)
     # v testech jsou max 2 clenove - odstran je
-    memberships_field.send_keys(Keys.BACK_SPACE)
-    memberships_field.send_keys(Keys.BACK_SPACE)
+    members_field.send_keys(Keys.BACK_SPACE)
+    members_field.send_keys(Keys.BACK_SPACE)
     # vloz nove udaje
     name_field.send_keys(context.name)
     helpers.react_select_insert(context.browser, course_field, context.course)
-    for membership in context.memberships:
-        if not helpers.react_select_insert(context.browser, memberships_field, membership):
+    for member in context.members:
+        if not helpers.react_select_insert(context.browser, members_field, member):
             context.react_select_success = False
     if (context.active and not active_checkbox.is_selected()) or (
         not context.active and active_checkbox.is_selected()
@@ -75,12 +73,12 @@ def insert_to_form(context, verify_current_data=False):
         active_label.click()
 
 
-def load_data_to_context(context, name, course, active, *memberships):
+def load_data_to_context(context, name, course, active, *members):
     load_id_data_to_context(context, name)
     context.course = course
     context.active = common_helpers.to_bool(active)
-    # z memberships vyfiltruj prazdne stringy
-    context.memberships = common_helpers.filter_empty_strings_from_list(memberships)
+    # z members vyfiltruj prazdne stringy
+    context.members = common_helpers.filter_empty_strings_from_list(members)
     # pro indikaci neuspesneho zadani clenu do react-selectu (clen nebyl ve vyberu)
     context.react_select_success = True
 

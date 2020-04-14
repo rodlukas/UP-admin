@@ -173,20 +173,20 @@ def _find_group_with_activity(activity, context, name, open_card=False, validate
         if found_name == name:
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             found_course = group.find_element_by_css_selector("[data-qa=course_name]").text
-            found_memberships = [
+            found_members = [
                 element.text
                 for element in group.find_elements_by_css_selector("[data-qa=client_name]")
             ]
             if not validate_context or (
                 validate_context
-                and set(found_memberships) == set(context.memberships)
+                and set(found_members) == set(context.members)
                 and found_course == context.course
                 and activity == context.active
             ):
                 # uloz stara data do kontextu pro pripadne overeni spravnosti
                 context.old_group_name = found_name
                 context.old_group_course = found_course
-                context.old_group_memberships = found_memberships
+                context.old_group_members = found_members
                 context.old_group_activity = activity
                 # uloz nalezenou skupinu
                 found_group = group

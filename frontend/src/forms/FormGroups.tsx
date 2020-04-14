@@ -62,7 +62,7 @@ type State = {
     /** Kurz skupiny. */
     course: GroupPostApiDummy["course"]
     /** Pole členů skupiny. */
-    membersOfGroup: Array<ClientType>
+    members: Array<ClientType>
     /** Pole klientů. */
     clients: Array<ClientType>
     /** Probíhá načítání (true). */
@@ -79,29 +79,29 @@ class FormGroups extends React.Component<Props, State> {
         name: this.props.group.name,
         active: this.props.group.active,
         course: this.props.group.course,
-        membersOfGroup: this.getMembersOfGroup(this.props.group.memberships),
+        members: this.getMembersOfGroup(this.props.group.memberships),
         clients: [],
         isLoading: true,
         isSubmit: false,
     }
 
     // pripravi pole se cleny ve spravnem formatu, aby fungoval react-select
-    getMembersOfGroup(memberships: Array<MembershipType>): Array<ClientType> {
-        return memberships.map((membership) => membership.client)
+    getMembersOfGroup(members: Array<MembershipType>): Array<ClientType> {
+        return members.map((member) => member.client)
     }
 
     // pripravi pole se cleny ve spravnem formatu, aby slo poslat do API
-    prepareMembersForSubmit(memberships: State["membersOfGroup"]): GroupPutApi["memberships"] {
-        return memberships.map((membership) => ({ client_id: membership.id }))
+    prepareMembersForSubmit(members: State["members"]): GroupPutApi["memberships"] {
+        return members.map((memberOfGroup) => ({ client_id: memberOfGroup.id }))
     }
 
     onSelectChange = (
-        name: "memberships" | "course",
+        name: "members" | "course",
         obj?: CourseType | ReadonlyArray<ClientType> | ClientType | null
     ): void => {
         this.props.setFormDirty()
         // react-select muze vratit null (napr. pri smazani vsech) nebo undefined, udrzujme tedy stav konzistentni
-        if (name === "memberships" && !obj) {
+        if (name === "members" && !obj) {
             obj = []
         } else if (name === "course" && !obj) {
             obj = null
@@ -126,7 +126,7 @@ class FormGroups extends React.Component<Props, State> {
 
     onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
-        const { name, membersOfGroup, course, active } = this.state
+        const { name, members, course, active } = this.state
         if (alertRequired("kurz", course)) {
             return
         }
@@ -134,7 +134,7 @@ class FormGroups extends React.Component<Props, State> {
         let request: Promise<GroupType>
         const dataPost: GroupPostApi = {
             name,
-            memberships: this.prepareMembersForSubmit(membersOfGroup),
+            memberships: this.prepareMembersForSubmit(members),
             course_id: courseId,
             active,
         }
@@ -171,7 +171,7 @@ class FormGroups extends React.Component<Props, State> {
         this.props.setFormDirty()
         this.setState((prevState) => {
             return {
-                membersOfGroup: [...prevState.membersOfGroup, newClient],
+                members: [...prevState.members, newClient],
             }
         })
     }
@@ -195,7 +195,7 @@ class FormGroups extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        const { name, clients, membersOfGroup, course, active } = this.state
+        const { name, clients, members, course, active } = this.state
         return (
             <Form onSubmit={this.onSubmit} data-qa="form_group">
                 <ModalHeader toggle={this.close}>
@@ -237,19 +237,19 @@ class FormGroups extends React.Component<Props, State> {
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
-                                <Label for="memberships" sm={2}>
+                                <Label for="members" sm={2}>
                                     Členové
                                 </Label>
                                 <Col sm={10}>
                                     <ReactSelectWrapper<ClientType>
-                                        {...reactSelectIds<ClientType>("memberships")}
-                                        value={membersOfGroup}
+                                        {...reactSelectIds<ClientType>("members")}
+                                        value={members}
                                         getOptionLabel={(option): string => clientName(option)}
                                         getOptionValue={(option): string => option.id.toString()}
                                         isMulti
                                         closeMenuOnSelect={false}
                                         onChange={(newValue): void =>
-                                            this.onSelectChange("memberships", newValue)
+                                            this.onSelectChange("members", newValue)
                                         }
                                         options={clients}
                                         placeholder={"Vyberte členy z existujících klientů..."}
