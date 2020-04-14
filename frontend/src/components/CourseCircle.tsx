@@ -3,8 +3,11 @@ import "./CourseCircle.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
+    /** Barva kolečka u kurzu. */
     color: string
+    /** Velikost kolečka u kurzu. */
     size: number
+    /** Zobraz titulek s kódem barvy (true). */
     showTitle?: boolean
 }
 

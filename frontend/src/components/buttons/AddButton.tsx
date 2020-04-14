@@ -3,7 +3,9 @@ import { Button, ButtonProps } from "reactstrap"
 import "./buttons.css"
 
 type Props = ButtonProps & {
+    /** Text v tlačítku. */
     content: string
+    /** Tlačítko je malé (true). */
     small?: boolean
 }
 

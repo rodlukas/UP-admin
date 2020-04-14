@@ -6,8 +6,11 @@ import { AttendanceStateType, AttendanceType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
 type Props = {
+    /** Funkce, která se zavolá po aktualizaci stavu účasti. */
     funcRefresh: fEmptyVoid
+    /** ID účasti. */
     attendanceId: AttendanceType["id"]
+    /** ID stavu účasti. */
     value: AttendanceStateType["id"]
 }
 

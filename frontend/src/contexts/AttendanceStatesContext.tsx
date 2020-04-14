@@ -5,11 +5,14 @@ import { AttendanceStateType } from "../types/models"
 import { fFunction } from "../types/types"
 
 type StateContext = {
+    /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
+    /** Pole se stavy účastí. */
     attendancestates: Array<AttendanceStateType>
 }
 
 type Context = StateContext & {
+    /** Funkce pro načtení/obnovení dat v kontextu. */
     funcRefresh: (callback?: fFunction) => void
 }
 
@@ -20,6 +23,7 @@ const AttendanceStatesContext = React.createContext<Context>({
     isLoaded: false,
 })
 
+/** Provider kontextu se stavy účastí. */
 export class AttendanceStatesProvider extends React.Component<{}, StateContext> {
     state: StateContext = {
         isLoaded: false,
@@ -55,10 +59,13 @@ export class AttendanceStatesProvider extends React.Component<{}, StateContext> 
     )
 }
 
+/** Props kontextu se stavy účastí při využití HOC. */
 export type AttendanceStatesContextProps = {
+    /** Objekt kontextu se stavy účasti. */
     attendanceStatesContext: Context
 }
 
+/** HOC komponenta pro kontext se stavy účasti. */
 const WithAttendanceStatesContext = <P,>(
     WrappedComponent: React.ComponentType<P>
 ): React.ComponentType<Omit<P, keyof AttendanceStatesContextProps>> => (

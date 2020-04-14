@@ -18,15 +18,20 @@ import "./PrepaidCounters.css"
 import Tooltip from "./Tooltip"
 
 type Props = {
+    /** Pole se členstvími všech klientů. */
     memberships: Array<MembershipType>
+    /** Funkce, která se zavolá po aktualizaci počtu předplacených lekcí. */
     funcRefreshPrepaidCnt: (
         id: MembershipType["id"],
         prepaidCnt: MembershipType["prepaid_cnt"]
     ) => void
+    /** Skupina je aktivní (true). */
     isGroupActive: boolean
 }
 
+/** Objekt držící počty předplacených lekcí jednotlivých klientů. */
 type PrepaidCntObjectsType = {
+    /** ID členství: počet předplacených lekcí. */
     [key: number]: MembershipType["prepaid_cnt"]
 }
 

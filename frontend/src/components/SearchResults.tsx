@@ -12,9 +12,13 @@ import Heading from "./Heading"
 import Loading from "./Loading"
 
 type Props = {
+    /** Výsledky vyhledávání klientů. */
     foundResults: Array<ClientActiveType>
+    /** Vyhledávaný výraz. */
     searchVal: string
+    /** Funkce pro zahájení vyhledávání klientů. */
     search: fEmptyVoid
+    /** Funkce zrušení vyhledávání klientů. */
     resetSearch: fEmptyVoid
 }
 

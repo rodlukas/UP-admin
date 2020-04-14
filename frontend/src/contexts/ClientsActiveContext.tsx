@@ -5,16 +5,21 @@ import { ClientActiveType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
 type StateContext = {
+    /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
+    /** Pole s aktivními klienty. */
     clients: Array<ClientActiveType>
 }
 
 type State = StateContext & {
+    /** Načtení dat do kontextu už bylo vyžádáno (true). */
     loadRequested: boolean
 }
 
 type Context = StateContext & {
+    /** Funkce pro načtení dat do kontextu, pokud ještě o načtení nikdo nepožádal. */
     funcRefresh: (callback?: fFunction) => void
+    /** Funkce pro obnovení již načtených dat v kontextu. */
     funcHardRefresh: fEmptyVoid
 }
 
@@ -26,6 +31,7 @@ const ClientsActiveContext = React.createContext<Context>({
     isLoaded: false,
 })
 
+/** Provider kontextu s aktivními klienty. */
 export class ClientsActiveProvider extends React.Component<{}, State> {
     state: State = {
         loadRequested: false,
@@ -92,10 +98,13 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
     )
 }
 
+/** Props kontextu s aktivními klienty při využití HOC. */
 export type ClientsActiveContextProps = {
+    /** Objekt kontextu s aktivními klienty. */
     clientsActiveContext: Context
 }
 
+/** HOC komponenta pro kontext s aktivními klienty. */
 const WithClientsActiveContext = <P,>(
     WrappedComponent: React.ComponentType<P>
 ): React.ComponentType<Omit<P, keyof ClientsActiveContextProps>> => (props): React.ReactElement => (

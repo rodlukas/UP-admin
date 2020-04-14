@@ -3,6 +3,7 @@ import { ClientType } from "../types/models"
 import NoInfo from "./NoInfo"
 
 type Props = {
+    /** Email klienta. */
     email: ClientType["email"]
 }
 

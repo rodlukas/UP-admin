@@ -16,25 +16,18 @@ type ToastOptions = any
 type TypeOptions = any
 
 type Props = {
+    /** Chybová zpráva z požadavku. */
     error: AxiosError
 }
 
-type State = {
-    errMsg: ErrMsg
-}
-
 /** Zařídí výpis chyby do notifikace a konzole. */
-class ErrorMessage extends React.Component<Props, State> {
-    state: State = {
-        errMsg: "",
-    }
-
+class ErrorMessage extends React.Component<Props> {
     errorResponse = this.props.error.response
     djangoError = parseDjangoError(this.props.error)
 
     componentDidMount(): void {
         this.logToConsole()
-        this.parseErrors()
+        this.parseError()
     }
 
     logToConsole = (): void => {
@@ -53,19 +46,18 @@ class ErrorMessage extends React.Component<Props, State> {
         }
     }
 
-    parseErrors = (): void => {
-        let errMsg: ErrMsg = NOTIFY_TEXT.ERROR
+    parseError = (): ErrMsg => {
         // request proveden, ale neprislo 2xx
         if (this.errorResponse) {
             // uloz do errMsg neco konkretnejsiho
             if (this.errorResponse.status === 503) {
-                errMsg = NOTIFY_TEXT.ERROR_TIMEOUT
+                return NOTIFY_TEXT.ERROR_TIMEOUT
             } else {
                 const djangoError = this.djangoError
                 if (typeof djangoError === "string") {
-                    errMsg = djangoError
+                    return djangoError
                 } else if (djangoError && typeof djangoError === "object") {
-                    errMsg = (
+                    return (
                         <ul>
                             {Object.keys(djangoError).map((field, index) => (
                                 <li key={`err${index}`}>
@@ -75,17 +67,20 @@ class ErrorMessage extends React.Component<Props, State> {
                             ))}
                         </ul>
                     )
+                } else {
+                    return NOTIFY_TEXT.ERROR
                 }
             }
         } else {
             // stalo se neco jineho pri priprave requestu
-            errMsg = this.props.error.message
+            return this.props.error.message
         }
-        this.setState({ errMsg: errMsg })
     }
 
+    error = this.parseError()
+
     render(): React.ReactNode {
-        return <Notification text={this.state.errMsg} type={toast.TYPE.ERROR} />
+        return <Notification text={this.error} type={toast.TYPE.ERROR} />
     }
 }
 

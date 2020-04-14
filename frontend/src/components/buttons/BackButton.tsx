@@ -4,6 +4,7 @@ import "./BackButton.css"
 import "./buttons.css"
 
 type Props = ButtonProps & {
+    /** Text v tlačítku. */
     content?: string
 }
 

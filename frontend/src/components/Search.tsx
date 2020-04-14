@@ -7,7 +7,9 @@ import "./Search.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
+    /** Funkce, která se zavolá při úpravě vyhledávaného výrazu. */
     onSearchChange: (newSearchVal: string) => void
+    /** Vyhledávaný výraz. */
     searchVal: string
 }
 

@@ -6,8 +6,11 @@ import "./AttendancePaidButton.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
+    /** Lekce je zaplacená (true). */
     paid: boolean
+    /** ID účasti. */
     attendanceId: number
+    /** Funkce, která se zavolá po aktualizaci platby za lekci. */
     funcRefresh: () => void
 }
 

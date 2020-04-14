@@ -28,14 +28,20 @@ import Loading from "./Loading"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = AttendanceStatesContextProps & {
+    /** Při požadavcích na API nedělej prodlevu (true) - prodleva se hodí při rychlém překlikávání mezi dny v diáři. */
     withoutWaiting?: boolean
+    /** Datum pro zobrazované lekce. */
     date: string
+    /** Rodič chce, aby se data v komponentě načetly znovu (true) - když nastane nějaká aktualizace. */
     shouldRefresh: boolean
+    /** Funkce, která se zavolá po nějaké aktualizaci v rámci komponenty. */
     setRefreshState: fEmptyVoid
 }
 
 type State = {
+    /** Pole lekcí pro daný den. */
     lectures: Array<LectureTypeWithDate>
+    /** Probíhá načítání (true). */
     isLoading: boolean
 }
 

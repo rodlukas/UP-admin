@@ -44,10 +44,15 @@ type ParamProps = { id: Model["id"] }
 type Props = CustomRouteComponentProps<ParamProps> & AttendanceStatesContextProps
 
 type State = {
+    /** Zobrazený objekt v kartě - klient/skupina. */
     object: ClientType | GroupType | null
+    /** Pole lekcí roztříděných podle kurzů. */
     lectures: GroupedObjectsByCourses<LectureType>
+    /** Skupiny, ve kterých je klient členem. */
     memberships: Array<GroupType>
+    /** TODO. */
     loadingCnt: number
+    /** Předpočítané výchozí hodnoty pro přidávanou lekci. */
     defaultValuesForLecture?: DefaultValuesForLecture
 }
 

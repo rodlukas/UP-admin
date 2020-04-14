@@ -4,7 +4,9 @@ import "./ActiveSwitcher.css"
 import "./buttons.css"
 
 type Props = {
+    /** Je vybráno zobrazení aktivních klientů/skupin (true). */
     active: boolean
+    /** Funkce, která se zavolá při přepínání. */
     onChange: (active: boolean, ignoreActiveRefresh: boolean) => void
 }
 

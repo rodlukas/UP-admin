@@ -25,6 +25,7 @@ import { CustomRouteComponentProps, QA } from "../types/types"
 import "./Settings.css"
 
 type VisibleProps = QA & {
+    /** Kurz/stav účasti je viditelný (true). */
     visible: boolean
 }
 
@@ -41,9 +42,13 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
 type Props = CustomRouteComponentProps & AttendanceStatesContextProps
 
 type State = {
+    /** Pole kurzů. */
     courses: Array<CourseType>
+    /** Probíhá načítání (true). */
     isLoading: boolean
+    /** ID stavu účasti s významem "klient se zúčastní" (výchozí stav). */
     attendanceStateDefaultId?: AttendanceStateType["id"]
+    /** ID stavu účasti s významem "klient je omluven". */
     attendanceStateExcusedId?: AttendanceStateType["id"]
 }
 

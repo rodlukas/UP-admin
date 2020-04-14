@@ -21,8 +21,11 @@ import { CustomRouteComponentProps } from "../types/types"
 type Props = CustomRouteComponentProps & ClientsActiveContextProps
 
 type State = {
+    /** Pole klientů. */
     clients: Array<ClientType>
+    /** Je vybráno zobrazení aktivních klientů (true). */
     active: boolean
+    /** Probíhá načítání (true). */
     isLoading: boolean
 }
 

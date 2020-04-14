@@ -8,8 +8,11 @@ import CourseCircle from "./CourseCircle"
 type InputGroup = GroupType | Pick<GroupType, "name">
 
 type PlainGroupNameProps = {
+    /** Skupina nebo alespoň objekt s názvem skupiny. */
     group: InputGroup
+    /** Zobraz před názvem skupiny "skupina" (true). */
     title: boolean
+    /** Zobraz název skupiny tučně (true). */
     bold: boolean
 }
 
@@ -27,11 +30,17 @@ const PlainName: React.FC<PlainGroupNameProps> = ({ group, title, bold }) => (
 )
 
 type GroupNameProps = {
+    /** Skupina nebo alespoň objekt s názvem skupiny. */
     group: InputGroup
+    /** Vytvoř odkaz na kartu skupiny (true). */
     link?: boolean
+    /** Zobraz před názvem skupiny "skupina" (true). */
     title?: boolean
+    /** Zobraz před názvem skupiny kolečko s barvou kurzu (true). */
     showCircle?: boolean
+    /** Zobraz název skupiny tučně (true). */
     bold?: boolean
+    /** Nezalamuj název skupiny (true). */
     noWrap?: boolean
 }
 

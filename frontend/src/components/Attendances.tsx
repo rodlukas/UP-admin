@@ -9,8 +9,11 @@ import ClientName from "./ClientName"
 import LectureNote from "./LectureNote"
 
 type AttendanceProps = {
+    /** Účast klienta na lekci. */
     attendance: AttendanceType
+    /** Zobraz jméno klienta (true). */
     showClient: boolean
+    /** Funkce, která se zavolá po aktualizaci účasti. */
     funcRefresh: fEmptyVoid
 }
 
@@ -33,8 +36,11 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
 )
 
 type AttendancesProps = {
+    /** Lekce, jejíž účasti se zobrazí. */
     lecture: LectureType
+    /** Zobraz jméno klienta (true). */
     showClient?: boolean
+    /** Funkce, která se zavolá po aktualizaci účasti. */
     funcRefresh: AttendanceProps["funcRefresh"]
 }
 

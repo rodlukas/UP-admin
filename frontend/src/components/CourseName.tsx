@@ -4,6 +4,7 @@ import { CourseType } from "../types/models"
 import "./CourseName.css"
 
 type Props = {
+    /** Kurz. */
     course: CourseType
 }
 

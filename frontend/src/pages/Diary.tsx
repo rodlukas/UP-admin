@@ -22,19 +22,35 @@ import { isModalShown, pageTitle } from "../global/utils"
 import { CustomRouteComponentProps } from "../types/types"
 import "./Diary.css"
 
-type TitleDateProps = { date: Date }
+type TitleDateProps = {
+    /** Datum, který se má zobrazit. */
+    date: Date
+}
 
+/** Pomocná komponenta zobrazující datum v záhlaví diáře. */
 const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
     <span className={`TitleDate font-weight-bold ${yearDiffs(date) ? "TitleDate-long" : ""}`}>
         {prettyDateWithYearIfDiff(date)}
     </span>
 )
 
-type ParamsProps = { year: string; month: string; day: string }
+type ParamsProps = {
+    /** Rok. */
+    year: string
+    /** Měsíc. */
+    month: string
+    /** Den. */
+    day: string
+}
 
 type Props = CustomRouteComponentProps<ParamsProps>
 
-type State = { shouldRefresh: boolean; week: Array<string> }
+type State = {
+    /** Komponenty se dny je potřeba znovu načíst (true) - některá z nich provedla aktualizace. */
+    shouldRefresh: boolean
+    /** Pole se dny v zobrazeném týdnu. */
+    week: Array<string>
+}
 
 /** Stránka s diářem. */
 export default class Diary extends React.Component<Props, State> {

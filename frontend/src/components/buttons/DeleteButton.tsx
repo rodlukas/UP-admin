@@ -2,6 +2,7 @@ import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
 
 type Props = ButtonProps & {
+    /** Text v tlačítku. */
     content?: string
 }
 

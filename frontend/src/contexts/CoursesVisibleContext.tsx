@@ -5,16 +5,21 @@ import { CourseType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
 type StateContext = {
+    /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
+    /** Pole s viditelnými klienty. */
     courses: Array<CourseType>
 }
 
 type State = StateContext & {
+    /** Načtení dat do kontextu už bylo vyžádáno (true). */
     loadRequested: boolean
 }
 
 type Context = StateContext & {
+    /** Funkce pro načtení dat do kontextu, pokud ještě o načtení nikdo nepožádal. */
     funcRefresh: (callback?: fFunction) => void
+    /** Funkce pro obnovení již načtených dat v kontextu. */
     funcHardRefresh: fEmptyVoid
 }
 
@@ -26,6 +31,7 @@ const CoursesVisibleContext = React.createContext<Context>({
     isLoaded: false,
 })
 
+/** Provider kontextu s viditelnými kurzy. */
 export class CoursesVisibleProvider extends React.Component<{}, State> {
     state: State = {
         loadRequested: false,
@@ -77,10 +83,13 @@ export class CoursesVisibleProvider extends React.Component<{}, State> {
     )
 }
 
+/** Props kontextu s viditelnými kurzy při využití HOC. */
 export type CoursesVisibleContextProps = {
+    /** Objekt kontextu s viditelnými kurzy. */
     coursesVisibleContext: Context
 }
 
+/** HOC komponenta pro kontext s viditelnými kurzy. */
 const WithCoursesVisibleContext = <P,>(
     WrappedComponent: React.ComponentType<P>
 ): React.ComponentType<Omit<P, keyof CoursesVisibleContextProps>> => (

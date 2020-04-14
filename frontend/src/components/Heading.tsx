@@ -2,6 +2,7 @@ import * as React from "react"
 import "./Heading.css"
 
 type Props = {
+    /** Jakýkoliv uzel JSX tvořící nadpis. */
     content: React.ReactNode
 }
 

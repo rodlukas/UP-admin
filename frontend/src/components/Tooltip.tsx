@@ -5,9 +5,13 @@ import { UncontrolledTooltipProps } from "reactstrap"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
+    /** Unikátní textové ID pro Tooltip. */
     postfix: string
+    /** Text zobrazený v Tooltipu. */
     text: React.ReactNode
+    /** Velikost ikony, která zobrazí Tooltip. */
     size?: FontAwesomeIconProps["size"]
+    /** Pozice Tooltipu. */
     placement?: UncontrolledTooltipProps["placement"]
 }
 

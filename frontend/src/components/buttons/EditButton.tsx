@@ -6,6 +6,7 @@ import { makeIdFromString } from "../../global/utils"
 import UncontrolledTooltipWrapper from "../UncontrolledTooltipWrapper"
 
 type Props = ButtonProps & {
+    /** Text v tlačítku. */
     content?: string
 }
 

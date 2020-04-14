@@ -4,7 +4,9 @@ import { LectureType } from "../types/models"
 import "./LectureNumber.css"
 
 type Props = {
+    /** Lekce. */
     lecture: LectureType
+    /** Obarvi číslo lekce barvou příslušného kurzu (true). */
     colorize?: boolean
 }
 

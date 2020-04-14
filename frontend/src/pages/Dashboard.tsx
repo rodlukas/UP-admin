@@ -10,6 +10,7 @@ import { CustomRouteComponentProps } from "../types/types"
 type Props = CustomRouteComponentProps
 
 type State = {
+    /** Komponentu se dnem je potřeba znovu načíst (true) - provedla se v ní aktualizace. */
     shouldRefresh: boolean
 }
 

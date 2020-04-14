@@ -3,6 +3,7 @@ import { USER_CELEBRATION } from "../global/constants"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
+    /** ID označující, co slaví lektorka (svátek/narozeniny/nic). */
     isUserCelebratingResult: number
 }
 

@@ -11,13 +11,18 @@ import Token from "./Token"
 const AUTH_REFRESH_THRESHOLD = 60 * 65 // sekundy -> 65 minut
 
 type State = {
+    /** Probíhá načítání (true). */
     isLoading: boolean
+    /** Uživatel je přihlášen (true). */
     isAuth: boolean
 }
 
 type Context = State & {
+    /** Funkce pro přihlášení uživatele. */
     login: (credentials: AuthorizationType) => void
+    /** Funkce pro odhlášení uživatele. */
     logout: fEmptyVoid
+    /** Funkce pro zjištění, zda je uživatel přihlášen (případně obnoví token s blížící se expirací). */
     isAuthenticated: (refreshExpiringToken?: boolean) => void
 }
 

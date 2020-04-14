@@ -7,7 +7,9 @@ import "./ClientPhone.css"
 import NoInfo from "./NoInfo"
 
 type Props = {
+    /** Telefonní číslo klienta. */
     phone: ClientType["phone"]
+    /** Zobraz ikonu u telefonního čísla (true). */
     icon?: boolean
 }
 

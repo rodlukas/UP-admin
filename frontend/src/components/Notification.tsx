@@ -2,8 +2,11 @@ import * as React from "react"
 import { toast } from "react-toastify"
 import { ErrMsg } from "../types/types"
 
+//todo https://github.com/fkhadra/react-toastify/issues/426
 type Props = {
+    /** Element s chybovou zprávou. */
     text?: ErrMsg
+    /** Typ toast notifikace. */
     type: string
 }
 

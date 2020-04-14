@@ -14,14 +14,18 @@ import { CustomRouteComponentProps, fEmptyVoid } from "../types/types"
 type Props = CustomRouteComponentProps
 
 type State = {
+    /** Vyskytla se chyba (true). */
     hasError: boolean
+    /** Objekt s dalšími informacemi o chybě (obsahuje componentStack). */
     errorInfo?: React.ErrorInfo
+    /** ID chyby ze Sentry. */
     eventId?: string
+    /** Konkrétní chyba, která se vyskytla. */
     error?: Error
 }
 
 /**
- * Stránka s diářem.
+ * Stránka s chybou při neočekávaném problému na klientské části.
  * Vychází z: https://docs.sentry.io/platforms/javascript/react/#error-boundaries
  */
 class ErrorBoundary extends React.Component<Props, State> {

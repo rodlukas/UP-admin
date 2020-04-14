@@ -9,8 +9,11 @@ import "./Menu.css"
 import Search from "./Search"
 
 type Props = {
+    /** Funkce pro zavření otevřeného hamburger menu. */
     closeNavbar: fEmptyVoid
+    /** Funkce, která se zavolá při úpravě vyhledávaného výrazu. */
     onSearchChange: (newSearchVal: string) => void
+    /** Vyhledávaný výraz. */
     searchVal: string
 }
 

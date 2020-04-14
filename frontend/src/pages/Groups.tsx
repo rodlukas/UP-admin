@@ -24,8 +24,11 @@ import { CustomRouteComponentProps } from "../types/types"
 type Props = CustomRouteComponentProps & GroupsActiveContextProps & CoursesVisibleContextProps
 
 type State = {
+    /** Pole skupin. */
     groups: Array<GroupType>
+    /** Je vybráno zobrazení aktivních skupin (true). */
     active: boolean
+    /** Probíhá načítání (true). */
     isLoading: boolean
 }
 

@@ -17,13 +17,17 @@ import CustomButton from "./buttons/CustomButton"
 import NoInfo from "./NoInfo"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
+/** Doba, po kterou nelze ručně provést opakované načtení dat z API. */
 const REFRESH_TIMEOUT = 60 // sekundy
 
 type TableInfoProps = {
+    /**  Text k zobrazení. */
     text?: string
+    /**  Barva textu (bootstrap). */
     color?: string
 }
 
+/** Pomocná komponenta pro výpis hlášky místo transakcí v tabulce. */
 const TableInfo: React.FC<TableInfoProps> = ({ text, color = "text-muted" }) => (
     <tr className={`${color} text-center`}>
         <td colSpan={4}>{text}</td>
@@ -31,9 +35,13 @@ const TableInfo: React.FC<TableInfoProps> = ({ text, color = "text-muted" }) => 
 )
 
 type State = {
+    /** Probíhá načítání (true). */
     isLoading: boolean
+    /** Manuální obnovení dat je zakázané (true). */
     REFRESH_DISABLED: boolean
+    /** Nastal problém při stahování dat z API (true). */
     DATA_PROBLEM: boolean
+    /** Data z banky stažená z API. */
     bankDataApi: BankType
 }
 

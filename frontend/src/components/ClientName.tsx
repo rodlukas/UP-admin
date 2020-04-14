@@ -8,7 +8,9 @@ import ConditionalWrapper from "./ConditionalWrapper"
 type InputClient = ClientType | Pick<ClientType, "firstname" | "surname">
 
 type PlainClientNameProps = {
+    /** Klient nebo alespoň objekt s křestním jménem a příjmením. */
     client: InputClient
+    /** Zobraz jméno klienta tučně (true). */
     bold: boolean
 }
 
@@ -26,8 +28,11 @@ const PlainClientName: React.FC<PlainClientNameProps> = ({ client, bold }) => (
 )
 
 type ClientNameProps = {
+    /** Klient nebo alespoň objekt s křestním jménem a příjmením. */
     client: InputClient
+    /** Vytvoř odkaz na kartu klienta (true). */
     link?: boolean
+    /** Zobraz jméno klienta tučně (true). */
     bold?: boolean
 }
 

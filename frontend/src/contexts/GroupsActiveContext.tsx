@@ -5,16 +5,21 @@ import { GroupType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
 type StateContext = {
+    /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
+    /** Pole s aktivními skupinami. */
     groups: Array<GroupType>
 }
 
 type State = StateContext & {
+    /** Načtení dat do kontextu už bylo vyžádáno (true). */
     loadRequested: boolean
 }
 
 type Context = StateContext & {
+    /** Funkce pro načtení dat do kontextu, pokud ještě o načtení nikdo nepožádal. */
     funcRefresh: (callback?: fFunction) => void
+    /** Funkce pro obnovení již načtených dat v kontextu. */
     funcHardRefresh: fEmptyVoid
 }
 
@@ -26,6 +31,7 @@ const GroupsActiveContext = React.createContext<Context>({
     isLoaded: false,
 })
 
+/** Provider kontextu s aktivními skupinami. */
 export class GroupsActiveProvider extends React.Component<{}, State> {
     state: State = {
         loadRequested: false,
@@ -77,10 +83,13 @@ export class GroupsActiveProvider extends React.Component<{}, State> {
     )
 }
 
+/** Props kontextu s aktivními skupinami při využití HOC. */
 export type GroupsActiveContextProps = {
+    /** Objekt kontextu s aktivními skupinami. */
     groupsActiveContext: Context
 }
 
+/** HOC komponenta pro kontext s aktivními skupinami. */
 const WithGroupsActiveContext = <P,>(
     WrappedComponent: React.ComponentType<P>
 ): React.ComponentType<Omit<P, keyof GroupsActiveContextProps>> => (props): React.ReactElement => (

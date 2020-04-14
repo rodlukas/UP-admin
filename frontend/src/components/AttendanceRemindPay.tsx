@@ -5,6 +5,7 @@ import { AttendanceType } from "../types/models"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
+    /** Účast klienta na lekci. */
     attendance: AttendanceType
 }
 

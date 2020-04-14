@@ -22,7 +22,9 @@ import "./Applications.css"
 type Props = CustomRouteComponentProps & CoursesVisibleContextProps
 
 type State = {
+    /** Pole zájemců o kurzy. */
     applications: GroupedObjectsByCourses<ApplicationType>
+    /** Probíhá načítání (true). */
     isLoading: boolean
 }
 

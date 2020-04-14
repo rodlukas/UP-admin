@@ -1,6 +1,7 @@
 import * as React from "react"
 
 type Props = {
+    /** Pole jakýchkoliv komponent. */
     components: Array<React.ReactNode>
 }
 

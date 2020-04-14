@@ -59,6 +59,7 @@ export function getLecturesgroupedByCourses(
     return requestLectures.then((lectures) => groupObjectsByCourses(lectures))
 }
 
+/** Návratový typ pro funkci getDefaultValuesForLecture (a také pro funkci, kterou používá - prepareDefaultValuesForLecture). */
 export type DefaultValuesForLecture = {
     course: CourseType | null
     start: Date | ""

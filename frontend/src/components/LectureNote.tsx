@@ -4,6 +4,7 @@ import { AttendanceType } from "../types/models"
 import "./LectureNote.css"
 
 type Props = {
+    /** Účast klienta na lekci. */
     attendance: AttendanceType
 }
 

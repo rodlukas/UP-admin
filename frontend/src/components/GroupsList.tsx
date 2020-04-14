@@ -4,6 +4,7 @@ import ComponentsList from "./ComponentsList"
 import GroupName from "./GroupName"
 
 type Props = {
+    /** Pole se skupinami. */
     groups: Array<GroupType>
 }
 
