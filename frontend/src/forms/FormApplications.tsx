@@ -25,18 +25,28 @@ import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
 type Props = CoursesVisibleContextProps & {
+    /** Zájemce o kurz. */
     application: ApplicationType | ApplicationPostApiDummy
+    /** Funkce, která se zavolá při zavření formuláře. */
     funcClose: () => boolean
+    /** Funkce, která se zavolá po úspěšném odeslání formuláře. */
     funcForceClose: (modalSubmitted?: boolean, data?: never) => boolean
+    /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
 }
 
 type State = {
+    /** Kurz. */
     course: ApplicationPostApiDummy["course"]
+    /** Klient. */
     client: ApplicationPostApiDummy["client"]
+    /** Poznámka k zájemci o kurz. */
     note: ApplicationPostApiDummy["note"]
+    /** Pole klientů. */
     clients: Array<ClientType>
+    /** Probíhá načítání (true). */
     isLoading: boolean
+    /** Formulář byl odeslán (true). */
     isSubmit: boolean
 }
 

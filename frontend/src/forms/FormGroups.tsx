@@ -42,20 +42,32 @@ import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
 type Props = CoursesVisibleContextProps & {
+    /** Skupina. */
     group: GroupType | GroupPostApiDummy
+    /** Funkce, která se zavolá při zavření formuláře. */
     funcClose: () => boolean
+    /** Funkce, která se zavolá po úspěšném odeslání formuláře. */
     funcForceClose: (modalSubmitted?: boolean, data?: ModalGroupsData) => boolean
+    /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
+    /** Funkce, která se zavolá po úspěšném přidání skupiny (spolu s daty o skupině). */
     funcProcessAdditionOfGroup?: (newGroup: GroupType) => void
 }
 
 type State = {
+    /** Název skupiny. */
     name: GroupPostApiDummy["name"]
+    /** Skupina je aktivní (true). */
     active: GroupPostApiDummy["active"]
+    /** Kurz skupiny. */
     course: GroupPostApiDummy["course"]
+    /** Pole členů skupiny. */
     memberships: Array<ClientType>
+    /** Pole klientů. */
     clients: Array<ClientType>
+    /** Probíhá načítání (true). */
     isLoading: boolean
+    /** Formulář byl odeslán (true). */
     isSubmit: boolean
 }
 

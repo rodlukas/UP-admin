@@ -1,4 +1,6 @@
-/** Dummy objekty použité pro výchozí hodnoty ve formulářích, když se provádí přidání. */
+/* *************************************************************************************************
+Dummy objekty použité pro výchozí hodnoty ve formulářích, když se provádí přidání.
+************************************************************************************************* */
 import { DEFAULT_COLOR, DEFAULT_LECTURE_DURATION_SINGLE } from "../../global/constants"
 import {
     ApplicationPostApiDummy,
@@ -9,6 +11,7 @@ import {
     LecturePostApiDummy,
 } from "../../types/models"
 
+/** Dummy klient. */
 export const DummyClient: ClientPostApiDummy = {
     active: true,
     email: "",
@@ -18,6 +21,7 @@ export const DummyClient: ClientPostApiDummy = {
     surname: "",
 }
 
+/** Dummy kurz. */
 export const DummyCourse: CoursePostApiDummy = {
     color: DEFAULT_COLOR,
     duration: DEFAULT_LECTURE_DURATION_SINGLE,
@@ -25,6 +29,7 @@ export const DummyCourse: CoursePostApiDummy = {
     visible: true,
 }
 
+/** Dummy stav účasti. */
 export const DummyAttendanceState: AttendanceStatePostApiDummy = {
     name: "",
     visible: true,
@@ -32,6 +37,7 @@ export const DummyAttendanceState: AttendanceStatePostApiDummy = {
     excused: true,
 }
 
+/** Dummy skupina. */
 export const DummyGroup: GroupPostApiDummy = {
     active: true,
     name: "",
@@ -39,6 +45,7 @@ export const DummyGroup: GroupPostApiDummy = {
     course: null,
 }
 
+/** Dummy zájemce o kurz. */
 export const DummyApplication: ApplicationPostApiDummy = {
     client: null,
     course: null,
@@ -46,6 +53,7 @@ export const DummyApplication: ApplicationPostApiDummy = {
     created_at: "",
 }
 
+/** Dummy lekce. */
 export const DummyLecture: LecturePostApiDummy = {
     course: null,
     start: "",

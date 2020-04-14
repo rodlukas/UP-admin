@@ -10,9 +10,13 @@ import FormGroups from "./FormGroups"
 import { DummyGroup } from "./helpers/dummies"
 
 type Props = {
+    /** Skupina. */
     currentGroup?: GroupType
+    /** Tlačítka pro otevření modálního okna jsou součástí vět (pro použití s komponentou Or). */
     inSentence?: boolean
+    /** Funkce, která se zavolá po úspěšném přidání skupiny (spolu s daty o skupině). */
     processAdditionOfGroup?: (newGroup: GroupType) => void
+    /** Funkce, která se zavolá po zavření modálního okna. */
     refresh: (data: ModalGroupsData) => void
 }
 

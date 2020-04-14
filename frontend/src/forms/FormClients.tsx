@@ -26,20 +26,32 @@ import { ClientPostApiDummy, ClientType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
 type Props = {
+    /** Klient. */
     client: ClientType | ClientPostApiDummy
+    /** Funkce, která se zavolá při zavření formuláře. */
     funcClose: () => boolean
+    /** Funkce, která se zavolá po úspěšném odeslání formuláře. */
     funcForceClose: (modalSubmitted?: boolean, data?: ModalClientsData) => boolean
+    /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
+    /** Funkce, která se zavolá po úspěšném přidání klienta (spolu s daty o klientovi). */
     funcProcessAdditionOfClient?: (newClient: ClientType) => void
 }
 
 type State = {
+    /** Křestní jméno klienta. */
     firstname: ClientPostApiDummy["firstname"]
+    /** Příjmení klienta. */
     surname: ClientPostApiDummy["surname"]
+    /** E-mail klienta. */
     email: ClientPostApiDummy["email"]
+    /** Telefonní číslo klienta. */
     phone: ClientPostApiDummy["phone"]
+    /** Poznámka ke klientovi. */
     note: ClientPostApiDummy["note"]
+    /** Klient je aktivní (true). */
     active: ClientPostApiDummy["active"]
+    /** Formulář byl odeslán (true). */
     isSubmit: boolean
 }
 

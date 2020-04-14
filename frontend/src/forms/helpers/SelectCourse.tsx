@@ -6,6 +6,7 @@ import ReactSelectWrapper from "./ReactSelectWrapper"
 import { selectStyles } from "./selectCourseColors"
 
 type SelectCourseProps = Props<CourseType> & {
+    /** Funkce, která se zavolá při vybrání kurzu. */
     onChangeCallback: (name: "course", newValue?: CourseType | null) => void
 }
 

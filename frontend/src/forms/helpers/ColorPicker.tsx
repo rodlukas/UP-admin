@@ -10,11 +10,14 @@ import UncontrolledTooltipWrapper from "../../components/UncontrolledTooltipWrap
 import "./ColorPicker.css"
 
 type Props = {
+    /** Barva kurzu. */
     color: string
+    /** Funkce, která se zavolá při změně barvy kurzu. */
     onChange: (newColor: string) => void
 }
 
 type State = {
+    /** Widget pro výběr barvy je zobrazený (true). */
     isPickerVisible: boolean
 }
 

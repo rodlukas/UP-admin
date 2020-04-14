@@ -2,6 +2,7 @@ import * as React from "react"
 import "./Or.css"
 
 type Props = {
+    /** Jakýkoliv uzel JSX pro zobrazení jakožto alternativní možnost přidání místo volby stávající entity. */
     content: React.ReactNode
 }
 

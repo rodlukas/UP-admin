@@ -12,8 +12,11 @@ import FormSettings from "./FormSettings"
 import { DummyAttendanceState, DummyCourse } from "./helpers/dummies"
 
 type Props = {
+    /** Kurz/stav účasti. */
     currentObject?: CourseType | AttendanceStateType
+    /** Indikátor typu objektu (klitn/stav účasti). */
     TYPE: number
+    /** Funkce, která se zavolá po zavření modálního okna. */
     refresh: (type: number) => void
 }
 

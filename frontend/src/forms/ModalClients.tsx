@@ -11,9 +11,13 @@ import FormClients from "./FormClients"
 import { DummyClient } from "./helpers/dummies"
 
 type Props = {
+    /** Klient. */
     currentClient?: ClientType
+    /** Tlačítka pro otevření modálního okna jsou součástí vět (pro použití s komponentou Or). */
     inSentence?: boolean
+    /** Funkce, která se zavolá po úspěšném přidání klienta (spolu s daty o klientovi). */
     processAdditionOfClient?: (newClient: ClientType) => void
+    /** Funkce, která se zavolá po zavření modálního okna. */
     refresh: (data: ModalClientsData) => void
 }
 

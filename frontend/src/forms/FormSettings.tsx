@@ -35,17 +35,26 @@ import "./FormSettings.css"
 import ColorPicker from "./helpers/ColorPicker"
 
 type Props = {
+    /** Kurz/stav účasti. */
     object: CourseType | AttendanceStateType | CoursePostApiDummy | AttendanceStatePostApiDummy
+    /** Funkce, která se zavolá při zavření formuláře. */
     funcClose: () => boolean
+    /** Funkce, která se zavolá po úspěšném odeslání formuláře. */
     funcForceClose: (modalSubmitted?: boolean, data?: never) => boolean
+    /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
 }
 
 type State = {
+    /** Název kurzu/stavu účasti. */
     name: CoursePostApiDummy["name"] | AttendanceStatePostApiDummy["name"]
+    /** Kurz/stav účasti je viditelný (true). */
     visible: CoursePostApiDummy["visible"] | AttendanceStatePostApiDummy["visible"]
+    /** Trvání kurzu. */
     duration?: CoursePostApiDummy["duration"]
+    /** Barva kurzu. */
     color?: CoursePostApiDummy["color"]
+    /** Formulář byl odeslán (true). */
     isSubmit: boolean
 }
 
