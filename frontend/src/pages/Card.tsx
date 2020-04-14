@@ -49,7 +49,7 @@ type State = {
     /** Pole lekcí roztříděných podle kurzů. */
     lectures: GroupedObjectsByCourses<LectureType>
     /** Skupiny, ve kterých je klient členem. */
-    memberships: Array<GroupType>
+    groupsOfClient: Array<GroupType>
     /** TODO. */
     loadingCnt: number
     /** Předpočítané výchozí hodnoty pro přidávanou lekci. */
@@ -68,7 +68,7 @@ class Card extends React.Component<Props, State> {
     state: State = {
         object: null,
         lectures: [],
-        memberships: [],
+        groupsOfClient: [],
         loadingCnt: this.isClientPage() ? 0 : 1,
         defaultValuesForLecture: undefined, // pro FormLecture, aby se vybral velmi pravdepodobny kurz/datum a cas pri
         // pridavani lekce
@@ -86,7 +86,7 @@ class Card extends React.Component<Props, State> {
         this.getObject()
         this.getLectures()
         if (this.isClientPage()) {
-            this.getMemberships()
+            this.getGroupsOfClient()
         }
     }
 
@@ -110,7 +110,7 @@ class Card extends React.Component<Props, State> {
                 () => {
                     this.getObject()
                     this.getLectures()
-                    this.getMemberships()
+                    this.getGroupsOfClient()
                 }
             )
         } else {
@@ -140,9 +140,9 @@ class Card extends React.Component<Props, State> {
 
     goBack = (): void => this.props.history.goBack()
 
-    getMemberships = (id = this.getId()): void => {
-        GroupService.getAllFromClient(id).then((memberships) =>
-            this.setState({ memberships }, this.loadingStateIncrement)
+    getGroupsOfClient = (id = this.getId()): void => {
+        GroupService.getAllFromClient(id).then((groupsOfClient) =>
+            this.setState({ groupsOfClient }, this.loadingStateIncrement)
         )
     }
 
@@ -214,7 +214,7 @@ class Card extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        const { object, lectures, defaultValuesForLecture, memberships, loadingCnt } = this.state
+        const { object, lectures, defaultValuesForLecture, groupsOfClient, loadingCnt } = this.state
         return (
             <>
                 <Container>
@@ -275,7 +275,7 @@ class Card extends React.Component<Props, State> {
                                                 </ListGroupItem>
                                                 <ListGroupItem>
                                                     <b>Skupiny:</b>{" "}
-                                                    <GroupsList groups={memberships} />
+                                                    <GroupsList groups={groupsOfClient} />
                                                 </ListGroupItem>
                                                 <ListGroupItem>
                                                     <b>Poznámka:</b>{" "}
