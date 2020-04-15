@@ -73,7 +73,7 @@ class Client(models.Model):
     active = models.BooleanField(default=True, help_text="Indikátor aktivity klienta")
     email = models.EmailField(blank=True, help_text="Email klienta")  # OMEZENÍ O10 (EmailField)
     firstname = models.TextField(help_text="Křestní jméno klienta")
-    note = models.TextField(blank=True, help_text="Poznámka")
+    note = models.TextField(blank=True, help_text="Poznámka ke klientovi")
     phone = models.TextField(blank=True, help_text="Telefonní číslo klienta")
     surname = models.TextField(help_text="Příjmení klienta")
 
@@ -106,7 +106,7 @@ class Application(models.Model):
     ŘAZENÍ: Vzestupně dle příjmení a křestního jména klienta.
     """
 
-    note = models.TextField(blank=True, help_text="Poznámka")
+    note = models.TextField(blank=True, help_text="Poznámka k zájemci o kurz")
     client = models.ForeignKey(
         Client,
         related_name="applications",
@@ -179,7 +179,7 @@ class Attendance(models.Model):
     ŘAZENÍ: Vzestupně dle příjmení a křestního jména klienta.
     """
 
-    note = models.TextField(blank=True, help_text="Poznámka")
+    note = models.TextField(blank=True, help_text="Poznámka k účasti")
     paid = models.BooleanField(help_text="Indikátor zaplacené lekce")
     client = models.ForeignKey(
         Client,
