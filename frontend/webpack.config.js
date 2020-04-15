@@ -102,6 +102,7 @@ module.exports = {
             // diky teto moznosti muze pak pracovat HtmlWebpackHarddiskPlugin
             alwaysWriteToDisk: true,
             scriptLoading: "defer",
+            inject: "head",
             template: htmlSource,
             filename: htmlFile,
             minify: isProduction
