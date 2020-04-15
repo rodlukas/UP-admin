@@ -18,19 +18,13 @@ urlpatterns = [
         "api/open-api/",
         get_schema_view(
             title="ÚPadmin API",
-            description="Dokumentace REST API pro aplikaci ÚPadmin.",
+            description="Dokumentace *REST API* pro aplikaci **ÚPadmin**. **[Přejít do aplikace](/)**",
             version="1.0.0",
         ),
         name="openapi-schema",
     ),
     # Swagger UI dokumentace API
-    path(
-        "api/docs/",
-        TemplateView.as_view(
-            template_name="swagger-ui.html", extra_context={"schema_url": "openapi-schema"}
-        ),
-        name="swagger-ui",
-    ),
+    path("api/docs/", TemplateView.as_view(template_name="swagger-ui.html"), name="swagger-ui"),
     # vychozi stranka (serviruje React aplikaci)
     re_path(r"^", TemplateView.as_view(template_name="react-autogenerate.html")),
 ]

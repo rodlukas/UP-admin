@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -9,20 +10,6 @@
 <body>
 <div id="swagger-ui"></div>
 <script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
-<script>
-    const ui = SwaggerUIBundle({
-        url: "{% url schema_url %}",
-        dom_id: "#swagger-ui",
-        presets: [
-            SwaggerUIBundle.presets.apis,
-            SwaggerUIBundle.SwaggerUIStandalonePreset
-        ],
-        layout: "BaseLayout",
-        requestInterceptor: (request) => {
-            request.headers['X-CSRFToken'] = "{{ csrf_token }}"
-            return request;
-        }
-    })
-</script>
+<script src="{% static "admin/swagger.js" %}"></script>
 </body>
 </html>
