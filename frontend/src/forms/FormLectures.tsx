@@ -63,36 +63,70 @@ import "./FormLectures.css"
 import CustomInputWrapper from "./helpers/CustomInputWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 
-// klic je ClientType["id"]
-type AtState = { [key: number]: AttendanceType["attendancestate"] }
-type AtStateWithEmpty = { [key: number]: AttendanceType["attendancestate"] | undefined }
-type AtPaid = { [key: number]: boolean }
-type AtNote = { [key: number]: AttendanceType["note"] }
+type AtState = {
+    /** ID klienta: ID stavu účasti. */
+    [key: number]: AttendanceType["attendancestate"]
+}
+
+type AtStateWithEmpty = {
+    /** ID klienta: ID stavu účasti (nebo žádný stav účasti). */
+    [key: number]: AttendanceType["attendancestate"] | undefined
+}
+
+type AtPaid = {
+    /** ID klienta: lekce je zaplacená (true). */
+    [key: number]: boolean
+}
+
+type AtNote = {
+    /** ID klienta: poznámka k účasti. */
+    [key: number]: AttendanceType["note"]
+}
 
 type Props = AttendanceStatesContextProps &
     CoursesVisibleContextProps & {
+        /** Lekce. */
         lecture: LectureType | LecturePostApiDummy | LectureTypeWithDate
+        /** Datum lekce. */
         date: string
+        /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
         object: ClientType | GroupType
+        /** Výchozí hodnoty pro lekci. */
         defaultValuesForLecture?: DefaultValuesForLecture
+        /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
         funcClose: () => boolean | void
+        /** Funkce, která zavře modální okno s formulářem (po úspěšně provedeném požadavku v rámci formuláře). */
         funcForceClose: (modalSubmitted?: boolean, data?: never) => boolean | void
+        /** Funkce, která se volá při změně údajů ve formuláři. */
         setFormDirty: fEmptyVoid
     }
 
 type State = {
+    /** Objekt držící stavy účasti k jednotlivým klientům. */
     atState: AtStateWithEmpty | AtState
+    /** Objekt držící zaplacenost (true) k jednotlivým klientům. */
     atPaid: AtPaid
+    /** Objekt držící poznámky k jednotlivým klientům. */
     atNote: AtNote
+    /** Lekce je předplacená (true). */
     prepaid: boolean
+    /** Lekce je zrušená (true). */
     canceled: LecturePostApiDummy["canceled"]
+    /** Předchozí hodnota zrušení lekce (než bylo automaticky nastaveno). */
     canceledPrevious?: LecturePostApiDummy["canceled"]
+    /** Datum lekce. */
     date: string
+    /** Čas lekce. */
     time: string
+    /** Kurz lekce. */
     course: LecturePostApiDummy["course"]
+    /** Trvání lekce. */
     duration: LecturePostApiDummy["duration"]
+    /** Zrušení lekce není možné upravit (true). */
     canceledDisabled: boolean
+    /** Formulář byl odeslán (true). */
     isSubmit: boolean
+    /** Počet přidávaných předplacených lekcí. */
     prepaidCnt: number
 }
 

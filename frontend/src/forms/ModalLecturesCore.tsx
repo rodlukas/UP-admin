@@ -8,12 +8,19 @@ import FormLectures from "./FormLectures"
 import { DummyLecture } from "./helpers/dummies"
 
 type Props = {
+    /** Lekce. */
     currentLecture?: LectureType
+    /** Výchozí hodnoty pro lekci. */
     defaultValuesForLecture?: DefaultValuesForLecture
+    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh?: fEmptyVoid
+    /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
     object?: ClientType | GroupType | null
+    /** Funkce, která se zavolá při jakémkoliv zavírání modálního okna. */
     funcCloseCallback: fEmptyVoid
+    /** Modální okno s formulářem se má otevřít (true). */
     shouldModalOpen?: boolean
+    /** Datum lekce. */
     date?: string
 }
 

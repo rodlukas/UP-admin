@@ -16,7 +16,7 @@ type Props = {
     withOr?: boolean
     /** Funkce, která se zavolá po úspěšném přidání skupiny (spolu s daty o skupině). */
     processAdditionOfGroup?: (newGroup: GroupType) => void
-    /** Funkce, která se zavolá po zavření modálního okna. */
+    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh: (data: ModalGroupsData) => void
 }
 

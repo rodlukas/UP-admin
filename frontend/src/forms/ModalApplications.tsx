@@ -11,7 +11,7 @@ import { DummyApplication } from "./helpers/dummies"
 type Props = {
     /** Zájemce o kurz. */
     currentApplication?: ApplicationType
-    /** Funkce, která se zavolá po zavření modálního okna. */
+    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh: fEmptyVoid
 }
 

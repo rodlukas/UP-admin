@@ -112,9 +112,9 @@ class DashboardDay extends React.Component<Props, State> {
                     <ModalLecturesWizard
                         refresh={this.props.setRefreshState}
                         date={this.props.date}
-                        className="float-right"
-                        size="sm"
-                        direction="up"
+                        dropdownClassName="float-right"
+                        dropdownSize="sm"
+                        dropdownDirection="up"
                     />
                 </ListGroupItem>
                 {isLoading || !this.props.attendanceStatesContext.isLoaded ? (

@@ -7,9 +7,13 @@ import { fEmptyVoid } from "../types/types"
 import ModalLecturesCore from "./ModalLecturesCore"
 
 type Props = {
+    /** Lekce. */
     currentLecture?: LectureType
+    /** Výchozí hodnoty pro lekci. */
     defaultValuesForLecture?: DefaultValuesForLecture
+    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh?: fEmptyVoid
+    /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
     object?: ClientType | GroupType | null
 }
 

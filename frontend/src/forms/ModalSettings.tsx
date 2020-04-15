@@ -16,7 +16,7 @@ type Props = {
     currentObject?: CourseType | AttendanceStateType
     /** Indikátor typu objektu (klitn/stav účasti). */
     TYPE: number
-    /** Funkce, která se zavolá po zavření modálního okna. */
+    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh: (type: number) => void
 }
 

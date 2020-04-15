@@ -17,7 +17,7 @@ type Props = {
     withOr?: boolean
     /** Funkce, která se zavolá po úspěšném přidání klienta (spolu s daty o klientovi). */
     processAdditionOfClient?: (newClient: ClientType) => void
-    /** Funkce, která se zavolá po zavření modálního okna. */
+    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh: (data: ModalClientsData) => void
 }
 

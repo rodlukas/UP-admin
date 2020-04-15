@@ -38,18 +38,28 @@ import "./ModalLecturesWizard.css"
 
 type Props = ClientsActiveContextProps &
     GroupsActiveContextProps & {
+        /** Datum lekce. */
         date?: string
-        className?: string
-        size?: string
-        direction?: Direction
+        /** CSS třída pro dropdown pro výběr klient/skupina. */
+        dropdownClassName?: string
+        /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
+        dropdownSize?: string
+        /** Směr otevírání dropdownu pro výběr klient/skupina. */
+        dropdownDirection?: Direction
+        /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
         refresh: fEmptyVoid
     }
 
 type State = {
+    /** Uživatel chce přidávat lekci pro klienta (true, jinak přidává pro skupinu). */
     isClient?: boolean
+    /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
     object: ClientType | GroupType | null
+    /** Výběr objektu (klient/skupina) je hotový (true). */
     modalSelectDone: boolean
+    /** Výchozí hodnoty pro lekci. */
     defaultValuesForLecture: DefaultValuesForLecture
+    /** Probíhá načítání (true). */
     isLoading: boolean
 }
 
@@ -144,17 +154,17 @@ class ModalLecturesWizard extends React.Component<Props, State> {
             <>
                 <div className="ModalLecturesWizard">
                     <UncontrolledButtonDropdown
-                        direction={this.props.direction}
-                        className={this.props.className}>
+                        direction={this.props.dropdownDirection}
+                        className={this.props.dropdownClassName}>
                         <DropdownToggle
                             caret
-                            size={this.props.size}
+                            size={this.props.dropdownSize}
                             id={`ModalLecturesWizard_${this.props.date ?? ""}`}
                             color="info">
                             <FontAwesomeIcon icon={faPlus} size="lg" />
                         </DropdownToggle>
                         <UncontrolledTooltipWrapper
-                            placement={this.props.direction === "up" ? "bottom" : "top"}
+                            placement={this.props.dropdownDirection === "up" ? "bottom" : "top"}
                             target={`ModalLecturesWizard_${this.props.date ?? ""}`}>
                             {title}
                         </UncontrolledTooltipWrapper>

@@ -28,9 +28,9 @@ import { fEmptyVoid } from "../types/types"
 type Props = {
     /** Klient. */
     client: ClientType | ClientPostApiDummy
-    /** Funkce, která se zavolá při zavření formuláře. */
+    /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
     funcClose: () => boolean
-    /** Funkce, která se zavolá po úspěšném odeslání formuláře. */
+    /** Funkce, která zavře modální okno s formulářem (po úspěšně provedeném požadavku v rámci formuláře). */
     funcForceClose: (modalSubmitted?: boolean, data?: ModalClientsData) => boolean
     /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
