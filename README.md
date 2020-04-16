@@ -33,7 +33,7 @@
 </p>
 
 <p align="center">
-    <a href="https://sentry.io/uspesnyprvnacek/up-admin/">Sentry</a> · 
+    <a href="https://sentry.io/organizations/rodlukas/issues/?project=1247206">Sentry</a> · 
     <a href="https://dashboard.heroku.com/apps">Heroku</a> · 
     <a href="https://uspesnyprvnacek.slack.com/messages">Slack</a> · 
     <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> · 
