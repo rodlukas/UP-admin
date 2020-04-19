@@ -103,3 +103,5 @@ python manage.py behave --stage=ui --tags=groups
     `fast.row1.1` – od každé funkcionality se vyzkouší jeden nejdůležitější příklad reprezentující
     nejčastější použití. Tyto testy se hodí zejména pro rychlý lokální test před zapsáním změn do
     repozitáře.
+-   V souboru [MANUAL_TESTS](MANUAL_TESTS.md) je seznam oblastí a průchodů v aplikaci, které nejsou
+    pokryty automatizovanými testy.
