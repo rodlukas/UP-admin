@@ -8,7 +8,9 @@
     Web application for the project <strong><a href="https://uspesnyprvnacek.cz/">Úspěšný prvňáček</a></strong>.
 </p>
 
-_Read this in other languages: [English](README.md), [Czech](README.cs.md)._
+<p align="center">
+    <strong>Read this in other languages: <a href="README.md">English</a>, <a href="README.cs.md">Czech</a></strong>.
+</p>
 
 <p align="center">
     <a href="https://travis-ci.com/rodlukas/UP-admin"><img alt="Travis (.com)" src="https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square"></a>
@@ -149,7 +151,7 @@ Responsive JS _([TypeScript](https://www.typescriptlang.org/))_ web app, specifi
 technologies:
 
 -   [React 16](https://reactjs.org/),
--   [Bootstrap 4](https://getbootstrap.com/) (with [Reactstrap](https://reactstrap.github.io/)em),
+-   [Bootstrap 4](https://getbootstrap.com/) (with [Reactstrap](https://reactstrap.github.io/)),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/)
 -   [a další...](/frontend/package.json)

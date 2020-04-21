@@ -8,7 +8,9 @@
     Webová aplikace pro projekt <strong><a href="https://uspesnyprvnacek.cz/">Úspěšný prvňáček</a></strong>.
 </p>
 
-_Read this in other languages: [English](README.md), [Czech](README.cs.md)._
+<p align="center">
+    Read this in other languages: <strong><a href="README.md">English</a></strong>, <strong><a href="README.cd.md">Czech</a></strong>.
+</p>
 
 <p align="center">
     <a href="https://travis-ci.com/rodlukas/UP-admin"><img alt="Travis (.com)" src="https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square"></a>
