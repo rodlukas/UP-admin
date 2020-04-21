@@ -229,7 +229,7 @@ u vývojáře.
 
 ## Struktura repozitáře
 
-```bash
+```
 ├── .idea ........ nastavení pro IDE (Pycharm od Jetbrains)
 ├── admin ........ Django aplikace pro webovou aplikaci
 ├── api .......... Django aplikace pro REST API
@@ -254,7 +254,7 @@ příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spu
 Minimální požadavky na nástroje nainstalované v cílovém OS:
 
 -   [Python 3.8](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
--   [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv),
+-   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
 -   [PostgreSQL 12](https://www.postgresql.org/download/).
 

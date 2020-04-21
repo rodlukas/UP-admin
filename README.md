@@ -79,13 +79,13 @@ login data: username `test` / password `test`.
 Web application for the project **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** -- based on
 techstack React (TypeScript), Django (Python), REST API, Django REST Framework.
 
-The app was created in a **bachelors thesis at [FIT CTU](https://fit.cvut.cz/)** – see a
-[repo with text of the bachelors thesis](https://github.com/rodlukas/bachelors-thesis). Since then
+The app was created in a **bachelor's thesis at [FIT CTU](https://fit.cvut.cz/)** – see a
+[repo with text of the bachelor's thesis](https://github.com/rodlukas/bachelors-thesis). Since then
 the app is successfully used in the project [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) on a
-daily basis and is constantly extended and worked on ❤️. In 2020 within a **masters thesis at
+daily basis and is constantly extended and worked on ❤️. In 2020 within a **master's thesis at
 [FIT CTU](https://fit.cvut.cz/)** I focused on all of the existing extension of the app by new
 features, technologies and tools – see a
-[repo with text of the masters thesis](https://github.com/rodlukas/masters-thesis).
+[repo with text of the master's thesis](https://github.com/rodlukas/masters-thesis).
 
 ### Key features
 
@@ -116,7 +116,7 @@ exhaustive):
 
 ### Used technologies
 
-The app is composed of the **frontend and backend** connected with a **REST API** secured using
+The app is composed of the **frontend and backend** connected via a **REST API** secured using
 **[JWT](https://jwt.io/) authentization**. [PostgreSQL 12](https://www.postgresql.org/) is used as a
 database.
 
@@ -234,7 +234,7 @@ can be run in a local dev environment of course.
 
 ## Repository structure
 
-```bash
+```
 ├── .idea ........ IDE settings (Pycharm from Jetbrains)
 ├── admin ........ Django app for the web app
 ├── api .......... Django app for the REST API
@@ -262,7 +262,7 @@ Minimal requirements of tools available in the target OS:
 
 -   [Python 3.8](https://www.python.org/downloads/) (for specific version see
     [`Pipfile`](/Pipfile)),
--   [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv),
+-   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
 -   [PostgreSQL 12](https://www.postgresql.org/download/).
 
