@@ -68,7 +68,7 @@
 ## Demo
 
 [**Deployed demo version of the app to Heroku**](https://uspesnyprvnacek-demo.herokuapp.com/) –
-login data: username `test` / password `test`.
+credentials: username `test` / password `test`.
 
 > If an app receives no web traffic in a 30-minute period, it will sleep, after a short delay it
 > will become active again. A database in the demo version is **automatically cleaned up** and
@@ -76,10 +76,10 @@ login data: username `test` / password `test`.
 
 ## Basic description of the app
 
-Web application for the project **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** -- based on
-techstack React (TypeScript), Django (Python), REST API, Django REST Framework.
+Web application for the project **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** – based on a
+techstack: React (TypeScript), Django (Python), REST API, Django REST Framework.
 
-The app was created in a **bachelor's thesis at [FIT CTU](https://fit.cvut.cz/)** – see a
+The app has been created in a **bachelor's thesis at [FIT CTU](https://fit.cvut.cz/)** – see a
 [repo with text of the bachelor's thesis](https://github.com/rodlukas/bachelors-thesis). Since then
 the app is successfully used in the project [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) on a
 daily basis and is constantly extended and worked on ❤️. In 2020 within a **master's thesis at
@@ -89,27 +89,26 @@ features, technologies and tools – see a
 
 ### Key features
 
-In the following list there are the most important features offered by this app (the list is not
-exhaustive):
+In the following list there are the most important features offered by this app _(the list is not
+exhaustive)_:
 
--   **storing information about clients and group of clients attending the lectures of some
-    course**,
+-   **storing information about clients and groups of clients attending the lectures of courses**,
 -   **storing information about lectures of the clients and groups including the prepaid ones –
     attendance state, payment, date, time, cancellation, notes**,
--   **keeping track of the applicants for the courses**,
--   **3 views for lectures: in a card of the client/group, diary and on the main page in today's
+-   **keeping track of applicants for the courses**,
+-   **3 views for the lectures: in a card of the client/group, diary and on a main page in today's
     overview**,
 -   identifying time conflicting lectures,
 -   automatic lecture cancellation for lectures without attendants,
--   automatic creation of the prepaid alternative lecture in case of the excuse or cancellation by
-    the lecturer,
+-   automatic creation of the prepaid alternative lecture in case of the excuse or cancellation by a
+    lecturer,
 -   notification of the next lecture payment,
 -   lecture number computation with respect to clients' attendances,
 -   searching for clients (fuzzy searching)
 -   course and attendance state configuration including e.g. an intuitive course color selection,
 -   integration with the API of _Fio bank_ – on the main page there is a pretty overview of the
     latest bank transactions,
--   automatic estimation of the course, date and time for the newly added lecture,
+-   automatic estimation of the course, date and time for newly added lectures,
 -   respecting and checking all the restrictions and limitations given by the domain (e.g.
     duplications),
 -   keeping record of active and inactive clients and groups.
@@ -120,7 +119,7 @@ The app is composed of the **frontend and backend** connected via a **REST API**
 **[JWT](https://jwt.io/) authentization**. [PostgreSQL 12](https://www.postgresql.org/) is used as a
 database.
 
-> **Note:** a part of this repo is dedicated to a deployment diagram and logical data model see
+> **Note:** a part of this repo is dedicated to a deployment diagram and logical data model – see
 > [`docs/README.md`](docs).
 
 #### Backend
@@ -140,8 +139,8 @@ Django complex SQL queries are highly **optimized** (multiple times speed increa
 **[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** and its plugin
 [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
 
-**Static type checking** across the codebase based on type hints (module
-[typing](https://docs.python.org/3/library/typing.html)), checking is done by
+**Static type checking** available across the codebase based on type hints (module
+[typing](https://docs.python.org/3/library/typing.html)), the checking is done via
 **[mypy](http://mypy-lang.org/)** and [Pycharm](https://www.jetbrains.com/pycharm/). **Dead code
 elimination** is checked with **[vulture](https://github.com/jendrikseipp/vulture/)**.
 
@@ -171,16 +170,16 @@ Main tools used for the frontend development:
 The app is **resilient against JS errors** thanks to
 **[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**.
 **[`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)** are used for
-**loading speed** of the whole app.
-[Webpack DevServer](https://webpack.js.org/configuration/dev-server/) is integrated in development
+**faster loading** of the whole app.
+[Webpack DevServer](https://webpack.js.org/configuration/dev-server/) is integrated in a development
 phase with [Django](https://www.djangoproject.com/) dev server with all the related benefits
 including [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 ### Deployed apps and tools
 
 The app is deployed to **4 PaaS [Heroku](https://www.heroku.com/) environments** varying in version
-of the deployed app, database instance, debugging options and colors of the menu. Besides, the app
-can be run in a local dev environment of course.
+of the deployed app, database instance, debugging options and colors of the menu. Additionaly, the
+app can be run in a local dev environment of course.
 
 > **List of environments:**
 >
@@ -196,16 +195,16 @@ can be run in a local dev environment of course.
     [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
     [[2]](https://wsvincent.com/django-best-practices/)).
 -   [Automatic database backup](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
-    is done at 3:00 (CET) in production env.
+    is done at 3:00 (CET) in the production environment.
 -   **Automatic code formatting** with **[Black](https://github.com/psf/black)** (Python) and
-    **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), both the
-    tools are integrated with IDE and perform automatic enhancements.
--   **The app are connected to more services:**
+    **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), both these
+    tools are integrated with an IDE and perform automatic enhancements.
+-   **The apps are connected to more services:**
     -   **CI and CD** is taken care of by [Travis](https://travis-ci.com/) – automated build,
         testing and deployment to various environments, automated execution of advanced scripts for
         e.g. automated app version addition to app, tokens handling, uploading static assets
         (frontend) to GitHub release assets, integration of cloud service for measuring code
-        coverage etc.
+        coverage.
     -   **Automated continuous code analysis** including code quality measure, finding zero-days and
         preventing critical vulnerabilities is taken care of by [LGTM](https://lgtm.com/),
         [SonarCloud](https://sonarcloud.io/) and [DeepScan](https://deepscan.io/).
@@ -224,11 +223,11 @@ can be run in a local dev environment of course.
     [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
 -   Developed in IDE _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (takes
     care of automatic import optimization, automatic code formatting etc.).
--   _Complex tests of the API and UI (e2e)_ are an important part of the app, the tests are
+-   **Complex tests of the API and UI (e2e)** are an important part of the app, the tests are
     automatically run on the CI and can also be run in the local environment.
     -   Testing is built on a **BDD framework [behave](https://github.com/behave/behave)** – testing
-        scenarios are written using a natural language (Gherking), each of the test is run according
-        to them.
+        scenarios are written using a natural language (Gherking), each of the tests is run
+        according to them.
     -   **UI (e2e) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
     -   **Details about the tests are available in [`tests/README.md` (CZ)](tests)**.
 
@@ -248,19 +247,19 @@ can be run in a local dev environment of course.
 
 ## Run the app
 
-There are two modes that the app can be run on the local dev environment, the default one is the
+There are two modes that the app can be run in on the local dev environment. The default one is the
 classic dev mode – this mode includes advanced debugging tools, Django dev server and
-webpack-dev-server for frontend are run. Since there is some work with private npm registry here
+webpack-dev-server for the frontend are run. Since there is some work with private npm registry here
 (see [below](#npmpro)), the frontend cannot be built without these tokens so that the alternative
 way to run this app without these tokens is the second mode – **manual production version of the
-app**, it's also the closest one to the customer's version, this mode will be also run in this
+app**, it's also the closest one to the customer's version, this mode will also be run in this
 tutorial.
 
 ### Requirements
 
 Minimal requirements of tools available in the target OS:
 
--   [Python 3.8](https://www.python.org/downloads/) (for specific version see
+-   [Python 3.8](https://www.python.org/downloads/) (for a specific version see
     [`Pipfile`](/Pipfile)),
 -   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
@@ -319,7 +318,7 @@ Since the minimal requirements above are meet, you can follow these steps then:
     pipenv shell
     ```
 
-7.  **Prepare the Django app for run** ([skript](scripts/shell/release_tasks.sh) will set the
+7.  **Prepare the Django app for run** (the [script](scripts/shell/release_tasks.sh) will set the
     default Django settings file, prepare the static frontend files and creates a database schema):
 
     ```bash
@@ -363,7 +362,7 @@ python manage.py runserver 0.0.0.0:8000
 
 ### Testing
 
-Various tests of the app can be executed, e.g. test the API for clients:
+Various tests of the app can be executed, e.g. test of the API for clients:
 
 ```bash
 python manage.py behave --stage=api --tags=clients

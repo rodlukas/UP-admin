@@ -243,11 +243,12 @@ u vývojáře.
 
 ## Spuštění aplikace
 
-Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je klasický vývojový – ten
-obsahuje pokročilé debugovací nástroje, spouští se Django vývojový server a také webpack-dev-server
-pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro)) nelze samozřejmě bez
-příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spuštění ve druhém režimu –
-**manuální produkční verze aplikace**, tedy ta, která je nejblíže verzi u zákazníka.
+Aplikaci lze spustit na lokálním prostředí ve dvou režimech. Výchozí re6im je klasický vývojový –
+ten obsahuje pokročilé debugovací nástroje, spouští se Django vývojový server a také
+webpack-dev-server pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro))
+nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu popisovat postup
+spuštění ve druhém režimu – **manuální produkční verze aplikace**, tedy ta, která je nejblíže verzi
+u zákazníka.
 
 ### Požadavky
 
