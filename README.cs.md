@@ -101,6 +101,7 @@ V následujícím seznamu jsou nejdůležitější funkce, která aplikace posky
 -   automatické vytváření předplacených náhrad lekcí při omluvě předem/zrušení ze strany lektorky,
 -   upozornění, že má klient příště platit,
 -   výpočet pořadového čísla lekce s ohledem na účast klientů,
+-   vyhledávání klientů (fuzzy vyhledávání)
 -   konfigurace kurzů a stavů účasti včetně např. intuitivního nastavení zvolené barvy pro kurz,
 -   propojení s API _Fio banky_ – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu,
 -   automatický odhad kurzu, data a času pro nově přidávané lekce,

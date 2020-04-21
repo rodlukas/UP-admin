@@ -105,6 +105,7 @@ exhaustive):
     the lecturer,
 -   notification of the next lecture payment,
 -   lecture number computation with respect to clients' attendances,
+-   searching for clients (fuzzy searching)
 -   course and attendance state configuration including e.g. an intuitive course color selection,
 -   integration with the API of _Fio bank_ – on the main page there is a pretty overview of the
     latest bank transactions,
