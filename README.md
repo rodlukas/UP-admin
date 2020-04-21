@@ -5,8 +5,10 @@
 <h3 align="center">ÚPadmin</h1>
 
 <p align="center">
-    Webová aplikace pro projekt <strong><a href="https://uspesnyprvnacek.cz/">Úspěšný prvňáček</a></strong>.
+    Web application for the project <strong><a href="https://uspesnyprvnacek.cz/">Úspěšný prvňáček</a></strong>.
 </p>
+
+_Read this in other languages: [English](README.md), [Czech](README.cs.md)._
 
 <p align="center">
     <a href="https://travis-ci.com/rodlukas/UP-admin"><img alt="Travis (.com)" src="https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square"></a>
@@ -38,7 +40,7 @@
     <a href="https://uspesnyprvnacek.slack.com/messages">Slack</a> · 
     <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> · 
     Logentries – 
-    <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">produkce</a> / 
+    <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">production</a> / 
     <a href="https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803">staging</a> / 
     <a href="https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3">testing</a>
 </p>
@@ -46,339 +48,353 @@
 ## Obsah
 
 -   [Demo](#demo)
--   [Základní informace o aplikaci](#základní-informace-o-aplikaci)
-    -   [Klíčové funkce aplikace](#klíčové-funkce-aplikace)
-    -   [Použité technologie](#použité-technologie)
+-   [Basic description of the app](#basic-description-of-the-app)
+    -   [Key features](#key-features)
+    -   [Used technologies](#used-technologies)
         -   [Backend](#backend)
         -   [Frontend](#frontend)
-    -   [Informace o nasazených aplikacích](#informace-o-nasazených-aplikacích)
--   [Struktura repozitáře](#struktura-repozitáře)
--   [Spuštění aplikace na lokálním prostředí](#spuštění-aplikace-na-lokálním-prostředí)
-    -   [Požadavky](#požadavky)
-    -   [Instalace](#instalace)
-    -   [Spuštění](#spuštění)
-    -   [Testování](#testování)
--   [Screenshoty z aplikace](#screenshoty-z-aplikace)
+    -   [Deployed apps and tools](#deployed-apps-and-tools)
+-   [Repository structure](#repository-structure)
+-   [Run the app](#run-the-app)
+    -   [Requirements](#requirements)
+    -   [Installation](#installation)
+    -   [Run](#run)
+    -   [Testing](#testing)
+-   [Screenshots](#screenshots)
 -   [Licence](#licence)
 
 ## Demo
 
-[**Nasazená demo verze aplikace na Heroku**](https://uspesnyprvnacek-demo.herokuapp.com/) – údaje
-pro přihlášení: už. jméno `test` / heslo `test`.
+[**Deployed demo version of the app to Heroku**](https://uspesnyprvnacek-demo.herokuapp.com/) –
+login data: username `test` / password `test`.
 
-> Aplikace po 30 minutách neaktivity usíná a chvíli trvá, než se probudí. Databáze v demo verzi je
-> každou noc (2:00 UTC) **automaticky smazána** a naplněna
-> [vzorovými daty](scripts/sql/sample_data.pgsql).
+> If an app receives no web traffic in a 30-minute period, it will sleep, after a short delay it
+> will become active again. A database in the demo version is **automatically cleaned up** and
+> filled with [sample data](scripts/sql/sample_data.pgsql).
 
-## Základní informace o aplikaci
+## Basic description of the app
 
-Aplikaci jsem vytvořil v roce 2018 v rámci **bakalářské práce na FIT ČVUT** – vizte
-[repozitář s textem bakalářské práce](https://github.com/rodlukas/bachelors-thesis). Od té doby je v
-projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) denně úspěšně používána a její rozšiřování
-a práce na ní stále pokračují ❤️.
+Web application for the project **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** -- based on
+techstack React (TypeScript), Django (Python), REST API, Django REST Framework.
 
-### Klíčové funkce aplikace
+The app was created in a **bachelors thesis at [FIT CTU](https://fit.cvut.cz/)** – see a
+[repo with text of the bachelors thesis](https://github.com/rodlukas/bachelors-thesis). Since then
+the app is successfully used in the project [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) on a
+daily basis and is constantly extended and worked on ❤️. In 2020 within a **masters thesis at
+[FIT CTU](https://fit.cvut.cz/)** I focused on all of the existing extension of the app by new
+features, technologies and tools – see a
+[repo with text of the masters thesis](https://github.com/rodlukas/masters-thesis).
 
--   **evidence klientů a skupin klientů docházejících na lekce kurzů**
--   **evidence lekcí klientů a skupin včetně předplacených – stav účasti, platba, datum, čas,
-    zrušení, poznámky**
--   **evidence zájemců o kurzy**
--   **zobrazení lekcí ve 3 formách: v kartě klienta/skupiny, v diáři a na hlavní stránce v přehledu
-    pro dnešní den**
--   kontrola časových konfliktů lekcí
--   automatické rušení lekcí když nikdo nemá přijít
--   automatické vytváření předplacených náhrad lekcí při omluvě předem
--   upozornění, že má klient příště platit
--   konfigurace kurzů a stavů účasti včetně např. intuitivního nastavení zvolené barvy pro kurz
--   propojení s API _Fio banky_ – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu
--   automatický odhad kurzu pro nově přidávané lekce
--   respektování a kontrola všech omezení daných danou doménou (např. duplicity apod.)
--   automatické přidání předplacené lekce při omluvě/zrušení lekce ze strany lektorky
--   funkce pro vedení aktivních a neaktivních klientů a skupin
--   _... (výčet není konečný)_
+### Key features
 
-### Použité technologie
+In the following list there are the most important features offered by this app (the list is not
+exhaustive):
 
-Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **REST API** zabezpečené
-**[JWT](https://jwt.io/) autentizací**. Jako databáze se používá
-[PostgreSQL 12](https://www.postgresql.org/).
+-   **storing information about clients and group of clients attending the lectures of some
+    course**,
+-   **storing information about lectures of the clients and groups including the prepaid ones –
+    attendance state, payment, date, time, cancellation, notes**,
+-   **keeping track of the applicants for the courses**,
+-   **3 views for lectures: in a card of the client/group, diary and on the main page in today's
+    overview**,
+-   identifying time conflicting lectures,
+-   automatic lecture cancellation for lectures without attendants,
+-   automatic creation of the prepaid alternative lecture in case of the excuse or cancellation by
+    the lecturer,
+-   notification of the next lecture payment,
+-   lecture number computation with respect to clients' attendances,
+-   course and attendance state configuration including e.g. an intuitive course color selection,
+-   integration with the API of _Fio bank_ – on the main page there is a pretty overview of the
+    latest bank transactions,
+-   automatic estimation of the course, date and time for the newly added lecture,
+-   respecting and checking all the restrictions and limitations given by the domain (e.g.
+    duplications),
+-   keeping record of active and inactive clients and groups.
 
-> **Poznámka:** součástí repozitáře je také diagram nasazení a logický datový model – viz
+### Used technologies
+
+The app is composed of the **frontend and backend** connected with a **REST API** secured using
+**[JWT](https://jwt.io/) authentization**. [PostgreSQL 12](https://www.postgresql.org/) is used as a
+database.
+
+> **Note:** a part of this repo is dedicated to a deployment diagram and logical data model see
 > [`docs/README.md`](docs).
 
 #### Backend
 
-Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
+Includes all the logic and exposes a **REST API** for a client, built on these technologies:
 
 -   [Python 3.8](https://www.python.org/),
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
--   [a další...](/Pipfile)
+-   [and more...](/Pipfile)
 
-V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplexní SQL dotazy** (viz
-články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/),
+Django complex SQL queries are highly **optimized** (multiple times speed increase) (see articles
+[[1]](https://www.revsys.com/tidbits/django-performance-simple-things/),
 [[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
-Aplikace umožňuje **pokročilé debugování** na lokálním i vzdáleném prostředí díky
-**[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** a jeho doplňku
+**Advanced debugging** in a remote/local environment is offered thanks to
+**[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** and its plugin
 [Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
 
-Pro **statickou typovou kontrolu** se napříč celým kódem používají typové anotace s použitím modulu
-[typing](https://docs.python.org/3/library/typing.html), pro kontrolu typů se používá
-**[mypy](http://mypy-lang.org/)** a [Pycharm](https://www.jetbrains.com/pycharm/). Pro **eliminaci
-mrtvého kódu** se také používá **[vulture](https://github.com/jendrikseipp/vulture/)**.
+**Static type checking** across the codebase based on type hints (module
+[typing](https://docs.python.org/3/library/typing.html)), checking is done by
+**[mypy](http://mypy-lang.org/)** and [Pycharm](https://www.jetbrains.com/pycharm/). **Dead code
+elimination** is checked with **[vulture](https://github.com/jendrikseipp/vulture/)**.
 
 #### Frontend
 
-Responzivní JS _([TypeScript](https://www.typescriptlang.org/))_ webová aplikace typu SPA
-([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto
-technologiích:
+Responsive JS _([TypeScript](https://www.typescriptlang.org/))_ web app, specifically SPA
+([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) built on these
+technologies:
 
 -   [React 16](https://reactjs.org/),
--   [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
+-   [Bootstrap 4](https://getbootstrap.com/) (with [Reactstrap](https://reactstrap.github.io/)em),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/)
 -   [a další...](/frontend/package.json)
 
-Vývoj frontendu je postaven především na:
+Main tools used for the frontend development:
 
--   [Webpack 4](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
+-   [Webpack 4](https://webpack.js.org/) with custom configuration (local and production) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
--   [Typescript 3.8](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
--   [ESlint 6](https://eslint.org/) a [stylelint](https://stylelint.io/) – lintery pro statickou
-    analýzu kódu
--   a [React Hot Loader](https://github.com/gaearon/react-hot-loader) – pro
+-   [Typescript 3.8](https://www.typescriptlang.org/) – static type checking,
+-   [ESlint 6](https://eslint.org/) a [stylelint](https://stylelint.io/) – linters for static code
+    analysis
+-   and [React Hot Loader](https://github.com/gaearon/react-hot-loader) – for
     [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
-Aplikace je **odolná proti pádům JS** díky
-**[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**. Pro **zrychlení
-načítání** celé aplikace se používá lazy loading
-**[`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)**.
-[Webpack DevServer](https://webpack.js.org/configuration/dev-server/) je při vývoji propojený s
-[Django](https://www.djangoproject.com/) dev serverem a umožňuje tak jednoduchý vývoj bez kompromisů
-včetně [HMR](https://webpack.js.org/guides/hot-module-replacement/).
+The app is **resilient against JS errors** thanks to
+**[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**.
+**[`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)** are used for
+**loading speed** of the whole app.
+[Webpack DevServer](https://webpack.js.org/configuration/dev-server/) is integrated in development
+phase with [Django](https://www.djangoproject.com/) dev server with all the related benefits
+including [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
-### Informace o nasazených aplikacích
+### Deployed apps and tools
 
-Aplikace je nasazena do **4 prostředí na PaaS [Heroku](https://www.heroku.com/)**, které se liší
-příslušnou nasazenou verzí aplikace, konkrétní instancí databáze, umožňují různé úrovně debugování a
-kosmeticky se liší také barvou menu. Mimo to lze samozřejmě aplikaci spustit i v prostředí lokálním
-u vývojáře.
+The app is deployed to **4 PaaS [Heroku](https://www.heroku.com/) environments** varying in version
+of the deployed app, database instance, debugging options and colors of the menu. Besides, the app
+can be run in a local dev environment of course.
 
-> **Seznam prostředí:**
+> **List of environments:**
 >
-> -   **vývojové (lokální)** – pro lokální vývoj _(žluté menu)_,
-> -   **testing** – umožňuje zapnout debugování, deploy každého commitu _(modré menu)_,
-> -   **staging** – stejná verze aplikace jako na produkci, deploy při release _(zelené menu)_,
-> -   **produkce** – produkční verze používaná zákazníkem, deploy při release (jako staging) _(bílé
->     menu)_,
-> -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo verze aplikace, manuální deploy
->     z větve `demo`.
+> -   **dev (local)** – for local development _(yellow menu)_,
+> -   **testing** – debugging mode can be turned on, each commit is deployed here _(blue menu)_,
+> -   **staging** – the same version as production, deploy of the releases _(green menu)_,
+> -   **production** – production version used by a customer, deploy of the releases (like staging)
+>     _(white menu)_,
+> -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo version of the app, manual
+>     deploy from the `demo` branch.
 
--   Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz
+-   Deployed apps are **HTTPS-only** (+ advanced security protection, see
     [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
     [[2]](https://wsvincent.com/django-best-practices/)).
--   Na produkci se každý den ve 3:00 provádí
-    [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
--   Pro **automatické formátování kódů** se používá **[Black](https://github.com/psf/black)**
-    (Python) a **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD),
-    oba nástroje jsou napojené na IDE a provádějí automatické úpravy.
--   **Aplikace jsou napojené na další služby:**
-    -   **CI a CD** má na starost [Travis](https://travis-ci.com/) – automatizovaný build, testování
-        i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro
-        automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do
-        assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
-    -   **Automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání
-        potenciálních chyb a zranitelností má na starost [LGTM](https://lgtm.com/),
-        [SonarCloud](https://sonarcloud.io/) a [DeepScan](https://deepscan.io/).
-    -   **Logování** z Heroku se zasílá do [Logentries](https://logentries.com/) (logy se uchovávají
-        po 7 dnů, tříděné podle typu prostředí).
-    -   **Odchytávání chyb na backendu i frontendu** včetně následné evidence, notifikací a
-        propojení s repozitářem zařizuje [Sentry](https://sentry.io/) (tříděné podle typu prostředí,
-        aktivní na produkci, testing i staging prostředí). Při chybě na frontendu je možné poslat
-        **zpětnou vazbu vázanou ke konkrétní chybě** díky propojení Sentry a
+-   [Automatic database backup](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
+    is done at 3:00 (CET) in production env.
+-   **Automatic code formatting** with **[Black](https://github.com/psf/black)** (Python) and
+    **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), both the
+    tools are integrated with IDE and perform automatic enhancements.
+-   **The app are connected to more services:**
+    -   **CI and CD** is taken care of by [Travis](https://travis-ci.com/) – automated build,
+        testing and deployment to various environments, automated execution of advanced scripts for
+        e.g. automated app version addition to app, tokens handling, uploading static assets
+        (frontend) to GitHub release assets, integration of cloud service for measuring code
+        coverage etc.
+    -   **Automated continuous code analysis** including code quality measure, finding zero-days and
+        preventing critical vulnerabilities is taken care of by [LGTM](https://lgtm.com/),
+        [SonarCloud](https://sonarcloud.io/) and [DeepScan](https://deepscan.io/).
+    -   **Logs** from Heroku are sent to [Logentries](https://logentries.com/) (the logs are
+        retained here for 7 days, sorted according to the environment).
+    -   **Error monitoring of backend and frontend** including triage, notifications and integration
+        with the repo is taken care of by [Sentry](https://sentry.io/) (sorted according to the
+        environment, active on deployed apps). Integrated ability to collect **additional feedback
+        upon hitting an error from user** thanks to the connection of Sentry and
         [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
-    -   **Sledování chování a návštěv** umožňuje napojení na
-        [Google Analytics](https://analytics.google.com/) (díky modulu
+    -   **User flow analysis** thanks to the integration of
+        [Google Analytics](https://analytics.google.com/) (via a module
         [react-ga](https://github.com/react-ga/react-ga)).
     -   [Slack](https://slack.com/)
--   Aplikace **respektuje standardy** [PEP 8](https://pep8.org),
+-   Various **standards are enforced**: [PEP 8](https://pep8.org),
     [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
--   Kompletní vývoj aplikace probíhá v IDE
-    _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (řeší například
-    automatickou optimalizaci importů, automatické formátování kódů apod.).
--   Základ aplikace tvoří **rozsáhlé testy API i frontendu**, které se automaticky spouští na CI a
-    lze je spustit i na lokálním prostředí.
-    -   Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** –
-        testové scénáře jsou psány přirozeným jazykem, podle nich se spouští konkrétní testy.
-    -   Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
-    -   **Podrobné informace o testech jsou v [`tests/README.md`](tests)**.
+-   Developed in IDE _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (takes
+    care of automatic import optimization, automatic code formatting etc.).
+-   _Complex tests of the API and UI (e2e)_ are an important part of the app, the tests are
+    automatically run on the CI and can also be run in the local environment.
+    -   Testing is built on a **BDD framework [behave](https://github.com/behave/behave)** – testing
+        scenarios are written using a natural language (Gherking), each of the test is run according
+        to them.
+    -   **UI (e2e) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
+    -   **Details about the tests are available in [`tests/README.md` (CZ)](tests)**.
 
-## Struktura repozitáře
+## Repository structure
 
 ```bash
-├── .idea ........ nastavení pro IDE (Pycharm od Jetbrains)
-├── admin ........ Django aplikace pro samotnou webovou aplikaci
-├── api .......... Django aplikace pro API
-├── docs ......... další dokumenty a soubory k aplikaci včetně diagramů
-├── frontend ..... klientská část webové aplikace
-├── scripts ...... skripty pro CI/CD/instalaci
-├── staticfiles .. složka pro statické soubory (prázdná, přesun až na CI)
-├── tests ........ kompletní testy API i UI (frontendu)
-└── up ........... celý Django projekt
+├── .idea ........ IDE settings (Pycharm from Jetbrains)
+├── admin ........ Django app for the web app
+├── api .......... Django app for the REST API
+├── docs ......... additional docs and files for the app including diagrams
+├── frontend ..... frontend part of the web app
+├── scripts ...... scripts for the CI/CD/PaaS/installation
+├── staticfiles .. directory for static files (empty, filled on the CI)
+├── tests ........ tests of the API and UI (e2e)
+└── up ........... entire Django project
 ```
 
-## Spuštění aplikace na lokálním prostředí
+## Run the app
 
-Aplikaci lze spustit na lokálním prostředí ve dvou režimech, výchozí je klasický vývojový – ten
-obsahuje pokročilé debugovací nástroje, spouští se Django vývojový server a také webpack-dev-server
-pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro)) nelze samozřejmě bez
-příslušných tokenů sestavovat frontend, proto zde budu popisovat postup spuštění ve druhém režimu –
-**produkční verze aplikace**, tedy ta, která je nejblíže verzi u zákazníka.
+There are two modes that the app can be run on the local dev environment, the default one is the
+classic dev mode – this mode includes advanced debugging tools, Django dev server and
+webpack-dev-server for frontend are run. Since there is some work with private npm registry here
+(see [below](#npmpro)), the frontend cannot be built without these tokens so that the alternative
+way to run this app without these tokens is the second mode – **manual production version of the
+app**, it's also the closest one to the customer's version, this mode will be also run in this
+tutorial.
 
-### Požadavky
+### Requirements
 
-Pro spuštění je potřeba mít v OS nainstalováno:
+Minimal requirements of tools available in the target OS:
 
--   [Python 3.8](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
+-   [Python 3.8](https://www.python.org/downloads/) (for specific version see
+    [`Pipfile`](/Pipfile)),
 -   [Pipenv](https://docs.pipenv.org/en/latest/install/#installing-pipenv),
 -   [Git](https://git-scm.com/downloads),
 -   [PostgreSQL 12](https://www.postgresql.org/download/).
 
 <a name="npmpro">
   
-> **Poznámka:** Node.js ani NPM/Yarn nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
- přístup přes token k privátnímu npm registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
- automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů ke každému release).
+> **Note:** Node.js and NPM/Yarn are not required since the frontend cannot be built without tokens to private npm
+ registry (for [FontAwesome PRO](https://fontawesome.com/)). Instead of this we'll use automatically generated assets 
+ of the latest production version from the CI.
  
 </a>
 
-### Instalace
+### Installation
 
-Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci.
+Since the minimal requirements above are meet, you can follow these steps then:
 
-1.  Nejdříve **naklonujeme repozitář**, otevřeme jeho složku a nahrajeme si **poslední produkční
-    verzi** repozitáře:
+1.  **Clone the repo**, open its folder and download **the latest production version** of the repo:
 
     ```bash
     git clone "https://github.com/rodlukas/UP-admin.git" && cd UP-admin
     git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
     ```
 
-2.  Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je
-    přímo do repozitáře (a `frontend.zip` smažeme):
+2.  Download the **prepared assets for the frontend** from the latest production version and
+    **unzip** them to the repo (and remove the `frontend.zip`):
 
     ```bash
     wget https://github.com/rodlukas/UP-admin/releases/latest/download/frontend.zip
     unzip frontend.zip && rm frontend.zip
     ```
 
-3.  **Přejmenujeme vzorový konfigurační soubor `.env.template`** v kořenovém adresáři na **`.env`**:
+3.  **Rename the sample config file `.env.template`** in the root to **`.env`**:
 
     ```bash
     mv .env.template .env
     ```
 
-4.  Pomocí **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **vytvoříme
-    databázi a uživatele** pro přístup do databáze:
+4.  Using the **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **we'll create
+    the database and user** for the access to the database:
 
     ```bash
     sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
     ```
 
-5.  Nahrajeme **český balíček pro databázi** (kvůli českému řazení podle abecedy):
+5.  Download a **czech language pack for the database** (for czech alphabetic ordering):
 
     ```bash
     source scripts/shell/postgresql_cs.sh
     ```
 
-6.  Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu:
+6.  Install all the **backend requirements** and activate a virtual Python environment:
 
     ```bash
     pipenv install --dev
     pipenv shell
     ```
 
-7.  **Připravíme celou Django aplikaci na spuštění** ([skript](scripts/shell/release_tasks.sh)
-    nastaví výchozí soubor s nastavením Djanga, připraví statické soubory frontendu pro nasazení a
-    vytvoří databázové schéma):
+7.  **Prepare the Django app for run** ([skript](scripts/shell/release_tasks.sh) will set the
+    default Django settings file, prepare the static frontend files and creates a database schema):
 
     ```bash
     source scripts/shell/release_tasks.sh
     ```
 
-8.  A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se
-    poté budeme přihlašovat):
+8.  Create an **user account for accessing the database** (choose some credentials that will be used
+    for the login later):
 
     ```bash
     python manage.py createsuperuser
     ```
 
-9.  💡 _(NEPOVINNÉ)_ Na závěr můžeme ještě **naplnit naší databázi
-    [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql)**, která ukážou fungování
-    aplikace a usnadní první použití (obsahují několik klientů, skupin, lekcí, zájemců, kurzů a
-    stavů účasti) – po zadání příkazu je vyžadováno heslo databázového uživatele `up`, které jsme
-    nastavili taktéž `up`:
+9.  💡 _(OPTIONAL)_ Finally you can also **fill the database with some
+    [prepared sample data](scripts/sql/sample_data.pgsql)** that show some great features of the app
+    out of the box and make the first experience enjoyable (the sample data includes some clients,
+    groups, lectures, applicants, courses and attendance states) – this script will require you to
+    authenticate using the database credentials above (user `up` with the password `up`):
 
     ```bash
     psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
     ```
 
-### Spuštění
+### Run
 
-**Spustíme vývojový server** 🚀:
+**Run the dev server** 🚀:
 
 ```bash
 python manage.py runserver 0.0.0.0:8000
 ```
 
-**✅ Aplikace je nyní dostupná na adrese <http://localhost:8000/>.**
+**✅ The app is now available at <http://localhost:8000/>.**
 
-> **Poznámka: otevření aplikace na jiném zařízení v síti** – aplikace je připravena pro použití i z
-> dalších zařízeních v síti (např. z mobilního telefonu), obvykle je potřeba provést tyto 2 kroky:
+> **Note: access the app from devices on the same network** – the app is ready for use from other
+> network devices (e.g. smartphone), usually there are two steps required to make this happen:
 >
-> 1.  povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
-> 2.  na mobilním zařízení zadat hostname nebo privátní IP adresu počítače, na kterém běží server.
+> 1.  allow Python and Node.js in a firewall (e.g. activate an interactive mode for ESET for a
+>     while),
+> 2.  type the hostname or private IP address of the computer running the server to your portable
+>     device.
 
-### Testování
+### Testing
 
-Můžeme také snadno spustit různé testy aplikace, například otestovat, jestli správně funguje API pro
-klienty:
+Various tests of the app can be executed, e.g. test the API for clients:
 
 ```bash
 python manage.py behave --stage=api --tags=clients
 ```
 
-Aplikace obsahuje **rozsáhlé API a UI testy** – vizte
-[podrobné informace o testech a možnostech spouštění](tests).
+The repo contains **complex tests of the API and UI (e2e)** – see the
+[details about the tests and executing options (CZ)](tests).
 
-## Screenshoty z aplikace
+## Screenshots
 
-> **Poznámka:** údaje v aplikaci jsou smyšlené.
+> **Note:** personal details are fictitious.
 
-### Diář
+### Diary
 
-[![screenshot z diáře](docs/screenshots/diary.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
+[![screenshot from the diary](docs/screenshots/diary.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
 
-### Přehled (hlavní stránka)
+### Dashboard (main page)
 
-[![screenshot z přehledu](docs/screenshots/dashboard.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png)
+[![screenshot from the dashboard](docs/screenshots/dashboard.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png)
 
-### Karta klienta
+### Client's card
 
-[![screenshot z karty klienta](docs/screenshots/card.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card.png)
+[![screenshot from the client's card](docs/screenshots/card.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card.png)
 
-### Zájemci o kurzy
+### Applications for courses
 
-[![screenshot ze zájemců o kurzy](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png)
+[![screenshot from the applications for course](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png)
 
-### Nastavení
+### Settings
 
-[![screenshot z nastavení](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
+[![screenshot from the settings](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
 
 ## Licence
 
-Licencováno pod [MIT](LICENSE).
+Licenced under the [MIT](LICENSE) licence.
 
 Copyright (c) 2020 [Lukáš Rod](https://lukasrod.cz/)
