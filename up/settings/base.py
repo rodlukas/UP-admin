@@ -14,17 +14,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # env promenne
 env = environ.Env(
     # nastaveni typu a pripadne vychozi hodnoty
-    DATABASE_URL=str,  # url pouzivane DB (napr. postgresql://postgres:postgres@localhost:5432/up)
-    SECRET_KEY=str,  # tajny klic pro Django
-    FIO_API_KEY=(str, ""),  # token pro pristup do Fia
-    DEBUG=(bool, False),  # aktivace debug prostredi
-    HEROKU=(bool, False),  # priznak nasazeni aplikace na Heroku
-    ENVIRONMENT=str,  # nazev aktualniho prostredi, kde je aplikace spustena (pro Sentry)
-    SENTRY_DSN=str,  # DSN klic pro Sentry
-    MANUAL_PRODUCTION=(bool, False),  # pro simulaci produkcni verze nastavit: True
     BANK_ACTIVE=(bool, True),  # aktivace propojeni s bankou
-    TESTS_RUNNING=(bool, False),  # indikace bezicich testu
+    BANK_RENT_PRICE=(int, 0),  # vyse najmu (v Kc)
+    DATABASE_URL=str,  # url pouzivane DB (napr. postgresql://postgres:postgres@localhost:5432/up)
+    DEBUG=(bool, False),  # aktivace debug prostredi
+    ENVIRONMENT=str,  # nazev aktualniho prostredi, kde je aplikace spustena (pro Sentry)
+    FIO_API_KEY=(str, ""),  # token pro pristup do Fia
     HEADLESS=(bool, True),  # indikace headless mode pro testy UI
+    HEROKU=(bool, False),  # priznak nasazeni aplikace na Heroku
+    MANUAL_PRODUCTION=(bool, False),  # pro simulaci produkcni verze nastavit: True
+    SECRET_KEY=str,  # tajny klic pro Django
+    SENTRY_DSN=str,  # DSN klic pro Sentry
+    TESTS_RUNNING=(bool, False),  # indikace bezicich testu
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
@@ -35,12 +36,13 @@ CONST_DB_CON_AGE = 600
 
 # vlastni konstanty nactene z prostredi/souboru
 BANK_ACTIVE = env("BANK_ACTIVE")
+BANK_RENT_PRICE = env("BANK_RENT_PRICE")
 ENVIRONMENT = env("ENVIRONMENT")
 FIO_API_KEY = env("FIO_API_KEY")
+HEADLESS = env("HEADLESS")
 HEROKU = env("HEROKU")
 MANUAL_PRODUCTION = env("MANUAL_PRODUCTION")
 SENTRY_DSN = env("SENTRY_DSN")
-HEADLESS = env("HEADLESS")
 # osetreni pro bezici testy - rozpoznani spusteni z radky/promenna prostredi (kvuli IDE)
 TESTS_RUNNING = env("TESTS_RUNNING") or (len(sys.argv) > 1 and sys.argv[1] in ["test", "behave"])
 

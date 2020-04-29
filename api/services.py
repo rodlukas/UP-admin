@@ -18,8 +18,6 @@ class Bank:
     FIO_API_URL = "https://www.fio.cz/ib_api/rest/"
     # minimalni zustatek v Kc na Fio uctu (odcita se od aktualniho zustatku)
     FIO_MIN_BALANCE = 100
-    # vyse najmu (v Kc)
-    BANK_RENT_PRICE = 3653
     # mozne chyby na Fio API a prislusne chybove hlasky
     FIO_API_ERRORS = {
         status.HTTP_409_CONFLICT: "překročení intervalu pro dotazování",
@@ -84,7 +82,7 @@ class Bank:
         # pridani timestamp dotazu (s prevodem na milisekundy)
         output_data["fetch_timestamp"] = int(datetime.now().timestamp() * 1000)
         # pridani vyse najmu (Kc)
-        output_data["rent_price"] = self.BANK_RENT_PRICE
+        output_data["rent_price"] = settings.BANK_RENT_PRICE
         # odstraneni nepotrebnych polozek z info o uctu
         info_remove = ["yearList", "idList", "idFrom", "idTo", "idLastDownload"]
         for key in info_remove:
