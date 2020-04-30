@@ -111,7 +111,7 @@ export default class Bank extends React.PureComponent<{}, State> {
     render(): React.ReactNode {
         const balance = this.state.bankDataApi.accountStatement.info.closingBalance
         const RENT_PRICE = this.state.bankDataApi.rent_price
-        const isLackOfMoney = balance && RENT_PRICE && balance < RENT_PRICE
+        const isLackOfMoney = balance && RENT_PRICE !== null && balance < RENT_PRICE
         return (
             <ListGroup className="pageContent">
                 <ListGroupItem color={isLackOfMoney ? "danger" : "success"}>
@@ -126,7 +126,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                         ) : (
                             "načítání"
                         )}{" "}
-                        {isLackOfMoney && RENT_PRICE && (
+                        {isLackOfMoney && RENT_PRICE !== null && (
                             <>
                                 <UncontrolledTooltipWrapper target="Bank_RentWarning">
                                     Na účtu není dostatek peněz (alespoň{" "}
