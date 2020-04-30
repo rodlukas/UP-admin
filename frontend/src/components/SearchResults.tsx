@@ -1,3 +1,4 @@
+import Fuse from "fuse.js"
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
@@ -13,7 +14,7 @@ import Loading from "./Loading"
 
 type Props = {
     /** Výsledky vyhledávání klientů. */
-    foundResults: Array<ClientActiveType>
+    foundResults: Array<Fuse.FuseResult<ClientActiveType>>
     /** Vyhledávaný výraz. */
     searchVal: string
     /** Funkce pro zahájení vyhledávání klientů. */
@@ -47,34 +48,32 @@ const SearchResults: React.FC<Props> = ({ foundResults, searchVal, search, reset
                             <Loading />
                         ) : (
                             <>
-                                {foundResults.map((client) => (
-                                    <ListGroupItem key={client.id}>
+                                {foundResults.map(({ item }) => (
+                                    <ListGroupItem key={item.id}>
                                         <Row className="align-items-center">
                                             {" "}
                                             <Col md="6">
                                                 <h5 className="mb-0 d-inline-block">
-                                                    <ClientName client={client} link />
+                                                    <ClientName client={item} link />
                                                 </h5>
-                                                {client.note !== "" && (
+                                                {item.note !== "" && (
                                                     <span className="text-secondary">
                                                         {" "}
-                                                        &ndash; {client.note}
+                                                        &ndash; {item.note}
                                                     </span>
                                                 )}
                                             </Col>
                                             <Col md="2">
-                                                {client.phone && (
-                                                    <ClientPhone phone={client.phone} icon />
+                                                {item.phone && (
+                                                    <ClientPhone phone={item.phone} icon />
                                                 )}
                                             </Col>
                                             <Col md="3">
-                                                {client.email && (
-                                                    <ClientEmail email={client.email} />
-                                                )}
+                                                {item.email && <ClientEmail email={item.email} />}
                                             </Col>
                                             <Col className="text-right mt-1 mt-md-0" md="1">
                                                 <ModalClients
-                                                    currentClient={client}
+                                                    currentClient={item}
                                                     refresh={search}
                                                 />
                                             </Col>

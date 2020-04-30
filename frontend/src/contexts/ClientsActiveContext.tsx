@@ -1,6 +1,6 @@
 import * as React from "react"
 import ClientService, { ListWithActiveClients } from "../api/services/ClientService"
-import { clientName, noop } from "../global/utils"
+import { noop } from "../global/utils"
 import { ClientActiveType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
@@ -46,10 +46,13 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
 
     loadClients = (): Promise<ListWithActiveClients> => {
         return ClientService.getActive().then((clients) => {
-            // pridani klice se zjednodusenym jmenem klienta
+            // pridani klice s krestnim jmenem a prijmenim klienta bez diakritiky
             return clients.map((client) => ({
                 ...client,
-                normalized: [clientName(client), this.removeSpecialCharacters(clientName(client))],
+                normalized: [
+                    this.removeSpecialCharacters(client.firstname),
+                    this.removeSpecialCharacters(client.surname),
+                ],
             }))
         })
     }

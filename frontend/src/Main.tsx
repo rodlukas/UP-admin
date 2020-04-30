@@ -1,4 +1,4 @@
-import * as Fuse from "fuse.js"
+import Fuse from "fuse.js"
 import * as React from "react"
 import { NavLink as RouterNavLink, Switch, useLocation } from "react-router-dom"
 import { toast, ToastContainer } from "react-toastify"
@@ -31,19 +31,19 @@ const Clients = React.lazy(() => lazySafe(() => import("./pages/Clients")))
 const Card = React.lazy(() => lazySafe(() => import("./pages/Card")))
 const Diary = React.lazy(() => lazySafe(() => import("./pages/Diary")))
 
-// konfigurace Fuse vyhledavani
-const searchOptions: Fuse.FuseOptions<ClientActiveType> = {
+// konfigurace Fuse.js vyhledavani
+const searchOptions: Fuse.IFuseOptions<ClientActiveType> = {
     shouldSort: true,
     threshold: 0.5,
-    tokenize: true,
-    matchAllTokens: true,
-    keys: ["normalized", "phone", "email"],
+    keys: ["firstname", "surname", "phone", "email", "normalized"],
 }
 
 /** Hlavní kostra aplikace. */
 const Main: React.FC = () => {
     const [isMenuOpened, setIsMenuOpened] = React.useState(false)
-    const [foundResults, setFoundResults] = React.useState<Array<ClientActiveType>>([])
+    const [foundResults, setFoundResults] = React.useState<
+        Array<Fuse.FuseResult<ClientActiveType>>
+    >([])
     const [searchVal, setSearchVal] = React.useState("")
     const authContext = React.useContext(AuthContext)
     const clientsActiveContext = React.useContext(ClientsActiveContext)
@@ -52,9 +52,7 @@ const Main: React.FC = () => {
 
     const search = React.useCallback(() => {
         if (searchVal !== "" && clientsActiveContext.isLoaded) {
-            const results = new Fuse(clientsActiveContext.clients, searchOptions).search(
-                searchVal
-            ) as Array<ClientActiveType>
+            const results = new Fuse(clientsActiveContext.clients, searchOptions).search(searchVal)
             setFoundResults(results)
         }
     }, [searchVal, clientsActiveContext.clients, clientsActiveContext.isLoaded])
