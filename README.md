@@ -83,7 +83,7 @@ The app has been created in a **bachelor's thesis at [FIT CTU](https://fit.cvut.
 [repo with text of the bachelor's thesis](https://github.com/rodlukas/bachelors-thesis). Since then
 the app is successfully used in the project [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) on a
 daily basis and is constantly extended and worked on ❤️. In 2020 within a **master's thesis at
-[FIT CTU](https://fit.cvut.cz/)** I focused on all of the existing extension of the app by new
+[FIT CTU](https://fit.cvut.cz/)** I focused on all of the existing extensions of the app by new
 features, technologies and tools – see a
 [repo with text of the master's thesis](https://github.com/rodlukas/masters-thesis).
 
