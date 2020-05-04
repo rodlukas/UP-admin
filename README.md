@@ -80,12 +80,12 @@ Web application for the project **[Úspěšný prvňáček](https://uspesnyprvna
 techstack: React (TypeScript), Django (Python), REST API, Django REST Framework.
 
 The app has been created in a **bachelor's thesis at [FIT CTU](https://fit.cvut.cz/)** – see a
-[repo with text of the bachelor's thesis](https://github.com/rodlukas/bachelors-thesis). Since then
-the app is successfully used in the project [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) on a
-daily basis and is constantly extended and worked on ❤️. In 2020 within a **master's thesis at
-[FIT CTU](https://fit.cvut.cz/)** I focused on all of the existing extensions of the app by new
+[repo with the text of the bachelor's thesis](https://github.com/rodlukas/bachelors-thesis). Since
+then, the app is successfully used in the project [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) on
+a daily basis and is constantly extended and worked on ❤️. In 2020 within a **master's thesis at
+[FIT CTU](https://fit.cvut.cz/)**, I focused on all of the existing extensions of the app by new
 features, technologies and tools – see a
-[repo with text of the master's thesis](https://github.com/rodlukas/masters-thesis).
+[repo with the text of the master's thesis](https://github.com/rodlukas/masters-thesis).
 
 ### Key features
 
@@ -96,7 +96,7 @@ exhaustive)_:
 -   **storing information about lectures of the clients and groups including the prepaid ones –
     attendance state, payment, date, time, cancellation, notes**,
 -   **keeping track of applicants for the courses**,
--   **3 views for the lectures: in a card of the client/group, diary and on a main page in today's
+-   **3 views for the lectures: in a card of the client/group, diary and on the main page in today's
     overview**,
 -   identifying time conflicting lectures,
 -   automatic lecture cancellation for lectures without attendants,
@@ -111,12 +111,12 @@ exhaustive)_:
 -   automatic estimation of the course, date and time for newly added lectures,
 -   respecting and checking all the restrictions and limitations given by the domain (e.g.
     duplications),
--   keeping record of active and inactive clients and groups.
+-   keeping records of active and inactive clients and groups.
 
 ### Used technologies
 
 The app is composed of the **frontend and backend** connected via a **REST API** secured using
-**[JWT](https://jwt.io/) authentization**. [PostgreSQL 12](https://www.postgresql.org/) is used as a
+**[JWT](https://jwt.io/) authentication**. [PostgreSQL 12](https://www.postgresql.org/) is used as a
 database.
 
 > **Note:** a part of this repo is dedicated to a deployment diagram and logical data model – see
@@ -177,9 +177,9 @@ including [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 ### Deployed apps and tools
 
-The app is deployed to **4 PaaS [Heroku](https://www.heroku.com/) environments** varying in version
-of the deployed app, database instance, debugging options and colors of the menu. Additionaly, the
-app can be run in a local dev environment of course.
+The app is deployed to **4 PaaS [Heroku](https://www.heroku.com/) environments** varying in a
+version of the deployed app, database instance, debugging options and colors of the menu.
+Additionally, the app can be run in a local dev environment, of course.
 
 > **List of environments:**
 >
@@ -226,8 +226,8 @@ app can be run in a local dev environment of course.
 -   **Complex tests of the API and UI (e2e)** are an important part of the app, the tests are
     automatically run on the CI and can also be run in the local environment.
     -   Testing is built on a **BDD framework [behave](https://github.com/behave/behave)** – testing
-        scenarios are written using a natural language (Gherking), each of the tests is run
-        according to them.
+        scenarios are written using a natural language (Gherkin), each of the tests is run according
+        to them.
     -   **UI (e2e) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
     -   **Details about the tests are available in [`tests/README.md` (CZ)](tests)**.
 
@@ -257,7 +257,7 @@ tutorial.
 
 ### Requirements
 
-Minimal requirements of tools available in the target OS:
+Minimum requirements of tools available in the target OS:
 
 -   [Python 3.8](https://www.python.org/downloads/) (for a specific version see
     [`Pipfile`](/Pipfile)),
@@ -275,7 +275,7 @@ Minimal requirements of tools available in the target OS:
 
 ### Installation
 
-Since the minimal requirements above are meet, you can follow these steps then:
+Since the minimum requirements above are met, you can follow these steps then:
 
 1.  **Clone the repo**, open its folder and download **the latest production version** of the repo:
 
@@ -305,7 +305,7 @@ Since the minimal requirements above are meet, you can follow these steps then:
     sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
     ```
 
-5.  Download a **czech language pack for the database** (for czech alphabetic ordering):
+5.  Download a **Czech language pack for the database** (for Czech alphabetic ordering):
 
     ```bash
     source scripts/shell/postgresql_cs.sh
@@ -318,21 +318,21 @@ Since the minimal requirements above are meet, you can follow these steps then:
     pipenv shell
     ```
 
-7.  **Prepare the Django app for run** (the [script](scripts/shell/release_tasks.sh) will set the
+7.  **Prepare the Django app for a run** (the [script](scripts/shell/release_tasks.sh) will set the
     default Django settings file, prepare the static frontend files and creates a database schema):
 
     ```bash
     source scripts/shell/release_tasks.sh
     ```
 
-8.  Create an **user account for accessing the database** (choose some credentials that will be used
+8.  Create a **user account for accessing the database** (choose some credentials that will be used
     for the login later):
 
     ```bash
     python manage.py createsuperuser
     ```
 
-9.  💡 _(OPTIONAL)_ Finally you can also **fill the database with some
+9.  💡 _(OPTIONAL)_ Finally, you can also **fill the database with some
     [prepared sample data](scripts/sql/sample_data.pgsql)** that show some great features of the app
     out of the box and make the first experience enjoyable (the sample data includes some clients,
     groups, lectures, applicants, courses and attendance states) – this script will require you to
