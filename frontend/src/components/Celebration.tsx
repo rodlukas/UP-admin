@@ -1,5 +1,6 @@
 import * as React from "react"
 import { USER_CELEBRATION } from "../global/constants"
+import "./Celebration.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
@@ -19,7 +20,7 @@ const Celebration: React.FC<Props> = ({ isUserCelebratingResult }) => {
                 {isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozeninám" : "svátku"}!
                 😍
             </UncontrolledTooltipWrapper>
-            <span id="Celebration" role="img" aria-label="Konfety">
+            <span id="Celebration" role="img" aria-label="Konfety" className="Celebration">
                 🎉
             </span>
         </>
