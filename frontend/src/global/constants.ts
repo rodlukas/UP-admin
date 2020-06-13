@@ -14,7 +14,7 @@ export const EDIT_TYPE = Object.freeze({
 })
 
 /** Prefix hlavičky s JWT tokenem. */
-export const JWT_HEADER_PREFIX = "Bearer "
+export const JWT_HEADER_PREFIX = "Bearer " // lgtm [js/hardcoded-credentials]
 
 /** Texty používané napříč aplikací. */
 export const TEXTS = Object.freeze({
