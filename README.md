@@ -76,8 +76,9 @@ credentials: username `test` / password `test`.
 
 ## Basic description of the app
 
-Web application for the project **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** – based on a
-techstack: React (TypeScript), Django (Python), REST API, Django REST Framework.
+Web application for the project **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** (check out
+[it's website](https://uspesnyprvnacek.cz/), also my work) – based on a techstack: React
+(TypeScript), Django (Python), REST API, Django REST Framework.
 
 The app has been created in a **bachelor's thesis at [FIT CTU](https://fit.cvut.cz/)** – see a
 [repo with the text of the bachelor's thesis](https://github.com/rodlukas/bachelors-thesis). Since
