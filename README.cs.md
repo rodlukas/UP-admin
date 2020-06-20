@@ -77,7 +77,7 @@ pro přihlášení: už. jméno `test` / heslo `test`.
 ## Základní informace o aplikaci
 
 Webová aplikace pro projekt **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** (mrkněte na
-[jeho stránky](https://uspesnyprvnacek.cz/), také pochází z mé tvorby) -- založená na technologiích
+[jeho stránky](https://uspesnyprvnacek.cz/), také pochází z mé tvorby) – založená na technologiích
 React (TypeScript), Django (Python), REST API, Django REST Framework.
 
 Aplikaci jsem vytvořil v roce 2018 jako **bakalářskou práci na [FIT ČVUT](https://fit.cvut.cz/cs)**
