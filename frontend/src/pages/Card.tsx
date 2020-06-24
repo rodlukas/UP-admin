@@ -224,20 +224,19 @@ class Card extends React.Component<Props, State> {
             <>
                 <Container>
                     <Heading
-                        content={
+                        title={
                             <>
-                                <BackButton onClick={this.goBack} />{" "}
                                 {`Karta ${this.isClientPage() ? "klienta" : "skupiny"}`}:{" "}
                                 {this.isClient(object) ? (
                                     <ClientName client={object} bold />
                                 ) : (
                                     object && <GroupName group={object} bold />
                                 )}
-                                <ModalLectures
-                                    defaultValuesForLecture={defaultValuesForLecture}
-                                    object={object}
-                                    refresh={this.refreshAfterLectureChanges}
-                                />
+                            </>
+                        }
+                        buttons={
+                            <>
+                                <BackButton onClick={this.goBack} />
                                 {this.isClient(object) ? (
                                     <ModalClients
                                         currentClient={object}
@@ -251,137 +250,130 @@ class Card extends React.Component<Props, State> {
                                         />
                                     )
                                 )}
+                                <ModalLectures
+                                    defaultValuesForLecture={defaultValuesForLecture}
+                                    object={object}
+                                    refresh={this.refreshAfterLectureChanges}
+                                />
                             </>
                         }
                     />
                 </Container>
                 {pendingLoadingCnt === 0 && this.props.attendanceStatesContext.isLoaded ? (
-                    <div className="pageContent">
-                        <Container fluid>
-                            <Row className="justify-content-center">
-                                <Col sm="9" md="7" lg="5" xl="3">
-                                    {object && !object.active && (
-                                        <Alert color="warning">
-                                            {this.isClient(object)
-                                                ? TEXTS.WARNING_INACTIVE_CLIENT
-                                                : TEXTS.WARNING_INACTIVE_GROUP}
-                                        </Alert>
-                                    )}
+                    <Container>
+                        <div className="CardInfo">
+                            {object && !object.active && (
+                                <Alert color="warning" className="mt-0">
+                                    {this.isClient(object)
+                                        ? TEXTS.WARNING_INACTIVE_CLIENT
+                                        : TEXTS.WARNING_INACTIVE_GROUP}
+                                </Alert>
+                            )}
+                            {this.isClient(object) && (
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        <b>Telefon:</b> <ClientPhone phone={object.phone} />
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>E-mail:</b> <ClientEmail email={object.email} />
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>Skupiny:</b> <GroupsList groups={groupsOfClient} />
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>Poznámka:</b> <ClientNote note={object.note} />
+                                    </ListGroupItem>
+                                </ListGroup>
+                            )}
+                        </div>
+                        {this.isGroup(object) && (
+                            <PrepaidCounters
+                                isGroupActive={object.active}
+                                memberships={object.memberships}
+                                funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}
+                            />
+                        )}
+                        <h2>Lekce</h2>
+                        <Row className="justify-content-center">
+                            {lectures.map((courseLectures) => (
+                                <Col
+                                    key={courseLectures.course.id}
+                                    sm="10"
+                                    md="8"
+                                    lg="6"
+                                    xl={this.isGroup(object) ? 5 : 4}
+                                    data-qa="card_course">
                                     <ListGroup>
-                                        {this.isClient(object) && (
-                                            <>
-                                                <ListGroupItem>
-                                                    <b>Telefon:</b>{" "}
-                                                    <ClientPhone phone={object.phone} />
+                                        <ListGroupItem
+                                            style={{ background: courseLectures.course.color }}>
+                                            <h4
+                                                className="text-center mb-0 Card_courseHeading"
+                                                data-qa="card_course_name">
+                                                {courseLectures.course.name}
+                                            </h4>
+                                        </ListGroupItem>
+                                        {courseLectures.objects.map((lecture) => {
+                                            // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
+                                            const date = new Date(lecture.start ?? 0)
+                                            let className = lecture.canceled
+                                                ? "lecture-canceled"
+                                                : ""
+                                            if (date > new Date(Date.now())) {
+                                                className += " lecture-future"
+                                            }
+                                            if (lecture.start === null) {
+                                                className += " lecture-prepaid"
+                                            }
+                                            return (
+                                                <ListGroupItem
+                                                    key={lecture.id}
+                                                    className={`${className} lecture lecture_card`}
+                                                    data-qa="lecture">
+                                                    <div className="lecture_heading">
+                                                        <h4>
+                                                            <span
+                                                                data-qa="lecture_start"
+                                                                id={`Card_CourseDuration_${lecture.id}`}>
+                                                                {lecture.start !== null
+                                                                    ? `${prettyDateWithDayYear(
+                                                                          date
+                                                                      )} – ${prettyTime(date)}`
+                                                                    : "Předplacená lekce"}
+                                                            </span>
+                                                            <UncontrolledTooltipWrapper
+                                                                target={`Card_CourseDuration_${lecture.id}`}>
+                                                                {courseDuration(lecture.duration)}
+                                                            </UncontrolledTooltipWrapper>
+                                                        </h4>
+                                                        <LectureNumber lecture={lecture} />
+                                                        <ModalLectures
+                                                            object={object}
+                                                            currentLecture={lecture}
+                                                            refresh={
+                                                                this.refreshAfterLectureChanges
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="lecture_content">
+                                                        <Attendances
+                                                            lecture={lecture}
+                                                            funcRefresh={
+                                                                this.refreshAfterLectureChanges
+                                                            }
+                                                            showClient={this.isGroup(object)}
+                                                        />
+                                                    </div>
                                                 </ListGroupItem>
-                                                <ListGroupItem>
-                                                    <b>E-mail:</b>{" "}
-                                                    <ClientEmail email={object.email} />
-                                                </ListGroupItem>
-                                                <ListGroupItem>
-                                                    <b>Skupiny:</b>{" "}
-                                                    <GroupsList groups={groupsOfClient} />
-                                                </ListGroupItem>
-                                                <ListGroupItem>
-                                                    <b>Poznámka:</b>{" "}
-                                                    <ClientNote note={object.note} />
-                                                </ListGroupItem>
-                                            </>
-                                        )}
+                                            )
+                                        })}
                                     </ListGroup>
                                 </Col>
-                            </Row>
-                            {this.isGroup(object) && (
-                                <PrepaidCounters
-                                    isGroupActive={object.active}
-                                    memberships={object.memberships}
-                                    funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}
-                                />
+                            ))}
+                            {lectures.length === 0 && (
+                                <p className="text-muted text-center">Žádné lekce</p>
                             )}
-                            <br />
-                            <Row className="justify-content-center">
-                                {lectures.map((courseLectures) => (
-                                    <Col
-                                        key={courseLectures.course.id}
-                                        sm="9"
-                                        md="7"
-                                        lg="5"
-                                        xl="3"
-                                        data-qa="card_course">
-                                        <ListGroup>
-                                            <ListGroupItem
-                                                style={{ background: courseLectures.course.color }}>
-                                                <h4
-                                                    className="text-center mb-0 Card_courseHeading"
-                                                    data-qa="card_course_name">
-                                                    {courseLectures.course.name}
-                                                </h4>
-                                            </ListGroupItem>
-                                            {courseLectures.objects.map((lecture) => {
-                                                // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
-                                                const date = new Date(lecture.start ?? 0)
-                                                let className = lecture.canceled
-                                                    ? "lecture-canceled"
-                                                    : ""
-                                                if (date > new Date(Date.now())) {
-                                                    className += " lecture-future"
-                                                }
-                                                if (lecture.start === null) {
-                                                    className += " lecture-prepaid"
-                                                }
-                                                return (
-                                                    <ListGroupItem
-                                                        key={lecture.id}
-                                                        className={`${className} lecture lecture_card`}
-                                                        data-qa="lecture">
-                                                        <div className="lecture_heading">
-                                                            <h4>
-                                                                <span
-                                                                    data-qa="lecture_start"
-                                                                    id={`Card_CourseDuration_${lecture.id}`}>
-                                                                    {lecture.start !== null
-                                                                        ? `${prettyDateWithDayYear(
-                                                                              date
-                                                                          )} – ${prettyTime(date)}`
-                                                                        : "Předplacená lekce"}
-                                                                </span>
-                                                                <UncontrolledTooltipWrapper
-                                                                    target={`Card_CourseDuration_${lecture.id}`}>
-                                                                    {courseDuration(
-                                                                        lecture.duration
-                                                                    )}
-                                                                </UncontrolledTooltipWrapper>
-                                                            </h4>
-                                                            <LectureNumber lecture={lecture} />
-                                                            <ModalLectures
-                                                                object={object}
-                                                                currentLecture={lecture}
-                                                                refresh={
-                                                                    this.refreshAfterLectureChanges
-                                                                }
-                                                            />
-                                                        </div>
-                                                        <div className="lecture_content">
-                                                            <Attendances
-                                                                lecture={lecture}
-                                                                funcRefresh={
-                                                                    this.refreshAfterLectureChanges
-                                                                }
-                                                                showClient={this.isGroup(object)}
-                                                            />
-                                                        </div>
-                                                    </ListGroupItem>
-                                                )
-                                            })}
-                                        </ListGroup>
-                                    </Col>
-                                ))}
-                                {lectures.length === 0 && (
-                                    <p className="text-muted text-center">Žádné lekce</p>
-                                )}
-                            </Row>
-                        </Container>
-                    </div>
+                        </Row>
+                    </Container>
                 ) : (
                     <Loading />
                 )}

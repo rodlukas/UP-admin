@@ -1,3 +1,5 @@
+import { faSackDollar } from "@fortawesome/pro-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import {
     Col,
@@ -16,6 +18,7 @@ import { MembershipType } from "../types/models"
 import ClientName from "./ClientName"
 import "./PrepaidCounters.css"
 import Tooltip from "./Tooltip"
+import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** Pole se členstvími všech klientů. */
@@ -73,7 +76,7 @@ const PrepaidCounters: React.FC<Props> = (props) => {
         <Container fluid>
             <Row className="justify-content-center">
                 {props.memberships.map((membership) => (
-                    <Col sm="9" md="3" lg="2" xl="2" key={membership.id}>
+                    <Col sm="9" md="3" lg="3" xl="2" key={membership.id}>
                         <ListGroup>
                             <ListGroupItem>
                                 <h5>
@@ -86,12 +89,12 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                         />
                                     )}
                                 </h5>
-                                <InputGroup>
+                                <InputGroup id={`PrepaidCounters${membership.id}`}>
                                     <InputGroupAddon addonType="prepend">
                                         <Label
                                             className="input-group-text"
                                             for={`prepaid_cnt${membership.id}`}>
-                                            předplaceno
+                                            <FontAwesomeIcon icon={faSackDollar} fixedWidth />
                                         </Label>
                                     </InputGroupAddon>
                                     <Input
@@ -105,6 +108,10 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                         className="PrepaidCountersInput"
                                     />
                                 </InputGroup>
+                                <UncontrolledTooltipWrapper
+                                    target={`PrepaidCounters${membership.id}`}>
+                                    Počet předplacených lekcí
+                                </UncontrolledTooltipWrapper>
                             </ListGroupItem>
                         </ListGroup>
                     </Col>

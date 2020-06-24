@@ -27,13 +27,13 @@ export default class Dashboard extends React.Component<Props, State> {
 
     render(): React.ReactNode {
         return (
-            <Container fluid>
+            <Container>
                 <Row className="justify-content-center">
-                    <Col sm="11" md="8" lg="8" xl="5">
+                    <Col sm="11" md="8" lg="8" xl="6">
                         <Heading
-                            content={
+                            title={
                                 <>
-                                    Dnešní přehled{" "}
+                                    Dnešní lekce{" "}
                                     <ModalLecturesWizard refresh={this.setRefreshState} />
                                 </>
                             }
@@ -45,8 +45,8 @@ export default class Dashboard extends React.Component<Props, State> {
                             withoutWaiting
                         />
                     </Col>
-                    <Col sm="11" md="8" lg="8" xl="5">
-                        <Heading content="Bankovní účet" />
+                    <Col sm="11" md="8" lg="8" xl="6">
+                        <Heading title="Bankovní účet" />
                         <Bank />
                     </Col>
                 </Row>

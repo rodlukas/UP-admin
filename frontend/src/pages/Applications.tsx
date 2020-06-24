@@ -65,17 +65,13 @@ class Applications extends React.Component<Props, State> {
             <>
                 <Container>
                     <Heading
-                        content={
-                            <>
-                                {APP_URLS.zajemci.title}
-                                <ModalApplications refresh={this.refresh} />
-                            </>
-                        }
+                        title={APP_URLS.zajemci.title}
+                        buttons={<ModalApplications refresh={this.refresh} />}
                     />
                     {isLoading ? (
                         <Loading />
                     ) : (
-                        <div className="pageContent">
+                        <>
                             {applications.length > 0 && (
                                 <UncontrolledTooltipWrapper target="Applications_DateAdded">
                                     Datum přidání
@@ -174,7 +170,7 @@ class Applications extends React.Component<Props, State> {
                             {applications.length === 0 && (
                                 <p className="text-muted text-center">Žádní zájemci</p>
                             )}
-                        </div>
+                        </>
                     )}
                 </Container>
             </>

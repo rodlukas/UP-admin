@@ -1,16 +1,16 @@
 import Fuse from "fuse.js"
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
+import BackButton from "../components/buttons/BackButton"
+import ClientEmail from "../components/ClientEmail"
+import ClientName from "../components/ClientName"
+import ClientPhone from "../components/ClientPhone"
+import Heading from "../components/Heading"
+import Loading from "../components/Loading"
 import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { ClientActiveType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
-import BackButton from "./buttons/BackButton"
-import ClientEmail from "./ClientEmail"
-import ClientName from "./ClientName"
-import ClientPhone from "./ClientPhone"
-import Heading from "./Heading"
-import Loading from "./Loading"
 
 type Props = {
     /** Výsledky vyhledávání klientů. */
@@ -32,16 +32,15 @@ const SearchResults: React.FC<Props> = ({ foundResults, searchVal, search, reset
             {searchVal !== "" && (
                 <Container>
                     <Heading
-                        content={
+                        title={
                             <>
-                                <BackButton onClick={resetSearch} content="Zrušit" /> Vyhledaní
-                                klienti{" "}
+                                Vyhledaní klienti{" "}
                                 <Badge color="secondary" pill>
-                                    {" "}
                                     {foundResults.length}
                                 </Badge>
                             </>
                         }
+                        buttons={<BackButton onClick={resetSearch} content="Zrušit vyhledávání" />}
                     />
                     <ListGroup>
                         {!clientsActiveContext.isLoaded ? (

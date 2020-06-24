@@ -47,9 +47,9 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
     }
     return (
         <Container>
-            <Heading content={APP_URLS.prihlasit.title} />
-            <Row className="justify-content-center pageContent">
-                <Col md="9" lg="7">
+            <Heading title={APP_URLS.prihlasit.title} />
+            <Row>
+                <Col md="9" lg="6">
                     <Card className="p-4">
                         <Form onSubmit={handleSubmit} data-qa="form_login">
                             <FormGroup row>

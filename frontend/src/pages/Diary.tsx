@@ -1,4 +1,4 @@
-import { faArrowAltCircleLeft, faArrowAltCircleRight } from "@fortawesome/pro-solid-svg-icons"
+import { faChevronCircleLeft, faChevronCircleRight } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as React from "react"
 import { Link } from "react-router-dom"
@@ -29,7 +29,10 @@ type TitleDateProps = {
 
 /** Pomocná komponenta zobrazující datum v záhlaví diáře. */
 const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
-    <span className={`TitleDate font-weight-bold ${yearDiffs(date) ? "TitleDate-long" : ""}`}>
+    <span
+        className={`TitleDate font-weight-bold text-center ${
+            yearDiffs(date) ? "TitleDate-long" : ""
+        }`}>
         {prettyDateWithYearIfDiff(date)}
     </span>
 )
@@ -143,49 +146,56 @@ export default class Diary extends React.Component<Props, State> {
         // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
         return (
             <>
-                <Heading
-                    content={
-                        <>
-                            <Link to={this.getPrevMondaySerialized()} id="Diary_PrevWeek">
-                                <FontAwesomeIcon
-                                    icon={faArrowAltCircleLeft}
-                                    className="Diary_arrowBtn text-muted"
-                                />
-                            </Link>
-                            <UncontrolledTooltipWrapper target="Diary_PrevWeek">
-                                Předchozí týden
-                            </UncontrolledTooltipWrapper>{" "}
-                            Týden <TitleDate date={this.getRequiredMonday()} /> –{" "}
-                            <TitleDate date={this.getFridayDate()} />{" "}
-                            <Link to={this.getNextMondaySerialized()} id="Diary_NextWeek">
-                                <FontAwesomeIcon
-                                    icon={faArrowAltCircleRight}
-                                    className="Diary_arrowBtn text-muted"
-                                />
-                            </Link>
-                            <UncontrolledTooltipWrapper target="Diary_NextWeek">
-                                Další týden
-                            </UncontrolledTooltipWrapper>{" "}
-                            <Link to={APP_URLS.diar.url} id="Diary_Today">
-                                <Button
-                                    color="secondary"
-                                    disabled={isEqualDate(
-                                        this.getCurrentMonday(),
-                                        this.getRequiredMonday()
-                                    )}
-                                    onClick={this.removeFocusAfterClick}
-                                    className="float-none align-top">
-                                    Dnes
-                                </Button>
-                            </Link>
-                            <UncontrolledTooltipWrapper target="Diary_Today">
-                                {prettyDateWithLongDayYear(new Date())}
-                            </UncontrolledTooltipWrapper>{" "}
-                            <ModalLecturesWizard refresh={this.setRefreshState} />
-                        </>
-                    }
-                />
-                <Container fluid className="pageContent">
+                <Container>
+                    <Heading
+                        fluid
+                        title={
+                            <>
+                                Týden <TitleDate date={this.getRequiredMonday()} /> –{" "}
+                                <TitleDate date={this.getFridayDate()} />
+                            </>
+                        }
+                        buttons={
+                            <>
+                                <Link to={this.getPrevMondaySerialized()} id="Diary_PrevWeek">
+                                    <FontAwesomeIcon
+                                        icon={faChevronCircleLeft}
+                                        className="Diary_arrowBtn text-muted"
+                                    />
+                                </Link>
+                                <UncontrolledTooltipWrapper target="Diary_PrevWeek">
+                                    Předchozí týden
+                                </UncontrolledTooltipWrapper>{" "}
+                                <Link to={this.getNextMondaySerialized()} id="Diary_NextWeek">
+                                    <FontAwesomeIcon
+                                        icon={faChevronCircleRight}
+                                        className="Diary_arrowBtn text-muted"
+                                    />
+                                </Link>
+                                <UncontrolledTooltipWrapper target="Diary_NextWeek">
+                                    Další týden
+                                </UncontrolledTooltipWrapper>{" "}
+                                <Link to={APP_URLS.diar.url} id="Diary_Today">
+                                    <Button
+                                        color="secondary"
+                                        disabled={isEqualDate(
+                                            this.getCurrentMonday(),
+                                            this.getRequiredMonday()
+                                        )}
+                                        onClick={this.removeFocusAfterClick}
+                                        className="align-top">
+                                        Dnes
+                                    </Button>
+                                </Link>
+                                <UncontrolledTooltipWrapper target="Diary_Today">
+                                    {prettyDateWithLongDayYear(new Date())}
+                                </UncontrolledTooltipWrapper>{" "}
+                                <ModalLecturesWizard refresh={this.setRefreshState} />
+                            </>
+                        }
+                    />
+                </Container>
+                <Container fluid>
                     <Row>
                         {this.state.week.map((day, index) => (
                             <Col key={index} md="6" lg="" className="Diary_day">

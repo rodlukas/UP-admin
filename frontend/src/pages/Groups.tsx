@@ -76,15 +76,15 @@ class Groups extends React.Component<Props, State> {
         return (
             <Container>
                 <Heading
-                    content={
+                    title={APP_URLS.skupiny.title}
+                    buttons={
                         <>
-                            {APP_URLS.skupiny.title}
-                            <ModalGroups refresh={this.refreshFromModal} />
                             <ActiveSwitcher onChange={this.refresh} active={this.state.active} />
+                            <ModalGroups refresh={this.refreshFromModal} />
                         </>
                     }
                 />
-                <Table striped size="sm" responsive className="pageContent table-custom">
+                <Table striped size="sm" responsive className="table-custom">
                     <thead className="thead-light">
                         <tr>
                             <th>Název</th>

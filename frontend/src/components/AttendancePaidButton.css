@@ -2,4 +2,13 @@
     cursor: pointer;
     position: relative;
     top: 0.06rem;
+    transition: color 0.15s ease-in-out;
+}
+
+.AttendancePaidButton.text-success:hover {
+    color: #218838 !important;
+}
+
+.AttendancePaidButton.text-danger:hover {
+    color: #c82333 !important;
 }

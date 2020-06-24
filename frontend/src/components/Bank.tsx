@@ -113,7 +113,7 @@ export default class Bank extends React.PureComponent<{}, State> {
         const RENT_PRICE = this.state.bankDataApi.rent_price
         const isLackOfMoney = balance && RENT_PRICE !== null && balance < RENT_PRICE
         return (
-            <ListGroup className="pageContent">
+            <ListGroup>
                 <ListGroupItem color={isLackOfMoney ? "danger" : "success"}>
                     <h4 className="text-center">
                         Aktuální stav:{" "}

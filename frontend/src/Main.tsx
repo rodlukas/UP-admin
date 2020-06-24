@@ -11,13 +11,19 @@ import AppCommit from "./components/AppCommit"
 import Loading from "./components/Loading"
 import Menu from "./components/Menu"
 import Page from "./components/Page"
-import SearchResults from "./components/SearchResults"
 import { ClientsActiveContext } from "./contexts/ClientsActiveContext"
-import { getEnvName, isEnvDevelopment, isEnvStaging, isEnvTesting } from "./global/funcEnvironments"
+import {
+    getEnvName,
+    isEnvDemo,
+    isEnvDevelopment,
+    isEnvStaging,
+    isEnvTesting,
+} from "./global/funcEnvironments"
 import lazySafe from "./global/lazySafe"
 import useKeyPress from "./hooks/useKeyPress"
 import "./Main.css"
 import ErrorBoundary from "./pages/ErrorBoundary"
+import SearchResults from "./pages/SearchResults"
 import { ClientActiveType } from "./types/models"
 
 // lazy nacitani pro jednotlive stranky
@@ -90,33 +96,36 @@ const Main: React.FC = () => {
 
     return (
         <div className={getEnvName()}>
-            <Navbar light className="border-bottom" expand="lg">
-                <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
-                    ÚP<sub>admin</sub>
-                </NavbarBrand>
-                {isEnvDevelopment() && <Badge color="dark">Vývojová verze</Badge>}
-                {isEnvStaging() && (
-                    <Badge color="success">
-                        Staging <AppCommit />
-                    </Badge>
-                )}
-                {isEnvTesting() && (
-                    <Badge color="primary">
-                        Testing <AppCommit />
-                    </Badge>
-                )}
-                {authContext.isAuth && <NavbarToggler onClick={toggleNavbar} />}
-                <Collapse isOpen={isMenuOpened} navbar>
-                    <Menu
-                        closeNavbar={closeNavbar}
-                        onSearchChange={onSearchChange}
-                        searchVal={searchVal}
-                    />
-                </Collapse>
+            <Navbar className="border-bottom bg-dark" expand="lg" dark>
+                <div className="container">
+                    <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
+                        ÚP<sub>admin</sub>
+                    </NavbarBrand>
+                    {isEnvDevelopment() && <Badge color="light">Vývojová verze</Badge>}
+                    {isEnvStaging() && (
+                        <Badge color="success">
+                            Staging <AppCommit />
+                        </Badge>
+                    )}
+                    {isEnvTesting() && (
+                        <Badge color="primary">
+                            Testing <AppCommit />
+                        </Badge>
+                    )}
+                    {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}
+                    {authContext.isAuth && <NavbarToggler onClick={toggleNavbar} />}
+                    <Collapse isOpen={isMenuOpened} navbar>
+                        <Menu
+                            closeNavbar={closeNavbar}
+                            onSearchChange={onSearchChange}
+                            searchVal={searchVal}
+                        />
+                    </Collapse>
+                </div>
             </Navbar>
-            <ErrorBoundary>
-                <ToastContainer position={toast.POSITION.TOP_RIGHT} />
-                <main className="content mb-4">
+            <main className="main mb-4">
+                <ErrorBoundary>
+                    <ToastContainer position={toast.POSITION.TOP_RIGHT} />
                     <SearchResults
                         foundResults={foundResults}
                         searchVal={searchVal}
@@ -169,8 +178,8 @@ const Main: React.FC = () => {
                             </Switch>
                         </React.Suspense>
                     </div>
-                </main>
-            </ErrorBoundary>
+                </ErrorBoundary>
+            </main>
         </div>
     )
 }

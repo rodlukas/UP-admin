@@ -11,3 +11,8 @@
 .Card_courseHeading {
     color: white;
 }
+
+.CardInfo > * {
+    margin: 0 auto 1rem;
+    max-width: 600px;
+}

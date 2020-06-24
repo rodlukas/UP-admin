@@ -1,6 +1,6 @@
 html,
 body,
-.content,
+.main,
 .root {
     background-color: #ecf0f5;
 }
@@ -10,9 +10,13 @@ a .btn.disabled {
     cursor: default;
 }
 
+.breadcrumb {
+    background-color: transparent;
+}
+
 /* prepsani pravidla z bootstrapu, nechceme responzivni chovani containeru, staci takto */
 .container {
-    max-width: 1140px !important;
+    max-width: 1500px !important;
 }
 
 /* pro plynule scrollovani v modal oknu - viz https://github.com/twbs/bootstrap/issues/17695 */
@@ -24,6 +28,18 @@ b {
     font-weight: 600;
 }
 
+h2 {
+    color: #41464b;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+h3 {
+    color: #41464b;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
 label {
     user-select: none;
 }
@@ -31,10 +47,6 @@ label {
 /* pro spravne zarovnani labelu u checkboxu */
 .custom-control {
     display: inline-block !important;
-}
-
-.pageContent {
-    clear: both;
 }
 
 /**************************** FORMS ****************************/

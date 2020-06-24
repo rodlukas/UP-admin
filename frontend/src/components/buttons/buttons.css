@@ -1,16 +1,11 @@
-h1 > .btn,
-h1 .ActiveSwitcher {
-    margin-top: 0.3rem;
+.HeadingButtons > * + * {
+    margin-left: 0.3rem;
 }
 
-h1 .btn,
-h1 .ActiveSwitcher {
-    float: right;
-}
-
-h1 .btn + .btn,
-h1 .AddButton + .ActiveSwitcher {
-    margin-right: 0.3rem;
+@media (max-width: 991.98px) {
+    .HeadingButtons > * {
+        margin-top: 0.3rem;
+    }
 }
 
 .small_button {

@@ -1,6 +1,5 @@
 import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
-import "./BackButton.css"
 import "./buttons.css"
 
 type Props = ButtonProps & {

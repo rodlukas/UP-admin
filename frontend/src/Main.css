@@ -1,20 +1,12 @@
 /* MENU */
 
-.development .navbar {
-    background-color: #fafac5;
-}
-
-.staging .navbar {
-    background-color: #a9dbb4;
-}
-
-.testing .navbar {
-    background-color: #96c1df;
-}
-
 @media (min-width: 992px) {
     /* pri klasickem menu pridej pravou mezeru k badge */
     .navbar .badge {
         margin-right: 1rem;
     }
+}
+
+.nav-content {
+    max-width: 900px;
 }

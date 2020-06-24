@@ -73,15 +73,15 @@ class Clients extends React.Component<Props, State> {
         return (
             <Container>
                 <Heading
-                    content={
+                    title={APP_URLS.klienti.title}
+                    buttons={
                         <>
-                            {APP_URLS.klienti.title}
-                            <ModalClients refresh={this.refreshFromModal} />
                             <ActiveSwitcher onChange={this.refresh} active={this.state.active} />
+                            <ModalClients refresh={this.refreshFromModal} />
                         </>
                     }
                 />
-                <Table striped size="sm" responsive className="pageContent table-custom">
+                <Table striped size="sm" responsive className="table-custom">
                     <thead className="thead-light">
                         <tr>
                             <th>Příjmení a jméno</th>

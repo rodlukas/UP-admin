@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import * as Sentry from "@sentry/browser"
 import * as React from "react"
 import { withRouter } from "react-router-dom"
-import { Alert, Col, Container, Row } from "reactstrap"
+import { Alert, Container } from "reactstrap"
 import Token from "../auth/Token"
 import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"
@@ -84,8 +84,8 @@ class ErrorBoundary extends React.Component<Props, State> {
         if (this.state.hasError) {
             // render fallback UI
             return (
-                <div className="text-center">
-                    <Heading content="Chyba aplikace" />
+                <Container>
+                    <Heading title="Chyba aplikace" />
                     <p>Nastala neočekávaná chyba v aplikaci. Zkuste tuto stránku načíst znovu.</p>
                     <CustomButton
                         onClick={(): void =>
@@ -116,24 +116,16 @@ class ErrorBoundary extends React.Component<Props, State> {
                             </>
                         }
                     />
-                    <Container className="mt-3">
-                        <Row className="justify-content-center">
-                            <Col className="col-auto">
-                                <Alert color="danger">
-                                    <h4 className="alert-heading">Popis chyby</h4>
-                                    <details
-                                        className="text-left"
-                                        style={{ whiteSpace: "pre-wrap" }}>
-                                        <summary className="font-weight-bold">
-                                            {this.state.error?.toString()}
-                                        </summary>
-                                        <small>{this.state.errorInfo?.componentStack}</small>
-                                    </details>
-                                </Alert>
-                            </Col>
-                        </Row>
-                    </Container>
-                </div>
+                    <Alert color="danger" className="mt-4">
+                        <h4 className="alert-heading">Popis chyby</h4>
+                        <details className="text-left" style={{ whiteSpace: "pre-wrap" }}>
+                            <summary className="font-weight-bold">
+                                {this.state.error?.toString()}
+                            </summary>
+                            <small>{this.state.errorInfo?.componentStack}</small>
+                        </details>
+                    </Alert>
+                </Container>
             )
         }
         // kdyz neni problem, renderuj potomka

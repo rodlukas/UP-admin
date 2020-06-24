@@ -12,6 +12,13 @@
 
 .Diary_arrowBtn {
     cursor: pointer;
+    font-size: 2rem;
+    margin-top: 0.15rem;
+    transition: color 0.15s ease-in-out;
+}
+
+.Diary_arrowBtn:hover {
+    color: #5a6268 !important;
 }
 
 .TitleDate {

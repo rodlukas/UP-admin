@@ -132,21 +132,21 @@ class Settings extends React.Component<Props, State> {
             <>
                 <Container>
                     <Heading
-                        content={
+                        title={APP_URLS.nastaveni.title}
+                        buttons={
                             <>
-                                {APP_URLS.nastaveni.title}
-                                <ModalSettings refresh={this.refresh} TYPE={EDIT_TYPE.COURSE} />
                                 <ModalSettings refresh={this.refresh} TYPE={EDIT_TYPE.STATE} />
+                                <ModalSettings refresh={this.refresh} TYPE={EDIT_TYPE.COURSE} />
                             </>
                         }
                     />
                     {this.state.isLoading || !this.props.attendanceStatesContext.isLoaded ? (
                         <Loading />
                     ) : (
-                        <div className="pageContent">
+                        <>
                             <Row>
-                                <Col>
-                                    <h2 className="text-center">Stavy účasti</h2>
+                                <Col md={6}>
+                                    <h2>Stavy účasti</h2>
                                     <Table striped size="sm" className="table-custom">
                                         <thead className="thead-light">
                                             <tr>
@@ -186,7 +186,7 @@ class Settings extends React.Component<Props, State> {
                                         <p className="text-muted text-center">Žádné stavy účasti</p>
                                     )}
                                     <hr />
-                                    <h3 className="text-center">Konfigurace stavů účasti</h3>
+                                    <h3>Konfigurace stavů účasti</h3>
                                     {attendanceStateDefaultId === undefined && (
                                         <Alert color="danger">
                                             Není vybraný výchozí stav, aplikace nemůže správně
@@ -276,8 +276,8 @@ class Settings extends React.Component<Props, State> {
                                         </ListGroupItem>
                                     </ListGroup>
                                 </Col>
-                                <Col>
-                                    <h2 className="text-center">Kurzy</h2>
+                                <Col md={6}>
+                                    <h2>Kurzy</h2>
                                     <Table striped size="sm" className="table-custom">
                                         <thead className="thead-light">
                                             <tr>
@@ -367,7 +367,7 @@ class Settings extends React.Component<Props, State> {
                                 </a>
                                 , 2018&ndash;%GIT_YEAR
                             </p>
-                        </div>
+                        </>
                     )}
                 </Container>
             </>

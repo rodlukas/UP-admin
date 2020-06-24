@@ -97,7 +97,7 @@ class DashboardDay extends React.Component<Props, State> {
         const title = prettyDateWithLongDayYearIfDiff(this.getDate())
         const isUserCelebratingResult = isUserCelebrating(this.getDate())
         return (
-            <ListGroup className="pageContent">
+            <ListGroup>
                 <ListGroupItem
                     color={isToday(this.getDate()) ? "primary" : ""}
                     className="text-center DashboardDay_date">
