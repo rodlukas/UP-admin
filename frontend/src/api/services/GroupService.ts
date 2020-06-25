@@ -2,7 +2,7 @@ import { ClientType, GroupPostApi, GroupPutApi, GroupType } from "../../types/mo
 import { requestData } from "../request"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 
-const baseUrl = API_URLS.Groups.url
+const baseUrl = API_URLS.groups.url
 
 type Item = GroupType
 type List = Array<Item>
@@ -10,7 +10,7 @@ type List = Array<Item>
 /** Získá skupinu. */
 function get(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
-        url: baseUrl + id + API_DELIM,
+        url: `${baseUrl}${id}${API_DELIM}`,
         method: API_METHODS.get,
     })
 }
@@ -26,7 +26,7 @@ function getAll(): Promise<List> {
 /** Získá aktivní skupiny. */
 function getActive(): Promise<List> {
     return requestData<List>({
-        url: `${baseUrl}?${API_URLS.Groups.filters.active}=true`,
+        url: `${baseUrl}?${API_URLS.groups.filters.active}=true`,
         method: API_METHODS.get,
     })
 }
@@ -34,14 +34,14 @@ function getActive(): Promise<List> {
 /** Získá neaktivní skupinÿ. */
 function getInactive(): Promise<List> {
     return requestData<List>({
-        url: `${baseUrl}?${API_URLS.Groups.filters.active}=false`,
+        url: `${baseUrl}?${API_URLS.groups.filters.active}=false`,
         method: API_METHODS.get,
     })
 }
 
 /** Získá skupiny zadaného klienta. */
 function getAllFromClient(clientId: ClientType["id"]): Promise<List> {
-    const url = `${baseUrl}?${API_URLS.Groups.filters.client}=${clientId}`
+    const url = `${baseUrl}?${API_URLS.groups.filters.client}=${clientId}`
     return requestData<List>({
         url: url,
         method: API_METHODS.get,
@@ -51,7 +51,7 @@ function getAllFromClient(clientId: ClientType["id"]): Promise<List> {
 /** Aktualizuje (PUT) skupinu. */
 function update(context: GroupPutApi): Promise<Item> {
     return requestData<Item>({
-        url: baseUrl + context.id + API_DELIM,
+        url: `${baseUrl}${context.id}${API_DELIM}`,
         method: API_METHODS.put,
         data: context,
     })
@@ -60,7 +60,7 @@ function update(context: GroupPutApi): Promise<Item> {
 /** Smaže skupinu. */
 function remove(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
-        url: baseUrl + id + API_DELIM,
+        url: `${baseUrl}${id}${API_DELIM}`,
         method: API_METHODS.remove,
     })
 }

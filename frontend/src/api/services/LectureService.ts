@@ -9,9 +9,9 @@ import {
 import { requestData } from "../request"
 import { API_DELIM, API_METHODS, API_ORDERING, API_URLS } from "../urls"
 
-const baseUrl = API_URLS.Lectures.url
+const baseUrl = API_URLS.lectures.url
 const ordering = (asc: boolean): string =>
-    `&${API_ORDERING}=${!asc ? "-" : ""}${API_URLS.Lectures.ordering.start}`
+    `&${API_ORDERING}=${!asc ? "-" : ""}${API_URLS.lectures.ordering.start}`
 
 type Item = LectureType
 type List = Array<Item>
@@ -20,7 +20,7 @@ type ListWithDate = Array<LectureTypeWithDate>
 /** Získá lekci. */
 function get(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
-        url: baseUrl + id + API_DELIM,
+        url: `${baseUrl}${id}${API_DELIM}`,
         method: API_METHODS.get,
     })
 }
@@ -35,7 +35,7 @@ function getAll(): Promise<List> {
 
 /** Získá všechny lekce dané skupiny (umožňuje definovat řazení). */
 function getAllFromGroupOrdered(group: GroupType["id"], asc: boolean): Promise<List> {
-    const url = `${baseUrl}?${API_URLS.Lectures.filters.group}=${group}${ordering(asc)}`
+    const url = `${baseUrl}?${API_URLS.lectures.filters.group}=${group}${ordering(asc)}`
     return requestData<List>({
         url: url,
         method: API_METHODS.get,
@@ -44,7 +44,7 @@ function getAllFromGroupOrdered(group: GroupType["id"], asc: boolean): Promise<L
 
 /** Získá všechny lekce daného klienta (umožňuje definovat řazení). */
 function getAllFromClientOrdered(client: ClientType["id"], asc: boolean): Promise<List> {
-    const url = `${baseUrl}?${API_URLS.Lectures.filters.client}=${client}${ordering(asc)}`
+    const url = `${baseUrl}?${API_URLS.lectures.filters.client}=${client}${ordering(asc)}`
     return requestData<List>({
         url: url,
         method: API_METHODS.get,
@@ -53,7 +53,7 @@ function getAllFromClientOrdered(client: ClientType["id"], asc: boolean): Promis
 
 /** Získá všechny lekce v daném dni (umožňuje definovat řazení). */
 function getAllFromDayOrdered(date: string, asc: boolean): Promise<ListWithDate> {
-    const url = `${baseUrl}?${API_URLS.Lectures.filters.date}=${date}${ordering(asc)}`
+    const url = `${baseUrl}?${API_URLS.lectures.filters.date}=${date}${ordering(asc)}`
     return requestData<ListWithDate>({
         url: url,
         method: API_METHODS.get,
@@ -63,7 +63,7 @@ function getAllFromDayOrdered(date: string, asc: boolean): Promise<ListWithDate>
 /** Aktualizuje (PUT) lekci. */
 function update(context: LecturePutApi): Promise<Item> {
     return requestData<Item>({
-        url: baseUrl + context.id + API_DELIM,
+        url: `${baseUrl}${context.id}${API_DELIM}`,
         method: API_METHODS.put,
         data: context,
     })
@@ -72,7 +72,7 @@ function update(context: LecturePutApi): Promise<Item> {
 /** Smaže lekci. */
 function remove(id: Item["id"]): Promise<Item> {
     return requestData<Item>({
-        url: baseUrl + id + API_DELIM,
+        url: `${baseUrl}${id}${API_DELIM}`,
         method: API_METHODS.remove,
     })
 }

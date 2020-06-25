@@ -7,19 +7,19 @@ export const API_ORDERING = "ordering"
 
 /** URL adresy API včetně možností řazení a filtrování. */
 export const API_URLS = Object.freeze({
-    Applications: {
+    applications: {
         url: `applications${API_DELIM}`,
     },
-    AttendanceStates: {
+    attendanceStates: {
         url: `attendancestates${API_DELIM}`,
     },
-    Clients: {
+    clients: {
         url: `clients${API_DELIM}`,
         filters: {
             active: "active",
         },
     },
-    Lectures: {
+    lectures: {
         url: `lectures${API_DELIM}`,
         filters: {
             date: "date",
@@ -30,33 +30,33 @@ export const API_URLS = Object.freeze({
             start: "start",
         },
     },
-    Courses: {
+    courses: {
         url: `courses${API_DELIM}`,
         filters: {
             visible: "visible",
         },
     },
-    Groups: {
+    groups: {
         url: `groups${API_DELIM}`,
         filters: {
             client: "client",
             active: "active",
         },
     },
-    Attendances: {
+    attendances: {
         url: `attendances${API_DELIM}`,
     },
-    Memberships: {
+    memberships: {
         url: `memberships${API_DELIM}`,
     },
-    Login: {
+    login: {
         url: "jwt-",
         action: {
             refresh: "refresh",
             authenticate: "auth",
         },
     },
-    Bank: {
+    bank: {
         url: `bank${API_DELIM}`,
     },
 })

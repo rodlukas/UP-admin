@@ -118,7 +118,10 @@ export function prettyAmount(amount: number): string {
 }
 
 /** Workaround dokud nebude fungovat required v react-selectu - TODO. */
-export function alertRequired(object: string, ...inputVals: Array<object | null>): boolean {
+export function alertRequired(
+    object: string,
+    ...inputVals: Array<CourseType | ClientType | null>
+): boolean {
     if (inputVals.some((e) => e === null)) {
         alert(`Není zvolen žádný ${object}!`)
         return true

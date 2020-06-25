@@ -48,7 +48,7 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE, refresh }) => {
         <>
             {currentObject ? (
                 <EditButton
-                    contentId={typeQa + currentObject.id}
+                    contentId={`${typeQa}${currentObject.id}`}
                     content={`Upravit ${typeButtons}`}
                     onClick={toggleModal}
                     data-qa={`button_edit_${typeQa}`}

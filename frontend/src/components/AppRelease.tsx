@@ -8,7 +8,7 @@ const AppRelease: React.FC = () => {
     const branchOrVersion = "%GIT_BRANCH"
 
     function isTaggedCommit(): boolean {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         return version !== ""
     }

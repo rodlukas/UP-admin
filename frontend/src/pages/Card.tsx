@@ -137,7 +137,9 @@ class Card extends React.Component<Props, State> {
         this.refresh(false)
     }
 
-    goBack = (): void => this.props.history.goBack()
+    goBack = (): void => {
+        this.props.history.goBack()
+    }
 
     getGroupsOfClient = (id = this.getId()): void => {
         GroupService.getAllFromClient(id).then((groupsOfClient) =>

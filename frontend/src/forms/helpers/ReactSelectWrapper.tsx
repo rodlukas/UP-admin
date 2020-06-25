@@ -13,7 +13,7 @@ const Input: React.FC<InputProps> = (props) => {
 
     // v oficialnim API neni onKeyUp a onKeyDown a selectProps pro Input dostupne
     // onKeyDown je dostupny jen na Select, onKeyDown ale korektne funguji, selectProps je v realu soucasti Props
-    /* eslint-disable @typescript-eslint/ban-ts-ignore */
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
     return (
         <components.Input
             {...propsWithTypes}
@@ -36,7 +36,7 @@ const Input: React.FC<InputProps> = (props) => {
             }}
         />
     )
-    /* eslint-enable @typescript-eslint/ban-ts-ignore */
+    /* eslint-enable @typescript-eslint/ban-ts-comment */
 }
 
 /** Wrapper pro react-select komponentu pro použití nadefinovaného react-selectu napříč aplikací. */

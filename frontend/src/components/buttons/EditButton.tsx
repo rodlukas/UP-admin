@@ -8,6 +8,8 @@ import UncontrolledTooltipWrapper from "../UncontrolledTooltipWrapper"
 type Props = ButtonProps & {
     /** Text v tlačítku. */
     content?: string
+    /** ID objektu, pro který se zobrazuje tlačítko. */
+    contentId: number | string
 }
 
 /** Tlačítko pro úpravu objektu v aplikaci. */

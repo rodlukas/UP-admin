@@ -341,7 +341,7 @@ class FormLectures extends React.Component<Props, State> {
             (prevState) => {
                 // as object - ve state jsou hodnoty co nejsou objekty
                 const newStateVal: AtNote | AtPaid | AtState = {
-                    ...(prevState[nameStateAttr] as object),
+                    ...(prevState[nameStateAttr] as AtNote | AtPaid | AtState),
                 }
                 newStateVal[id] = value
                 // ...prevState kvuli https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18365

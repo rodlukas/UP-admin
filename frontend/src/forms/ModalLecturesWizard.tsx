@@ -196,7 +196,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                                 {this.state.isLoading ||
                                 (this.state.isClient &&
                                     !this.props.clientsActiveContext.isLoaded) ||
-                                (this.state.isClient === false &&
+                                (!this.state.isClient &&
                                     !this.props.groupsActiveContext.isLoaded) ? (
                                     <Loading
                                         text={

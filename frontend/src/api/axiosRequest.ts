@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 
 /** Vloží do hlavičky HTTP požadavku JWT token. */
 const setAuthHeader = (): void => {
-    axiosInstance.defaults.headers.common["Authorization"] = JWT_HEADER_PREFIX + Token.get()
+    axiosInstance.defaults.headers.common["Authorization"] = `${JWT_HEADER_PREFIX}${Token.get()}`
 }
 
 /** Wrapper pro axios používaný pro HTTP požadavky na API. */

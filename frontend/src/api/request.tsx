@@ -103,7 +103,7 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
         console.debug(`%cÚspěch: ${responseUrl}`, "color: green", response)
         if (options.method !== API_METHODS.get) {
             if (
-                (responseUrl && !responseUrl.match(API_URLS.Login.url)) ||
+                (responseUrl && !responseUrl.match(API_URLS.login.url)) ||
                 responseUrl === undefined
             ) {
                 // responseURL neni definovana v IE, tedy v IE se zobrazi vice notifikaci, ale aspon bude appka fungovat

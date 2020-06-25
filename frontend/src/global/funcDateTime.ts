@@ -136,7 +136,7 @@ export function toISODate(date: Date): string {
  * Hodiny i minuty jsou zarovnány nulou.
  */
 export function toISOTime(datetime: Date): string {
-    return `${(datetime.getHours() < 10 ? "0" : "") + datetime.getHours()}:${
+    return `${datetime.getHours() < 10 ? "0" : ""}${datetime.getHours()}:${
         datetime.getMinutes() < 10 ? "0" : ""
     }${datetime.getMinutes()}`
 }

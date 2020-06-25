@@ -38,9 +38,9 @@ type State = {
     /** Probíhá načítání (true). */
     isLoading: boolean
     /** Manuální obnovení dat je zakázané (true). */
-    REFRESH_DISABLED: boolean
+    isRefreshDisabled: boolean
     /** Nastal problém při stahování dat z API (true). */
-    DATA_PROBLEM: boolean
+    isDataProblem: boolean
     /** Data z banky stažená z API. */
     bankDataApi: BankType
 }
@@ -67,8 +67,8 @@ export default class Bank extends React.PureComponent<{}, State> {
     state: State = {
         bankDataApi: this.bankDataApiInit,
         isLoading: true,
-        REFRESH_DISABLED: true,
-        DATA_PROBLEM: false,
+        isRefreshDisabled: true,
+        isDataProblem: false,
     }
 
     getBankData = (): void => {
@@ -77,20 +77,20 @@ export default class Bank extends React.PureComponent<{}, State> {
                 this.setState({
                     // z API dorazi jen status_info, provedeme merge se zbytkem init hodnot
                     bankDataApi: Object.assign(this.bankDataApiInit, response.data),
-                    DATA_PROBLEM: true,
+                    isDataProblem: true,
                     isLoading: false,
                 })
             } else {
                 this.setState({
                     bankDataApi: response.data,
                     isLoading: false,
-                    REFRESH_DISABLED: true,
-                    DATA_PROBLEM: false,
+                    isRefreshDisabled: true,
+                    isDataProblem: false,
                 })
             }
             // po zadanem poctu sekund povol tlacitko refresh
             this.timeoutId = window.setTimeout(
-                () => this.setState({ REFRESH_DISABLED: false }),
+                () => this.setState({ isRefreshDisabled: false }),
                 REFRESH_TIMEOUT * 1000
             )
         })
@@ -110,8 +110,8 @@ export default class Bank extends React.PureComponent<{}, State> {
 
     render(): React.ReactNode {
         const balance = this.state.bankDataApi.accountStatement.info.closingBalance
-        const RENT_PRICE = this.state.bankDataApi.rent_price
-        const isLackOfMoney = balance && RENT_PRICE !== null && balance < RENT_PRICE
+        const rentPrice = this.state.bankDataApi.rent_price
+        const isLackOfMoney = balance && rentPrice !== null && balance < rentPrice
         return (
             <ListGroup>
                 <ListGroupItem color={isLackOfMoney ? "danger" : "success"}>
@@ -121,17 +121,17 @@ export default class Bank extends React.PureComponent<{}, State> {
                             <span className="font-weight-bold text-nowrap">
                                 {`${prettyAmount(balance)} ${CURRENCY}`}
                             </span>
-                        ) : this.state.DATA_PROBLEM ? (
+                        ) : this.state.isDataProblem ? (
                             "neznámý"
                         ) : (
                             "načítání"
                         )}{" "}
-                        {isLackOfMoney && RENT_PRICE !== null && (
+                        {isLackOfMoney && rentPrice !== null && (
                             <>
                                 <UncontrolledTooltipWrapper target="Bank_RentWarning">
                                     Na účtu není dostatek peněz (alespoň{" "}
                                     <span className="font-weight-bold text-nowrap">
-                                        {`${prettyAmount(RENT_PRICE)} ${CURRENCY}`}
+                                        {`${prettyAmount(rentPrice)} ${CURRENCY}`}
                                     </span>
                                     ) pro zaplacení nájmu!
                                 </UncontrolledTooltipWrapper>
@@ -155,7 +155,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                         )}{" "}
                         <CustomButton
                             onClick={this.onClick}
-                            disabled={this.state.REFRESH_DISABLED}
+                            disabled={this.state.isRefreshDisabled}
                             id="Bank"
                             content={
                                 <FontAwesomeIcon
@@ -166,7 +166,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                             }
                         />
                         <UncontrolledTooltipWrapper target="Bank">
-                            {this.state.REFRESH_DISABLED
+                            {this.state.isRefreshDisabled
                                 ? "Výpis lze obnovit jednou za minutu"
                                 : "Obnovit výpis"}
                         </UncontrolledTooltipWrapper>{" "}
@@ -195,7 +195,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                             </tr>
                         </thead>
                         <tbody>
-                            {!this.state.DATA_PROBLEM ? (
+                            {!this.state.isDataProblem ? (
                                 this.state.bankDataApi.accountStatement.transactionList.transaction
                                     .length === 0 && !this.state.isLoading ? (
                                     <TableInfo text="Žádné nedávné transakce" />
