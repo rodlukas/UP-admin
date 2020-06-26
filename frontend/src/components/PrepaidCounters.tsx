@@ -89,10 +89,16 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                         />
                                     )}
                                 </h5>
-                                <InputGroup id={`PrepaidCounters${membership.id}`}>
-                                    <InputGroupAddon addonType="prepend">
+                                <InputGroup>
+                                    <InputGroupAddon
+                                        addonType="prepend"
+                                        id={`PrepaidCounters${membership.id}`}>
                                         <Label
-                                            className="input-group-text"
+                                            className={`input-group-text ${
+                                                prepaidCnts[membership.id] > 0
+                                                    ? "PrepaidCountersLabelPrepaid"
+                                                    : ""
+                                            }`}
                                             for={`prepaid_cnt${membership.id}`}>
                                             <FontAwesomeIcon icon={faSackDollar} fixedWidth />
                                         </Label>
