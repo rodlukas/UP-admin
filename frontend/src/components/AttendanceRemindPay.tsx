@@ -20,7 +20,7 @@ const AttendanceRemindPay: React.FC<Props> = ({ attendance }) => {
                 id={`RemindPay_${attendance.id}`}
                 icon={faCommentAltDollar}
                 size="lg"
-                className="text-secondary"
+                className="text-warning"
                 transform="up-4"
             />
             <UncontrolledTooltipWrapper target={`RemindPay_${attendance.id}`}>

@@ -66,6 +66,7 @@ export type AttendanceType = Model & {
     remind_pay: boolean
     note: string
     paid: boolean
+    number?: number
     // !! bez vnoreni
     attendancestate: AttendanceStateType["id"]
 }
@@ -170,7 +171,7 @@ export type ApplicationPutApi = Omit<ApplicationType, "course" | "client" | "cre
 }
 
 /** Účast (PUT). */
-export type AttendancePutApi = Omit<AttendanceType, "remind_pay" | "client"> & {
+export type AttendancePutApi = Omit<AttendanceType, "remind_pay" | "number" | "client"> & {
     client_id: ClientType["id"]
 }
 

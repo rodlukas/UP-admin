@@ -11,7 +11,7 @@ Poznámka:
         https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
 """
 
-from typing import Union, cast
+from typing import Union, cast, Any
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
@@ -250,11 +250,19 @@ class AttendanceSerializer(serializers.ModelSerializer):
     )
     # info, zda je potreba pripomenout klientovi platbu priste (jen pro cteni)
     remind_pay = serializers.SerializerMethodField()
+    # cislo lekce pro klienty skupiny
+    number = serializers.SerializerMethodField()
     # + attendancestate vraci jen ID
 
     class Meta:
         model = Attendance
         exclude = ("lecture",)  # ochrana proti cykleni
+
+    def __init__(self, *args: Any, **kwargs: Any):
+        super(AttendanceSerializer, self).__init__(*args, **kwargs)
+
+        if self.instance and not self.instance.lecture.group:
+            self.fields.pop("number")
 
     def update(self, instance: Attendance, validated_data: dict) -> Attendance:  # type: ignore
         """
@@ -280,6 +288,32 @@ class AttendanceSerializer(serializers.ModelSerializer):
         if self.instance and self.instance.lecture.start is None:
             LectureHelpers.validate_prepaid_non_changable_paid_state(data)
         return data
+
+    @staticmethod
+    def get_number(obj: Attendance) -> int:
+        """
+        Vypočítá pořadové číslo lekce pro daného klienta skupiny (pro jednotlivce se pole nezobrazuje).
+        Pokud se nedá číslo dopočítat kvůli chybějícímu výchozímu stavu účasti, vrátí upozornění.
+        """
+        if obj.lecture.group:
+            # proved vypocet poradoveho cisla pro ucastnika skupinove lekce
+            try:
+                # je potreba najit vychozi stav
+                attendancestate_default_pk = LectureHelpers.find_default_state()
+            except ObjectDoesNotExist:
+                # pokud neni vychozi stav zvoleny, vrat misto toho upozorneni
+                return LectureHelpers.DEFAULT_STATE_MISSING
+            prev_lectures_cnt = Attendance.objects.filter(
+                client=obj.client,
+                lecture__course=obj.lecture.course,
+                lecture__group=obj.lecture.group,
+                lecture__start__lt=obj.lecture.start,
+                lecture__canceled=False,
+                attendancestate=attendancestate_default_pk,
+            ).count()
+
+            # vrat poradove cislo aktualni lekce (tedy +1 k poctu minulych lekci)
+            return prev_lectures_cnt + 1
 
     @staticmethod
     def get_remind_pay(obj: Attendance) -> bool:
@@ -376,12 +410,10 @@ class LectureSerializer(serializers.ModelSerializer):
             # proved vypocet poradoveho cisla pro jednotlivce
             try:
                 # je potreba najit vychozi stav
-                attendancestate_default_pk = AttendanceState.objects.values("pk").get(default=True)[
-                    "pk"
-                ]
+                attendancestate_default_pk = LectureHelpers.find_default_state()
             except ObjectDoesNotExist:
                 # pokud neni vychozi stav zvoleny, vrat misto toho upozorneni
-                return "⚠ není zvolen výchozí stav účasti – vizte nastavení"
+                return LectureHelpers.DEFAULT_STATE_MISSING
             prev_lectures_cnt = Attendance.objects.filter(
                 client=obj.attendances.get().client_id,
                 lecture__course=obj.course,

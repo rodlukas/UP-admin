@@ -82,6 +82,16 @@ class LectureHelpers:
     Pomocné funkce pro lekce a účasti na lekcích používané v serializerech.
     """
 
+    # text zobrazeny v pripadech chybejiciho vychoziho stavu ucasti
+    DEFAULT_STATE_MISSING = "⚠ není zvolen výchozí stav účasti – vizte nastavení"
+
+    @staticmethod
+    def find_default_state() -> AttendanceState:
+        """
+        Vrátí výchozí stav účasti (nebo ObjectDoesNotExist).
+        """
+        return AttendanceState.objects.values("pk").get(default=True)["pk"]
+
     @staticmethod
     def find_if_lecture_should_be_canceled(attendances: Union[dict, List[Attendance]]) -> bool:
         """

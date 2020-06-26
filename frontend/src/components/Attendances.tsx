@@ -1,4 +1,5 @@
 import * as React from "react"
+import { Badge } from "reactstrap"
 import { AttendanceType, LectureType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 import AttendancePaidButton from "./AttendancePaidButton"
@@ -26,6 +27,13 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
             attendanceId={attendance.id}
             funcRefresh={funcRefresh}
         />{" "}
+        {attendance.number && (
+            <>
+                <Badge color="secondary" pill className="AttendanceNumber font-weight-bold">
+                    {attendance.number}
+                </Badge>{" "}
+            </>
+        )}
         <AttendanceRemindPay attendance={attendance} /> <LectureNote attendance={attendance} />
         <AttendanceSelectAttendanceState
             value={attendance.attendancestate}

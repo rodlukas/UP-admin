@@ -10,3 +10,7 @@
 .Attendances p {
     margin: 0;
 }
+
+.Attendances .AttendanceNumber {
+    margin-bottom: 0.3rem;
+}
