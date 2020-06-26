@@ -86,9 +86,9 @@ class LectureHelpers:
     DEFAULT_STATE_MISSING = "⚠ není zvolen výchozí stav účasti – vizte nastavení"
 
     @staticmethod
-    def find_default_state() -> AttendanceState:
+    def find_default_state() -> int:
         """
-        Vrátí výchozí stav účasti (nebo ObjectDoesNotExist).
+        Vrátí ID výchozího stavu účasti (nebo ObjectDoesNotExist).
         """
         return AttendanceState.objects.values("pk").get(default=True)["pk"]
 

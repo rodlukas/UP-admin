@@ -290,30 +290,33 @@ class AttendanceSerializer(serializers.ModelSerializer):
         return data
 
     @staticmethod
-    def get_number(obj: Attendance) -> int:
+    def get_number(obj: Attendance) -> Union[int, str]:
         """
-        Vypočítá pořadové číslo lekce pro daného klienta skupiny (pro jednotlivce se pole nezobrazuje).
+        Vypočítá pořadové číslo lekce pro daného klienta skupiny.
+        Pro jednotlivce se pole nezobrazuje, tedy neni treba nic pocitat.
         Pokud se nedá číslo dopočítat kvůli chybějícímu výchozímu stavu účasti, vrátí upozornění.
         """
-        if obj.lecture.group:
-            # proved vypocet poradoveho cisla pro ucastnika skupinove lekce
-            try:
-                # je potreba najit vychozi stav
-                attendancestate_default_pk = LectureHelpers.find_default_state()
-            except ObjectDoesNotExist:
-                # pokud neni vychozi stav zvoleny, vrat misto toho upozorneni
-                return LectureHelpers.DEFAULT_STATE_MISSING
-            prev_lectures_cnt = Attendance.objects.filter(
-                client=obj.client,
-                lecture__course=obj.lecture.course,
-                lecture__group=obj.lecture.group,
-                lecture__start__lt=obj.lecture.start,
-                lecture__canceled=False,
-                attendancestate=attendancestate_default_pk,
-            ).count()
+        # pro lekce jednotlivcu pole neukazujeme, tedy nic neni treba pocitat
+        if not obj.lecture.group:
+            return -1
+        # proved vypocet poradoveho cisla pro ucastnika skupinove lekce
+        try:
+            # je potreba najit vychozi stav
+            attendancestate_default_pk = LectureHelpers.find_default_state()
+        except ObjectDoesNotExist:
+            # pokud neni vychozi stav zvoleny, vrat misto toho upozorneni
+            return LectureHelpers.DEFAULT_STATE_MISSING
+        prev_lectures_cnt = Attendance.objects.filter(
+            client=obj.client,
+            lecture__course=obj.lecture.course,
+            lecture__group=obj.lecture.group,
+            lecture__start__lt=obj.lecture.start,
+            lecture__canceled=False,
+            attendancestate=attendancestate_default_pk,
+        ).count()
 
-            # vrat poradove cislo aktualni lekce (tedy +1 k poctu minulych lekci)
-            return prev_lectures_cnt + 1
+        # vrat poradove cislo aktualni lekce (tedy +1 k poctu minulych lekci)
+        return prev_lectures_cnt + 1
 
     @staticmethod
     def get_remind_pay(obj: Attendance) -> bool:
