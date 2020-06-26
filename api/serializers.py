@@ -11,7 +11,7 @@ Poznámka:
         https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
 """
 
-from typing import Union, cast, Any
+from typing import Union, cast
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
@@ -258,11 +258,14 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         exclude = ("lecture",)  # ochrana proti cykleni
 
-    def __init__(self, *args: Any, **kwargs: Any):
-        super(AttendanceSerializer, self).__init__(*args, **kwargs)
-
-        if self.instance and not self.instance.lecture.group:
-            self.fields.pop("number")
+    def to_representation(self, instance: Attendance) -> dict:
+        """
+        Při serializaci odstraní "number" pro lekce jednotlivců (využívá se jen pro skupiny).
+        """
+        ret = super().to_representation(instance)
+        if not instance.lecture.group:
+            ret.pop("number")
+        return ret
 
     def update(self, instance: Attendance, validated_data: dict) -> Attendance:  # type: ignore
         """
@@ -290,7 +293,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         return data
 
     @staticmethod
-    def get_number(obj: Attendance) -> Union[int, str]:
+    def get_number(obj: Attendance) -> Union[int, str, None]:
         """
         Vypočítá pořadové číslo lekce pro daného klienta skupiny.
         Pro jednotlivce se pole nezobrazuje, tedy neni treba nic pocitat.
@@ -298,7 +301,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         """
         # pro lekce jednotlivcu pole neukazujeme, tedy nic neni treba pocitat
         if not obj.lecture.group:
-            return -1
+            return None
         # proved vypocet poradoveho cisla pro ucastnika skupinove lekce
         try:
             # je potreba najit vychozi stav
