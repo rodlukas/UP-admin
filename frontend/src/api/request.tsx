@@ -1,6 +1,6 @@
 import { AxiosError, AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios"
 import * as React from "react"
-import { toast } from "react-toastify"
+import { toast, ToastOptions, TypeOptions as ToastTypeOptions } from "react-toastify"
 import APP_URLS from "../APP_URLS"
 import Token from "../auth/Token"
 import Notification from "../components/Notification"
@@ -10,10 +10,6 @@ import { ErrMsg } from "../types/types"
 import axiosRequest from "./axiosRequest"
 import { parseDjangoError } from "./parseDjangoError"
 import { API_METHODS, API_URLS } from "./urls"
-
-//todo https://github.com/fkhadra/react-toastify/issues/426
-type ToastOptions = any
-type TypeOptions = any
 
 type Props = {
     /** Chybová zpráva z požadavku. */
@@ -90,7 +86,7 @@ class ErrorMessage extends React.Component<Props> {
  * V případě neúspěchu zařídí notifikaci o chybě, v případě úspěchu předá dál celou Response pro další práci.
  */
 export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): AxiosPromise<T> => {
-    const notify = (message: React.ReactNode, level: TypeOptions): void => {
+    const notify = (message: React.ReactNode, level: ToastTypeOptions): void => {
         const toastOptions: ToastOptions = {
             type: level,
             autoClose: level === toast.TYPE.ERROR ? 15000 : 4000,
