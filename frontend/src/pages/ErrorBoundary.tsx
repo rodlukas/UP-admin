@@ -60,7 +60,7 @@ class ErrorBoundary extends React.Component<Props, State> {
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
         Sentry.withScope((scope) => {
-            scope.setExtras(errorInfo)
+            scope.setExtras(errorInfo as any)
             const eventId = Sentry.captureException(error)
             this.setState({ eventId, error, errorInfo })
         })
