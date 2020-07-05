@@ -1,5 +1,5 @@
-import { faPhone } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPhone } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { prettyPhone } from "../global/utils"
 import { ClientType } from "../types/models"

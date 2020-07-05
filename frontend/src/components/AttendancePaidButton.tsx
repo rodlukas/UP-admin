@@ -1,5 +1,5 @@
-import { faUsdCircle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faUsdCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import AttendanceService from "../api/services/AttendanceService"
 import "./AttendancePaidButton.css"

@@ -1,10 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
     faCalendarAlt,
     faClipboardList,
     faClock,
     faHourglass,
-} from "@fortawesome/pro-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+} from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import {
     Alert,

@@ -1,5 +1,5 @@
-import { faSpinnerThird } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
 

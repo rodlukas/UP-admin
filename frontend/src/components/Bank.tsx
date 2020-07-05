@@ -1,10 +1,10 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
     faExclamationCircle,
     faExternalLinkAlt,
     faInfoCircle,
     faSyncAlt,
-} from "@fortawesome/pro-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+} from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { ListGroup, ListGroupItem, Table } from "reactstrap"
 import BankService from "../api/services/BankService"

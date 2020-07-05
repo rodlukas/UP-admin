@@ -1,5 +1,5 @@
-import { faPenNib } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPenNib } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as Sentry from "@sentry/browser"
 import * as React from "react"
 import { withRouter } from "react-router-dom"
@@ -60,7 +60,7 @@ class ErrorBoundary extends React.Component<Props, State> {
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
         Sentry.withScope((scope) => {
-            scope.setExtras(errorInfo)
+            scope.setExtras(errorInfo as any)
             const eventId = Sentry.captureException(error)
             this.setState({ eventId, error, errorInfo })
         })

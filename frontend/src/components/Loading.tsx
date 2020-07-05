@@ -1,5 +1,5 @@
-import { faSpinnerThird, faSyncAlt } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSpinnerThird, faSyncAlt } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Alert } from "reactstrap"
 import CustomButton from "./buttons/CustomButton"

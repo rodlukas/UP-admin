@@ -1,6 +1,6 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
-import { faCheck, faTimes } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Alert, Col, Container, Label, ListGroup, ListGroupItem, Row, Table } from "reactstrap"
 import AttendanceStateService from "../api/services/AttendanceStateService"

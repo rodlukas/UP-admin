@@ -1,5 +1,5 @@
-import { faSearch } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSearch } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Input, InputGroup, InputGroupAddon, Label } from "reactstrap"
 import { ClientsActiveContext } from "../contexts/ClientsActiveContext"

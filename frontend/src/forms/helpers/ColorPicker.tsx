@@ -1,5 +1,5 @@
-import { faPalette } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPalette } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as chroma from "chroma-js"
 import * as React from "react"
 import { ChromePicker } from "react-color"

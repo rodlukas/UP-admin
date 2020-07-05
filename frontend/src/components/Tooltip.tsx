@@ -1,5 +1,5 @@
-import { faInfoCircle } from "@fortawesome/pro-solid-svg-icons"
 import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome"
+import { faInfoCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { UncontrolledTooltipProps } from "reactstrap"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
