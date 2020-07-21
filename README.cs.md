@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-    Read this in other languages: <strong><a href="README.md">English</a></strong>, <strong><a href="README.cd.md">Czech</a></strong>.
+    Read this in other languages: <strong><a href="README.md">English</a></strong>, <strong><a href="README.cs.md">Czech</a></strong>.
 </p>
 
 <p align="center">
@@ -246,10 +246,10 @@ u vývojáře.
 
 Aplikaci lze spustit na lokálním prostředí ve dvou režimech. Výchozí re6im je klasický vývojový –
 ten obsahuje pokročilé debugovací nástroje, spouští se Django vývojový server a také
-webpack-dev-server pro frontend. Vzhledem k práci s privátními npm registry (viz [níže](#npmpro))
-nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu popisovat postup
-spuštění ve druhém režimu – **manuální produkční verze aplikace**, tedy ta, která je nejblíže verzi
-u zákazníka.
+webpack-dev-server pro frontend. Vzhledem k práci s privátními GitHub Package registry (viz
+[níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu
+popisovat postup spuštění ve druhém režimu – **manuální produkční verze aplikace**, tedy ta, která
+je nejblíže verzi u zákazníka.
 
 ### Požadavky
 
@@ -263,7 +263,7 @@ Minimální požadavky na nástroje nainstalované v cílovém OS:
 <a name="npmpro">
   
 > **Poznámka:** Node.js ani NPM/Yarn nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
- přístup přes token k privátnímu npm registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
+ přístup přes token k privátnímu GitHub Package registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
  automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů ke každému release).
  
 </a>

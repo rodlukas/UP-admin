@@ -250,11 +250,11 @@ Additionally, the app can be run in a local dev environment, of course.
 
 There are two modes that the app can be run in on the local dev environment. The default one is the
 classic dev mode – this mode includes advanced debugging tools, Django dev server and
-webpack-dev-server for the frontend are run. Since there is some work with private npm registry here
-(see [below](#npmpro)), the frontend cannot be built without these tokens so that the alternative
-way to run this app without these tokens is the second mode – **manual production version of the
-app**, it's also the closest one to the customer's version, this mode will also be run in this
-tutorial.
+webpack-dev-server for the frontend are run. Since there is some work with private GitHub Package
+registry here (see [below](#npmpro)), the frontend cannot be built without these tokens so that the
+alternative way to run this app without these tokens is the second mode – **manual production
+version of the app**, it's also the closest one to the customer's version, this mode will also be
+run in this tutorial.
 
 ### Requirements
 
@@ -268,7 +268,7 @@ Minimum requirements of tools available in the target OS:
 
 <a name="npmpro">
   
-> **Note:** Node.js and NPM/Yarn are not required since the frontend cannot be built without tokens to private npm
+> **Note:** Node.js and NPM/Yarn are not required since the frontend cannot be built without tokens to private GitHub Package
  registry (for [FontAwesome PRO](https://fontawesome.com/)). Instead of this we'll use automatically generated assets 
  of the latest production version from the CI.
  
