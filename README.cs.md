@@ -24,7 +24,9 @@
     <a href="https://lgtm.com/projects/g/rodlukas/UP-admin/context:python"><img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/python/github/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.herokuapp.com"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.herokuapp.com?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
+    <br>
     <a href="https://deepscan.io/dashboard#view=project&tid=8194&pid=10346&bid=141965"><img src="https://deepscan.io/api/teams/8194/projects/10346/branches/141965/badge/grade.svg" alt="DeepScan grade"></a>
+    <a href="https://codebeat.co/projects/github-com-rodlukas-up-admin-master"><img alt="codebeat badge" src="https://codebeat.co/badges/7ee3ee4d-8e68-4088-8ccd-7a0e57e71a9e" /></a>
     <br>
     <a href="https://stackshare.io/rodlukas/upadmin"><img alt="StackShare" src="http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square"></a>
     <a href="https://github.com/prettier/prettier"><img alt="Code style (js): prettier" src="https://img.shields.io/badge/code_style_(js)-prettier-ff69b4.svg?style=flat-square"></a>
@@ -40,6 +42,7 @@
     <a href="https://sentry.io/organizations/rodlukas/issues/?project=1247206">Sentry</a> · 
     <a href="https://dashboard.heroku.com/apps">Heroku</a> · 
     <a href="https://uspesnyprvnacek.slack.com/messages">Slack</a> · 
+    <a href="https://www.deepcode.ai/">DeepCode</a> · 
     <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> · 
     Logentries – 
     <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">produkce</a> / 
@@ -379,9 +382,11 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
 
 [![screenshot z přehledu](docs/screenshots/dashboard.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png)
 
-### Karta klienta
+### Karta klienta / skupiny
 
-[![screenshot z karty klienta](docs/screenshots/card.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card.png)
+[![screenshot z karty klienta](docs/screenshots/card-client.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-client.png)
+
+[![screenshot z karty skupiny](docs/screenshots/card-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-group.png)
 
 ### Zájemci o kurzy
 
@@ -390,6 +395,16 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
 ### Nastavení
 
 [![screenshot z nastavení](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
+
+### Formuláře
+
+#### Úprava skupinové lekce
+
+[![screenshot formuláře pro úpravu skupinové lekce](docs/screenshots/form-lecture.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-lecture.png)
+
+#### Úprava údajů o skupině
+
+[![screenshot formuláře pro úpravu údajů o skupině](docs/screenshots/form-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png)
 
 ## Licence
 
