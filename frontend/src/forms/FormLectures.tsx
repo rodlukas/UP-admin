@@ -19,6 +19,7 @@ import {
     ModalBody,
     ModalFooter,
     ModalHeader,
+    UncontrolledAlert,
 } from "reactstrap"
 import LectureService from "../api/services/LectureService"
 import CancelButton from "../components/buttons/CancelButton"
@@ -648,6 +649,12 @@ class FormLectures extends React.Component<Props, State> {
                                 </Col>
                             </FormGroup>
                             <hr />
+                            {!this.isClient(this.props.object) && (
+                                <UncontrolledAlert color="info">
+                                    Klienti s předplacenými lekcemi mají tuto lekci automaticky
+                                    zaplacenou.
+                                </UncontrolledAlert>
+                            )}
                             {this.members.map((member) => (
                                 <div key={member.id} data-qa="form_lecture_attendance">
                                     {!this.isClient(this.props.object) && (
