@@ -92,7 +92,12 @@ module.exports = {
         ],
     },
     plugins: [
-        new StylelintPlugin({ emitWarning: true, files: "**/*.css", fix: true }),
+        new StylelintPlugin({
+            emitWarning: true,
+            files: "**/*.css",
+            fix: true,
+            ignoreFiles: ["build/*.css"],
+        }),
         new MiniCssExtractPlugin({
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
             chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",
