@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Container, Table } from "reactstrap"
+import { Badge, Container, Table } from "reactstrap"
 import GroupService from "../api/services/GroupService"
 import APP_URLS from "../APP_URLS"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
@@ -76,7 +76,16 @@ class Groups extends React.Component<Props, State> {
         return (
             <Container>
                 <Heading
-                    title={APP_URLS.skupiny.title}
+                    title={
+                        <>
+                            {APP_URLS.skupiny.title}{" "}
+                            {!this.isLoading() && (
+                                <Badge color="secondary" pill>
+                                    {this.getGroupsData().length}
+                                </Badge>
+                            )}
+                        </>
+                    }
                     buttons={
                         <>
                             <ActiveSwitcher onChange={this.refresh} active={this.state.active} />

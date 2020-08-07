@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Container, Table } from "reactstrap"
+import { Badge, Container, Table } from "reactstrap"
 import ClientService from "../api/services/ClientService"
 import APP_URLS from "../APP_URLS"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
@@ -73,7 +73,16 @@ class Clients extends React.Component<Props, State> {
         return (
             <Container>
                 <Heading
-                    title={APP_URLS.klienti.title}
+                    title={
+                        <>
+                            {APP_URLS.klienti.title}{" "}
+                            {!this.isLoading() && (
+                                <Badge color="secondary" pill>
+                                    {this.getClientsData().length}
+                                </Badge>
+                            )}
+                        </>
+                    }
                     buttons={
                         <>
                             <ActiveSwitcher onChange={this.refresh} active={this.state.active} />

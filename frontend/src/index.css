@@ -90,6 +90,10 @@ label {
     white-space: normal; /* aby se text zalamoval a nepretekal */
 }
 
+h1 .badge {
+    vertical-align: middle; /* zarovnani badge na middle, protoze ma mensi font-size nez h1 */
+}
+
 /**************************** REACT-TOASTIFY ****************************/
 
 /* vychozi zluta je spatne citelna s bilym textem */
@@ -166,6 +170,7 @@ label {
 }
 
 .lecture_content h5 {
+    margin-bottom: 0.2rem;
     margin-top: 0.4rem;
 }
 
