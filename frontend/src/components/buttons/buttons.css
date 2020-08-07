@@ -11,3 +11,7 @@
 .small_button {
     padding: 0 0.5rem !important;
 }
+
+.btn_icon {
+    margin-right: 0.4rem;
+}
