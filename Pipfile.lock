@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "72fb5541ae24361e7b8f96584245aeb89fb081ec4b6226515040e0f5df563e0c"
+            "sha256": "5ec84eb463fc6a844bf6adf16e2597ddadfd4c9413bd8e36aead3a4cd8cbc505"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -48,11 +48,11 @@
         },
         "django-csp": {
             "hashes": [
-                "sha256:0a38aa9618c675cbf5f5e517e20d5846a3e100ef7b307e32e7fb18c58aa47723",
-                "sha256:d9ee5a8c6442aa54854e8de627c2826786208ed38fb4ea8ced08c42332673eb1"
+                "sha256:01443a07723f9a479d498bd7bb63571aaa771e690f64bde515db6cdb76e8041a",
+                "sha256:01eda02ad3f10261c74131cdc0b5a6a62b7c7ad4fd017fbefb7a14776e0a9727"
             ],
             "index": "pypi",
-            "version": "==3.6"
+            "version": "==3.7"
         },
         "django-debug-toolbar": {
             "hashes": [
@@ -196,11 +196,11 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:21b17d6aa064c0fb703a7c00f77cf6c9c497cf2f83345c28892980a5e742d116",
-                "sha256:4fc97114c77d005467b9b1a29f042e2bc01923cb683b0ef0bbda46e79fa12532"
+                "sha256:d359609e23ec9360b61e5ffdfa417e2f6bca281bfb869608c98c169c7e64acd5",
+                "sha256:e12eb1c2c01cd9e9cfe70608dbda4ef451f37ef0b7cbb92e5d43f87c341d6334"
             ],
             "index": "pypi",
-            "version": "==0.16.3"
+            "version": "==0.16.5"
         },
         "sqlparse": {
             "hashes": [
@@ -228,11 +228,11 @@
         },
         "vulture": {
             "hashes": [
-                "sha256:79ecb77e5d61a2375e2b94dea2fd859cd77a067e55e99b8238b64196adfcdc0f",
-                "sha256:7b94784ededbf8e2913b5142dc875d8f26de7c903b37cd2d8f478f79275f7ce9"
+                "sha256:ab0dce458ab746212cc02ac10cf31912c43bbfdcccb49025745b00850beab086",
+                "sha256:d61fd85cc9b43e263e6b813c1ab4936e7000e0fee6558e63461074c893fef3d9"
             ],
             "index": "pypi",
-            "version": "==1.6"
+            "version": "==2.0"
         },
         "whitenoise": {
             "hashes": [
