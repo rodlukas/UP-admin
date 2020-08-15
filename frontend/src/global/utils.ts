@@ -1,3 +1,4 @@
+import * as React from "react"
 import LectureService from "../api/services/LectureService"
 import {
     ApplicationType,
@@ -176,4 +177,9 @@ export const noop = (): void => {}
 export function pageTitle(title: string): string {
     const envTitle = !isEnvProduction() ? `${getEnvNameShort()} | ` : ""
     return `${envTitle + title} – ÚPadmin`
+}
+
+/** Vrátí jméno komponenty pro React Developer Tools. */
+export function getDisplayName<P>(Component: React.ComponentType<P>): string {
+    return Component.displayName || Component.name || "UnknownComponent"
 }

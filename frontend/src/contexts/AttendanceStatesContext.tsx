@@ -1,6 +1,6 @@
 import * as React from "react"
 import AttendanceStateService from "../api/services/AttendanceStateService"
-import { noop } from "../global/utils"
+import { getDisplayName, noop } from "../global/utils"
 import { AttendanceStateType } from "../types/models"
 import { fFunction } from "../types/types"
 
@@ -65,17 +65,28 @@ export type AttendanceStatesContextProps = {
     attendanceStatesContext: Context
 }
 
+type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof AttendanceStatesContextProps>
+
 /** HOC komponenta pro kontext se stavy účasti. */
 const WithAttendanceStatesContext = <P,>(
     WrappedComponent: React.ComponentType<P>
-): React.ComponentType<Omit<P, keyof AttendanceStatesContextProps>> => (
-    props
-): React.ReactElement => (
-    <AttendanceStatesContext.Consumer>
-        {(attendanceStatesContext): React.ReactNode => (
-            <WrappedComponent {...(props as P)} attendanceStatesContext={attendanceStatesContext} />
-        )}
-    </AttendanceStatesContext.Consumer>
-)
+): React.ComponentType<ComponentWithCoursesVisibleContextProps<P>> => {
+    const ComponentWithAttendanceStatesContext = (
+        props: ComponentWithCoursesVisibleContextProps<P>
+    ) => (
+        <AttendanceStatesContext.Consumer>
+            {(attendanceStatesContext): React.ReactNode => (
+                <WrappedComponent
+                    {...(props as P)}
+                    attendanceStatesContext={attendanceStatesContext}
+                />
+            )}
+        </AttendanceStatesContext.Consumer>
+    )
+    ComponentWithAttendanceStatesContext.displayName = `WithCoursesVisibleContext(${getDisplayName<
+        P
+    >(WrappedComponent)})`
+    return ComponentWithAttendanceStatesContext
+}
 
 export { WithAttendanceStatesContext, AttendanceStatesContext }

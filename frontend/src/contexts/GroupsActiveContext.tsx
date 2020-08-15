@@ -1,6 +1,6 @@
 import * as React from "react"
 import GroupService from "../api/services/GroupService"
-import { noop } from "../global/utils"
+import { getDisplayName, noop } from "../global/utils"
 import { GroupType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
@@ -89,15 +89,23 @@ export type GroupsActiveContextProps = {
     groupsActiveContext: Context
 }
 
+type ComponentWithGroupsActiveContextProps<P> = Omit<P, keyof GroupsActiveContextProps>
+
 /** HOC komponenta pro kontext s aktivními skupinami. */
 const WithGroupsActiveContext = <P,>(
     WrappedComponent: React.ComponentType<P>
-): React.ComponentType<Omit<P, keyof GroupsActiveContextProps>> => (props): React.ReactElement => (
-    <GroupsActiveContext.Consumer>
-        {(groupsActiveContext): React.ReactNode => (
-            <WrappedComponent {...(props as P)} groupsActiveContext={groupsActiveContext} />
-        )}
-    </GroupsActiveContext.Consumer>
-)
+): React.ComponentType<ComponentWithGroupsActiveContextProps<P>> => {
+    const ComponentWithGroupsActiveContext = (props: ComponentWithGroupsActiveContextProps<P>) => (
+        <GroupsActiveContext.Consumer>
+            {(groupsActiveContext): React.ReactNode => (
+                <WrappedComponent {...(props as P)} groupsActiveContext={groupsActiveContext} />
+            )}
+        </GroupsActiveContext.Consumer>
+    )
+    ComponentWithGroupsActiveContext.displayName = `WithGroupsActiveContext(${getDisplayName<P>(
+        WrappedComponent
+    )})`
+    return ComponentWithGroupsActiveContext
+}
 
 export { WithGroupsActiveContext, GroupsActiveContext }

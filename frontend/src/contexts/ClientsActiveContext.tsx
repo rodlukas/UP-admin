@@ -1,6 +1,6 @@
 import * as React from "react"
 import ClientService, { ListWithActiveClients } from "../api/services/ClientService"
-import { noop } from "../global/utils"
+import { getDisplayName, noop } from "../global/utils"
 import { ClientActiveType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
@@ -107,15 +107,25 @@ export type ClientsActiveContextProps = {
     clientsActiveContext: Context
 }
 
+type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof ClientsActiveContextProps>
+
 /** HOC komponenta pro kontext s aktivními klienty. */
 const WithClientsActiveContext = <P,>(
     WrappedComponent: React.ComponentType<P>
-): React.ComponentType<Omit<P, keyof ClientsActiveContextProps>> => (props): React.ReactElement => (
-    <ClientsActiveContext.Consumer>
-        {(clientsActiveContext): React.ReactNode => (
-            <WrappedComponent {...(props as P)} clientsActiveContext={clientsActiveContext} />
-        )}
-    </ClientsActiveContext.Consumer>
-)
+): React.ComponentType<ComponentWithCoursesVisibleContextProps<P>> => {
+    const ComponentWithClientsActiveContext = (
+        props: ComponentWithCoursesVisibleContextProps<P>
+    ) => (
+        <ClientsActiveContext.Consumer>
+            {(clientsActiveContext): React.ReactNode => (
+                <WrappedComponent {...(props as P)} clientsActiveContext={clientsActiveContext} />
+            )}
+        </ClientsActiveContext.Consumer>
+    )
+    ComponentWithClientsActiveContext.displayName = `WithClientsActiveContext(${getDisplayName<P>(
+        WrappedComponent
+    )})`
+    return ComponentWithClientsActiveContext
+}
 
 export { WithClientsActiveContext, ClientsActiveContext }

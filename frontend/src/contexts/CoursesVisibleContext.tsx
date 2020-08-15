@@ -1,6 +1,6 @@
 import * as React from "react"
 import CourseService from "../api/services/CourseService"
-import { noop } from "../global/utils"
+import { getDisplayName, noop } from "../global/utils"
 import { CourseType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
@@ -89,17 +89,25 @@ export type CoursesVisibleContextProps = {
     coursesVisibleContext: Context
 }
 
+type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof CoursesVisibleContextProps>
+
 /** HOC komponenta pro kontext s viditelnými kurzy. */
 const WithCoursesVisibleContext = <P,>(
     WrappedComponent: React.ComponentType<P>
-): React.ComponentType<Omit<P, keyof CoursesVisibleContextProps>> => (
-    props
-): React.ReactElement => (
-    <CoursesVisibleContext.Consumer>
-        {(coursesVisibleContext): React.ReactNode => (
-            <WrappedComponent {...(props as P)} coursesVisibleContext={coursesVisibleContext} />
-        )}
-    </CoursesVisibleContext.Consumer>
-)
+): React.ComponentType<ComponentWithCoursesVisibleContextProps<P>> => {
+    const ComponentWithCoursesVisibleContext = (
+        props: ComponentWithCoursesVisibleContextProps<P>
+    ) => (
+        <CoursesVisibleContext.Consumer>
+            {(coursesVisibleContext): React.ReactNode => (
+                <WrappedComponent {...(props as P)} coursesVisibleContext={coursesVisibleContext} />
+            )}
+        </CoursesVisibleContext.Consumer>
+    )
+    ComponentWithCoursesVisibleContext.displayName = `WithCoursesVisibleContext(${getDisplayName<P>(
+        WrappedComponent
+    )})`
+    return ComponentWithCoursesVisibleContext
+}
 
 export { WithCoursesVisibleContext, CoursesVisibleContext }
