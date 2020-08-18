@@ -649,12 +649,13 @@ class FormLectures extends React.Component<Props, State> {
                                 </Col>
                             </FormGroup>
                             <hr />
-                            {!this.isClient(this.props.object) && (
-                                <UncontrolledAlert color="info">
-                                    Klienti s předplacenými lekcemi mají tuto lekci automaticky
-                                    zaplacenou.
-                                </UncontrolledAlert>
-                            )}
+                            {!this.isClient(this.props.object) &&
+                                !this.isLecture(this.props.lecture) && (
+                                    <UncontrolledAlert color="info">
+                                        Klienti s předplacenými lekcemi mají tuto lekci automaticky
+                                        zaplacenou.
+                                    </UncontrolledAlert>
+                                )}
                             {this.members.map((member) => (
                                 <div key={member.id} data-qa="form_lecture_attendance">
                                     {!this.isClient(this.props.object) && (
