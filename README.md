@@ -166,7 +166,7 @@ Main tools used for the frontend development:
 -   [Webpack 4](https://webpack.js.org/) with custom configuration (local and production) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
--   [Typescript 3.9](https://www.typescriptlang.org/) – static type checking,
+-   [Typescript 4.0](https://www.typescriptlang.org/) – static type checking,
 -   [ESlint 7](https://eslint.org/) a [stylelint](https://stylelint.io/) – linters for static code
     analysis
 -   and [React Hot Loader](https://github.com/gaearon/react-hot-loader) – for
