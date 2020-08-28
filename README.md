@@ -185,16 +185,16 @@ takes advantage of **[React Hooks](https://reactjs.org/docs/hooks-intro.html)**.
 ### Deployed apps and tools
 
 The app is deployed to **4 PaaS [Heroku](https://www.heroku.com/) environments** varying in a
-version of the deployed app, database instance, debugging options and colors of the menu.
-Additionally, the app can be run in a local dev environment, of course.
+version of the deployed app, database instance and debugging options. Additionally, the app can be
+run in a local dev environment, of course. The type of the environment is also highlighted with a
+top menu label title and color (except for the production).
 
 > **List of environments:**
 >
-> -   **dev (local)** – for local development _(yellow menu)_,
-> -   **testing** – debugging mode can be turned on, each commit is deployed here _(blue menu)_,
-> -   **staging** – the same version as production, deploy of the releases _(green menu)_,
-> -   **production** – production version used by a customer, deploy of the releases (like staging)
->     _(white menu)_,
+> -   **dev (local)** – for local development,
+> -   **testing** – debugging mode can be turned on, each commit is deployed here,
+> -   **staging** – the same version as production, deploy of the releases,
+> -   **production** – production version used by a customer, deploy of the releases (like staging),
 > -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo version of the app, manual
 >     deploy from the `demo` branch.
 

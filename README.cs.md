@@ -179,17 +179,16 @@ také výhod **[React Hooks](https://reactjs.org/docs/hooks-intro.html)**.
 ### Nasazené aplikace a nástroje
 
 Aplikace je nasazena do **4 prostředí na PaaS [Heroku](https://www.heroku.com/)**, které se liší
-příslušnou nasazenou verzí aplikace, konkrétní instancí databáze, umožňují různé úrovně debugování a
-kosmeticky se liší také barvou menu. Mimo to lze samozřejmě aplikaci spustit i v prostředí lokálním
-u vývojáře.
+příslušnou nasazenou verzí aplikace, konkrétní instancí databáze a umožňují různé úrovně debugování.
+Mimo to lze samozřejmě aplikaci spustit i v prostředí lokálním u vývojáře. Typ prostředí je také
+zvýrazněn barevným štítkem v horním menu (kromě produkce).
 
 > **Seznam prostředí:**
 >
-> -   **vývojové (lokální)** – pro lokální vývoj _(žluté menu)_,
-> -   **testing** – umožňuje zapnout debugování, deploy každého commitu _(modré menu)_,
-> -   **staging** – stejná verze aplikace jako na produkci, deploy při release _(zelené menu)_,
-> -   **produkce** – produkční verze používaná zákazníkem, deploy při release (jako staging) _(bílé
->     menu)_,
+> -   **vývojové (lokální)** – pro lokální vývoj,
+> -   **testing** – umožňuje zapnout debugování, deploy každého commitu,
+> -   **staging** – stejná verze aplikace jako na produkci, deploy při release,
+> -   **produkce** – produkční verze používaná zákazníkem, deploy při release (jako staging),
 > -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo verze aplikace, manuální deploy
 >     z větve `demo`.
 
