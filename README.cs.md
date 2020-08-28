@@ -172,7 +172,9 @@ načítání** celé aplikace se používá lazy loading
 **[`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)**.
 [Webpack DevServer](https://webpack.js.org/configuration/dev-server/) je při vývoji propojený s
 [Django](https://www.djangoproject.com/) dev serverem a umožňuje tak jednoduchý vývoj bez kompromisů
-včetně [HMR](https://webpack.js.org/guides/hot-module-replacement/).
+včetně [HMR](https://webpack.js.org/guides/hot-module-replacement/). Globální stav aplikace je
+spravován přes **[React Context](https://reactjs.org/docs/context.html)**. Část codebase využívá
+také výhod **[React Hooks](https://reactjs.org/docs/hooks-intro.html)**.
 
 ### Nasazené aplikace a nástroje
 

@@ -178,7 +178,9 @@ The app is **resilient against JS errors** thanks to
 **faster loading** of the whole app.
 [Webpack DevServer](https://webpack.js.org/configuration/dev-server/) is integrated in a development
 phase with [Django](https://www.djangoproject.com/) dev server with all the related benefits
-including [HMR](https://webpack.js.org/guides/hot-module-replacement/).
+including [HMR](https://webpack.js.org/guides/hot-module-replacement/). A global state of the app is
+managed with **[React Context](https://reactjs.org/docs/context.html)**. Part of the codebase also
+takes advantage of **[React Hooks](https://reactjs.org/docs/hooks-intro.html)**.
 
 ### Deployed apps and tools
 
