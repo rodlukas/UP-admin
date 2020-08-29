@@ -7,7 +7,7 @@ import {
 } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
-import { USER_CELEBRATION } from "../global/constants"
+import { DASHBOARDDAY_UPDATE_TYPE, USER_CELEBRATION } from "../global/constants"
 import {
     isToday,
     isUserCelebrating,
@@ -32,10 +32,10 @@ type Props = AttendanceStatesContextProps & {
     withoutWaiting?: boolean
     /** Datum pro zobrazované lekce. */
     date: string
-    /** Rodič chce, aby se data v komponentě načetly znovu (true) - když nastane nějaká aktualizace. */
-    shouldRefresh: boolean
+    /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní (aktualizaci požaduje rodič). */
+    updateType: number
     /** Funkce, která se zavolá po nějaké aktualizaci v rámci komponenty. */
-    setRefreshState: fEmptyVoid
+    setUpdateType: fEmptyVoid
 }
 
 type State = {
@@ -76,9 +76,16 @@ class DashboardDay extends React.Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props): void {
-        if (this.props.shouldRefresh && !prevProps.shouldRefresh) {
+        if (
+            this.props.updateType !== DASHBOARDDAY_UPDATE_TYPE.NONE &&
+            prevProps.updateType === DASHBOARDDAY_UPDATE_TYPE.NONE
+        ) {
             // pokud se nema uplatnit prodleva nebo se nemeni den (napr. se upravil jen stav ucasti)
-            if (this.props.withoutWaiting || this.props.date === prevProps.date) {
+            if (
+                this.props.withoutWaiting ||
+                (this.props.date === prevProps.date &&
+                    this.props.updateType === DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED)
+            ) {
                 this.getLectures()
             }
             // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
@@ -110,7 +117,7 @@ class DashboardDay extends React.Component<Props, State> {
                         <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
                     </h4>
                     <ModalLecturesWizard
-                        refresh={this.props.setRefreshState}
+                        refresh={this.props.setUpdateType}
                         date={this.props.date}
                         dropdownClassName="float-right"
                         dropdownSize="sm"
@@ -154,7 +161,7 @@ class DashboardDay extends React.Component<Props, State> {
                                                 : lecture.attendances[0].client
                                         }
                                         currentLecture={lecture}
-                                        refresh={this.props.setRefreshState}
+                                        refresh={this.props.setUpdateType}
                                     />
                                 </div>
                                 <div className="lecture_content">
@@ -165,7 +172,7 @@ class DashboardDay extends React.Component<Props, State> {
                                     )}
                                     <Attendances
                                         lecture={lecture}
-                                        funcRefresh={this.props.setRefreshState}
+                                        funcRefresh={this.props.setUpdateType}
                                         showClient
                                     />
                                 </div>

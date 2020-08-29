@@ -11,6 +11,7 @@ import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
+import { DASHBOARDDAY_UPDATE_TYPE } from "../global/constants"
 import {
     addDays,
     DAYS_IN_WEEK,
@@ -52,8 +53,8 @@ type ParamsProps = {
 type Props = CustomRouteComponentProps<ParamsProps>
 
 type State = {
-    /** Komponenty se dny je potřeba znovu načíst (true) - některá z nich provedla aktualizace. */
-    shouldRefresh: boolean
+    /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní. */
+    updateType: number
     /** Pole se dny v zobrazeném týdnu. */
     week: Array<string>
 }
@@ -64,7 +65,7 @@ export default class Diary extends React.Component<Props, State> {
     getWeek = (): Array<string> => getWeekSerializedFromMonday(this.getRequiredMonday())
 
     state: State = {
-        shouldRefresh: false,
+        updateType: DASHBOARDDAY_UPDATE_TYPE.NONE,
         week: this.getWeek(),
     }
 
@@ -108,7 +109,7 @@ export default class Diary extends React.Component<Props, State> {
         ) {
             this.setState({ week: this.getWeek() }, () => {
                 this.refreshTitle()
-                this.setRefreshState()
+                this.setUpdateType(DASHBOARDDAY_UPDATE_TYPE.DAY_CHANGED)
             })
         }
     }
@@ -142,8 +143,10 @@ export default class Diary extends React.Component<Props, State> {
         e.currentTarget.blur()
     }
 
-    setRefreshState = (): void =>
-        this.setState({ shouldRefresh: true }, () => this.setState({ shouldRefresh: false }))
+    setUpdateType = (newUpdateType = DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED): void =>
+        this.setState({ updateType: newUpdateType }, () =>
+            this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.NONE })
+        )
 
     render(): React.ReactNode {
         // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
@@ -193,7 +196,7 @@ export default class Diary extends React.Component<Props, State> {
                                 <UncontrolledTooltipWrapper target="Diary_Today">
                                     {prettyDateWithLongDayYear(new Date())}
                                 </UncontrolledTooltipWrapper>{" "}
-                                <ModalLecturesWizard refresh={this.setRefreshState} />
+                                <ModalLecturesWizard refresh={this.setUpdateType} />
                             </>
                         }
                     />
@@ -204,8 +207,8 @@ export default class Diary extends React.Component<Props, State> {
                             <Col key={index} md="6" lg="" className="Diary_day">
                                 <DashboardDay
                                     date={day}
-                                    setRefreshState={this.setRefreshState}
-                                    shouldRefresh={this.state.shouldRefresh}
+                                    setUpdateType={this.setUpdateType}
+                                    updateType={this.state.updateType}
                                 />
                             </Col>
                         ))}

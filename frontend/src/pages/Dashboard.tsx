@@ -4,26 +4,29 @@ import Bank from "../components/Bank"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
+import { DASHBOARDDAY_UPDATE_TYPE } from "../global/constants"
 import { toISODate } from "../global/funcDateTime"
 import { CustomRouteComponentProps } from "../types/types"
 
 type Props = CustomRouteComponentProps
 
 type State = {
-    /** Komponentu se dnem je potřeba znovu načíst (true) - provedla se v ní aktualizace. */
-    shouldRefresh: boolean
+    /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní. */
+    updateType: number
 }
 
 /** Stránka s hlavním přehledem - dnešní lekce a banka. */
 export default class Dashboard extends React.Component<Props, State> {
     state: State = {
-        shouldRefresh: false,
+        updateType: DASHBOARDDAY_UPDATE_TYPE.NONE,
     }
 
     getDate = (): string => toISODate(new Date())
 
-    setRefreshState = (): void =>
-        this.setState({ shouldRefresh: true }, () => this.setState({ shouldRefresh: false }))
+    setUpdateType = (): void =>
+        this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED }, () =>
+            this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.NONE })
+        )
 
     render(): React.ReactNode {
         return (
@@ -34,14 +37,14 @@ export default class Dashboard extends React.Component<Props, State> {
                             title={
                                 <>
                                     Dnešní lekce{" "}
-                                    <ModalLecturesWizard refresh={this.setRefreshState} />
+                                    <ModalLecturesWizard refresh={this.setUpdateType} />
                                 </>
                             }
                         />
                         <DashboardDay
                             date={this.getDate()}
-                            setRefreshState={this.setRefreshState}
-                            shouldRefresh={this.state.shouldRefresh}
+                            setUpdateType={this.setUpdateType}
+                            updateType={this.state.updateType}
                             withoutWaiting
                         />
                     </Col>
