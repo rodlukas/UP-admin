@@ -74,14 +74,14 @@
 credentials: username `test` / password `test`. Note the app is not translated into English (Czech
 only).
 
-> If an app receives no web traffic in a 30-minute period, it will sleep, after a short delay it
+> If an app receives no web traffic in a 30-minute period, it will **sleep**, after a short delay it
 > will become active again. A database in the demo version is **automatically cleaned up** and
 > filled with [sample data](scripts/sql/sample_data.pgsql).
 
 ## Basic description of the app
 
 Web application for the project **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** (check out
-[it's website](https://uspesnyprvnacek.cz/), also my work) – based on a techstack: React
+[its website](https://uspesnyprvnacek.cz/), also my work) – based on a techstack: React
 (TypeScript), Django (Python), REST API, Django REST Framework.
 
 The app has been created in a **bachelor's thesis at [FIT CTU](https://fit.cvut.cz/)** – see a
