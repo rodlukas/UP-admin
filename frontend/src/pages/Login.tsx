@@ -20,6 +20,9 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
         isLoading: authContextIsLoading,
     } = React.useContext(AuthContext)
 
+    const usernameField = React.useRef<HTMLInputElement>(null)
+    const passwordField = React.useRef<HTMLInputElement>(null)
+
     const [values, handleChange, handleSubmit] = useForm<AuthorizationType>(
         {
             username: "",
@@ -29,7 +32,14 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
     )
 
     function login(): void {
-        authContextLogin(values)
+        // workaround kvuli https://github.com/facebook/react/issues/1159
+        // - nefunkcni autocomplete v nekterych prohlizecich (predevsim mobily)
+        // - v idealnim svete zde bude jen: authContextLogin(values)
+        const valuesCurrent: AuthorizationType = {
+            username: usernameField.current ? usernameField.current.value : values.username,
+            password: passwordField.current ? passwordField.current.value : values.username,
+        }
+        authContextLogin(valuesCurrent)
     }
 
     React.useEffect(() => {
@@ -61,6 +71,7 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
                                         type="text"
                                         id="username"
                                         value={values.username}
+                                        innerRef={usernameField}
                                         onChange={handleChange}
                                         required
                                         autoCapitalize="none"
@@ -78,6 +89,7 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
                                         type="password"
                                         id="password"
                                         value={values.password}
+                                        innerRef={passwordField}
                                         onChange={handleChange}
                                         required
                                         data-qa="login_field_password"
