@@ -1,6 +1,8 @@
 import * as React from "react"
+import { toast } from "react-toastify"
 import LoginService from "../api/services/LoginService"
 import APP_URLS from "../APP_URLS"
+import Notification from "../components/Notification"
 import history from "../global/history"
 import { noop } from "../global/utils"
 import { AuthorizationType, TokenCodedType } from "../types/models"
@@ -96,8 +98,14 @@ class AuthProvider extends React.Component<Props, State> {
             })
             .catch(() => {
                 this.isAuthenticated(false)
-                alert(
-                    "CHYBA - neúspěšný pokus o obnovení vašeho přihlášení. Přihlašte se, prosím, znovu!"
+                toast(
+                    <Notification
+                        type={toast.TYPE.WARNING}
+                        text="Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!"
+                    />,
+                    {
+                        type: toast.TYPE.WARNING,
+                    }
                 )
             })
     }
