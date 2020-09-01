@@ -6,7 +6,7 @@ body,
 }
 
 .main {
-    padding-top: 56px;
+    padding-top: 3.5rem; /* 56px */
 }
 
 /* aby tlacitka s odkazem nemely pointer */

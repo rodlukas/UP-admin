@@ -1,6 +1,12 @@
-@media (min-width: 768px) and (max-width: 992px) {
+@media (min-width: 768px) and (max-width: 991.98px) {
     .Diary_day:nth-of-type(n + 3) {
         padding-top: 15px;
+    }
+}
+
+@media (min-width: 992px) {
+    .Diary_day {
+        padding-bottom: 15px;
     }
 }
 
