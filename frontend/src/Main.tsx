@@ -96,7 +96,7 @@ const Main: React.FC = () => {
 
     return (
         <div className={getEnvName()}>
-            <Navbar className="border-bottom bg-dark" expand="lg" dark>
+            <Navbar className="bg-dark" expand="lg" dark fixed="top">
                 <div className="container">
                     <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
                         ÚP<sub>admin</sub>

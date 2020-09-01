@@ -5,6 +5,10 @@ body,
     background-color: #ecf0f5;
 }
 
+.main {
+    padding-top: 56px;
+}
+
 /* aby tlacitka s odkazem nemely pointer */
 a .btn.disabled {
     cursor: default;
