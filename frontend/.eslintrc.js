@@ -63,7 +63,8 @@ module.exports = {
             files: ["*.ts", "*.tsx", "*.js", "*.jsx"],
         },
     ],
-    ignorePatterns: ["webpack.config.js", ".eslintrc.js", "jest.config.js"],
+    // ignorace souboru v urovni s konfiguraci
+    ignorePatterns: ["/*.js", "*.ts"],
     parserOptions: {
         ecmaFeatures: {
             jsx: true,
@@ -76,7 +77,15 @@ module.exports = {
         tsconfigRootDir: __dirname,
         project: "./tsconfig.json",
     },
-    plugins: ["import", "jsx-a11y", "react", "react-hooks", "prettier", "@typescript-eslint"],
+    plugins: [
+        "import",
+        "jsx-a11y",
+        "react",
+        "react-hooks",
+        "prettier",
+        "@typescript-eslint",
+        "jest-dom",
+    ],
     settings: {
         react: {
             version: "detect",
@@ -107,6 +116,8 @@ module.exports = {
         "prettier/@typescript-eslint",
         "prettier/babel",
         "prettier/react",
+
+        "plugin:jest-dom/recommended",
     ],
     rules: {
         "react/prop-types": 0,
