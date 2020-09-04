@@ -11,6 +11,6 @@
   },
   "scripts": {
     "postinstall": "cd frontend && yarn install && yarn build:ci",
-    "types": "cd frontend && yarn types"
+    "test": "cd frontend && yarn test"
   }
 }
