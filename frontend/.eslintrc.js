@@ -52,6 +52,7 @@ module.exports = {
         browser: true,
         node: true,
         es6: true,
+        jest: true,
     },
     globals: {
         Atomics: "readonly",
@@ -62,7 +63,7 @@ module.exports = {
             files: ["*.ts", "*.tsx", "*.js", "*.jsx"],
         },
     ],
-    ignorePatterns: ["webpack.config.js", ".eslintrc.js"],
+    ignorePatterns: ["webpack.config.js", ".eslintrc.js", "jest.config.js"],
     parserOptions: {
         ecmaFeatures: {
             jsx: true,
