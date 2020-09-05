@@ -16,11 +16,11 @@ import {
     addDays,
     DAYS_IN_WEEK,
     getMonday,
-    getWeekSerializedFromMonday,
+    getSerializedWeek,
     isEqualDate,
+    isNotCurrentYear,
     prettyDateWithLongDayYear,
     prettyDateWithYearIfDiff,
-    yearDiffs,
 } from "../global/funcDateTime"
 import { isModalShown, pageTitle } from "../global/utils"
 import { CustomRouteComponentProps } from "../types/types"
@@ -35,7 +35,7 @@ type TitleDateProps = {
 const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
     <span
         className={`TitleDate font-weight-bold text-center ${
-            yearDiffs(date) ? "TitleDate-long" : ""
+            isNotCurrentYear(date) ? "TitleDate-long" : ""
         }`}>
         {prettyDateWithYearIfDiff(date)}
     </span>
@@ -62,7 +62,8 @@ type State = {
 /** Stránka s diářem. */
 export default class Diary extends React.Component<Props, State> {
     getRequiredMonday = (): Date => getMonday(Diary.parseDateFromParams(this.props.match.params))
-    getWeek = (): Array<string> => getWeekSerializedFromMonday(this.getRequiredMonday())
+    getWeek = (): Array<string> =>
+        getSerializedWeek(Diary.parseDateFromParams(this.props.match.params))
 
     state: State = {
         updateType: DASHBOARDDAY_UPDATE_TYPE.NONE,

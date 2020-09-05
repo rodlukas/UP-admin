@@ -23,8 +23,9 @@ export function isToday(date: Date): boolean {
 
 /** Vrátí datum posunutý o zadaný počet dní. */
 export function addDays(date: Date, days: number): Date {
-    date.setDate(date.getDate() + days)
-    return date
+    const newDate = new Date(date)
+    newDate.setDate(date.getDate() + days)
+    return newDate
 }
 
 /**
@@ -46,13 +47,13 @@ export function prettyDateWithYear(date: Date): string {
 }
 
 /** Zjistí, jestli se rok ze zadaného datumu liší od aktuálního. */
-export function yearDiffs(date: Date): boolean {
+export function isNotCurrentYear(date: Date): boolean {
     return date.getFullYear() !== new Date().getFullYear()
 }
 
 /** Vrátí zadaný datum ve srozumitelném formátu (rok pouze odlišný od aktuálního, bez slovní reprezentace dne). */
 export function prettyDateWithYearIfDiff(date: Date): string {
-    if (!yearDiffs(date)) {
+    if (!isNotCurrentYear(date)) {
         return prettyDate(date)
     }
     return prettyDateWithYear(date)
@@ -143,14 +144,15 @@ export function toISOTime(datetime: Date): string {
 
 /** Vrátí datum nejbližšího pondělí předcházejícího danému datumu (případně tentýž datum, pokud už je pondělí). */
 export function getMonday(date: Date): Date {
-    date.setDate(date.getDate() + 1 - (date.getDay() || 7))
-    return date
+    const newDate = new Date(date)
+    newDate.setDate(date.getDate() + 1 - (date.getDay() || 7))
+    return newDate
 }
 
-/** Vrať pole datumů pracovních dnů v příslušném týdnu začínajícím daným pondělím. */
-export function getWeekSerializedFromMonday(monday: Date): Array<string> {
+/** Vrátí pole datumů pracovních dnů v týdnu, do kterého patří příslušný denzačínajícím daným pondělím. */
+export function getSerializedWeek(dayOfWeek: Date): Array<string> {
     const week: Array<string> = []
-    let dayToProcess = monday
+    let dayToProcess = getMonday(dayOfWeek)
     while (week.length < WORK_DAYS_COUNT) {
         week.push(toISODate(dayToProcess))
         dayToProcess = addDays(dayToProcess, 1)
