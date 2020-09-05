@@ -13,6 +13,7 @@ env:
     global:
         - MOZ_HEADLESS=1
         - PIPENV_CACHE_DIR=$HOME/.cache/pipenv
+        - NODE_ICU_DATA="node_modules/full-icu"
 
 cache:
     yarn: true
