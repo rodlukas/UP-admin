@@ -85,6 +85,7 @@ module.exports = {
         "prettier",
         "@typescript-eslint",
         "jest-dom",
+        "testing-library",
     ],
     settings: {
         react: {
@@ -118,6 +119,7 @@ module.exports = {
         "prettier/react",
 
         "plugin:jest-dom/recommended",
+        "plugin:testing-library/react",
     ],
     rules: {
         "react/prop-types": 0,
