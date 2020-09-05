@@ -2,7 +2,7 @@ language: python
 # pro python >= 3.7 je potreba >= xenial
 dist: bionic
 python: "3.8"
-node_js: "12"
+node_js: "14"
 services:
     - postgresql
 addons:
@@ -13,7 +13,6 @@ env:
     global:
         - MOZ_HEADLESS=1
         - PIPENV_CACHE_DIR=$HOME/.cache/pipenv
-        - NODE_ICU_DATA="node_modules/full-icu"
 
 cache:
     yarn: true
