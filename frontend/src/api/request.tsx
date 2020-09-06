@@ -94,7 +94,7 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
         toast(message, toastOptions)
     }
 
-    const onSuccess = <T,>(response: AxiosResponse<T>): AxiosResponse<T> => {
+    const onSuccess = (response: AxiosResponse<T>): AxiosResponse<T> => {
         const responseUrl = response.request.responseURL
         console.debug(`%cÚspěch: ${responseUrl}`, "color: green", response)
         if (options.method !== API_METHODS.get) {
@@ -133,7 +133,7 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
     }
 
     return axiosRequest<T>(options)
-        .then((response) => onSuccess<T>(response))
+        .then((response) => onSuccess(response))
         .catch(onError)
 }
 
