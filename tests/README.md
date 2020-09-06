@@ -1,6 +1,6 @@
 # Testy
 
-V této složce se nachází **rozsáhlé testy API i frontendu** tvořící základ aplikace. Testy se
+V této složce se nachází **rozsáhlé testy API i UI (E2E)** tvořící základ aplikace. Testy se
 automaticky spouští na CI a lze je spustit i na lokálním prostředí.
 
 Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** – testové
@@ -105,3 +105,13 @@ python manage.py behave --stage=ui --tags=groups
     repozitáře.
 -   V souboru [MANUAL_TESTS](MANUAL_TESTS.md) je seznam oblastí a průchodů v aplikaci, které nejsou
     pokryty automatizovanými testy.
+
+## Unit testy frontendu
+
+Jednotkové testy frontendu se nachází ve [složce s frontendem](../frontend/src)), postupně přibývají
+pro kritické části aplikace. Soubory s testy se vždy nacházejí vedle testovaného souboru a
+respektují klíč názvu `nazev_testovaneho_souboru.test.(ts|tsx)`.
+
+Unit testy jsou postaveny na frameworku [Jest](https://jestjs.io/) a nástrojích
+[React Testing Library](https://testing-library.com/docs/react-testing-library/intro) a
+[jest-dom](https://testing-library.com/docs/ecosystem-jest-dom).

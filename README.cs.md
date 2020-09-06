@@ -224,12 +224,15 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
 -   Kompletní vývoj aplikace probíhá v IDE
     _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (řeší automatickou
     optimalizaci importů, automatické formátování kódů apod.).
--   **Rozsáhlé testy API i UI (e2e)** jsou důležitou částí aplikace, automaticky se spouští na CI a
-    lze je spustit i na lokálním prostředí.
-    -   Testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** –
-        testové scénáře jsou psány přirozeným jazykem (Gherkin), podle nich se spouští konkrétní
+-   **Rozsáhlé testy API i UI (E2E)** jsou důležitou částí aplikace, automaticky se spouští na CI a
+    lze je spustit i na lokálním prostředí. Část frontendu je navíc pokryta **unit testy**.
+    -   E2E testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)**
+        – testové scénáře jsou psány přirozeným jazykem (Gherkin), podle nich se spouští konkrétní
         testy.
-    -   Pro **testování UI (e2e)** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
+    -   Unit testy jsou postaveny na **frameworku [Jest](https://jestjs.io/)** a nástrojích
+        **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)** a
+        [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom).
+    -   Pro **testování UI (E2E)** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
     -   **Podrobné informace o testech jsou v [`tests/README.md`](tests)**.
 
 ## Struktura repozitáře

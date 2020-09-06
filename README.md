@@ -230,12 +230,16 @@ top menu label title and color (except for the production).
     [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
 -   Developed in IDE _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (takes
     care of automatic import optimization, automatic code formatting etc.).
--   **Complex tests of the API and UI (e2e)** are an important part of the app, the tests are
-    automatically run on the CI and can also be run in the local environment.
-    -   Testing is built on a **BDD framework [behave](https://github.com/behave/behave)** – testing
-        scenarios are written using a natural language (Gherkin), each of the tests is run according
-        to them.
-    -   **UI (e2e) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
+-   **Complex tests of the API and UI (E2E)** are an important part of the app, the tests are
+    automatically run on the CI and can also be run in the local environment. A part of the frontend
+    is moreover covered with **unit tests**.
+    -   E2E testing is built on a **BDD framework [behave](https://github.com/behave/behave)** –
+        testing scenarios are written using a natural language (Gherkin), each of the tests is run
+        according to them.
+    -   Unit tests are built on a **[Jest](https://jestjs.io/) framework** and tools like
+        **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
+        and [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom).
+    -   **UI (E2E) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
     -   **Details about the tests are available in [`tests/README.md` (CZ)](tests)**.
 
 ## Repository structure
