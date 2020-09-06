@@ -28,6 +28,6 @@
         // aktivace isolatedModules pro zamezeni nekompatibilite s Babel, viz https://devblogs.microsoft.com/typescript/typescript-and-babel-7/
         "isolatedModules": true
     },
-    "include": ["./src/"],
-    "exclude": ["node_modules", "build", "webpack.config.js"]
+    "include": ["./src/", "/*.ts"],
+    "exclude": ["node_modules", "build", "/*.js"]
 }

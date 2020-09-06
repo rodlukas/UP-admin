@@ -64,7 +64,7 @@ module.exports = {
         },
     ],
     // ignorace souboru v urovni s konfiguraci
-    ignorePatterns: ["/*.js", "*.ts"],
+    ignorePatterns: ["/*.js", "/*.ts"],
     parserOptions: {
         ecmaFeatures: {
             jsx: true,
