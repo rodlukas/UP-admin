@@ -4,5 +4,6 @@
     <option name="enableServiceForProjectsWithoutConfig" value="false" />
     <option name="scopeName" value="typescript" />
     <option name="showAllErrors" value="true" />
+    <option name="typeScriptCompilerParams" value="--resolveJsonModule" />
   </component>
 </project>

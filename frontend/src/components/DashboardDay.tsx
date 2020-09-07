@@ -137,6 +137,7 @@ class DashboardDay extends React.Component<Props, State> {
                         return (
                             <ListGroupItem
                                 key={lecture.id}
+                                data-qa="lecture"
                                 className={`${className} lecture lecture_dashboardday`}>
                                 <div
                                     className="lecture_heading"

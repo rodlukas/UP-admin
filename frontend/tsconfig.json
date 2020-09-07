@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "resolveJsonModule": true,
         // pro funkcni import() (a zaroven es6 import/export)
         "module": "ESNext",
         // JSX neprevadej, to ma na starost Babel
@@ -28,6 +29,6 @@
         // aktivace isolatedModules pro zamezeni nekompatibilite s Babel, viz https://devblogs.microsoft.com/typescript/typescript-and-babel-7/
         "isolatedModules": true
     },
-    "include": ["./src/", "/*.ts"],
+    "include": ["./src/", "/*.ts", "./__mocks__/"],
     "exclude": ["node_modules", "build", "/*.js"]
 }

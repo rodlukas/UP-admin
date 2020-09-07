@@ -1,7 +1,7 @@
 module.exports = {
     env: {
         production: {
-            // vycleneni pouze na production kvuli nefunkcnimu Jestu
+            // vycleneni useESModules pouze na produkci kvuli nefunkcnimu Jestu
             plugins: [
                 [
                     "@babel/plugin-transform-runtime",
@@ -10,6 +10,10 @@ module.exports = {
                     },
                 ],
             ],
+        },
+        test: {
+            // Jest deps
+            plugins: [["@babel/plugin-transform-runtime"]],
         },
     },
     presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],

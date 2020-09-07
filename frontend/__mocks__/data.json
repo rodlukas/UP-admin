@@ -1,0 +1,100 @@
+{
+    "lectures": [
+        {
+            "id": 88,
+            "attendances": [
+                {
+                    "id": 103,
+                    "client": {
+                        "id": 18,
+                        "active": true,
+                        "email": "info@lukasrod.cz",
+                        "firstname": "Lukáš",
+                        "note": "vcvxc vxc v cv  xcvxc vcxvxcv cv cx v xcv cx vxc vcxvcxv xcv cx xv xv",
+                        "phone": "000000000",
+                        "surname": "Rod"
+                    },
+                    "remind_pay": false,
+                    "note": "uuu",
+                    "paid": false,
+                    "attendancestate": 1
+                }
+            ],
+            "course": {
+                "id": 4,
+                "name": "Feuersteinova metoda",
+                "color": "#0E760A",
+                "duration": 30,
+                "visible": true
+            },
+            "group": null,
+            "number": 1,
+            "canceled": false,
+            "duration": 30,
+            "start": "2020-09-09T15:00:00+02:00"
+        },
+        {
+            "id": 89,
+            "attendances": [
+                {
+                    "id": 104,
+                    "client": {
+                        "id": 14,
+                        "active": true,
+                        "email": "",
+                        "firstname": "cfsdf",
+                        "note": "",
+                        "phone": "",
+                        "surname": "fd"
+                    },
+                    "remind_pay": true,
+                    "note": "",
+                    "paid": true,
+                    "attendancestate": 1
+                }
+            ],
+            "course": {
+                "id": 5,
+                "name": "Kompletní příprava",
+                "color": "#FF0808",
+                "duration": 30,
+                "visible": true
+            },
+            "group": null,
+            "number": 1,
+            "canceled": false,
+            "duration": 30,
+            "start": "2020-09-09T16:00:00+02:00"
+        }
+    ],
+    "attendancestates": [
+        {
+            "id": 4,
+            "name": "ddd",
+            "default": false,
+            "excused": false,
+            "visible": false
+        },
+        {
+            "id": 3,
+            "name": "nepřišel",
+            "default": false,
+            "excused": false,
+            "visible": true
+        },
+        {
+            "id": 1,
+            "name": "OK",
+            "default": true,
+            "excused": false,
+            "visible": true
+        },
+        {
+            "id": 2,
+            "name": "omluven",
+            "default": false,
+            "excused": true,
+            "visible": true
+        }
+    ]
+}
