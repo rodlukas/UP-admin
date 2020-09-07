@@ -43,6 +43,12 @@ const Input: React.FC<InputProps> = (props) => {
 const ReactSelectWrapper = <OptionType,>(props: Props<OptionType>): JSX.Element => (
     <Select<OptionType>
         {...props}
+        styles={{
+            ...props.styles,
+            ...{
+                menu: (provided) => ({ ...provided, zIndex: 2 }),
+            },
+        }}
         noOptionsMessage={(): string => TEXTS.NO_RESULTS}
         components={{
             Input,
