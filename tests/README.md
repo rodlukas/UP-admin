@@ -112,6 +112,8 @@ Jednotkové testy frontendu se nachází ve [složce s frontendem](../frontend/s
 pro kritické části aplikace. Soubory s testy se vždy nacházejí vedle testovaného souboru a
 respektují klíč názvu `nazev_testovaneho_souboru.test.(ts|tsx)`.
 
-Unit testy jsou postaveny na frameworku [Jest](https://jestjs.io/) a nástrojích
-[React Testing Library](https://testing-library.com/docs/react-testing-library/intro) a
-[jest-dom](https://testing-library.com/docs/ecosystem-jest-dom).
+Unit testy jsou postaveny na **frameworku [Jest](https://jestjs.io/)** a nástrojích
+**[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
+(jednoduché utility pro testování Reactu),
+[jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers pro
+Jest) a [MSW](https://mswjs.io/) (mockování API).

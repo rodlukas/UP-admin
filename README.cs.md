@@ -230,8 +230,10 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
         – testové scénáře jsou psány přirozeným jazykem (Gherkin), podle nich se spouští konkrétní
         testy.
     -   Unit testy jsou postaveny na **frameworku [Jest](https://jestjs.io/)** a nástrojích
-        **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)** a
-        [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom).
+        **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
+        (jednoduché utility pro testování Reactu),
+        [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers
+        pro Jest) a [MSW](https://mswjs.io/) (mockování API).
     -   Pro **testování UI (E2E)** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
     -   **Podrobné informace o testech jsou v [`tests/README.md`](tests)**.
 

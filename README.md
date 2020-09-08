@@ -238,7 +238,9 @@ top menu label title and color (except for the production).
         according to them.
     -   Unit tests are built on a **[Jest](https://jestjs.io/) framework** and tools like
         **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
-        and [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom).
+        (simple React testing utilities),
+        [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers
+        for Jest) and [MSW](https://mswjs.io/) (API mocking).
     -   **UI (E2E) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
     -   **Details about the tests are available in [`tests/README.md` (CZ)](tests)**.
 
