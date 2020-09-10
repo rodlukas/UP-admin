@@ -20,146 +20,137 @@ SET row_security = off;
 -- Data for Name: admin_client; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_client (id, firstname, surname, phone, email, note, active) FROM stdin;
-3	Vladimír	Novotný				t
-2	Jan	Novák				f
-4	Lukáš	Rod	111222333	info@lukasrod.cz	:)	t
-1	Pavel	Rod	777777777	test@test.cz	grafomotorika	t
-5	Anna	Horáková			doporučení od logo	t
-\.
+INSERT INTO public.admin_client (id, firstname, surname, phone, email, note, active) VALUES (3, 'Vladimír', 'Novotný', '', '', '', true);
+INSERT INTO public.admin_client (id, firstname, surname, phone, email, note, active) VALUES (2, 'Jan', 'Novák', '', '', '', false);
+INSERT INTO public.admin_client (id, firstname, surname, phone, email, note, active) VALUES (4, 'Lukáš', 'Rod', '111222333', 'info@lukasrod.cz', ':)', true);
+INSERT INTO public.admin_client (id, firstname, surname, phone, email, note, active) VALUES (1, 'Pavel', 'Rod', '777777777', 'test@test.cz', 'grafomotorika', true);
+INSERT INTO public.admin_client (id, firstname, surname, phone, email, note, active) VALUES (5, 'Anna', 'Horáková', '', '', 'doporučení od logo', true);
 
 
 --
 -- Data for Name: admin_course; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_course (id, name, visible, duration, color) FROM stdin;
-1	Feuersteinova metoda	t	30	#2EA0BA
-2	Kurz Slabika	t	30	#D2527F
-3	RoPraTem	t	40	#C0392B
-4	Máme doma leváka	f	20	#446CB3
-5	Rozvoj grafomotoriky	t	30	#F39C12
-\.
+INSERT INTO public.admin_course (id, name, visible, duration, color) VALUES (1, 'Feuersteinova metoda', true, 30, '#2EA0BA');
+INSERT INTO public.admin_course (id, name, visible, duration, color) VALUES (2, 'Kurz Slabika', true, 30, '#D2527F');
+INSERT INTO public.admin_course (id, name, visible, duration, color) VALUES (3, 'RoPraTem', true, 40, '#C0392B');
+INSERT INTO public.admin_course (id, name, visible, duration, color) VALUES (4, 'Máme doma leváka', false, 20, '#446CB3');
+INSERT INTO public.admin_course (id, name, visible, duration, color) VALUES (5, 'Rozvoj grafomotoriky', true, 30, '#F39C12');
 
 
 --
 -- Data for Name: admin_application; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_application (id, note, client_id, course_id, created_at) FROM stdin;
-1	od srpna 2019	1	1	2019-07-05
-2	od března 2020	3	2	2020-01-30
-3	v březnu 2019 se neozvali, skupina s Vláďou	2	2	2019-02-01
-\.
+INSERT INTO public.admin_application (id, note, client_id, course_id, created_at) VALUES (1, 'od srpna 2019', 1, 1, '2019-07-05');
+INSERT INTO public.admin_application (id, note, client_id, course_id, created_at) VALUES (2, 'od března 2020', 3, 2, '2020-01-30');
+INSERT INTO public.admin_application (id, note, client_id, course_id, created_at) VALUES (3, 'v březnu 2019 se neozvali, skupina s Vláďou', 2, 2, '2019-02-01');
 
 
 --
 -- Data for Name: admin_attendancestate; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_attendancestate (id, name, visible, "default", excused) FROM stdin;
-1	OK	t	t	f
-2	omluven	t	f	t
-3	nepřišel	t	f	f
-\.
+INSERT INTO public.admin_attendancestate (id, name, visible, "default", excused) VALUES (1, 'OK', true, true, false);
+INSERT INTO public.admin_attendancestate (id, name, visible, "default", excused) VALUES (2, 'omluven', true, false, true);
+INSERT INTO public.admin_attendancestate (id, name, visible, "default", excused) VALUES (3, 'nepřišel', true, false, false);
 
 
 --
 -- Data for Name: admin_group; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_group (id, name, course_id, active) FROM stdin;
-1	Kurz Slabika 1	2	t
-2	Kurz Slabika 2	2	f
-3	RoPraTem 1	3	t
-4	GMT 1	5	t
-\.
+INSERT INTO public.admin_group (id, name, course_id, active) VALUES (1, 'Kurz Slabika 1', 2, true);
+INSERT INTO public.admin_group (id, name, course_id, active) VALUES (2, 'Kurz Slabika 2', 2, false);
+INSERT INTO public.admin_group (id, name, course_id, active) VALUES (3, 'RoPraTem 1', 3, true);
+INSERT INTO public.admin_group (id, name, course_id, active) VALUES (4, 'GMT 1', 5, true);
 
 
 --
 -- Data for Name: admin_lecture; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_lecture (id, start, duration, course_id, group_id, canceled) FROM stdin;
-5	\N	30	1	\N	f
-4	2019-07-12 15:00:00+02	30	1	\N	f
-7	2019-07-17 16:00:00+02	30	1	\N	f
-8	2019-07-14 15:00:00+02	30	1	\N	f
-9	\N	30	1	\N	f
-6	2019-07-10 15:00:00+02	30	1	\N	t
-2	\N	40	3	\N	f
-10	2019-07-17 18:00:00+02	40	3	\N	f
-1	2019-06-20 08:44:00+02	32	1	\N	f
-12	2019-07-10 05:00:00+02	45	2	1	f
-11	2019-07-25 17:00:00+02	45	2	1	f
-13	2019-07-09 05:08:00+02	45	2	1	t
-14	2020-03-03 15:00:00+01	45	2	2	f
-15	2020-03-10 15:00:00+01	45	2	2	f
-16	2020-03-17 15:00:00+01	45	2	2	f
-17	2020-03-24 15:00:00+01	45	2	2	f
-18	2025-03-31 15:00:00+02	45	2	2	f
-20	\N	30	5	\N	f
-19	2020-03-03 05:00:00+01	35	5	\N	f
-22	2020-03-19 08:00:00+01	45	5	4	f
-21	2020-03-12 08:00:00+01	45	5	4	f
-\.
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (5, NULL, 30, 1, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (4, date_trunc('week', current_date) + INTERVAL '1 day' + TIME '11:00', 30, 1, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (7, date_trunc('week', current_date) + INTERVAL '1 day' + TIME '16:00', 30, 1, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (8, date_trunc('week', current_date) + INTERVAL '1 day' + TIME '17:00', 30, 1, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (9, NULL, 30, 1, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (6, date_trunc('week', current_date) + INTERVAL '1 day' + TIME '18:00', 30, 1, NULL, true);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (2, NULL, 40, 3, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (10, date_trunc('week', current_date) + INTERVAL '1 day' + TIME '19:00', 40, 3, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (1, date_trunc('week', current_date) + INTERVAL '2 day' + TIME '14:00', 32, 1, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (12, date_trunc('week', current_date) + INTERVAL '2 day' + TIME '16:00', 45, 2, 1, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (11, date_trunc('week', current_date) + INTERVAL '2 day' + TIME '17:00', 45, 2, 1, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (13, date_trunc('week', current_date) + INTERVAL '2 day' + TIME '18:00', 45, 2, 1, true);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (14, date_trunc('week', current_date) + INTERVAL '2 day' + TIME '19:00', 45, 2, 2, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (15, date_trunc('week', current_date) + INTERVAL '4 day' + TIME '15:00', 45, 2, 2, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (16, date_trunc('week', current_date) + INTERVAL '4 day' + TIME '16:00', 45, 2, 2, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (17, date_trunc('week', current_date) + INTERVAL '4 day' + TIME '17:00', 45, 2, 2, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (18, date_trunc('week', current_date) + INTERVAL '4 day' + TIME '19:00', 45, 2, 2, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (20, NULL, 30, 5, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (19, date_trunc('week', current_date) + INTERVAL '7 day' + TIME '10:00', 35, 5, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (22, date_trunc('week', current_date) - INTERVAL '7 day' + TIME '9:00', 45, 5, 4, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (21, date_trunc('week', current_date) + INTERVAL '9 day' + TIME '8:00', 45, 5, 4, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (23, current_date + TIME '14:00', 32, 1, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (24, current_date + TIME '12:00', 32, 1, NULL, false);
+INSERT INTO public.admin_lecture (id, start, duration, course_id, group_id, canceled) VALUES (25, current_date + TIME '8:00', 45, 5, 4, false);
 
 
 --
 -- Data for Name: admin_attendance; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) FROM stdin;
-5	t	1	3	5	
-4	t	1	3	4	
-7	f	1	3	7	
-8	f	1	3	8	
-6	t	2	3	6	matka nestíhá - vrací se z tábora
-9	t	1	3	9	Náhrada lekce (10. 7. 2019)
-2	t	1	1	2	
-10	f	1	1	10	
-1	t	1	1	1	půjčen bzučák
-11	t	1	3	11	
-13	t	1	3	12	
-14	t	1	1	12	
-12	t	3	1	11	
-15	t	2	3	13	
-16	t	2	1	13	
-18	t	1	1	14	
-17	t	1	3	14	
-20	t	1	1	15	
-19	t	1	3	15	
-21	t	1	3	16	
-22	t	1	1	16	
-23	t	1	3	17	
-24	t	1	1	17	
-25	t	1	3	18	
-26	t	1	1	18	
-28	t	1	5	20	
-27	t	1	5	19	
-30	t	1	4	21	
-31	t	1	5	22	
-32	f	1	4	22	
-33	f	1	1	22	
-29	f	2	5	21	
-\.
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (5, true, 1, 3, 5, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (4, true, 1, 3, 4, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (7, false, 1, 3, 7, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (8, false, 1, 3, 8, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (6, true, 2, 3, 6, 'matka nestíhá - vrací se z tábora');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (9, true, 1, 3, 9, 'Náhrada lekce (10. 7. 2019)');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (2, true, 1, 1, 2, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (10, false, 1, 1, 10, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (1, true, 1, 1, 1, 'půjčen bzučák');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (11, true, 1, 3, 11, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (13, true, 1, 3, 12, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (14, true, 1, 1, 12, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (12, true, 3, 1, 11, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (15, true, 2, 3, 13, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (16, true, 2, 1, 13, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (18, true, 1, 1, 14, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (17, true, 1, 3, 14, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (20, true, 1, 1, 15, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (19, true, 1, 3, 15, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (21, true, 1, 3, 16, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (22, true, 1, 1, 16, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (23, true, 1, 3, 17, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (24, true, 1, 1, 17, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (25, true, 1, 3, 18, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (26, true, 1, 1, 18, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (28, true, 1, 5, 20, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (27, true, 1, 5, 19, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (30, true, 1, 4, 21, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (31, true, 1, 5, 22, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (32, false, 1, 4, 22, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (33, false, 1, 1, 22, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (29, false, 2, 5, 21, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (34, true, 1, 1, 23, 'půjčen bzučák');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (35, true, 1, 1, 24, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (36, false, 2, 5, 25, '');
+INSERT INTO public.admin_attendance (id, paid, attendancestate_id, client_id, lecture_id, note) VALUES (37, true, 1, 4, 25, 'půjčena kniha');
 
 
 --
 -- Data for Name: admin_membership; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.admin_membership (id, client_id, group_id, prepaid_cnt) FROM stdin;
-4	3	1	1
-1	1	1	3
-6	3	2	7
-5	1	2	5
-7	2	3	0
-8	4	3	0
-9	4	4	0
-10	5	4	0
-11	1	4	0
-\.
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (4, 3, 1, 1);
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (1, 1, 1, 3);
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (6, 3, 2, 7);
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (5, 1, 2, 5);
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (7, 2, 3, 0);
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (8, 4, 3, 0);
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (9, 4, 4, 0);
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (10, 5, 4, 0);
+INSERT INTO public.admin_membership (id, client_id, group_id, prepaid_cnt) VALUES (11, 1, 4, 0);
 
 
 --
