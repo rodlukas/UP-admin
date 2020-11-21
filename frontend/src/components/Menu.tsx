@@ -25,6 +25,12 @@ const Menu: React.FC<Props> = (props) => {
     const MyNavLink: React.FC<MyNavLinkProps> = (otherProps) => (
         <NavLink onClick={props.closeNavbar} tag={RouterNavLink} {...otherProps} />
     )
+    const onClickLogout = () => {
+        // pri odhlaseni chceme zavrit menu
+        props.closeNavbar()
+        authContext.logout()
+    }
+
     return (
         <>
             {authContext.isAuth && (
@@ -60,7 +66,7 @@ const Menu: React.FC<Props> = (props) => {
                             </MyNavLink>
                         </NavItem>
                     </Nav>
-                    <Button color="secondary" onClick={authContext.logout} data-qa="button_logout">
+                    <Button color="secondary" onClick={onClickLogout} data-qa="button_logout">
                         Odhlásit
                     </Button>
                     <AuthChecking />
