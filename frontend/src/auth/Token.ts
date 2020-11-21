@@ -1,4 +1,4 @@
-import * as JwtDecode from "jwt-decode"
+import jwt_decode from "jwt-decode"
 import { prettyDateTime } from "../global/funcDateTime"
 import { TokenCodedType, TokenDecodedType } from "../types/models"
 
@@ -28,7 +28,7 @@ export default class Token {
     }
 
     static decodeToken(token: TokenCodedType): TokenDecodedType {
-        return JwtDecode(token)
+        return jwt_decode(token)
     }
 
     static logToConsole(token: TokenCodedType, decoded: TokenDecodedType, dif: number): void {
