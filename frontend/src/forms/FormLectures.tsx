@@ -417,7 +417,10 @@ class FormLectures extends React.Component<Props, State> {
         return attendances
     }
 
-    onSubmit = (e: React.FormEvent<HTMLFormElement>, refreshClients = false): void => {
+    onSubmit = (
+        e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+        refreshClients = false
+    ): void => {
         e.preventDefault()
         const { prepaid, canceled, course, time, date, duration, prepaidCnt } = this.state
         if (alertRequired("kurz", course)) {
