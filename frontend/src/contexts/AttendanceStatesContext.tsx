@@ -83,9 +83,9 @@ const WithAttendanceStatesContext = <P,>(
             )}
         </AttendanceStatesContext.Consumer>
     )
-    ComponentWithAttendanceStatesContext.displayName = `WithCoursesVisibleContext(${getDisplayName<
-        P
-    >(WrappedComponent)})`
+    ComponentWithAttendanceStatesContext.displayName = `WithCoursesVisibleContext(${getDisplayName<P>(
+        WrappedComponent
+    )})`
     return ComponentWithAttendanceStatesContext
 }
 
