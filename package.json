@@ -10,7 +10,7 @@
     "yarn": "1"
   },
   "scripts": {
-    "postinstall": "cd frontend && yarn install && yarn build:ci",
+    "postinstall": "cd frontend && yarn install --frozen-lockfile && yarn build:ci",
     "test": "cd frontend && yarn test"
   }
 }
