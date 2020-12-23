@@ -33,4 +33,4 @@ urlpatterns = [
 if settings.DEBUG or settings.MANUAL_PRODUCTION:
     import debug_toolbar
 
-    urlpatterns = [re_path(r"^__debug__/", include(debug_toolbar.urls))] + urlpatterns
+    urlpatterns.insert(0, re_path(r"^__debug__/", include(debug_toolbar.urls)))
