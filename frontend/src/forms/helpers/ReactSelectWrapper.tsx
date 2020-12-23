@@ -40,8 +40,10 @@ const Input: React.FC<InputProps> = (props) => {
 }
 
 /** Wrapper pro react-select komponentu pro použití nadefinovaného react-selectu napříč aplikací. */
-const ReactSelectWrapper = <OptionType,>(props: Props<OptionType>): JSX.Element => (
-    <Select<OptionType>
+const ReactSelectWrapper = <OptionType, IsMulti extends boolean = false>(
+    props: Props<OptionType, IsMulti>
+): JSX.Element => (
+    <Select<OptionType, IsMulti>
         {...props}
         styles={{
             ...props.styles,
@@ -50,9 +52,7 @@ const ReactSelectWrapper = <OptionType,>(props: Props<OptionType>): JSX.Element 
             },
         }}
         noOptionsMessage={(): string => TEXTS.NO_RESULTS}
-        components={{
-            Input,
-        }}
+        components={{ Input }}
     />
 )
 
