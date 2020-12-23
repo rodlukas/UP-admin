@@ -53,6 +53,9 @@ script:
     # priprav Django aplikaci
     - source scripts/shell/release_tasks.sh
 
+    # spust audit frontendu
+    - yarn run audit
+
     # otestuj frontend (typy, linting, jest)
     - yarn run test
 

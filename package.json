@@ -11,6 +11,7 @@
   },
   "scripts": {
     "postinstall": "cd frontend && yarn install --frozen-lockfile && yarn build:ci",
-    "test": "cd frontend && yarn test"
+    "test": "cd frontend && yarn test",
+    "audit": "cd frontend && yarn run audit"
   }
 }

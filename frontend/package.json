@@ -5,6 +5,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "audit": "audit-ci --config audit.config.json",
     "types": "tsc",
     "types:watch": "yarn run types -- --watch",
     "build": "cross-env NODE_ENV=production webpack --progress",
@@ -40,6 +41,7 @@
     "@types/reactstrap": "^8.4.1",
     "@typescript-eslint/eslint-plugin": "^4.0.1",
     "@typescript-eslint/parser": "^4.0.1",
+    "audit-ci": "^3.1.1",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^26.3.0",
     "babel-loader": "^8.0.6",
