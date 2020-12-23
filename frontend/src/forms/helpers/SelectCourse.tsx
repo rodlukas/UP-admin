@@ -22,9 +22,7 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
         value={value}
         getOptionLabel={(option): string => option.name}
         getOptionValue={(option): string => option.id.toString()}
-        onChange={(newValue): void =>
-            onChangeCallback("course", newValue as CourseType | undefined | null)
-        }
+        onChange={(newValue): void => onChangeCallback("course", newValue)}
         options={options}
         placeholder={"Vyberte kurz..."}
         styles={selectStyles}

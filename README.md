@@ -131,7 +131,7 @@ database.
 
 Includes all the logic and exposes a **REST API** for a client, built on these technologies:
 
--   [Python 3.8](https://www.python.org/),
+-   [Python 3.9](https://www.python.org/),
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
@@ -155,10 +155,10 @@ Responsive JS _([TypeScript](https://www.typescriptlang.org/))_ web app, specifi
 ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) built on these
 technologies:
 
--   [React 16](https://reactjs.org/),
+-   [React 17](https://reactjs.org/),
 -   [Bootstrap 4](https://getbootstrap.com/) (with [Reactstrap](https://reactstrap.github.io/)),
 -   [React Router 5](https://reacttraining.com/react-router/),
--   [FontAwesome 5 PRO](https://fontawesome.com/)
+-   [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry)
 -   [a další...](/frontend/package.json)
 
 Main tools used for the frontend development:
@@ -166,7 +166,7 @@ Main tools used for the frontend development:
 -   [Webpack 4](https://webpack.js.org/) with custom configuration (local and production) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
--   [Typescript 4.0](https://www.typescriptlang.org/) – static type checking,
+-   [Typescript 4](https://www.typescriptlang.org/) – static type checking,
 -   [ESlint 7](https://eslint.org/) a [stylelint](https://stylelint.io/) – linters for static code
     analysis
 -   and [React Hot Loader](https://github.com/gaearon/react-hot-loader) – for

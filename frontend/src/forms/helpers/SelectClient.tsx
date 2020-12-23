@@ -17,9 +17,7 @@ const SelectClient: React.FC<SelectClientProps> = ({ value, onChangeCallback, op
         value={value}
         getOptionLabel={(option): string => clientName(option)}
         getOptionValue={(option): string => option.id.toString()}
-        onChange={(newValue): void =>
-            onChangeCallback("client", newValue as ClientType | null | undefined)
-        }
+        onChange={(newValue): void => onChangeCallback("client", newValue)}
         options={options}
         placeholder={"Vyberte existujícího klienta..."}
         required

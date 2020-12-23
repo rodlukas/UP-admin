@@ -240,10 +240,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                                                 option.id.toString()
                                             }
                                             onChange={(newValue): void =>
-                                                this.onSelectChange(
-                                                    "group",
-                                                    newValue as GroupType | null | undefined
-                                                )
+                                                this.onSelectChange("group", newValue)
                                             }
                                             options={this.props.groupsActiveContext.groups}
                                             placeholder={"Vyberte existující skupinu..."}

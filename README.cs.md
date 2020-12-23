@@ -125,7 +125,7 @@ Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **R
 
 Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
 
--   [Python 3.8](https://www.python.org/),
+-   [Python 3.9](https://www.python.org/),
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
@@ -149,10 +149,11 @@ Responzivní JS _([TypeScript](https://www.typescriptlang.org/))_ webová aplika
 ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto
 technologiích:
 
--   [React 16](https://reactjs.org/),
+-   [React 17](https://reactjs.org/),
 -   [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 -   [React Router 5](https://reacttraining.com/react-router/),
--   [FontAwesome 5 PRO](https://fontawesome.com/)
+-   [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package
+    Registry)
 -   [a další...](/frontend/package.json)
 
 Vývoj frontendu je postaven především na:
@@ -160,7 +161,7 @@ Vývoj frontendu je postaven především na:
 -   [Webpack 4](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
--   [Typescript 4.0](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
+-   [Typescript 4](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
 -   [ESlint 7](https://eslint.org/) a [stylelint](https://stylelint.io/) – lintery pro statickou
     analýzu kódu
 -   a [React Hot Loader](https://github.com/gaearon/react-hot-loader) – pro
