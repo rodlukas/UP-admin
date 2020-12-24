@@ -277,7 +277,7 @@ run in this tutorial.
 
 Minimum requirements of tools available in the target OS:
 
--   [Python 3.8](https://www.python.org/downloads/) (for a specific version see
+-   [Python 3](https://www.python.org/downloads/) (for a specific version see
     [`Pipfile`](/Pipfile)),
 -   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),

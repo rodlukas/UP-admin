@@ -270,7 +270,7 @@ je nejblíže verzi u zákazníka.
 
 Minimální požadavky na nástroje nainstalované v cílovém OS:
 
--   [Python 3.8](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
+-   [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
 -   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
 -   [PostgreSQL 12](https://www.postgresql.org/download/).
