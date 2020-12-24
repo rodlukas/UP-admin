@@ -163,7 +163,10 @@ Vývoj frontendu je postaven především na:
 -   [Babel 7](https://babeljs.io/),
 -   [Typescript 4](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
 -   [ESlint 7](https://eslint.org/) a [stylelint](https://stylelint.io/) – lintery pro statickou
-    analýzu kódu
+    analýzu kódu,
+-   [husky](https://github.com/typicode/husky) a
+    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit kontroly (eslint, stylelint,
+    prettier)
 -   a [React Hot Loader](https://github.com/gaearon/react-hot-loader) – pro
     [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
@@ -220,6 +223,8 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
         [Google Analytics](https://analytics.google.com/) (přes modul
         [react-ga](https://github.com/react-ga/react-ga)).
     -   [Slack](https://slack.com/)
+-   [audit-ci](https://github.com/IBM/audit-ci) se používá pro automatizovanou kontrolu zranitelných
+    závislostí projektu na CI.
 -   Aplikace **respektuje standardy** [PEP 8](https://pep8.org),
     [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
 -   Kompletní vývoj aplikace probíhá v IDE

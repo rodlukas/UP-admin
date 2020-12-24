@@ -114,11 +114,11 @@
     "remark": "13.0.0"
   },
   "lint-staged": {
-    "*.+(js|jsx|ts|tsx)": [
+    "src/**/*.+(js|jsx|ts|tsx)": [
       "prettier --write",
       "eslint --fix"
     ],
-    "*.css": [
+    "src/**/*.css": [
       "prettier --write",
       "stylelint --fix"
     ]

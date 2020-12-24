@@ -167,8 +167,11 @@ Main tools used for the frontend development:
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
 -   [Typescript 4](https://www.typescriptlang.org/) – static type checking,
--   [ESlint 7](https://eslint.org/) a [stylelint](https://stylelint.io/) – linters for static code
-    analysis
+-   [ESlint 7](https://eslint.org/) and [stylelint](https://stylelint.io/) – linters for static code
+    analysis,
+-   [husky](https://github.com/typicode/husky) and
+    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (eslint, stylelint,
+    prettier)
 -   and [React Hot Loader](https://github.com/gaearon/react-hot-loader) – for
     [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
@@ -226,6 +229,8 @@ top menu label title and color (except for the production).
         [Google Analytics](https://analytics.google.com/) (via a module
         [react-ga](https://github.com/react-ga/react-ga)).
     -   [Slack](https://slack.com/)
+-   [audit-ci](https://github.com/IBM/audit-ci) is used for automated security review of the
+    project's dependency tree on the CI.
 -   Various **standards are enforced**: [PEP 8](https://pep8.org),
     [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
 -   Developed in IDE _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (takes
