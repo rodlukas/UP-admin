@@ -1,9 +1,11 @@
 import * as React from "react"
+
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import { DefaultValuesForLecture } from "../global/utils"
 import { ClientType, GroupType, LectureType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
 import ModalLecturesCore from "./ModalLecturesCore"
 
 type Props = {

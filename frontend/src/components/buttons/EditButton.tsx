@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPencil } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
+
 import { makeIdFromString } from "../../global/utils"
 import UncontrolledTooltipWrapper from "../UncontrolledTooltipWrapper"
 

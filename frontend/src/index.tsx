@@ -1,11 +1,12 @@
 import { config } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import * as Sentry from "@sentry/browser"
-import "bootstrap/dist/css/bootstrap.css"
 import * as React from "react"
+import "bootstrap/dist/css/bootstrap.css"
 import { render } from "react-dom"
 import { hot } from "react-hot-loader/root"
 import { Router } from "react-router-dom"
+
 import { AuthProvider } from "./auth/AuthContext"
 import GA from "./components/GoogleAnalytics"
 import { ClientsActiveProvider } from "./contexts/ClientsActiveContext"

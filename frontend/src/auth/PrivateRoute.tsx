@@ -1,11 +1,13 @@
 import * as React from "react"
 import { Redirect } from "react-router-dom"
+
 import APP_URLS from "../APP_URLS"
 import Page from "../components/Page"
 import { AttendanceStatesProvider } from "../contexts/AttendanceStatesContext"
 import { CoursesVisibleProvider } from "../contexts/CoursesVisibleContext"
 import { GroupsActiveProvider } from "../contexts/GroupsActiveContext"
 import { CustomRouteProps } from "../types/types"
+
 import { AuthContext } from "./AuthContext"
 
 /**

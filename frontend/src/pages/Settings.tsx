@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Alert, Col, Container, Label, ListGroup, ListGroupItem, Row, Table } from "reactstrap"
+
 import AttendanceStateService from "../api/services/AttendanceStateService"
 import CourseService from "../api/services/CourseService"
 import APP_URLS from "../APP_URLS"

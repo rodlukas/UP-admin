@@ -1,4 +1,5 @@
 import * as React from "react"
+
 import LectureService from "../api/services/LectureService"
 import {
     ApplicationType,
@@ -7,6 +8,7 @@ import {
     LectureType,
     MembershipType,
 } from "../types/models"
+
 import { LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
 import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"

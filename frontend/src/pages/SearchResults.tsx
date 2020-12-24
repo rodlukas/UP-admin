@@ -1,6 +1,7 @@
 import Fuse from "fuse.js"
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
+
 import BackButton from "../components/buttons/BackButton"
 import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"

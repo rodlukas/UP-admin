@@ -15,6 +15,7 @@ import {
     ModalFooter,
     ModalHeader,
 } from "reactstrap"
+
 import AttendanceStateService from "../api/services/AttendanceStateService"
 import CourseService from "../api/services/CourseService"
 import CancelButton from "../components/buttons/CancelButton"
@@ -31,6 +32,7 @@ import {
     CourseType,
 } from "../types/models"
 import { fEmptyVoid, Model } from "../types/types"
+
 import "./FormSettings.css"
 import ColorPicker from "./helpers/ColorPicker"
 

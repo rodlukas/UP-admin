@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Badge } from "reactstrap"
+
 import { CourseType } from "../types/models"
 import "./CourseName.css"
 

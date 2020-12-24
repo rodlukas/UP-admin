@@ -1,5 +1,6 @@
 import * as React from "react"
 import { toast } from "react-toastify"
+
 import LoginService from "../api/services/LoginService"
 import APP_URLS from "../APP_URLS"
 import Notification from "../components/Notification"
@@ -7,6 +8,7 @@ import history from "../global/history"
 import { noop } from "../global/utils"
 import { AuthorizationType, TokenCodedType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
 import Token from "./Token"
 
 /** Hodnota zbývající platnosti tokenu, při které dojde k požadavku na jeho obnovení. */

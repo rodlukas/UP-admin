@@ -1,5 +1,7 @@
 import * as React from "react"
+
 import { MembershipType } from "../types/models"
+
 import ClientName from "./ClientName"
 import ComponentsList from "./ComponentsList"
 

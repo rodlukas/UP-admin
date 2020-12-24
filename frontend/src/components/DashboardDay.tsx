@@ -1,5 +1,6 @@
 import * as React from "react"
 import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
+
 import LectureService from "../api/services/LectureService"
 import {
     AttendanceStatesContextProps,
@@ -18,6 +19,7 @@ import {
 import { courseDuration } from "../global/utils"
 import { LectureTypeWithDate } from "../types/models"
 import { fEmptyVoid, TimeoutType } from "../types/types"
+
 import Attendances from "./Attendances"
 import Celebration from "./Celebration"
 import CourseName from "./CourseName"

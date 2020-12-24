@@ -1,4 +1,5 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from "axios"
+
 import Token from "../auth/Token"
 import { API_URL, JWT_HEADER_PREFIX } from "../global/constants"
 

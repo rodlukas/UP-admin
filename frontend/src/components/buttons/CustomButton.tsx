@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
+
 import { noop } from "../../global/utils"
 
 type Props = ButtonProps & {

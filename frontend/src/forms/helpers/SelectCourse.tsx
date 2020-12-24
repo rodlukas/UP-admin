@@ -1,6 +1,8 @@
 import * as React from "react"
 import { Props } from "react-select"
+
 import { CourseType } from "../../types/models"
+
 import { reactSelectIds } from "./func"
 import ReactSelectWrapper from "./ReactSelectWrapper"
 import { selectStyles } from "./selectCourseColors"

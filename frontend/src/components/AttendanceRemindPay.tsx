@@ -1,7 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCommentAltDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
+
 import { AttendanceType } from "../types/models"
+
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {

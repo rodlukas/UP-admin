@@ -1,4 +1,5 @@
 import * as React from "react"
+
 import { AuthContext } from "./AuthContext"
 
 /** Interval pro dotazování na platnost tokenu (případně se obnoví jeho platnost). */

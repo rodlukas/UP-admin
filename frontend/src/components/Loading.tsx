@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSpinnerThird, faSyncAlt } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Alert } from "reactstrap"
+
 import CustomButton from "./buttons/CustomButton"
 
 const LONG_LOADING_THRESHOLD = 5 // sekundy

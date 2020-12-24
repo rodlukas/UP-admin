@@ -4,6 +4,7 @@ import * as Sentry from "@sentry/browser"
 import * as React from "react"
 import { withRouter } from "react-router-dom"
 import { Alert, Container } from "reactstrap"
+
 import Token from "../auth/Token"
 import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"

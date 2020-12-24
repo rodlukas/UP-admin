@@ -1,5 +1,6 @@
 import * as React from "react"
 import { toast, TypeOptions as ToastTypeOptions } from "react-toastify"
+
 import { ErrMsg } from "../types/types"
 
 type Props = {

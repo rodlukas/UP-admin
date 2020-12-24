@@ -11,7 +11,26 @@
   },
   "scripts": {
     "postinstall": "cd frontend && yarn install --frozen-lockfile && yarn build:ci",
-    "test": "cd frontend && yarn test",
-    "audit": "cd frontend && yarn run audit"
+    "frontend:test": "cd frontend && yarn test",
+    "frontend:audit": "cd frontend && yarn run audit",
+    "frontend:lint:js": "cd frontend && yarn run lint:js",
+    "frontend:lint:css": "cd frontend && yarn run lint:css"
+  },
+  "devDependencies": {
+    "husky": "^4.3.6",
+    "lint-staged": "^10.5.3"
+  },
+  "lint-staged": {
+    "frontend/src/**/*.+(js|jsx|ts|tsx)": [
+      "yarn run frontend:lint:js"
+    ],
+    "frontend/src/**/*.css": [
+      "yarn run frontend:lint:css"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

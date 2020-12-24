@@ -1,4 +1,5 @@
 import { AxiosPromise } from "axios"
+
 import { BankType } from "../../types/models"
 import { request } from "../request"
 import { API_METHODS, API_URLS } from "../urls"

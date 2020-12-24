@@ -1,5 +1,7 @@
 import * as React from "react"
+
 import { GroupType } from "../types/models"
+
 import ComponentsList from "./ComponentsList"
 import GroupName from "./GroupName"
 

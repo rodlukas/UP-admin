@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Badge } from "reactstrap"
+
 import { AttendanceType } from "../types/models"
 import "./LectureNote.css"
 

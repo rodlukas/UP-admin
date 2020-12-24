@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
+
 import ApplicationService from "../api/services/ApplicationService"
 import APP_URLS from "../APP_URLS"
 import DeleteButton from "../components/buttons/DeleteButton"

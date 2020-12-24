@@ -1,6 +1,7 @@
 import * as React from "react"
 import * as ReactGA from "react-ga"
 import { Route, RouteComponentProps } from "react-router-dom"
+
 import { isEnvProduction } from "../global/funcEnvironments"
 
 type Props = RouteComponentProps & ReactGA.FieldsObject

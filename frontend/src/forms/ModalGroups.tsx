@@ -1,11 +1,13 @@
 import * as React from "react"
 import { Modal } from "reactstrap"
+
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
 import useModal from "../hooks/useModal"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
+
 import FormGroups from "./FormGroups"
 import { DummyGroup } from "./helpers/dummies"
 

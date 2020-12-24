@@ -54,10 +54,10 @@ script:
     - source scripts/shell/release_tasks.sh
 
     # spust audit frontendu
-    - yarn run audit
+    - yarn run frontend:audit
 
     # otestuj frontend (typy, linting, jest)
-    - yarn run test
+    - yarn run frontend:test
 
     # otestuj typy v backendu pres mypy
     - mypy .
@@ -74,7 +74,7 @@ after_success:
     - source scripts/shell/travis/create_frontend_zip.sh
 
     # smazani dat z buildu, testovani a dokumentace
-    - rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests
+    - rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
 notifications:
     email:
         recipients:

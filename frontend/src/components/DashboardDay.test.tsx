@@ -1,11 +1,13 @@
 import { render, screen } from "@testing-library/react"
 import * as React from "react"
 import { Router } from "react-router-dom"
+
 import * as data from "../../__mocks__/data.json"
 import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { DASHBOARDDAY_UPDATE_TYPE } from "../global/constants"
 import history from "../global/history"
 import { noop } from "../global/utils"
+
 import DashboardDay from "./DashboardDay"
 
 test("dashboard day shows lectures for a specific date", async () => {

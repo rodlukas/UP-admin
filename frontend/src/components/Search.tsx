@@ -2,7 +2,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSearch } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Input, InputGroup, InputGroupAddon, Label } from "reactstrap"
+
 import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
+
 import "./Search.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 

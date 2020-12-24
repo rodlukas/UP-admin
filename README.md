@@ -170,8 +170,7 @@ Main tools used for the frontend development:
 -   [ESlint 7](https://eslint.org/) and [stylelint](https://stylelint.io/) – linters for static code
     analysis,
 -   [husky](https://github.com/typicode/husky) and
-    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (eslint, stylelint,
-    prettier)
+    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (eslint, stylelint)
 -   and [React Hot Loader](https://github.com/gaearon/react-hot-loader) – for
     [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 

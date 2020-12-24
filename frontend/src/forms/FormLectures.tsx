@@ -21,6 +21,7 @@ import {
     ModalHeader,
     UncontrolledAlert,
 } from "reactstrap"
+
 import LectureService from "../api/services/LectureService"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -60,6 +61,7 @@ import {
     LectureTypeWithDate,
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
 import "./FormLectures.css"
 import CustomInputWrapper from "./helpers/CustomInputWrapper"
 import SelectCourse from "./helpers/SelectCourse"

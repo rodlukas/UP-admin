@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Col, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
+
 import ApplicationService from "../api/services/ApplicationService"
 import ClientService from "../api/services/ClientService"
 import CancelButton from "../components/buttons/CancelButton"
@@ -19,6 +20,7 @@ import {
     CourseType,
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
 import Or from "./helpers/Or"
 import SelectClient from "./helpers/SelectClient"
 import SelectCourse from "./helpers/SelectCourse"

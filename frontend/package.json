@@ -11,10 +11,10 @@
     "build": "cross-env NODE_ENV=production webpack --progress",
     "build:ci": "cross-env NODE_ENV=production webpack",
     "start": "cross-env NODE_ENV=development webpack-dev-server --progress",
-    "lint:js": "eslint src",
-    "lint!:js": "eslint --fix",
-    "lint:css": "stylelint **/*.css",
-    "lint!:css": "stylelint **/*.css --fix",
+    "lint:js": "eslint .",
+    "lint!:js": "eslint . --fix",
+    "lint:css": "stylelint src/*.css",
+    "lint!:css": "stylelint src/*.css --fix",
     "lint:all": "yarn run lint:js && yarn run lint:css",
     "lint!:all": "yarn run lint!:js && yarn run lint!:css",
     "test": "yarn run types && yarn run lint:all && jest --silent",
@@ -112,20 +112,5 @@
   },
   "resolutions": {
     "remark": "13.0.0"
-  },
-  "lint-staged": {
-    "src/**/*.+(js|jsx|ts|tsx)": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "src/**/*.css": [
-      "prettier --write",
-      "stylelint --fix"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }

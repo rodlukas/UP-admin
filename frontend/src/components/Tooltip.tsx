@@ -2,6 +2,7 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontaw
 import { faInfoCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { UncontrolledTooltipProps } from "reactstrap"
+
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {

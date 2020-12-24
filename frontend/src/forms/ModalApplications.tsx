@@ -1,10 +1,12 @@
 import * as React from "react"
 import { Modal } from "reactstrap"
+
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
 import { ApplicationType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
 import FormApplications from "./FormApplications"
 import { DummyApplication } from "./helpers/dummies"
 

@@ -1,4 +1,5 @@
 import * as React from "react"
+
 import CourseService from "../api/services/CourseService"
 import { getDisplayName, noop } from "../global/utils"
 import { CourseType } from "../types/models"

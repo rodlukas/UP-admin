@@ -1,9 +1,11 @@
 import * as React from "react"
 import { Modal } from "reactstrap"
+
 import { DefaultValuesForLecture } from "../global/utils"
 import useModal from "../hooks/useModal"
 import { ClientType, GroupType, LectureType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
 import FormLectures from "./FormLectures"
 import { DummyLecture } from "./helpers/dummies"
 

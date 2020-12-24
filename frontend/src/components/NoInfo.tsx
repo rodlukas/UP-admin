@@ -1,4 +1,5 @@
 import * as React from "react"
+
 import { QA } from "../types/types"
 
 type Props = QA

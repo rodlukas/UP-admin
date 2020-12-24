@@ -1,5 +1,7 @@
 import * as React from "react"
+
 import { USER_CELEBRATION } from "../global/constants"
+
 import "./Celebration.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 

@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Modal } from "reactstrap"
+
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
@@ -8,6 +9,7 @@ import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { EDIT_TYPE } from "../global/constants"
 import useModal from "../hooks/useModal"
 import { AttendanceStateType, CourseType } from "../types/models"
+
 import FormSettings from "./FormSettings"
 import { DummyAttendanceState, DummyCourse } from "./helpers/dummies"
 

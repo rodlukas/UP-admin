@@ -1,7 +1,9 @@
 import * as React from "react"
 import { Link } from "react-router-dom"
+
 import APP_URLS from "../APP_URLS"
 import { ClientType } from "../types/models"
+
 import "./ClientName.css"
 import ConditionalWrapper from "./ConditionalWrapper"
 

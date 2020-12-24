@@ -5,6 +5,7 @@ import * as React from "react"
 import { ChromePicker } from "react-color"
 import { toast } from "react-toastify"
 import { Col, InputGroup, InputGroupAddon, Label } from "reactstrap"
+
 import Notification from "../../components/Notification"
 import UncontrolledTooltipWrapper from "../../components/UncontrolledTooltipWrapper"
 import "./ColorPicker.css"

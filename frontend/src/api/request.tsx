@@ -1,12 +1,14 @@
 import { AxiosError, AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios"
 import * as React from "react"
 import { toast, ToastOptions, TypeOptions as ToastTypeOptions } from "react-toastify"
+
 import APP_URLS from "../APP_URLS"
 import Token from "../auth/Token"
 import Notification from "../components/Notification"
 import { NOTIFY_TEXT } from "../global/constants"
 import history from "../global/history"
 import { ErrMsg } from "../types/types"
+
 import axiosRequest from "./axiosRequest"
 import { parseDjangoError } from "./parseDjangoError"
 import { API_METHODS, API_URLS } from "./urls"

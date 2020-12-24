@@ -64,7 +64,7 @@ module.exports = {
         },
     ],
     // ignorace souboru v urovni s konfiguraci
-    ignorePatterns: ["/*.js", "/*.ts"],
+    ignorePatterns: ["/*.js", "/*.ts", "build/*", "node_modules/*"],
     parserOptions: {
         ecmaFeatures: {
             jsx: true,
@@ -171,5 +171,16 @@ module.exports = {
         ],
 
         "import/namespace": [2, { allowComputed: true }],
+        "import/order": [
+            "error",
+            {
+                groups: ["builtin", "external", "parent", "sibling", "index"],
+                "newlines-between": "always",
+                alphabetize: {
+                    order: "asc",
+                    caseInsensitive: true,
+                },
+            },
+        ],
     },
 }

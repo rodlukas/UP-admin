@@ -1,7 +1,9 @@
 import * as React from "react"
 import { Badge } from "reactstrap"
+
 import { AttendanceType, LectureType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
 import AttendancePaidButton from "./AttendancePaidButton"
 import AttendanceRemindPay from "./AttendanceRemindPay"
 import "./Attendances.css"
