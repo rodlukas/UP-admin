@@ -21,7 +21,7 @@ cache:
         - $PIPENV_CACHE_DIR
 
 before_install:
-    # instalace postgresql 12
+    # instalace postgresql 12 (na dist focal neni potreba)
     # - source scripts/shell/travis/postgresql_install.sh
     # pridani ceskeho balicku pro funkcni CZ v databazi
     - source scripts/shell/postgresql_cs.sh
