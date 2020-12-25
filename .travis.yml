@@ -22,7 +22,7 @@ cache:
 
 before_install:
     # instalace postgresql 12
-    - source scripts/shell/travis/postgresql_install.sh
+    # - source scripts/shell/travis/postgresql_install.sh
     # pridani ceskeho balicku pro funkcni CZ v databazi
     - source scripts/shell/postgresql_cs.sh
 install:
