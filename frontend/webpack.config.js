@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const StylelintPlugin = require("stylelint-webpack-plugin")
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 
 // bez .local by nefungovalo na iOS
 const hostName = `${os.hostname().toLowerCase()}.local`
@@ -21,6 +22,8 @@ const htmlTarget = path.resolve(__dirname, "..", "admin", "templates")
 // pouziva se cross-env pro crossplatform nastaveni env promenne
 // napr. kvuli https://github.com/gaearon/react-hot-loader#what-about-production
 const isProduction = process.env.NODE_ENV === "production"
+
+const isBundleAnalyze = process.env.BUNDLE_ANALYZE === "true"
 
 // konfigurace je zalozena:
 // - CRA: https://github.com/facebook/create-react-app/blob/v3.3.1/packages/react-scripts/config/webpack.config.js
@@ -177,4 +180,8 @@ module.exports = {
             }),
         ],
     },
+}
+
+if (isBundleAnalyze) {
+    module.exports.plugins.push(new BundleAnalyzerPlugin())
 }
