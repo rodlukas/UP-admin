@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as chroma from "chroma-js"
 import * as CSS from "csstype"
-import { StylesConfig } from "react-select"
 
 // typ viz https://github.com/frenic/csstype#usage
 type CSSTypes = { [key in CSS.Pseudos]?: CSS.Properties<string | number> } &
@@ -26,9 +26,9 @@ const dot = (color = "#ccc"): CSSTypes => ({
  *
  * Vychází z: https://react-select.com/home#custom-styles
  */
-export const selectStyles: StylesConfig = {
-    control: (styles) => ({ ...styles, backgroundColor: "white" }),
-    option: (styles: CSSTypes, { data, isFocused, isSelected }) => {
+export const selectStyles = {
+    control: (styles: CSSTypes) => ({ ...styles, backgroundColor: "white" }),
+    option: (styles: CSSTypes, { data, isFocused, isSelected }: any) => {
         const color = chroma(data.color)
         return {
             ...styles,
@@ -44,7 +44,7 @@ export const selectStyles: StylesConfig = {
             },
         }
     },
-    input: (styles) => ({ ...styles, ...dot() }),
-    placeholder: (styles) => ({ ...styles, ...dot() }),
-    singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) }),
+    input: (styles: CSSTypes) => ({ ...styles, ...dot() }),
+    placeholder: (styles: CSSTypes) => ({ ...styles, ...dot() }),
+    singleValue: (styles: CSSTypes, { data }: any) => ({ ...styles, ...dot(data.color) }),
 }
