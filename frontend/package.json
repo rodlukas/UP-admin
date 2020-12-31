@@ -16,9 +16,9 @@
     "lint!:js": "eslint . --fix",
     "lint:css": "stylelint src/*.css",
     "lint!:css": "stylelint src/*.css --fix",
-    "lint:all": "yarn run lint:js && yarn run lint:css",
-    "lint!:all": "yarn run lint!:js && yarn run lint!:css",
-    "test": "yarn run types && yarn run lint:all && jest --silent",
+    "lint": "yarn run lint:js && yarn run lint:css",
+    "lint!": "yarn run lint!:js && yarn run lint!:css",
+    "test": "yarn run types && yarn run lint && jest --silent",
     "jest:watch": "yarn run jest --watch",
     "jest:debug": "yarn run jest"
   },
