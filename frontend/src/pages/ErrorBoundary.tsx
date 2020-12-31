@@ -87,7 +87,14 @@ class ErrorBoundary extends React.Component<Props, State> {
             return (
                 <Container>
                     <Heading title="Chyba aplikace" />
-                    <p>Nastala neočekávaná chyba v aplikaci. Zkuste tuto stránku načíst znovu.</p>
+                    <p>
+                        Nastala neočekávaná chyba v aplikaci. Zkuste tuto stránku{" "}
+                        <CustomButton
+                            content={"načíst znovu"}
+                            onClick={() => window.location.reload()}
+                        />
+                        .
+                    </p>
                     <CustomButton
                         onClick={(): void =>
                             Sentry.showReportDialog({
