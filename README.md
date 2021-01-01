@@ -428,4 +428,4 @@ The repo contains **complex tests of the API and UI (e2e)** – see the
 
 Licensed under the [MIT](LICENSE) license.
 
-Copyright (c) 2020 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2021 [Lukáš Rod](https://lukasrod.cz/)
