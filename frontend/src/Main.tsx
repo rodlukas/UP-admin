@@ -112,12 +112,12 @@ const Main: React.FC = () => {
                     {isEnvDevelopment() && <Badge color="light">Vývojová verze</Badge>}
                     {isEnvStaging() && (
                         <Badge color="success">
-                            Staging <AppCommit />
+                            Staging <AppCommit pageId="Main" />
                         </Badge>
                     )}
                     {isEnvTesting() && (
                         <Badge color="primary">
-                            Testing <AppCommit />
+                            Testing <AppCommit pageId="Main" />
                         </Badge>
                     )}
                     {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}

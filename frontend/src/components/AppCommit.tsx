@@ -5,18 +5,23 @@ import { GITHUB_REPO_URL } from "../global/constants"
 import "./AppCommit.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
+type Props = {
+    /** Název stránky, na které se komponenta používá (musí být unikátní). */
+    pageId: string
+}
+
 /** Komponenta zobrazující hash commitu příslušné verze aplikace. */
-const AppCommit: React.FC = () => (
+const AppCommit: React.FC<Props> = ({ pageId }) => (
     <>
         <a
             href={`${GITHUB_REPO_URL}/commit/%GIT_COMMIT`}
             target="_blank"
             className="AppCommit"
             rel="noopener noreferrer"
-            id="AppCommit">
+            id={`AppCommit_${pageId}`}>
             %GIT_COMMIT
         </a>
-        <UncontrolledTooltipWrapper target="AppCommit">
+        <UncontrolledTooltipWrapper target={`AppCommit_${pageId}`}>
             Zobrazení commitu (GitHub)
         </UncontrolledTooltipWrapper>
     </>

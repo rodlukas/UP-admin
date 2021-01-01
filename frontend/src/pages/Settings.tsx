@@ -330,7 +330,7 @@ class Settings extends React.Component<Props, State> {
                             <hr />
                             <p className="text-center Settings_Footer">
                                 <span className="font-weight-bold">Verze aplikace:</span>{" "}
-                                <AppCommit />
+                                <AppCommit pageId="Settings" />
                                 {" ("}
                                 <AppRelease />
                                 {")"} – <AppDate />{" "}
