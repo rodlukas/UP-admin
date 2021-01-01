@@ -5,7 +5,7 @@ import LoginService from "../api/services/LoginService"
 import APP_URLS from "../APP_URLS"
 import Notification from "../components/Notification"
 import history from "../global/history"
-import { noop } from "../global/utils"
+import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { AuthorizationType, TokenCodedType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
@@ -30,14 +30,10 @@ type Context = State & {
     isAuthenticated: (refreshExpiringToken?: boolean) => void
 }
 
+type AuthContextInterface = Context | undefined
+
 /** Context pro správu přihlášení uživatele. */
-const AuthContext = React.createContext<Context>({
-    isLoading: false,
-    isAuth: false,
-    isAuthenticated: noop,
-    login: noop,
-    logout: noop,
-})
+const AuthContext = React.createContext<AuthContextInterface>(undefined)
 
 type Props = {}
 
@@ -143,5 +139,6 @@ class AuthProvider extends React.Component<Props, State> {
         </AuthContext.Provider>
     )
 }
+export const useAuthContext = (): Context => useContextWithProvider(AuthContext)
 
 export { AuthProvider, AuthContext }

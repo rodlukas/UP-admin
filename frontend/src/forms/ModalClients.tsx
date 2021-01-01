@@ -3,8 +3,8 @@ import { Modal } from "reactstrap"
 
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
-import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
-import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
+import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
+import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import useModal from "../hooks/useModal"
 import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
@@ -40,8 +40,8 @@ const ModalClients: React.FC<Props> = ({
         tempData,
     ] = useModal()
 
-    const clientsActiveContext = React.useContext(ClientsActiveContext)
-    const groupsActiveContext = React.useContext(GroupsActiveContext)
+    const clientsActiveContext = useClientsActiveContext()
+    const groupsActiveContext = useGroupsActiveContext()
 
     function onModalClose(): void {
         processOnModalClose(() => {

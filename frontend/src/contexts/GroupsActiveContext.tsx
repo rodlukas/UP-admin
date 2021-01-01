@@ -2,6 +2,7 @@ import * as React from "react"
 
 import GroupService from "../api/services/GroupService"
 import { getDisplayName, noop } from "../global/utils"
+import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { GroupType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
@@ -24,13 +25,10 @@ type Context = StateContext & {
     funcHardRefresh: fEmptyVoid
 }
 
+type GroupsActiveContextInterface = Context | undefined
+
 /** Context pro přístup a práci s aktivními skupinami. */
-const GroupsActiveContext = React.createContext<Context>({
-    groups: [],
-    funcRefresh: noop,
-    funcHardRefresh: noop,
-    isLoaded: false,
-})
+const GroupsActiveContext = React.createContext<GroupsActiveContextInterface>(undefined)
 
 /** Provider kontextu s aktivními skupinami. */
 export class GroupsActiveProvider extends React.Component<{}, State> {
@@ -90,7 +88,12 @@ export type GroupsActiveContextProps = {
     groupsActiveContext: Context
 }
 
-type ComponentWithGroupsActiveContextProps<P> = Omit<P, keyof GroupsActiveContextProps>
+/** Interně je v contextu hodnota nebo undefined, ošetřujeme to přes errory. */
+type GroupsActiveContextPropsInternal = {
+    groupsActiveContext: GroupsActiveContextInterface
+}
+
+type ComponentWithGroupsActiveContextProps<P> = Omit<P, keyof GroupsActiveContextPropsInternal>
 
 /** HOC komponenta pro kontext s aktivními skupinami. */
 const WithGroupsActiveContext = <P,>(
@@ -98,9 +101,16 @@ const WithGroupsActiveContext = <P,>(
 ): React.ComponentType<ComponentWithGroupsActiveContextProps<P>> => {
     const ComponentWithGroupsActiveContext = (props: ComponentWithGroupsActiveContextProps<P>) => (
         <GroupsActiveContext.Consumer>
-            {(groupsActiveContext): React.ReactNode => (
-                <WrappedComponent {...(props as P)} groupsActiveContext={groupsActiveContext} />
-            )}
+            {(groupsActiveContext) => {
+                if (groupsActiveContext === undefined) {
+                    throw new Error(
+                        "groupsActiveContext must be used within a GroupsActiveProvider"
+                    )
+                }
+                return (
+                    <WrappedComponent {...(props as P)} groupsActiveContext={groupsActiveContext} />
+                )
+            }}
         </GroupsActiveContext.Consumer>
     )
     ComponentWithGroupsActiveContext.displayName = `WithGroupsActiveContext(${getDisplayName<P>(
@@ -108,5 +118,7 @@ const WithGroupsActiveContext = <P,>(
     )})`
     return ComponentWithGroupsActiveContext
 }
+
+export const useGroupsActiveContext = (): Context => useContextWithProvider(GroupsActiveContext)
 
 export { WithGroupsActiveContext, GroupsActiveContext }

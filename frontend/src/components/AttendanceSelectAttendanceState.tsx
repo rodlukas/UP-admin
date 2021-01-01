@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import AttendanceService from "../api/services/AttendanceService"
-import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
+import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
 import { AttendanceStateType, AttendanceType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
@@ -17,7 +17,7 @@ type Props = {
 
 /** Komponenta zobrazující box pro výběr stavu účasti klienta na dané lekci. */
 const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
-    const { attendancestates } = React.useContext(AttendanceStatesContext)
+    const { attendancestates } = useAttendanceStatesContext()
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const newValue = Number(e.currentTarget.value)

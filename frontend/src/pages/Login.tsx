@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom"
 import { Card, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap"
 
 import APP_URLS from "../APP_URLS"
-import { AuthContext } from "../auth/AuthContext"
+import { useAuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
@@ -19,7 +19,7 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
         isAuthenticated: authContextIsAuthenticated,
         login: authContextLogin,
         isLoading: authContextIsLoading,
-    } = React.useContext(AuthContext)
+    } = useAuthContext()
 
     const usernameField = React.useRef<HTMLInputElement>(null)
     const passwordField = React.useRef<HTMLInputElement>(null)

@@ -2,6 +2,7 @@ import * as React from "react"
 
 import ClientService, { ListWithActiveClients } from "../api/services/ClientService"
 import { getDisplayName, noop } from "../global/utils"
+import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { ClientActiveType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
@@ -24,13 +25,10 @@ type Context = StateContext & {
     funcHardRefresh: fEmptyVoid
 }
 
+type ClientsActiveContextInterface = Context | undefined
+
 /** Context pro přístup a práci s aktivními klienty. */
-const ClientsActiveContext = React.createContext<Context>({
-    clients: [],
-    funcRefresh: noop,
-    funcHardRefresh: noop,
-    isLoaded: false,
-})
+const ClientsActiveContext = React.createContext<ClientsActiveContextInterface>(undefined)
 
 /** Provider kontextu s aktivními klienty. */
 export class ClientsActiveProvider extends React.Component<{}, State> {
@@ -108,7 +106,12 @@ export type ClientsActiveContextProps = {
     clientsActiveContext: Context
 }
 
-type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof ClientsActiveContextProps>
+/** Interně je v contextu hodnota nebo undefined, ošetřujeme to přes errory. */
+type ClientsActiveContextPropsInternal = {
+    clientsActiveContext: ClientsActiveContextInterface
+}
+
+type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof ClientsActiveContextPropsInternal>
 
 /** HOC komponenta pro kontext s aktivními klienty. */
 const WithClientsActiveContext = <P,>(
@@ -118,9 +121,19 @@ const WithClientsActiveContext = <P,>(
         props: ComponentWithCoursesVisibleContextProps<P>
     ) => (
         <ClientsActiveContext.Consumer>
-            {(clientsActiveContext): React.ReactNode => (
-                <WrappedComponent {...(props as P)} clientsActiveContext={clientsActiveContext} />
-            )}
+            {(clientsActiveContext) => {
+                if (clientsActiveContext === undefined) {
+                    throw new Error(
+                        "clientsActiveContext must be used within a ClientsActiveProvider"
+                    )
+                }
+                return (
+                    <WrappedComponent
+                        {...(props as P)}
+                        clientsActiveContext={clientsActiveContext}
+                    />
+                )
+            }}
         </ClientsActiveContext.Consumer>
     )
     ComponentWithClientsActiveContext.displayName = `WithClientsActiveContext(${getDisplayName<P>(
@@ -128,5 +141,7 @@ const WithClientsActiveContext = <P,>(
     )})`
     return ComponentWithClientsActiveContext
 }
+
+export const useClientsActiveContext = (): Context => useContextWithProvider(ClientsActiveContext)
 
 export { WithClientsActiveContext, ClientsActiveContext }

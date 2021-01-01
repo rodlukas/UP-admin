@@ -5,17 +5,16 @@ import APP_URLS from "../APP_URLS"
 import Page from "../components/Page"
 import { AttendanceStatesProvider } from "../contexts/AttendanceStatesContext"
 import { CoursesVisibleProvider } from "../contexts/CoursesVisibleContext"
-import { GroupsActiveProvider } from "../contexts/GroupsActiveContext"
 import { CustomRouteProps } from "../types/types"
 
-import { AuthContext } from "./AuthContext"
+import { useAuthContext } from "./AuthContext"
 
 /**
  * Komponenta, která rozlišuje ne/přihlášeného uživatele.
  * Na základě toho mu zobrazí příslušný obsah, případně přesměruje na přihlášení.
  */
 const PrivateRoute: React.FC<CustomRouteProps> = ({ component: WrappedComponent, ...rest }) => {
-    const authContext = React.useContext(AuthContext)
+    const authContext = useAuthContext()
 
     if (!WrappedComponent) {
         return null
@@ -28,9 +27,7 @@ const PrivateRoute: React.FC<CustomRouteProps> = ({ component: WrappedComponent,
                 authContext.isAuth ? (
                     <AttendanceStatesProvider>
                         <CoursesVisibleProvider>
-                            <GroupsActiveProvider>
-                                <WrappedComponent {...props} />
-                            </GroupsActiveProvider>
+                            <WrappedComponent {...props} />
                         </CoursesVisibleProvider>
                     </AttendanceStatesProvider>
                 ) : (

@@ -2,6 +2,7 @@ import * as React from "react"
 
 import CourseService from "../api/services/CourseService"
 import { getDisplayName, noop } from "../global/utils"
+import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { CourseType } from "../types/models"
 import { fEmptyVoid, fFunction } from "../types/types"
 
@@ -24,13 +25,10 @@ type Context = StateContext & {
     funcHardRefresh: fEmptyVoid
 }
 
+type CoursesVisibleContextInterface = Context | undefined
+
 /** Context pro přístup a práci s viditelnými kurzy. */
-const CoursesVisibleContext = React.createContext<Context>({
-    courses: [],
-    funcRefresh: noop,
-    funcHardRefresh: noop,
-    isLoaded: false,
-})
+const CoursesVisibleContext = React.createContext<CoursesVisibleContextInterface>(undefined)
 
 /** Provider kontextu s viditelnými kurzy. */
 export class CoursesVisibleProvider extends React.Component<{}, State> {
@@ -90,7 +88,12 @@ export type CoursesVisibleContextProps = {
     coursesVisibleContext: Context
 }
 
-type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof CoursesVisibleContextProps>
+/** Interně je v contextu hodnota nebo undefined, ošetřujeme to přes errory. */
+type CoursesVisibleContextPropsInternal = {
+    coursesVisibleContext: CoursesVisibleContextInterface
+}
+
+type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof CoursesVisibleContextPropsInternal>
 
 /** HOC komponenta pro kontext s viditelnými kurzy. */
 const WithCoursesVisibleContext = <P,>(
@@ -100,9 +103,19 @@ const WithCoursesVisibleContext = <P,>(
         props: ComponentWithCoursesVisibleContextProps<P>
     ) => (
         <CoursesVisibleContext.Consumer>
-            {(coursesVisibleContext): React.ReactNode => (
-                <WrappedComponent {...(props as P)} coursesVisibleContext={coursesVisibleContext} />
-            )}
+            {(coursesVisibleContext) => {
+                if (coursesVisibleContext === undefined) {
+                    throw new Error(
+                        "coursesVisibleContext must be used within a CoursesVisibleProvider"
+                    )
+                }
+                return (
+                    <WrappedComponent
+                        {...(props as P)}
+                        coursesVisibleContext={coursesVisibleContext}
+                    />
+                )
+            }}
         </CoursesVisibleContext.Consumer>
     )
     ComponentWithCoursesVisibleContext.displayName = `WithCoursesVisibleContext(${getDisplayName<P>(
@@ -110,5 +123,7 @@ const WithCoursesVisibleContext = <P,>(
     )})`
     return ComponentWithCoursesVisibleContext
 }
+
+export const useCoursesVisibleContext = (): Context => useContextWithProvider(CoursesVisibleContext)
 
 export { WithCoursesVisibleContext, CoursesVisibleContext }

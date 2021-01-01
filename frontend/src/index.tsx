@@ -10,10 +10,12 @@ import { Router } from "react-router-dom"
 import { AuthProvider } from "./auth/AuthContext"
 import GA from "./components/GoogleAnalytics"
 import { ClientsActiveProvider } from "./contexts/ClientsActiveContext"
+import { GroupsActiveProvider } from "./contexts/GroupsActiveContext"
 import { getEnvName, isHosted } from "./global/funcEnvironments"
 import history from "./global/history"
 import "./index.css"
 import Main from "./Main"
+import ErrorBoundary from "./pages/ErrorBoundary"
 
 // opatreni kvuli CSP pro FontAwesome, viz https://fontawesome.com/how-to-use/on-the-web/other-topics/security
 config.autoAddCss = false
@@ -30,12 +32,16 @@ if (isHosted()) {
 /** Základní kostra aplikace. */
 const App: React.FC = () => (
     <Router history={history}>
-        {GA.init() && <GA.RouteTracker />}
-        <AuthProvider>
-            <ClientsActiveProvider>
-                <Main />
-            </ClientsActiveProvider>
-        </AuthProvider>
+        <ErrorBoundary>
+            {GA.init() && <GA.RouteTracker />}
+            <AuthProvider>
+                <ClientsActiveProvider>
+                    <GroupsActiveProvider>
+                        <Main />
+                    </GroupsActiveProvider>
+                </ClientsActiveProvider>
+            </AuthProvider>
+        </ErrorBoundary>
     </Router>
 )
 

@@ -3,9 +3,9 @@ import { Modal } from "reactstrap"
 
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
-import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
-import { CoursesVisibleContext } from "../contexts/CoursesVisibleContext"
-import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
+import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
+import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
+import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { EDIT_TYPE } from "../global/constants"
 import useModal from "../hooks/useModal"
 import { AttendanceStateType, CourseType } from "../types/models"
@@ -28,9 +28,9 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE, refresh }) => {
     const typeButtons = TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav účasti"
     const typeQa = TYPE === EDIT_TYPE.COURSE ? "course" : "attendancestate"
 
-    const coursesVisibleContext = React.useContext(CoursesVisibleContext)
-    const groupsActiveContext = React.useContext(GroupsActiveContext)
-    const attendanceStatesContext = React.useContext(AttendanceStatesContext)
+    const coursesVisibleContext = useCoursesVisibleContext()
+    const groupsActiveContext = useGroupsActiveContext()
+    const attendanceStatesContext = useAttendanceStatesContext()
 
     function onModalClose(): void {
         processOnModalClose(() => {

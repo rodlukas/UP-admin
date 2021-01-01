@@ -1,52 +1,97 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSearch } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import Fuse from "fuse.js"
 import * as React from "react"
-import { Input, InputGroup, InputGroupAddon, Label } from "reactstrap"
+import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
-import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
+import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
+import ModalClients from "../forms/ModalClients"
+import { ClientActiveType } from "../types/models"
+import { fEmptyVoid } from "../types/types"
 
-import "./Search.css"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
+import BackButton from "./buttons/BackButton"
+import ClientEmail from "./ClientEmail"
+import ClientName from "./ClientName"
+import ClientPhone from "./ClientPhone"
+import Heading from "./Heading"
+import Loading from "./Loading"
 
 type Props = {
-    /** Funkce, která se zavolá při úpravě vyhledávaného výrazu. */
-    onSearchChange: (newSearchVal: string) => void
+    /** Výsledky vyhledávání klientů. */
+    foundResults: Array<Fuse.FuseResult<ClientActiveType>>
     /** Vyhledávaný výraz. */
     searchVal: string
+    /** Funkce pro zahájení vyhledávání klientů. */
+    search: fEmptyVoid
+    /** Funkce zrušení vyhledávání klientů. */
+    resetSearch: fEmptyVoid
 }
 
-/** Komponenta zobrazující pole pro vyhledávání. */
-const Search: React.FC<Props> = (props) => {
-    // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
-    const { funcRefresh: clientsActiveContextFuncRefresh } = React.useContext(ClientsActiveContext)
-
-    React.useEffect(() => {
-        clientsActiveContextFuncRefresh()
-    }, [clientsActiveContextFuncRefresh])
-
-    function onSearchChange(e: React.ChangeEvent<HTMLInputElement>): void {
-        props.onSearchChange(e.currentTarget.value)
-    }
+/** Komponenta zobrazující výsledky vyhledávání - seznam klientů. */
+const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch }) => {
+    const clientsActiveContext = useClientsActiveContext()
 
     return (
-        <InputGroup className="Search">
-            <InputGroupAddon id="Search" addonType="prepend">
-                <Label className="input-group-text" for="search">
-                    <FontAwesomeIcon icon={faSearch} fixedWidth />
-                </Label>
-            </InputGroupAddon>
-            <UncontrolledTooltipWrapper placement="left" target="Search">
-                Vyhledávání klientů
-            </UncontrolledTooltipWrapper>
-            <Input
-                onChange={onSearchChange}
-                placeholder="Vyhledat klienta..."
-                value={props.searchVal}
-                type="search"
-                id="search"
-                autoComplete="off"
-            />
-        </InputGroup>
+        <>
+            {searchVal !== "" && (
+                <Container>
+                    <Heading
+                        title={
+                            <>
+                                Vyhledaní klienti{" "}
+                                <Badge color="secondary" pill>
+                                    {foundResults.length}
+                                </Badge>
+                            </>
+                        }
+                        buttons={<BackButton onClick={resetSearch} content="Zrušit vyhledávání" />}
+                    />
+                    <ListGroup>
+                        {!clientsActiveContext.isLoaded ? (
+                            <Loading />
+                        ) : (
+                            <>
+                                {foundResults.map(({ item }) => (
+                                    <ListGroupItem key={item.id}>
+                                        <Row className="align-items-center">
+                                            {" "}
+                                            <Col md="6">
+                                                <h5 className="mb-0 d-inline-block">
+                                                    <ClientName client={item} link />
+                                                </h5>
+                                                {item.note !== "" && (
+                                                    <span className="text-secondary">
+                                                        {" "}
+                                                        &ndash; {item.note}
+                                                    </span>
+                                                )}
+                                            </Col>
+                                            <Col md="2">
+                                                {item.phone && (
+                                                    <ClientPhone phone={item.phone} icon />
+                                                )}
+                                            </Col>
+                                            <Col md="3">
+                                                {item.email && <ClientEmail email={item.email} />}
+                                            </Col>
+                                            <Col className="text-right mt-1 mt-md-0" md="1">
+                                                <ModalClients
+                                                    currentClient={item}
+                                                    refresh={search}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </ListGroupItem>
+                                ))}
+                                {foundResults.length === 0 && (
+                                    <p className="text-muted text-center">
+                                        Žádní klienti nenalezeni
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    </ListGroup>
+                </Container>
+            )}
+        </>
     )
 }
 

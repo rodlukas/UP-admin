@@ -6,13 +6,14 @@ import "react-toastify/dist/ReactToastify.css"
 import { Badge, Collapse, Navbar, NavbarBrand, NavbarToggler } from "reactstrap"
 
 import APP_URLS from "./APP_URLS"
-import { AuthContext } from "./auth/AuthContext"
+import { useAuthContext } from "./auth/AuthContext"
 import PrivateRoute from "./auth/PrivateRoute"
 import AppCommit from "./components/AppCommit"
 import Loading from "./components/Loading"
 import Menu from "./components/Menu"
 import Page from "./components/Page"
-import { ClientsActiveContext } from "./contexts/ClientsActiveContext"
+import Search from "./components/Search"
+import { useClientsActiveContext } from "./contexts/ClientsActiveContext"
 import {
     getEnvName,
     isEnvDemo,
@@ -21,10 +22,10 @@ import {
     isEnvTesting,
 } from "./global/funcEnvironments"
 import lazySafe from "./global/lazySafe"
+import { isModalShown } from "./global/utils"
 import useKeyPress from "./hooks/useKeyPress"
 import "./Main.css"
 import ErrorBoundary from "./pages/ErrorBoundary"
-import SearchResults from "./pages/SearchResults"
 import { ClientActiveType } from "./types/models"
 
 // lazy nacitani pro jednotlive stranky
@@ -52,8 +53,8 @@ const Main: React.FC = () => {
         Array<Fuse.FuseResult<ClientActiveType>>
     >([])
     const [searchVal, setSearchVal] = React.useState("")
-    const authContext = React.useContext(AuthContext)
-    const clientsActiveContext = React.useContext(ClientsActiveContext)
+    const authContext = useAuthContext()
+    const clientsActiveContext = useClientsActiveContext()
     const location = useLocation()
     const escPress = useKeyPress("Escape")
 
@@ -71,7 +72,13 @@ const Main: React.FC = () => {
 
     React.useEffect(() => {
         resetSearch()
-    }, [location, escPress])
+    }, [location])
+
+    React.useEffect(() => {
+        if (!isModalShown()) {
+            resetSearch()
+        }
+    }, [escPress])
 
     React.useEffect(() => {
         search()
@@ -127,7 +134,7 @@ const Main: React.FC = () => {
             <main className="main mb-4">
                 <ErrorBoundary>
                     <ToastContainer position={toast.POSITION.TOP_RIGHT} />
-                    <SearchResults
+                    <Search
                         foundResults={foundResults}
                         searchVal={searchVal}
                         search={search}

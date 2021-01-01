@@ -2,6 +2,7 @@ import * as React from "react"
 
 import AttendanceStateService from "../api/services/AttendanceStateService"
 import { getDisplayName, noop } from "../global/utils"
+import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { AttendanceStateType } from "../types/models"
 import { fFunction } from "../types/types"
 
@@ -17,12 +18,10 @@ type Context = StateContext & {
     funcRefresh: (callback?: fFunction) => void
 }
 
+type AttendanceStatesContextInterface = Context | undefined
+
 /** Context pro přístup a práci se stavy účasti. */
-const AttendanceStatesContext = React.createContext<Context>({
-    attendancestates: [],
-    funcRefresh: noop,
-    isLoaded: false,
-})
+const AttendanceStatesContext = React.createContext<AttendanceStatesContextInterface>(undefined)
 
 /** Provider kontextu se stavy účastí. */
 export class AttendanceStatesProvider extends React.Component<{}, StateContext> {
@@ -66,7 +65,15 @@ export type AttendanceStatesContextProps = {
     attendanceStatesContext: Context
 }
 
-type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof AttendanceStatesContextProps>
+/** Interně je v contextu hodnota nebo undefined, ošetřujeme to přes errory. */
+type AttendanceStatesContextPropsInternal = {
+    attendanceStatesContext: AttendanceStatesContextInterface
+}
+
+type ComponentWithCoursesVisibleContextProps<P> = Omit<
+    P,
+    keyof AttendanceStatesContextPropsInternal
+>
 
 /** HOC komponenta pro kontext se stavy účasti. */
 const WithAttendanceStatesContext = <P,>(
@@ -76,12 +83,19 @@ const WithAttendanceStatesContext = <P,>(
         props: ComponentWithCoursesVisibleContextProps<P>
     ) => (
         <AttendanceStatesContext.Consumer>
-            {(attendanceStatesContext): React.ReactNode => (
-                <WrappedComponent
-                    {...(props as P)}
-                    attendanceStatesContext={attendanceStatesContext}
-                />
-            )}
+            {(attendanceStatesContext) => {
+                if (attendanceStatesContext === undefined) {
+                    throw new Error(
+                        "attendanceStatesContext must be used within a AttendanceStatesProvider"
+                    )
+                }
+                return (
+                    <WrappedComponent
+                        {...(props as P)}
+                        attendanceStatesContext={attendanceStatesContext}
+                    />
+                )
+            }}
         </AttendanceStatesContext.Consumer>
     )
     ComponentWithAttendanceStatesContext.displayName = `WithCoursesVisibleContext(${getDisplayName<P>(
@@ -89,5 +103,8 @@ const WithAttendanceStatesContext = <P,>(
     )})`
     return ComponentWithAttendanceStatesContext
 }
+
+export const useAttendanceStatesContext = (): Context =>
+    useContextWithProvider(AttendanceStatesContext)
 
 export { WithAttendanceStatesContext, AttendanceStatesContext }
