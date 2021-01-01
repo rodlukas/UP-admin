@@ -82,12 +82,16 @@ describe("pretty date with year", () => {
 })
 
 test("recognizes current year", () => {
-    expect(isNotCurrentYear(new Date(2020, 1, 1))).toBe(false)
+    expect(isNotCurrentYear(new Date())).toBe(false)
     expect(isNotCurrentYear(new Date(2010, 1, 1))).toBe(true)
 })
 
 test("pretty date with year (if differs from current)", () => {
-    expect(prettyDateWithYearIfDiff(new Date(2020, 1, 1, 15, 2, 4))).toBe("1. 2.")
+    const dateWithCurrentYear = new Date()
+    dateWithCurrentYear.setDate(1)
+    dateWithCurrentYear.setMonth(1)
+
+    expect(prettyDateWithYearIfDiff(new Date(dateWithCurrentYear))).toBe("1. 2.")
     expect(prettyDateWithYearIfDiff(new Date(2010, 1, 1, 15, 2, 4))).toBe("1. 2. 2010")
 })
 
@@ -102,7 +106,14 @@ test("pretty date with year and short textual day", () => {
 })
 
 test("pretty date with year (if differs from current) and long textual day", () => {
-    expect(prettyDateWithLongDayYearIfDiff(new Date(2020, 1, 3, 15, 2, 4))).toBe("pondělí 3. 2.")
+    const dateWithCurrentYear = new Date()
+    dateWithCurrentYear.setDate(3)
+    dateWithCurrentYear.setMonth(1)
+    const nameOfCurDay = Intl.DateTimeFormat("cs-CZ", { weekday: "long" }).format(
+        dateWithCurrentYear
+    )
+
+    expect(prettyDateWithLongDayYearIfDiff(dateWithCurrentYear)).toBe(`${nameOfCurDay} 3. 2.`)
     expect(prettyDateWithLongDayYearIfDiff(new Date(2010, 1, 2, 15, 2, 4))).toBe("úterý 2. 2. 2010")
 })
 
@@ -123,7 +134,16 @@ describe("pretty date year (if differs from current) and short textual day, poss
     })
 
     test("full date when single word not required", () => {
-        expect(prettyDateWithDayYearIfDiff(new Date(2020, 1, 3, 15, 2, 4), false)).toBe("po 3. 2.")
+        const dateWithCurrentYear = new Date()
+        dateWithCurrentYear.setDate(3)
+        dateWithCurrentYear.setMonth(1)
+        const nameOfCurDay = Intl.DateTimeFormat("cs-CZ", { weekday: "short" }).format(
+            dateWithCurrentYear
+        )
+
+        expect(prettyDateWithDayYearIfDiff(new Date(dateWithCurrentYear), false)).toBe(
+            `${nameOfCurDay} 3. 2.`
+        )
         expect(prettyDateWithDayYearIfDiff(new Date(2010, 1, 3, 15, 2, 4), false)).toBe(
             "st 3. 2. 2010"
         )

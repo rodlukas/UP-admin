@@ -42,10 +42,10 @@
                         "id": 14,
                         "active": true,
                         "email": "",
-                        "firstname": "cfsdf",
+                        "firstname": "Jan",
                         "note": "",
                         "phone": "",
-                        "surname": "fd"
+                        "surname": "Novák"
                     },
                     "remind_pay": true,
                     "note": "",
@@ -95,6 +95,70 @@
             "default": false,
             "excused": true,
             "visible": true
+        }
+    ],
+    "clients": [
+        {
+            "id": 18,
+            "active": true,
+            "email": "info@lukasrod.cz",
+            "firstname": "Lukáš",
+            "note": "vcvxc vxc v cv  xcvxc vcxvxcv cv cx v xcv cx vxc vcxvcxv xcv cx xv xv",
+            "phone": "000000000",
+            "surname": "Rod",
+            "normalized": ["Lukas", "Rod"]
+        },
+        {
+            "id": 14,
+            "active": true,
+            "email": "",
+            "firstname": "Jan",
+            "note": "",
+            "phone": "",
+            "surname": "Novák",
+            "normalized": ["Jan", "Novak"]
+        }
+    ],
+    "groups": [
+        {
+            "id": 4,
+            "name": "GMT 1",
+            "memberships": [
+                {
+                    "id": 10,
+                    "client": {
+                        "id": 14,
+                        "active": true,
+                        "email": "",
+                        "firstname": "Jan",
+                        "note": "",
+                        "phone": "",
+                        "surname": "Novák"
+                    },
+                    "prepaid_cnt": 0
+                },
+                {
+                    "id": 9,
+                    "client": {
+                        "id": 18,
+                        "active": true,
+                        "email": "info@lukasrod.cz",
+                        "firstname": "Lukáš",
+                        "note": "vcvxc vxc v cv  xcvxc vcxvxcv cv cx v xcv cx vxc vcxvcxv xcv cx xv xv",
+                        "phone": "000000000",
+                        "surname": "Rod"
+                    },
+                    "prepaid_cnt": 0
+                }
+            ],
+            "course": {
+                "id": 5,
+                "name": "Rozvoj grafomotoriky",
+                "color": "#F39C12",
+                "duration": 30,
+                "visible": true
+            },
+            "active": true
         }
     ]
 }
