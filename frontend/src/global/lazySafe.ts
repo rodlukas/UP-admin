@@ -22,7 +22,10 @@ export default function lazySafe(
             .then(resolve)
             .catch((error) => {
                 // zjisti, jestli se nepodarilo nacist chunk
-                if (/loading chunk \d* failed./i.test(error.message)) {
+                // muze dorazit:
+                //  1. Loading chunk 11 failed.
+                //  2. Loading CSS chunk 11 failed.
+                if (/loading(?: css)? chunk \d* failed./i.test(error.message)) {
                     // zjisti, zda uz doslo k prvnimu automatickemu reloadu
                     const curValue = localStorage.getItem(FIRST_RELOAD_KEY)
                     if (curValue === null || curValue !== "true") {
