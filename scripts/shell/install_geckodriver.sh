@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=0.28.0
+VERSION=0.29.0
 GITHUB_REPO_URL=https://github.com/mozilla/geckodriver
 
 mkdir geckodriver
