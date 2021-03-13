@@ -114,9 +114,6 @@ module.exports = {
         "plugin:jsx-a11y/recommended",
 
         "plugin:prettier/recommended",
-        "prettier/@typescript-eslint",
-        "prettier/babel",
-        "prettier/react",
 
         "plugin:jest-dom/recommended",
         "plugin:testing-library/react",
