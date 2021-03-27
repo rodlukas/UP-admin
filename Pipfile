@@ -31,7 +31,7 @@ django-stubs = "~=1.7.0"
 djangorestframework-stubs = "~=1.2.0"
 
 [requires]
-python_full_version = "3.9.1"
+python_full_version = "3.9.2"
 
 [pipenv]
 allow_prereleases = true
