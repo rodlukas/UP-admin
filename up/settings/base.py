@@ -128,6 +128,8 @@ DATABASES = {"default": env.db()}
 # nastaveni persistentnich spojeni s DB (mimo testy - zpusobuje problemy)
 if not TESTS_RUNNING:
     DATABASES["default"]["CONN_MAX_AGE"] = CONST_DB_CON_AGE
+# https://docs.djangoproject.com/fr/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
