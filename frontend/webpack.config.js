@@ -8,6 +8,7 @@ const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const StylelintPlugin = require("stylelint-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
+const ESLintPlugin = require("eslint-webpack-plugin")
 
 // bez .local by nefungovalo na iOS
 const hostName = `${os.hostname().toLowerCase()}.local`
@@ -42,18 +43,6 @@ module.exports = {
     entry: ["react-hot-loader/patch", "./src/index"],
     module: {
         rules: [
-            {
-                test: /\.(ts|js)x?$/,
-                enforce: "pre",
-                exclude: /node_modules/,
-                loader: "eslint-loader",
-                options: {
-                    // vsechny errors/warnings od eslint interpretuj jako warning
-                    emitWarning: true,
-                    // !! pri upravach eslint konfigurace deaktivovat, viz https://github.com/webpack-contrib/eslint-loader/issues/214
-                    cache: true,
-                },
-            },
             {
                 test: /\.(ts|js)x?$/,
                 exclude: /node_modules/,
@@ -95,6 +84,7 @@ module.exports = {
         ],
     },
     plugins: [
+        new ESLintPlugin({ extensions: ["js", "jsx", "ts", "tsx"] }),
         new StylelintPlugin({
             emitWarning: true,
             files: "src/*.css",
