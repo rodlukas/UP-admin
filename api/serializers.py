@@ -249,9 +249,13 @@ class AttendanceSerializer(serializers.ModelSerializer):
         queryset=Client.objects.all(), source="client", write_only=True
     )
     # info, zda je potreba pripomenout klientovi platbu priste (jen pro cteni)
-    remind_pay = serializers.SerializerMethodField()
+    remind_pay = serializers.SerializerMethodField(
+        help_text="Indikátor připomenutí platby za příští lekci"
+    )
     # cislo lekce pro klienty skupiny
-    number = serializers.SerializerMethodField()
+    number = serializers.SerializerMethodField(
+        help_text="Číslo lekce daného klienta v rámci skupiny"
+    )
     # + attendancestate vraci jen ID
 
     class Meta:
@@ -389,9 +393,13 @@ class LectureSerializer(serializers.ModelSerializer):
         allow_null=True,
     )
     # poradove cislo lekce (jen pro cteni)
-    number = serializers.SerializerMethodField()
+    number = serializers.SerializerMethodField(help_text="Pořadové číslo lekce")
     # indikator, zda aktualizovat ucastniky dane lekce na (pouze) aktualni cleny skupiny
-    refresh_clients = serializers.BooleanField(write_only=True, default=False)
+    refresh_clients = serializers.BooleanField(
+        write_only=True,
+        default=False,
+        help_text="Indikátor, zda aktualizovat účastníky dané lekce jen na aktuální členy skupiny",
+    )
 
     class Meta:
         model = Lecture

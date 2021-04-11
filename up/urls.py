@@ -20,6 +20,7 @@ urlpatterns = [
             title="ÚPadmin API",
             description="Dokumentace *REST API* pro aplikaci **ÚPadmin**. **[Přejít do aplikace](/)**",
             version="1.0.0",
+            urlconf="api.urls",
         ),
         name="openapi-schema",
     ),
