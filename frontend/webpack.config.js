@@ -58,15 +58,7 @@ module.exports = {
             {
                 test: /\.css$/i,
                 use: [
-                    isProduction
-                        ? {
-                              loader: MiniCssExtractPlugin.loader,
-                              options: {
-                                  hmr: !isProduction,
-                                  sourceMap: true,
-                              },
-                          }
-                        : "style-loader",
+                    isProduction ? MiniCssExtractPlugin.loader : "style-loader",
                     {
                         loader: "css-loader",
                         options: { importLoaders: 1, sourceMap: true },
@@ -74,9 +66,10 @@ module.exports = {
                     {
                         loader: "postcss-loader",
                         options: {
+                            postcssOptions: {
+                                plugins: ["postcss-preset-env", "cssnano"],
+                            },
                             sourceMap: true,
-                            ident: "postcss",
-                            plugins: [require("postcss-preset-env")(), require("cssnano")()],
                         },
                     },
                 ],
