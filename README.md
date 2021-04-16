@@ -47,10 +47,11 @@
     Logentries – 
     <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">production</a> / 
     <a href="https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803">staging</a> / 
-    <a href="https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3">testing</a>
+    <a href="https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3">testing</a> / 
+    <a href="https://addons-sso.heroku.com/apps/312b2926-0bff-425b-9902-f71c8b8d223b/addons/43ad6f0f-a3b8-4551-81b5-5aced9b9b143">demo</a>
 </p>
 
-## Obsah
+## Table of Contents
 
 -   [Demo](#demo)
 -   [Basic description of the app](#basic-description-of-the-app)
