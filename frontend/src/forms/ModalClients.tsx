@@ -30,15 +30,8 @@ const ModalClients: React.FC<Props> = ({
     processAdditionOfClient,
     refresh,
 }) => {
-    const [
-        isModal,
-        toggleModal,
-        toggleModalForce,
-        setFormDirty,
-        ,
-        processOnModalClose,
-        tempData,
-    ] = useModal()
+    const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose, tempData] =
+        useModal()
 
     const clientsActiveContext = useClientsActiveContext()
     const groupsActiveContext = useGroupsActiveContext()

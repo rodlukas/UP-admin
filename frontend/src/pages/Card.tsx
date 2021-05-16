@@ -216,13 +216,8 @@ class Card extends React.Component<Props, State> {
     }
 
     render(): React.ReactNode {
-        const {
-            object,
-            lectures,
-            defaultValuesForLecture,
-            groupsOfClient,
-            pendingLoadingCnt,
-        } = this.state
+        const { object, lectures, defaultValuesForLecture, groupsOfClient, pendingLoadingCnt } =
+            this.state
         return (
             <>
                 <Container>

@@ -29,15 +29,8 @@ const ModalGroups: React.FC<Props> = ({
     refresh,
     processAdditionOfGroup,
 }) => {
-    const [
-        isModal,
-        toggleModal,
-        toggleModalForce,
-        setFormDirty,
-        ,
-        processOnModalClose,
-        tempData,
-    ] = useModal()
+    const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose, tempData] =
+        useModal()
 
     const groupsActiveContext = useGroupsActiveContext()
 

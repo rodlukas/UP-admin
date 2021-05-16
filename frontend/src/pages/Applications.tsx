@@ -40,9 +40,8 @@ class Applications extends React.Component<Props, State> {
 
     getApplications = (): void => {
         ApplicationService.getAll().then((applications) => {
-            const grouppedApplicationsByCourses = groupObjectsByCourses<ApplicationType>(
-                applications
-            )
+            const grouppedApplicationsByCourses =
+                groupObjectsByCourses<ApplicationType>(applications)
             this.setState({
                 applications: grouppedApplicationsByCourses,
                 isLoading: false,

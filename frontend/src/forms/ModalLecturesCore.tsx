@@ -39,14 +39,8 @@ const ModalLecturesCore: React.FC<Props> = ({
     shouldModalOpen = false,
     date = "",
 }) => {
-    const [
-        isModal,
-        toggleModal,
-        toggleModalForce,
-        setFormDirty,
-        setModal,
-        processOnModalClose,
-    ] = useModal()
+    const [isModal, toggleModal, toggleModalForce, setFormDirty, setModal, processOnModalClose] =
+        useModal()
 
     function onModalClose(): void {
         processOnModalClose(refresh)

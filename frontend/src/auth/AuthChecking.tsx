@@ -11,10 +11,8 @@ const REFRESH_TOKEN_INTERVAL = 210 * 60 * 1000 // milisekundy -> 3.5 hodiny
  */
 const AuthChecking: React.FC = () => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
-    const {
-        isAuth: authContextIsAuth,
-        isAuthenticated: authContextIsAuthenticated,
-    } = useAuthContext()
+    const { isAuth: authContextIsAuth, isAuthenticated: authContextIsAuthenticated } =
+        useAuthContext()
 
     React.useEffect(() => {
         authContextIsAuthenticated()

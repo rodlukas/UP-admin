@@ -112,9 +112,8 @@ class ModalLecturesWizard extends React.Component<Props, State> {
             request.then((lecturesGroupedByCourses) => {
                 this.setState(
                     {
-                        defaultValuesForLecture: getDefaultValuesForLecture(
-                            lecturesGroupedByCourses
-                        ),
+                        defaultValuesForLecture:
+                            getDefaultValuesForLecture(lecturesGroupedByCourses),
                     },
                     () =>
                         this.setState({
