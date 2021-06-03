@@ -148,7 +148,7 @@ class Settings extends React.Component<Props, State> {
                             <Row>
                                 <Col md={6}>
                                     <h2>Stavy účasti</h2>
-                                    <Table striped size="sm" className="table-custom">
+                                    <Table striped responsive size="sm" className="table-custom">
                                         <thead className="thead-light">
                                             <tr>
                                                 <th>Název</th>
@@ -279,7 +279,7 @@ class Settings extends React.Component<Props, State> {
                                 </Col>
                                 <Col md={6}>
                                     <h2>Kurzy</h2>
-                                    <Table striped size="sm" className="table-custom">
+                                    <Table striped responsive size="sm" className="table-custom">
                                         <thead className="thead-light">
                                             <tr>
                                                 <th>Název</th>
