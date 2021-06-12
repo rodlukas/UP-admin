@@ -1,5 +1,5 @@
 {
     "low": true,
     "report-type": "summary",
-    "allowlist": ["postcss", "ws"]
+    "allowlist": ["postcss", "css-what", "normalize-url", "glob-parent"]
 }
