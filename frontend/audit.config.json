@@ -1,5 +1,5 @@
 {
     "low": true,
     "report-type": "summary",
-    "allowlist": ["css-what", "normalize-url", "glob-parent"]
+    "allowlist": ["glob-parent"]
 }
