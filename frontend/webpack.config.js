@@ -1,6 +1,5 @@
 const os = require("os")
 const path = require("path")
-const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
@@ -86,7 +85,6 @@ module.exports = {
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
             chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",
         }),
-        new CleanWebpackPlugin(),
         new HtmlWebPackPlugin({
             // diky teto moznosti muze pak pracovat HtmlWebpackHarddiskPlugin
             alwaysWriteToDisk: true,
@@ -119,6 +117,7 @@ module.exports = {
         filename: isProduction ? "[name].[contenthash:8].js" : "[name].js",
         path: pathBuild,
         publicPath: isProduction ? urlProduction : urlLocal,
+        clean: true,
     },
     devServer: {
         // pro povoleni pristupu odkudkoliv (a z Djanga)
