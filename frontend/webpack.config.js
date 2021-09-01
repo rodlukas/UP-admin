@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const StylelintPlugin = require("stylelint-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
@@ -141,27 +141,11 @@ module.exports = {
         minimize: isProduction,
         splitChunks: {
             chunks: "all",
-            name: !isProduction,
         },
         runtimeChunk: {
             name: (entrypoint) => `runtime-${entrypoint.name}`,
         },
-        minimizer: [
-            new TerserPlugin({
-                sourceMap: true,
-            }),
-            new OptimizeCSSAssetsPlugin({
-                cssProcessorOptions: {
-                    map: {
-                        inline: false,
-                        annotation: true,
-                    },
-                },
-                cssProcessorPluginOptions: {
-                    preset: ["default", { minifyFontValues: { removeQuotes: false } }],
-                },
-            }),
-        ],
+        minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
     },
 }
 
