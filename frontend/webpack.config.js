@@ -145,6 +145,7 @@ module.exports = {
             name: (entrypoint) => `runtime-${entrypoint.name}`,
         },
         minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+        realContentHash: false,
     },
 }
 
