@@ -27,6 +27,7 @@ const isBundleAnalyze = process.env.BUNDLE_ANALYZE === "true"
 
 // konfigurace je zalozena:
 // - CRA: https://github.com/facebook/create-react-app/blob/v3.3.1/packages/react-scripts/config/webpack.config.js
+//   - plus novejsi verze CRA (nejen webpack config, ale i dalsi)
 // - castecne se take inspiruje u https://github.com/neutrinojs/neutrino a
 //   https://github.com/insin/nwb/
 // - stavi na puvodni pouzivane konfiguraci https://github.com/rodlukas/UP-admin/blob/0.18.1/frontend/nwb.config.js
@@ -145,7 +146,8 @@ module.exports = {
             name: (entrypoint) => `runtime-${entrypoint.name}`,
         },
         minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
-        // TODO
+        // TODO zapnout, az bude fixnuty html-webpack-plugin, viz
+        // https://github.com/jantimon/html-webpack-plugin/issues/1638
         realContentHash: false,
     },
 }
