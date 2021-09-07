@@ -157,6 +157,7 @@ Responsive JS _([TypeScript](https://www.typescriptlang.org/))_ web app, specifi
 technologies:
 
 -   [React 17](https://reactjs.org/),
+-   [TypeScript 4](https://www.typescriptlang.org/),
 -   [Bootstrap 4](https://getbootstrap.com/) (with [Reactstrap](https://reactstrap.github.io/)),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry)
@@ -164,7 +165,7 @@ technologies:
 
 Main tools used for the frontend development:
 
--   [Webpack 4](https://webpack.js.org/) with custom configuration (local and production) +
+-   [Webpack 5](https://webpack.js.org/) with custom configuration (local and production) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
 -   [Typescript 4](https://www.typescriptlang.org/) – static type checking,

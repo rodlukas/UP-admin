@@ -151,6 +151,7 @@ Responzivní JS _([TypeScript](https://www.typescriptlang.org/))_ webová aplika
 technologiích:
 
 -   [React 17](https://reactjs.org/),
+-   [TypeScript 4](https://www.typescriptlang.org/),
 -   [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package
@@ -159,7 +160,7 @@ technologiích:
 
 Vývoj frontendu je postaven především na:
 
--   [Webpack 4](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
+-   [Webpack 5](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
 -   [Typescript 4](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,

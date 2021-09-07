@@ -1,10 +1,9 @@
 const os = require("os")
 const path = require("path")
-const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const StylelintPlugin = require("stylelint-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
@@ -28,6 +27,7 @@ const isBundleAnalyze = process.env.BUNDLE_ANALYZE === "true"
 
 // konfigurace je zalozena:
 // - CRA: https://github.com/facebook/create-react-app/blob/v3.3.1/packages/react-scripts/config/webpack.config.js
+//   - plus novejsi verze CRA (nejen webpack config, ale i dalsi)
 // - castecne se take inspiruje u https://github.com/neutrinojs/neutrino a
 //   https://github.com/insin/nwb/
 // - stavi na puvodni pouzivane konfiguraci https://github.com/rodlukas/UP-admin/blob/0.18.1/frontend/nwb.config.js
@@ -86,7 +86,6 @@ module.exports = {
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
             chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",
         }),
-        new CleanWebpackPlugin(),
         new HtmlWebPackPlugin({
             // diky teto moznosti muze pak pracovat HtmlWebpackHarddiskPlugin
             alwaysWriteToDisk: true,
@@ -119,6 +118,7 @@ module.exports = {
         filename: isProduction ? "[name].[contenthash:8].js" : "[name].js",
         path: pathBuild,
         publicPath: isProduction ? urlProduction : urlLocal,
+        clean: true,
     },
     devServer: {
         // pro povoleni pristupu odkudkoliv (a z Djanga)
@@ -141,27 +141,14 @@ module.exports = {
         minimize: isProduction,
         splitChunks: {
             chunks: "all",
-            name: !isProduction,
         },
         runtimeChunk: {
             name: (entrypoint) => `runtime-${entrypoint.name}`,
         },
-        minimizer: [
-            new TerserPlugin({
-                sourceMap: true,
-            }),
-            new OptimizeCSSAssetsPlugin({
-                cssProcessorOptions: {
-                    map: {
-                        inline: false,
-                        annotation: true,
-                    },
-                },
-                cssProcessorPluginOptions: {
-                    preset: ["default", { minifyFontValues: { removeQuotes: false } }],
-                },
-            }),
-        ],
+        minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+        // TODO zapnout, az bude fixnuty html-webpack-plugin, viz
+        // https://github.com/jantimon/html-webpack-plugin/issues/1638
+        realContentHash: false,
     },
 }
 
