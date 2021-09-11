@@ -132,6 +132,9 @@ module.exports = {
 
         "jsx-a11y/no-autofocus": 0,
 
+        "testing-library/no-container": "warn",
+        "testing-library/no-node-access": "warn",
+
         "react-hooks/exhaustive-deps": "warn",
         "react-hooks/rules-of-hooks": "error",
 
