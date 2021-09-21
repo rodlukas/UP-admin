@@ -19,7 +19,13 @@ type Props = {
     searchVal: string
 }
 
-type MyNavLinkProps = QA & RouterNavLinkProps
+type MyNavLinkProps = {
+    // react-router podporuje posilani funkci do className/style, reactstrap to ale neumi a TS krici
+    // vypneme si tedy moznost funkci
+    className?: string
+    style?: React.CSSProperties | undefined
+} & QA &
+    Omit<RouterNavLinkProps, "className">
 
 /** Komponenta zobrazující menu aplikace pro přihlášené uživatele. */
 const Menu: React.FC<Props> = (props) => {
