@@ -22,6 +22,7 @@ type Props = {
 type MyNavLinkProps = {
     // react-router podporuje posilani funkci do className/style, reactstrap to ale neumi a TS krici
     // vypneme si tedy moznost funkci
+    // viz https://github.com/remix-run/react-router/releases/tag/v5.3.0
     className?: string
     style?: React.CSSProperties | undefined
 } & QA &
