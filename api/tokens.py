@@ -2,7 +2,7 @@
 Vlastní definice způsobu serializace JWT tokenů.
 """
 from rest_framework_simplejwt.serializers import TokenObtainSlidingSerializer
-from rest_framework_simplejwt.state import User
+from rest_framework_simplejwt.models import TokenUser
 from rest_framework_simplejwt.tokens import SlidingToken
 from rest_framework_simplejwt.views import TokenObtainSlidingView
 
@@ -11,11 +11,11 @@ class MyTokenObtainSlidingSerializer(TokenObtainSlidingSerializer):
     """
     Vlastní serializace JWT tokenu - přidání vlastních claims k tokenu.
 
-    Vychází z: https://github.com/davesque/django-rest-framework-simplejwt#customizing-token-claims
+    Vychází z: https://django-rest-framework-simplejwt.readthedocs.io/en/latest/customizing_token_claims.html
     """
 
     @classmethod
-    def get_token(cls, user: User) -> SlidingToken:
+    def get_token(cls, user: TokenUser) -> SlidingToken:
         """
         Serializuje JWT token a přidá k němu vlastní claims o uživateli (username, email).
         """
