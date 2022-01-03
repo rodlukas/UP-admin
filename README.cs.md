@@ -423,4 +423,4 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
 
 Licencováno pod [MIT](LICENSE) licencí.
 
-Copyright (c) 2021 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2022 [Lukáš Rod](https://lukasrod.cz/)
