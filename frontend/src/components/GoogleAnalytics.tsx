@@ -4,7 +4,7 @@ import { Route, RouteComponentProps } from "react-router-dom"
 
 import { isEnvProduction } from "../global/funcEnvironments"
 
-type Props = RouteComponentProps & ReactGA.FieldsObject
+type Props = RouteComponentProps & { options: ReactGA.FieldsObject }
 
 /**
  * Komponenta zajišťující Google Analytics napříč aplikací.

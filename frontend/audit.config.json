@@ -1,5 +1,5 @@
 {
     "low": true,
     "report-type": "summary",
-    "allowlist": ["glob-parent", "ansi-regex", "ansi-html"]
+    "allowlist": ["glob-parent", "ansi-regex", "node-forge", "postcss", "node-fetch"]
 }

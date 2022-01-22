@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { AxiosError } from "axios"
 
 /** Rozparsuje pro frontend chybu vrácenou z API. */
