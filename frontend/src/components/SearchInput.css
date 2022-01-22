@@ -1,6 +1,6 @@
 .Search input,
 .Search .input-group-text {
-    background-color: rgba(255, 255, 255, 0.07);
+    background-color: rgb(255 255 255 / 0.07);
     border: 0;
 }
 
@@ -13,7 +13,7 @@
 }
 
 .Search input:focus {
-    background-color: rgba(255, 255, 255, 0.11);
+    background-color: rgb(255 255 255 / 0.11);
     box-shadow: none;
     color: white;
 }

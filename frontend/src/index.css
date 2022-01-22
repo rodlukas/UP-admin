@@ -155,7 +155,7 @@ h1 .badge {
 }
 
 .lecture {
-    padding: 0 0 0.75rem 0 !important;
+    padding: 0 0 0.75rem !important;
 }
 
 .lecture_heading {
@@ -188,7 +188,7 @@ h1 .badge {
 }
 
 .lecture_content {
-    padding: 0 1rem 0 1rem;
+    padding: 0 1rem;
 }
 
 .lecture_free {
@@ -201,7 +201,7 @@ h1 .badge {
 }
 
 .lecture-canceled h4 span::after {
-    border-bottom: 2px solid rgba(255, 0, 0, 0.6);
+    border-bottom: 2px solid rgb(255 0 0 / 0.6);
     color: #fff;
     content: "";
     position: absolute;
