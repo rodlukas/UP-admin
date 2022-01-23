@@ -29,7 +29,7 @@ from admin.models import (
     Lecture,
     Membership,
 )
-from api.serializers_helpers import LectureHelpers, BaseValidators
+from api.serializers_helpers import BaseUtils, LectureHelpers, BaseValidators
 
 
 class ClientSerializer(serializers.ModelSerializer[Client]):
@@ -68,13 +68,15 @@ class CourseSerializer(serializers.ModelSerializer[Course]):
 
     # nazev kurzu (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(
-        validators=[UniqueValidator(queryset=Course.objects.all())]
+        validators=[UniqueValidator(queryset=Course.objects.all())],
+        help_text=BaseUtils.get_help_text(Course, "name"),
     )  # OMEZENÍ O17
     # barva kurzu (znovuuvedeni kvuli validaci formatu)
     color = serializers.CharField(
         validators=[
             RegexValidator(regex="^#(?:[0-9a-fA-F]{3}){1,2}$", message="Barva není v HEX formátu")
-        ]  # OMEZENÍ O18: regex viz https://stackoverflow.com/a/1636354
+        ],  # OMEZENÍ O18: regex viz https://stackoverflow.com/a/1636354
+        help_text=BaseUtils.get_help_text(Course, "color"),
     )
 
     class Meta:
@@ -100,10 +102,15 @@ class MembershipSerializer(serializers.ModelSerializer[Membership]):
     """
 
     # vnorene informace o klientovi (jen pro cteni)
-    client = ClientSerializer(read_only=True)
+    client = ClientSerializer(
+        read_only=True, help_text=BaseUtils.get_help_text(Membership, "client")
+    )
     # ID klienta (jen pro zapis)
     client_id = serializers.PrimaryKeyRelatedField(
-        queryset=Client.objects.all(), source="client", write_only=True
+        queryset=Client.objects.all(),
+        source="client",
+        write_only=True,
+        help_text=BaseUtils.get_help_text(Membership, "client"),
     )
 
     class Meta:
@@ -128,15 +135,22 @@ class GroupSerializer(serializers.ModelSerializer[Group]):
 
     # nazev skupiny (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(
-        validators=[UniqueValidator(queryset=Group.objects.all())]
+        validators=[UniqueValidator(queryset=Group.objects.all())],
+        help_text=BaseUtils.get_help_text(Group, "name"),
     )  # OMEZENÍ O17
     # vnorene informace o clenstvich
-    memberships = MembershipSerializer(many=True)
+    memberships = MembershipSerializer(many=True, help_text="Členství jednotlivých členů skupiny")
     # vnorene informace o kurzu (jen pro cteni)
-    course = CourseSerializer(read_only=True)
+    course = CourseSerializer(
+        read_only=True,
+        help_text=BaseUtils.get_help_text(Group, "course"),
+    )
     # ID kurzu (jen pro zapis)
     course_id = serializers.PrimaryKeyRelatedField(
-        queryset=Course.objects.all(), source="course", write_only=True
+        queryset=Course.objects.all(),
+        source="course",
+        write_only=True,
+        help_text=BaseUtils.get_help_text(Group, "course"),
     )
 
     class Meta:
@@ -189,7 +203,8 @@ class AttendanceStateSerializer(serializers.ModelSerializer[AttendanceState]):
 
     # nazev stavu ucasti (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(
-        validators=[UniqueValidator(queryset=AttendanceState.objects.all())]  # OMEZENÍ O17
+        validators=[UniqueValidator(queryset=AttendanceState.objects.all())],  # OMEZENÍ O17
+        help_text=BaseUtils.get_help_text(AttendanceState, "name"),
     )
 
     class Meta:
@@ -203,16 +218,26 @@ class ApplicationSerializer(serializers.ModelSerializer[Application]):
     """
 
     # vnorene informace o klientovi (jen pro cteni)
-    client = ClientSerializer(read_only=True)
+    client = ClientSerializer(
+        read_only=True, help_text=BaseUtils.get_help_text(Application, "client")
+    )
     # ID klienta (jen pro zapis)
     client_id = serializers.PrimaryKeyRelatedField(
-        queryset=Client.objects.all(), source="client", write_only=True
+        queryset=Client.objects.all(),
+        source="client",
+        write_only=True,
+        help_text=BaseUtils.get_help_text(Application, "client"),
     )
     # vnorene informace o kurzu (jen pro cteni)
-    course = CourseSerializer(read_only=True)
+    course = CourseSerializer(
+        read_only=True, help_text=BaseUtils.get_help_text(Application, "course")
+    )
     # ID kurzu (jen pro zapis)
     course_id = serializers.PrimaryKeyRelatedField(
-        queryset=Course.objects.all(), source="course", write_only=True
+        queryset=Course.objects.all(),
+        source="course",
+        write_only=True,
+        help_text=BaseUtils.get_help_text(Application, "course"),
     )
 
     class Meta:
@@ -243,10 +268,15 @@ class AttendanceSerializer(serializers.ModelSerializer[Attendance]):
     # (viz: https://stackoverflow.com/a/46525126/10045971)
     id = serializers.IntegerField(required=False)
     # vnorene informace o klientovi (jen pro cteni)
-    client = ClientSerializer(read_only=True)
+    client = ClientSerializer(
+        read_only=True, help_text=BaseUtils.get_help_text(Attendance, "client")
+    )
     # ID klienta (jen pro zapis)
     client_id = serializers.PrimaryKeyRelatedField(
-        queryset=Client.objects.all(), source="client", write_only=True
+        queryset=Client.objects.all(),
+        source="client",
+        write_only=True,
+        help_text=BaseUtils.get_help_text(Attendance, "client"),
     )
     # info, zda je potreba pripomenout klientovi platbu priste (jen pro cteni)
     remind_pay = serializers.SerializerMethodField(
@@ -375,15 +405,19 @@ class LectureSerializer(serializers.ModelSerializer[Lecture]):
     """
 
     # vnorene informace o ucastech na lekci
-    attendances = AttendanceSerializer(many=True)
+    attendances = AttendanceSerializer(many=True, help_text="Účasti jednotlivých klientů na lekci")
     # vnorene informace o kurzu (jen pro cteni)
-    course = CourseSerializer(read_only=True)
+    course = CourseSerializer(read_only=True, help_text=BaseUtils.get_help_text(Lecture, "course"))
     # ID kurzu (jen pro zapis)
     course_id = serializers.PrimaryKeyRelatedField(
-        queryset=Course.objects.all(), source="course", write_only=True, required=False
+        queryset=Course.objects.all(),
+        source="course",
+        write_only=True,
+        required=False,
+        help_text=BaseUtils.get_help_text(Lecture, "course"),
     )
     # vnorene informace o skupine (jen pro cteni)
-    group = GroupSerializer(read_only=True)
+    group = GroupSerializer(read_only=True, help_text=BaseUtils.get_help_text(Lecture, "group"))
     # ID skupiny (jen pro zapis)
     group_id = serializers.PrimaryKeyRelatedField(
         queryset=Group.objects.all(),
@@ -391,6 +425,7 @@ class LectureSerializer(serializers.ModelSerializer[Lecture]):
         write_only=True,
         required=False,
         allow_null=True,
+        help_text=BaseUtils.get_help_text(Lecture, "group"),
     )
     # poradove cislo lekce (jen pro cteni)
     number = serializers.SerializerMethodField(help_text="Pořadové číslo lekce")

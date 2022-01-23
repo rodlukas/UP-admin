@@ -1,14 +1,27 @@
 import re
 from datetime import datetime, timedelta
-from typing import Union, Optional, List, cast
+from typing import Union, Optional, List, cast, Type
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F, ExpressionWrapper, DateTimeField
+from django.db.models import F, ExpressionWrapper, DateTimeField, Model
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.settings import api_settings
 
 from admin.models import Attendance, AttendanceState, Lecture, Course, Group
+
+
+class BaseUtils:
+    """
+    Utility pro serializery.
+    """
+
+    @staticmethod
+    def get_help_text(model: Type[Model], field: str) -> str:
+        """
+        Pro zaslaný model a jeho pole vrátí help_text z models.py.
+        """
+        return model._meta.get_field(field).help_text
 
 
 class BaseValidators:
