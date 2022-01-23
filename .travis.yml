@@ -69,7 +69,7 @@ script:
     - coverage run -a manage.py behave --stage=ui --format=progress3
 after_success:
     # posli pokryti kodu do codecov
-    - source scripts/shell/codecov_run.sh
+    - source scripts/shell/travis/codecov_run.sh
 
     # pro tagged commit: zabal frontend do zipu pro GH
     - source scripts/shell/travis/create_frontend_zip.sh
