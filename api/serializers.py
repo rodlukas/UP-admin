@@ -32,7 +32,7 @@ from admin.models import (
 from api.serializers_helpers import LectureHelpers, BaseValidators
 
 
-class ClientSerializer(serializers.ModelSerializer):
+class ClientSerializer(serializers.ModelSerializer[Client]):
     """
     Serializer pro klienta lektorky.
     """
@@ -61,7 +61,7 @@ class ClientSerializer(serializers.ModelSerializer):
         return BaseValidators.validate_phone(phone)
 
 
-class CourseSerializer(serializers.ModelSerializer):
+class CourseSerializer(serializers.ModelSerializer[Course]):
     """
     Serializer pro kurz, na který mohou klienti v rámci lekcí docházet.
     """
@@ -94,7 +94,7 @@ class CourseSerializer(serializers.ModelSerializer):
         return values
 
 
-class MembershipSerializer(serializers.ModelSerializer):
+class MembershipSerializer(serializers.ModelSerializer[Membership]):
     """
     Serializer pro členství klienta ve skupině - používá se pro vnořené členství ve skupině.
     """
@@ -111,7 +111,7 @@ class MembershipSerializer(serializers.ModelSerializer):
         exclude = ("group",)
 
 
-class MembershipPlainSerializer(serializers.ModelSerializer):
+class MembershipPlainSerializer(serializers.ModelSerializer[Client]):
     """
     Serializer pro členství klienta ve skupině - používá se pro samostatné operace se členstvím.
     """
@@ -121,7 +121,7 @@ class MembershipPlainSerializer(serializers.ModelSerializer):
         exclude = ("group", "client")
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class GroupSerializer(serializers.ModelSerializer[Group]):
     """
     Serializer skupiny klientů nějakého kurzu.
     """
@@ -153,7 +153,7 @@ class GroupSerializer(serializers.ModelSerializer):
             Membership.objects.create(group=instance, **membership_data)
         return instance
 
-    def update(self, instance: Group, validated_data: dict) -> Group:  # type: ignore
+    def update(self, instance: Group, validated_data: dict) -> Group:
         """
         Upraví skupinu a k ní příslušející členství klientů.
         """
@@ -182,7 +182,7 @@ class GroupSerializer(serializers.ModelSerializer):
         return BaseValidators.validate_course_is_visible(course)
 
 
-class AttendanceStateSerializer(serializers.ModelSerializer):
+class AttendanceStateSerializer(serializers.ModelSerializer[AttendanceState]):
     """
     Serializer stavu účasti klienta na lekci.
     """
@@ -197,7 +197,7 @@ class AttendanceStateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class ApplicationSerializer(serializers.ModelSerializer):
+class ApplicationSerializer(serializers.ModelSerializer[Application]):
     """
     Serializer žádosti reprezentující zájem klienta o kurz.
     """
@@ -234,7 +234,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         return BaseValidators.validate_course_is_visible(course)
 
 
-class AttendanceSerializer(serializers.ModelSerializer):
+class AttendanceSerializer(serializers.ModelSerializer[Attendance]):
     """
     Serializer pro účast klienta na nějaké lekci.
     """
@@ -271,7 +271,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             ret.pop("number")
         return ret
 
-    def update(self, instance: Attendance, validated_data: dict) -> Attendance:  # type: ignore
+    def update(self, instance: Attendance, validated_data: dict) -> Attendance:
         """
         Upraví účast a provede další nutné transformace dat.
         """
@@ -369,7 +369,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         return not bool(res)
 
 
-class LectureSerializer(serializers.ModelSerializer):
+class LectureSerializer(serializers.ModelSerializer[Lecture]):
     """
     Serializer pro lekci klienta či skupiny náležící nějakému kurzu.
     """
@@ -485,7 +485,7 @@ class LectureSerializer(serializers.ModelSerializer):
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
         return instance
 
-    def update(self, instance: Lecture, validated_data: dict) -> Lecture:  # type: ignore
+    def update(self, instance: Lecture, validated_data: dict) -> Lecture:
         """
         Upraví lekci a k ní příslušející účasti klientů, provede další nutné transformace.
         """

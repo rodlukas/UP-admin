@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timedelta
-from typing import Union, Optional, List
+from typing import Union, Optional, List, cast
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, ExpressionWrapper, DateTimeField
@@ -326,7 +326,7 @@ class LectureHelpers:
         if qs.exists():
             for elem in list(qs):
                 # tvorba errormsg
-                err_datetime = BaseHelpers.datetime_str(elem.start)
+                err_datetime = BaseHelpers.datetime_str(cast(datetime, elem.start))
                 err_duration = str(elem.duration)
                 if elem.group is not None:
                     err_obj = f"skupina {elem.group.name}"
