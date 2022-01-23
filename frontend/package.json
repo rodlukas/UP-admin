@@ -110,6 +110,6 @@
     "reactstrap": "^8.10.1"
   },
   "resolutions": {
-    "eslint-webpack-plugin/**/@types/eslint": "^8.4.0"
+    "eslint-webpack-plugin/**/@types/eslint": "^8.4.1"
   }
 }
