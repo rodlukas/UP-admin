@@ -130,7 +130,7 @@ h1 .badge {
 .gdpr .client__option,
 .gdpr .memberships__multi-value__label,
 .gdpr .client__single-value {
-    background-color: currentColor !important;
+    background-color: currentcolor !important;
     user-select: none;
 }
 
