@@ -124,16 +124,20 @@ module.exports = {
         // pro povoleni pristupu odkudkoliv (a z Djanga)
         allowedHosts: ["0.0.0.0", hostName],
         compress: true,
+        client: {
+            overlay: true,
+        },
+        devMiddleware: {
+            index: htmlFile,
+            stats: {
+                modules: false,
+            },
+        },
         headers: { "Access-Control-Allow-Origin": "*" },
         historyApiFallback: true,
         host: "0.0.0.0",
         hot: true,
-        index: htmlFile,
-        overlay: true,
         port: port,
-        stats: {
-            modules: false,
-        },
     },
     stats: { children: false, modules: false },
     devtool: isProduction ? "source-map" : "cheap-module-source-map",
