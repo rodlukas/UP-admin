@@ -126,7 +126,7 @@ Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **R
 
 Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
 
--   [Python 3.9](https://www.python.org/),
+-   [Python 3.10](https://www.python.org/),
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),

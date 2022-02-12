@@ -132,7 +132,7 @@ database.
 
 Includes all the logic and exposes a **REST API** for a client, built on these technologies:
 
--   [Python 3.9](https://www.python.org/),
+-   [Python 3.10](https://www.python.org/),
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
