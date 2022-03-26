@@ -18,6 +18,7 @@ export type CustomRouteProps = RouteProps & {
 
 /** React prop pro QA (využívá Selenium). */
 export type QA = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     "data-qa"?: string
 }
 
