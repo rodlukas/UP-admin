@@ -277,7 +277,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                                   )
                                 : "neznámý datum"}
                         </UncontrolledTooltipWrapper>
-                        <strong id="Bank_days">3 týdny</strong> lze zobrazit pouze{" "}
+                        <strong id="Bank_days">30 dnů</strong> lze zobrazit pouze{" "}
                         <a href={BANKING_URL} target="_blank" rel="noopener noreferrer">
                             v bankovnictví <FontAwesomeIcon icon={faExternalLink} size="xs" />
                         </a>
