@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faExternalLink } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { NavLink as RouterNavLink, NavLinkProps as RouterNavLinkProps } from "react-router-dom"
 import { Button, Nav, NavItem, NavLink } from "reactstrap"
@@ -76,6 +78,16 @@ const Menu: React.FC<Props> = (props) => {
                             <MyNavLink to={APP_URLS.nastaveni.url} data-qa="menu_settings">
                                 Nastavení
                             </MyNavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink
+                                href="https://uspesnyprvnacek.cz/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="NavExternalLink">
+                                Web&nbsp;
+                                <FontAwesomeIcon icon={faExternalLink} />
+                            </NavLink>
                         </NavItem>
                     </Nav>
                     <Button color="secondary" onClick={onClickLogout} data-qa="button_logout">

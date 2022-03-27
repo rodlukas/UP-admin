@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
     faExclamationCircle,
-    faExternalLinkAlt,
+    faExternalLink,
     faInfoCircle,
     faSyncAlt,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
@@ -178,11 +178,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                             rel="noopener noreferrer"
                             className="btn btn-secondary">
                             Bankovnictví{" "}
-                            <FontAwesomeIcon
-                                icon={faExternalLinkAlt}
-                                transform="right-2"
-                                size="sm"
-                            />
+                            <FontAwesomeIcon icon={faExternalLink} transform="right-2" size="sm" />
                         </a>
                     </div>
                 </ListGroupItem>
@@ -283,7 +279,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                         </UncontrolledTooltipWrapper>
                         <strong id="Bank_days">3 týdny</strong> lze zobrazit pouze{" "}
                         <a href={BANKING_URL} target="_blank" rel="noopener noreferrer">
-                            v bankovnictví <FontAwesomeIcon icon={faExternalLinkAlt} size="xs" />
+                            v bankovnictví <FontAwesomeIcon icon={faExternalLink} size="xs" />
                         </a>
                         .
                     </div>

@@ -6,6 +6,14 @@
     background-color: white;
 }
 
+.NavExternalLink {
+    white-space: nowrap;
+}
+
+.NavExternalLink svg {
+    margin-left: 0.2em;
+}
+
 @media (min-width: 992px) {
     /* pri klasickem menu pridej levou mezeru k odhlasovacimu tlacitku */
     .navbar-expand-lg .btn {
