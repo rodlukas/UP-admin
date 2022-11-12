@@ -1,5 +1,5 @@
 {
     "low": true,
     "report-type": "summary",
-    "allowlist": []
+    "allowlist": [">@xmldom/xmldom", "loader-utils"]
 }
