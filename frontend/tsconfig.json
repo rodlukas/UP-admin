@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
         "resolveJsonModule": true,
+        "skipLibCheck": true,
         // pro funkcni import() (a zaroven es6 import/export)
         "module": "ESNext",
         // JSX neprevadej, to ma na starost Babel
