@@ -16,7 +16,7 @@ pyyaml = "~=6.0"
 requests = "~=2.28.1"
 sentry-sdk = "~=1.5.3"
 uritemplate = "~=4.1.1"
-vulture = "~=2.3"
+vulture = "~=2.6"
 whitenoise = "~=6.2.0"
 django-csp = "~=3.7.0"
 
