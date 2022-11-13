@@ -1,5 +1,5 @@
 import * as React from "react"
-import Select, { components, InputProps, Props } from "react-select"
+import Select, { components, InputProps, OptionTypeBase, Props } from "react-select"
 
 import { TEXTS } from "../../global/constants"
 
@@ -41,7 +41,7 @@ const Input: React.FC<InputProps> = (props) => {
 }
 
 /** Wrapper pro react-select komponentu pro použití nadefinovaného react-selectu napříč aplikací. */
-const ReactSelectWrapper = <OptionType, IsMulti extends boolean = false>(
+const ReactSelectWrapper = <OptionType extends OptionTypeBase, IsMulti extends boolean = false>(
     props: Props<OptionType, IsMulti>
 ): JSX.Element => (
     <Select<OptionType, IsMulti>

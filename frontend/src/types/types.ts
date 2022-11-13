@@ -30,11 +30,12 @@ export type TimeoutType = number | undefined
  *
  * Viz: https://stackoverflow.com/a/59857898/10045971
  */
-export type CustomRouteComponentProps<Params = {}> = RouteComponentProps<
+export type CustomRouteComponentProps<Params extends {} = {}> = RouteComponentProps<
     Params,
     StaticContext,
     LocationState
 >
+
 type LocationState = {
     from: Location
 }
