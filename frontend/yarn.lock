@@ -1989,10 +1989,17 @@
     "@types/react" "*"
     "@types/reactcss" "*"
 
-"@types/react-dom@*", "@types/react-dom@17.0.15", "@types/react-dom@<18.0.0":
+"@types/react-dom@*", "@types/react-dom@<18.0.0":
   version "17.0.15"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.15.tgz#f2c8efde11521a4b7991e076cb9c70ba3bb0d156"
   integrity sha512-Tr9VU9DvNoHDWlmecmcsE5ZZiUkYx+nKBzum4Oxe1K0yJVyBlfbq7H3eXjxXqJczBKqPGq3EgfTru4MgKb9+Yw==
+  dependencies:
+    "@types/react" "^17"
+
+"@types/react-dom@^17.0.18":
+  version "17.0.18"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.18.tgz#8f7af38f5d9b42f79162eea7492e5a1caff70dc2"
+  integrity sha512-rLVtIfbwyur2iFKykP2w0pl/1unw26b5td16d5xMgp7/yjTHomkyxPYChFoCr/FtEX1lN9wY6lFj1qvKdS5kDw==
   dependencies:
     "@types/react" "^17"
 
@@ -2029,10 +2036,19 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@17.0.43", "@types/react@^17":
+"@types/react@*", "@types/react@^17":
   version "17.0.43"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.43.tgz#4adc142887dd4a2601ce730bc56c3436fdb07a55"
   integrity sha512-8Q+LNpdxf057brvPu1lMtC5Vn7J119xrP1aq4qiaefNioQUYANF/CYeK4NsKorSZyUGJ66g0IM+4bbjwx45o2A==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^17.0.52":
+  version "17.0.52"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.52.tgz#10d8b907b5c563ac014a541f289ae8eaa9bf2e9b"
+  integrity sha512-vwk8QqVODi0VaZZpDXQCmEmiOuyjEFPY7Ttaw5vjM112LOq37yz1CDJGrRJwA1fYEq4Iitd5rnjd1yWAc/bT+A==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -4044,7 +4060,7 @@ eslint-plugin-react@^7.31.10:
     semver "^6.3.0"
     string.prototype.matchall "^4.0.7"
 
-eslint-plugin-testing-library@^5.5.1:
+eslint-plugin-testing-library@^5.9.1:
   version "5.9.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-testing-library/-/eslint-plugin-testing-library-5.9.1.tgz#12e4bd34c48683ee98af4df2e3318ec9f51dcf8a"
   integrity sha512-6BQp3tmb79jLLasPHJmy8DnxREe+2Pgf7L+7o09TSWPfdqqtQfRZmZNetr5mOs3yqZk/MRNxpN3RUpJe0wB4LQ==
