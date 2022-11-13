@@ -1,6 +1,6 @@
 language: python
 # pro python >= 3.7 je potreba >= xenial
-dist: jammy
+dist: focal
 python: "3.10"
 node_js: "18"
 services:
