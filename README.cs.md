@@ -89,7 +89,8 @@ Aplikaci jsem vytvořil v roce 2018 jako **bakalářskou práci na [FIT ČVUT](h
 doby je v projektu [Úspěšný prvňáček](https://uspesnyprvnacek.cz/) denně úspěšně používána a její
 rozšiřování a práce na ní stále pokračují ❤️. V roce 2020 jsem se také v **diplomové práci na FIT
 ČVUT** věnoval všem dosavadním rozšířením aplikace o nové funkce, technologie a nástroje – vizte
-[repozitář s textem diplomové práce](https://github.com/rodlukas/masters-thesis).
+[repozitář s textem diplomové práce](https://github.com/rodlukas/masters-thesis). A vývoj probíhá i
+nadále.
 
 ### Klíčové funkce
 
