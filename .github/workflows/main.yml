@@ -84,8 +84,8 @@ jobs:
                   pg_isready
             - name: Create postgres-test user
               run: |
-                  sudo -u postgres psql --command="CREATE USER postgres-test PASSWORD 'postgres'" --command="\du"
+                  sudo -u postgres psql --command="CREATE USER postgres_test PASSWORD 'postgres'" --command="\du"
             - name: Create ci_test database
               run: |
-                  sudo -u postgres-test createdb --owner=postgres-test ci_test
-                  PGPASSWORD=postgres psql --username=postgres-test --host=localhost --list ci_test
+                  sudo -u postgres_test createdb --owner=postgres-test ci_test
+                  PGPASSWORD=postgres psql --username=postgres_test --host=localhost --list ci_test
