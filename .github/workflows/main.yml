@@ -13,6 +13,7 @@ env:
     SENTRY_PROJECT: up-admin
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
+    MOZ_HEADLESS: 1
 
 jobs:
     build:
@@ -25,12 +26,15 @@ jobs:
             - name: "🔧 setup node"
               uses: actions/setup-node@v3
               with:
-                  node-version: 18
+                  node-version: "18"
+                  cache: "yarn"
+                  cache-dependency-path: "**/yarn.json"
 
             - name: "🔧 setup Python"
-              uses: actions/setup-python@v3
+              uses: actions/setup-python@v4
               with:
                   python-version: "3.10"
+                  cache: "pipenv"
 
             # nainstaluj geckodriver pro selenium testovani
             - name: "🔧 install geckodriver"
@@ -45,8 +49,8 @@ jobs:
               run: touch .env
 
             # nainstaluj JS zavislosti
-            - name: "🔧 install JS deps"
-              run: yarn install
+            - name: "🔧 install JS deps & build frontend app"
+              run: yarn install --frozen-lockfile
 
             # nainstaluj Python zavislosti
             - name: "🔧 install Python deps"
@@ -54,7 +58,7 @@ jobs:
                   pip install pipenv
                   pipenv install --dev
 
-            - name: log
+            - name: "🐞 debug env log"
               run:
                   node --version && npm --version && yarn --version && python --version && pipenv
                   --version && psql --version && pg_config --version && ls -la
@@ -66,3 +70,8 @@ jobs:
             # otestuj frontend (typy, linting, jest)
             - name: "🔍 JS: run tests"
               run: yarn run frontend:test
+
+            # otestuj typy v backendu pres mypy
+            # TODO zapnout kontrolu typu na CI
+            # - name: "🔍 JS: run tests"
+            #  run: mypy .
