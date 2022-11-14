@@ -1,9 +1,17 @@
 name: CI
+
 on:
     push:
         branches: ["master"]
     pull_request:
         branches: ["master"]
+
+env:
+    BANK_ACTIVE: false
+    ENVIRONMENT: testing
+    SENTRY_ORG: uspesnyprvnacek
+    SENTRY_PROJECT: up-admin
+    SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
 
 jobs:
     build:
