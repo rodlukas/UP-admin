@@ -19,6 +19,7 @@ jobs:
     build:
         name: Build app
         runs-on: ubuntu-latest
+
         steps:
             - name: "☁️ checkout repo"
               uses: actions/checkout@v3
@@ -75,3 +76,15 @@ jobs:
             # TODO zapnout kontrolu typu na CI
             # - name: "🔍 JS: run tests"
             #  run: mypy .
+
+            - name: Start PostgreSQL
+              run: |
+                  sudo systemctl start postgresql.service
+                  pg_isready
+            - name: Create postgresUser user
+              run: |
+                  sudo -u postgres psql --command="CREATE USER postgresUser PASSWORD 'postgresPassword'" --command="\du"
+            - name: Create ci_test database
+              run: |
+                  sudo -u postgres createdb --owner=postgresUser ci_test
+                  PGPASSWORD=postgresPassword psql --username=postgresUser --host=localhost --list ci_test
