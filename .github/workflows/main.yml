@@ -87,5 +87,5 @@ jobs:
                   sudo -u postgres psql --command="CREATE USER postgres_test PASSWORD 'postgres'" --command="\du"
             - name: Create ci_test database
               run: |
-                  sudo -u postgres_test createdb --owner=postgres-test ci_test
+                  sudo -u postgres_test createdb --owner=postgres_test ci_test
                   PGPASSWORD=postgres psql --username=postgres_test --host=localhost --list ci_test
