@@ -1,5 +1,4 @@
-name: Django CI
-
+name: Development
 on:
   push:
     branches: [ "master" ]
@@ -7,10 +6,27 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - uses: ./.github/workflows/build
+    build:
+        name: Build app
+        runs-on: ubuntu-latest
+        steps:
+            - name: "☁️ checkout repository"
+              uses: actions/checkout@v3
+
+            - name: "🔧 setup node"
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+
+            - name: "🔧 install npm@latest"
+              run: yarn install
+
+            - name: "install geckodriver"
+              run: ./scripts/shell/install_geckodriver.sh
+              shell: bash
+
+            - name: "🔍 run tests"
+              run: yarn run frontend:test
+
+            - name: "🔍 run audit"
+              run: yarn run frontend:audit
