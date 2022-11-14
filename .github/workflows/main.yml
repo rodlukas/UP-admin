@@ -1,9 +1,9 @@
 name: CI
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    push:
+        branches: ["master"]
+    pull_request:
+        branches: ["master"]
 
 jobs:
     build:
@@ -37,16 +37,17 @@ jobs:
             - name: Set up Python
               uses: actions/setup-python@v3
               with:
-                python-version: 3.10
+                  python-version: 3.10
 
             - name: Install deps python
               run: |
-                pip install pipenv
-                pipenv install --dev
+                  pip install pipenv
+                  pipenv install --dev
 
             - name: log
-              run: node --version && npm --version && yarn --version && python --version && pipenv --version &&
-      psql --version && pg_config --version && ls -la
+              run:
+                  node --version && npm --version && yarn --version && python --version && pipenv
+                  --version && psql --version && pg_config --version && ls -la
 
             # spust audit frontendu
             - name: "🔍 run audit"
