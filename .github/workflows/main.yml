@@ -1,4 +1,4 @@
-name: Development
+name: CI
 on:
   push:
     branches: [ "master" ]
@@ -18,21 +18,40 @@ jobs:
               with:
                   node-version: 18
 
+            # nainstaluj geckodriver pro selenium testovani
             - name: "install geckodriver"
               run: ./scripts/shell/install_geckodriver.sh
 
+            # spust skripty pro upravu souboru
             - name: "create npmrc"
               run: ./scripts/shell/travis/create_npmrc.sh
-
             - name: "string substitution"
               run: ./scripts/shell/travis/string_substitution.sh
-              shell: bash
+            - name: ".env file"
+              run: touch .env
 
+            # nainstaluj JS zavislosti
             - name: "🔧 install npm@latest"
               run: yarn install
 
-            - name: "🔍 run tests"
-              run: yarn run frontend:test
+            - name: Set up Python
+              uses: actions/setup-python@v3
+              with:
+                python-version: 3.10
 
+            - name: Install deps python
+              run: |
+                pip install pipenv
+                pipenv install --dev
+
+            - name: log
+              run: node --version && npm --version && yarn --version && python --version && pipenv --version &&
+      psql --version && pg_config --version && ls -la
+
+            # spust audit frontendu
             - name: "🔍 run audit"
               run: yarn run frontend:audit
+
+            # otestuj frontend (typy, linting, jest)
+            - name: "🔍 run tests"
+              run: yarn run frontend:test

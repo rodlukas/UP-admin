@@ -44,5 +44,4 @@ substitute_folder() {
 }
 
 substitute_folder frontend/src
-ls -la
 substitute_folder up
