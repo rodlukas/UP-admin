@@ -14,6 +14,7 @@ env:
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
     MOZ_HEADLESS: 1
+    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/up
 
 jobs:
     build:
@@ -83,8 +84,8 @@ jobs:
                   pg_isready
             - name: Create postgresUser user
               run: |
-                  sudo -u postgres psql --command="CREATE USER postgresUser PASSWORD 'postgresPassword'" --command="\du"
+                  sudo -u postgres psql --command="CREATE USER postgres PASSWORD 'postgres'" --command="\du"
             - name: Create ci_test database
               run: |
-                  sudo -u postgres createdb --owner=postgresUser ci_test
-                  PGPASSWORD=postgresPassword psql --username=postgresUser --host=localhost --list ci_test
+                  sudo -u postgres createdb --owner=postgres ci_test
+                  PGPASSWORD=postgres psql --username=postgres --host=localhost --list ci_test
