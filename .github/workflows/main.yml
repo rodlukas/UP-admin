@@ -82,10 +82,10 @@ jobs:
               run: |
                   sudo systemctl start postgresql.service
                   pg_isready
-            - name: Create postgresUser user
+            - name: Create postgres-test user
               run: |
-                  sudo -u postgres psql --command="CREATE USER postgres PASSWORD 'postgres'" --command="\du"
+                  sudo -u postgres-test psql --command="CREATE USER postgres-test PASSWORD 'postgres'" --command="\du"
             - name: Create ci_test database
               run: |
-                  sudo -u postgres createdb --owner=postgres ci_test
-                  PGPASSWORD=postgres psql --username=postgres --host=localhost --list ci_test
+                  sudo -u postgres-test createdb --owner=postgres-test ci_test
+                  PGPASSWORD=postgres psql --username=postgres-test --host=localhost --list ci_test
