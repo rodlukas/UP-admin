@@ -27,28 +27,29 @@ jobs:
               with:
                   node-version: 18
 
+            - name: "🔧 setup Python"
+              uses: actions/setup-python@v3
+              with:
+                  python-version: "3.10"
+
             # nainstaluj geckodriver pro selenium testovani
-            - name: "install geckodriver"
+            - name: "🔧 install geckodriver"
               run: ./scripts/shell/install_geckodriver.sh
 
             # spust skripty pro upravu souboru
-            - name: "create npmrc"
+            - name: "📝 create .npmrc file"
               run: ./scripts/shell/travis/create_npmrc.sh
-            - name: "string substitution"
+            - name: "📝 string substitution"
               run: ./scripts/shell/travis/string_substitution.sh
-            - name: ".env file"
+            - name: "📝 dummy .env file"
               run: touch .env
 
             # nainstaluj JS zavislosti
-            - name: "🔧 install npm@latest"
+            - name: "🔧 install JS deps"
               run: yarn install
 
-            - name: Set up Python
-              uses: actions/setup-python@v3
-              with:
-                  python-version: 3.10
-
-            - name: Install deps python
+            # nainstaluj Python zavislosti
+            - name: "🔧 install Python deps"
               run: |
                   pip install pipenv
                   pipenv install --dev
@@ -59,9 +60,9 @@ jobs:
                   --version && psql --version && pg_config --version && ls -la
 
             # spust audit frontendu
-            - name: "🔍 run audit"
+            - name: "🔍 JS: run audit"
               run: yarn run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
-            - name: "🔍 run tests"
+            - name: "🔍 JS: run tests"
               run: yarn run frontend:test
