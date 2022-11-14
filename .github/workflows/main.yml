@@ -18,6 +18,18 @@ jobs:
               with:
                   node-version: 18
 
+            - name: "npmrc"
+              run: ./scripts/shell/install_geckodriver.sh
+              shell: bash
+
+            - name: "npmrc"
+              run: ./scripts/shell/travis/create_npmrc.sh
+              shell: bash
+
+            - name: "npmrc"
+              run: ./scripts/shell/travis/string_substitution.sh
+              shell: bash
+
             - name: "🔧 install npm@latest"
               run: yarn install
 
