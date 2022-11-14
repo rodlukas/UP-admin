@@ -38,7 +38,7 @@ substitute_folder() {
   substitute "$GIT_YEAR_STRING" "$YEAR"
   substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
 
-  cd "$TRAVIS_BUILD_DIR" || exit
+  cd "$GITHUB_WORKSPACE" || exit
 
   echo "* Substituce retezcu ve slozce \"$1\" byla uspesna"
 }
