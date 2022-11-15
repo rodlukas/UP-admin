@@ -13,6 +13,8 @@ env:
     SENTRY_PROJECT: up-admin
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
+    FIO_API_KEY: ${{ secrets.FIO_API_KEY }}
+    SECRET_KEY: ${{ secrets.SECRET_KEY }}
     MOZ_HEADLESS: 1
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/up
 
@@ -94,13 +96,13 @@ jobs:
             - name: "🔍 Python: run tests"
               run: pipenv run coverage run -a manage.py test
             - name: "🔍 E2E API: run tests"
-              run: coverage run -a manage.py behave --stage=api --format=progress3
+              run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
             - name: "🔍 E2E UI: run tests"
-              run: coverage run -a manage.py behave --stage=ui --format=progress3
+              run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
             - name: "🔍 Tests: generate reports"
               run: |
-                  coverage report
-                  coverage xml
+                  pipenv run coverage report
+                  pipenv run coverage xml
 
             # posli pokryti kodu do codecov
             - name: "☁️ upload code coverage"
