@@ -75,10 +75,6 @@ jobs:
             # - name: 🔍 Python - run tests
             #  run: mypy .
 
-            # priprav Django aplikaci
-            - name: 🔍 Python - build Django app
-              run: ./scripts/shell/release_tasks.sh
-
             # PostgreSQL
             # - Maps tcp port 5432 on service container to the host
             - name: 📦 PostgreSQL - container build & run
@@ -93,6 +89,10 @@ jobs:
                   node --version && npm --version && yarn --version && python --version && pipenv
                   --version && firefox --version && geckodriver --version && psql --version && pg_config --version && ls -la
                   docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
+
+            # priprav Django aplikaci
+            - name: 🔍 Python - build Django app
+              run: ./scripts/shell/release_tasks.sh
 
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
