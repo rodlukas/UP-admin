@@ -76,7 +76,7 @@ jobs:
             #  run: mypy .
 
             # priprav Django aplikaci
-            - name: 🔍 Django - build app
+            - name: 🔍 Python - build Django app
               run: ./scripts/shell/release_tasks.sh
 
             # PostgreSQL
@@ -91,7 +91,7 @@ jobs:
             - name: 🐞 Debug env log
               run: |
                   node --version && npm --version && yarn --version && python --version && pipenv
-                  --version && psql --version && pg_config --version && ls -la
+                  --version && firefox --version && geckodriver --version && psql --version && pg_config --version && ls -la
                   docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
 
             # proved testy a spocitej pokryti kodu

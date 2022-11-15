@@ -16,9 +16,9 @@ SENTRY_DSN_STRING='SENTRY_DSN'
 
 # nastaveni novych hodnot pro nahrazovane retezce
 COMMIT=$(git rev-parse --short HEAD)
-# viz https://docs.travis-ci.com/user/environment-variables/
-RELEASE=$TRAVIS_TAG
-BRANCH=$TRAVIS_BRANCH
+# viz https://docs.github.com/en/actions/learn-github-actions/environment-variables
+RELEASE=$GITHUB_REF_NAME
+BRANCH=$GITHUB_REF_NAME
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
 YEAR=$(git log -1 --format=%cd --date=format:"%Y")
 
