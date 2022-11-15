@@ -16,12 +16,27 @@ env:
     FIO_API_KEY: ${{ secrets.FIO_API_KEY }}
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     MOZ_HEADLESS: 1
-    DATABASE_URL: postgresql://postgres_test:postgres@localhost:5432/ci_test
+    DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
 
 jobs:
     build:
         name: Build app
         runs-on: ubuntu-latest
+
+        services:
+          # Label used to access the service container
+          postgres:
+            # Docker Hub image
+            image: postgres
+            # Provide the password for postgres
+            env:
+              POSTGRES_PASSWORD: postgres
+            # Set health checks to wait until postgres has started
+            options: >-
+              --health-cmd pg_isready
+              --health-interval 10s
+              --health-timeout 5s
+              --health-retries 5
 
         steps:
             - name: "☁️ checkout repo"
@@ -79,18 +94,6 @@ jobs:
             # TODO zapnout kontrolu typu na CI
             # - name: "🔍 JS: run tests"
             #  run: mypy .
-
-            - name: Start PostgreSQL
-              run: |
-                  sudo systemctl start postgresql.service
-                  pg_isready
-            - name: Create postgres-test user
-              run: |
-                  sudo -u postgres psql --command="CREATE USER postgres_test PASSWORD 'postgres'" --command="\du"
-            - name: Create ci_test database
-              run: |
-                  sudo -u postgres createdb --owner=postgres_test ci_test
-                  PGPASSWORD=postgres psql --username=postgres_test --host=localhost --list ci_test
 
             # proved testy a spocitej pokryti kodu
             - name: "🔍 Python: run tests"
