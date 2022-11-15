@@ -16,7 +16,7 @@ env:
     FIO_API_KEY: ${{ secrets.FIO_API_KEY }}
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     MOZ_HEADLESS: 1
-    DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
 
 jobs:
     build:
@@ -24,19 +24,19 @@ jobs:
         runs-on: ubuntu-latest
 
         services:
-          # Label used to access the service container
-          postgres:
-            # Docker Hub image
-            image: postgres
-            # Provide the password for postgres
-            env:
-              POSTGRES_PASSWORD: postgres
-            # Set health checks to wait until postgres has started
-            options: >-
-              --health-cmd pg_isready
-              --health-interval 10s
-              --health-timeout 5s
-              --health-retries 5
+            # Label used to access the service container
+            postgres:
+                # Docker Hub image
+                image: postgres
+                # Provide the password for postgres
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_DB: postgres
+                    POSTGRES_PASSWORD: postgres
+                # Set health checks to wait until postgres has started
+                options: >-
+                    --health-cmd pg_isready --health-interval 10s --health-timeout 5s
+                    --health-retries 5
 
         steps:
             - name: "☁️ checkout repo"
