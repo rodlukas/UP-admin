@@ -75,6 +75,10 @@ jobs:
             # - name: 🔍 Python - run tests
             #  run: mypy .
 
+            # priprav Django aplikaci
+            - name: 🔍 Django - build app
+              run: ./scripts/shell/release_tasks.sh
+
             # PostgreSQL
             # - Maps tcp port 5432 on service container to the host
             - name: 📦 PostgreSQL - container build & run
@@ -83,10 +87,6 @@ jobs:
                   docker run -d --name postgresql_t -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_i
             - name: 📦 PostgreSQL - wait for db
               run: until docker exec postgresql_t pg_isready -U postgres; do sleep 1; done
-
-            # priprav Django aplikaci
-            - name: 🔍 Django - build app
-              run: ./scripts/shell/release_tasks.sh
 
             - name: 🐞 Debug env log
               run: |
