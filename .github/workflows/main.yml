@@ -87,14 +87,23 @@ jobs:
             - name: 📦 PostgreSQL - wait for db
               run: until docker exec postgresql_t pg_isready -U postgres; do sleep 1; done
 
-            - name: 🐞 Debug env log
-              run: |
-                  node --version && npm --version && yarn --version && python --version && pipenv --version && firefox --version && geckodriver --version && psql --version && pg_config --version && ls -la
-                  docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
-
             # priprav Django aplikaci
             - name: 🔍 Python - build Django app
               run: ./scripts/shell/release_tasks.sh
+
+            - name: 🐞 Debug env log
+              run: |
+                  node --version
+                  npm --version
+                  yarn --version
+                  python --version
+                  pipenv --version
+                  firefox --version
+                  geckodriver --version
+                  docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
+                  docker exec postgresql_t psql --version
+                  docker exec postgresql_t pg_config --version
+                  ls -la
 
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
