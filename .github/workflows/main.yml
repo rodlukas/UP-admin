@@ -15,6 +15,9 @@ env:
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
     FIO_API_KEY: ${{ secrets.FIO_API_KEY }}
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    GH_API_KEY: ${{ secrets.GH_API_KEY }}
+    SENTRY_AUTH_KEY: ${{ secrets.SENTRY_AUTH_KEY }}
     MOZ_HEADLESS: 1
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
 
@@ -86,8 +89,7 @@ jobs:
 
             - name: 🐞 Debug env log
               run: |
-                  node --version && npm --version && yarn --version && python --version && pipenv
-                    --version && firefox --version && geckodriver --version && psql --version && pg_config --version && ls -la
+                  node --version && npm --version && yarn --version && python --version && pipenv --version && firefox --version && geckodriver --version && psql --version && pg_config --version && ls -la
                   docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
 
             # priprav Django aplikaci
