@@ -24,95 +24,94 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: "☁️ checkout repo"
+            - name: ☁️ Checkout repo
               uses: actions/checkout@v3
 
-            - name: "🔧 setup node"
+            - name: 🔧 Setup node
               uses: actions/setup-node@v3
               with:
                   node-version: "18"
                   cache: "yarn"
                   cache-dependency-path: "**/yarn.lock"
 
-            - name: "🔧 setup Python"
+            - name: 🔧 Setup Python
               uses: actions/setup-python@v4
               with:
                   python-version: "3.10"
                   cache: "pipenv"
 
             # nainstaluj geckodriver pro selenium testovani
-            - name: "🔧 install geckodriver"
+            - name: 🔧 Install geckodriver
               run: ./scripts/shell/install_geckodriver.sh
 
             # spust skripty pro upravu souboru
-            - name: "📝 create .npmrc file"
+            - name: 📝 Create .npmrc file
               run: ./scripts/shell/travis/create_npmrc.sh
-            - name: "📝 string substitution"
+            - name: 📝 String substitution
               run: ./scripts/shell/travis/string_substitution.sh
-            - name: "📝 dummy .env file"
+            - name: 📝 Create dummy .env file
               run: touch .env
 
             # nainstaluj JS zavislosti
-            - name: "🔧 install JS deps & build frontend app"
+            - name: 🔧 JS - install deps & build frontend app
               run: yarn install --frozen-lockfile
 
             # nainstaluj Python zavislosti
-            - name: "🔧 install Python deps"
+            - name: 🔧 Python - install deps
               run: |
                   pip install pipenv
                   pipenv install --dev
 
-            - name: "🐞 debug env log"
-              run:
-                  node --version && npm --version && yarn --version && python --version && pipenv
-                  --version && psql --version && pg_config --version && ls -la
-
             # spust audit frontendu
-            - name: "🔍 JS: run audit"
+            - name: 🔍 JS - run audit
               run: yarn run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
-            - name: "🔍 JS: run tests"
+            - name: 🔍 JS - run tests
               run: yarn run frontend:test
 
             # otestuj typy v backendu pres mypy
             # TODO zapnout kontrolu typu na CI
-            # - name: "🔍 JS: run tests"
+            # - name: 🔍 Python - run tests
             #  run: mypy .
 
             # PostgreSQL
             # - Maps tcp port 5432 on service container to the host
-            - name: PostgreSQL container build & run
+            - name: 📦 PostgreSQL - container build & run
               run: |
                   docker build -t postgresql_i .github/workflows
                   docker run -d --name postgresql_t -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_i
-            - name: wait for db
+            - name: 📦 PostgreSQL - wait for db
               run: until docker exec postgresql_t pg_isready -U postgres; do sleep 1; done
-            - name: show locale
-              run: docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
+
+            - name: 🐞 Debug env log
+              run: |
+                  node --version && npm --version && yarn --version && python --version && pipenv
+                  --version && psql --version && pg_config --version && ls -la
+                  docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
 
             # proved testy a spocitej pokryti kodu
-            - name: "🔍 Python: run tests"
+            - name: 🔍 Python - run tests
               run: pipenv run coverage run -a manage.py test
-            - name: "🔍 E2E API: run tests"
+            - name: 🔍 Run E2E API tests"
               run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
-            - name: "🔍 E2E UI: run tests"
+            - name: 🔍 Run E2E UI tests"
               run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
-            - name: "🔍 Tests: generate reports"
+            - name: 📝 Generate test reports"
               run: |
                   pipenv run coverage report
                   pipenv run coverage xml
 
             # posli pokryti kodu do codecov
-            - name: "☁️ upload code coverage"
+            - name: ☁️ Upload code coverage"
               run: ./scripts/shell/travis/codecov_run.sh
 
             # pro tagged commit: zabal frontend do zipu pro GH
-            - name: "☁️ upload JS bundle to GitHub releases"
+            - name: ☁️ Upload JS bundle to GitHub releases
               run: ./scripts/shell/travis/create_frontend_zip.sh
 
             # smazani dat z buildu, testovani a dokumentace
-            - name: "🧹 cleanup project folder"
+            - name: 🧹 Cleanup project folder
               run:
                   rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
                   .idea codecov .mypy_cache
