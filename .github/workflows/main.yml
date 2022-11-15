@@ -89,3 +89,29 @@ jobs:
               run: |
                   sudo -u postgres createdb --owner=postgres_test ci_test
                   PGPASSWORD=postgres psql --username=postgres_test --host=localhost --list ci_test
+
+            # proved testy a spocitej pokryti kodu
+            - name: "🔍 Python: run tests"
+              run: coverage run -a manage.py test
+            - name: "🔍 E2E API: run tests"
+              run: coverage run -a manage.py behave --stage=api --format=progress3
+            - name: "🔍 E2E UI: run tests"
+              run: coverage run -a manage.py behave --stage=ui --format=progress3
+            - name: "🔍 Tests: generate reports"
+              run: |
+                  coverage report
+                  coverage xml
+
+            # posli pokryti kodu do codecov
+            - name: "📝 upload code coverage"
+              run: ./scripts/shell/travis/codecov_run.sh
+
+            # pro tagged commit: zabal frontend do zipu pro GH
+            - name: "📝 upload code coverage"
+              run: ./scripts/shell/travis/create_frontend_zip.sh
+
+            # smazani dat z buildu, testovani a dokumentace
+            - name: "📝 upload code coverage"
+              run:
+                  rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
+                  .idea codecov .mypy_cache
