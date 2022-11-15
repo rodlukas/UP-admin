@@ -23,24 +23,6 @@ jobs:
         name: Build app
         runs-on: ubuntu-latest
 
-        services:
-            # Label used to access the service container
-            postgres:
-                # Docker Hub image
-                image: postgres
-                # Provide the password for postgres
-                env:
-                    POSTGRES_USER: postgres
-                    POSTGRES_DB: postgres
-                    POSTGRES_PASSWORD: postgres
-                # Set health checks to wait until postgres has started
-                options: >-
-                    --health-cmd pg_isready --health-interval 10s --health-timeout 5s
-                    --health-retries 5
-                ports:
-                    # Maps tcp port 5432 on service container to the host
-                    - 5432:5432
-
         steps:
             - name: "☁️ checkout repo"
               uses: actions/checkout@v3
@@ -97,6 +79,17 @@ jobs:
             # TODO zapnout kontrolu typu na CI
             # - name: "🔍 JS: run tests"
             #  run: mypy .
+
+            # PostgreSQL
+            # - Maps tcp port 5432 on service container to the host
+            - name: PostgreSQL container build & run
+              run: |
+                  docker build -t postgresql_i .github/workflows
+                  docker run -d --name postgresql_t -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_i
+            - name: wait for db
+              run: until docker exec postgresql_t pg_isready -U postgres; do sleep 1; done
+            - name: show locale
+              run: docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
 
             # proved testy a spocitej pokryti kodu
             - name: "🔍 Python: run tests"
