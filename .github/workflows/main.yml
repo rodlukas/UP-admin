@@ -87,7 +87,7 @@ jobs:
             - name: 🐞 Debug env log
               run: |
                   node --version && npm --version && yarn --version && python --version && pipenv
-                  --version && firefox --version && geckodriver --version && psql --version && pg_config --version && ls -la
+                    --version && firefox --version && geckodriver --version && psql --version && pg_config --version && ls -la
                   docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
 
             # priprav Django aplikaci
