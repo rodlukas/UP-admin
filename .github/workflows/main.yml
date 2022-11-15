@@ -103,15 +103,15 @@ jobs:
                   coverage xml
 
             # posli pokryti kodu do codecov
-            - name: "📝 upload code coverage"
+            - name: "☁️ upload code coverage"
               run: ./scripts/shell/travis/codecov_run.sh
 
             # pro tagged commit: zabal frontend do zipu pro GH
-            - name: "📝 upload code coverage"
+            - name: "☁️ upload JS bundle to GitHub releases"
               run: ./scripts/shell/travis/create_frontend_zip.sh
 
             # smazani dat z buildu, testovani a dokumentace
-            - name: "📝 upload code coverage"
+            - name: "🧹 cleanup project folder"
               run:
                   rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
                   .idea codecov .mypy_cache
