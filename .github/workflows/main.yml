@@ -84,6 +84,10 @@ jobs:
             - name: 📦 PostgreSQL - wait for db
               run: until docker exec postgresql_t pg_isready -U postgres; do sleep 1; done
 
+            # priprav Django aplikaci
+            - name: 🔍 Django - build app
+              run: ./scripts/shell/release_tasks.sh
+
             - name: 🐞 Debug env log
               run: |
                   node --version && npm --version && yarn --version && python --version && pipenv
