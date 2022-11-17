@@ -48,7 +48,7 @@ def login(context, username, password):
     print(context.browser.page_source)
     context.browser.find_element_by_tag_name('body')
     context.browser.save_screenshot('screenshot.png')
-    print(requests.get('http://localhost:8000/static/assets/runtime-main.72fd7f6a.js'))
+    #print(requests.get('http://localhost:8000/static/assets/runtime-main.72fd7f6a.js'))
     DrawImage.from_file("screenshot.png").draw_image()
     DrawImage.from_url("https://www.google.com/logos/doodles/2022/czech-republic-freedom-and-democracy-day-2022-6753651837109659-s.png").draw_image()
     # pockej az bude dostupny prihlasovaci formular
