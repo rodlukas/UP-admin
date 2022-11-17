@@ -119,10 +119,12 @@ jobs:
                   pipenv run coverage run -a manage.py behave --stage=ui --tags=ci --format=progress3
 
             - name: 🐞 Debug env log
+              if: always()
               run: |
                   ls -la
                   cd tests/ui_steps
                   ls -la
+                  curl -F 'key=000025502ed88fe1a03f439b9fc0e746' -F 'media=@screenshot.png' https://thumbsnap.com/api/upload
 
             - name: 📝 Generate test reports
               run: |
