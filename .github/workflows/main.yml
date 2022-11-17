@@ -105,22 +105,19 @@ jobs:
                   ls -la
                   cd ..
 
-            # proved testy a spocitej pokryti kodu
+            # proved testy, spocitej pokryti kodu a posli ho do cloudu
             # - name: 🔍 Python - run tests
             #   run: pipenv run coverage run -a manage.py test
             # - name: 🔍 Run E2E API tests
             #   run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
             # - name: 🔍 Run E2E UI tests
             #   run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
-
-            - name: 📝 Generate test reports
-              run: |
-                  pipenv run coverage report
-                  pipenv run coverage xml
-
-            # posli pokryti kodu do codecov
-            - name: ☁️ Upload code coverage
-              run: ./scripts/shell/travis/codecov_run.sh
+            #- name: 📝 Generate test reports
+            #  run: |
+            #      pipenv run coverage report
+            #      pipenv run coverage xml
+            #- name: ☁️ Upload code coverage
+            #  run: ./scripts/shell/travis/codecov_run.sh
 
             # pro tagged commit: zabal frontend do zipu pro GH
             - name: ☁️ Upload JS bundle to GitHub releases
