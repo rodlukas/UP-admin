@@ -4,4 +4,7 @@
 
 if [ "$GITHUB_REF_TYPE" = "tag" ]; then
   rm -f frontend.zip
+  echo "✅ Soubor frontend.zip byl uspesne smazan."
+else
+  echo "ℹ️ Soubor frontend.zip nebylo potreba mazat, protoze se nejedna o tagged commit."
 fi

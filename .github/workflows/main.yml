@@ -125,3 +125,6 @@ jobs:
               run:
                   rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
                   .idea codecov .mypy_cache
+
+            - name: 🧹 Cleanup project folder after deploy
+              run: ./scripts/shell/travis/remove_frontend_zip.sh
