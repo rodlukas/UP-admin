@@ -61,13 +61,13 @@ jobs:
                   pip install pipenv
                   pipenv install --dev
 
-            # spust audit frontendu
-            - name: 🔍 JS - run audit
-              run: yarn run frontend:audit
-
-            # otestuj frontend (typy, linting, jest)
-            - name: 🔍 JS - run tests
-              run: yarn run frontend:test
+            ## spust audit frontendu
+            #- name: 🔍 JS - run audit
+            #  run: yarn run frontend:audit
+            #
+            ## otestuj frontend (typy, linting, jest)
+            #- name: 🔍 JS - run tests
+            #  run: yarn run frontend:test
 
             # otestuj typy v backendu pres mypy
             # TODO zapnout kontrolu typu na CI
@@ -106,12 +106,12 @@ jobs:
                   cd ..
 
             # proved testy a spocitej pokryti kodu
-            - name: 🔍 Python - run tests
-              run: pipenv run coverage run -a manage.py test
-            - name: 🔍 Run E2E API tests
-              run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
-            - name: 🔍 Run E2E UI tests
-              run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
+            # - name: 🔍 Python - run tests
+            #   run: pipenv run coverage run -a manage.py test
+            # - name: 🔍 Run E2E API tests
+            #   run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
+            # - name: 🔍 Run E2E UI tests
+            #   run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
 
             - name: 📝 Generate test reports
               run: |
