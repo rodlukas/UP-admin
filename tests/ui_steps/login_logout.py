@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 import requests
-import climage
+from image import DrawImage
 
 # noinspection PyUnresolvedReferences
 from tests.common_steps import login_logout  # lgtm [py/unused-import]
@@ -48,8 +48,9 @@ def login(context, username, password):
     print(context.browser.page_source)
     context.browser.find_element_by_tag_name('body')
     context.browser.save_screenshot('screenshot.png')
-    print(climage.convert('screenshot.png'))
-    print(requests.get('/static/assets/runtime-main.72fd7f6a.js'))
+    DrawImage("screenshot.png")
+    DrawImage("https://www.google.com/logos/doodles/2022/czech-republic-freedom-and-democracy-day-2022-6753651837109659-s.png")
+    print(requests.get('http://localhost:8000/static/assets/runtime-main.72fd7f6a.js'))
     # pockej az bude dostupny prihlasovaci formular
     wait_form_login_visible(context.browser)
     # vloz prihlasovaci udaje do formulare
