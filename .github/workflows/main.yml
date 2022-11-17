@@ -66,12 +66,12 @@ jobs:
                   pipenv install --dev
 
             # spust audit frontendu
-            - name: 🔍 JS - run audit
-              run: yarn run frontend:audit
+            #- name: 🔍 JS - run audit
+            #  run: yarn run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
-            - name: 🔍 JS - run tests
-              run: yarn run frontend:test
+            #- name: 🔍 JS - run tests
+            #  run: yarn run frontend:test
 
             # otestuj typy v backendu pres mypy
             # TODO zapnout kontrolu typu na CI
