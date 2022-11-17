@@ -34,6 +34,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # pravidla pro manualni produkci (pro jeji simulaci na lokalu/build a fungovani CI)
 if MANUAL_PRODUCTION:
+    print("manual production is active")
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "frontend", "build")
     ]  # jen na CI (zde se pak slozka smaze) / manualni produkci

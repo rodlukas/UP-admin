@@ -74,7 +74,10 @@ jobs:
             # - name: 🔍 Python - run tests
             #  run: mypy .
 
-            # PostgreSQL (maps tcp port 5432 on service container to the host)
+            # PostgreSQL
+            # - build custom PSQL container image with CZ locale
+            # - and then start the PSQL service (tcp port 5432 on service container is mapped to the host)
+            # https://github.com/orgs/community/discussions/24923
             - name: 📦 PostgreSQL - container build & run
               run: |
                   docker build -t postgresql_i .github/workflows
@@ -98,6 +101,8 @@ jobs:
                   docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
                   docker exec postgresql_t psql --version
                   docker exec postgresql_t pg_config --version
+                  cd staticfiles
+                  ls -la
 
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
@@ -127,12 +132,14 @@ jobs:
                   .idea codecov .mypy_cache
 
             # nasazeni na HEROKU prod
+            - name: 🚀 Deploy to Heroku
             - uses: akhileshns/heroku-deploy@v3.12.12
               # if: ${{ github.ref_type == 'tag' }}
               with:
                   heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
                   heroku_app_name: uspesnyprvnacek-testing
                   heroku_email: ${{ secrets.HEROKU_EMAIL }}
+                  dontautocreate: true
 
             - name: 🧹 Cleanup project folder after deploy
               run: ./scripts/shell/travis/remove_frontend_zip.sh
