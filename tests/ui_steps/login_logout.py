@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from imgrender import render
+import requests
 
 # noinspection PyUnresolvedReferences
 from tests.common_steps import login_logout  # lgtm [py/unused-import]
@@ -47,6 +48,13 @@ def login(context, username, password):
     print(context.browser.page_source)
     context.browser.find_element_by_tag_name('body')
     context.browser.save_screenshot('screenshot.png')
+    print(context.get_url('/static/assets/main.67986cc6.js'))
+
+    try:
+        r = requests.get(context.get_url('/static/assets/main.67986cc6.js'))
+        r.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        print (e)
     # pockej az bude dostupny prihlasovaci formular
     wait_form_login_visible(context.browser)
     # vloz prihlasovaci udaje do formulare
