@@ -3,7 +3,7 @@
 # funkce pro nahrazeni retezcu (arg1: $1) retezcem (arg2: $2)
 substitute() {
   git grep -l "%$1" | xargs --no-run-if-empty sed -i "s|%$1|$2|g"
-  echo "\t%$1\t\t --> \t\"$2\""
+  echo -e "\t%$1\t\t --> \t\"$2\""
 }
 
 # nastaveni konstant, ktere budou nahrazeny
@@ -27,7 +27,7 @@ YEAR=$(git log -1 --format=%cd --date=format:"%Y")
 # provedeni subtituce ve slozce $1
 substitute_folder() {
   cd "$1" || {
-    echo "*** ❌ CHYBA - Substituce retezcu ve slozce \"$1\" se nepodarila. ***"
+    echo -e "*** ❌ CHYBA - Substituce retezcu ve slozce \"$1\" se nepodarila. ***\n"
     exit 1
   }
 
