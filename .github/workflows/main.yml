@@ -20,6 +20,7 @@ env:
     SENTRY_AUTH_KEY: ${{ secrets.SENTRY_AUTH_KEY }}
     MOZ_HEADLESS: 1
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+    DJANGO_SETTINGS_MODULE: up.settings.production
 
 jobs:
     build:
@@ -119,7 +120,8 @@ jobs:
             #  run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
             - name: 🔍 Run E2E UI tests
               run:
-                  pipenv run coverage run -a manage.py behave --stage=ui --tags=ci --format=progress3
+                  pipenv run coverage run -a manage.py behave --stage=ui --tags=ci
+                  --format=progress3
 
             - name: 🐞 Debug image
               if: always()
