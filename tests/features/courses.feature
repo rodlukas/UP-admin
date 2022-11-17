@@ -24,13 +24,13 @@ Feature: Operations with courses
     Then the course is not added
 
     Examples: Courses
-      | name                 | visibility | duration | color    |
+      | name                 | visibility | duration | color   |
       # chybi nazev kurzu
-      |                      | True       | 35       | #00B16A  |
+      |                      | True       | 35       | #00B16A |
       # duplicitni nazev kurzu
-      | Kurz Slabika         | False      | 20       | #00B16A  |
+      | Kurz Slabika         | False      | 20       | #00B16A |
       # chybejici doba trvani kurzu
-      | Rozvoj grafomotoriky | False      |          | #00B16A  |
+      | Rozvoj grafomotoriky | False      |          | #00B16A |
 
   @edit @courses
   Scenario: Edit course

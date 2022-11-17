@@ -42,7 +42,7 @@ Feature: Operations with applications
     When user updates the data of the application from client "Rod Lukáš" for course "Kurz Slabika" to client "Uhlíř Jaroslav", course "xyz" and note "xxx"
     Then the application is updated
 
-  @delete @applications @ci
+  @delete @applications
   Scenario: Delete application
     When user deletes the application from client "Rod Lukáš" for course "Kurz Slabika"
     Then the application is deleted

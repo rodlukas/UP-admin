@@ -67,20 +67,19 @@ jobs:
                   pipenv install --dev
 
             # spust audit frontendu
-            #- name: 🔍 JS - run audit
-            #  run: yarn run frontend:audit
+            - name: 🔍 JS - run audit
+              run: yarn run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
-            #- name: 🔍 JS - run tests
-            #  run: yarn run frontend:test
+            - name: 🔍 JS - run tests
+              run: yarn run frontend:test
 
             # otestuj typy v backendu pres mypy
             # TODO zapnout kontrolu typu na CI
             # - name: 🔍 Python - run tests
             #  run: mypy .
 
-            # PostgreSQL
-            # - Maps tcp port 5432 on service container to the host
+            # PostgreSQL (maps tcp port 5432 on service container to the host)
             - name: 📦 PostgreSQL - container build & run
               run: |
                   docker build -t postgresql_i .github/workflows
@@ -104,30 +103,14 @@ jobs:
                   docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
                   docker exec postgresql_t psql --version
                   docker exec postgresql_t pg_config --version
-                  ls -la
-                  cd staticfiles
-                  ls -la
-                  cd assets
-                  ls -la
-                  cd ..
-                  cd ..
-                  pipenv install imgrender
 
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
               run: pipenv run coverage run -a manage.py test
-            #- name: 🔍 Run E2E API tests
-            #  run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
+            - name: 🔍 Run E2E API tests
+              run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
             - name: 🔍 Run E2E UI tests
-              run:
-                  pipenv run coverage run -a manage.py behave --stage=ui --tags=ci
-                  --format=progress3
-
-            - name: 🐞 Debug image
-              if: always()
-              run: |
-                  ls -la
-                  curl -F 'key=000025502ed88fe1a03f439b9fc0e746' -F 'media=@screenshot.png' https://thumbsnap.com/api/upload
+              run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
 
             - name: 📝 Generate test reports
               run: |

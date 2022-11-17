@@ -36,6 +36,6 @@ Feature: Operations with attendance states
     Then the attendance state is deleted
 
     Examples: Attendance states
-      | name    |
-      | skryty  |
-      | OK      |
+      | name   |
+      | skryty |
+      | OK     |
