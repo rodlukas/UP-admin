@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # env promenne
 env = environ.Env(
     # nastaveni typu a pripadne vychozi hodnoty
-    BANK_ACTIVE=(bool, True),  # aktivace propojeni s bankou
+    BANK_ACTIVE=(bool, False),  # aktivace propojeni s bankou
     BANK_RENT_PRICE=(int, 0),  # vyse najmu (v Kc)
     DATABASE_URL=str,  # url pouzivane DB (napr. postgresql://postgres:postgres@localhost:5432/up)
     DEBUG=(bool, False),  # aktivace debug prostredi

@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
     push:
@@ -7,17 +7,12 @@ on:
         branches: ["master"]
 
 env:
-    BANK_ACTIVE: false
-    ENVIRONMENT: testing
-    SENTRY_ORG: uspesnyprvnacek
-    SENTRY_PROJECT: up-admin
+    ENVIRONMENT: CI
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
-    FIO_API_KEY: ${{ secrets.FIO_API_KEY }}
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     GH_API_KEY: ${{ secrets.GH_API_KEY }}
-    SENTRY_AUTH_KEY: ${{ secrets.SENTRY_AUTH_KEY }}
     MOZ_HEADLESS: 1
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
@@ -25,7 +20,7 @@ env:
 jobs:
     build:
         name: Build app
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
 
         steps:
             - name: ☁️ Checkout repo
