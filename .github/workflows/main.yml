@@ -13,14 +13,14 @@ env:
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     GH_API_KEY: ${{ secrets.GH_API_KEY }}
-    MOZ_HEADLESS: 1
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
 
 jobs:
     build:
         name: Build app
-        runs-on: ubuntu-22.04
+        # TODO prejit na 22 - https://github.com/actions/runner-images/pull/6528
+        runs-on: ubuntu-20.04
 
         steps:
             - name: ☁️ Checkout repo
