@@ -3,6 +3,7 @@ from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+import climage
 
 # noinspection PyUnresolvedReferences
 from tests.common_steps import login_logout  # lgtm [py/unused-import]
@@ -42,6 +43,9 @@ def wait_form_login_visible(driver):
 def login(context, username, password):
     # prejdi na hlavni stranku
     context.browser.get(context.base_url)
+    el = context.browser.find_element_by_tag_name('body')
+    el.screenshot('screenshot.png')
+    print(climage.convert('screenshot.png'))
     # pockej az bude dostupny prihlasovaci formular
     wait_form_login_visible(context.browser)
     # vloz prihlasovaci udaje do formulare

@@ -107,7 +107,7 @@ jobs:
                   cd staticfiles
                   ls -la
                   cd ..
-                  pipenv run python manage.py runserver 0.0.0.0:8000 & sleep 10 & curl https://localhost:8000
+                  pipenv install climage
 
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
