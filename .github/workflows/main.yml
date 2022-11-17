@@ -106,6 +106,9 @@ jobs:
                   ls -la
                   cd staticfiles
                   ls -la
+                  cd ..
+                  pipenv run python manage.py runserver localhost:8000
+                  curl https://localhost:8000
 
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
