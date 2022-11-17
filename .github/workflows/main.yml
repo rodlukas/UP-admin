@@ -106,6 +106,9 @@ jobs:
                   ls -la
                   cd staticfiles
                   ls -la
+                  cd assets
+                  ls -la
+                  cd ..
                   cd ..
                   pipenv install imgrender
 
@@ -118,7 +121,7 @@ jobs:
               run:
                   pipenv run coverage run -a manage.py behave --stage=ui --tags=ci --format=progress3
 
-            - name: 🐞 Debug env log
+            - name: 🐞 Debug image
               if: always()
               run: |
                   ls -la
