@@ -3,7 +3,7 @@
 # funkce pro nahrazeni retezcu (arg1: $1) retezcem (arg2: $2)
 substitute() {
   git grep -l "%$1" | xargs --no-run-if-empty sed -i "s|%$1|$2|g"
-  echo "- %\"$1\" --> \"$2\""
+  echo "\t%$1\t\t --> \t\"$2\""
 }
 
 # nastaveni konstant, ktere budou nahrazeny
@@ -42,7 +42,7 @@ substitute_folder() {
 
   cd "$GITHUB_WORKSPACE" || exit
 
-  echo "*** ✅ Substituce retezcu ve slozce \"$1\" byla uspesna. ***"
+  echo -e "*** ✅ Substituce retezcu ve slozce \"$1\" byla uspesna. ***\n"
 }
 
 substitute_folder frontend/src
