@@ -112,8 +112,8 @@ jobs:
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
               run: pipenv run coverage run -a manage.py test
-            - name: 🔍 Run E2E API tests
-              run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
+            #- name: 🔍 Run E2E API tests
+            #  run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
             - name: 🔍 Run E2E UI tests
               run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
             - name: 📝 Generate test reports

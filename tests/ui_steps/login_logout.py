@@ -43,6 +43,7 @@ def wait_form_login_visible(driver):
 def login(context, username, password):
     # prejdi na hlavni stranku
     context.browser.get(context.base_url)
+    print(context.browser.page_source)
     el = context.browser.find_element_by_tag_name('body')
     el.screenshot('screenshot.png')
     print(climage.convert('screenshot.png'))
