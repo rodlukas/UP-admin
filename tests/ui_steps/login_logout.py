@@ -43,9 +43,10 @@ def wait_form_login_visible(driver):
 def login(context, username, password):
     # prejdi na hlavni stranku
     context.browser.get(context.base_url)
+    context.browser.implicitly_wait(10)
     print(context.browser.page_source)
-    el = context.browser.find_element_by_tag_name('body')
-    el.screenshot('screenshot.png')
+    context.browser.find_element_by_tag_name('body')
+    context.browser.save_screenshot('screenshot.png')
     print(climage.convert('screenshot.png'))
     # pockej az bude dostupny prihlasovaci formular
     wait_form_login_visible(context.browser)
