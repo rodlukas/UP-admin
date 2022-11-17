@@ -134,7 +134,7 @@ jobs:
 
             # nasazeni na HEROKU prod
             - name: 🚀 Deploy to Heroku
-            - uses: akhileshns/heroku-deploy@v3.12.12
+              uses: akhileshns/heroku-deploy@v3.12.12
               # if: ${{ github.ref_type == 'tag' }}
               with:
                   heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
