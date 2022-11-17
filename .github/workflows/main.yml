@@ -107,7 +107,7 @@ jobs:
                   cd staticfiles
                   ls -la
                   cd ..
-                  pipenv install terminal-img
+                  pipenv install imgrender
 
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
