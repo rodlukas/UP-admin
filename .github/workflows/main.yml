@@ -103,6 +103,7 @@ jobs:
                   docker exec postgresql_t pg_config --version
                   cd staticfiles
                   ls -la
+                  cd ..
 
             # proved testy a spocitej pokryti kodu
             - name: 🔍 Python - run tests
