@@ -23,26 +23,26 @@ Feature: Operations with applications
     Then the application is not added
 
     Examples: Applications
-      | full_name | course            | note               |
+      | full_name | course           | note               |
       # chybi jmeno klienta
-      |           | Kurz Slabika      |                    |
+      |           | Kurz Slabika     |                    |
       # chybi kurz
-      | Rod Lukáš |                   | testovací poznámka |
+      | Rod Lukáš |                  | testovací poznámka |
       # neexistujici kurz
-      | Rod Lukáš | blabla            | testovací poznámka |
+      | Rod Lukáš | blabla           | testovací poznámka |
       # neexistujici klient
-      | blabla    | Kurz Slabika      |                    |
+      | blabla    | Kurz Slabika     |                    |
       # zajemce o skryty kurz
-      | Rod Lukáš | Máme doma leváka  | testovací poznámka |
+      | Rod Lukáš | Máme doma leváka | testovací poznámka |
       # duplicitni zaznam - klienta se zajmem o dany kurz uz evidujeme
-      | Rod Lukáš | Kurz Slabika      | testovací poznámka |
+      | Rod Lukáš | Kurz Slabika     | testovací poznámka |
 
   @edit @applications
   Scenario: Edit application
     When user updates the data of the application from client "Rod Lukáš" for course "Kurz Slabika" to client "Uhlíř Jaroslav", course "xyz" and note "xxx"
     Then the application is updated
 
-  @delete @applications
+  @delete @applications @ci
   Scenario: Delete application
     When user deletes the application from client "Rod Lukáš" for course "Kurz Slabika"
     Then the application is deleted
