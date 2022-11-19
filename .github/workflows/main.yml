@@ -52,6 +52,7 @@ jobs:
             # TODO az bude https://github.com/actions/runner-images/pull/6528, geckodriver by mel byt predinstalovany
             # nainstaluj geckodriver pro selenium testovani
             - name: 🔧 Install geckodriver
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               run: ./scripts/shell/install_geckodriver.sh
 
             # nainstaluj JS zavislosti
@@ -66,10 +67,12 @@ jobs:
 
             # spust audit frontendu
             - name: 🔍 JS - run audit
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               run: yarn run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
             - name: 🔍 JS - run tests
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               run: yarn run frontend:test
 
             # TODO zapnout kontrolu typu na CI
@@ -82,10 +85,12 @@ jobs:
             # - and then start the PSQL service (tcp port 5432 on service container is mapped to the host)
             # https://github.com/orgs/community/discussions/24923
             - name: 📦 PostgreSQL - container build & run
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               run: |
                   docker build -t postgresql_cz_image -f .github/workflows/Dockerfile.postgresql .
                   docker run -d --name postgresql_cz -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_cz_image
             - name: 📦 PostgreSQL - wait for db
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               run: until docker exec postgresql_cz pg_isready -U postgres; do sleep 1; done
 
             # priprav Django aplikaci
@@ -115,29 +120,33 @@ jobs:
             - name: 🔍 Python - run tests
               run: pipenv run coverage run -a manage.py test
             - name: 🔍 Run E2E API tests
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
             - name: 🔍 Run E2E UI tests
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
             - name: 📝 Generate test reports
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               run: |
                   pipenv run coverage report
                   pipenv run coverage xml
             - name: ☁️ Upload code coverage
+              if: ${{ !startsWith(github.ref, 'refs/tags/') }}
               env:
                   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
               run: ./scripts/shell/ci/codecov_run.sh
 
             # pro tagged commity: zabal frontend do zipu pro GH a nahraj
             - name: ✨ Pre-deploy tasks Github Releases
-              if: startsWith(github.ref, 'refs/tags/')
+              if: ${{ startsWith(github.ref, 'refs/tags/') }}
               run: ./scripts/shell/ci/create_frontend_zip.sh
             - name: 🚀 Upload build artifacts to GH Releases
               uses: softprops/action-gh-release@v1
-              if: startsWith(github.ref, 'refs/tags/')
+              if: ${{ startsWith(github.ref, 'refs/tags/') }}
               with:
                   files: frontend.zip
             - name: 🧹 Post-deploy tasks Github Releases
-              if: startsWith(github.ref, 'refs/tags/')
+              if: ${{ startsWith(github.ref, 'refs/tags/') }}
               run: ./scripts/shell/ci/remove_frontend_zip.sh
 
             # smazani dat z buildu, testovani a dokumentace
@@ -149,12 +158,13 @@ jobs:
 
             # smazeme gitignore, aby se na heroku vydeployovalo vse co chceme
             - name: 🧹 Pre-deploy tasks Heroku
+              if: ${{ startsWith(github.ref, 'refs/tags/') }}
               run: rm -rf .gitignore
 
             # nasazeni na HEROKU
             - name: 🚀 Deploy to Heroku
               uses: akhileshns/heroku-deploy@v3.12.12
-              if: startsWith(github.ref, 'refs/tags/')
+              if: ${{ startsWith(github.ref, 'refs/tags/') }}
               with:
                   heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
                   heroku_app_name: uspesnyprvnacek-staging
