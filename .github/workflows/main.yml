@@ -11,9 +11,8 @@ env:
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
-    GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
+    MANUAL_PRODUCTION: true
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
-    CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     GH_API_KEY: ${{ secrets.GH_API_KEY }}
 
 jobs:
@@ -40,6 +39,8 @@ jobs:
 
             # spust skripty pro upravu souboru
             - name: 📝 Create .npmrc file
+              env:
+                  GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
               run: ./scripts/shell/ci/create_npmrc.sh
             - name: 📝 String substitution
               run: ./scripts/shell/ci/string_substitution.sh
@@ -68,6 +69,12 @@ jobs:
             ## otestuj frontend (typy, linting, jest)
             #- name: 🔍 JS - run tests
             #  run: yarn run frontend:test
+
+            # spust Django deployment checklist
+            - name: 🔍 Python - run Django deployment checklist
+              env:
+                  MANUAL_PRODUCTION: false
+              run: pipenv run python manage.py check --deploy --fail-level WARNING
 
             # TODO zapnout kontrolu typu na CI
             # otestuj typy v backendu pres mypy
@@ -114,6 +121,8 @@ jobs:
                   pipenv run coverage report
                   pipenv run coverage xml
             - name: ☁️ Upload code coverage
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
               run: ./scripts/shell/ci/codecov_run.sh
 
             # pro tagged commity: zabal frontend do zipu pro GH a nahraj

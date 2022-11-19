@@ -9,10 +9,6 @@ import os
 
 from .base import *
 
-# pro korektni build a fungovani na CI
-if os.getenv("CI"):
-    MANUAL_PRODUCTION = True
-
 ALLOWED_HOSTS = [
     "uspesnyprvnacek.herokuapp.com",
     "uspesnyprvnacek-staging.herokuapp.com",
@@ -40,7 +36,6 @@ if MANUAL_PRODUCTION:
     ]
     DEBUG = False
     ALLOWED_HOSTS.append("localhost")
-    os.environ["SENTRY_DSN"] = SENTRY_DSN  # pro JS
-
-if MANUAL_PRODUCTION and not os.getenv("CI"):
     SECURE_SSL_REDIRECT = False
+    os.environ["SENTRY_DSN"] = SENTRY_DSN  # pro JS
+    
