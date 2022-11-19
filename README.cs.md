@@ -13,15 +13,13 @@
 </p>
 
 <p align="center">
-    <a href="https://travis-ci.com/rodlukas/UP-admin"><img alt="Travis (.com)" src="https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/main.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/main.yml/badge.svg"></a>
     <a href="https://codecov.io/gh/rodlukas/UP-admin"><img alt="Codecov" src="https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/release/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square"></a>
     <br>
-    <a href="https://lgtm.com/projects/g/rodlukas/UP-admin/alerts/"><img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/github/rodlukas/UP-admin.svg?style=flat-square"></a>
-    <a href="https://lgtm.com/projects/g/rodlukas/UP-admin/context:javascript"><img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/github/rodlukas/UP-admin.svg?style=flat-square"></a>
-    <a href="https://lgtm.com/projects/g/rodlukas/UP-admin/context:python"><img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/python/github/rodlukas/UP-admin.svg?style=flat-square"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml/badge.svg"></a>
     <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.herokuapp.com"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.herokuapp.com?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
     <br>
@@ -207,13 +205,15 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
     (Python) a **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD),
     oba nástroje jsou napojené na IDE a provádějí automatické úpravy.
 -   **Aplikace jsou napojené na další služby:**
-    -   **CI a CD** má na starost [Travis](https://travis-ci.com/) – automatizovaný build, testování
-        i nasazení na různá prostředí, automaticky prováděné pokročilejší skripty např. pro
-        automatické zapsání verze do aplikace, práci s tokeny, nahrání sestaveného frontendu do
-        assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí kódu a další.
+    -   **CI a CD** má na starost [GitHub Actions](https://github.com/features/actions) –
+        automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné
+        pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny,
+        nahrání sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet
+        pokrytí kódu a další.
     -   **Automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání
-        potenciálních chyb a zranitelností má na starost [LGTM](https://lgtm.com/),
-        [SonarCloud](https://sonarcloud.io/) a [DeepScan](https://deepscan.io/).
+        potenciálních chyb a zranitelností má na starost
+        [GitHub CodeQL](https://codeql.github.com/), [SonarCloud](https://sonarcloud.io/) a
+        [DeepScan](https://deepscan.io/).
     -   **Logování** z Heroku se zasílá do [Logentries](https://logentries.com/) (logy se uchovávají
         po 7 dnů, tříděné podle typu prostředí).
     -   **Odchytávání chyb na backendu i frontendu** včetně následné evidence, notifikací a
@@ -419,6 +419,13 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
 #### Úprava údajů o skupině
 
 [![screenshot formuláře pro úpravu údajů o skupině](docs/screenshots/form-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png)
+
+## Historie
+
+-   Projekt původně pro CI & CD používal [Travis](https://travis-ci.com/), ale v listopadu 2022
+    došlo k migraci na GitHub Actions.
+-   Automatickou průběžnou analýzu a kontrolu kódu zajišťoval mj. [LGTM](https://lgtm.com/) až do
+    listopadu 2022, kdy byl nahrazen svým nástupcem [GitHub CodeQL](https://codeql.github.com/).
 
 ## Licence
 

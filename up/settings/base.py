@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # env promenne
 env = environ.Env(
     # nastaveni typu a pripadne vychozi hodnoty
-    BANK_ACTIVE=(bool, True),  # aktivace propojeni s bankou
+    BANK_ACTIVE=(bool, False),  # aktivace propojeni s bankou
     BANK_RENT_PRICE=(int, 0),  # vyse najmu (v Kc)
     DATABASE_URL=str,  # url pouzivane DB (napr. postgresql://postgres:postgres@localhost:5432/up)
     DEBUG=(bool, False),  # aktivace debug prostredi
@@ -22,7 +22,7 @@ env = environ.Env(
     FIO_API_KEY=(str, ""),  # token pro pristup do Fia
     HEADLESS=(bool, True),  # indikace headless mode pro testy UI
     HEROKU=(bool, False),  # priznak nasazeni aplikace na Heroku
-    MANUAL_PRODUCTION=(bool, False),  # pro simulaci produkcni verze nastavit: True
+    MANUAL_PRODUCTION=(bool, False),  # pro simulaci produkcni verze nastavit: True (nutne i pro CI)
     SECRET_KEY=str,  # tajny klic pro Django
     SENTRY_DSN=str,  # DSN klic pro Sentry
     TESTS_RUNNING=(bool, False),  # indikace bezicich testu

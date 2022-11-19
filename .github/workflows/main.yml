@@ -1,0 +1,162 @@
+name: CI & CD
+
+on:
+    push:
+        branches: ["master"]
+    pull_request:
+        branches: ["master"]
+
+env:
+    ENVIRONMENT: CI
+    SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
+    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+    DJANGO_SETTINGS_MODULE: up.settings.production
+    MANUAL_PRODUCTION: true
+    SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
+
+jobs:
+    build_test_deploy:
+        name: Build, test and deploy app
+        # TODO prejit na 22 - https://github.com/actions/runner-images/pull/6528
+        runs-on: ubuntu-20.04
+
+        # github token opravneni pro upload k releasum
+        permissions:
+            contents: write
+
+        steps:
+            # priprav prostredi
+            - name: ☁️ Checkout repo
+              uses: actions/checkout@v3
+            - name: 🔧 Setup node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+                  cache: "yarn"
+                  cache-dependency-path: "**/yarn.lock"
+            - name: 🔧 Setup Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.10"
+                  cache: "pipenv"
+
+            # spust skripty pro upravu souboru
+            - name: 📝 Create .npmrc file
+              run: ./scripts/shell/ci/create_npmrc.sh
+            - name: 📝 String substitution
+              run: ./scripts/shell/ci/string_substitution.sh
+            - name: 📝 Create dummy .env file
+              run: touch .env
+
+            # TODO az bude https://github.com/actions/runner-images/pull/6528, geckodriver by mel byt predinstalovany
+            # nainstaluj geckodriver pro selenium testovani
+            - name: 🔧 Install geckodriver
+              run: ./scripts/shell/install_geckodriver.sh
+
+            # nainstaluj JS zavislosti
+            - name: 🔧 JS - install deps & build frontend app
+              run: yarn install --frozen-lockfile
+
+            # nainstaluj Python zavislosti
+            - name: 🔧 Python - install deps
+              run: |
+                  pip install pipenv
+                  pipenv install --dev
+
+            # spust audit frontendu
+            - name: 🔍 JS - run audit
+              run: yarn run frontend:audit
+
+            # otestuj frontend (typy, linting, jest)
+            - name: 🔍 JS - run tests
+              run: yarn run frontend:test
+
+            # TODO zapnout kontrolu typu na CI
+            # otestuj typy v backendu pres mypy
+            # - name: 🔍 Python - run tests
+            #  run: mypy .
+
+            # PostgreSQL
+            # - build custom PSQL container image with CZ locale
+            # - and then start the PSQL service (tcp port 5432 on service container is mapped to the host)
+            # https://github.com/orgs/community/discussions/24923
+            - name: 📦 PostgreSQL - container build & run
+              run: |
+                  docker build -t postgresql_cz_image -f .github/workflows/Dockerfile.postgresql .
+                  docker run -d --name postgresql_cz -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_cz_image
+            - name: 📦 PostgreSQL - wait for db
+              run: until docker exec postgresql_cz pg_isready -U postgres; do sleep 1; done
+
+            # priprav Django aplikaci
+            - name: 🔧 Python - build Django app
+              run: ./scripts/shell/release_tasks.sh
+
+            # spust Django deployment checklist
+            - name: 🔍 Python - run Django deployment checklist
+              env:
+                  MANUAL_PRODUCTION: false
+              run: pipenv run python manage.py check --deploy --fail-level WARNING
+
+            - name: 🐞 Debug env log
+              run: |
+                  node --version
+                  npm --version
+                  yarn --version
+                  python --version
+                  pipenv --version
+                  firefox --version
+                  geckodriver --version
+                  docker exec postgresql_cz psql -U postgres -c "SHOW LC_COLLATE;"
+                  docker exec postgresql_cz psql --version
+                  docker exec postgresql_cz pg_config --version
+
+            # proved testy, spocitej pokryti kodu a posli ho do cloudu
+            - name: 🔍 Python - run tests
+              run: pipenv run coverage run -a manage.py test
+            - name: 🔍 Run E2E API tests
+              run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
+            - name: 🔍 Run E2E UI tests
+              run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
+            - name: 📝 Generate test reports
+              run: |
+                  pipenv run coverage report
+                  pipenv run coverage xml
+            - name: ☁️ Upload code coverage
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+              run: ./scripts/shell/ci/codecov_run.sh
+
+            # pro tagged commity: zabal frontend do zipu pro GH a nahraj
+            - name: ✨ Pre-deploy tasks Github Releases
+              if: startsWith(github.ref, 'refs/tags/')
+              run: ./scripts/shell/ci/create_frontend_zip.sh
+            - name: 🚀 Upload build artifacts to GH Releases
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                  files: frontend.zip
+            - name: 🧹 Post-deploy tasks Github Releases
+              if: startsWith(github.ref, 'refs/tags/')
+              run: ./scripts/shell/ci/remove_frontend_zip.sh
+
+            # smazani dat z buildu, testovani a dokumentace
+            - name: 🧹 Cleanup project folder
+              run:
+                  rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
+                  .idea codecov .mypy_cache .behaverc .coveragerc .editorconfig .env.template .env
+                  mypy.ini .prettierignore .prettierrc.json pyproject.toml .codecov.yml
+
+            # smazeme gitignore, aby se na heroku vydeployovalo vse co chceme
+            - name: 🧹 Pre-deploy tasks Heroku
+              run: rm -rf .gitignore
+
+            # nasazeni na HEROKU prod
+            - name: 🚀 Deploy to Heroku
+              uses: akhileshns/heroku-deploy@v3.12.12
+              # if: startsWith(github.ref, 'refs/tags/')
+              with:
+                  heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+                  heroku_app_name: uspesnyprvnacek-staging
+                  heroku_email: ${{ secrets.HEROKU_EMAIL }}
+                  dontautocreate: true

@@ -7,11 +7,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 import os
 
-from .base import *  # lgtm [py/polluting-import]
-
-# pro korektni build a fungovani na Travisu
-if os.getenv("TRAVIS"):
-    MANUAL_PRODUCTION = True
+from .base import *
 
 ALLOWED_HOSTS = [
     "uspesnyprvnacek.herokuapp.com",
@@ -32,12 +28,14 @@ SECURE_HSTS_SECONDS = 63072000  # 2 roky
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
-# pravidla pro manualni produkci (pro jeji simulaci na lokalu/build a fungovani Travisu)
+# pravidla pro manualni produkci (pro jeji simulaci na lokalu/build a fungovani CI)
 if MANUAL_PRODUCTION:
+    # jen na CI (zde se pak slozka smaze) / manualni produkci
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, "frontend", "build")
-    ]  # jen na Travisu (zde se pak slozka smaze) / manualni produkci
+    ]
     DEBUG = False
     ALLOWED_HOSTS.append("localhost")
     SECURE_SSL_REDIRECT = False
     os.environ["SENTRY_DSN"] = SENTRY_DSN  # pro JS
+    

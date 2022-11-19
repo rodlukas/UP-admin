@@ -2,7 +2,7 @@
 Lokální (vývojová) konfigurace Django projektu.
 Rozšiřuje základní konfiguraci ze souboru base.py.
 """
-from .base import *  # lgtm [py/polluting-import]
+from .base import *
 
 # Django konstanty
 ALLOWED_HOSTS = ["*"]

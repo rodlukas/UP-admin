@@ -24,7 +24,7 @@ export const DASHBOARDDAY_UPDATE_TYPE = Object.freeze({
 })
 
 /** Prefix hlavičky s JWT tokenem. */
-export const JWT_HEADER_PREFIX = "Bearer " // lgtm [js/hardcoded-credentials]
+export const JWT_HEADER_PREFIX = "Bearer "
 
 /** Texty používané napříč aplikací. */
 export const TEXTS = Object.freeze({

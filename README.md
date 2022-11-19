@@ -13,15 +13,13 @@
 </p>
 
 <p align="center">
-    <a href="https://travis-ci.com/rodlukas/UP-admin"><img alt="Travis (.com)" src="https://img.shields.io/travis/com/rodlukas/UP-admin.svg?style=flat-square"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/main.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/main.yml/badge.svg"></a>
     <a href="https://codecov.io/gh/rodlukas/UP-admin"><img alt="Codecov" src="https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/release/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square"></a>
     <br>
-    <a href="https://lgtm.com/projects/g/rodlukas/UP-admin/alerts/"><img alt="LGTM Alerts" src="https://img.shields.io/lgtm/alerts/github/rodlukas/UP-admin.svg?style=flat-square"></a>
-    <a href="https://lgtm.com/projects/g/rodlukas/UP-admin/context:javascript"><img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/javascript/github/rodlukas/UP-admin.svg?style=flat-square"></a>
-    <a href="https://lgtm.com/projects/g/rodlukas/UP-admin/context:python"><img alt="LGTM Grade" src="https://img.shields.io/lgtm/grade/python/github/rodlukas/UP-admin.svg?style=flat-square"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml/badge.svg"></a>
     <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.herokuapp.com"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.herokuapp.com?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
     <br>
@@ -212,14 +210,15 @@ top menu label title and color (except for the production).
     **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), both these
     tools are integrated with an IDE and perform automatic enhancements.
 -   **The apps are connected to more services:**
-    -   **CI and CD** is taken care of by [Travis](https://travis-ci.com/) – automated build,
-        testing and deployment to various environments, automated execution of advanced scripts for
-        e.g. automated app version addition to app, tokens handling, uploading static assets
-        (frontend) to GitHub release assets, integration of cloud service for measuring code
-        coverage.
+    -   **CI and CD** is taken care of by [GitHub Actions](https://github.com/features/actions) –
+        automated build, testing and deployment to various environments, automated execution of
+        advanced scripts for e.g. automated app version addition to app, tokens handling, uploading
+        static assets (frontend) to GitHub Release Assets, integration of cloud service for
+        measuring code coverage.
     -   **Automated continuous code analysis** including code quality measure, finding zero-days and
-        preventing critical vulnerabilities is taken care of by [LGTM](https://lgtm.com/),
-        [SonarCloud](https://sonarcloud.io/) and [DeepScan](https://deepscan.io/).
+        preventing critical vulnerabilities is taken care of by
+        [GitHub CodeQL](https://codeql.github.com/), [SonarCloud](https://sonarcloud.io/) and
+        [DeepScan](https://deepscan.io/).
     -   **Logs** from Heroku are sent to [Logentries](https://logentries.com/) (the logs are
         retained here for 7 days, sorted according to the environment).
     -   **Error monitoring of backend and frontend** including triage, notifications and integration
@@ -426,6 +425,13 @@ The repo contains **complex tests of the API and UI (e2e)** – see the
 #### Edit of group's data
 
 [![screenshot from the settings](docs/screenshots/form-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png)
+
+## History
+
+-   Projekt originally used [Travis](https://travis-ci.com/) for CI & CD, but in November 2022 the
+    flow was migrated to GitHub Actions.
+-   Automated continuous code analysis was ensured among others by [LGTM](https://lgtm.com/) until
+    November 2022 when it was replaced by its successor [GitHub CodeQL](https://codeql.github.com/).
 
 ## License
 

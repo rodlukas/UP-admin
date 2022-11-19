@@ -6,10 +6,10 @@ from rest_framework import status
 from tests import common_helpers
 
 # noinspection PyUnresolvedReferences
-from tests.api_steps import helpers, login_logout  # lgtm [py/unused-import]
+from tests.api_steps import helpers, login_logout
 
 # noinspection PyUnresolvedReferences
-from tests.common_steps import applications  # lgtm [py/unused-import]
+from tests.common_steps import applications
 
 
 def applications_cnt(api_client):

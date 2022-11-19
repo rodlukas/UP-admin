@@ -7,10 +7,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from tests import common_helpers
 
 # noinspection PyUnresolvedReferences
-from tests.common_steps import clients  # lgtm [py/unused-import]
+from tests.common_steps import clients
 
 # noinspection PyUnresolvedReferences
-from tests.ui_steps import helpers, login_logout  # lgtm [py/unused-import]
+from tests.ui_steps import helpers, login_logout
 
 
 def clients_cnt(driver):

@@ -4,8 +4,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+
 # noinspection PyUnresolvedReferences
-from tests.common_steps import login_logout  # lgtm [py/unused-import]
+from tests.common_steps import login_logout
 from tests.ui_steps import helpers
 
 LOCAL_STORAGE_JWT_KEY = "jwt"

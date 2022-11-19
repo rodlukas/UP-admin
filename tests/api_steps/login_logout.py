@@ -7,7 +7,7 @@ from rest_framework import status
 from tests.api_steps import helpers
 
 # noinspection PyUnresolvedReferences
-from tests.common_steps import login_logout  # lgtm [py/unused-import]
+from tests.common_steps import login_logout
 
 
 def login(context, username, password):

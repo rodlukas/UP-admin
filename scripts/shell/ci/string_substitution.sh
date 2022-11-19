@@ -3,7 +3,7 @@
 # funkce pro nahrazeni retezcu (arg1: $1) retezcem (arg2: $2)
 substitute() {
   git grep -l "%$1" | xargs --no-run-if-empty sed -i "s|%$1|$2|g"
-  echo "- nahrazeni \"$1\" hodnotou \"$2\" bylo uspesne"
+  echo -e "\t%$1\t --> \t\"$2\""
 }
 
 # nastaveni konstant, ktere budou nahrazeny
@@ -16,20 +16,22 @@ SENTRY_DSN_STRING='SENTRY_DSN'
 
 # nastaveni novych hodnot pro nahrazovane retezce
 COMMIT=$(git rev-parse --short HEAD)
-# viz https://docs.travis-ci.com/user/environment-variables/
-RELEASE=$TRAVIS_TAG
-BRANCH=$TRAVIS_BRANCH
+# nazev vetve (v pripade tagged commitu nazev tagu, pro PR nazev vetve PR)
+BRANCH=$GITHUB_HEAD_REF || $GITHUB_REF_NAME
+# viz https://docs.github.com/en/actions/learn-github-actions/environment-variables
+# nazev tagu - pokud jde o tagged commit, v GITHUB_REF_NAME je nazev tagu, ktery vyuzijeme, jinak je tam nazev vetve a ten zahodime
+RELEASE=$([[ "$GITHUB_REF_TYPE" == "tag" ]] && echo "$GITHUB_REF_NAME" || echo "")
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
 YEAR=$(git log -1 --format=%cd --date=format:"%Y")
 
 # provedeni subtituce ve slozce $1
 substitute_folder() {
   cd "$1" || {
-    echo "CHYBA - Substituce retezcu ve slozce \"$1\" se nepodarila"
+    echo -e "❌ CHYBA: Substituce retezcu ve slozce \"$1\" se nepodarila.\n"
     exit 1
   }
 
-  echo "* Zacina substituce retezcu ve slozce \"$1\""
+  echo "🚀 Zacina substituce retezcu ve slozce \"$1\" :"
 
   substitute "$GIT_COMMIT_STRING" "$COMMIT"
   substitute "$GIT_RELEASE_STRING" "$RELEASE"
@@ -38,9 +40,9 @@ substitute_folder() {
   substitute "$GIT_YEAR_STRING" "$YEAR"
   substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
 
-  cd "$TRAVIS_BUILD_DIR" || exit
+  cd "$GITHUB_WORKSPACE" || exit
 
-  echo "* Substituce retezcu ve slozce \"$1\" byla uspesna"
+  echo -e "✅ Substituce retezcu ve slozce \"$1\" byla uspesna.\n"
 }
 
 substitute_folder frontend/src
