@@ -7,7 +7,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 import os
 
-from .base import *  # lgtm [py/polluting-import]
+from .base import *
 
 # pro korektni build a fungovani na CI
 if os.getenv("CI"):
