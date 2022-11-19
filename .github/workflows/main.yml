@@ -69,8 +69,8 @@ jobs:
             #- name: 🔍 JS - run tests
             #  run: yarn run frontend:test
 
-            # otestuj typy v backendu pres mypy
             # TODO zapnout kontrolu typu na CI
+            # otestuj typy v backendu pres mypy
             # - name: 🔍 Python - run tests
             #  run: mypy .
 
