@@ -151,10 +151,10 @@ jobs:
             - name: 🧹 Pre-deploy tasks Heroku
               run: rm -rf .gitignore
 
-            # nasazeni na HEROKU prod
+            # nasazeni na HEROKU
             - name: 🚀 Deploy to Heroku
               uses: akhileshns/heroku-deploy@v3.12.12
-              # if: startsWith(github.ref, 'refs/tags/')
+              if: startsWith(github.ref, 'refs/tags/')
               with:
                   heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
                   heroku_app_name: uspesnyprvnacek-staging
