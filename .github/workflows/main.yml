@@ -129,6 +129,10 @@ jobs:
                   rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
                   .idea codecov .mypy_cache
 
+            # smazani dat z buildu, testovani a dokumentace
+            - name: 🧹 Pre-deploy cleanup
+              run: rm -rf .gitignore
+
             # nasazeni na HEROKU prod
             - name: 🚀 Deploy to Heroku
               uses: akhileshns/heroku-deploy@v3.12.12
