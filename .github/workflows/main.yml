@@ -65,13 +65,13 @@ jobs:
                   pip install pipenv
                   pipenv install --dev
 
-            ## spust audit frontendu
-            #- name: 🔍 JS - run audit
-            #  run: yarn run frontend:audit
-            #
-            ## otestuj frontend (typy, linting, jest)
-            #- name: 🔍 JS - run tests
-            #  run: yarn run frontend:test
+            # spust audit frontendu
+            - name: 🔍 JS - run audit
+              run: yarn run frontend:audit
+
+            # otestuj frontend (typy, linting, jest)
+            - name: 🔍 JS - run tests
+              run: yarn run frontend:test
 
             # TODO zapnout kontrolu typu na CI
             # otestuj typy v backendu pres mypy
@@ -90,7 +90,7 @@ jobs:
               run: until docker exec postgresql_cz pg_isready -U postgres; do sleep 1; done
 
             # priprav Django aplikaci
-            - name: 🔍 Python - build Django app
+            - name: 🔧 Python - build Django app
               run: ./scripts/shell/release_tasks.sh
 
             # spust Django deployment checklist
