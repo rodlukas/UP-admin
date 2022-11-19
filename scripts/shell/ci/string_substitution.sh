@@ -16,11 +16,11 @@ SENTRY_DSN_STRING='SENTRY_DSN'
 
 # nastaveni novych hodnot pro nahrazovane retezce
 COMMIT=$(git rev-parse --short HEAD)
+# nazev vetve (v pripade tagged commitu nazev tagu, pro PR nazev vetve PR)
+BRANCH=$GITHUB_HEAD_REF || $GITHUB_REF_NAME
 # viz https://docs.github.com/en/actions/learn-github-actions/environment-variables
-# nazev tagu - pokud jde o tagged commit, v GITHUB_REF_TYPE je nazev tagu, ktery vyuzijeme, jinak je tam nazev vetve a ten zahodime
+# nazev tagu - pokud jde o tagged commit, v GITHUB_REF_NAME je nazev tagu, ktery vyuzijeme, jinak je tam nazev vetve a ten zahodime
 RELEASE=$([[ "$GITHUB_REF_TYPE" == "tag" ]] && echo "$GITHUB_REF_NAME" || echo "")
-# nazev vetve (v pripade tagged commitu nazev tagu)
-BRANCH=$GITHUB_REF_NAME
 DATETIME=$(git log -1 --format=%cd --date=format:"%d. %m. %Y, %H:%M:%S")
 YEAR=$(git log -1 --format=%cd --date=format:"%Y")
 
