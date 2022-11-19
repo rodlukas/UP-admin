@@ -39,8 +39,6 @@ jobs:
 
             # spust skripty pro upravu souboru
             - name: 📝 Create .npmrc file
-              env:
-                  GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
               run: ./scripts/shell/ci/create_npmrc.sh
             - name: 📝 String substitution
               run: ./scripts/shell/ci/string_substitution.sh
@@ -54,6 +52,8 @@ jobs:
 
             # nainstaluj JS zavislosti
             - name: 🔧 JS - install deps & build frontend app
+              env:
+                  GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
               run: yarn install --frozen-lockfile
 
             # nainstaluj Python zavislosti
