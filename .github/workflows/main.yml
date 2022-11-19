@@ -80,10 +80,10 @@ jobs:
             # https://github.com/orgs/community/discussions/24923
             - name: 📦 PostgreSQL - container build & run
               run: |
-                  docker build -t postgresql_i .github/workflows
-                  docker run -d --name postgresql_t -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_i
+                  docker build -t postgresql_cz_image -f Dockerfile.postgresql .github/workflows
+                  docker run -d --name postgresql_cz -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_cz_image
             - name: 📦 PostgreSQL - wait for db
-              run: until docker exec postgresql_t pg_isready -U postgres; do sleep 1; done
+              run: until docker exec postgresql_cz pg_isready -U postgres; do sleep 1; done
 
             # priprav Django aplikaci
             - name: 🔍 Python - build Django app
@@ -98,12 +98,9 @@ jobs:
                   pipenv --version
                   firefox --version
                   geckodriver --version
-                  docker exec postgresql_t psql -U postgres -c "SHOW LC_COLLATE;"
-                  docker exec postgresql_t psql --version
-                  docker exec postgresql_t pg_config --version
-                  cd staticfiles
-                  ls -la
-                  cd ..
+                  docker exec postgresql_cz psql -U postgres -c "SHOW LC_COLLATE;"
+                  docker exec postgresql_cz psql --version
+                  docker exec postgresql_cz pg_config --version
 
             # proved testy, spocitej pokryti kodu a posli ho do cloudu
             # - name: 🔍 Python - run tests
@@ -137,7 +134,7 @@ jobs:
               run:
                   rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
                   .idea codecov .mypy_cache .behaverc .coveragerc .editorconfig .env.template .env
-                  lgtm.yml mypy.ini .prettierignore .prettierrc.json pyproject.toml .codecov.yml
+                  mypy.ini .prettierignore .prettierrc.json pyproject.toml .codecov.yml
 
             # smazeme gitignore, aby se na heroku vydeployovalo vse co chceme
             - name: 🧹 Pre-deploy tasks Heroku
