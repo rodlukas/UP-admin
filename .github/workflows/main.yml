@@ -17,31 +17,26 @@ env:
     GH_API_KEY: ${{ secrets.GH_API_KEY }}
 
 jobs:
-    build:
-        name: Build app
+    build_test_deploy:
+        name: Build, test and deploy app
         # TODO prejit na 22 - https://github.com/actions/runner-images/pull/6528
         runs-on: ubuntu-20.04
 
         steps:
+            # priprav prostredi
             - name: ☁️ Checkout repo
               uses: actions/checkout@v3
-
             - name: 🔧 Setup node
               uses: actions/setup-node@v3
               with:
                   node-version: "18"
                   cache: "yarn"
                   cache-dependency-path: "**/yarn.lock"
-
             - name: 🔧 Setup Python
               uses: actions/setup-python@v4
               with:
                   python-version: "3.10"
                   cache: "pipenv"
-
-            # nainstaluj geckodriver pro selenium testovani
-            - name: 🔧 Install geckodriver
-              run: ./scripts/shell/install_geckodriver.sh
 
             # spust skripty pro upravu souboru
             - name: 📝 Create .npmrc file
@@ -50,6 +45,11 @@ jobs:
               run: ./scripts/shell/travis/string_substitution.sh
             - name: 📝 Create dummy .env file
               run: touch .env
+
+            # TODO az bude https://github.com/actions/runner-images/pull/6528, geckodriver by mel byt predinstalovany
+            # nainstaluj geckodriver pro selenium testovani
+            - name: 🔧 Install geckodriver
+              run: ./scripts/shell/install_geckodriver.sh
 
             # nainstaluj JS zavislosti
             - name: 🔧 JS - install deps & build frontend app
@@ -119,18 +119,28 @@ jobs:
             #- name: ☁️ Upload code coverage
             #  run: ./scripts/shell/travis/codecov_run.sh
 
-            # pro tagged commit: zabal frontend do zipu pro GH
-            - name: ☁️ Upload JS bundle to GitHub releases
+            # pro tagged commity: zabal frontend do zipu pro GH a nahraj
+            - name: ✨ Pre-deploy tasks Github Releases
+              if: startsWith(github.ref, 'refs/tags/')
               run: ./scripts/shell/travis/create_frontend_zip.sh
+            - name: 🚀 Upload build artifacts to GH Releases
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                  files: frontend.zip
+            - name: 🧹 Post-deploy tasks Github Releases
+              if: startsWith(github.ref, 'refs/tags/')
+              run: ./scripts/shell/travis/remove_frontend_zip.sh
 
             # smazani dat z buildu, testovani a dokumentace
             - name: 🧹 Cleanup project folder
               run:
                   rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
-                  .idea codecov .mypy_cache
+                  .idea codecov .mypy_cache .behaverc .coveragerc .editorconfig .env.template .env
+                  lgtm.yml mypy.ini .prettierignore .prettierrc.json pyproject.toml
 
-            # smazani dat z buildu, testovani a dokumentace
-            - name: 🧹 Pre-deploy cleanup
+            # smazeme gitignore, aby se na heroku vydeployovalo vse co chceme
+            - name: 🧹 Pre-deploy tasks Heroku
               run: rm -rf .gitignore
 
             # nasazeni na HEROKU prod
@@ -142,6 +152,3 @@ jobs:
                   heroku_app_name: uspesnyprvnacek-testing
                   heroku_email: ${{ secrets.HEROKU_EMAIL }}
                   dontautocreate: true
-
-            - name: 🧹 Cleanup project folder after deploy
-              run: ./scripts/shell/travis/remove_frontend_zip.sh
