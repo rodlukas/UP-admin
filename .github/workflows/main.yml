@@ -13,6 +13,7 @@ env:
     DJANGO_SETTINGS_MODULE: up.settings.production
     MANUAL_PRODUCTION: true
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
 jobs:
     build_test_deploy:
@@ -55,8 +56,6 @@ jobs:
 
             # nainstaluj JS zavislosti
             - name: 🔧 JS - install deps & build frontend app
-              env:
-                  GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
               run: yarn install --frozen-lockfile
 
             # nainstaluj Python zavislosti
@@ -67,8 +66,6 @@ jobs:
 
             # spust audit frontendu
             - name: 🔍 JS - run audit
-              env:
-                  GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
               run: yarn run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
