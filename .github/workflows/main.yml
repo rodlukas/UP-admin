@@ -80,7 +80,7 @@ jobs:
             # https://github.com/orgs/community/discussions/24923
             - name: 📦 PostgreSQL - container build & run
               run: |
-                  docker build -t postgresql_cz_image -f Dockerfile.postgresql .github/workflows
+                  docker build -t postgresql_cz_image -f .github/workflows/Dockerfile.postgresql .
                   docker run -d --name postgresql_cz -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_cz_image
             - name: 📦 PostgreSQL - wait for db
               run: until docker exec postgresql_cz pg_isready -U postgres; do sleep 1; done
