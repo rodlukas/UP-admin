@@ -70,12 +70,6 @@ jobs:
             #- name: 🔍 JS - run tests
             #  run: yarn run frontend:test
 
-            # spust Django deployment checklist
-            - name: 🔍 Python - run Django deployment checklist
-              env:
-                  MANUAL_PRODUCTION: false
-              run: pipenv run python manage.py check --deploy --fail-level WARNING
-
             # TODO zapnout kontrolu typu na CI
             # otestuj typy v backendu pres mypy
             # - name: 🔍 Python - run tests
@@ -95,6 +89,12 @@ jobs:
             # priprav Django aplikaci
             - name: 🔍 Python - build Django app
               run: ./scripts/shell/release_tasks.sh
+
+            # spust Django deployment checklist
+            - name: 🔍 Python - run Django deployment checklist
+              env:
+                  MANUAL_PRODUCTION: false
+              run: pipenv run python manage.py check --deploy --fail-level WARNING
 
             - name: 🐞 Debug env log
               run: |
