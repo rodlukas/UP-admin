@@ -67,6 +67,8 @@ jobs:
 
             # spust audit frontendu
             - name: 🔍 JS - run audit
+              env:
+                  GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
               run: yarn run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
