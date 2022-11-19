@@ -40,9 +40,9 @@ jobs:
 
             # spust skripty pro upravu souboru
             - name: 📝 Create .npmrc file
-              run: ./scripts/shell/travis/create_npmrc.sh
+              run: ./scripts/shell/ci/create_npmrc.sh
             - name: 📝 String substitution
-              run: ./scripts/shell/travis/string_substitution.sh
+              run: ./scripts/shell/ci/string_substitution.sh
             - name: 📝 Create dummy .env file
               run: touch .env
 
@@ -117,12 +117,12 @@ jobs:
             #      pipenv run coverage report
             #      pipenv run coverage xml
             #- name: ☁️ Upload code coverage
-            #  run: ./scripts/shell/travis/codecov_run.sh
+            #  run: ./scripts/shell/ci/codecov_run.sh
 
             # pro tagged commity: zabal frontend do zipu pro GH a nahraj
             - name: ✨ Pre-deploy tasks Github Releases
               if: startsWith(github.ref, 'refs/tags/')
-              run: ./scripts/shell/travis/create_frontend_zip.sh
+              run: ./scripts/shell/ci/create_frontend_zip.sh
             - name: 🚀 Upload build artifacts to GH Releases
               uses: softprops/action-gh-release@v1
               if: startsWith(github.ref, 'refs/tags/')
@@ -130,14 +130,14 @@ jobs:
                   files: frontend.zip
             - name: 🧹 Post-deploy tasks Github Releases
               if: startsWith(github.ref, 'refs/tags/')
-              run: ./scripts/shell/travis/remove_frontend_zip.sh
+              run: ./scripts/shell/ci/remove_frontend_zip.sh
 
             # smazani dat z buildu, testovani a dokumentace
             - name: 🧹 Cleanup project folder
               run:
                   rm -rf geckodriver geckodriver.log coverage.xml docs frontend tests node_modules
                   .idea codecov .mypy_cache .behaverc .coveragerc .editorconfig .env.template .env
-                  lgtm.yml mypy.ini .prettierignore .prettierrc.json pyproject.toml
+                  lgtm.yml mypy.ini .prettierignore .prettierrc.json pyproject.toml .codecov.yml
 
             # smazeme gitignore, aby se na heroku vydeployovalo vse co chceme
             - name: 🧹 Pre-deploy tasks Heroku
