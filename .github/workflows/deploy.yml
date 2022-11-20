@@ -6,13 +6,14 @@ on:
 
 env:
     ENVIRONMENT: CI
+    SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     DJANGO_SETTINGS_MODULE: up.settings.production
     MANUAL_PRODUCTION: true
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
 jobs:
-    deploy:
-        name: Deploy
+    build_and_deploy:
+        name: Build & Deploy
         runs-on: ubuntu-22.04
 
         # github token opravneni pro upload k releasum

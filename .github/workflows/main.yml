@@ -16,8 +16,8 @@ env:
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
 jobs:
-    build_test_deploy:
-        name: Build, test and deploy app
+    build_and_test:
+        name: Build & Test
         # TODO prejit na 22 - https://github.com/actions/runner-images/pull/6528
         runs-on: ubuntu-20.04
 
