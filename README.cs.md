@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/main.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/main.yml/badge.svg"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/test.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/test.yml/badge.svg"></a>
     <a href="https://codecov.io/gh/rodlukas/UP-admin"><img alt="Codecov" src="https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/release/rodlukas/UP-admin.svg?style=flat-square"></a>
