@@ -126,3 +126,12 @@ jobs:
             # smazani dat z buildu, testovani a dokumentace
             - name: 🧹 Cleanup project folder
               run: ./scripts/shell/ci/cleanup.sh
+
+            - name: Build docker image
+              run: docker build . -t project_name
+
+            - name: Test image
+              run: |
+                  docker run --rm -d --name test_container -p 8000:8000 project_name
+                  docker run --link test_container:test_container waisbrot/wait
+                  curl --fail http://localhost:8000

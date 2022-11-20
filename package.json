@@ -1,36 +1,36 @@
 {
-  "name": "up-frontend-root",
-  "version": "3.0.0",
-  "author": "Lukáš Rod <info@lukasrod.cz> (https://lukasrod.cz)",
-  "private": true,
-  "license": "MIT",
-  "engines": {
-    "node": "18",
-    "npm": "8",
-    "yarn": "1"
-  },
-  "scripts": {
-    "postinstall": "cd frontend && yarn install --frozen-lockfile && yarn build:ci",
-    "frontend:test": "cd frontend && yarn test",
-    "frontend:audit": "cd frontend && yarn run audit",
-    "frontend:lint:js": "cd frontend && yarn run lint:js",
-    "frontend:lint:css": "cd frontend && yarn run lint:css"
-  },
-  "devDependencies": {
-    "husky": "^4.3.8",
-    "lint-staged": "^10.5.4"
-  },
-  "lint-staged": {
-    "frontend/src/**/*.+(js|jsx|ts|tsx)": [
-      "yarn run frontend:lint:js"
-    ],
-    "frontend/src/**/*.css": [
-      "yarn run frontend:lint:css"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
+    "name": "up-frontend-root",
+    "version": "3.0.0",
+    "author": "Lukáš Rod <info@lukasrod.cz> (https://lukasrod.cz)",
+    "private": true,
+    "license": "MIT",
+    "engines": {
+        "node": "16",
+        "npm": "8",
+        "yarn": "1"
+    },
+    "scripts": {
+        "postinstall": "cd frontend && yarn install --frozen-lockfile && yarn build:ci",
+        "frontend:test": "cd frontend && yarn test",
+        "frontend:audit": "cd frontend && yarn run audit",
+        "frontend:lint:js": "cd frontend && yarn run lint:js",
+        "frontend:lint:css": "cd frontend && yarn run lint:css"
+    },
+    "devDependencies": {
+        "husky": "^4.3.8",
+        "lint-staged": "^10.5.4"
+    },
+    "lint-staged": {
+        "frontend/src/**/*.+(js|jsx|ts|tsx)": [
+            "yarn run frontend:lint:js"
+        ],
+        "frontend/src/**/*.css": [
+            "yarn run frontend:lint:css"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
     }
-  }
 }
