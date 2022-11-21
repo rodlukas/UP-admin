@@ -90,10 +90,10 @@ jobs:
               run: ./scripts/shell/release_tasks.sh
 
             # spust Django deployment checklist
-            - name: 🔍 Python - run Django deployment checklist
-              env:
-                  MANUAL_PRODUCTION: false
-              run: pipenv run python manage.py check --deploy --fail-level WARNING
+            #- name: 🔍 Python - run Django deployment checklist
+            #  env:
+            #      MANUAL_PRODUCTION: false
+            #  run: pipenv run python manage.py check --deploy --fail-level WARNING
 
             - name: 🐞 Debug env log
               run: |
