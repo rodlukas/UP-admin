@@ -1,4 +1,0 @@
-queries:
-    - include: "*"
-    - exclude: js/node/unused-npm-dependency
-    - exclude: py/unused-global-variable
