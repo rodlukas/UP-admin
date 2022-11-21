@@ -1,6 +1,8 @@
 # FROM - Image to start building on.
 FROM python:3.10
 
+RUN apt update && apt install -y --no-install-recommends locales; rm -rf /var/lib/apt/lists/*; sed -i '/^#.* cs_CZ.UTF-8 /s/^#//' /etc/locale.gen; locale-gen
+
 # sets the working directory
 WORKDIR /usr/src/django-docker
 

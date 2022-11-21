@@ -9,10 +9,12 @@ class Migration(migrations.Migration):
 
     dependencies = [("admin", "0036_auto_20190128_1144")]
 
+    collation = None
+    
     if platform.system() == "Windows":
         collation = migrations.RunSQL('CREATE COLLATION cz (locale = "cs-CZ-x-icu")')
     else:
-        collation = migrations.RunSQL('CREATE COLLATION cz (locale = "cs_CZ.utf8")')
+        collation = migrations.RunSQL('CREATE COLLATION cz (provider = icu, locale = "cs_CZ")')
 
     operations = [
         collation,
