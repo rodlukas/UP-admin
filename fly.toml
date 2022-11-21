@@ -6,12 +6,11 @@ kill_timeout = 5
 processes = []
 
 [env]
-  PORT = "8000"
-  BANK_ACTIVE = true
-  DEBUG = true
+  PORT = 8000
+  BANK_ACTIVE = false
+  DEBUG = false
   DJANGO_SETTINGS_MODULE = "up.settings.production"
-  ENVIRONMENT = "testing"
-  FIO_API_KEY = ""
+  ENVIRONMENT = "testing-fly"
 
 [experimental]
   allowed_public_ports = []
