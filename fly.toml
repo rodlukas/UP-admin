@@ -8,7 +8,7 @@ processes = []
 [env]
   PORT = 8000
   BANK_ACTIVE = false
-  DEBUG = false
+  DEBUG = true
   DJANGO_SETTINGS_MODULE = "up.settings.production"
   ENVIRONMENT = "testing-fly"
 
