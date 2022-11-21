@@ -4,11 +4,6 @@
     "author": "Lukáš Rod <info@lukasrod.cz> (https://lukasrod.cz)",
     "private": true,
     "license": "MIT",
-    "engines": {
-        "node": "16",
-        "npm": "8",
-        "yarn": "1"
-    },
     "scripts": {
         "postinstall": "cd frontend && yarn install --frozen-lockfile && yarn build:ci",
         "frontend:test": "cd frontend && yarn test",
