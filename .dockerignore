@@ -28,3 +28,5 @@ docs
 .vscode
 .github
 tests
+.npmrc
+.env
