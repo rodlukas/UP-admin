@@ -14,6 +14,7 @@ import { GroupsActiveProvider } from "./contexts/GroupsActiveContext"
 import { getEnvName, isHosted } from "./global/funcEnvironments"
 import history from "./global/history"
 import "./index.css"
+import { isValidUrl } from "./global/utils"
 import Main from "./Main"
 import ErrorBoundary from "./pages/ErrorBoundary"
 
@@ -21,7 +22,7 @@ import ErrorBoundary from "./pages/ErrorBoundary"
 config.autoAddCss = false
 
 // CI provede substituci stringu za URL, promenna prostredi ale musi existovat, jinak nefunguje (proto podminka)
-if (isHosted()) {
+if (isHosted() && isValidUrl("%SENTRY_DSN")) {
     Sentry.init({
         dsn: "%SENTRY_DSN",
         environment: getEnvName(),

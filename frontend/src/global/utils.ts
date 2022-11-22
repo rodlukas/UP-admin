@@ -185,3 +185,12 @@ export function pageTitle(title: string): string {
 export function getDisplayName<P>(Component: React.ComponentType<P>): string {
     return Component.displayName || Component.name || "UnknownComponent"
 }
+
+/** Vrátí boolean, jestli je zaslaný string URL. */
+export function isValidUrl(urlString: string) {
+    try {
+        return Boolean(new URL(urlString))
+    } catch (e) {
+        return false
+    }
+}
