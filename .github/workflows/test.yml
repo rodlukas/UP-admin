@@ -127,7 +127,7 @@ jobs:
             - name: 🧹 Cleanup project folder
               run: ./scripts/shell/ci/cleanup.sh
 
-            # nasazeni na Fly.io
+            # nasazeni testing verze na Fly.io
             - name: 🚀 Deploy to Fly.io
               uses: superfly/flyctl-actions/setup-flyctl@1.3
             - run: flyctl deploy --remote-only
