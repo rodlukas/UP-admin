@@ -5,7 +5,7 @@ on:
         tags: ["*"]
 
 env:
-    ENVIRONMENT: CI-DEPLOY
+    ENVIRONMENT: CI-deploy
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production

@@ -7,14 +7,13 @@ on:
         branches: ["master"]
 
 env:
-    ENVIRONMENT: CI-TEST
+    ENVIRONMENT: CI-test
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
     MANUAL_PRODUCTION: true
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
-    FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
     build_and_test:
@@ -90,10 +89,10 @@ jobs:
               run: ./scripts/shell/release_tasks.sh
 
             # spust Django deployment checklist
-            #- name: 🔍 Python - run Django deployment checklist
-            #  env:
-            #      MANUAL_PRODUCTION: false
-            #  run: pipenv run python manage.py check --deploy --fail-level WARNING
+            - name: 🔍 Python - run Django deployment checklist
+              env:
+                  MANUAL_PRODUCTION: false
+              run: pipenv run python manage.py check --deploy --fail-level WARNING
 
             - name: 🐞 Debug env log
               run: |
@@ -128,16 +127,9 @@ jobs:
             - name: 🧹 Cleanup project folder
               run: ./scripts/shell/ci/cleanup.sh
 
-            # docker build
-            #- name: Build docker image
-            #  run: docker build . -t project_name
-            #- name: Test image
-            #  run: |
-            #      docker run --rm -d --name test_container -p 8000:8000 project_name
-            #      docker run --link test_container:test_container waisbrot/wait
-            #      curl --fail http://localhost:8000
-
             # nasazeni na Fly.io
             - name: 🚀 Deploy to Fly.io
-              uses: superfly/flyctl-actions/setup-flyctl@master
+              uses: superfly/flyctl-actions/setup-flyctl@1
             - run: flyctl deploy --remote-only
+              env:
+                  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

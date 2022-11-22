@@ -21,7 +21,7 @@ env = environ.Env(
     ENVIRONMENT=str,  # nazev aktualniho prostredi, kde je aplikace spustena (pro Sentry)
     FIO_API_KEY=(str, ""),  # token pro pristup do Fia
     HEADLESS=(bool, True),  # indikace headless mode pro testy UI
-    HEROKU=(bool, False),  # priznak nasazeni aplikace na Heroku
+    DEPLOYED=(bool, False),  # priznak nasazeni aplikace
     MANUAL_PRODUCTION=(bool, False),  # pro simulaci produkcni verze nastavit: True (nutne i pro CI)
     SECRET_KEY=str,  # tajny klic pro Django
     SENTRY_DSN=str,  # DSN klic pro Sentry
@@ -40,7 +40,7 @@ BANK_RENT_PRICE = env("BANK_RENT_PRICE")
 ENVIRONMENT = env("ENVIRONMENT")
 FIO_API_KEY = env("FIO_API_KEY")
 HEADLESS = env("HEADLESS")
-HEROKU = env("HEROKU")
+DEPLOYED = env("DEPLOYED")
 MANUAL_PRODUCTION = env("MANUAL_PRODUCTION")
 SENTRY_DSN = env("SENTRY_DSN")
 # osetreni pro bezici testy - rozpoznani spusteni z radky/promenna prostredi (kvuli IDE)
@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     "django_filters",
     "debug_toolbar",
 ]
-if not HEROKU:
+if not DEPLOYED:
     INSTALLED_APPS.append("behave_django")
 
 # API

@@ -2,7 +2,7 @@
 FROM python:3.10
 
 # sets the working directory
-WORKDIR /usr/src/django-docker
+WORKDIR /usr/src/up-admin
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -17,7 +17,7 @@ COPY Pipfile Pipfile.lock ./
 RUN pip install -U pipenv
 
 # install project dependencies
-RUN pipenv install --dev --system
+RUN pipenv install --deploy --system
 
 # copy all files and directories from <src> to <dest>
 COPY . .
