@@ -11,7 +11,7 @@ env:
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
-    MANUAL_PRODUCTION: true
+    MANUAL_PRODUCTION: True
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
@@ -91,7 +91,7 @@ jobs:
             # spust Django deployment checklist
             - name: 🔍 Python - run Django deployment checklist
               env:
-                  MANUAL_PRODUCTION: false
+                  MANUAL_PRODUCTION: False
               run: pipenv run python manage.py check --deploy --fail-level WARNING
 
             - name: 🐞 Debug env log
