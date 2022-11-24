@@ -30,8 +30,8 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: "18"
-                  cache: "yarn"
-                  cache-dependency-path: "**/yarn.lock"
+                  cache: "npm"
+                  cache-dependency-path: "**/package.lock"
             - name: 🔧 Setup Python
               uses: actions/setup-python@v4
               with:
@@ -48,7 +48,7 @@ jobs:
 
             # nainstaluj JS zavislosti
             - name: 🔧 JS - install deps & build frontend app
-              run: yarn install --frozen-lockfile
+              run: npm ci
 
             # nainstaluj Python zavislosti
             - name: 🔧 Python - install deps

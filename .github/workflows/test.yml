@@ -29,8 +29,8 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: "18"
-                  cache: "yarn"
-                  cache-dependency-path: "**/yarn.lock"
+                  cache: "npm"
+                  cache-dependency-path: "**/package-lock.json"
             - name: 🔧 Setup Python
               uses: actions/setup-python@v4
               with:
@@ -52,7 +52,7 @@ jobs:
 
             # nainstaluj JS zavislosti
             - name: 🔧 JS - install deps & build frontend app
-              run: yarn install --frozen-lockfile
+              run: npm ci
 
             # nainstaluj Python zavislosti
             - name: 🔧 Python - install deps
@@ -62,11 +62,11 @@ jobs:
 
             # spust audit frontendu
             - name: 🔍 JS - run audit
-              run: yarn run frontend:audit
+              run: npm run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
             - name: 🔍 JS - run tests
-              run: yarn run frontend:test
+              run: npm run frontend:test
 
             # TODO zapnout kontrolu typu na CI
             # otestuj typy v backendu pres mypy
@@ -98,7 +98,6 @@ jobs:
               run: |
                   node --version
                   npm --version
-                  yarn --version
                   python --version
                   pipenv --version
                   firefox --version

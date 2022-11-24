@@ -277,7 +277,7 @@ Minimální požadavky na nástroje nainstalované v cílovém OS:
 
 <a name="npmpro">
   
-> **Poznámka:** Node.js ani NPM/Yarn nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
+> **Poznámka:** Node.js ani npm nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
  přístup přes token k privátnímu GitHub Package registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
  automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů ke každému release).
  

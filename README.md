@@ -283,7 +283,7 @@ Minimum requirements of tools available in the target OS:
 
 <a name="npmpro">
   
-> **Note:** Node.js and NPM/Yarn are not required since the frontend cannot be built without tokens to private GitHub Package
+> **Note:** Node.js and npm are not required since the frontend cannot be built without tokens to private GitHub Package
  registry (for [FontAwesome PRO](https://fontawesome.com/)). Instead of this we'll use automatically generated assets 
  of the latest production version from the CI.
  
