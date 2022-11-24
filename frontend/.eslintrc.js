@@ -124,7 +124,7 @@ module.exports = {
         curly: "error",
         "no-console": ["error", { allow: ["warn", "debug", "error", "info"] }], // zakaz console.log
         "no-restricted-globals": ["error"].concat(restrictedGlobals),
-        "no-shadow": "error",
+        "no-shadow": "off",
         "no-template-curly-in-string": "error",
         "no-throw-literal": "error",
         "no-useless-concat": "error",
@@ -138,6 +138,7 @@ module.exports = {
         "react-hooks/exhaustive-deps": "warn",
         "react-hooks/rules-of-hooks": "error",
 
+        "@typescript-eslint/no-shadow": ["error"],
         "@typescript-eslint/ban-types": ["error", { types: defaultTypes, extendDefaults: false }],
         "@typescript-eslint/consistent-type-definitions": ["error", "type"],
         "@typescript-eslint/no-explicit-any": 0,
