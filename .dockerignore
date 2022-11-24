@@ -1,8 +1,3 @@
-*.pyc
-*.pyo
-*.egg-info
-.git/
-__pycache__
 Dockerfile
 node_modules
 .git
@@ -13,7 +8,6 @@ docs
 .github
 tests
 .npmrc
-.env
 geckodriver
 geckodriver.log
 coverage.xml
@@ -23,7 +17,8 @@ codecov
 .coveragerc
 .editorconfig
 .env.template
-.env mypy.ini
+.env
+mypy.ini
 .prettierignore
 .prettierrc.json
 pyproject.toml
@@ -31,3 +26,6 @@ pyproject.toml
 README.md
 README.cs.md
 SECURITY.md
+.dockerignore
+.gitattributes
+.gitignore
