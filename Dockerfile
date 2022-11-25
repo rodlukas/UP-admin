@@ -5,15 +5,13 @@ WORKDIR /usr/src/up-admin
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# copy these two files from <src> to <dest>
-# <src> = current directory on host machine
-# <dest> = filesystem of the container
+# copy pipenv files to container
 COPY Pipfile Pipfile.lock ./
 
 RUN pip install -U pipenv
 RUN pipenv install --deploy --system
 
-# copy all files and directories from <src> to <dest>
+# copy all files and directories to container
 COPY . .
 
 # expose the port
