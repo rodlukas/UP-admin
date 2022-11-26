@@ -31,8 +31,7 @@
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
     <br>
     <a href="https://uspesnyprvnacek.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
-    <a href="https://uspesnyprvnacek-staging.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-staging?label=deploy%20%28staging%29&style=flat-square"></a>
-    <a href="https://uspesnyprvnacek-testing.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
+    <a href="https://up-admin.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-demo.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-demo?label=deploy%20%28demo%29&style=flat-square"></a>
 </p>
 
@@ -44,7 +43,6 @@
     <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> · 
     Logentries – 
     <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">production</a> / 
-    <a href="https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803">staging</a> / 
     <a href="https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3">testing</a> / 
     <a href="https://addons-sso.heroku.com/apps/312b2926-0bff-425b-9902-f71c8b8d223b/addons/43ad6f0f-a3b8-4551-81b5-5aced9b9b143">demo</a>
 </p>
@@ -194,10 +192,10 @@ top menu label title and color (except for the production).
 
 > **List of environments:**
 >
-> -   **dev (local)** – for local development,
-> -   **testing** – debugging mode can be turned on, each commit is deployed here,
-> -   **staging** – the same version as production, deploy of the releases,
-> -   **production** – production version used by a customer, deploy of the releases (like staging),
+> -   **local** – for local development,
+> -   **testing** – the same config as production, each commit is deployed here; debugging mode can
+>     be turned on,
+> -   **production** – production version used by a customer, deploy of the releases,
 > -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo version of the app, manual
 >     deploy from the `demo` branch.
 
@@ -282,11 +280,11 @@ Minimum requirements of tools available in the target OS:
     [`Pipfile`](/Pipfile)),
 -   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
--   [PostgreSQL 12](https://www.postgresql.org/download/).
+-   [Docker](https://www.docker.com/).
 
 <a name="npmpro">
   
-> **Note:** Node.js and NPM/Yarn are not required since the frontend cannot be built without tokens to private GitHub Package
+> **Note:** Node.js and npm are not required since the frontend cannot be built without tokens to private GitHub Package
  registry (for [FontAwesome PRO](https://fontawesome.com/)). Instead of this we'll use automatically generated assets 
  of the latest production version from the CI.
  
@@ -317,48 +315,40 @@ Since the minimum requirements above are met, you can follow these steps then:
     mv .env.template .env
     ```
 
-4.  Using the **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **we'll create
-    the database and user** for the access to the database:
-
-    ```bash
-    sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
-    ```
-
-5.  Download a **Czech language pack for the database** (for Czech alphabetic ordering):
-
-    ```bash
-    source scripts/shell/postgresql_cs.sh
-    ```
-
-6.  Install all the **backend requirements** and activate a virtual Python environment:
+4.  Install all the **backend requirements** and activate a virtual Python environment:
 
     ```bash
     pipenv install --dev
     pipenv shell
     ```
 
-7.  **Prepare the Django app for a run** (the [script](scripts/shell/release_tasks.sh) will set the
+5.  Create docker image and run the PostgreSQL container:
+
+    ```bash
+    source scripts/shell/postgresql_docker.sh
+    ```
+
+6.  **Prepare the Django app for a run** (the [script](scripts/shell/release_tasks.sh) will set the
     default Django settings file, prepare the static frontend files and creates a database schema):
 
     ```bash
     source scripts/shell/release_tasks.sh
     ```
 
-8.  Create a **user account for accessing the database** (choose some credentials that will be used
+7.  Create a **user account for accessing the database** (choose some credentials that will be used
     for the login later):
 
     ```bash
     python manage.py createsuperuser
     ```
 
-9.  💡 _(OPTIONAL)_ Finally, you can also **fill the database with some
+8.  💡 _(OPTIONAL)_ Finally, you can also **fill the database with some
     [prepared sample data](scripts/sql/sample_data.pgsql)** that show some great features of the app
     out of the box and make the first experience enjoyable (the sample data includes some clients,
-    groups, lectures, applicants, courses and attendance states) – this script will require you to
-    authenticate using the database credentials above (user `up` with the password `up`):
+    groups, lectures, applicants, courses and attendance states):
 
     ```bash
-    psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
+    docker exec postgresql_cz psql --dbname postgres -h localhost -U postgres -f sample_data.pgsql
     ```
 
 ### Run

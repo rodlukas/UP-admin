@@ -14,13 +14,7 @@ import Menu from "./components/Menu"
 import Page from "./components/Page"
 import Search from "./components/Search"
 import { useClientsActiveContext } from "./contexts/ClientsActiveContext"
-import {
-    getEnvName,
-    isEnvDemo,
-    isEnvDevelopment,
-    isEnvStaging,
-    isEnvTesting,
-} from "./global/funcEnvironments"
+import { getEnvName, isEnvDemo, isEnvLocal, isEnvTesting } from "./global/funcEnvironments"
 import lazySafe from "./global/lazySafe"
 import { isModalShown } from "./global/utils"
 import useKeyPress from "./hooks/useKeyPress"
@@ -109,12 +103,7 @@ const Main: React.FC = () => {
                     <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
                         ÚP<sub>admin</sub>
                     </NavbarBrand>
-                    {isEnvDevelopment() && <Badge color="light">Vývojová verze</Badge>}
-                    {isEnvStaging() && (
-                        <Badge color="success">
-                            Staging <AppCommit pageId="Main" />
-                        </Badge>
-                    )}
+                    {isEnvLocal() && <Badge color="light">Vývojová verze</Badge>}
                     {isEnvTesting() && (
                         <Badge color="primary">
                             Testing <AppCommit pageId="Main" />

@@ -7,11 +7,11 @@ on:
         branches: ["master"]
 
 env:
-    ENVIRONMENT: CI-TEST
+    ENVIRONMENT: CI-test
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
-    MANUAL_PRODUCTION: true
+    MANUAL_PRODUCTION: True
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
@@ -29,8 +29,8 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: "18"
-                  cache: "yarn"
-                  cache-dependency-path: "**/yarn.lock"
+                  cache: "npm"
+                  cache-dependency-path: "**/package-lock.json"
             - name: 🔧 Setup Python
               uses: actions/setup-python@v4
               with:
@@ -52,21 +52,21 @@ jobs:
 
             # nainstaluj JS zavislosti
             - name: 🔧 JS - install deps & build frontend app
-              run: yarn install --frozen-lockfile
+              run: npm ci
 
             # nainstaluj Python zavislosti
             - name: 🔧 Python - install deps
               run: |
                   pip install pipenv
-                  pipenv install --dev
+                  pipenv install --deploy --dev
 
             # spust audit frontendu
             - name: 🔍 JS - run audit
-              run: yarn run frontend:audit
+              run: npm run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
             - name: 🔍 JS - run tests
-              run: yarn run frontend:test
+              run: npm run frontend:test
 
             # TODO zapnout kontrolu typu na CI
             # otestuj typy v backendu pres mypy
@@ -78,11 +78,7 @@ jobs:
             # - and then start the PSQL service (tcp port 5432 on service container is mapped to the host)
             # https://github.com/orgs/community/discussions/24923
             - name: 📦 PostgreSQL - container build & run
-              run: |
-                  docker build -t postgresql_cz_image -f .github/workflows/Dockerfile.postgresql .
-                  docker run -d --name postgresql_cz -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_cz_image
-            - name: 📦 PostgreSQL - wait for db
-              run: until docker exec postgresql_cz pg_isready -U postgres; do sleep 1; done
+              run: source scripts/shell/postgresql_docker.sh
 
             # priprav Django aplikaci
             - name: 🔧 Python - build Django app (staticfiles & migration)
@@ -91,14 +87,13 @@ jobs:
             # spust Django deployment checklist
             - name: 🔍 Python - run Django deployment checklist
               env:
-                  MANUAL_PRODUCTION: false
+                  MANUAL_PRODUCTION: False
               run: pipenv run python manage.py check --deploy --fail-level WARNING
 
             - name: 🐞 Debug env log
               run: |
                   node --version
                   npm --version
-                  yarn --version
                   python --version
                   pipenv --version
                   firefox --version
@@ -126,3 +121,10 @@ jobs:
             # smazani dat z buildu, testovani a dokumentace
             - name: 🧹 Cleanup project folder
               run: ./scripts/shell/ci/cleanup.sh
+
+            # nasazeni testing verze na Fly.io
+            - name: 🚀 Deploy to Fly.io
+              uses: superfly/flyctl-actions/setup-flyctl@master
+            - run: flyctl deploy --remote-only
+              env:
+                  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

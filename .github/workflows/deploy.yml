@@ -5,11 +5,11 @@ on:
         tags: ["*"]
 
 env:
-    ENVIRONMENT: CI-DEPLOY
+    ENVIRONMENT: CI-deploy
     SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
-    MANUAL_PRODUCTION: true
+    MANUAL_PRODUCTION: True
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
@@ -30,8 +30,8 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: "18"
-                  cache: "yarn"
-                  cache-dependency-path: "**/yarn.lock"
+                  cache: "npm"
+                  cache-dependency-path: "**/package.lock"
             - name: 🔧 Setup Python
               uses: actions/setup-python@v4
               with:
@@ -48,13 +48,13 @@ jobs:
 
             # nainstaluj JS zavislosti
             - name: 🔧 JS - install deps & build frontend app
-              run: yarn install --frozen-lockfile
+              run: npm ci
 
             # nainstaluj Python zavislosti
             - name: 🔧 Python - install deps
               run: |
                   pip install pipenv
-                  pipenv install --dev
+                  pipenv install --deploy --dev
 
             # priprav Django aplikaci
             - name: 🔧 Python - build Django app (staticfiles)

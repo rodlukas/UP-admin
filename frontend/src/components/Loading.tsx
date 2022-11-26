@@ -8,14 +8,14 @@ import CustomButton from "./buttons/CustomButton"
 const LONG_LOADING_THRESHOLD = 5 // sekundy
 const OVERLONG_LOADING_THRESHOLD = 25 // sekundy
 
-const LOADING_STATE = Object.freeze({
+enum LOADING_STATE {
     /** Načítání probíhá krátce. */
-    NORMAL_LOADING: 0,
+    NORMAL_LOADING = 0,
     /** Načítání probíhá delší dobu. */
-    LONG_LOADING: 1,
+    LONG_LOADING = 1,
     /** Načítání probíhá příliš dlouho, to značí problém, zobraz možné řešení. */
-    OVERLONG_LOADING: 2,
-})
+    OVERLONG_LOADING = 2,
+}
 
 type Props = {
     /** Text zobrazený při načítání. */

@@ -31,8 +31,7 @@
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
     <br>
     <a href="https://uspesnyprvnacek.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
-    <a href="https://uspesnyprvnacek-staging.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-staging?label=deploy%20%28staging%29&style=flat-square"></a>
-    <a href="https://uspesnyprvnacek-testing.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
+    <a href="https://up-admin.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-demo.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-demo?label=deploy%20%28demo%29&style=flat-square"></a>
 </p>
 
@@ -44,7 +43,6 @@
     <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> · 
     Logentries – 
     <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">produkce</a> / 
-    <a href="https://addons-sso.heroku.com/apps/e3a9ca55-ccff-46ec-b37f-99ce57c75ee1/addons/f32bd464-be5c-4a70-bdbd-ca4b1c925803">staging</a> / 
     <a href="https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3">testing</a> / 
     <a href="https://addons-sso.heroku.com/apps/312b2926-0bff-425b-9902-f71c8b8d223b/addons/43ad6f0f-a3b8-4551-81b5-5aced9b9b143">demo</a>
 </p>
@@ -116,7 +114,7 @@ V následujícím seznamu jsou nejdůležitější funkce, která aplikace posky
 
 Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **REST API** zabezpečené
 **[JWT](https://jwt.io/) autentizací**. Jako databáze se používá
-[PostgreSQL 12](https://www.postgresql.org/).
+[PostgreSQL 14](https://www.postgresql.org/).
 
 > **Poznámka:** součástí repozitáře je také diagram nasazení a logický datový model – viz
 > [`docs/README.md`](docs).
@@ -189,10 +187,10 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
 
 > **Seznam prostředí:**
 >
-> -   **vývojové (lokální)** – pro lokální vývoj,
-> -   **testing** – umožňuje zapnout debugování, deploy každého commitu,
-> -   **staging** – stejná verze aplikace jako na produkci, deploy při release,
-> -   **produkce** – produkční verze používaná zákazníkem, deploy při release (jako staging),
+> -   **lokální** – pro lokální vývoj,
+> -   **testing** – stejná konfigurace jako na produkci, deploy při každém commitu; umožňuje zapnout
+>     debugování,
+> -   **produkce** – produkční verze používaná zákazníkem, deploy při release,
 > -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo verze aplikace, manuální deploy
 >     z větve `demo`.
 
@@ -261,7 +259,7 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
 
 ## Spuštění aplikace
 
-Aplikaci lze spustit na lokálním prostředí ve dvou režimech. Výchozí re6im je klasický vývojový –
+Aplikaci lze spustit na lokálním prostředí ve dvou režimech. Výchozí režim je klasický vývojový –
 ten obsahuje pokročilé debugovací nástroje, spouští se Django vývojový server a také
 webpack-dev-server pro frontend. Vzhledem k práci s privátními GitHub Package registry (viz
 [níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu
@@ -275,11 +273,11 @@ Minimální požadavky na nástroje nainstalované v cílovém OS:
 -   [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
 -   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
--   [PostgreSQL 12](https://www.postgresql.org/download/).
+-   [Docker](https://www.docker.com/).
 
 <a name="npmpro">
   
-> **Poznámka:** Node.js ani NPM/Yarn nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
+> **Poznámka:** Node.js ani npm nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
  přístup přes token k privátnímu GitHub Package registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
  automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů ke každému release).
  
@@ -311,27 +309,20 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci:
     mv .env.template .env
     ```
 
-4.  Pomocí **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **vytvoříme
-    databázi a uživatele** pro přístup do databáze:
-
-    ```bash
-    sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
-    ```
-
-5.  Nahrajeme **český balíček pro databázi** (kvůli českému řazení podle abecedy):
-
-    ```bash
-    source scripts/shell/postgresql_cs.sh
-    ```
-
-6.  Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu:
+4.  Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu:
 
     ```bash
     pipenv install --dev
     pipenv shell
     ```
 
-7.  **Připravíme celou Django aplikaci na spuštění** ([skript](scripts/shell/release_tasks.sh)
+5.  Vytvoříme docker image a spustíme kontejner s PostgreSQL:
+
+    ```bash
+    source scripts/shell/postgresql_docker.sh
+    ```
+
+6.  **Připravíme celou Django aplikaci na spuštění** ([skript](scripts/shell/release_tasks.sh)
     nastaví výchozí soubor s nastavením Djanga, připraví statické soubory frontendu a vytvoří
     databázové schéma):
 
@@ -339,21 +330,20 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci:
     source scripts/shell/release_tasks.sh
     ```
 
-8.  A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se
+7.  A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se
     poté budeme přihlašovat):
 
     ```bash
     python manage.py createsuperuser
     ```
 
-9.  💡 _(NEPOVINNÉ)_ Na závěr můžeme ještě **naplnit naší databázi
+8.  💡 _(NEPOVINNÉ)_ Na závěr můžeme ještě **naplnit naší databázi
     [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql)**, která ukážou fungování
     aplikace a usnadní první použití (obsahují několik klientů, skupin, lekcí, zájemců, kurzů a
-    stavů účasti) – po zadání příkazu je vyžadováno heslo databázového uživatele `up`, které jsme
-    nastavili taktéž `up`:
+    stavů účasti):
 
     ```bash
-    psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
+    docker exec postgresql_cz psql --dbname postgres -h localhost -U postgres -f sample_data.pgsql
     ```
 
 ### Spuštění

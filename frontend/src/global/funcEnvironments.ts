@@ -3,19 +3,14 @@ export function getAppUrl(): string {
     return window.location.hostname.split(".")[0]
 }
 
-/** Zjistí, jestli aktuální aplikace běží na staging prostředí. */
-export function isEnvStaging(): boolean {
-    return getAppUrl() === "uspesnyprvnacek-staging"
-}
-
 /** Zjistí, jestli aktuální aplikace běží na testing prostředí. */
 export function isEnvTesting(): boolean {
-    return getAppUrl() === "uspesnyprvnacek-testing"
+    return getAppUrl() === "up-admin"
 }
 
 /** Zjistí, jestli aktuální aplikace běží na demo prostředí. */
 export function isEnvDemo(): boolean {
-    return getAppUrl() === "uspesnyprvnacek-demo"
+    return getAppUrl() === "up-admin-demo"
 }
 
 /** Zjistí, jestli aktuální aplikace běží na production prostředí. */
@@ -25,36 +20,26 @@ export function isEnvProduction(): boolean {
 
 /** Zjistí název prostředí, kde běží aktuální aplikace. */
 export function getEnvName(): string {
-    return isEnvStaging()
-        ? "staging"
-        : isEnvTesting()
+    return isEnvTesting()
         ? "testing"
         : isEnvDemo()
         ? "demo"
         : process.env.NODE_ENV
         ? process.env.NODE_ENV
-        : "development"
+        : "local"
 }
 
 /** Zjistí, jestli aktuální aplikace běží na development prostředí. */
-export function isEnvDevelopment(): boolean {
-    return getEnvName() === "development"
+export function isEnvLocal(): boolean {
+    return getEnvName() === "local"
 }
 
 /** Zjistí krátký název prostředí, kde běží aktuální aplikace. */
 export function getEnvNameShort(): string {
-    return isEnvStaging()
-        ? "STAGE"
-        : isEnvTesting()
-        ? "TEST"
-        : isEnvDemo()
-        ? "DEMO"
-        : isEnvProduction()
-        ? "PROD"
-        : "DEV"
+    return isEnvTesting() ? "TEST" : isEnvDemo() ? "DEMO" : isEnvProduction() ? "PROD" : "LOCAL"
 }
 
 /** Zjistí, jestli je aktuální aplikace nasazená. */
 export function isHosted(): boolean {
-    return isEnvStaging() || isEnvTesting() || isEnvProduction() || isEnvDemo()
+    return isEnvTesting() || isEnvProduction() || isEnvDemo()
 }
