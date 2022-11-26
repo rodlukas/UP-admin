@@ -246,9 +246,11 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
 ## Struktura repozitáře
 
 ```
+├── .github ...... GitHub Actions konfigurace
 ├── .idea ........ nastavení pro IDE (Pycharm od Jetbrains)
 ├── admin ........ Django aplikace pro webovou aplikaci
 ├── api .......... Django aplikace pro REST API
+├── db ........... Dockerfily pro PostgreSQL
 ├── docs ......... další dokumentace a soubory k aplikaci včetně diagramů
 ├── frontend ..... klientská část webové aplikace
 ├── scripts ...... skripty pro CI/CD/PaaS/instalaci

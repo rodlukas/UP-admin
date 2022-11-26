@@ -251,9 +251,11 @@ top menu label title and color (except for the production).
 ## Repository structure
 
 ```
+├── .github ...... GitHub Actions configuration
 ├── .idea ........ IDE settings (Pycharm from Jetbrains)
 ├── admin ........ Django app for the web app
 ├── api .......... Django app for the REST API
+├── db ........... Dockerfiles for PostgreSQL
 ├── docs ......... additional docs and files for the app including diagrams
 ├── frontend ..... frontend part of the web app
 ├── scripts ...... scripts for the CI/CD/PaaS/installation
