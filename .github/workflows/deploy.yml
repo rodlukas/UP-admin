@@ -54,7 +54,7 @@ jobs:
             - name: 🔧 Python - install deps
               run: |
                   pip install pipenv
-                  pipenv install --dev
+                  pipenv install --deploy --dev
 
             # priprav Django aplikaci
             - name: 🔧 Python - build Django app (staticfiles)
