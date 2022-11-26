@@ -78,11 +78,7 @@ jobs:
             # - and then start the PSQL service (tcp port 5432 on service container is mapped to the host)
             # https://github.com/orgs/community/discussions/24923
             - name: 📦 PostgreSQL - container build & run
-              run: |
-                  docker build -t postgresql_cz_image -f .github/workflows/Dockerfile.postgresql .
-                  docker run -d --name postgresql_cz -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e LC_ALL=cs_CZ.UTF-8 postgresql_cz_image
-            - name: 📦 PostgreSQL - wait for db
-              run: until docker exec postgresql_cz pg_isready -U postgres; do sleep 1; done
+              run: source scripts/shell/postgresql_docker.sh
 
             # priprav Django aplikaci
             - name: 🔧 Python - build Django app (staticfiles & migration)

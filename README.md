@@ -193,7 +193,8 @@ top menu label title and color (except for the production).
 > **List of environments:**
 >
 > -   **local** – for local development,
-> -   **testing** – the same config as production, each commit is deployed here; debugging mode can be turned on,
+> -   **testing** – the same config as production, each commit is deployed here; debugging mode can
+>     be turned on,
 > -   **production** – production version used by a customer, deploy of the releases,
 > -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo version of the app, manual
 >     deploy from the `demo` branch.
@@ -279,7 +280,7 @@ Minimum requirements of tools available in the target OS:
     [`Pipfile`](/Pipfile)),
 -   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
--   [PostgreSQL 12](https://www.postgresql.org/download/).
+-   [Docker](https://www.docker.com/).
 
 <a name="npmpro">
   
@@ -314,48 +315,40 @@ Since the minimum requirements above are met, you can follow these steps then:
     mv .env.template .env
     ```
 
-4.  Using the **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **we'll create
-    the database and user** for the access to the database:
-
-    ```bash
-    sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
-    ```
-
-5.  Download a **Czech language pack for the database** (for Czech alphabetic ordering):
-
-    ```bash
-    source scripts/shell/postgresql_cs.sh
-    ```
-
-6.  Install all the **backend requirements** and activate a virtual Python environment:
+4.  Install all the **backend requirements** and activate a virtual Python environment:
 
     ```bash
     pipenv install --dev
     pipenv shell
     ```
 
-7.  **Prepare the Django app for a run** (the [script](scripts/shell/release_tasks.sh) will set the
+5.  Create docker image and run the PostgreSQL container:
+
+    ```bash
+    source scripts/shell/postgresql_docker.sh
+    ```
+
+6.  **Prepare the Django app for a run** (the [script](scripts/shell/release_tasks.sh) will set the
     default Django settings file, prepare the static frontend files and creates a database schema):
 
     ```bash
     source scripts/shell/release_tasks.sh
     ```
 
-8.  Create a **user account for accessing the database** (choose some credentials that will be used
+7.  Create a **user account for accessing the database** (choose some credentials that will be used
     for the login later):
 
     ```bash
     python manage.py createsuperuser
     ```
 
-9.  💡 _(OPTIONAL)_ Finally, you can also **fill the database with some
+8.  💡 _(OPTIONAL)_ Finally, you can also **fill the database with some
     [prepared sample data](scripts/sql/sample_data.pgsql)** that show some great features of the app
     out of the box and make the first experience enjoyable (the sample data includes some clients,
-    groups, lectures, applicants, courses and attendance states) – this script will require you to
-    authenticate using the database credentials above (user `up` with the password `up`):
+    groups, lectures, applicants, courses and attendance states):
 
     ```bash
-    psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
+    docker exec postgresql_cz psql --dbname postgres -h localhost -U postgres -f sample_data.pgsql
     ```
 
 ### Run

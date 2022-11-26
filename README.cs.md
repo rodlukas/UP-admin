@@ -114,7 +114,7 @@ V následujícím seznamu jsou nejdůležitější funkce, která aplikace posky
 
 Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **REST API** zabezpečené
 **[JWT](https://jwt.io/) autentizací**. Jako databáze se používá
-[PostgreSQL 12](https://www.postgresql.org/).
+[PostgreSQL 14](https://www.postgresql.org/).
 
 > **Poznámka:** součástí repozitáře je také diagram nasazení a logický datový model – viz
 > [`docs/README.md`](docs).
@@ -259,7 +259,7 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
 
 ## Spuštění aplikace
 
-Aplikaci lze spustit na lokálním prostředí ve dvou režimech. Výchozí re6im je klasický vývojový –
+Aplikaci lze spustit na lokálním prostředí ve dvou režimech. Výchozí režim je klasický vývojový –
 ten obsahuje pokročilé debugovací nástroje, spouští se Django vývojový server a také
 webpack-dev-server pro frontend. Vzhledem k práci s privátními GitHub Package registry (viz
 [níže](#npmpro)) nelze samozřejmě bez příslušných tokenů sestavovat frontend, proto zde budu
@@ -273,7 +273,7 @@ Minimální požadavky na nástroje nainstalované v cílovém OS:
 -   [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
 -   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
--   [PostgreSQL 12](https://www.postgresql.org/download/).
+-   [Docker](https://www.docker.com/).
 
 <a name="npmpro">
   
@@ -309,27 +309,20 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci:
     mv .env.template .env
     ```
 
-4.  Pomocí **[_psql CLI_](https://www.postgresql.org/docs/current/app-psql.html)** **vytvoříme
-    databázi a uživatele** pro přístup do databáze:
-
-    ```bash
-    sudo -u postgres psql -c "CREATE USER up WITH ENCRYPTED PASSWORD 'up';" -c "CREATE DATABASE up WITH OWNER up;"
-    ```
-
-5.  Nahrajeme **český balíček pro databázi** (kvůli českému řazení podle abecedy):
-
-    ```bash
-    source scripts/shell/postgresql_cs.sh
-    ```
-
-6.  Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu:
+4.  Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu:
 
     ```bash
     pipenv install --dev
     pipenv shell
     ```
 
-7.  **Připravíme celou Django aplikaci na spuštění** ([skript](scripts/shell/release_tasks.sh)
+5.  Vytvoříme docker image a spustíme kontejner s PostgreSQL:
+
+    ```bash
+    source scripts/shell/postgresql_docker.sh
+    ```
+
+6.  **Připravíme celou Django aplikaci na spuštění** ([skript](scripts/shell/release_tasks.sh)
     nastaví výchozí soubor s nastavením Djanga, připraví statické soubory frontendu a vytvoří
     databázové schéma):
 
@@ -337,21 +330,20 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci:
     source scripts/shell/release_tasks.sh
     ```
 
-8.  A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se
+7.  A vytvoříme **uživatelský účet pro přístup do aplikace** (zadáme libovolné údaje, kterými se
     poté budeme přihlašovat):
 
     ```bash
     python manage.py createsuperuser
     ```
 
-9.  💡 _(NEPOVINNÉ)_ Na závěr můžeme ještě **naplnit naší databázi
+8.  💡 _(NEPOVINNÉ)_ Na závěr můžeme ještě **naplnit naší databázi
     [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql)**, která ukážou fungování
     aplikace a usnadní první použití (obsahují několik klientů, skupin, lekcí, zájemců, kurzů a
-    stavů účasti) – po zadání příkazu je vyžadováno heslo databázového uživatele `up`, které jsme
-    nastavili taktéž `up`:
+    stavů účasti):
 
     ```bash
-    psql --dbname up -h localhost -U up -f scripts/sql/sample_data.pgsql
+    docker exec postgresql_cz psql --dbname postgres -h localhost -U postgres -f sample_data.pgsql
     ```
 
 ### Spuštění
