@@ -31,7 +31,7 @@ jobs:
               with:
                   node-version: "18"
                   cache: "npm"
-                  cache-dependency-path: "**/package.lock"
+                  cache-dependency-path: "**/package-lock.json"
             - name: 🔧 Setup Python
               uses: actions/setup-python@v4
               with:
