@@ -78,11 +78,20 @@ jobs:
             - name: 🧹 Pre-deploy tasks Heroku
               run: rm -rf .gitignore
 
-            # nasazeni na HEROKU
-            - name: 🚀 Deploy to Heroku
+            # nasazeni prod verze na HEROKU
+            - name: 🚀 Deploy to prod Heroku
               uses: akhileshns/heroku-deploy@v3.12.12
               with:
                   heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
                   heroku_app_name: uspesnyprvnacek
                   heroku_email: ${{ secrets.HEROKU_EMAIL }}
                   dontautocreate: true
+
+            # nasazeni prod verze na Fly.io
+            - name: 🚀 Deploy to prod Fly.io
+              uses: superfly/flyctl-actions/setup-flyctl@master
+            - run: |
+                  mv fly.prod.toml fly.toml
+                  flyctl deploy --remote-only
+              env:
+                  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
