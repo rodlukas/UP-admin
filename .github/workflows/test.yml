@@ -44,11 +44,6 @@ jobs:
             - name: 📝 Create dummy .env file
               run: touch .env
 
-            # TODO az bude https://github.com/actions/runner-images/pull/6528, geckodriver by mel byt predinstalovany
-            # nainstaluj geckodriver pro selenium testovani
-            - name: 🔧 Install geckodriver
-              run: ./scripts/shell/install_geckodriver.sh
-
             # nainstaluj JS zavislosti
             - name: 🔧 JS - install deps & build frontend app
               run: npm ci
