@@ -41,7 +41,7 @@ jobs:
             # spust skripty pro upravu souboru
             - name: 📝 Create .npmrc file
               run: ./scripts/shell/ci/create_npmrc.sh
-            - name: 📝 String substitution
+            - name: 📝 Apply string substitution
               run: ./scripts/shell/ci/string_substitution.sh
             - name: 📝 Create dummy .env file
               run: touch .env
