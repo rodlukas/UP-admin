@@ -1,6 +1,8 @@
 Dockerfile
 node_modules
 .git
+fly.prod.toml
+fly.test.toml
 frontend
 docs
 .idea

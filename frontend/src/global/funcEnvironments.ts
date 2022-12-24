@@ -5,7 +5,7 @@ export function getAppUrl(): string {
 
 /** Zjistí, jestli aktuální aplikace běží na testing prostředí. */
 export function isEnvTesting(): boolean {
-    return getAppUrl() === "up-admin"
+    return getAppUrl() === "uspesnyprvnacek-test"
 }
 
 /** Zjistí, jestli aktuální aplikace běží na demo prostředí. */
