@@ -6,7 +6,7 @@ on:
 
 env:
     ENVIRONMENT: CI-deploy
-    SENTRY_DSN: https://5945e623babc4c68a9fe6bd3189e2068@sentry.io/1247206
+    SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
     MANUAL_PRODUCTION: True
@@ -87,11 +87,13 @@ jobs:
                   heroku_email: ${{ secrets.HEROKU_EMAIL }}
                   dontautocreate: true
 
+            # nastavime spravnou fly.io konfiguraci
+            - name: 🧹 Pre-deploy tasks Fly.io
+              run: mv fly.prod.toml fly.toml
+
             # nasazeni prod verze na Fly.io
             - name: 🚀 Deploy to prod Fly.io
               uses: superfly/flyctl-actions/setup-flyctl@master
-            - run: |
-                  mv fly.prod.toml fly.toml
-                  flyctl deploy --remote-only
+            - run: flyctl deploy --remote-only
               env:
                   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_PROD }}
