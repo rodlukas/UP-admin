@@ -31,7 +31,7 @@
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
     <br>
     <a href="https://uspesnyprvnacek.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
-    <a href="https://up-admin.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
+    <a href="https://uspesnyprvnacek-test.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-demo.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-demo?label=deploy%20%28demo%29&style=flat-square"></a>
 </p>
 

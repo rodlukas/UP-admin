@@ -11,7 +11,8 @@ from .base import *
 
 ALLOWED_HOSTS = [
     "uspesnyprvnacek.herokuapp.com",
-    "up-admin.fly.dev",
+    "uspesnyprvnacek.fly.dev",
+    "uspesnyprvnacek-test.fly.dev",
 ]
 
 sentry_sdk.init(environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_COMMIT")
