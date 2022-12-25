@@ -20,7 +20,7 @@
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square"></a>
     <br>
     <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml/badge.svg"></a>
-    <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.herokuapp.com"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.herokuapp.com?publish&style=flat-square"></a>
+    <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
     <br>
     <a href="https://deepscan.io/dashboard#view=project&tid=8194&pid=10346&bid=141965"><img src="https://deepscan.io/api/teams/8194/projects/10346/branches/141965/badge/grade.svg" alt="DeepScan grade"></a>
@@ -30,26 +30,20 @@
     <a href="https://github.com/prettier/prettier"><img alt="Code style (js): prettier" src="https://img.shields.io/badge/code_style_(js)-prettier-ff69b4.svg?style=flat-square"></a>
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
     <br>
-    <a href="https://uspesnyprvnacek.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
+    <a href="https://uspesnyprvnacek.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-test.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
-    <a href="https://uspesnyprvnacek-demo.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-demo?label=deploy%20%28demo%29&style=flat-square"></a>
 </p>
 
 <p align="center">
     <a href="https://sentry.io/organizations/rodlukas/issues/?project=1247206">Sentry</a> · 
-    <a href="https://dashboard.heroku.com/apps">Heroku</a> · 
+    <a href="https://fly.io/dashboard">Fly.io</a> · 
     <a href="https://uspesnyprvnacek.slack.com/messages">Slack</a> · 
     <a href="https://www.deepcode.ai/">DeepCode</a> · 
     <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> · 
-    Logentries – 
-    <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">produkce</a> / 
-    <a href="https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3">testing</a> / 
-    <a href="https://addons-sso.heroku.com/apps/312b2926-0bff-425b-9902-f71c8b8d223b/addons/43ad6f0f-a3b8-4551-81b5-5aced9b9b143">demo</a>
 </p>
 
 ## Obsah
 
--   [Demo](#demo)
 -   [Základní informace o aplikaci](#základní-informace-o-aplikaci)
     -   [Klíčové funkce](#klíčové-funkce)
     -   [Použité technologie](#použité-technologie)
@@ -64,15 +58,6 @@
     -   [Testování](#testování)
 -   [Screenshoty](#screenshoty)
 -   [Licence](#licence)
-
-## Demo
-
-[**Nasazená demo verze aplikace na Heroku**](https://uspesnyprvnacek-demo.herokuapp.com/) – údaje
-pro přihlášení: už. jméno `test` / heslo `test`.
-
-> Aplikace po 30 minutách neaktivity usíná a chvíli trvá, než se probudí. Databáze v demo verzi je
-> každou noc (2:00 UTC) **automaticky smazána** a naplněna
-> [vzorovými daty](scripts/sql/sample_data.pgsql).
 
 ## Základní informace o aplikaci
 
@@ -180,10 +165,10 @@ také výhod **[React Hooks](https://reactjs.org/docs/hooks-intro.html)**.
 
 ### Nasazené aplikace a nástroje
 
-Aplikace je nasazena do **4 prostředí na PaaS [Heroku](https://www.heroku.com/)**, které se liší
-příslušnou nasazenou verzí aplikace, konkrétní instancí databáze a umožňují různé úrovně debugování.
-Mimo to lze samozřejmě aplikaci spustit i v prostředí lokálním u vývojáře. Typ prostředí je také
-zvýrazněn barevným štítkem v horním menu (kromě produkce).
+Aplikace je nasazena do **2 prostředí na PaaS [Fly.io](https://fly.io/)**, které se liší příslušnou
+nasazenou verzí aplikace, konkrétní instancí databáze a umožňují různé úrovně debugování. Mimo to
+lze samozřejmě aplikaci spustit i v prostředí lokálním u vývojáře. Typ prostředí je také zvýrazněn
+barevným štítkem v horním menu (kromě produkce).
 
 > **Seznam prostředí:**
 >
@@ -191,14 +176,10 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
 > -   **testing** – stejná konfigurace jako na produkci, deploy při každém commitu; umožňuje zapnout
 >     debugování,
 > -   **produkce** – produkční verze používaná zákazníkem, deploy při release,
-> -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo verze aplikace, manuální deploy
->     z větve `demo`.
 
 -   Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz
     [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
     [[2]](https://wsvincent.com/django-best-practices/)).
--   Na produkci se každý den ve 3:00 provádí
-    [automatická záloha databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
 -   Pro **automatické formátování kódů** se používá **[Black](https://github.com/psf/black)**
     (Python) a **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD),
     oba nástroje jsou napojené na IDE a provádějí automatické úpravy.
@@ -212,8 +193,6 @@ zvýrazněn barevným štítkem v horním menu (kromě produkce).
         potenciálních chyb a zranitelností má na starost
         [GitHub CodeQL](https://codeql.github.com/), [SonarCloud](https://sonarcloud.io/) a
         [DeepScan](https://deepscan.io/).
-    -   **Logování** z Heroku se zasílá do [Logentries](https://logentries.com/) (logy se uchovávají
-        po 7 dnů, tříděné podle typu prostředí).
     -   **Odchytávání chyb na backendu i frontendu** včetně následné evidence, notifikací a
         propojení s repozitářem zařizuje [Sentry](https://sentry.io/) (tříděné podle typu prostředí,
         aktivní na všech nasazených aplikacích). Při chybě na frontendu je možné poslat **zpětnou
@@ -418,6 +397,16 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
     došlo k migraci na GitHub Actions.
 -   Automatickou průběžnou analýzu a kontrolu kódu zajišťoval mj. [LGTM](https://lgtm.com/) až do
     listopadu 2022, kdy byl nahrazen svým nástupcem [GitHub CodeQL](https://codeql.github.com/).
+-   Projekt byl původně nasazen na [Heroku PaaS](https://www.heroku.com/). Zde byly 4 nezávislé
+    běžící instance - `testing` (automatické nasazování z master větve), `staging` (stejné jako
+    produkce), `produkce` a `demo` (s veřejnými přístupovými údaji a ukázkovými daty, která byla
+    automaticky a periodicky obnovována přes Heroku Scheduler). Kvůli
+    [oznámeným změnám cen Heroku](https://blog.heroku.com/next-chapter) bylo učiněno rozhodnutí
+    posunout se o dům dál. Nejprve v listopadu 2022 bylo na [Fly.io](https://fly.io/) zmigrováno
+    testing prostředí. Krátce nato v prosinci 2022 byla takto přesunuta i celá produkce. Migrace
+    zahrnovala i PostgreSQL databázi se všemi daty. Staging a demo byly ukončeny bez náhrady, stejně
+    tak
+    [automatické zálohování dat z databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
 
 ## Licence
 

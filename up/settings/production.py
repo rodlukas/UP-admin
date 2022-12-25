@@ -10,7 +10,6 @@ import os
 from .base import *
 
 ALLOWED_HOSTS = [
-    "uspesnyprvnacek.herokuapp.com",
     "uspesnyprvnacek.fly.dev",
     "uspesnyprvnacek-test.fly.dev",
 ]
