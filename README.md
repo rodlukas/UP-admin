@@ -20,7 +20,7 @@
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square"></a>
     <br>
     <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml/badge.svg"></a>
-    <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.herokuapp.com"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.herokuapp.com?publish&style=flat-square"></a>
+    <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
     <br>
     <a href="https://deepscan.io/dashboard#view=project&tid=8194&pid=10346&bid=141965"><img src="https://deepscan.io/api/teams/8194/projects/10346/branches/141965/badge/grade.svg" alt="DeepScan grade"></a>
@@ -30,26 +30,20 @@
     <a href="https://github.com/prettier/prettier"><img alt="Code style (js): prettier" src="https://img.shields.io/badge/code_style_(js)-prettier-ff69b4.svg?style=flat-square"></a>
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
     <br>
-    <a href="https://uspesnyprvnacek.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
+    <a href="https://uspesnyprvnacek.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-test.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
-    <a href="https://uspesnyprvnacek-demo.herokuapp.com/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-demo?label=deploy%20%28demo%29&style=flat-square"></a>
 </p>
 
 <p align="center">
     <a href="https://sentry.io/organizations/rodlukas/issues/?project=1247206">Sentry</a> · 
-    <a href="https://dashboard.heroku.com/apps">Heroku</a> · 
+    <a href="https://fly.io/dashboard">Fly.io</a> · 
     <a href="https://uspesnyprvnacek.slack.com/messages">Slack</a> · 
     <a href="https://www.deepcode.ai/">DeepCode</a> · 
     <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> · 
-    Logentries – 
-    <a href="https://addons-sso.heroku.com/apps/20c2c1b9-7573-42c9-ba22-cfdc7568f1f9/addons/551eb689-3908-4088-9100-519dfb42e836">production</a> / 
-    <a href="https://addons-sso.heroku.com/apps/20090cc9-a6a5-46f4-b6ff-516a1bb9ebf3/addons/398b1cfa-4aa4-499a-a3cd-300f2093c4b3">testing</a> / 
-    <a href="https://addons-sso.heroku.com/apps/312b2926-0bff-425b-9902-f71c8b8d223b/addons/43ad6f0f-a3b8-4551-81b5-5aced9b9b143">demo</a>
 </p>
 
 ## Table of Contents
 
--   [Demo](#demo)
 -   [Basic description of the app](#basic-description-of-the-app)
     -   [Key features](#key-features)
     -   [Used technologies](#used-technologies)
@@ -64,16 +58,6 @@
     -   [Testing](#testing)
 -   [Screenshots](#screenshots)
 -   [License](#license)
-
-## Demo
-
-[**Deployed demo version of the app to Heroku**](https://uspesnyprvnacek-demo.herokuapp.com/) –
-credentials: username `test` / password `test`. Note the app is not translated into English (Czech
-only).
-
-> If an app receives no web traffic in a 30-minute period, it will **sleep**, after a short delay it
-> will become active again. A database in the demo version is **automatically cleaned up** and
-> filled with [sample data](scripts/sql/sample_data.pgsql).
 
 ## Basic description of the app
 
@@ -185,10 +169,10 @@ takes advantage of **[React Hooks](https://reactjs.org/docs/hooks-intro.html)**.
 
 ### Deployed apps and tools
 
-The app is deployed to **4 PaaS [Heroku](https://www.heroku.com/) environments** varying in a
-version of the deployed app, database instance and debugging options. Additionally, the app can be
-run in a local dev environment, of course. The type of the environment is also highlighted with a
-top menu label title and color (except for the production).
+The app is deployed to **2 PaaS [Fly.io](https://fly.io/) environments** varying in a version of the
+deployed app, database instance and debugging options. Additionally, the app can be run in a local
+dev environment, of course. The type of the environment is also highlighted with a top menu label
+title and color (except for the production).
 
 > **List of environments:**
 >
@@ -196,14 +180,10 @@ top menu label title and color (except for the production).
 > -   **testing** – the same config as production, each commit is deployed here; debugging mode can
 >     be turned on,
 > -   **production** – production version used by a customer, deploy of the releases,
-> -   [**demo**](https://uspesnyprvnacek-demo.herokuapp.com/) – demo version of the app, manual
->     deploy from the `demo` branch.
 
 -   Deployed apps are **HTTPS-only** (+ advanced security protection, see
     [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
     [[2]](https://wsvincent.com/django-best-practices/)).
--   [Automatic database backup](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups)
-    is done at 3:00 (CET) in the production environment.
 -   **Automatic code formatting** with **[Black](https://github.com/psf/black)** (Python) and
     **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), both these
     tools are integrated with an IDE and perform automatic enhancements.
@@ -217,8 +197,6 @@ top menu label title and color (except for the production).
         preventing critical vulnerabilities is taken care of by
         [GitHub CodeQL](https://codeql.github.com/), [SonarCloud](https://sonarcloud.io/) and
         [DeepScan](https://deepscan.io/).
-    -   **Logs** from Heroku are sent to [Logentries](https://logentries.com/) (the logs are
-        retained here for 7 days, sorted according to the environment).
     -   **Error monitoring of backend and frontend** including triage, notifications and integration
         with the repo is taken care of by [Sentry](https://sentry.io/) (sorted according to the
         environment, active on deployed apps). Integrated ability to collect **additional feedback
@@ -420,10 +398,20 @@ The repo contains **complex tests of the API and UI (e2e)** – see the
 
 ## History
 
--   Projekt originally used [Travis](https://travis-ci.com/) for CI & CD, but in November 2022 the
+-   Project originally used [Travis](https://travis-ci.com/) for CI & CD, but in November 2022 the
     flow was migrated to GitHub Actions.
 -   Automated continuous code analysis was ensured among others by [LGTM](https://lgtm.com/) until
     November 2022 when it was replaced by its successor [GitHub CodeQL](https://codeql.github.com/).
+-   Project was originally deployed to [Heroku PaaS](https://www.heroku.com/). There were 4 running
+    independent instances - `testing` (automatic deployment from master branch), `staging` (same as
+    production), `production` and `demo` (with public credentials and sample data that were
+    automatically and periodically refreshed using Heroku Scheduler). Due to
+    [announced Heroku's pricing changes](https://blog.heroku.com/next-chapter) the decision to move
+    on was made. At first in November 2022 the testing environment was migrated to
+    [Fly.io](https://fly.io/). Shortly afterwards in December 2022 the whole production was also
+    migrated to the same place. The migration included also the PostgreSQL database with all the
+    data. Staging and demo were terminated without replacement, as was the
+    [automatic database backup](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
 
 ## License
 

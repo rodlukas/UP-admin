@@ -74,19 +74,6 @@ jobs:
             - name: 🧹 Cleanup project folder
               run: ./scripts/shell/ci/cleanup.sh
 
-            # smazeme gitignore, aby se na heroku vydeployovalo vse co chceme
-            - name: 🧹 Pre-deploy tasks Heroku
-              run: rm -rf .gitignore
-
-            # nasazeni prod verze na HEROKU
-            - name: 🚀 Deploy to prod Heroku
-              uses: akhileshns/heroku-deploy@v3.12.12
-              with:
-                  heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-                  heroku_app_name: uspesnyprvnacek
-                  heroku_email: ${{ secrets.HEROKU_EMAIL }}
-                  dontautocreate: true
-
             # nastavime spravnou fly.io konfiguraci
             - name: 🧹 Pre-deploy tasks Fly.io
               run: mv fly.prod.toml fly.toml
