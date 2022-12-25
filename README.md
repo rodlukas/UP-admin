@@ -22,7 +22,6 @@
     <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml/badge.svg"></a>
     <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
-    <br>
     <a href="https://deepscan.io/dashboard#view=project&tid=8194&pid=10346&bid=141965"><img src="https://deepscan.io/api/teams/8194/projects/10346/branches/141965/badge/grade.svg" alt="DeepScan grade"></a>
     <a href="https://codebeat.co/projects/github-com-rodlukas-up-admin-master"><img alt="codebeat badge" src="https://codebeat.co/badges/7ee3ee4d-8e68-4088-8ccd-7a0e57e71a9e" /></a>
     <br>
@@ -30,6 +29,7 @@
     <a href="https://github.com/prettier/prettier"><img alt="Code style (js): prettier" src="https://img.shields.io/badge/code_style_(js)-prettier-ff69b4.svg?style=flat-square"></a>
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
     <br>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml/badge.svg"></a>
     <a href="https://uspesnyprvnacek.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-test.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
 </p>
@@ -57,6 +57,7 @@
     -   [Run](#run)
     -   [Testing](#testing)
 -   [Screenshots](#screenshots)
+-   [History](#history)
 -   [License](#license)
 
 ## Basic description of the app
@@ -103,7 +104,7 @@ exhaustive)_:
 ### Used technologies
 
 The app is composed of the **frontend and backend** connected via a **REST API** secured using
-**[JWT](https://jwt.io/) authentication**. [PostgreSQL 12](https://www.postgresql.org/) is used as a
+**[JWT](https://jwt.io/) authentication**. [PostgreSQL 14](https://www.postgresql.org/) is used as a
 database.
 
 > **Note:** a part of this repo is dedicated to a deployment diagram and logical data model – see
@@ -398,23 +399,30 @@ The repo contains **complex tests of the API and UI (e2e)** – see the
 
 ## History
 
--   Project originally used [Travis](https://travis-ci.com/) for CI & CD, but in November 2022 the
-    flow was migrated to GitHub Actions.
--   Automated continuous code analysis was ensured among others by [LGTM](https://lgtm.com/) until
-    November 2022 when it was replaced by its successor [GitHub CodeQL](https://codeql.github.com/).
--   Project was originally deployed to [Heroku PaaS](https://www.heroku.com/). There were 4 running
-    independent instances - `testing` (automatic deployment from master branch), `staging` (same as
-    production), `production` and `demo` (with public credentials and sample data that were
-    automatically and periodically refreshed using Heroku Scheduler). Due to
-    [announced Heroku's pricing changes](https://blog.heroku.com/next-chapter) the decision to move
-    on was made. At first in November 2022 the testing environment was migrated to
-    [Fly.io](https://fly.io/). Shortly afterwards in December 2022 the whole production was also
-    migrated to the same place. The migration included also the PostgreSQL database with all the
-    data. Staging and demo were terminated without replacement, as was the
-    [automatic database backup](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
+### CI
+
+Project originally used [Travis](https://travis-ci.com/) for CI & CD, but in November 2022 the flow
+was migrated to GitHub Actions.
+
+### Code analysis
+
+Automated continuous code analysis was ensured among others by [LGTM](https://lgtm.com/) until
+November 2022 when it was replaced by its successor [GitHub CodeQL](https://codeql.github.com/).
+
+### PaaS
+
+Project was originally deployed to [Heroku PaaS](https://www.heroku.com/). There were 4 running
+independent instances - `testing` (automatic deployment from master branch), `staging` (same as
+production), `production` and `demo` (with public credentials and sample data that were
+automatically and periodically refreshed using _Heroku Scheduler_). Due to
+[announced Heroku's pricing changes](https://blog.heroku.com/next-chapter) the decision to move on
+was made. At first in November 2022 the testing environment was migrated to
+[Fly.io](https://fly.io/). Shortly afterwards in December 2022 the whole production was also
+migrated to the same place. The migration included also the PostgreSQL database with all the data.
+The instances `staging` and `demo` were terminated without replacement.
 
 ## License
 
 Licensed under the [MIT](LICENSE) license.
 
-Copyright (c) 2018–2022 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2018–2023 [Lukáš Rod](https://lukasrod.cz/)

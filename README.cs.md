@@ -22,7 +22,6 @@
     <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml/badge.svg"></a>
     <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
-    <br>
     <a href="https://deepscan.io/dashboard#view=project&tid=8194&pid=10346&bid=141965"><img src="https://deepscan.io/api/teams/8194/projects/10346/branches/141965/badge/grade.svg" alt="DeepScan grade"></a>
     <a href="https://codebeat.co/projects/github-com-rodlukas-up-admin-master"><img alt="codebeat badge" src="https://codebeat.co/badges/7ee3ee4d-8e68-4088-8ccd-7a0e57e71a9e" /></a>
     <br>
@@ -30,6 +29,7 @@
     <a href="https://github.com/prettier/prettier"><img alt="Code style (js): prettier" src="https://img.shields.io/badge/code_style_(js)-prettier-ff69b4.svg?style=flat-square"></a>
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
     <br>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml/badge.svg"></a>
     <a href="https://uspesnyprvnacek.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek?label=deploy%20%28production%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-test.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/uspesnyprvnacek-testing?label=deploy%20%28testing%29&style=flat-square"></a>
 </p>
@@ -57,6 +57,7 @@
     -   [Spuštění](#spuštění)
     -   [Testování](#testování)
 -   [Screenshoty](#screenshoty)
+-   [Historie](#historie)
 -   [Licence](#licence)
 
 ## Základní informace o aplikaci
@@ -393,23 +394,29 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
 
 ## Historie
 
--   Projekt původně pro CI & CD používal [Travis](https://travis-ci.com/), ale v listopadu 2022
-    došlo k migraci na GitHub Actions.
--   Automatickou průběžnou analýzu a kontrolu kódu zajišťoval mj. [LGTM](https://lgtm.com/) až do
-    listopadu 2022, kdy byl nahrazen svým nástupcem [GitHub CodeQL](https://codeql.github.com/).
--   Projekt byl původně nasazen na [Heroku PaaS](https://www.heroku.com/). Zde byly 4 nezávislé
-    běžící instance - `testing` (automatické nasazování z master větve), `staging` (stejné jako
-    produkce), `produkce` a `demo` (s veřejnými přístupovými údaji a ukázkovými daty, která byla
-    automaticky a periodicky obnovována přes Heroku Scheduler). Kvůli
-    [oznámeným změnám cen Heroku](https://blog.heroku.com/next-chapter) bylo učiněno rozhodnutí
-    posunout se o dům dál. Nejprve v listopadu 2022 bylo na [Fly.io](https://fly.io/) zmigrováno
-    testing prostředí. Krátce nato v prosinci 2022 byla takto přesunuta i celá produkce. Migrace
-    zahrnovala i PostgreSQL databázi se všemi daty. Staging a demo byly ukončeny bez náhrady, stejně
-    tak
-    [automatické zálohování dat z databáze](https://devcenter.heroku.com/articles/heroku-postgres-backups#scheduling-backups).
+### CI
+
+Projekt původně pro CI & CD používal [Travis](https://travis-ci.com/), ale v listopadu 2022 došlo k
+migraci na GitHub Actions.
+
+### Analýza kódu
+
+Automatickou průběžnou analýzu a kontrolu kódu zajišťoval mj. [LGTM](https://lgtm.com/) až do
+listopadu 2022, kdy byl nahrazen svým nástupcem [GitHub CodeQL](https://codeql.github.com/).
+
+### PaaS
+
+Projekt byl původně nasazen na [Heroku PaaS](https://www.heroku.com/). Zde byly 4 nezávislé běžící
+instance - `testing` (automatické nasazování z master větve), `staging` (stejné jako produkce),
+`produkce` a `demo` (s veřejnými přístupovými údaji a ukázkovými daty, která byla automaticky a
+periodicky obnovována přes _Heroku Scheduler_). Kvůli
+[oznámeným změnám cen Heroku](https://blog.heroku.com/next-chapter) bylo učiněno rozhodnutí posunout
+se o dům dál. Nejprve v listopadu 2022 bylo na [Fly.io](https://fly.io/) zmigrováno testing
+prostředí. Krátce nato v prosinci 2022 byla takto přesunuta i celá produkce. Migrace zahrnovala i
+PostgreSQL databázi se všemi daty. Instance `staging` a `demo` byly ukončeny bez náhrady.
 
 ## Licence
 
 Licencováno pod [MIT](LICENSE) licencí.
 
-Copyright (c) 2018–2022 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2018–2023 [Lukáš Rod](https://lukasrod.cz/)
