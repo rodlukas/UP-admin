@@ -14,7 +14,8 @@ ALLOWED_HOSTS = [
     "uspesnyprvnacek-test.fly.dev",
 ]
 
-sentry_sdk.init(environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_COMMIT")
+if SENTRY_DSN:
+    sentry_sdk.init(environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_COMMIT")
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 

@@ -18,13 +18,13 @@ env = environ.Env(
     BANK_RENT_PRICE=(int, 0),  # vyse najmu (v Kc)
     DATABASE_URL=str,  # url pouzivane DB (napr. postgresql://postgres:postgres@localhost:5432/up)
     DEBUG=(bool, False),  # aktivace debug prostredi
+    DEPLOYED=(bool, False),  # priznak nasazeni aplikace
     ENVIRONMENT=str,  # nazev aktualniho prostredi, kde je aplikace spustena (pro Sentry)
     FIO_API_KEY=(str, ""),  # token pro pristup do Fia
-    HEADLESS=(bool, True),  # indikace headless mode pro testy UI
-    DEPLOYED=(bool, False),  # priznak nasazeni aplikace
     MANUAL_PRODUCTION=(bool, False),  # pro simulaci produkcni verze nastavit: True (nutne i pro CI)
     SECRET_KEY=str,  # tajny klic pro Django
-    SENTRY_DSN=str,  # DSN klic pro Sentry
+    SENTRY_DSN=(str, ""),  # DSN klic pro Sentry
+    TESTS_HEADLESS=(bool, True),  # indikace headless mode pro testy UI
     TESTS_RUNNING=(bool, False),  # indikace bezicich testu
 )
 # cteni z .env souboru
@@ -39,7 +39,7 @@ BANK_ACTIVE = env("BANK_ACTIVE")
 BANK_RENT_PRICE = env("BANK_RENT_PRICE")
 ENVIRONMENT = env("ENVIRONMENT")
 FIO_API_KEY = env("FIO_API_KEY")
-HEADLESS = env("HEADLESS")
+TESTS_HEADLESS = env("TESTS_HEADLESS")
 DEPLOYED = env("DEPLOYED")
 MANUAL_PRODUCTION = env("MANUAL_PRODUCTION")
 SENTRY_DSN = env("SENTRY_DSN")

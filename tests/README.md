@@ -53,7 +53,7 @@ konkrétní sady tedy stačí tyto příkazy:
 
 > **Tip pro UI testy:** ve výchozím nastavení běží UI testy v tzv. _headless_ módu prohlížeče, tedy
 > bez GUI (prohlížeč není vidět), pokud chcete průběh UI testů (postupné proklikávání a psaní v
-> aplikaci) vidět, stačí upravit v [souboru .env](../.env) řádek s `HEADLESS` na: `HEADLESS=False`.
+> aplikaci) vidět, stačí upravit v [souboru .env](../.env) řádek s `TESTS_HEADLESS` na: `TESTS_HEADLESS=False`.
 
 Testování lze ještě dále zúžit na **konkrétní testovanou část či operaci (označené tzv. _tagem_)** z
 dané sady testů (_stage_). Pro jednoduchost jsou _tagy_ pro testované části totožné s názvy souborů

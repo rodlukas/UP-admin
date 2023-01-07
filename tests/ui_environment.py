@@ -10,7 +10,7 @@ SCREEN_HEIGHT = 1080
 
 def before_all(context):
     options = Options()
-    options.headless = settings.HEADLESS
+    options.headless = settings.TESTS_HEADLESS
     context.browser = webdriver.Firefox(options=options)
     context.browser.set_window_size(SCREEN_WIDTH, SCREEN_HEIGHT)
 
