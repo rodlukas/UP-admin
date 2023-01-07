@@ -454,6 +454,16 @@ was made. At first in November 2022 the testing environment was migrated to
 migrated to the same place. The migration included also the PostgreSQL database with all the data.
 The instances `staging` and `demo` were terminated without replacement.
 
+### Containerization
+
+Since the app was historically deployed to [Heroku PaaS](https://www.heroku.com/) using the primary
+buildpack approach, it didn't use any form of containerization. This buildpack approach had it's
+advantages and disadvantages. However, with the arrival of other PaaS like
+[Fly.io](https://fly.io/), migration to container approach was required. These efforts led to fully
+containerized app based on Docker (and published image in Github Container Registry). With the help
+of the newly introduced Docker Compose V2 the README Install & Run instruction could also be rapidly
+simplified and the app can be launched with a few lines.
+
 ## License
 
 Licensed under the [MIT](LICENSE) license.
