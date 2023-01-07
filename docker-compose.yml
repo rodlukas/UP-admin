@@ -1,0 +1,36 @@
+services:
+  web:
+    image: ghcr.io/rodlukas/up-admin:latest
+    command: sh -c "python manage.py migrate &&
+                    python manage.py runserver 0.0.0.0:8000" 
+    volumes:
+    - .:/up_admin_app 
+    env_file: 
+    - .env
+    environment:
+      DATABASE_URL: 'postgresql://postgres:postgres@db:5432/postgres'
+      DEBUG: 'False'
+      DEPLOYED: 'True'
+      DJANGO_SETTINGS_MODULE: 'up.settings.local'
+      MANUAL_PRODUCTION: 'False'
+    ports: 
+      - 8000:8000
+    restart: "on-failure"
+    depends_on: 
+    - db
+
+  db:
+    build: 
+      context: .
+      dockerfile: ./db/Dockerfile.postgresql-sample
+    image: up_admin_db
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data/
+    environment: 
+      - POSTGRES_PASSWORD=postgres
+      - PGPORT=5432
+    restart: "on-failure"
+
+volumes:
+  postgres_data:
