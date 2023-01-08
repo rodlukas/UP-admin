@@ -25,7 +25,6 @@ services:
       dockerfile: ./db/Dockerfile
     image: up_admin_db
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data/
     environment: 
       - POSTGRES_PASSWORD=postgres
