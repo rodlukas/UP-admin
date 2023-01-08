@@ -107,7 +107,7 @@ The app is composed of the **frontend and backend** connected via a **REST API**
 **[JWT](https://jwt.io/) authentication**. [PostgreSQL 14](https://www.postgresql.org/) is used as a
 database.
 
-> **Note:** a part of this repo is dedicated to a deployment diagram and logical data model – see
+> **ℹ️ Note:** a part of this repo is dedicated to a deployment diagram and logical data model – see
 > [`docs/README.md`](docs).
 
 #### Backend
@@ -290,7 +290,7 @@ Minimum requirements are:
 
 5.  **The app is now available at <http://localhost:8000/> ✅.**
 
-> **⚠️ Warning:** Docker Compose file uses django dev server (not Gunicorn), it's only for local
+> **⚠️ Warning:** Docker Compose file uses Django dev server (not Gunicorn), it's only for local
 > testing purposes, deployed environments use Gunicorn server.
 
 > **ℹ️ Note: access the app from devices on the same network** – the app is ready for use from other
@@ -306,7 +306,7 @@ Minimum requirements are:
 You can also launch the app with plain Docker without Docker Compose V2, but it's much harder!
 
 <details>
-<summary>Show me the alternative way</summary>
+<summary>Show me the alternative advanced installation</summary>
 
 <a name="npmpro">
   
@@ -398,7 +398,7 @@ The repo contains **complex tests of the API and UI (e2e)** – see the
 
 ## Screenshots
 
-> **Note:** personal details are fictitious.
+> **ℹ️ Note:** personal details are fictitious.
 
 ### Diary
 
@@ -458,13 +458,13 @@ The instances `staging` and `demo` were terminated without replacement.
 
 ### Containerization
 
-Since the app was historically deployed to [Heroku PaaS](https://www.heroku.com/) using the primary
-buildpack approach, it didn't use any form of containerization. This buildpack approach had it's
-advantages and disadvantages. However, with the arrival of other PaaS like
-[Fly.io](https://fly.io/), migration to container approach was required. These efforts led to fully
-containerized app based on Docker (and published image in Github Container Registry). With the help
-of the newly introduced Docker Compose V2 the README Install & Run instruction could also be rapidly
-simplified and the app can be launched with a few lines.
+Since the app was historically deployed to [Heroku PaaS](https://www.heroku.com/) using theirs
+[Builpacks](https://devcenter.heroku.com/articles/buildpacks), it didn't use any form of
+containerization. This approach had it's advantages and disadvantages. However, with the arrival of
+other PaaS like [Fly.io](https://fly.io/) migration to container approach was required. These
+efforts led to fully containerized app based on Docker (and published image in Github Container
+Registry). With the help of the newly introduced Docker Compose V2 the README Install & Run
+instruction could also be rapidly simplified and the app can be launched with a few lines.
 
 ## License
 

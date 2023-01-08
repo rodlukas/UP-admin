@@ -53,8 +53,8 @@
 -   [Struktura repozitáře](#struktura-repozitáře)
 -   [Spuštění aplikace](#spuštění-aplikace)
     -   [Požadavky](#požadavky)
-    -   [Instalace](#instalace)
-    -   [Spuštění](#spuštění)
+    -   [Instalace](#instalace-&-spuštění)
+    -   [Pokročilá instalace bez Docker Compose](#instalace-&-spuštění)
     -   [Testování](#testování)
 -   [Screenshoty](#screenshoty)
 -   [Historie](#historie)
@@ -102,7 +102,7 @@ Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **R
 **[JWT](https://jwt.io/) autentizací**. Jako databáze se používá
 [PostgreSQL 14](https://www.postgresql.org/).
 
-> **Poznámka:** součástí repozitáře je také diagram nasazení a logický datový model – viz
+> **ℹ️ Poznámka:** součástí repozitáře je také diagram nasazení a logický datový model – viz
 > [`docs/README.md`](docs).
 
 #### Backend
@@ -113,6 +113,7 @@ Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těc
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
+-   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [a další...](/Pipfile)
 
 V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplexní SQL dotazy** (viz
@@ -250,26 +251,14 @@ je nejblíže verzi u zákazníka.
 
 ### Požadavky
 
-Minimální požadavky na nástroje nainstalované v cílovém OS:
+Minimální požadavky jsou:
 
--   [Python 3](https://www.python.org/downloads/) (konkrétní verze viz [`Pipfile`](/Pipfile)),
--   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
--   [Docker](https://www.docker.com/).
+-   [Docker Desktop s Compose V2](https://www.docker.com/products/docker-desktop/).
 
-<a name="npmpro">
-  
-> **Poznámka:** Node.js ani npm nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
- přístup přes token k privátnímu GitHub Package registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
- automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů ke každému release).
- 
-</a>
+### Instalace & spuštění
 
-### Instalace
-
-Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci:
-
-1.  Nejdříve **naklonujeme repozitář**, otevřeme jeho složku a nahrajeme si **poslední produkční
+1.  Nejdříve **naklonujte repozitář**, otevřete jeho složku a nahrajte si **poslední produkční
     verzi** repozitáře:
 
     ```bash
@@ -277,7 +266,59 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci:
     git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
     ```
 
-2.  Stáhneme již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalíme** je
+2.  **Vytvořte vaší lokální konfigurační prostředí ze vzorové konfigurace `.env.template`**:
+
+    ```bash
+    cp .env.template .env
+    ```
+
+3.  Použijte Docker Compose V2 pro **spuštění všech kontejnerů** 🚀:
+
+    ```bash
+    docker compose up
+    ```
+
+4.  A když kontejnery běží, ve vedlejším CLI si založte uživatelský účet:
+
+    ```bash
+    docker compose run web python manage.py createsuperuser
+    ```
+
+5.  **Aplikace je nyní dostupná na adrese <http://localhost:8000/> ✅.**
+
+> **⚠️ Upozornění:** Docker Compose soubor používá Django dev server (ne Gunicorn), je pouze pro
+> lokální testovací účely, nasazená prostředí používají Gunicorn server.
+
+> **ℹ️ Poznámka: otevření aplikace na jiném zařízení v síti** – aplikace je připravena pro použití i
+> z dalších zařízeních v síti (např. z mobilního telefonu), obvykle je potřeba provést tyto 2 kroky:
+>
+> 1.  povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
+> 2.  na mobilním zařízení zadat hostname nebo privátní IP adresu počítače, na kterém běží server.
+
+<a name="npmpro">
+  
+> **ℹ️ Poznámka:** Node.js ani npm nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
+ přístup přes token k privátnímu GitHub Package registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
+ automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů ke každému release).
+ 
+</a>
+
+### Pokročilá instalace bez Docker Compose
+
+Aplikaci také můžete spustit pouze s Dockerem bez Docker Compose V2, ale je to o poznání náročnější!
+
+<details>
+<summary>Ukaž mi alternativní pokročilejší instalaci</summary>
+
+1.  Nejdříve **naklonujte repozitář**, otevřete jeho složku a nahrajte si **poslední produkční
+    verzi** repozitáře:
+
+    ```bash
+    git clone "https://github.com/rodlukas/UP-admin.git" && cd UP-admin
+    git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+    ```
+
+2.  Stáhněte již **sestavené zdrojové kódy frontendu** z poslední produkční verze a **rozbalte** je
     přímo do repozitáře (a `frontend.zip` smažeme):
 
     ```bash
@@ -285,10 +326,10 @@ Pokud už požadavky výše splňujete, můžeme se vrhnout na instalaci:
     unzip frontend.zip && rm frontend.zip
     ```
 
-3.  **Přejmenujeme vzorový konfigurační soubor `.env.template`** v kořenovém adresáři na **`.env`**:
+3.  **Vytvořte vaší lokální konfigurační prostředí ze vzorové konfigurace `.env.template`**:
 
     ```bash
-    mv .env.template .env
+    cp .env.template .env
     ```
 
 4.  Nainstalujeme všechny **závislosti pro backend** a aktivujeme virtuální prostředí Pythonu:
@@ -338,11 +379,7 @@ python manage.py runserver 0.0.0.0:8000
 
 **✅ Aplikace je nyní dostupná na adrese <http://localhost:8000/>.**
 
-> **Poznámka: otevření aplikace na jiném zařízení v síti** – aplikace je připravena pro použití i z
-> dalších zařízeních v síti (např. z mobilního telefonu), obvykle je potřeba provést tyto 2 kroky:
->
-> 1.  povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
-> 2.  na mobilním zařízení zadat hostname nebo privátní IP adresu počítače, na kterém běží server.
+</details>
 
 ### Testování
 
@@ -358,7 +395,7 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
 
 ## Screenshoty
 
-> **Poznámka:** údaje v aplikaci jsou smyšlené.
+> **ℹ️ Poznámka:** údaje v aplikaci jsou smyšlené.
 
 ### Diář
 
@@ -414,6 +451,16 @@ periodicky obnovována přes _Heroku Scheduler_). Kvůli
 se o dům dál. Nejprve v listopadu 2022 bylo na [Fly.io](https://fly.io/) zmigrováno testing
 prostředí. Krátce nato v prosinci 2022 byla takto přesunuta i celá produkce. Migrace zahrnovala i
 PostgreSQL databázi se všemi daty. Instance `staging` a `demo` byly ukončeny bez náhrady.
+
+### Kontejnerizace
+
+Vzhledem k tomu, že aplikace byla původně nasazena na [Heroku PaaS](https://www.heroku.com/) s
+použitím jejich [Builpacks](https://devcenter.heroku.com/articles/buildpacks), nepoužívala žádnou
+formu kontejnerizace. Tento přístup měl své výhody i nevýhody. Ale vzhledem k příchodu jiných PaaS
+jako [Fly.io](https://fly.io/) byla vyžadována migrace na kontejnery. To vedlo k plně
+kontejnerizované aplikaci založené na Dockeru (a publikovaném obrazu v Github Container Registry). S
+pomocí nově vzniklého Docker Compose V2 bylo žaké možné výrazné zjednodušení tohoto README pro
+instalaci a spuštění, která nyní zabere jen pár řádků.
 
 ## Licence
 
