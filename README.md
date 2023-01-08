@@ -290,8 +290,8 @@ Minimum requirements are:
 
 5.  **The app is now available at <http://localhost:8000/> ✅.**
 
-> **⚠️ Warning:** Docker Compose file uses django dev server (not gunicorn), it's only for local
-> testing purposes, deployed environments use gunicorn server.
+> **⚠️ Warning:** Docker Compose file uses django dev server (not Gunicorn), it's only for local
+> testing purposes, deployed environments use Gunicorn server.
 
 > **ℹ️ Note: access the app from devices on the same network** – the app is ready for use from other
 > network devices (e.g. smartphone), usually there are two steps required to make this happen:
