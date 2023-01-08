@@ -53,8 +53,8 @@
 -   [Repository structure](#repository-structure)
 -   [Run the app](#run-the-app)
     -   [Requirements](#requirements)
-    -   [Installation](#installation)
-    -   [Run](#run)
+    -   [Installation & Run](#installation-&-run)
+    -   [Advanced installation without Docker Compose](#advanced-installation-without-docker-compose)
     -   [Testing](#testing)
 -   [Screenshots](#screenshots)
 -   [History](#history)
@@ -107,7 +107,7 @@ The app is composed of the **frontend and backend** connected via a **REST API**
 **[JWT](https://jwt.io/) authentication**. [PostgreSQL 14](https://www.postgresql.org/) is used as a
 database.
 
-> **Note:** a part of this repo is dedicated to a deployment diagram and logical data model – see
+> **ℹ️ Note:** a part of this repo is dedicated to a deployment diagram and logical data model – see
 > [`docs/README.md`](docs).
 
 #### Backend
@@ -118,6 +118,7 @@ Includes all the logic and exposes a **REST API** for a client, built on these t
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
+-   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [and more...](/Pipfile)
 
 Django complex SQL queries are highly **optimized** (multiple times speed increase) (see articles
@@ -255,25 +256,65 @@ run in this tutorial.
 
 ### Requirements
 
-Minimum requirements of tools available in the target OS:
+Minimum requirements are:
 
--   [Python 3](https://www.python.org/downloads/) (for a specific version see
-    [`Pipfile`](/Pipfile)),
--   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 -   [Git](https://git-scm.com/downloads),
--   [Docker](https://www.docker.com/).
+-   [Docker Desktop with Compose V2](https://www.docker.com/products/docker-desktop/).
+
+### Installation & Run
+
+1.  **Clone the repo**, open its folder and download **the latest production version** of the repo:
+
+    ```bash
+    git clone "https://github.com/rodlukas/UP-admin.git" && cd UP-admin
+    git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
+    ```
+
+2.  Create your **local environment config** from the sample config file `.env.template`:
+
+    ```bash
+    cp .env.template .env
+    ```
+
+3.  Use the Docker Compose V2 to **launch all the containers** 🚀:
+
+    ```bash
+    docker compose up
+    ```
+
+4.  And while the containers are up, set up the user account in a separate CLI:
+
+    ```bash
+    docker compose run web python manage.py createsuperuser
+    ```
+
+5.  **The app is now available at <http://localhost:8000/> ✅.**
+
+> **⚠️ Warning:** Docker Compose file uses Django dev server (not Gunicorn), it's only for local
+> testing purposes, deployed environments use Gunicorn server.
+
+> **ℹ️ Note: access the app from devices on the same network** – the app is ready for use from other
+> network devices (e.g. smartphone), usually there are two steps required to make this happen:
+>
+> 1.  allow Python and Node.js in a firewall (e.g. activate an interactive mode for ESET for a
+>     while),
+> 2.  type the hostname or private IP address of the computer running the server to your portable
+>     device.
+
+### Advanced installation without Docker Compose
+
+You can also launch the app with plain Docker without Docker Compose V2, but it's much harder!
+
+<details>
+<summary>Show me the alternative advanced installation</summary>
 
 <a name="npmpro">
   
-> **Note:** Node.js and npm are not required since the frontend cannot be built without tokens to private GitHub Package
+> **ℹ️ Note:** Node.js and npm are not required since the frontend cannot be built without tokens to private GitHub Package
  registry (for [FontAwesome PRO](https://fontawesome.com/)). Instead of this we'll use automatically generated assets 
  of the latest production version from the CI.
  
 </a>
-
-### Installation
-
-Since the minimum requirements above are met, you can follow these steps then:
 
 1.  **Clone the repo**, open its folder and download **the latest production version** of the repo:
 
@@ -290,10 +331,10 @@ Since the minimum requirements above are met, you can follow these steps then:
     unzip frontend.zip && rm frontend.zip
     ```
 
-3.  **Rename the sample config file `.env.template`** in the root to **`.env`**:
+3.  **Create your local environment config from the sample config file `.env.template`**:
 
     ```bash
-    mv .env.template .env
+    cp .env.template .env
     ```
 
 4.  Install all the **backend requirements** and activate a virtual Python environment:
@@ -342,13 +383,7 @@ python manage.py runserver 0.0.0.0:8000
 
 **✅ The app is now available at <http://localhost:8000/>.**
 
-> **Note: access the app from devices on the same network** – the app is ready for use from other
-> network devices (e.g. smartphone), usually there are two steps required to make this happen:
->
-> 1.  allow Python and Node.js in a firewall (e.g. activate an interactive mode for ESET for a
->     while),
-> 2.  type the hostname or private IP address of the computer running the server to your portable
->     device.
+</details>
 
 ### Testing
 
@@ -363,7 +398,7 @@ The repo contains **complex tests of the API and UI (e2e)** – see the
 
 ## Screenshots
 
-> **Note:** personal details are fictitious.
+> **ℹ️ Note:** personal details are fictitious.
 
 ### Diary
 
@@ -420,6 +455,16 @@ was made. At first in November 2022 the testing environment was migrated to
 [Fly.io](https://fly.io/). Shortly afterwards in December 2022 the whole production was also
 migrated to the same place. The migration included also the PostgreSQL database with all the data.
 The instances `staging` and `demo` were terminated without replacement.
+
+### Containerization
+
+Since the app was historically deployed to [Heroku PaaS](https://www.heroku.com/) using theirs
+[Builpacks](https://devcenter.heroku.com/articles/buildpacks), it didn't use any form of
+containerization. This approach had it's advantages and disadvantages. However, with the arrival of
+other PaaS like [Fly.io](https://fly.io/) migration to container approach was required. These
+efforts led to fully containerized app based on Docker (and published image in Github Container
+Registry). With the help of the newly introduced Docker Compose V2 the README Install & Run
+instruction could also be rapidly simplified and the app can be launched with a few lines.
 
 ## License
 
