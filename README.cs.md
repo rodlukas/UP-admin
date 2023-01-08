@@ -326,7 +326,7 @@ Aplikaci také můžete spustit pouze s Dockerem bez Docker Compose V2, ale je t
     unzip frontend.zip && rm frontend.zip
     ```
 
-3.  **Vytvořte vaší lokální konfigurační prostředí ze vzorové konfigurace `.env.template`**:
+3.  **Vytvořte vaší lokální konfiguraci prostředí ze vzorové konfigurace `.env.template`**:
 
     ```bash
     cp .env.template .env
@@ -459,7 +459,7 @@ použitím jejich [Builpacks](https://devcenter.heroku.com/articles/buildpacks),
 formu kontejnerizace. Tento přístup měl své výhody i nevýhody. Ale vzhledem k příchodu jiných PaaS
 jako [Fly.io](https://fly.io/) byla vyžadována migrace na kontejnery. To vedlo k plně
 kontejnerizované aplikaci založené na Dockeru (a publikovaném obrazu v Github Container Registry). S
-pomocí nově vzniklého Docker Compose V2 bylo žaké možné výrazné zjednodušení tohoto README pro
+pomocí nově vzniklého Docker Compose V2 bylo také možné výrazné zjednodušení tohoto README pro
 instalaci a spuštění, která nyní zabere jen pár řádků.
 
 ## Licence
