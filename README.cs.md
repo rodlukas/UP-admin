@@ -53,8 +53,8 @@
 -   [Struktura repozitáře](#struktura-repozitáře)
 -   [Spuštění aplikace](#spuštění-aplikace)
     -   [Požadavky](#požadavky)
-    -   [Instalace](#instalace-&-spuštění)
-    -   [Pokročilá instalace bez Docker Compose](#instalace-&-spuštění)
+    -   [Instalace & spuštění](#instalace-&-spuštění)
+    -   [Pokročilá instalace bez Docker Compose](#pokročilá-instalace-bez-docker-compose)
     -   [Testování](#testování)
 -   [Screenshoty](#screenshoty)
 -   [Historie](#historie)
@@ -295,6 +295,13 @@ Minimální požadavky jsou:
 > 1.  povolit Python a Node.js ve firewallu (např. na chvíli aktivovat interaktivní režim ESETu),
 > 2.  na mobilním zařízení zadat hostname nebo privátní IP adresu počítače, na kterém běží server.
 
+### Pokročilá instalace bez Docker Compose
+
+Aplikaci také můžete spustit pouze s Dockerem bez Docker Compose V2, ale je to o poznání náročnější!
+
+<details>
+<summary>Ukaž mi alternativní pokročilejší instalaci</summary>
+
 <a name="npmpro">
   
 > **ℹ️ Poznámka:** Node.js ani npm nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
@@ -302,13 +309,6 @@ Minimální požadavky jsou:
  automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů ke každému release).
  
 </a>
-
-### Pokročilá instalace bez Docker Compose
-
-Aplikaci také můžete spustit pouze s Dockerem bez Docker Compose V2, ale je to o poznání náročnější!
-
-<details>
-<summary>Ukaž mi alternativní pokročilejší instalaci</summary>
 
 1.  Nejdříve **naklonujte repozitář**, otevřete jeho složku a nahrajte si **poslední produkční
     verzi** repozitáře:
