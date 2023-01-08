@@ -22,7 +22,7 @@ services:
   db:
     build: 
       context: .
-      dockerfile: ./db/Dockerfile.postgresql-sample
+      dockerfile: ./db/Dockerfile
     image: up_admin_db
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql

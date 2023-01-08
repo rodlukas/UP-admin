@@ -256,14 +256,12 @@ run in this tutorial.
 
 ### Requirements
 
-Minimum requirements of tools available in the target OS:
+Minimum requirements are:
 
 -   [Git](https://git-scm.com/downloads),
 -   [Docker Desktop with Compose V2](https://www.docker.com/products/docker-desktop/).
 
 ### Installation & Run
-
-Since the minimum requirements above are met, you can follow these steps then:
 
 1.  **Clone the repo**, open its folder and download **the latest production version** of the repo:
 
@@ -285,13 +283,17 @@ Since the minimum requirements above are met, you can follow these steps then:
     ```
 
 4.  And while the containers are up, set up the user account in a separate CLI:
+
     ```bash
     docker compose run web python manage.py createsuperuser
     ```
 
-**✅ The app is now available at <http://localhost:8000/>.**
+5.  **The app is now available at <http://localhost:8000/> ✅.**
 
-> **Note: access the app from devices on the same network** – the app is ready for use from other
+> **⚠️ Warning:** Docker Compose file uses django dev server (not gunicorn), it's only for local
+> testing purposes, deployed environments use gunicorn server.
+
+> **ℹ️ Note: access the app from devices on the same network** – the app is ready for use from other
 > network devices (e.g. smartphone), usually there are two steps required to make this happen:
 >
 > 1.  allow Python and Node.js in a firewall (e.g. activate an interactive mode for ESET for a
@@ -308,7 +310,7 @@ You can also launch the app with plain Docker without Docker Compose V2, but it'
 
 <a name="npmpro">
   
-> **Note:** Node.js and npm are not required since the frontend cannot be built without tokens to private GitHub Package
+> **ℹ️ Note:** Node.js and npm are not required since the frontend cannot be built without tokens to private GitHub Package
  registry (for [FontAwesome PRO](https://fontawesome.com/)). Instead of this we'll use automatically generated assets 
  of the latest production version from the CI.
  
