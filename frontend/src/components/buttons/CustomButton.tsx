@@ -3,7 +3,7 @@ import { Button, ButtonProps } from "reactstrap"
 
 import { noop } from "../../global/utils"
 
-type Props = ButtonProps & {
+type Props = Omit<ButtonProps, "content"> & {
     /** Jakýkoliv uzel JSX tvořící text tlačítka. */
     content: React.ReactNode
 }
