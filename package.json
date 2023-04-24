@@ -6,7 +6,7 @@
     "license": "MIT",
     "engines": {
         "node": "18",
-        "npm": "8"
+        "npm": "9"
     },
     "scripts": {
         "postinstall": "cd frontend && npm ci && npm run build:ci",
