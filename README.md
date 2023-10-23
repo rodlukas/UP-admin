@@ -60,7 +60,7 @@
 -   [History](#history)
 -   [License](#license)
 
-## Basic description of the app
+## Basic description of this app
 
 Web application for the project **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** (check out
 [its website](https://uspesnyprvnacek.cz/), also my work) – based on a techstack: React

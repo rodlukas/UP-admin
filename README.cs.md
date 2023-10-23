@@ -60,7 +60,7 @@
 -   [Historie](#historie)
 -   [Licence](#licence)
 
-## Základní informace o aplikaci
+## Základní informace o této aplikaci
 
 Webová aplikace pro projekt **[Úspěšný prvňáček](https://uspesnyprvnacek.cz/)** (mrkněte na
 [jeho stránky](https://uspesnyprvnacek.cz/), také pochází z mé tvorby) – založená na technologiích
