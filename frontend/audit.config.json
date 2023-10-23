@@ -1,5 +1,5 @@
 {
     "low": true,
     "report-type": "summary",
-    "allowlist": ["semver", "word-wrap"]
+    "allowlist": ["word-wrap", "@adobe/css-tools"]
 }
