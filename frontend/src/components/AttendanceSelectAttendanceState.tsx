@@ -41,7 +41,7 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
                         <option key={attendancestate.id} value={attendancestate.id}>
                             {attendancestate.name}
                         </option>
-                    )
+                    ),
             )}
         </CustomInputWrapper>
     )

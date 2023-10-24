@@ -42,7 +42,7 @@ const Input: React.FC<InputProps> = (props) => {
 
 /** Wrapper pro react-select komponentu pro použití nadefinovaného react-selectu napříč aplikací. */
 const ReactSelectWrapper = <OptionType extends OptionTypeBase, IsMulti extends boolean = false>(
-    props: Props<OptionType, IsMulti>
+    props: Props<OptionType, IsMulti>,
 ): JSX.Element => (
     <Select<OptionType, IsMulti>
         {...props}

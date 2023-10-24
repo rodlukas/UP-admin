@@ -93,7 +93,7 @@ export default class Bank extends React.PureComponent<{}, State> {
             // po zadanem poctu sekund povol tlacitko refresh
             this.timeoutId = window.setTimeout(
                 () => this.setState({ isRefreshDisabled: false }),
-                REFRESH_TIMEOUT * 1000
+                REFRESH_TIMEOUT * 1000,
             )
         })
     }
@@ -151,7 +151,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                             <span className="font-italic align-middle mr-1">
                                 Čas výpisu:{" "}
                                 {prettyTimeWithSeconds(
-                                    new Date(this.state.bankDataApi.fetch_timestamp)
+                                    new Date(this.state.bankDataApi.fetch_timestamp),
                                 )}
                             </span>
                         )}{" "}
@@ -201,7 +201,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                                     this.state.bankDataApi.accountStatement.transactionList.transaction.map(
                                         (transaction) => {
                                             const date = new Date(
-                                                transaction.column0.value.split("+")[0]
+                                                transaction.column0.value.split("+")[0],
                                             )
                                             const amount = transaction.column1.value
                                             const messageObj = transaction.column16
@@ -252,7 +252,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                                                     </td>
                                                 </tr>
                                             )
-                                        }
+                                        },
                                     )
                                 )
                             ) : (
@@ -270,10 +270,10 @@ export default class Bank extends React.PureComponent<{}, State> {
                                 ? prettyDateWithDayYearIfDiff(
                                       new Date(
                                           this.state.bankDataApi.accountStatement.info.dateStart.split(
-                                              "+"
-                                          )[0]
+                                              "+",
+                                          )[0],
                                       ),
-                                      true
+                                      true,
                                   )
                                 : "neznámý datum"}
                         </UncontrolledTooltipWrapper>

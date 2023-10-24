@@ -19,7 +19,7 @@ type GroupedObjectsByCoursesReduce<O> = { [key: string]: { course: CourseType; o
 
 /** Vrátí zaslané objekty seskupené podle kurzů. */
 export function groupObjectsByCourses<O extends ApplicationType | LectureType>(
-    objects: Array<O>
+    objects: Array<O>,
 ): GroupedObjectsByCourses<O> {
     // seskup data podle kurzu ve formatu "nazev_kurzu": {course: objekt_s_kurzem, objects: pole_objektu}
     const groupByCourses = objects.reduce((obj: GroupedObjectsByCoursesReduce<O>, item: O) => {
@@ -54,7 +54,7 @@ export function groupObjectsByCourses<O extends ApplicationType | LectureType>(
 /** Získá z API lekce roztříděné podle skupin. */
 export function getLecturesgroupedByCourses(
     id: number,
-    isClient: boolean
+    isClient: boolean,
 ): Promise<GroupedObjectsByCourses<LectureType>> {
     const requestLectures = isClient
         ? LectureService.getAllFromClientOrdered(id, false)
@@ -71,7 +71,7 @@ export type DefaultValuesForLecture = {
 /** Vrátí zaslaný kurz a start lekce nebo výchozí hodnoty. */
 export function prepareDefaultValuesForLecture(
     course: CourseType | null = null,
-    start: string | null = ""
+    start: string | null = "",
 ): DefaultValuesForLecture {
     return {
         course,
@@ -81,7 +81,7 @@ export function prepareDefaultValuesForLecture(
 
 /** Vrátí optimální kurz, jehož lekce bude s nejvyšší pravděpodobností přidávána a odhadnutý start lekce. */
 export function getDefaultValuesForLecture(
-    lecturesGroupedByCourses: GroupedObjectsByCourses<LectureType>
+    lecturesGroupedByCourses: GroupedObjectsByCourses<LectureType>,
 ): DefaultValuesForLecture {
     // nemame co vratit
     if (lecturesGroupedByCourses.length === 0) {
@@ -91,13 +91,13 @@ export function getDefaultValuesForLecture(
     else if (lecturesGroupedByCourses.length === 1) {
         return prepareDefaultValuesForLecture(
             lecturesGroupedByCourses[0].course,
-            lecturesGroupedByCourses[0].objects[0].start
+            lecturesGroupedByCourses[0].objects[0].start,
         )
     }
     // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (preferuj ten s predplacenymi lekcemi)
     else {
         const latestLecturesOfEachCourse: Array<LectureType> = lecturesGroupedByCourses.map(
-            (elem) => elem.objects[0]
+            (elem) => elem.objects[0],
         )
         // pro porovnani se vyuziva lexicographical order
         // (ISO pro datum a cas to podporuje, viz https://en.wikipedia.org/wiki/ISO_8601#General_principles)

@@ -93,8 +93,8 @@ export default class Diary extends React.Component<Props, State> {
     refreshTitle(): void {
         document.title = pageTitle(
             `${APP_URLS.diar.title} (${prettyDateWithYearIfDiff(
-                this.getRequiredMonday()
-            )} – ${prettyDateWithYearIfDiff(this.getFridayDate())})`
+                this.getRequiredMonday(),
+            )} – ${prettyDateWithYearIfDiff(this.getFridayDate())})`,
         )
     }
 
@@ -147,7 +147,7 @@ export default class Diary extends React.Component<Props, State> {
 
     setUpdateType = (newUpdateType = DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED): void =>
         this.setState({ updateType: newUpdateType }, () =>
-            this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.NONE })
+            this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.NONE }),
         )
 
     render(): React.ReactNode {
@@ -188,7 +188,7 @@ export default class Diary extends React.Component<Props, State> {
                                         color="secondary"
                                         disabled={isEqualDate(
                                             this.getCurrentMonday(),
-                                            this.getRequiredMonday()
+                                            this.getRequiredMonday(),
                                         )}
                                         onClick={this.removeFocusAfterClick}
                                         className="align-top">

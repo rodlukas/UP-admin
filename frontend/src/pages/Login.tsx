@@ -29,7 +29,7 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
             username: "",
             password: "",
         },
-        login
+        login,
     )
 
     function login(): void {

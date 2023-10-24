@@ -20,7 +20,7 @@ test("dashboard day shows lectures for a specific date", async () => {
                     withoutWaiting={true}
                 />
             </MockContexts>
-        </Router>
+        </Router>,
     )
     await screen.findAllByTestId("loading")
     const items = await screen.findAllByTestId("lecture")

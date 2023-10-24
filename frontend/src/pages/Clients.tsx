@@ -61,7 +61,7 @@ class Clients extends React.Component<Props, State> {
             this.props.clientsActiveContext.funcRefresh()
         } else if (!active) {
             ClientService.getInactive().then((clients) =>
-                this.setState({ clients, isLoading: false })
+                this.setState({ clients, isLoading: false }),
             )
         }
     }

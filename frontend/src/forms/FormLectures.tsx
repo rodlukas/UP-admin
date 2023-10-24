@@ -294,7 +294,7 @@ class FormLectures extends React.Component<Props, State> {
             (client, id) =>
                 (objects[client.id] = this.isLecture(this.props.lecture)
                     ? this.props.lecture.attendances[id].attendancestate
-                    : defaultStateIndex)
+                    : defaultStateIndex),
         )
         return objects
     }
@@ -308,7 +308,7 @@ class FormLectures extends React.Component<Props, State> {
                 objects[client.id] = false
                 if (!this.isClient(object)) {
                     const membership = object.memberships.find(
-                        (elem) => elem.client.id === client.id
+                        (elem) => elem.client.id === client.id,
                     )
                     if (membership && membership.prepaid_cnt > 0) {
                         objects[client.id] = true
@@ -325,7 +325,7 @@ class FormLectures extends React.Component<Props, State> {
             (client, id) =>
                 (objects[client.id] = this.isLecture(this.props.lecture)
                     ? this.props.lecture.attendances[id].note
-                    : "")
+                    : ""),
         )
         return objects
     }
@@ -354,7 +354,7 @@ class FormLectures extends React.Component<Props, State> {
                 if (nameStateAttr === "atState") {
                     this.checkDisabledCanceled()
                 }
-            }
+            },
         )
     }
 
@@ -399,7 +399,7 @@ class FormLectures extends React.Component<Props, State> {
                 }
                 if (this.isLecture(this.props.lecture)) {
                     const attendanceId = this.props.lecture.attendances.find(
-                        (elem) => elem.client.id === member.id
+                        (elem) => elem.client.id === member.id,
                     )
                     if (attendanceId === undefined) {
                         throw Error("Nepodařilo se dohledat ID účasti")
@@ -421,7 +421,7 @@ class FormLectures extends React.Component<Props, State> {
 
     onSubmit = (
         e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
-        refreshClients = false
+        refreshClients = false,
     ): void => {
         e.preventDefault()
         const { prepaid, canceled, course, time, date, duration, prepaidCnt } = this.state
@@ -712,7 +712,7 @@ class FormLectures extends React.Component<Props, State> {
                                                                     value={attendancestate.id}>
                                                                     {attendancestate.name}
                                                                 </option>
-                                                            )
+                                                            ),
                                                     )}
                                                 </CustomInputWrapper>
                                             </InputGroup>
@@ -790,11 +790,11 @@ class FormLectures extends React.Component<Props, State> {
                                             onClick={(): void => {
                                                 const msgDateTime = !prepaid
                                                     ? ` v ${prettyDateWithLongDayYear(
-                                                          new Date(date)
+                                                          new Date(date),
                                                       )} ${time}`
                                                     : ""
                                                 const msgObjectName = this.isClient(
-                                                    this.props.object
+                                                    this.props.object,
                                                 )
                                                     ? `${this.props.object.surname} ${this.props.object.firstname}`
                                                     : this.props.object.name

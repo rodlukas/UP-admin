@@ -48,8 +48,8 @@ export class CoursesVisibleProvider extends React.Component<{}, State> {
                             courses,
                             isLoaded: true,
                         },
-                        callback
-                    )
+                        callback,
+                    ),
                 )
             })
         }
@@ -63,7 +63,7 @@ export class CoursesVisibleProvider extends React.Component<{}, State> {
                     this.setState({
                         courses,
                         isLoaded: true,
-                    })
+                    }),
                 )
             })
         }
@@ -97,16 +97,16 @@ type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof CoursesVisibleCo
 
 /** HOC komponenta pro kontext s viditelnými kurzy. */
 const WithCoursesVisibleContext = <P,>(
-    WrappedComponent: React.ComponentType<P>
+    WrappedComponent: React.ComponentType<P>,
 ): React.ComponentType<ComponentWithCoursesVisibleContextProps<P>> => {
     const ComponentWithCoursesVisibleContext = (
-        props: ComponentWithCoursesVisibleContextProps<P>
+        props: ComponentWithCoursesVisibleContextProps<P>,
     ) => (
         <CoursesVisibleContext.Consumer>
             {(coursesVisibleContext) => {
                 if (coursesVisibleContext === undefined) {
                     throw new Error(
-                        "coursesVisibleContext must be used within a CoursesVisibleProvider"
+                        "coursesVisibleContext must be used within a CoursesVisibleProvider",
                     )
                 }
                 return (
@@ -119,7 +119,7 @@ const WithCoursesVisibleContext = <P,>(
         </CoursesVisibleContext.Consumer>
     )
     ComponentWithCoursesVisibleContext.displayName = `WithCoursesVisibleContext(${getDisplayName<P>(
-        WrappedComponent
+        WrappedComponent,
     )})`
     return ComponentWithCoursesVisibleContext
 }

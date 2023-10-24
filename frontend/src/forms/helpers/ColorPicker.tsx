@@ -56,7 +56,7 @@ export default class ColorPicker extends React.Component<Props, State> {
                     toastId: ColorPicker.customToastId,
                     autoClose: false,
                     type: toast.TYPE.WARNING,
-                }
+                },
             )
         } else {
             toast.dismiss(ColorPicker.customToastId)

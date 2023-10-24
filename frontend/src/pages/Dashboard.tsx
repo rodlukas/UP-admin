@@ -26,7 +26,7 @@ export default class Dashboard extends React.Component<Props, State> {
 
     setUpdateType = (): void =>
         this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED }, () =>
-            this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.NONE })
+            this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.NONE }),
         )
 
     render(): React.ReactNode {

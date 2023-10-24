@@ -94,11 +94,11 @@ class Card extends React.Component<Props, State> {
         if (!data?.isDeleted) {
             this.setState(
                 (prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt + 1 }),
-                () => this.getObject()
+                () => this.getObject(),
             )
         } else {
             this.props.history.push(
-                this.isClientPage() ? APP_URLS.klienti.url : APP_URLS.skupiny.url
+                this.isClientPage() ? APP_URLS.klienti.url : APP_URLS.skupiny.url,
             )
         }
     }
@@ -111,7 +111,7 @@ class Card extends React.Component<Props, State> {
                     this.getObject()
                     this.getLectures()
                     this.getGroupsOfClient()
-                }
+                },
             )
         } else {
             this.setState(
@@ -119,7 +119,7 @@ class Card extends React.Component<Props, State> {
                 () => {
                     this.getObject()
                     this.getLectures()
-                }
+                },
             )
         }
     }
@@ -144,7 +144,7 @@ class Card extends React.Component<Props, State> {
 
     getGroupsOfClient = (id = this.getId()): void => {
         GroupService.getAllFromClient(id).then((groupsOfClient) =>
-            this.setState({ groupsOfClient }, this.loadingDone)
+            this.setState({ groupsOfClient }, this.loadingDone),
         )
     }
 
@@ -173,7 +173,7 @@ class Card extends React.Component<Props, State> {
                     lectures: lecturesGroupedByCourses,
                     defaultValuesForLecture: getDefaultValuesForLecture(lecturesGroupedByCourses),
                 },
-                this.loadingDone
+                this.loadingDone,
             )
         })
     }
@@ -181,7 +181,7 @@ class Card extends React.Component<Props, State> {
     // uprava nadrazeneho objektu (tohoto) po uprave v synovi (prepaid_cnt)
     funcRefreshPrepaidCnt = (
         id: MembershipType["id"],
-        prepaidCnt: MembershipType["prepaid_cnt"]
+        prepaidCnt: MembershipType["prepaid_cnt"],
     ): void => {
         this.setState((prevState) => {
             const newLoadingState = {
@@ -205,7 +205,7 @@ class Card extends React.Component<Props, State> {
             })
             if (successUpdateCnt !== 1) {
                 throw new Error(
-                    "Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě"
+                    "Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě",
                 )
             }
             return {
@@ -334,7 +334,7 @@ class Card extends React.Component<Props, State> {
                                                                 id={`Card_CourseDuration_${lecture.id}`}>
                                                                 {lecture.start !== null
                                                                     ? `${prettyDateWithDayYear(
-                                                                          date
+                                                                          date,
                                                                       )} – ${prettyTime(date)}`
                                                                     : "Předplacená lekce"}
                                                             </span>

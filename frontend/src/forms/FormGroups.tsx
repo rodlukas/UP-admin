@@ -99,7 +99,7 @@ class FormGroups extends React.Component<Props, State> {
 
     onSelectChange = (
         name: "members" | "course",
-        obj?: CourseType | ReadonlyArray<ClientType> | ClientType | null
+        obj?: CourseType | ReadonlyArray<ClientType> | ClientType | null,
     ): void => {
         this.props.setFormDirty()
         // react-select muze vratit null (napr. pri smazani vsech) nebo undefined, udrzujme tedy stav konzistentni
@@ -165,7 +165,7 @@ class FormGroups extends React.Component<Props, State> {
 
     delete = (id: GroupType["id"]): void => {
         GroupService.remove(id).then(() =>
-            this.props.funcForceClose(true, { active: this.state.active, isDeleted: true })
+            this.props.funcForceClose(true, { active: this.state.active, isDeleted: true }),
         )
     }
 
@@ -187,7 +187,7 @@ class FormGroups extends React.Component<Props, State> {
             this.setState({
                 clients,
                 isLoading: false,
-            })
+            }),
         )
     }
 
@@ -307,7 +307,7 @@ class FormGroups extends React.Component<Props, State> {
                                                     if (
                                                         this.isGroup(this.props.group) &&
                                                         window.confirm(
-                                                            `Opravdu chcete smazat skupinu ${name}?`
+                                                            `Opravdu chcete smazat skupinu ${name}?`,
                                                         )
                                                     ) {
                                                         this.delete(this.props.group.id)

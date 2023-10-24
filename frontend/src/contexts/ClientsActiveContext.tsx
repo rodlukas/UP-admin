@@ -66,7 +66,7 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
                             clients,
                             isLoaded: true,
                         },
-                        callback
+                        callback,
                     )
                 })
             })
@@ -81,7 +81,7 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
                     this.setState({
                         clients,
                         isLoaded: true,
-                    })
+                    }),
                 )
             })
         }
@@ -115,16 +115,16 @@ type ComponentWithCoursesVisibleContextProps<P> = Omit<P, keyof ClientsActiveCon
 
 /** HOC komponenta pro kontext s aktivními klienty. */
 const WithClientsActiveContext = <P,>(
-    WrappedComponent: React.ComponentType<P>
+    WrappedComponent: React.ComponentType<P>,
 ): React.ComponentType<ComponentWithCoursesVisibleContextProps<P>> => {
     const ComponentWithClientsActiveContext = (
-        props: ComponentWithCoursesVisibleContextProps<P>
+        props: ComponentWithCoursesVisibleContextProps<P>,
     ) => (
         <ClientsActiveContext.Consumer>
             {(clientsActiveContext) => {
                 if (clientsActiveContext === undefined) {
                     throw new Error(
-                        "clientsActiveContext must be used within a ClientsActiveProvider"
+                        "clientsActiveContext must be used within a ClientsActiveProvider",
                     )
                 }
                 return (
@@ -137,7 +137,7 @@ const WithClientsActiveContext = <P,>(
         </ClientsActiveContext.Consumer>
     )
     ComponentWithClientsActiveContext.displayName = `WithClientsActiveContext(${getDisplayName<P>(
-        WrappedComponent
+        WrappedComponent,
     )})`
     return ComponentWithClientsActiveContext
 }

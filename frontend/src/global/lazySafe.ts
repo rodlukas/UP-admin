@@ -14,7 +14,7 @@ import * as React from "react"
  * https://blog.francium.tech/vue-lazy-routes-loading-chunk-failed-9ee407bbd58
  */
 export default function lazySafe(
-    fn: () => Promise<{ readonly default?: React.ComponentType<any> }>
+    fn: () => Promise<{ readonly default?: React.ComponentType<any> }>,
 ): Promise<any> {
     const FIRST_RELOAD_KEY = "firstReload"
     return new Promise((resolve, reject) => {

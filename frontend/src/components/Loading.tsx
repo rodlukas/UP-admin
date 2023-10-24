@@ -31,7 +31,7 @@ const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
             () => setLoadingState(newLoadingState),
             (newLoadingState === LOADING_STATE.LONG_LOADING
                 ? LONG_LOADING_THRESHOLD
-                : OVERLONG_LOADING_THRESHOLD) * 1000
+                : OVERLONG_LOADING_THRESHOLD) * 1000,
         )
     }
 

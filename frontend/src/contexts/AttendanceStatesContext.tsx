@@ -42,8 +42,8 @@ export class AttendanceStatesProvider extends React.Component<{}, StateContext> 
                         attendancestates,
                         isLoaded: true,
                     },
-                    callback
-                )
+                    callback,
+                ),
             )
         })
 
@@ -77,16 +77,16 @@ type ComponentWithCoursesVisibleContextProps<P> = Omit<
 
 /** HOC komponenta pro kontext se stavy účasti. */
 const WithAttendanceStatesContext = <P,>(
-    WrappedComponent: React.ComponentType<P>
+    WrappedComponent: React.ComponentType<P>,
 ): React.ComponentType<ComponentWithCoursesVisibleContextProps<P>> => {
     const ComponentWithAttendanceStatesContext = (
-        props: ComponentWithCoursesVisibleContextProps<P>
+        props: ComponentWithCoursesVisibleContextProps<P>,
     ) => (
         <AttendanceStatesContext.Consumer>
             {(attendanceStatesContext) => {
                 if (attendanceStatesContext === undefined) {
                     throw new Error(
-                        "attendanceStatesContext must be used within a AttendanceStatesProvider"
+                        "attendanceStatesContext must be used within a AttendanceStatesProvider",
                     )
                 }
                 return (
@@ -99,7 +99,7 @@ const WithAttendanceStatesContext = <P,>(
         </AttendanceStatesContext.Consumer>
     )
     ComponentWithAttendanceStatesContext.displayName = `WithCoursesVisibleContext(${getDisplayName<P>(
-        WrappedComponent
+        WrappedComponent,
     )})`
     return ComponentWithAttendanceStatesContext
 }

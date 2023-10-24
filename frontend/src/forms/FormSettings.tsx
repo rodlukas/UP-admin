@@ -229,7 +229,7 @@ export default class FormSettings extends React.Component<Props, State> {
                                             if (
                                                 this.isObject(this.props.object) &&
                                                 window.confirm(
-                                                    `Opravdu chcete smazat ${type} ${name}?`
+                                                    `Opravdu chcete smazat ${type} ${name}?`,
                                                 )
                                             ) {
                                                 this.delete(this.props.object.id)

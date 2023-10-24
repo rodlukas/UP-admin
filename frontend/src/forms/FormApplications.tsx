@@ -132,7 +132,7 @@ class FormApplications extends React.Component<Props, State> {
             this.setState({
                 clients,
                 isLoading: false,
-            })
+            }),
         )
     }
 

@@ -127,7 +127,7 @@ class Applications extends React.Component<Props, State> {
                                                             id="Applications_DateAdded"
                                                             data-qa="application_created_at">
                                                             {prettyDateWithYear(
-                                                                new Date(application.created_at)
+                                                                new Date(application.created_at),
                                                             )}
                                                         </Badge>{" "}
                                                         <span data-qa="application_note">
@@ -152,7 +152,7 @@ class Applications extends React.Component<Props, State> {
                                                                 if (
                                                                     window.confirm(
                                                                         "Opravdu chcete smazat zájemce " +
-                                                                            `${application.client.surname} ${application.client.firstname} o ${application.course.name}?`
+                                                                            `${application.client.surname} ${application.client.firstname} o ${application.course.name}?`,
                                                                     )
                                                                 ) {
                                                                     this.delete(application.id)

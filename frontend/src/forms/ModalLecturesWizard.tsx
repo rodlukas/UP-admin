@@ -120,7 +120,7 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                             object: obj,
                             modalSelectDone: true,
                             isLoading: false,
-                        })
+                        }),
                 )
             })
         })

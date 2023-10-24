@@ -28,7 +28,7 @@ type Props = {
     /** Funkce, která se zavolá po aktualizaci počtu předplacených lekcí. */
     funcRefreshPrepaidCnt: (
         id: MembershipType["id"],
-        prepaidCnt: MembershipType["prepaid_cnt"]
+        prepaidCnt: MembershipType["prepaid_cnt"],
     ) => void
     /** Skupina je aktivní (true). */
     isGroupActive: boolean

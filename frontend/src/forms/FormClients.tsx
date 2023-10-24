@@ -121,7 +121,7 @@ export default class FormClients extends React.Component<Props, State> {
 
     delete = (id: ClientType["id"]): void => {
         ClientService.remove(id).then(() =>
-            this.props.funcForceClose(true, { active: this.state.active, isDeleted: true })
+            this.props.funcForceClose(true, { active: this.state.active, isDeleted: true }),
         )
     }
 
@@ -257,7 +257,7 @@ export default class FormClients extends React.Component<Props, State> {
                                             if (
                                                 this.isClient(this.props.client) &&
                                                 window.confirm(
-                                                    `Opravdu chcete smazat klienta ${firstname} ${surname}?`
+                                                    `Opravdu chcete smazat klienta ${firstname} ${surname}?`,
                                                 )
                                             ) {
                                                 this.delete(this.props.client.id)

@@ -13,7 +13,7 @@ function getAll(): AxiosPromise<BankType> {
             url: baseUrl,
             method: API_METHODS.get,
         },
-        true
+        true,
     )
 }
 

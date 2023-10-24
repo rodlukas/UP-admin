@@ -94,7 +94,7 @@ class Settings extends React.Component<Props, State> {
 
     getCourses = (): void => {
         CourseService.getAll().then((courses) =>
-            this.setState({ courses }, () => this.setState({ isLoading: false }))
+            this.setState({ courses }, () => this.setState({ isLoading: false })),
         )
     }
 
@@ -179,7 +179,7 @@ class Settings extends React.Component<Props, State> {
                                                             />
                                                         </td>
                                                     </tr>
-                                                )
+                                                ),
                                             )}
                                         </tbody>
                                     </Table>
@@ -235,7 +235,7 @@ class Settings extends React.Component<Props, State> {
                                                                         value={attendancestate.id}>
                                                                         {attendancestate.name}
                                                                     </option>
-                                                                )
+                                                                ),
                                                         )}
                                                     </CustomInputWrapper>
                                                 </Col>
@@ -269,7 +269,7 @@ class Settings extends React.Component<Props, State> {
                                                                         value={attendancestate.id}>
                                                                         {attendancestate.name}
                                                                     </option>
-                                                                )
+                                                                ),
                                                         )}
                                                     </CustomInputWrapper>
                                                 </Col>

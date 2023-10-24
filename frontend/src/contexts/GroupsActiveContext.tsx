@@ -48,8 +48,8 @@ export class GroupsActiveProvider extends React.Component<{}, State> {
                             groups,
                             isLoaded: true,
                         },
-                        callback
-                    )
+                        callback,
+                    ),
                 )
             })
         }
@@ -63,7 +63,7 @@ export class GroupsActiveProvider extends React.Component<{}, State> {
                     this.setState({
                         groups,
                         isLoaded: true,
-                    })
+                    }),
                 )
             })
         }
@@ -97,14 +97,14 @@ type ComponentWithGroupsActiveContextProps<P> = Omit<P, keyof GroupsActiveContex
 
 /** HOC komponenta pro kontext s aktivními skupinami. */
 const WithGroupsActiveContext = <P,>(
-    WrappedComponent: React.ComponentType<P>
+    WrappedComponent: React.ComponentType<P>,
 ): React.ComponentType<ComponentWithGroupsActiveContextProps<P>> => {
     const ComponentWithGroupsActiveContext = (props: ComponentWithGroupsActiveContextProps<P>) => (
         <GroupsActiveContext.Consumer>
             {(groupsActiveContext) => {
                 if (groupsActiveContext === undefined) {
                     throw new Error(
-                        "groupsActiveContext must be used within a GroupsActiveProvider"
+                        "groupsActiveContext must be used within a GroupsActiveProvider",
                     )
                 }
                 return (
@@ -114,7 +114,7 @@ const WithGroupsActiveContext = <P,>(
         </GroupsActiveContext.Consumer>
     )
     ComponentWithGroupsActiveContext.displayName = `WithGroupsActiveContext(${getDisplayName<P>(
-        WrappedComponent
+        WrappedComponent,
     )})`
     return ComponentWithGroupsActiveContext
 }

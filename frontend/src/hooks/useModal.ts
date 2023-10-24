@@ -17,7 +17,7 @@ type UseModal = readonly [
     fEmptyVoid,
     (value: ((prevState: boolean) => boolean) | boolean) => void,
     (callback?: () => void) => void,
-    ModalTempData | null
+    ModalTempData | null,
 ]
 
 /** Hook pro jednoduchou práci s modálním oknem. */
@@ -28,7 +28,7 @@ const useModal = (): UseModal => {
 
     const toggleModalForce = (
         modalSubmitted = true,
-        dataToStore: ModalTempData | null = null
+        dataToStore: ModalTempData | null = null,
     ): boolean => {
         // pokud se zavira a probehl submit formulare/smazani, zapamatuj si to
         // POZOR: na zaver je stejne potreba zresetovat stav na clean, toto ma na starost

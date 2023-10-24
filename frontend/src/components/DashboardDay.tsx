@@ -64,7 +64,7 @@ class DashboardDay extends React.Component<Props, State> {
                 this.setState({
                     lectures,
                     isLoading: false,
-                })
+                }),
             )
         })
     }
@@ -95,7 +95,7 @@ class DashboardDay extends React.Component<Props, State> {
                 window.clearTimeout(this.timeoutId)
                 this.setState(
                     { isLoading: true },
-                    () => (this.timeoutId = window.setTimeout(this.getLectures, 700))
+                    () => (this.timeoutId = window.setTimeout(this.getLectures, 700)),
                 )
             }
         }

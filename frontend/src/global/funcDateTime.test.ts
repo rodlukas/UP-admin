@@ -110,7 +110,7 @@ test("pretty date with year (if differs from current) and long textual day", () 
     dateWithCurrentYear.setDate(3)
     dateWithCurrentYear.setMonth(1)
     const nameOfCurDay = Intl.DateTimeFormat("cs-CZ", { weekday: "long" }).format(
-        dateWithCurrentYear
+        dateWithCurrentYear,
     )
 
     expect(prettyDateWithLongDayYearIfDiff(dateWithCurrentYear)).toBe(`${nameOfCurDay} 3. 2.`)
@@ -138,14 +138,14 @@ describe("pretty date year (if differs from current) and short textual day, poss
         dateWithCurrentYear.setDate(3)
         dateWithCurrentYear.setMonth(1)
         const nameOfCurDay = Intl.DateTimeFormat("cs-CZ", { weekday: "short" }).format(
-            dateWithCurrentYear
+            dateWithCurrentYear,
         )
 
         expect(prettyDateWithDayYearIfDiff(new Date(dateWithCurrentYear), false)).toBe(
-            `${nameOfCurDay} 3. 2.`
+            `${nameOfCurDay} 3. 2.`,
         )
         expect(prettyDateWithDayYearIfDiff(new Date(2010, 1, 3, 15, 2, 4), false)).toBe(
-            "st 3. 2. 2010"
+            "st 3. 2. 2010",
         )
     })
 })
@@ -201,7 +201,7 @@ test("serialized week", () => {
 describe("user's celebrations", () => {
     test("user celebrates birthday", () => {
         expect(isUserCelebrating(new Date(2020, USER_BIRTHDAY.month, USER_BIRTHDAY.date))).toBe(
-            USER_CELEBRATION.BIRTHDAY
+            USER_CELEBRATION.BIRTHDAY,
         )
     })
     test("user celebrates nothing", () => {
@@ -209,7 +209,7 @@ describe("user's celebrations", () => {
     })
     test("user celebrates nameday", () => {
         expect(isUserCelebrating(new Date(2020, USER_NAMEDAY.month, USER_NAMEDAY.date))).toBe(
-            USER_CELEBRATION.NAMEDAY
+            USER_CELEBRATION.NAMEDAY,
         )
     })
 })
