@@ -23,11 +23,11 @@ jobs:
         steps:
             # priprav prostredi
             - name: ☁️ Checkout repo
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
             - name: 🔧 Setup node
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
-                  node-version: "18"
+                  node-version: "20"
                   cache: "npm"
                   cache-dependency-path: "**/package-lock.json"
             - name: 🔧 Setup Python
