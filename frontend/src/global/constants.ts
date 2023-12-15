@@ -52,7 +52,7 @@ export const BANKING_URL = "https://ib.fio.cz/"
 export const USER_BIRTHDAY = new Date(1964, 10, 1)
 
 /** Datum svátku lektorky. */
-export const USER_NAMEDAY = new Date(2021, 4, 24)
+export const USER_NAMEDAY = new Date(1964, 4, 24)
 
 /** Typ oslavy v příslušném dni v kalendáři - buď se slaví svátek nebo narozeniny, jinak nic. */
 export enum USER_CELEBRATION {

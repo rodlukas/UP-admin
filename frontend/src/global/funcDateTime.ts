@@ -164,9 +164,9 @@ export function getSerializedWeek(dayOfWeek: Date): string[] {
 export function isUserCelebrating(date: Date): USER_CELEBRATION {
     const curMonth = date.getMonth(),
         curDate = date.getDate()
-    if (curMonth === USER_BIRTHDAY.getMonth() && curDate === USER_BIRTHDAY.getDay()) {
+    if (curMonth === USER_BIRTHDAY.getMonth() && curDate === USER_BIRTHDAY.getDate()) {
         return USER_CELEBRATION.BIRTHDAY
-    } else if (curMonth === USER_NAMEDAY.getMonth() && curDate === USER_NAMEDAY.getDay()) {
+    } else if (curMonth === USER_NAMEDAY.getMonth() && curDate === USER_NAMEDAY.getDate()) {
         return USER_CELEBRATION.NAMEDAY
     }
     return USER_CELEBRATION.NOTHING
