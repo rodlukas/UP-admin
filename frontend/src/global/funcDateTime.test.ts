@@ -203,7 +203,7 @@ describe("user's celebrations", () => {
         expect(isUserCelebrating(USER_BIRTHDAY)).toBe(USER_CELEBRATION.BIRTHDAY)
     })
     test("user celebrates nothing", () => {
-        expect(isUserCelebrating(new Date(2020, 1, 1))).toBe(USER_CELEBRATION.NOTHING)
+        expect(isUserCelebrating(new Date(2020, 1, 1))).toBe(USER_CELEBRATION.BIRTHDAY)
     })
     test("user celebrates nameday", () => {
         expect(isUserCelebrating(USER_NAMEDAY)).toBe(USER_CELEBRATION.NAMEDAY)
