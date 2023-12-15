@@ -49,16 +49,10 @@ export const DEFAULT_COLOR = "#000"
 export const BANKING_URL = "https://ib.fio.cz/"
 
 /** Datum narozenin lektorky. */
-export enum USER_BIRTHDAY {
-    date = 1,
-    month = 10,
-}
+export const USER_BIRTHDAY = new Date(1964, 10, 1)
 
 /** Datum svátku lektorky. */
-export enum USER_NAMEDAY {
-    date = 24,
-    month = 4,
-}
+export const USER_NAMEDAY = new Date(2021, 4, 24)
 
 /** Typ oslavy v příslušném dni v kalendáři - buď se slaví svátek nebo narozeniny, jinak nic. */
 export enum USER_CELEBRATION {

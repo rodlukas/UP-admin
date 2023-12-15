@@ -44,7 +44,7 @@ type Props = CustomRouteComponentProps & AttendanceStatesContextProps
 
 type State = {
     /** Pole kurzů. */
-    courses: Array<CourseType>
+    courses: CourseType[]
     /** Probíhá načítání (true). */
     isLoading: boolean
     /** ID stavu účasti s významem "klient se zúčastní" (výchozí stav). */
@@ -62,7 +62,7 @@ class Settings extends React.Component<Props, State> {
         attendanceStateExcusedId: undefined,
     }
 
-    getAttendanceStatesData = (): Array<AttendanceStateType> =>
+    getAttendanceStatesData = (): AttendanceStateType[] =>
         this.props.attendanceStatesContext.attendancestates
     callAttendanceStatesFuncRefresh = (): void => {
         // zde je potreba zavolat findStateIndexes, to ale obstara componentDidUpdate
@@ -85,7 +85,7 @@ class Settings extends React.Component<Props, State> {
         }
     }
 
-    refresh = (type: number): void => {
+    refresh = (type: EDIT_TYPE): void => {
         if (type === EDIT_TYPE.COURSE) {
             this.setState({ isLoading: true }, () => this.getCourses())
         }

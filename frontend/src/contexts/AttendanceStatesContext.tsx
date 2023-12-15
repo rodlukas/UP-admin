@@ -10,7 +10,7 @@ type StateContext = {
     /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
     /** Pole se stavy účastí. */
-    attendancestates: Array<AttendanceStateType>
+    attendancestates: AttendanceStateType[]
 }
 
 type Context = StateContext & {

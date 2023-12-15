@@ -66,25 +66,13 @@ import "./FormLectures.css"
 import CustomInputWrapper from "./helpers/CustomInputWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 
-type AtState = {
-    /** ID klienta: ID stavu účasti. */
-    [key: number]: AttendanceType["attendancestate"]
-}
+type AtState = Record<number, AttendanceType["attendancestate"]>
 
-type AtStateWithEmpty = {
-    /** ID klienta: ID stavu účasti (nebo žádný stav účasti). */
-    [key: number]: AttendanceType["attendancestate"] | undefined
-}
+type AtStateWithEmpty = Record<number, AttendanceType["attendancestate"] | undefined>
 
-type AtPaid = {
-    /** ID klienta: lekce je zaplacená (true). */
-    [key: number]: boolean
-}
+type AtPaid = Record<number, boolean>
 
-type AtNote = {
-    /** ID klienta: poznámka k účasti. */
-    [key: number]: AttendanceType["note"]
-}
+type AtNote = Record<number, AttendanceType["note"]>
 
 type Props = AttendanceStatesContextProps &
     CoursesVisibleContextProps & {
@@ -153,13 +141,13 @@ class FormLectures extends React.Component<Props, State> {
         return true
     }
 
-    members: Array<ClientType> = this.isClient(this.props.object)
+    members: ClientType[] = this.isClient(this.props.object)
         ? [this.props.object]
         : this.isLecture(this.props.lecture)
         ? this.getMembers(this.props.lecture.attendances)
         : this.getMembers(this.props.object.memberships)
 
-    getAttendanceStatesData = (): Array<AttendanceStateType> =>
+    getAttendanceStatesData = (): AttendanceStateType[] =>
         this.props.attendanceStatesContext.attendancestates
 
     state: State = {
@@ -282,7 +270,7 @@ class FormLectures extends React.Component<Props, State> {
         }
     }
 
-    getMembers(memberships: Array<{ client: ClientType }>): Array<ClientType> {
+    getMembers(memberships: { client: ClientType }[]): ClientType[] {
         // map se provadi nad hodnotami MembershipType | AttendanceType
         return memberships.map((member) => member.client)
     }
@@ -386,9 +374,9 @@ class FormLectures extends React.Component<Props, State> {
         }
     }
 
-    getAttendancesSubmit = <T extends AttendancePostApi | AttendancePutApi>(): Array<T> => {
+    getAttendancesSubmit = <T extends AttendancePostApi | AttendancePutApi>(): T[] => {
         const { atNote, atPaid, atState } = this.state
-        const attendances: Array<T> = []
+        const attendances: T[] = []
         if (this.isAtStateWithoutEmpty(atState)) {
             this.members.forEach((member) => {
                 const attendancesDataPost = {
@@ -430,7 +418,7 @@ class FormLectures extends React.Component<Props, State> {
         }
 
         const start = `${date} ${time}`
-        const courseId = (course as LectureType["course"]).id
+        const courseId = course!.id
         const data = {
             duration,
             canceled,
@@ -451,7 +439,7 @@ class FormLectures extends React.Component<Props, State> {
             // pridava se lekce
             // pokud je predplacena, vytvor pole s prislusnym poctem lekci a posli ho
             if (prepaid) {
-                const dataArray: Array<LecturePostApi> = []
+                const dataArray: LecturePostApi[] = []
                 let tmp = prepaidCnt
                 while (tmp) {
                     dataArray.push(dataPost)

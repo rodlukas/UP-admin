@@ -26,7 +26,7 @@ type Props = CustomRouteComponentProps & GroupsActiveContextProps & CoursesVisib
 
 type State = {
     /** Pole skupin. */
-    groups: Array<GroupType>
+    groups: GroupType[]
     /** Je vybráno zobrazení aktivních skupin (true). */
     active: boolean
     /** Probíhá načítání (true). */
@@ -44,7 +44,7 @@ class Groups extends React.Component<Props, State> {
     isLoading = (): boolean =>
         this.state.active ? !this.props.groupsActiveContext.isLoaded : this.state.isLoading
 
-    getGroupsData = (): Array<GroupType> =>
+    getGroupsData = (): GroupType[] =>
         this.state.active ? this.props.groupsActiveContext.groups : this.state.groups
 
     refreshFromModal = (data: ModalGroupsData): void => {

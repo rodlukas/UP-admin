@@ -45,7 +45,7 @@ type State = {
     /** Poznámka k zájemci o kurz. */
     note: ApplicationPostApiDummy["note"]
     /** Pole klientů. */
-    clients: Array<ClientType>
+    clients: ClientType[]
     /** Probíhá načítání (true). */
     isLoading: boolean
     /** Formulář byl odeslán (true). */
@@ -95,8 +95,8 @@ class FormApplications extends React.Component<Props, State> {
         if (alertRequired("kurz nebo klient", course, client)) {
             return
         }
-        const courseId = (course as ApplicationType["course"]).id
-        const clientId = (client as ApplicationType["client"]).id
+        const courseId = course!.id
+        const clientId = client!.id
         let request: Promise<ApplicationType>
         const dataPost: ApplicationPostApi = { course_id: courseId, client_id: clientId, note }
         if (this.isApplication(this.props.application)) {

@@ -10,7 +10,7 @@ type StateContext = {
     /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
     /** Pole s aktivními skupinami. */
-    groups: Array<GroupType>
+    groups: GroupType[]
 }
 
 type State = StateContext & {

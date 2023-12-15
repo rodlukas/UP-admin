@@ -50,7 +50,7 @@ type State = {
     /** Pole lekcí roztříděných podle kurzů. */
     lectures: GroupedObjectsByCourses<LectureType>
     /** Skupiny, ve kterých je klient členem. */
-    groupsOfClient: Array<GroupType>
+    groupsOfClient: GroupType[]
     /** Počet zbývajících požadavků na načtení. */
     pendingLoadingCnt: number
     /** Předpočítané výchozí hodnoty pro přidávanou lekci. */

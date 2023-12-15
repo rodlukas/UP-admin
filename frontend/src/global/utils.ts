@@ -13,13 +13,13 @@ import { LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
 import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
 
-export type GroupedObjectsByCourses<O> = Array<{ course: CourseType; objects: Array<O> }>
+export type GroupedObjectsByCourses<O> = { course: CourseType; objects: O[] }[]
 
-type GroupedObjectsByCoursesReduce<O> = { [key: string]: { course: CourseType; objects: Array<O> } }
+type GroupedObjectsByCoursesReduce<O> = Record<string, { course: CourseType; objects: O[] }>
 
 /** Vrátí zaslané objekty seskupené podle kurzů. */
 export function groupObjectsByCourses<O extends ApplicationType | LectureType>(
-    objects: Array<O>,
+    objects: O[],
 ): GroupedObjectsByCourses<O> {
     // seskup data podle kurzu ve formatu "nazev_kurzu": {course: objekt_s_kurzem, objects: pole_objektu}
     const groupByCourses = objects.reduce((obj: GroupedObjectsByCoursesReduce<O>, item: O) => {
@@ -96,7 +96,7 @@ export function getDefaultValuesForLecture(
     }
     // chodi na vice kurzu, vyber ten jehoz posledni lekce je nejpozdeji (preferuj ten s predplacenymi lekcemi)
     else {
-        const latestLecturesOfEachCourse: Array<LectureType> = lecturesGroupedByCourses.map(
+        const latestLecturesOfEachCourse: LectureType[] = lecturesGroupedByCourses.map(
             (elem) => elem.objects[0],
         )
         // pro porovnani se vyuziva lexicographical order
@@ -123,7 +123,7 @@ export function prettyAmount(amount: number): string {
 /** Workaround dokud nebude fungovat required v react-selectu - TODO. */
 export function alertRequired(
     object: string,
-    ...inputVals: Array<CourseType | ClientType | null>
+    ...inputVals: (CourseType | ClientType | null)[]
 ): boolean {
     if (inputVals.some((e) => e === null)) {
         alert(`Není zvolen žádný ${object}!`)
@@ -152,7 +152,7 @@ export function courseDuration(duration: LectureType["duration"]): string {
 }
 
 /** Zjistí, jestli jsou všichni členové skupiny aktivní. */
-export function areAllMembersActive(memberships: Array<MembershipType>): boolean {
+export function areAllMembersActive(memberships: MembershipType[]): boolean {
     return memberships.every((membership) => membership.client.active)
 }
 
@@ -183,7 +183,7 @@ export function pageTitle(title: string): string {
 
 /** Vrátí jméno komponenty pro React Developer Tools. */
 export function getDisplayName<P>(Component: React.ComponentType<P>): string {
-    return Component.displayName || Component.name || "UnknownComponent"
+    return Component.displayName ?? Component.name ?? "UnknownComponent"
 }
 
 /** Vrátí boolean, jestli je zaslaný string URL. */

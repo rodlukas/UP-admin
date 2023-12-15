@@ -10,7 +10,7 @@ type StateContext = {
     /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
     /** Pole s aktivními klienty. */
-    clients: Array<ClientActiveType>
+    clients: ClientActiveType[]
 }
 
 type State = StateContext & {

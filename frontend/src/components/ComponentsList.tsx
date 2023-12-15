@@ -2,7 +2,7 @@ import * as React from "react"
 
 type Props = {
     /** Pole jakýchkoliv komponent. */
-    components: Array<React.ReactNode>
+    components: React.ReactNode[]
 }
 
 /** Obecná komponenta zajišťující výpis pole komponent oddělených čárkami. */

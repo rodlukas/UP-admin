@@ -24,7 +24,7 @@ import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** Pole se členstvími všech klientů. */
-    memberships: Array<MembershipType>
+    memberships: MembershipType[]
     /** Funkce, která se zavolá po aktualizaci počtu předplacených lekcí. */
     funcRefreshPrepaidCnt: (
         id: MembershipType["id"],
@@ -35,10 +35,7 @@ type Props = {
 }
 
 /** Objekt držící počty předplacených lekcí jednotlivých klientů. */
-type PrepaidCntObjectsType = {
-    /** ID členství: počet předplacených lekcí. */
-    [key: number]: MembershipType["prepaid_cnt"]
-}
+type PrepaidCntObjectsType = Record<number, MembershipType["prepaid_cnt"]>
 
 /** Komponenta zobrazující počítadla předplacených lekcí pro členy skupiny. */
 const PrepaidCounters: React.FC<Props> = (props) => {
@@ -57,7 +54,7 @@ const PrepaidCounters: React.FC<Props> = (props) => {
     function onChange(e: React.ChangeEvent<HTMLInputElement>): void {
         const target = e.currentTarget
         const value = Number(target.value)
-        const id = Number(target.dataset.id as string)
+        const id = Number(target.dataset.id!)
         setPrepaidCnts((prevPrepaidCnts) => {
             // vytvorime kopii prepaidCnts (ma jen jednu uroven -> staci melka kopie)
             const newPrepaidCnts = { ...prevPrepaidCnts }

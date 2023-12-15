@@ -5,8 +5,8 @@ import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 const baseUrl = API_URLS.clients.url
 
 type Item = ClientType
-type List = Array<Item>
-export type ListWithActiveClients = Array<ClientActiveType>
+type List = Item[]
+export type ListWithActiveClients = ClientActiveType[]
 
 /** Získá klienta. */
 function get(id: Item["id"]): Promise<Item> {

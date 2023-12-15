@@ -7,7 +7,7 @@ import ComponentsList from "./ComponentsList"
 
 type Props = {
     /** Pole se členstvími všech členů skupiny. */
-    memberships: Array<MembershipType>
+    memberships: MembershipType[]
 }
 
 /** Komponenta zobrazující čárkami oddělený seznam všech členů skupiny. */

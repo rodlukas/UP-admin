@@ -14,8 +14,8 @@ const ordering = (asc: boolean): string =>
     `&${API_ORDERING}=${!asc ? "-" : ""}${API_URLS.lectures.ordering.start}`
 
 type Item = LectureType
-type List = Array<Item>
-type ListWithDate = Array<LectureTypeWithDate>
+type List = Item[]
+type ListWithDate = LectureTypeWithDate[]
 
 /** Získá lekci. */
 function get(id: Item["id"]): Promise<Item> {
@@ -77,7 +77,7 @@ function remove(id: Item["id"]): Promise<Item> {
     })
 }
 
-function create(context: LecturePostApi | Array<LecturePostApi>): Promise<Item> {
+function create(context: LecturePostApi | LecturePostApi[]): Promise<Item> {
     return requestData<Item>({
         url: baseUrl,
         method: API_METHODS.post,

@@ -57,14 +57,13 @@ type State = {
     /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní. */
     updateType: number
     /** Pole se dny v zobrazeném týdnu. */
-    week: Array<string>
+    week: string[]
 }
 
 /** Stránka s diářem. */
 export default class Diary extends React.Component<Props, State> {
     getRequiredMonday = (): Date => getMonday(Diary.parseDateFromParams(this.props.match.params))
-    getWeek = (): Array<string> =>
-        getSerializedWeek(Diary.parseDateFromParams(this.props.match.params))
+    getWeek = (): string[] => getSerializedWeek(Diary.parseDateFromParams(this.props.match.params))
 
     state: State = {
         updateType: DASHBOARDDAY_UPDATE_TYPE.NONE,

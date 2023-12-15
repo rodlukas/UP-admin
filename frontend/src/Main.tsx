@@ -43,9 +43,7 @@ const searchOptions: Fuse.IFuseOptions<ClientActiveType> = {
 /** Hlavní kostra aplikace. */
 const Main: React.FC = () => {
     const [isMenuOpened, setIsMenuOpened] = React.useState(false)
-    const [foundResults, setFoundResults] = React.useState<
-        Array<Fuse.FuseResult<ClientActiveType>>
-    >([])
+    const [foundResults, setFoundResults] = React.useState<Fuse.FuseResult<ClientActiveType>[]>([])
     const [searchVal, setSearchVal] = React.useState("")
     const authContext = useAuthContext()
     const clientsActiveContext = useClientsActiveContext()

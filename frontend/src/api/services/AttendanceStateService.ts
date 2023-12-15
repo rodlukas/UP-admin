@@ -10,7 +10,7 @@ import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 const baseUrl = API_URLS.attendanceStates.url
 
 type Item = AttendanceStateType
-type List = Array<Item>
+type List = Item[]
 
 /** Získá všechny stavy účasti. */
 function getAll(): Promise<List> {
