@@ -66,12 +66,16 @@ import "./FormLectures.css"
 import CustomInputWrapper from "./helpers/CustomInputWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 
+/** ID klienta: ID stavu účasti. */
 type AtState = Record<number, AttendanceType["attendancestate"]>
 
+/** ID klienta: ID stavu účasti (nebo žádný stav účasti). */
 type AtStateWithEmpty = Record<number, AttendanceType["attendancestate"] | undefined>
 
+/** ID klienta: lekce je zaplacená (true). */
 type AtPaid = Record<number, boolean>
 
+/** ID klienta: poznámka k účasti. */
 type AtNote = Record<number, AttendanceType["note"]>
 
 type Props = AttendanceStatesContextProps &

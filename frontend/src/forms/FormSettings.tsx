@@ -49,9 +49,11 @@ type Props = {
 
 type State = {
     /** Název kurzu/stavu účasti. */
-    name: CoursePostApiDummy["name"]
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
+    name: CoursePostApiDummy["name"] | AttendanceStatePostApiDummy["name"]
     /** Kurz/stav účasti je viditelný (true). */
-    visible: CoursePostApiDummy["visible"]
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
+    visible: CoursePostApiDummy["visible"] | AttendanceStatePostApiDummy["visible"]
     /** Trvání kurzu. */
     duration?: CoursePostApiDummy["duration"]
     /** Barva kurzu. */

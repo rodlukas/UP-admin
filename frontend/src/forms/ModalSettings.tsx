@@ -16,7 +16,7 @@ import { DummyAttendanceState, DummyCourse } from "./helpers/dummies"
 type Props = {
     /** Kurz/stav účasti. */
     currentObject?: CourseType | AttendanceStateType
-    /** Indikátor typu objektu (klient/stav účasti). */
+    /** Indikátor typu objektu (kurz/stav účasti). */
     TYPE: EDIT_TYPE
     /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh: (type: EDIT_TYPE) => void

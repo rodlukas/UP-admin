@@ -34,7 +34,10 @@ type Props = {
     isGroupActive: boolean
 }
 
-/** Objekt držící počty předplacených lekcí jednotlivých klientů. */
+/**
+ * Objekt držící počty předplacených lekcí jednotlivých klientů.
+ * ID členství: počet předplacených lekcí.
+ */
 type PrepaidCntObjectsType = Record<number, MembershipType["prepaid_cnt"]>
 
 /** Komponenta zobrazující počítadla předplacených lekcí pro členy skupiny. */
