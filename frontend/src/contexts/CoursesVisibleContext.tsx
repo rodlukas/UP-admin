@@ -10,7 +10,7 @@ type StateContext = {
     /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
     /** Pole s viditelnými klienty. */
-    courses: Array<CourseType>
+    courses: CourseType[]
 }
 
 type State = StateContext & {

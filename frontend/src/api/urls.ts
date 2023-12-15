@@ -62,7 +62,7 @@ export const API_URLS = Object.freeze({
 })
 
 /** Metody, které poskytuje API. */
-export const API_METHODS: { [key: string]: Method } = Object.freeze({
+export const API_METHODS: Record<string, Method> = Object.freeze({
     get: "get",
     post: "post",
     patch: "patch",

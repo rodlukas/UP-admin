@@ -35,14 +35,14 @@ type Props = AttendanceStatesContextProps & {
     /** Datum pro zobrazované lekce. */
     date: string
     /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní (aktualizaci požaduje rodič). */
-    updateType: number
+    updateType: DASHBOARDDAY_UPDATE_TYPE
     /** Funkce, která se zavolá po nějaké aktualizaci v rámci komponenty. */
     setUpdateType: fEmptyVoid
 }
 
 type State = {
     /** Pole lekcí pro daný den. */
-    lectures: Array<LectureTypeWithDate>
+    lectures: LectureTypeWithDate[]
     /** Probíhá načítání (true). */
     isLoading: boolean
 }
@@ -84,7 +84,7 @@ class DashboardDay extends React.Component<Props, State> {
         ) {
             // pokud se nema uplatnit prodleva nebo se nemeni den (napr. se upravil jen stav ucasti)
             if (
-                this.props.withoutWaiting ||
+                this.props.withoutWaiting === true ||
                 (this.props.date === prevProps.date &&
                     this.props.updateType === DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED)
             ) {

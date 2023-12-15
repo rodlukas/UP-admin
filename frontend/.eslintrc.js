@@ -72,10 +72,8 @@ module.exports = {
         ecmaVersion: 2018,
         sourceType: "module",
 
-        // nastaveni potrebna pro type-aware typescript-eslint
-        // https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/TYPED_LINTING.md
         tsconfigRootDir: __dirname,
-        project: "./tsconfig.json",
+        project: true,
     },
     plugins: [
         "import",
@@ -102,8 +100,8 @@ module.exports = {
     extends: [
         "eslint:recommended",
 
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking", // pravidla zahrnujici typy
+        "plugin:@typescript-eslint/recommended-type-checked",
+        "plugin:@typescript-eslint/stylistic-type-checked",
 
         "plugin:react/recommended",
 

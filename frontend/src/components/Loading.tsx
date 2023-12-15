@@ -26,7 +26,7 @@ type Props = {
 const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
     const [loadingState, setLoadingState] = React.useState(LOADING_STATE.NORMAL_LOADING)
 
-    function setLoadingTimeout(newLoadingState: number): number {
+    function setLoadingTimeout(newLoadingState: LOADING_STATE): number {
         return window.setTimeout(
             () => setLoadingState(newLoadingState),
             (newLoadingState === LOADING_STATE.LONG_LOADING

@@ -150,8 +150,8 @@ export function getMonday(date: Date): Date {
 }
 
 /** Vrátí pole datumů pracovních dnů v týdnu, do kterého patří příslušný denzačínajícím daným pondělím. */
-export function getSerializedWeek(dayOfWeek: Date): Array<string> {
-    const week: Array<string> = []
+export function getSerializedWeek(dayOfWeek: Date): string[] {
+    const week: string[] = []
     let dayToProcess = getMonday(dayOfWeek)
     while (week.length < WORK_DAYS_COUNT) {
         week.push(toISODate(dayToProcess))
@@ -161,12 +161,12 @@ export function getSerializedWeek(dayOfWeek: Date): Array<string> {
 }
 
 /** Zjisti, zda má uživatel narozeniny/svátek a vrať, co má. */
-export function isUserCelebrating(date: Date): number {
+export function isUserCelebrating(date: Date): USER_CELEBRATION {
     const curMonth = date.getMonth(),
         curDate = date.getDate()
-    if (curMonth === USER_BIRTHDAY.month && curDate === USER_BIRTHDAY.date) {
+    if (curMonth === USER_BIRTHDAY.getMonth() && curDate === USER_BIRTHDAY.getDay()) {
         return USER_CELEBRATION.BIRTHDAY
-    } else if (curMonth === USER_NAMEDAY.month && curDate === USER_NAMEDAY.date) {
+    } else if (curMonth === USER_NAMEDAY.getMonth() && curDate === USER_NAMEDAY.getDay()) {
         return USER_CELEBRATION.NAMEDAY
     }
     return USER_CELEBRATION.NOTHING

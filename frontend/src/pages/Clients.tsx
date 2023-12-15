@@ -23,7 +23,7 @@ type Props = CustomRouteComponentProps & ClientsActiveContextProps
 
 type State = {
     /** Pole klientů. */
-    clients: Array<ClientType>
+    clients: ClientType[]
     /** Je vybráno zobrazení aktivních klientů (true). */
     active: boolean
     /** Probíhá načítání (true). */
@@ -41,7 +41,7 @@ class Clients extends React.Component<Props, State> {
     isLoading = (): boolean =>
         this.state.active ? !this.props.clientsActiveContext.isLoaded : this.state.isLoading
 
-    getClientsData = (): Array<ClientType> =>
+    getClientsData = (): ClientType[] =>
         this.state.active ? this.props.clientsActiveContext.clients : this.state.clients
 
     refreshFromModal = (data: ModalClientsData): void => {

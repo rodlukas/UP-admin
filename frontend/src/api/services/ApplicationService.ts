@@ -5,7 +5,7 @@ import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 const baseUrl = API_URLS.applications.url
 
 type Item = ApplicationType
-type List = Array<Item>
+type List = Item[]
 
 /** Získá všechny zájemce o kurzy. */
 function getAll(): Promise<List> {

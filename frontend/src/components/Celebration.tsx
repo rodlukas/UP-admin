@@ -7,7 +7,7 @@ import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** ID označující, co slaví lektorka (svátek/narozeniny/nic). */
-    isUserCelebratingResult: number
+    isUserCelebratingResult: USER_CELEBRATION
 }
 
 /** Komponenta zobrazující přání k svátku/narozeninám lektorky. */

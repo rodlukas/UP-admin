@@ -19,7 +19,7 @@ export type ClientType = Model & {
 
 /** Aktivní klient (GET). */
 export type ClientActiveType = ClientType & {
-    normalized: Array<string>
+    normalized: string[]
 }
 
 /** Kurz (GET). */
@@ -57,7 +57,7 @@ export type LectureType = Model & {
     number: number
     canceled: boolean
     duration: number
-    attendances: Array<AttendanceType>
+    attendances: AttendanceType[]
 }
 
 /** Účast na lekci (GET). */
@@ -74,7 +74,7 @@ export type AttendanceType = Model & {
 /** Skupina (GET). */
 export type GroupType = Model & {
     name: string
-    memberships: Array<MembershipType>
+    memberships: MembershipType[]
     active: boolean
     course: CourseType
 }
@@ -102,7 +102,7 @@ export type BankType = {
         }
         /** Pohyby na účtu za dané období. */
         transactionList: {
-            transaction: Array<{
+            transaction: {
                 /** Datum pohybu ve tvaru rrrr-mm-dd+GMT. */
                 column0: { value: string }
                 /** Velikost přijaté (odeslané) částky. */
@@ -115,7 +115,7 @@ export type BankType = {
                 column22: { value: number }
                 /** Komentář. */
                 column25: { value: string } | null
-            }>
+            }[]
         }
     }
     /** Časová značka informací z banky. */
@@ -187,14 +187,14 @@ export type CoursePutApi = CourseType
 /** Skupina (PUT). */
 export type GroupPutApi = Omit<GroupType, "course" | "memberships"> & {
     course_id: CourseType["id"]
-    memberships: Array<MembershipPostApi>
+    memberships: MembershipPostApi[]
 }
 
 /** Lekce (PUT). */
 export type LecturePutApi = Omit<LectureType, "course" | "group" | "number" | "attendances"> & {
     course_id?: CourseType["id"]
     group_id: GroupType["id"] | null
-    attendances: Array<AttendancePutApi>
+    attendances: AttendancePutApi[]
 }
 
 /** Členství (PUT). */
@@ -229,7 +229,7 @@ export type GroupPostApi = Omit<GroupPutApi, "id">
 
 /** Lekce (POST). */
 export type LecturePostApi = Omit<LecturePutApi, "id" | "attendances"> & {
-    attendances: Array<AttendancePostApi>
+    attendances: AttendancePostApi[]
 }
 
 /** Členství (POST). */

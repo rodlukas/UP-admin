@@ -7,7 +7,7 @@ import GroupName from "./GroupName"
 
 type Props = {
     /** Pole se skupinami. */
-    groups: Array<GroupType>
+    groups: GroupType[]
 }
 
 /** Komponenta zobrazující čárkami oddělený seznam všech skupin, ve kterých je daný klient. */

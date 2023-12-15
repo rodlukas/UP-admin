@@ -64,9 +64,9 @@ type State = {
     /** Kurz skupiny. */
     course: GroupPostApiDummy["course"]
     /** Pole členů skupiny. */
-    members: Array<ClientType>
+    members: ClientType[]
     /** Pole klientů. */
-    clients: Array<ClientType>
+    clients: ClientType[]
     /** Probíhá načítání (true). */
     isLoading: boolean
     /** Formulář byl odeslán (true). */
@@ -88,7 +88,7 @@ class FormGroups extends React.Component<Props, State> {
     }
 
     // pripravi pole se cleny ve spravnem formatu, aby fungoval react-select
-    getMembersOfGroup(members: Array<MembershipType>): Array<ClientType> {
+    getMembersOfGroup(members: MembershipType[]): ClientType[] {
         return members.map((member) => member.client)
     }
 
@@ -99,7 +99,7 @@ class FormGroups extends React.Component<Props, State> {
 
     onSelectChange = (
         name: "members" | "course",
-        obj?: CourseType | ReadonlyArray<ClientType> | ClientType | null,
+        obj?: CourseType | readonly ClientType[] | ClientType | null,
     ): void => {
         this.props.setFormDirty()
         // react-select muze vratit null (napr. pri smazani vsech) nebo undefined, udrzujme tedy stav konzistentni
@@ -132,7 +132,7 @@ class FormGroups extends React.Component<Props, State> {
         if (alertRequired("kurz", course)) {
             return
         }
-        const courseId = (course as GroupType["course"]).id
+        const courseId = course!.id
         let request: Promise<GroupType>
         const dataPost: GroupPostApi = {
             name,

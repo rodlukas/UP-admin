@@ -200,16 +200,12 @@ test("serialized week", () => {
 
 describe("user's celebrations", () => {
     test("user celebrates birthday", () => {
-        expect(isUserCelebrating(new Date(2020, USER_BIRTHDAY.month, USER_BIRTHDAY.date))).toBe(
-            USER_CELEBRATION.BIRTHDAY,
-        )
+        expect(isUserCelebrating(USER_BIRTHDAY)).toBe(USER_CELEBRATION.BIRTHDAY)
     })
     test("user celebrates nothing", () => {
         expect(isUserCelebrating(new Date(2020, 1, 1))).toBe(USER_CELEBRATION.NOTHING)
     })
     test("user celebrates nameday", () => {
-        expect(isUserCelebrating(new Date(2020, USER_NAMEDAY.month, USER_NAMEDAY.date))).toBe(
-            USER_CELEBRATION.NAMEDAY,
-        )
+        expect(isUserCelebrating(USER_NAMEDAY)).toBe(USER_CELEBRATION.NAMEDAY)
     })
 })

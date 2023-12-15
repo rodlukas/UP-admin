@@ -49,8 +49,10 @@ type Props = {
 
 type State = {
     /** Název kurzu/stavu účasti. */
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
     name: CoursePostApiDummy["name"] | AttendanceStatePostApiDummy["name"]
     /** Kurz/stav účasti je viditelný (true). */
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
     visible: CoursePostApiDummy["visible"] | AttendanceStatePostApiDummy["visible"]
     /** Trvání kurzu. */
     duration?: CoursePostApiDummy["duration"]
@@ -93,8 +95,8 @@ export default class FormSettings extends React.Component<Props, State> {
         const { name, visible, duration, color } = this.state
         let request: Promise<CourseType | AttendanceStateType>
         if (this.isCourse(this.props.object)) {
-            const durationCourse = duration as CourseType["duration"]
-            const colorCourse = color as CourseType["color"]
+            const durationCourse = duration!
+            const colorCourse = color!
             const dataPost: CoursePostApi = {
                 name,
                 visible,
@@ -203,10 +205,7 @@ export default class FormSettings extends React.Component<Props, State> {
                                 </Col>
                             </FormGroup>
                             <FormGroup row className="align-items-center required">
-                                <ColorPicker
-                                    color={color as CourseType["color"]}
-                                    onChange={this.onChangeColor}
-                                />
+                                <ColorPicker color={color!} onChange={this.onChangeColor} />
                             </FormGroup>
                         </>
                     )}

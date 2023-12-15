@@ -2,7 +2,7 @@
 import { AxiosError } from "axios"
 
 /** Rozparsuje pro frontend chybu vrácenou z API. */
-export function parseDjangoError(error: AxiosError): null | { [key: string]: any } | string {
+export function parseDjangoError(error: AxiosError): null | Record<string, any> | string {
     if (!error.request) {
         return null
     }
@@ -19,7 +19,7 @@ export function parseDjangoError(error: AxiosError): null | { [key: string]: any
         // obecna chyba nevztazena ke konkretnimu field,
         // nebo chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
         if ("non_field_errors" in json || "detail" in json) {
-            result = json["non_field_errors"] || json["detail"]
+            result = json.non_field_errors || json.detail
             // stringify, kdyz prijde objekt
             if (Array.isArray(result) && result.length !== 1) {
                 result = JSON.stringify(result)
@@ -33,7 +33,7 @@ export function parseDjangoError(error: AxiosError): null | { [key: string]: any
             Object.keys(json).forEach((field) => {
                 json[field] = Array.isArray(json[field])
                     ? json[field]
-                          .map((subField: { [key: string]: any } | string | []) => {
+                          .map((subField: Record<string, any> | string | []) => {
                               let errContent
                               if (typeof subField === "object" && !Array.isArray(subField)) {
                                   errContent = `${Object.keys(subField)[0]}: ${

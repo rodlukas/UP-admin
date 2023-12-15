@@ -16,7 +16,7 @@ import Loading from "./Loading"
 
 type Props = {
     /** Výsledky vyhledávání klientů. */
-    foundResults: Array<Fuse.FuseResult<ClientActiveType>>
+    foundResults: Fuse.FuseResult<ClientActiveType>[]
     /** Vyhledávaný výraz. */
     searchVal: string
     /** Funkce pro zahájení vyhledávání klientů. */
