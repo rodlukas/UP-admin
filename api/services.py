@@ -15,7 +15,7 @@ class Bank:
     """
 
     # URL adresa API Fio banky
-    FIO_API_URL = "https://www.fio.cz/ib_api/rest/"
+    FIO_API_URL = "https://fioapi.fio.cz/ib_api/rest/"
     # minimalni zustatek v Kc na Fio uctu (odcita se od aktualniho zustatku)
     FIO_MIN_BALANCE = 100
     # mozne chyby na Fio API a prislusne chybove hlasky
