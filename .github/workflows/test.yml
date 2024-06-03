@@ -123,6 +123,7 @@ jobs:
 
             # nasazeni testing verze na Fly.io
             - name: 🚀 Deploy to test Fly.io
+              if: ${{ github.actor != 'dependabot[bot]' }}
               uses: superfly/flyctl-actions/setup-flyctl@master
             - run: flyctl deploy --remote-only
               env:
