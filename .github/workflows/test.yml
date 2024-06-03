@@ -118,13 +118,16 @@ jobs:
               run: ./scripts/shell/ci/cleanup.sh
 
             # nastavime spravnou fly.io konfiguraci
-            - name: 🧹 Pre-deploy tasks Fly.io
+            - name: 🧹 Pre-deploy tasks Fly.io - config files
               run: mv fly.test.toml fly.toml
+
+            # pripravime fly.io klienta pro deploy
+            - name: 🧹 Pre-deploy tasks Fly.io - client
+              uses: superfly/flyctl-actions/setup-flyctl@master
 
             # nasazeni testing verze na Fly.io
             - name: 🚀 Deploy to test Fly.io
               if: ${{ github.actor != 'dependabot[bot]' }}
-              uses: superfly/flyctl-actions/setup-flyctl@master
-            - run: flyctl deploy --remote-only
+              run: flyctl deploy --remote-only
               env:
                   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_TEST }}
