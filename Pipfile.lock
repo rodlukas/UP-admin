@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b3f2238aaec03569d2e38db46ef10b50d73227795beea9e3f01e1d577c8325dc"
+            "sha256": "0432229e39776145507bda2435e26afc8885f985c76a61212fe274258e770424"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -26,11 +26,11 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:3cd43f1c6fa7dedc5899d69d3ad0398fd018ad1a17fba83ddaf78aa46c747516",
-                "sha256:ddc6c8ce995e6987e7faf5e3f1b02b302836a0e5d98ece18392cb1a36c72ad56"
+                "sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b",
+                "sha256:c198e21b1289c2ab85ee4e67bb4b4ef3ead0892059901a8d5b622f24a1101e90"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==2024.6.2"
+            "version": "==2024.7.4"
         },
         "charset-normalizer": {
             "hashes": [
@@ -367,11 +367,12 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:273fe05adf052b40fd19f6d4b9a5556316807246bd817e5e3482930730726bb0",
-                "sha256:72c00322217d813cf493fe76590b23a757e063ff62fec59299f4af7201dd4448"
+                "sha256:6051562d2cfa8087bb8b4b8b79dc44690f8a054762a29c07e22588b1f619bfb5",
+                "sha256:aa4314f877d9cd9add5a0c9ba18e3f27f99f7de835ce36bd150e48a41c7c646f"
             ],
             "index": "pypi",
-            "version": "==1.14.0"
+            "markers": "python_version >= '3.6'",
+            "version": "==2.8.0"
         },
         "setuptools": {
             "hashes": [
@@ -409,12 +410,11 @@
         },
         "urllib3": {
             "hashes": [
-                "sha256:37a0344459b199fce0e80b0d3569837ec6b6937435c5244e7fd73fa6006830f3",
-                "sha256:3e3d753a8618b86d7de333b4223005f68720bcd6a7d2bcb9fbd2229ec7c1e429"
+                "sha256:a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472",
+                "sha256:dd505485549a7a552833da5e6063639d0d177c04f23bc3864e41e5dc5f612168"
             ],
-            "index": "pypi",
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==1.26.19"
+            "markers": "python_version >= '3.8'",
+            "version": "==2.2.2"
         },
         "vulture": {
             "hashes": [
