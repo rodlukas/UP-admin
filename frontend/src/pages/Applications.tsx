@@ -103,8 +103,8 @@ class Applications extends React.Component<Props, State> {
                                                     {cnt === 1
                                                         ? "e"
                                                         : cnt > 1 && cnt < 5
-                                                        ? "i"
-                                                        : "ů"}
+                                                          ? "i"
+                                                          : "ů"}
                                                 </Badge>
                                             </h4>
                                         </ListGroupItem>

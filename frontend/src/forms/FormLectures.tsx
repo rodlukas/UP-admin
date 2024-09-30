@@ -148,8 +148,8 @@ class FormLectures extends React.Component<Props, State> {
     members: ClientType[] = this.isClient(this.props.object)
         ? [this.props.object]
         : this.isLecture(this.props.lecture)
-        ? this.getMembers(this.props.lecture.attendances)
-        : this.getMembers(this.props.object.memberships)
+          ? this.getMembers(this.props.lecture.attendances)
+          : this.getMembers(this.props.object.memberships)
 
     getAttendanceStatesData = (): AttendanceStateType[] =>
         this.props.attendanceStatesContext.attendancestates
@@ -164,22 +164,23 @@ class FormLectures extends React.Component<Props, State> {
         date: this.isLectureWithDate(this.props.lecture)
             ? toISODate(new Date(this.props.lecture.start))
             : this.props.date !== ""
-            ? this.props.date
-            : this.props.defaultValuesForLecture && this.props.defaultValuesForLecture.start !== ""
-            ? toISODate(this.props.defaultValuesForLecture.start)
-            : "",
+              ? this.props.date
+              : this.props.defaultValuesForLecture &&
+                  this.props.defaultValuesForLecture.start !== ""
+                ? toISODate(this.props.defaultValuesForLecture.start)
+                : "",
         time: this.isLectureWithDate(this.props.lecture)
             ? toISOTime(new Date(this.props.lecture.start))
             : this.props.defaultValuesForLecture && this.props.defaultValuesForLecture.start !== ""
-            ? toISOTime(this.props.defaultValuesForLecture.start)
-            : "",
+              ? toISOTime(this.props.defaultValuesForLecture.start)
+              : "",
         course: this.isLecture(this.props.lecture)
             ? this.props.lecture.course
             : this.isClient(this.props.object) && this.props.defaultValuesForLecture
-            ? this.props.defaultValuesForLecture.course
-            : !this.isClient(this.props.object)
-            ? this.props.object.course
-            : null,
+              ? this.props.defaultValuesForLecture.course
+              : !this.isClient(this.props.object)
+                ? this.props.object.course
+                : null,
         duration: this.isLecture(this.props.lecture)
             ? this.props.lecture.duration
             : this.computeDuration(),

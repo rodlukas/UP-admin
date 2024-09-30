@@ -23,10 +23,10 @@ export function getEnvName(): string {
     return isEnvTesting()
         ? "testing"
         : isEnvDemo()
-        ? "demo"
-        : process.env.NODE_ENV
-        ? process.env.NODE_ENV
-        : "local"
+          ? "demo"
+          : process.env.NODE_ENV
+            ? process.env.NODE_ENV
+            : "local"
 }
 
 /** Zjistí, jestli aktuální aplikace běží na development prostředí. */

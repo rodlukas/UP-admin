@@ -68,8 +68,8 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE, refresh }) => {
                         currentObject
                             ? currentObject
                             : TYPE === EDIT_TYPE.COURSE
-                            ? DummyCourse
-                            : DummyAttendanceState
+                              ? DummyCourse
+                              : DummyAttendanceState
                     }
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}

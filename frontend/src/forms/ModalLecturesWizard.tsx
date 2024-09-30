@@ -188,8 +188,8 @@ class ModalLecturesWizard extends React.Component<Props, State> {
                         {this.state.isClient
                             ? "klienta"
                             : this.state.isClient !== undefined
-                            ? "skupiny"
-                            : ""}
+                              ? "skupiny"
+                              : ""}
                     </ModalHeader>
                     <ModalBody>
                         {this.state.isClient !== undefined && (
