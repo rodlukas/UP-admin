@@ -91,7 +91,7 @@
         "@rodlukas/fontawesome-pro-solid-svg-icons": "^5.15.2",
         "@sentry/browser": "^6.19.7",
         "axios": "^0.28.1",
-        "bootstrap": "^4.6.2",
+        "bootstrap": "^5.0.0",
         "chroma-js": "2.4.2",
         "eslint-webpack-plugin": "^4.2.0",
         "fuse.js": "^6.6.2",
