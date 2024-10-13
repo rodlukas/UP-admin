@@ -109,7 +109,7 @@ Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **R
 
 Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
 
--   [Python 3.10](https://www.python.org/),
+-   [Python 3.11](https://www.python.org/),
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
@@ -135,7 +135,7 @@ Responzivní JS _([TypeScript](https://www.typescriptlang.org/))_ webová aplika
 technologiích:
 
 -   [React 17](https://reactjs.org/),
--   [TypeScript 4](https://www.typescriptlang.org/),
+-   [TypeScript 5](https://www.typescriptlang.org/),
 -   [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package
@@ -147,7 +147,7 @@ Vývoj frontendu je postaven především na:
 -   [Webpack 5](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
--   [Typescript 4](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
+-   [Typescript 5](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
 -   [ESlint 8](https://eslint.org/) a [stylelint](https://stylelint.io/) – lintery pro statickou
     analýzu kódu,
 -   [husky](https://github.com/typicode/husky) a
@@ -466,4 +466,4 @@ instalaci a spuštění, která nyní zabere jen pár řádků.
 
 Licencováno pod [MIT](LICENSE) licencí.
 
-Copyright (c) 2018–2023 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2018–2024 [Lukáš Rod](https://lukasrod.cz/)
