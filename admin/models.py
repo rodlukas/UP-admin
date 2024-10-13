@@ -1,6 +1,7 @@
 """
 Modely - reprezentují entity z databáze.
 """
+
 from typing import Any
 
 from django.db import models

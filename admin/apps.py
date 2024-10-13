@@ -1,6 +1,7 @@
 """
 Konfigurace Django aplikace admin.
 """
+
 from django.apps import AppConfig
 
 

@@ -2,6 +2,7 @@
 Lokální (vývojová) konfigurace Django projektu.
 Rozšiřuje základní konfiguraci ze souboru base.py.
 """
+
 from .base import *
 
 # Django konstanty
