@@ -39,7 +39,7 @@
     <a href="https://fly.io/dashboard">Fly.io</a> · 
     <a href="https://uspesnyprvnacek.slack.com/messages">Slack</a> · 
     <a href="https://www.deepcode.ai/">DeepCode</a> · 
-    <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a> · 
+    <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a>
 </p>
 
 ## Table of Contents
