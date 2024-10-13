@@ -114,7 +114,7 @@ database.
 
 Includes all the logic and exposes a **REST API** for a client, built on these technologies:
 
--   [Python 3.10](https://www.python.org/),
+-   [Python 3.11](https://www.python.org/),
 -   [Django 3](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
@@ -140,7 +140,7 @@ Responsive JS _([TypeScript](https://www.typescriptlang.org/))_ web app, specifi
 technologies:
 
 -   [React 17](https://reactjs.org/),
--   [TypeScript 4](https://www.typescriptlang.org/),
+-   [TypeScript 5](https://www.typescriptlang.org/),
 -   [Bootstrap 4](https://getbootstrap.com/) (with [Reactstrap](https://reactstrap.github.io/)),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry)
@@ -151,7 +151,7 @@ Main tools used for the frontend development:
 -   [Webpack 5](https://webpack.js.org/) with custom configuration (local and production) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Babel 7](https://babeljs.io/),
--   [Typescript 4](https://www.typescriptlang.org/) – static type checking,
+-   [Typescript 5](https://www.typescriptlang.org/) – static type checking,
 -   [ESlint 8](https://eslint.org/) and [stylelint](https://stylelint.io/) – linters for static code
     analysis,
 -   [husky](https://github.com/typicode/husky) and
@@ -470,4 +470,4 @@ instruction could also be rapidly simplified and the app can be launched with a 
 
 Licensed under the [MIT](LICENSE) license.
 
-Copyright (c) 2018–2023 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2018–2024 [Lukáš Rod](https://lukasrod.cz/)

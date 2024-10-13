@@ -1,6 +1,7 @@
 """
 Filtry pro pokročilé filtrování ve views.
 """
+
 from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
 

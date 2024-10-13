@@ -2,6 +2,7 @@
 Základní konfigurace Django projektu.
 Je základem pro konfigurace v souborech local.py a production.py.
 """
+
 import os
 import sys
 from datetime import timedelta

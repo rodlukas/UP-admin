@@ -1,6 +1,7 @@
 """
 Views - na základě requestu vrátí příslušnou response.
 """
+
 from typing import Any
 
 from django.db.models import Prefetch

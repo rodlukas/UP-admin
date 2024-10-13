@@ -1,6 +1,7 @@
 """
 Definice mapování URL na jednotlivá view pro API.
 """
+
 from django.urls import include, path
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenRefreshSlidingView

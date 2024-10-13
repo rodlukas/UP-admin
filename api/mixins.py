@@ -1,6 +1,7 @@
 """
 Mixins použité pro sdílení funkcionality napříč třídami (views).
 """
+
 from rest_framework import status
 from rest_framework.response import Response
 

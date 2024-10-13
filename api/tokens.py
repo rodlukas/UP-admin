@@ -1,6 +1,7 @@
 """
 Vlastní definice způsobu serializace JWT tokenů.
 """
+
 from rest_framework_simplejwt.serializers import TokenObtainSlidingSerializer
 from rest_framework_simplejwt.models import TokenUser
 from rest_framework_simplejwt.tokens import SlidingToken

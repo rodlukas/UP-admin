@@ -1,6 +1,7 @@
 """
 Konfigurace Django aplikace api.
 """
+
 from django.apps import AppConfig
 
 
