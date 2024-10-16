@@ -18,6 +18,7 @@ uritemplate = "~=4.1.1"
 vulture = "~=2.13.0"
 whitenoise = "~=6.7.0"
 django-csp = "~=3.8.0"
+urllib3 = "~=1.26.20"
 sentry-sdk = {extras = ["django"], version = "~=2.16.0"}
 
 [dev-packages]
