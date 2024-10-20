@@ -114,8 +114,8 @@ database.
 
 Includes all the logic and exposes a **REST API** for a client, built on these technologies:
 
--   [Python 3.11](https://www.python.org/),
--   [Django 3](https://www.djangoproject.com/),
+-   [Python 3.12](https://www.python.org/),
+-   [Django 5](https://www.djangoproject.com/),
 -   [Django REST framework 3](https://www.django-rest-framework.org/),
 -   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
 -   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
