@@ -2,12 +2,10 @@ import * as React from "react"
 import {
     Alert,
     Col,
-    CustomInput,
+    Input,
     Form,
     FormGroup,
-    Input,
     InputGroup,
-    InputGroupAddon,
     Label,
     ModalBody,
     ModalFooter,
@@ -107,8 +105,9 @@ export default class FormClients extends React.Component<Props, State> {
         this.setState({ isSubmit: true }, (): void => {
             request
                 .then((response) => {
-                    this.props.funcProcessAdditionOfClient &&
+                    if (this.props.funcProcessAdditionOfClient) {
                         this.props.funcProcessAdditionOfClient(response)
+                    }
                     this.props.funcForceClose(true, { active: response.active, isDeleted: false })
                 })
                 .catch(() => this.setState({ isSubmit: false }))
@@ -187,11 +186,9 @@ export default class FormClients extends React.Component<Props, State> {
                         </Label>
                         <Col sm={10}>
                             <InputGroup>
-                                <InputGroupAddon addonType="prepend">
-                                    <Label className="input-group-text" for="phone">
-                                        +420
-                                    </Label>
-                                </InputGroupAddon>
+                                <Label className="input-group-text" for="phone">
+                                    +420
+                                </Label>
                                 <Input
                                     type="tel"
                                     id="phone"
@@ -224,7 +221,7 @@ export default class FormClients extends React.Component<Props, State> {
                             Aktivní
                         </Label>
                         <Col sm={10}>
-                            <CustomInput
+                            <Input
                                 type="checkbox"
                                 id="active"
                                 checked={active}

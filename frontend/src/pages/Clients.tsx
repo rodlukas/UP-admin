@@ -45,7 +45,9 @@ class Clients extends React.Component<Props, State> {
         this.state.active ? this.props.clientsActiveContext.clients : this.state.clients
 
     refreshFromModal = (data: ModalClientsData): void => {
-        data && this.refresh(data.active)
+        if (data) {
+            this.refresh(data.active)
+        }
     }
 
     refresh = (active = this.state.active, ignoreActiveRefresh = false): void => {

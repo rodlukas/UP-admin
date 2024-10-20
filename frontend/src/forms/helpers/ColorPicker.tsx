@@ -4,7 +4,7 @@ import * as chroma from "chroma-js"
 import * as React from "react"
 import { ChromePicker } from "react-color"
 import { toast } from "react-toastify"
-import { Col, InputGroup, InputGroupAddon, Label } from "reactstrap"
+import { Col, InputGroup, Label } from "reactstrap"
 
 import Notification from "../../components/Notification"
 import UncontrolledTooltipWrapper from "../../components/UncontrolledTooltipWrapper"
@@ -71,14 +71,9 @@ export default class ColorPicker extends React.Component<Props, State> {
                 </Label>
                 <Col sm={9}>
                     <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                            <Label
-                                className="input-group-text"
-                                for="color"
-                                onClick={this.togglePicker}>
-                                <FontAwesomeIcon icon={faPalette} fixedWidth />
-                            </Label>
-                        </InputGroupAddon>
+                        <Label className="input-group-text" for="color" onClick={this.togglePicker}>
+                            <FontAwesomeIcon icon={faPalette} fixedWidth />
+                        </Label>
                         <button
                             id="color"
                             type="button"

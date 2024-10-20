@@ -95,7 +95,7 @@ class Applications extends React.Component<Props, State> {
                                                     style={{
                                                         color: courseApplications.course.color,
                                                     }}
-                                                    className="font-weight-bold">
+                                                    className="fw-bold">
                                                     <span data-qa="applications_for_course_cnt">
                                                         {cnt}
                                                     </span>{" "}

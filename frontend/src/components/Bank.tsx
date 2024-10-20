@@ -120,7 +120,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                     <h4 className="text-center">
                         Aktuální stav:{" "}
                         {balance ? (
-                            <span className="font-weight-bold text-nowrap">
+                            <span className="fw-bold text-nowrap">
                                 {`${prettyAmount(balance)} ${CURRENCY}`}
                             </span>
                         ) : this.state.isDataProblem ? (
@@ -132,7 +132,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                             <>
                                 <UncontrolledTooltipWrapper target="Bank_RentWarning">
                                     Na účtu není dostatek peněz (alespoň{" "}
-                                    <span className="font-weight-bold text-nowrap">
+                                    <span className="fw-bold text-nowrap">
                                         {`${prettyAmount(rentPrice)} ${CURRENCY}`}
                                     </span>
                                     ) pro zaplacení nájmu!
@@ -148,7 +148,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                     </h4>
                     <div className="text-right">
                         {this.state.bankDataApi.fetch_timestamp && (
-                            <span className="font-italic align-middle mr-1">
+                            <span className="font-italic align-middle me-1">
                                 Čas výpisu:{" "}
                                 {prettyTimeWithSeconds(
                                     new Date(this.state.bankDataApi.fetch_timestamp),
@@ -245,7 +245,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                                                         {prettyDateWithDayYearIfDiff(date, true)}
                                                     </td>
                                                     <td
-                                                        className={`${amountClassName} font-weight-bold text-right text-nowrap`}
+                                                        className={`${amountClassName} fw-bold text-right text-nowrap`}
                                                         style={{ minWidth: "7em" }}>
                                                         {prettyAmount(amount)} {CURRENCY}
                                                     </td>

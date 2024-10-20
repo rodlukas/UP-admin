@@ -137,7 +137,7 @@ h1 .badge {
 /**************************** BOOTSTRAP ****************************/
 
 /* kontrastnejsi barva pozadi badge */
-.badge-light {
+.bg-light {
     background-color: #eaeaea;
 }
 

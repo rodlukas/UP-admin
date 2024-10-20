@@ -41,6 +41,7 @@ export default function lazySafe(
                 }
                 // nejedna se o chybu s chunkem, posli dal
                 else {
+                    // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     reject(error)
                 }
             })

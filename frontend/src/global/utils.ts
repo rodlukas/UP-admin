@@ -190,7 +190,7 @@ export function getDisplayName<P>(Component: React.ComponentType<P>): string {
 export function isValidUrl(urlString: string) {
     try {
         return Boolean(new URL(urlString))
-    } catch (e) {
+    } catch {
         return false
     }
 }
