@@ -27,7 +27,7 @@ const Notification: React.FC<Props> = ({ text = "", type }) => {
 
     return (
         <>
-            <h6 className="font-weight-bold">{heading}</h6>
+            <h6 className="fw-bold">{heading}</h6>
             {text}
         </>
     )

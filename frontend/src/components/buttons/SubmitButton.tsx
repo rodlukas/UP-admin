@@ -21,7 +21,7 @@ const SubmitButton: React.FC<Props> = ({
 }) => (
     <Button
         color="primary"
-        className="float-right"
+        className="float-end"
         type="submit"
         {...props}
         disabled={loading || disabled}>

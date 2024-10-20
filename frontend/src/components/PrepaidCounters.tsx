@@ -1,17 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSackDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
-import {
-    Col,
-    Container,
-    Input,
-    InputGroup,
-    InputGroupAddon,
-    Label,
-    ListGroup,
-    ListGroupItem,
-    Row,
-} from "reactstrap"
+import { Col, Container, Input, InputGroup, Label, ListGroup, ListGroupItem, Row } from "reactstrap"
 
 import MembershipService from "../api/services/MembershipService"
 import { TEXTS } from "../global/constants"
@@ -92,19 +82,16 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                     )}
                                 </h5>
                                 <InputGroup>
-                                    <InputGroupAddon
-                                        addonType="prepend"
-                                        id={`PrepaidCounters${membership.id}`}>
-                                        <Label
-                                            className={`input-group-text ${
-                                                prepaidCnts[membership.id] > 0
-                                                    ? "PrepaidCountersLabelPrepaid"
-                                                    : ""
-                                            }`}
-                                            for={`prepaid_cnt${membership.id}`}>
-                                            <FontAwesomeIcon icon={faSackDollar} fixedWidth />
-                                        </Label>
-                                    </InputGroupAddon>
+                                    <Label
+                                        className={`input-group-text ${
+                                            prepaidCnts[membership.id] > 0
+                                                ? "PrepaidCountersLabelPrepaid"
+                                                : ""
+                                        }`}
+                                        id={`PrepaidCounters${membership.id}`}
+                                        for={`prepaid_cnt${membership.id}`}>
+                                        <FontAwesomeIcon icon={faSackDollar} fixedWidth />
+                                    </Label>
                                     <Input
                                         type="number"
                                         value={prepaidCnts[membership.id]}

@@ -18,7 +18,7 @@ import {
     AttendanceStatesContextProps,
     WithAttendanceStatesContext,
 } from "../contexts/AttendanceStatesContext"
-import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
+import InputWrapper from "../forms/helpers/InputWrapper"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
 import { AttendanceStateType, CourseType } from "../types/models"
@@ -209,13 +209,13 @@ class Settings extends React.Component<Props, State> {
                                         <ListGroupItem>
                                             <Row>
                                                 <Label for="state_default_id" sm={7}>
-                                                    <span className="font-weight-bold">
+                                                    <span className="fw-bold">
                                                         „klient se zúčastní“
                                                     </span>{" "}
                                                     (výchozí stav)
                                                 </Label>
                                                 <Col sm={5}>
-                                                    <CustomInputWrapper
+                                                    <InputWrapper
                                                         type="select"
                                                         id="state_default_id"
                                                         value={
@@ -237,19 +237,19 @@ class Settings extends React.Component<Props, State> {
                                                                     </option>
                                                                 ),
                                                         )}
-                                                    </CustomInputWrapper>
+                                                    </InputWrapper>
                                                 </Col>
                                             </Row>
                                         </ListGroupItem>
                                         <ListGroupItem>
                                             <Row>
                                                 <Label for="state_excused_id" sm={7}>
-                                                    <span className="font-weight-bold">
+                                                    <span className="fw-bold">
                                                         „klient je omluven“
                                                     </span>
                                                 </Label>
                                                 <Col sm={5}>
-                                                    <CustomInputWrapper
+                                                    <InputWrapper
                                                         type="select"
                                                         id="state_excused_id"
                                                         value={
@@ -271,7 +271,7 @@ class Settings extends React.Component<Props, State> {
                                                                     </option>
                                                                 ),
                                                         )}
-                                                    </CustomInputWrapper>
+                                                    </InputWrapper>
                                                 </Col>
                                             </Row>
                                         </ListGroupItem>
@@ -329,7 +329,7 @@ class Settings extends React.Component<Props, State> {
                             </Row>
                             <hr />
                             <p className="text-center Settings_Footer">
-                                <span className="font-weight-bold">Verze aplikace:</span>{" "}
+                                <span className="fw-bold">Verze aplikace:</span>{" "}
                                 <AppCommit pageId="Settings" />
                                 {" ("}
                                 <AppRelease />

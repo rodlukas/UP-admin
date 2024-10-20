@@ -31,7 +31,7 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
         />{" "}
         {attendance.number && (
             <>
-                <Badge color="secondary" pill className="AttendanceNumber font-weight-bold">
+                <Badge color="secondary" pill className="AttendanceNumber fw-bold">
                     {attendance.number}
                 </Badge>{" "}
             </>

@@ -9,12 +9,10 @@ import * as React from "react"
 import {
     Alert,
     Col,
-    CustomInput,
     Form,
     FormGroup,
     Input,
     InputGroup,
-    InputGroupAddon,
     Label,
     ModalBody,
     ModalFooter,
@@ -63,7 +61,7 @@ import {
 import { fEmptyVoid } from "../types/types"
 
 import "./FormLectures.css"
-import CustomInputWrapper from "./helpers/CustomInputWrapper"
+import InputWrapper from "./helpers/InputWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 
 /** ID klienta: ID stavu účasti. */
@@ -368,7 +366,9 @@ class FormLectures extends React.Component<Props, State> {
             obj = null
         }
         this.setState({ [name]: obj })
-        obj && this.setState({ duration: obj.duration })
+        if (obj) {
+            this.setState({ duration: obj.duration })
+        }
     }
 
     onChangePrepaid = (): void => {
@@ -511,7 +511,7 @@ class FormLectures extends React.Component<Props, State> {
                                 <Col sm={4}>
                                     {this.isClient(this.props.object) && (
                                         <>
-                                            <CustomInput
+                                            <Input
                                                 type="checkbox"
                                                 id="prepaid"
                                                 checked={prepaid}
@@ -539,11 +539,9 @@ class FormLectures extends React.Component<Props, State> {
                                 </Col>
                                 <Col sm={4}>
                                     <InputGroup id="FormLectures_Date">
-                                        <InputGroupAddon addonType="prepend">
-                                            <Label className="input-group-text" for="date">
-                                                <FontAwesomeIcon icon={faCalendarAlt} fixedWidth />
-                                            </Label>
-                                        </InputGroupAddon>
+                                        <Label className="input-group-text" for="date">
+                                            <FontAwesomeIcon icon={faCalendarAlt} fixedWidth />
+                                        </Label>
                                         <Input
                                             type="date"
                                             id="date"
@@ -564,11 +562,9 @@ class FormLectures extends React.Component<Props, State> {
                                 </Col>
                                 <Col sm={4}>
                                     <InputGroup id="FormLectures_Time">
-                                        <InputGroupAddon addonType="prepend">
-                                            <Label className="input-group-text" for="time">
-                                                <FontAwesomeIcon icon={faClock} fixedWidth />
-                                            </Label>
-                                        </InputGroupAddon>
+                                        <Label className="input-group-text" for="time">
+                                            <FontAwesomeIcon icon={faClock} fixedWidth />
+                                        </Label>
                                         <Input
                                             type="time"
                                             id="time"
@@ -587,7 +583,7 @@ class FormLectures extends React.Component<Props, State> {
                             </FormGroup>
                             <FormGroup row className="align-items-center">
                                 <Col sm={4}>
-                                    <CustomInput
+                                    <Input
                                         type="checkbox"
                                         id="canceled"
                                         checked={canceled}
@@ -626,11 +622,9 @@ class FormLectures extends React.Component<Props, State> {
                                 </Col>
                                 <Col sm={4}>
                                     <InputGroup id="FormLectures_Duration">
-                                        <InputGroupAddon addonType="prepend">
-                                            <Label className="input-group-text" for="duration">
-                                                <FontAwesomeIcon icon={faHourglass} fixedWidth />
-                                            </Label>
-                                        </InputGroupAddon>
+                                        <Label className="input-group-text" for="duration">
+                                            <FontAwesomeIcon icon={faHourglass} fixedWidth />
+                                        </Label>
                                         <Input
                                             type="number"
                                             id="duration"
@@ -677,14 +671,12 @@ class FormLectures extends React.Component<Props, State> {
                                     <FormGroup row className="align-items-center">
                                         <Col sm={4}>
                                             <InputGroup>
-                                                <InputGroupAddon addonType="prepend">
-                                                    <Label
-                                                        className="input-group-text"
-                                                        for={`atState${member.id}`}>
-                                                        účast
-                                                    </Label>
-                                                </InputGroupAddon>
-                                                <CustomInputWrapper
+                                                <Label
+                                                    className="input-group-text"
+                                                    for={`atState${member.id}`}>
+                                                    účast
+                                                </Label>
+                                                <InputWrapper
                                                     type="select"
                                                     name="atState"
                                                     id={`atState${member.id}`}
@@ -707,11 +699,11 @@ class FormLectures extends React.Component<Props, State> {
                                                                 </option>
                                                             ),
                                                     )}
-                                                </CustomInputWrapper>
+                                                </InputWrapper>
                                             </InputGroup>
                                         </Col>
                                         <Col sm={2} className="text-sm-center">
-                                            <CustomInput
+                                            <Input
                                                 type="checkbox"
                                                 id={`atPaid${member.id}`}
                                                 name="atPaid"
@@ -724,7 +716,7 @@ class FormLectures extends React.Component<Props, State> {
                                             <Label
                                                 for={`atPaid${member.id}`}
                                                 data-qa="lecture_label_attendance_paid"
-                                                className={`mb-0 font-weight-bold ${
+                                                className={`mb-0 fw-bold ${
                                                     atPaid[member.id]
                                                         ? "text-success"
                                                         : "text-danger"
@@ -740,16 +732,14 @@ class FormLectures extends React.Component<Props, State> {
                                         </Col>
                                         <Col sm={6}>
                                             <InputGroup id={`FormLectures_Note_${member.id}`}>
-                                                <InputGroupAddon addonType="prepend">
-                                                    <Label
-                                                        className="input-group-text"
-                                                        for={`atNote${member.id}`}>
-                                                        <FontAwesomeIcon
-                                                            icon={faClipboardList}
-                                                            fixedWidth
-                                                        />
-                                                    </Label>
-                                                </InputGroupAddon>
+                                                <Label
+                                                    className="input-group-text"
+                                                    for={`atNote${member.id}`}>
+                                                    <FontAwesomeIcon
+                                                        icon={faClipboardList}
+                                                        fixedWidth
+                                                    />
+                                                </Label>
                                                 <Input
                                                     type="text"
                                                     name="atNote"

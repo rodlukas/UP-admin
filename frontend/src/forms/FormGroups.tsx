@@ -2,7 +2,6 @@ import * as React from "react"
 import {
     Alert,
     Col,
-    CustomInput,
     Form,
     FormGroup,
     Input,
@@ -149,8 +148,9 @@ class FormGroups extends React.Component<Props, State> {
         this.setState({ isSubmit: true }, (): void => {
             request
                 .then((response) => {
-                    this.props.funcProcessAdditionOfGroup &&
+                    if (this.props.funcProcessAdditionOfGroup) {
                         this.props.funcProcessAdditionOfGroup(response)
+                    }
                     this.props.funcForceClose(true, { active: response.active, isDeleted: false })
                 })
                 .catch(() => {
@@ -277,7 +277,7 @@ class FormGroups extends React.Component<Props, State> {
                                     Aktivní
                                 </Label>
                                 <Col sm={10}>
-                                    <CustomInput
+                                    <Input
                                         type="checkbox"
                                         id="active"
                                         checked={active}

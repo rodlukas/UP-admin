@@ -127,10 +127,8 @@ class ErrorBoundary extends React.Component<Props, State> {
                     />
                     <Alert color="danger" className="mt-4">
                         <h4 className="alert-heading">Popis chyby</h4>
-                        <details className="text-left" style={{ whiteSpace: "pre-wrap" }}>
-                            <summary className="font-weight-bold">
-                                {this.state.error?.toString()}
-                            </summary>
+                        <details className="text-start" style={{ whiteSpace: "pre-wrap" }}>
+                            <summary className="fw-bold">{this.state.error?.toString()}</summary>
                             <small>{this.state.errorInfo?.componentStack}</small>
                         </details>
                     </Alert>

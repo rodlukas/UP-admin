@@ -1,17 +1,17 @@
 import * as React from "react"
-import { CustomInput, CustomInputProps } from "reactstrap"
+import { Input, InputProps } from "reactstrap"
 
 /**
- * Wrapper pro CustomInput z reactstrap (pro type="select") zajišťující korektní chování při stisku ESC,
+ * Wrapper pro Input z reactstrap (pro type="select") zajišťující korektní chování při stisku ESC,
  * když je otevřeno modální okno.
  * Původní komponentu doplňuje o stav indikující otevřené/zavřené dropdown menu pro umožnění zpracování ESC.
  *
  * Viz https://github.com/rodlukas/UP-admin/issues/84
  */
-const CustomInputWrapper: React.FC<CustomInputProps> = (props) => {
+const InputWrapper: React.FC<InputProps> = (props) => {
     const [menuIsOpen, setMenuIsOpen] = React.useState(false)
     return (
-        <CustomInput
+        <Input
             {...props}
             onKeyUp={(e): void => {
                 // pokud je ESC keyUp a je otevrene dropdown menu (menuIsOpen je true),
@@ -29,4 +29,4 @@ const CustomInputWrapper: React.FC<CustomInputProps> = (props) => {
     )
 }
 
-export default CustomInputWrapper
+export default InputWrapper

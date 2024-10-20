@@ -2,7 +2,7 @@ import * as React from "react"
 
 import AttendanceService from "../api/services/AttendanceService"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
-import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
+import InputWrapper from "../forms/helpers/InputWrapper"
 import { AttendanceStateType, AttendanceType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
@@ -27,7 +27,7 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
     }
 
     return (
-        <CustomInputWrapper
+        <InputWrapper
             type="select"
             bsSize="sm"
             onChange={onChange}
@@ -43,7 +43,7 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
                         </option>
                     ),
             )}
-        </CustomInputWrapper>
+        </InputWrapper>
     )
 }
 
