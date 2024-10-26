@@ -18,6 +18,10 @@ a {
     text-decoration: none;
 }
 
+.form-label {
+    margin-bottom: 0 !important
+}
+
 .breadcrumb {
     background-color: transparent;
 }
