@@ -146,7 +146,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                             </>
                         )}
                     </h4>
-                    <div className="text-right">
+                    <div className="text-end">
                         {this.state.bankDataApi.fetch_timestamp && (
                             <span className="font-italic align-middle me-1">
                                 Čas výpisu:{" "}
@@ -188,8 +188,8 @@ export default class Bank extends React.PureComponent<{}, State> {
                             <tr>
                                 <th>Poznámka</th>
                                 <th>Zpráva pro příjemce</th>
-                                <th className="text-right">Datum</th>
-                                <th className="text-right">Suma</th>
+                                <th className="text-end">Datum</th>
+                                <th className="text-end">Suma</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -240,12 +240,12 @@ export default class Bank extends React.PureComponent<{}, State> {
                                                         </td>
                                                     )}
                                                     <td
-                                                        className="text-right text-nowrap"
+                                                        className="text-end text-nowrap"
                                                         style={{ minWidth: "6em" }}>
                                                         {prettyDateWithDayYearIfDiff(date, true)}
                                                     </td>
                                                     <td
-                                                        className={`${amountClassName} fw-bold text-right text-nowrap`}
+                                                        className={`${amountClassName} fw-bold text-end text-nowrap`}
                                                         style={{ minWidth: "7em" }}>
                                                         {prettyAmount(amount)} {CURRENCY}
                                                     </td>

@@ -14,12 +14,10 @@ type Props = {
 /** Komponenta pro jednotné zobrazení nadpisu stránky napříč aplikací. */
 const Heading: React.FC<Props> = ({ title, buttons, fluid = false }) => (
     <Row className="justify-content-sm-end my-3 Heading align-items-center">
-        <Col md={6} className={fluid ? "text-md-right" : ""}>
+        <Col md={6} className={fluid ? "text-md-end" : ""}>
             <h1>{title}</h1>
         </Col>
-        <Col
-            md={6}
-            className={`${fluid ? "text-right text-md-left" : "text-right"} HeadingButtons`}>
+        <Col md={6} className={`${fluid ? "text-end text-md-start" : "text-end"} HeadingButtons`}>
             {buttons}
         </Col>
     </Row>

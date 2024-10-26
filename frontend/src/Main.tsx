@@ -96,27 +96,25 @@ const Main: React.FC = () => {
 
     return (
         <div className={getEnvName()}>
-            <Navbar className="bg-dark" expand="lg" dark fixed="top">
-                <div className="container">
-                    <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
-                        ÚP<sub>admin</sub>
-                    </NavbarBrand>
-                    {isEnvLocal() && <Badge color="light">Vývojová verze</Badge>}
-                    {isEnvTesting() && (
-                        <Badge color="primary">
-                            Testing <AppCommit pageId="Main" />
-                        </Badge>
-                    )}
-                    {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}
-                    {authContext.isAuth && <NavbarToggler onClick={toggleNavbar} />}
-                    <Collapse isOpen={isMenuOpened} navbar>
-                        <Menu
-                            closeNavbar={closeNavbar}
-                            onSearchChange={onSearchChange}
-                            searchVal={searchVal}
-                        />
-                    </Collapse>
-                </div>
+            <Navbar className="bg-dark up-navbar" expand="lg" dark fixed="top">
+                <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
+                    ÚP<sub>admin</sub>
+                </NavbarBrand>
+                {isEnvLocal() && <Badge color="light">Vývojová verze</Badge>}
+                {isEnvTesting() && (
+                    <Badge color="primary">
+                        Testing <AppCommit pageId="Main" />
+                    </Badge>
+                )}
+                {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}
+                {authContext.isAuth && <NavbarToggler onClick={toggleNavbar} />}
+                <Collapse isOpen={isMenuOpened} navbar>
+                    <Menu
+                        closeNavbar={closeNavbar}
+                        onSearchChange={onSearchChange}
+                        searchVal={searchVal}
+                    />
+                </Collapse>
             </Navbar>
             <main className="main mb-4">
                 <ErrorBoundary>

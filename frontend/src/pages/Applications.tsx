@@ -142,7 +142,7 @@ class Applications extends React.Component<Props, State> {
                                                             />
                                                         )}
                                                     </Col>
-                                                    <Col className="text-right mt-1 mt-md-0" md="2">
+                                                    <Col className="text-end mt-1 mt-md-0" md="2">
                                                         <ModalApplications
                                                             currentApplication={application}
                                                             refresh={this.refresh}

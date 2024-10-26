@@ -10,3 +10,8 @@
 .nav-content {
     max-width: 900px;
 }
+
+.up-navbar > *
+{
+    max-width: 1500px !important;
+}

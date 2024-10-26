@@ -153,7 +153,7 @@ class Settings extends React.Component<Props, State> {
                                             <tr>
                                                 <th>Název</th>
                                                 <th className="text-center">Viditelný</th>
-                                                <th className="text-right text-md-right">Akce</th>
+                                                <th className="text-end text-md-end">Akce</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -171,7 +171,7 @@ class Settings extends React.Component<Props, State> {
                                                                 data-qa="attendancestate_visible"
                                                             />
                                                         </td>
-                                                        <td className="text-right text-md-right">
+                                                        <td className="text-end text-md-end">
                                                             <ModalSettings
                                                                 refresh={this.refresh}
                                                                 TYPE={EDIT_TYPE.STATE}
@@ -286,7 +286,7 @@ class Settings extends React.Component<Props, State> {
                                                 <th className="text-center">Viditelný</th>
                                                 <th className="text-center">Barva</th>
                                                 <th className="text-center">Trvání</th>
-                                                <th className="text-right text-md-right">Akce</th>
+                                                <th className="text-end text-md-end">Akce</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -311,7 +311,7 @@ class Settings extends React.Component<Props, State> {
                                                         className="text-center">
                                                         {course.duration}
                                                     </td>
-                                                    <td className="text-right text-md-right">
+                                                    <td className="text-end text-md-end">
                                                         <ModalSettings
                                                             refresh={this.refresh}
                                                             TYPE={EDIT_TYPE.COURSE}
