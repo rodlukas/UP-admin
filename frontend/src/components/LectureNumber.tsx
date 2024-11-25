@@ -20,7 +20,7 @@ const LectureNumber: React.FC<Props> = ({ lecture, colorize = false }) => {
         <Badge
             color="secondary"
             pill
-            className="LectureNumber font-weight-bold"
+            className="LectureNumber fw-bold"
             style={colorize ? { color: lecture.course.color } : undefined}>
             {lecture.number}
         </Badge>

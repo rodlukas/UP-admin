@@ -59,7 +59,7 @@ class ErrorMessage extends React.Component<Props> {
                         <ul>
                             {Object.keys(djangoError).map((field, index) => (
                                 <li key={`err${index}`}>
-                                    <span className="font-weight-bold">{field}: </span>
+                                    <span className="fw-bold">{field}: </span>
                                     <span className="font-italic">{djangoError[field]}</span>
                                 </li>
                             ))}
@@ -128,7 +128,7 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
                     history.push(APP_URLS.nenalezeno.url)
                 }
             }
-            return Promise.reject(error.response ?? error.message)
+            return Promise.reject(error)
         } else {
             return error.response
         }

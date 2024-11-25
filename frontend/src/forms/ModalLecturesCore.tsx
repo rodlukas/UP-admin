@@ -47,7 +47,9 @@ const ModalLecturesCore: React.FC<Props> = ({
     }
 
     function funcWrapper(func: () => boolean): void {
-        func() && funcCloseCallback()
+        if (func()) {
+            funcCloseCallback()
+        }
     }
 
     React.useEffect(() => {

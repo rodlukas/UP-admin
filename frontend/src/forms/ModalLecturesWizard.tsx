@@ -9,8 +9,8 @@ import {
     ModalBody,
     ModalHeader,
     UncontrolledButtonDropdown,
+    DropdownProps,
 } from "reactstrap"
-import { Direction } from "reactstrap/lib/Dropdown"
 
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
@@ -47,7 +47,7 @@ type Props = ClientsActiveContextProps &
         /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
         dropdownSize?: string
         /** Směr otevírání dropdownu pro výběr klient/skupina. */
-        dropdownDirection?: Direction
+        dropdownDirection?: DropdownProps["direction"]
         /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
         refresh: fEmptyVoid
     }

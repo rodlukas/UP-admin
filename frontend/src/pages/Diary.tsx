@@ -35,7 +35,7 @@ type TitleDateProps = {
 /** Pomocná komponenta zobrazující datum v záhlaví diáře. */
 const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
     <span
-        className={`TitleDate font-weight-bold text-center ${
+        className={`TitleDate fw-bold text-center ${
             isNotCurrentYear(date) ? "TitleDate-long" : ""
         }`}>
         {prettyDateWithYearIfDiff(date)}

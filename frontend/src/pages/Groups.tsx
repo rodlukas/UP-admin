@@ -48,7 +48,9 @@ class Groups extends React.Component<Props, State> {
         this.state.active ? this.props.groupsActiveContext.groups : this.state.groups
 
     refreshFromModal = (data: ModalGroupsData): void => {
-        data && this.refresh(data.active)
+        if (data) {
+            this.refresh(data.active)
+        }
     }
 
     refresh = (active = this.state.active, ignoreActiveRefresh = false): void => {
@@ -100,7 +102,7 @@ class Groups extends React.Component<Props, State> {
                             <th>Název</th>
                             <th className="d-none d-sm-table-cell">Kurz</th>
                             <th>Členové</th>
-                            <th className="text-right text-md-right">Akce</th>
+                            <th className="text-end text-md-end">Akce</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -134,7 +136,7 @@ class Groups extends React.Component<Props, State> {
                                         <td>
                                             <ClientsList memberships={group.memberships} />
                                         </td>
-                                        <td className="text-right text-md-right">
+                                        <td className="text-end text-md-end">
                                             <ModalGroups
                                                 currentGroup={group}
                                                 refresh={this.refreshFromModal}

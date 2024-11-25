@@ -121,7 +121,7 @@ class DashboardDay extends React.Component<Props, State> {
                     <ModalLecturesWizard
                         refresh={this.props.setUpdateType}
                         date={this.props.date}
-                        dropdownClassName="float-right"
+                        dropdownClassName="float-end"
                         dropdownSize="sm"
                         dropdownDirection="up"
                     />
@@ -147,7 +147,7 @@ class DashboardDay extends React.Component<Props, State> {
                                     <h4>
                                         <span
                                             id={`Card_CourseDuration_${lecture.id}`}
-                                            className="font-weight-bold">
+                                            className="fw-bold">
                                             {prettyTime(new Date(lecture.start))}
                                         </span>
                                         <UncontrolledTooltipWrapper
