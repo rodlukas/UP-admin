@@ -171,7 +171,7 @@ CSPURL_GOOGLE_ANALYTICS_SSL = "https://ssl.google-analytics.com"
 CSPURL_GOOGLE_FONTS_STYLE = "fonts.googleapis.com"
 CSPURL_GOOGLE_FONTS_FONT = "fonts.gstatic.com"
 # CSP pro Sentry
-CSPURL_SENTRY = "https://sentry.io"
+CSPURL_SENTRY = "https://*.sentry.io"
 # CSP pro unpkg.com
 CSPURL_UNPKG = "https://unpkg.com"
 

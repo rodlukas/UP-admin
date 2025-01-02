@@ -45,7 +45,9 @@ class Clients extends React.Component<Props, State> {
         this.state.active ? this.props.clientsActiveContext.clients : this.state.clients
 
     refreshFromModal = (data: ModalClientsData): void => {
-        data && this.refresh(data.active)
+        if (data) {
+            this.refresh(data.active)
+        }
     }
 
     refresh = (active = this.state.active, ignoreActiveRefresh = false): void => {
@@ -102,7 +104,7 @@ class Clients extends React.Component<Props, State> {
                                 E-mail
                             </th>
                             <th className="d-none d-sm-table-cell">Poznámka</th>
-                            <th className="text-right text-md-right">Akce</th>
+                            <th className="text-end text-md-end">Akce</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,7 +132,7 @@ class Clients extends React.Component<Props, State> {
                                         <td className="d-none d-sm-table-cell">
                                             <ClientNote note={client.note} />
                                         </td>
-                                        <td className="text-right text-md-right">
+                                        <td className="text-end text-md-end">
                                             <ModalClients
                                                 currentClient={client}
                                                 refresh={this.refreshFromModal}

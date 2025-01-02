@@ -22,9 +22,7 @@ const PlainName: React.FC<PlainGroupNameProps> = ({ group, title, bold }) => (
     <span data-qa="group_name">
         <ConditionalWrapper
             condition={bold}
-            wrapper={(children): React.ReactNode => (
-                <span className="font-weight-bold">{children}</span>
-            )}>
+            wrapper={(children): React.ReactNode => <span className="fw-bold">{children}</span>}>
             {title && "Skupina "}
             {group.name}
         </ConditionalWrapper>

@@ -4,12 +4,10 @@ import * as React from "react"
 import {
     Alert,
     Col,
-    CustomInput,
     Form,
     FormGroup,
     Input,
     InputGroup,
-    InputGroupAddon,
     Label,
     ModalBody,
     ModalFooter,
@@ -166,7 +164,7 @@ export default class FormSettings extends React.Component<Props, State> {
                             Viditelnost
                         </Label>
                         <Col sm={9}>
-                            <CustomInput
+                            <Input
                                 type="checkbox"
                                 id="visible"
                                 label="Bude zobrazováno"
@@ -187,11 +185,9 @@ export default class FormSettings extends React.Component<Props, State> {
                                 </Label>
                                 <Col sm={9}>
                                     <InputGroup>
-                                        <InputGroupAddon addonType="prepend">
-                                            <Label className="input-group-text" for="duration">
-                                                <FontAwesomeIcon icon={faHourglass} fixedWidth />
-                                            </Label>
-                                        </InputGroupAddon>
+                                        <Label className="input-group-text" for="duration">
+                                            <FontAwesomeIcon icon={faHourglass} fixedWidth />
+                                        </Label>
                                         <Input
                                             type="number"
                                             id="duration"

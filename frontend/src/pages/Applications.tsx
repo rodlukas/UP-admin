@@ -95,7 +95,7 @@ class Applications extends React.Component<Props, State> {
                                                     style={{
                                                         color: courseApplications.course.color,
                                                     }}
-                                                    className="font-weight-bold">
+                                                    className="fw-bold">
                                                     <span data-qa="applications_for_course_cnt">
                                                         {cnt}
                                                     </span>{" "}
@@ -142,7 +142,7 @@ class Applications extends React.Component<Props, State> {
                                                             />
                                                         )}
                                                     </Col>
-                                                    <Col className="text-right mt-1 mt-md-0" md="2">
+                                                    <Col className="text-end mt-1 mt-md-0" md="2">
                                                         <ModalApplications
                                                             currentApplication={application}
                                                             refresh={this.refresh}

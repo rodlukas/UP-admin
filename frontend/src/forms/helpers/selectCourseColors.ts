@@ -5,9 +5,8 @@ import * as chroma from "chroma-js"
 import * as CSS from "csstype"
 
 // typ viz https://github.com/frenic/csstype#usage
-type CSSTypes = { [key in CSS.Pseudos]?: CSS.Properties<string | number> } & CSS.Properties<
-    string | number
->
+type CSSTypes = Partial<Record<CSS.Pseudos, CSS.Properties<string | number>>> &
+    CSS.Properties<string | number>
 
 // kolecko zobrazene v react-select
 const dot = (color = "#ccc"): CSSTypes => ({

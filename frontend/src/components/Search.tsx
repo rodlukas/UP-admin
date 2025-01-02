@@ -1,4 +1,4 @@
-import Fuse from "fuse.js"
+import { FuseResult } from "fuse.js"
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
@@ -16,7 +16,7 @@ import Loading from "./Loading"
 
 type Props = {
     /** Výsledky vyhledávání klientů. */
-    foundResults: Fuse.FuseResult<ClientActiveType>[]
+    foundResults: FuseResult<ClientActiveType>[]
     /** Vyhledávaný výraz. */
     searchVal: string
     /** Funkce pro zahájení vyhledávání klientů. */
@@ -72,7 +72,7 @@ const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch 
                                             <Col md="3">
                                                 {item.email && <ClientEmail email={item.email} />}
                                             </Col>
-                                            <Col className="text-right mt-1 mt-md-0" md="1">
+                                            <Col className="text-end mt-1 mt-md-0" md="1">
                                                 <ModalClients
                                                     currentClient={item}
                                                     refresh={search}

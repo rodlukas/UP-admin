@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSearch } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
-import { Input, InputGroup, InputGroupAddon, Label } from "reactstrap"
+import { Input, InputGroup, Label } from "reactstrap"
 
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 
@@ -30,11 +30,9 @@ const SearchInput: React.FC<Props> = (props) => {
 
     return (
         <InputGroup className="Search">
-            <InputGroupAddon id="Search" addonType="prepend">
-                <Label className="input-group-text" for="search">
-                    <FontAwesomeIcon icon={faSearch} fixedWidth />
-                </Label>
-            </InputGroupAddon>
+            <Label id="Search" className="input-group-text" for="search">
+                <FontAwesomeIcon icon={faSearch} fixedWidth />
+            </Label>
             <UncontrolledTooltipWrapper placement="left" target="Search">
                 Vyhledávání klientů
             </UncontrolledTooltipWrapper>
