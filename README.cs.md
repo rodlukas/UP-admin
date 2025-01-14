@@ -466,4 +466,4 @@ instalaci a spuštění, která nyní zabere jen pár řádků.
 
 Licencováno pod [MIT](LICENSE) licencí.
 
-Copyright (c) 2018–2024 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2018–2025 [Lukáš Rod](https://lukasrod.cz/)
