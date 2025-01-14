@@ -1,4 +1,4 @@
-import Fuse from "fuse.js"
+import { FuseResult } from "fuse.js"
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
@@ -16,7 +16,7 @@ import Loading from "./Loading"
 
 type Props = {
     /** Výsledky vyhledávání klientů. */
-    foundResults: Fuse.FuseResult<ClientActiveType>[]
+    foundResults: FuseResult<ClientActiveType>[]
     /** Vyhledávaný výraz. */
     searchVal: string
     /** Funkce pro zahájení vyhledávání klientů. */

@@ -149,8 +149,9 @@ class FormGroups extends React.Component<Props, State> {
         this.setState({ isSubmit: true }, (): void => {
             request
                 .then((response) => {
-                    this.props.funcProcessAdditionOfGroup &&
+                    if (this.props.funcProcessAdditionOfGroup) {
                         this.props.funcProcessAdditionOfGroup(response)
+                    }
                     this.props.funcForceClose(true, { active: response.active, isDeleted: false })
                 })
                 .catch(() => {

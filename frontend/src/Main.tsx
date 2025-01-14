@@ -1,4 +1,4 @@
-import Fuse from "fuse.js"
+import Fuse, { IFuseOptions, FuseResult } from "fuse.js"
 import * as React from "react"
 import { NavLink as RouterNavLink, Switch, useLocation } from "react-router-dom"
 import { toast, ToastContainer } from "react-toastify"
@@ -34,7 +34,7 @@ const Card = React.lazy(() => lazySafe(() => import("./pages/Card")))
 const Diary = React.lazy(() => lazySafe(() => import("./pages/Diary")))
 
 // konfigurace Fuse.js vyhledavani
-const searchOptions: Fuse.IFuseOptions<ClientActiveType> = {
+const searchOptions: IFuseOptions<ClientActiveType> = {
     shouldSort: true,
     threshold: 0.5,
     keys: ["firstname", "surname", "phone", "email", "normalized"],
@@ -43,7 +43,7 @@ const searchOptions: Fuse.IFuseOptions<ClientActiveType> = {
 /** Hlavní kostra aplikace. */
 const Main: React.FC = () => {
     const [isMenuOpened, setIsMenuOpened] = React.useState(false)
-    const [foundResults, setFoundResults] = React.useState<Fuse.FuseResult<ClientActiveType>[]>([])
+    const [foundResults, setFoundResults] = React.useState<FuseResult<ClientActiveType>[]>([])
     const [searchVal, setSearchVal] = React.useState("")
     const authContext = useAuthContext()
     const clientsActiveContext = useClientsActiveContext()
