@@ -48,7 +48,9 @@ class Groups extends React.Component<Props, State> {
         this.state.active ? this.props.groupsActiveContext.groups : this.state.groups
 
     refreshFromModal = (data: ModalGroupsData): void => {
-        data && this.refresh(data.active)
+        if (data) {
+            this.refresh(data.active)
+        }
     }
 
     refresh = (active = this.state.active, ignoreActiveRefresh = false): void => {

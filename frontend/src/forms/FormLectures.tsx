@@ -368,7 +368,9 @@ class FormLectures extends React.Component<Props, State> {
             obj = null
         }
         this.setState({ [name]: obj })
-        obj && this.setState({ duration: obj.duration })
+        if (obj) {
+            this.setState({ duration: obj.duration })
+        }
     }
 
     onChangePrepaid = (): void => {

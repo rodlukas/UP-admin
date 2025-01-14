@@ -48,7 +48,9 @@ const ModalClients: React.FC<Props> = ({
             // groupsActiveContext - kvuli tomu se prekresli a tim padem se aktualni
             // formulare unmountnou z DOMu. U pridani ne, protoze tam se formular
             // pouze prekresli a nezavre.
-            !processAdditionOfClient && groupsActiveContext.funcHardRefresh()
+            if (!processAdditionOfClient) {
+                groupsActiveContext.funcHardRefresh()
+            }
         })
     }
 

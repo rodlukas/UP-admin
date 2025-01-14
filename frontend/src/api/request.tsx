@@ -128,7 +128,7 @@ export const request = <T,>(options: AxiosRequestConfig, ignoreErrors = false): 
                     history.push(APP_URLS.nenalezeno.url)
                 }
             }
-            return Promise.reject(error.response ?? error.message)
+            return Promise.reject(error)
         } else {
             return error.response
         }

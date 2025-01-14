@@ -107,8 +107,9 @@ export default class FormClients extends React.Component<Props, State> {
         this.setState({ isSubmit: true }, (): void => {
             request
                 .then((response) => {
-                    this.props.funcProcessAdditionOfClient &&
+                    if (this.props.funcProcessAdditionOfClient) {
                         this.props.funcProcessAdditionOfClient(response)
+                    }
                     this.props.funcForceClose(true, { active: response.active, isDeleted: false })
                 })
                 .catch(() => this.setState({ isSubmit: false }))

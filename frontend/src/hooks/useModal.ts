@@ -33,9 +33,13 @@ const useModal = (): UseModal => {
         // pokud se zavira a probehl submit formulare/smazani, zapamatuj si to
         // POZOR: na zaver je stejne potreba zresetovat stav na clean, toto ma na starost
         // funkce processOnModalClose, kterou musi komponenta zavolat
-        isModal && modalSubmitted && setFormState(DIRTY_INDICATORS.SUBMITTED_DIRTY)
+        if (isModal && modalSubmitted) {
+            setFormState(DIRTY_INDICATORS.SUBMITTED_DIRTY)
+        }
         // uloz docasna data potrebna pro dalsi praci v aplikaci
-        dataToStore && setTempData(dataToStore)
+        if (dataToStore) {
+            setTempData(dataToStore)
+        }
 
         setModal((prevIsModal) => !prevIsModal)
         // zavira se - vrat true pro rodicovske komponenty
@@ -75,8 +79,9 @@ const useModal = (): UseModal => {
                 e.returnValue = ""
             }
         }
-        formState === DIRTY_INDICATORS.DIRTY &&
+        if (formState === DIRTY_INDICATORS.DIRTY) {
             window.addEventListener("beforeunload", beforeUnload)
+        }
         return (): void => window.removeEventListener("beforeunload", beforeUnload)
     }, [formState])
 
