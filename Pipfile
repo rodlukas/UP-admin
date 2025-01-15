@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-django = "~=5.1.4"
+django = "~=5.1.5"
 django-csp = "~=3.8.0"
 django-debug-toolbar = "~=4.4.6"
 django-environ = "~=0.11.2"
