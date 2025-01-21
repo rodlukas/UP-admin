@@ -117,7 +117,11 @@ export function getDefaultValuesForLecture(
 
 /** Vrátí částku ve srozumitelném formátu. */
 export function prettyAmount(amount: number): string {
-    return amount.toLocaleString(LOCALE_CZ)
+    return amount.toLocaleString(LOCALE_CZ, {
+        style: "currency",
+        currency: "CZK",
+        maximumFractionDigits: 0,
+    })
 }
 
 /** Workaround dokud nebude fungovat required v react-selectu - TODO. */

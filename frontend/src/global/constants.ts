@@ -61,9 +61,6 @@ export enum USER_CELEBRATION {
     NAMEDAY = 2,
 }
 
-/** Výchozí měna. */
-export const CURRENCY = "Kč"
-
 /** URL adresa GitHub repozitáře s aplikací. */
 export const GITHUB_REPO_URL = "https://github.com/rodlukas/UP-admin"
 

@@ -9,7 +9,7 @@ import * as React from "react"
 import { ListGroup, ListGroupItem, Table } from "reactstrap"
 
 import BankService from "../api/services/BankService"
-import { BANKING_URL, CURRENCY } from "../global/constants"
+import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"
 import { BankType } from "../types/models"
@@ -121,7 +121,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                         Aktuální stav:{" "}
                         {balance ? (
                             <span className="font-weight-bold text-nowrap">
-                                {`${prettyAmount(balance)} ${CURRENCY}`}
+                                {prettyAmount(balance)}
                             </span>
                         ) : this.state.isDataProblem ? (
                             "neznámý"
@@ -133,7 +133,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                                 <UncontrolledTooltipWrapper target="Bank_RentWarning">
                                     Na účtu není dostatek peněz (alespoň{" "}
                                     <span className="font-weight-bold text-nowrap">
-                                        {`${prettyAmount(rentPrice)} ${CURRENCY}`}
+                                        {prettyAmount(rentPrice)}
                                     </span>
                                     ) pro zaplacení nájmu!
                                 </UncontrolledTooltipWrapper>
@@ -247,7 +247,7 @@ export default class Bank extends React.PureComponent<{}, State> {
                                                     <td
                                                         className={`${amountClassName} font-weight-bold text-right text-nowrap`}
                                                         style={{ minWidth: "7em" }}>
-                                                        {prettyAmount(amount)} {CURRENCY}
+                                                        {prettyAmount(amount)}
                                                     </td>
                                                 </tr>
                                             )
