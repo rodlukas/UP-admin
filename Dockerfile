@@ -2,8 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /usr/src/up-admin
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # copy pipenv files to container
 COPY Pipfile Pipfile.lock ./

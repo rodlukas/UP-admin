@@ -164,7 +164,7 @@ SELECT pg_catalog.setval('public.admin_application_id_seq', 3, true);
 -- Name: admin_attendance_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.admin_attendance_id_seq', 33, true);
+SELECT pg_catalog.setval('public.admin_attendance_id_seq', 37, true);
 
 
 --
@@ -199,7 +199,7 @@ SELECT pg_catalog.setval('public.admin_group_id_seq', 4, true);
 -- Name: admin_lecture_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.admin_lecture_id_seq', 22, true);
+SELECT pg_catalog.setval('public.admin_lecture_id_seq', 25, true);
 
 
 --
