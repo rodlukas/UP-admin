@@ -514,7 +514,7 @@ class LectureSerializer(serializers.ModelSerializer[Lecture]):
                         and attendance_data["attendancestate"].default
                         and membership.prepaid_cnt > 0
                     ):
-                        attendance_data.paid = True
+                        attendance_data["paid"] = True
                         membership.prepaid_cnt = membership.prepaid_cnt - 1
                         membership.save()
             Attendance.objects.create(client=client, lecture=instance, **attendance_data)
