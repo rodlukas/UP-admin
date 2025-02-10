@@ -65,9 +65,8 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE, refresh }) => {
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormSettings
                     object={
-                        (currentObject ?? TYPE === EDIT_TYPE.COURSE)
-                            ? DummyCourse
-                            : DummyAttendanceState
+                        currentObject ??
+                        (TYPE === EDIT_TYPE.COURSE ? DummyCourse : DummyAttendanceState)
                     }
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
