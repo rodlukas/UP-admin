@@ -73,7 +73,7 @@ const ModalClients: React.FC<Props> = ({
             )}
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormClients
-                    client={currentClient ? currentClient : DummyClient}
+                    client={currentClient ?? DummyClient}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}

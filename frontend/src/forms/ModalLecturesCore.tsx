@@ -66,7 +66,7 @@ const ModalLecturesCore: React.FC<Props> = ({
             onClosed={onModalClose}>
             {object && (
                 <FormLectures
-                    lecture={currentLecture ? currentLecture : DummyLecture}
+                    lecture={currentLecture ?? DummyLecture}
                     object={object}
                     date={date}
                     defaultValuesForLecture={defaultValuesForLecture}

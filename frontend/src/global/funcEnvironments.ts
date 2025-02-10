@@ -20,13 +20,7 @@ export function isEnvProduction(): boolean {
 
 /** Zjistí název prostředí, kde běží aktuální aplikace. */
 export function getEnvName(): string {
-    return isEnvTesting()
-        ? "testing"
-        : isEnvDemo()
-          ? "demo"
-          : process.env.NODE_ENV
-            ? process.env.NODE_ENV
-            : "local"
+    return isEnvTesting() ? "testing" : isEnvDemo() ? "demo" : (process.env.NODE_ENV ?? "local")
 }
 
 /** Zjistí, jestli aktuální aplikace běží na development prostředí. */
