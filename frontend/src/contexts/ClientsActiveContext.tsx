@@ -38,22 +38,8 @@ export class ClientsActiveProvider extends React.Component<{}, State> {
         clients: [],
     }
 
-    // odstraneni zvlastnich znaku pro vyhledavani (viz https://github.com/krisk/Fuse/issues/181)
-    removeSpecialCharacters = (str: string): string => {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    }
-
     loadClients = (): Promise<ListWithActiveClients> => {
-        return ClientService.getActive().then((clients) => {
-            // pridani klice s krestnim jmenem a prijmenim klienta bez diakritiky
-            return clients.map((client) => ({
-                ...client,
-                normalized: [
-                    this.removeSpecialCharacters(client.firstname),
-                    this.removeSpecialCharacters(client.surname),
-                ],
-            }))
-        })
+        return ClientService.getActive()
     }
 
     getClients = (callback = noop): void => {

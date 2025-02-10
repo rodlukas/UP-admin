@@ -43,7 +43,7 @@ const ModalApplications: React.FC<Props> = ({ currentApplication, refresh }) => 
             )}
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormApplications
-                    application={currentApplication ? currentApplication : DummyApplication}
+                    application={currentApplication ?? DummyApplication}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}

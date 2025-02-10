@@ -158,11 +158,7 @@ class DashboardDay extends React.Component<Props, State> {
                                     <CourseName course={lecture.course} />
                                     <LectureNumber lecture={lecture} colorize />
                                     <ModalLectures
-                                        object={
-                                            lecture.group
-                                                ? lecture.group
-                                                : lecture.attendances[0].client
-                                        }
+                                        object={lecture.group ?? lecture.attendances[0].client}
                                         currentLecture={lecture}
                                         refresh={this.props.setUpdateType}
                                     />

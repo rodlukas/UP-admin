@@ -61,7 +61,7 @@ const ModalGroups: React.FC<Props> = ({
             )}
             <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
                 <FormGroups
-                    group={currentGroup ? currentGroup : DummyGroup}
+                    group={currentGroup ?? DummyGroup}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}

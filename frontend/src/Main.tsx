@@ -36,6 +36,7 @@ const Diary = React.lazy(() => lazySafe(() => import("./pages/Diary")))
 // konfigurace Fuse.js vyhledavani
 const searchOptions: IFuseOptions<ClientActiveType> = {
     shouldSort: true,
+    ignoreDiacritics: true,
     threshold: 0.5,
     keys: ["firstname", "surname", "phone", "email", "normalized"],
 }
