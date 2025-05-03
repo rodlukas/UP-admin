@@ -222,13 +222,12 @@ export default class Bank extends React.PureComponent<{}, State> {
                                                     <td
                                                         colSpan={duplicates ? 2 : undefined}
                                                         data-gdpr>
-                                                        {commentObj?.value ? (
-                                                            commentObj.value
-                                                        ) : targetAccountOwnerObj?.value ? (
-                                                            `Vlastník protiúčtu: ${targetAccountOwnerObj.value}`
-                                                        ) : (
-                                                            <NoInfo />
-                                                        )}
+                                                        {commentObj?.value ??
+                                                            (targetAccountOwnerObj?.value ? (
+                                                                `Vlastník protiúčtu: ${targetAccountOwnerObj.value}`
+                                                            ) : (
+                                                                <NoInfo />
+                                                            ))}
                                                     </td>
                                                     {!duplicates && (
                                                         <td data-gdpr>

@@ -9,6 +9,7 @@
         "npm": "10"
     },
     "scripts": {
+        "prepare": "husky",
         "postinstall": "cd frontend && npm ci && npm run build:ci",
         "frontend:test": "cd frontend && npm run test",
         "frontend:audit": "cd frontend && npm run audit",
@@ -16,8 +17,8 @@
         "frontend:lint:css": "cd frontend && npm run lint:css"
     },
     "devDependencies": {
-        "husky": "^4.3.8",
-        "lint-staged": "^10.5.4"
+        "husky": "^9.1.7",
+        "lint-staged": "^15.5.1"
     },
     "lint-staged": {
         "frontend/src/**/*.+(js|jsx|ts|tsx)": [
@@ -26,10 +27,5 @@
         "frontend/src/**/*.css": [
             "npm run frontend:lint:css"
         ]
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
     }
 }
