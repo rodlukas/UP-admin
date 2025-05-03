@@ -19,7 +19,7 @@ export function parseDjangoError(error: AxiosError): null | Record<string, any> 
         // obecna chyba nevztazena ke konkretnimu field,
         // nebo chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
         if ("non_field_errors" in json || "detail" in json) {
-            result = json.non_field_errors || json.detail
+            result = json.non_field_errors ?? json.detail
             // stringify, kdyz prijde objekt
             if (Array.isArray(result) && result.length !== 1) {
                 result = JSON.stringify(result)
