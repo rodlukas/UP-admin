@@ -90,7 +90,7 @@
         "@hot-loader/react-dom": "^17.0.2",
         "@rodlukas/fontawesome-pro-solid-svg-icons": "^5.15.2",
         "@sentry/browser": "^8.55.0",
-        "axios": "^0.30.0",
+        "axios": "^0.30.2",
         "bootstrap": "^4.6.2",
         "chroma-js": "2.4.2",
         "eslint-webpack-plugin": "^4.2.0",
