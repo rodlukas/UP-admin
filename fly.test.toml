@@ -6,7 +6,7 @@
 app = "uspesnyprvnacek-test"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
-primary_region = "waw"
+primary_region = "arn"
 
 [experimental]
 auto_rollback = true
