@@ -17,7 +17,7 @@ class Bank:
     # URL adresa API Fio banky
     FIO_API_URL = "https://fioapi.fio.cz/ib_api/rest/"
     # minimalni zustatek v Kc na Fio uctu (odcita se od aktualniho zustatku)
-    FIO_MIN_BALANCE = 100
+    FIO_MIN_BALANCE = 0
     # mozne chyby na Fio API a prislusne chybove hlasky
     FIO_API_ERRORS = {
         status.HTTP_409_CONFLICT: "překročení intervalu pro dotazování",
