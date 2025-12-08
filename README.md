@@ -470,4 +470,4 @@ instruction could also be rapidly simplified and the app can be launched with a 
 
 Licensed under the [MIT](LICENSE) license.
 
-Copyright (c) 2018–2025 [Lukáš Rod](https://lukasrod.cz/)
+Copyright (c) 2018–2026 [Lukáš Rod](https://lukasrod.cz/)
