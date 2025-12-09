@@ -124,18 +124,6 @@ export function prettyAmount(amount: number): string {
     })
 }
 
-/** Workaround dokud nebude fungovat required v react-selectu - TODO. */
-export function alertRequired(
-    object: string,
-    ...inputVals: (CourseType | ClientType | null)[]
-): boolean {
-    if (inputVals.some((e) => e === null)) {
-        alert(`Není zvolen žádný ${object}!`)
-        return true
-    }
-    return false
-}
-
 /** Vrátí telefonní číslo ve srozumitelném formátu. */
 export function prettyPhone(phone: ClientType["phone"]): string {
     if (!phone) {

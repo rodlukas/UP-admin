@@ -1,5 +1,5 @@
 import * as React from "react"
-import Select, { components, InputProps, OptionTypeBase, Props } from "react-select"
+import Select, { components, InputProps, Props } from "react-select"
 
 import { TEXTS } from "../../global/constants"
 
@@ -8,7 +8,9 @@ import { TEXTS } from "../../global/constants"
  * Řeší problém, kdy po stisku ESC dojde jak ke zavření možností, tak celého modálního okna.
  * Viz https://github.com/rodlukas/UP-admin/issues/84
  */
-const Input: React.FC<InputProps> = (props) => {
+const Input = <Option, IsMulti extends boolean = false>(
+    props: InputProps<Option, IsMulti>,
+): JSX.Element => {
     const [menuWasOpen, setMenuWasOpen] = React.useState(false)
     const propsWithTypes = props
 
@@ -19,7 +21,7 @@ const Input: React.FC<InputProps> = (props) => {
         <components.Input
             {...propsWithTypes}
             // @ts-ignore
-            onKeyUp={(e: KeyboardEvent): void => {
+            onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>): void => {
                 // pokud je ESC keyUp a bylo predtim nastavene menu (menuWasOpen je true),
                 // zastav propagaci eventu a priznak otevreneho menu (menuWasOpen) zrus
                 if (e.key === "Escape" && menuWasOpen) {
@@ -27,7 +29,7 @@ const Input: React.FC<InputProps> = (props) => {
                     setMenuWasOpen(false)
                 }
             }}
-            onKeyDown={(e: KeyboardEvent): void => {
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>): void => {
                 // pokud se stiskl ESC a menu bylo otevrene - projev to do stavu,
                 // pri keyUp je potreba zastavit propagaci eventu
                 // @ts-ignore
@@ -41,10 +43,10 @@ const Input: React.FC<InputProps> = (props) => {
 }
 
 /** Wrapper pro react-select komponentu pro použití nadefinovaného react-selectu napříč aplikací. */
-const ReactSelectWrapper = <OptionType extends OptionTypeBase, IsMulti extends boolean = false>(
-    props: Props<OptionType, IsMulti>,
+const ReactSelectWrapper = <Option, IsMulti extends boolean = false>(
+    props: Props<Option, IsMulti>,
 ): JSX.Element => (
-    <Select<OptionType, IsMulti>
+    <Select<Option, IsMulti>
         {...props}
         styles={{
             ...props.styles,
