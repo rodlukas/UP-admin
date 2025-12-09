@@ -90,7 +90,7 @@ def react_select_insert(driver, element, value):
     element.send_keys(value)
     try:
         # najdi moznosti react-selectu, moznosti maji id zacinajici danym stringem
-        found_option = driver.find_element_by_css_selector("[id^='react-select-']")
+        found_option = driver.find_element_by_css_selector("[role='option']")
     except NoSuchElementException:
         pass
     else:
