@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as chroma from "chroma-js"
 import * as CSS from "csstype"
 
@@ -9,9 +7,10 @@ type CSSTypes = Partial<Record<CSS.Pseudos, CSS.Properties<string | number>>> &
     CSS.Properties<string | number>
 
 // kolecko zobrazene v react-select
-const dot = (color = "#ccc"): CSSTypes => ({
+const dot = (color = "transparent"): CSSTypes => ({
     alignItems: "center",
     display: "flex",
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     ":before": {
         backgroundColor: color,
         borderRadius: 14,
@@ -40,6 +39,7 @@ export const selectStyles = {
                     ? "white"
                     : "black"
                 : data.color,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             ":active": {
                 ...styles[":active"],
                 backgroundColor: isSelected ? data.color : color.alpha(0.3).css(),
@@ -47,6 +47,6 @@ export const selectStyles = {
         }
     },
     input: (styles: CSSTypes) => ({ ...styles, ...dot() }),
-    placeholder: (styles: CSSTypes) => ({ ...styles, ...dot() }),
+    placeholder: (styles: CSSTypes) => ({ ...styles, ...dot("#ccc") }),
     singleValue: (styles: CSSTypes, { data }: any) => ({ ...styles, ...dot(data.color) }),
 }

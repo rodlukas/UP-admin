@@ -42,6 +42,9 @@ const Input = <Option, IsMulti extends boolean = false>(
     /* eslint-enable @typescript-eslint/ban-ts-comment */
 }
 
+const FOCUS_BORDER_COLOR = "#80bdff"
+const FOCUS_BOX_SHADOW = "0 0 0 0.2rem rgba(0, 123, 255, 0.25)"
+
 /** Wrapper pro react-select komponentu pro použití nadefinovaného react-selectu napříč aplikací. */
 const ReactSelectWrapper = <Option, IsMulti extends boolean = false>(
     props: Props<Option, IsMulti>,
@@ -51,6 +54,26 @@ const ReactSelectWrapper = <Option, IsMulti extends boolean = false>(
         styles={{
             ...props.styles,
             ...{
+                // Boostrap4 styling pro react-select
+                control: (provided, state) => {
+                    const focusStyles = state.isFocused
+                        ? {
+                              borderColor: FOCUS_BORDER_COLOR,
+                              boxShadow: FOCUS_BOX_SHADOW,
+                              outline: 0,
+                          }
+                        : {}
+
+                    return {
+                        ...provided,
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                        "&:hover": {
+                            boxShadow: state.isFocused ? FOCUS_BOX_SHADOW : "none",
+                            outline: 0,
+                        },
+                        ...focusStyles,
+                    }
+                },
                 menu: (provided) => ({ ...provided, zIndex: 2 }),
             },
         }}
