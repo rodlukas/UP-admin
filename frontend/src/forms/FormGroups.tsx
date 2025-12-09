@@ -242,8 +242,6 @@ class FormGroups extends React.Component<Props, State> {
                                     Členové
                                 </Label>
                                 <Col sm={10}>
-                                    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                                    {/* @ts-ignore: isMulti components type problem */}
                                     <ReactSelectWrapper<ClientType, true>
                                         {...reactSelectIds<ClientType>("members")}
                                         value={members}

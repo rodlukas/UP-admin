@@ -1,13 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import * as chroma from "chroma-js"
-import * as CSS from "csstype"
+import { CSSObjectWithLabel, StylesConfig } from "react-select"
 
-// typ viz https://github.com/frenic/csstype#usage
-type CSSTypes = Partial<Record<CSS.Pseudos, CSS.Properties<string | number>>> &
-    CSS.Properties<string | number>
+import { CourseType } from "../../types/models"
 
 // kolecko zobrazene v react-select
-const dot = (color = "transparent"): CSSTypes => ({
+const dot = (color = "transparent"): CSSObjectWithLabel => ({
     alignItems: "center",
     display: "flex",
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -27,13 +24,17 @@ const dot = (color = "transparent"): CSSTypes => ({
  *
  * Vychází z: https://react-select.com/home#custom-styles
  */
-export const selectStyles = {
-    control: (styles: CSSTypes) => ({ ...styles, backgroundColor: "white" }),
-    option: (styles: CSSTypes, { data, isFocused, isSelected }: any) => {
+export const selectStyles: StylesConfig<CourseType> = {
+    control: (styles) => ({ ...styles, backgroundColor: "white" }),
+    option: (styles, { data, isFocused, isSelected }) => {
         const color = chroma(data.color)
         return {
             ...styles,
-            backgroundColor: isSelected ? data.color : isFocused ? color.alpha(0.1).css() : null,
+            backgroundColor: isSelected
+                ? data.color
+                : isFocused
+                  ? color.alpha(0.1).css()
+                  : undefined,
             color: isSelected
                 ? chroma.contrast(color, "white") > 2
                     ? "white"
@@ -46,7 +47,10 @@ export const selectStyles = {
             },
         }
     },
-    input: (styles: CSSTypes) => ({ ...styles, ...dot() }),
-    placeholder: (styles: CSSTypes) => ({ ...styles, ...dot("#ccc") }),
-    singleValue: (styles: CSSTypes, { data }: any) => ({ ...styles, ...dot(data.color) }),
+    input: (styles) => ({ ...styles, ...dot() }),
+    placeholder: (styles) => ({ ...styles, ...dot("#ccc") }),
+    singleValue: (styles, { data }) => ({
+        ...styles,
+        ...dot(data.color),
+    }),
 }
