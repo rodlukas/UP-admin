@@ -10,7 +10,6 @@ import {
     CoursesVisibleContextProps,
     WithCoursesVisibleContext,
 } from "../contexts/CoursesVisibleContext"
-import { alertRequired } from "../global/utils"
 import {
     ApplicationPostApi,
     ApplicationPostApiDummy,
@@ -92,9 +91,6 @@ class FormApplications extends React.Component<Props, State> {
     onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
         const { course, client, note } = this.state
-        if (alertRequired("kurz nebo klient", course, client)) {
-            return
-        }
         const courseId = course!.id
         const clientId = client!.id
         let request: Promise<ApplicationType>
@@ -160,6 +156,7 @@ class FormApplications extends React.Component<Props, State> {
                                 </Label>
                                 <Col sm={9}>
                                     <SelectClient
+                                        required
                                         value={client}
                                         options={clients}
                                         onChangeCallback={this.onSelectChange}
@@ -183,6 +180,7 @@ class FormApplications extends React.Component<Props, State> {
                                 </Label>
                                 <Col sm={9}>
                                     <SelectCourse
+                                        required
                                         value={course}
                                         onChangeCallback={this.onSelectChange}
                                         options={this.props.coursesVisibleContext.courses}

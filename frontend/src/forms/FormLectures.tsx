@@ -45,7 +45,7 @@ import {
     TEXTS,
 } from "../global/constants"
 import { prettyDateWithLongDayYear, toISODate, toISOTime } from "../global/funcDateTime"
-import { alertRequired, DefaultValuesForLecture } from "../global/utils"
+import { DefaultValuesForLecture } from "../global/utils"
 import {
     AttendancePostApi,
     AttendancePutApi,
@@ -420,9 +420,6 @@ class FormLectures extends React.Component<Props, State> {
     ): void => {
         e.preventDefault()
         const { prepaid, canceled, course, time, date, duration, prepaidCnt } = this.state
-        if (alertRequired("kurz", course)) {
-            return
-        }
 
         const start = `${date} ${time}`
         const courseId = course!.id
@@ -620,6 +617,7 @@ class FormLectures extends React.Component<Props, State> {
                                 </Col>
                                 <Col sm={4}>
                                     <SelectCourse
+                                        required
                                         value={course}
                                         onChangeCallback={this.onSelectChange}
                                         options={this.props.coursesVisibleContext.courses}

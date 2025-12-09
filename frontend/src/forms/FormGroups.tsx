@@ -24,7 +24,7 @@ import {
     CoursesVisibleContextProps,
     WithCoursesVisibleContext,
 } from "../contexts/CoursesVisibleContext"
-import { alertRequired, clientName } from "../global/utils"
+import { clientName } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import {
     ClientType,
@@ -129,9 +129,6 @@ class FormGroups extends React.Component<Props, State> {
     onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault()
         const { name, members, course, active } = this.state
-        if (alertRequired("kurz", course)) {
-            return
-        }
         const courseId = course!.id
         let request: Promise<GroupType>
         const dataPost: GroupPostApi = {
@@ -233,6 +230,7 @@ class FormGroups extends React.Component<Props, State> {
                                 </Label>
                                 <Col sm={10}>
                                     <SelectCourse
+                                        required
                                         value={course}
                                         onChangeCallback={this.onSelectChange}
                                         options={this.props.coursesVisibleContext.courses}
@@ -244,8 +242,6 @@ class FormGroups extends React.Component<Props, State> {
                                     Členové
                                 </Label>
                                 <Col sm={10}>
-                                    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-                                    {/* @ts-ignore: isMulti components type problem */}
                                     <ReactSelectWrapper<ClientType, true>
                                         {...reactSelectIds<ClientType>("members")}
                                         value={members}
