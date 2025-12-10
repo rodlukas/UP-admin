@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faUsdCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 
 import AttendanceService from "../api/services/AttendanceService"
@@ -25,7 +26,10 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
         AttendanceService.patch(data).then(() => props.funcRefresh())
     }
 
-    const className = `AttendancePaidButton ${props.paid ? "text-success" : "text-danger"}`
+    const className = classNames("AttendancePaidButton", {
+        "text-success": props.paid,
+        "text-danger": !props.paid,
+    })
     const title = `Označit lekci jako ${props.paid ? "NE" : ""}ZAPLACENOU`
     return (
         <>

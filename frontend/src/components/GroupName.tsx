@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import * as React from "react"
 import { Link } from "react-router-dom"
 
@@ -62,7 +63,7 @@ const GroupName: React.FC<GroupNameProps> = ({
         <span className="ClientName GroupName">
             {"id" in group && link ? (
                 <Link to={`${APP_URLS.skupiny.url}/${group.id}`}>
-                    <span className={noWrap ? "text-nowrap" : undefined}>
+                    <span className={classNames({ "text-nowrap": noWrap })}>
                         {showCircle && <CourseCircle color={group.course.color} size={0.5} />}
                         <PlainGroupNameComponent />
                     </span>

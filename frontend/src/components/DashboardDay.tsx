@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import * as React from "react"
 import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 
@@ -132,15 +133,12 @@ class DashboardDay extends React.Component<Props, State> {
                     </ListGroupItem>
                 ) : lectures.length > 0 ? (
                     lectures.map((lecture) => {
-                        let className = lecture.group ? "LectureGroup" : ""
-                        if (lecture.canceled) {
-                            className = "lecture-canceled"
-                        }
+                        const className = classNames("lecture", "lecture_dashboardday", {
+                            LectureGroup: lecture.group,
+                            "lecture-canceled": lecture.canceled,
+                        })
                         return (
-                            <ListGroupItem
-                                key={lecture.id}
-                                data-qa="lecture"
-                                className={`${className} lecture lecture_dashboardday`}>
+                            <ListGroupItem key={lecture.id} data-qa="lecture" className={className}>
                                 <div
                                     className="lecture_heading"
                                     style={{ background: lecture.course.color }}>

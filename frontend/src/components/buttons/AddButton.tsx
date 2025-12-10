@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
 import "./buttons.css"
@@ -13,7 +14,9 @@ type Props = ButtonProps & {
 
 /** Tlačítko pro přidání objektu v aplikaci. */
 const AddButton: React.FC<Props> = ({ content, onClick, small = false, ...props }) => {
-    const className = `AddButton${small ? " small_button" : ""}`
+    const className = classNames("AddButton", {
+        small_button: small,
+    })
     return (
         <Button color="info" className={className} onClick={onClick} {...props}>
             <FontAwesomeIcon icon={faPlus} className="btn_icon" />

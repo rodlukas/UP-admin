@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import * as React from "react"
 import { Badge } from "reactstrap"
 
@@ -56,7 +57,9 @@ type AttendancesProps = {
 
 /** Komponenta zobrazující účasti všech klientů na dané lekci. */
 const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false, funcRefresh }) => {
-    const className = `Attendances${lecture.group ? " AttendancesGroup" : ""}`
+    const className = classNames("Attendances", {
+        AttendancesGroup: lecture.group,
+    })
     return (
         <ul className={className}>
             {lecture.attendances.map((attendance) => (
