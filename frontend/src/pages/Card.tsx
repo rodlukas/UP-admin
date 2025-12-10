@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import * as React from "react"
 import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
@@ -313,19 +314,19 @@ class Card extends React.Component<Props, State> {
                                         {courseLectures.objects.map((lecture) => {
                                             // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
                                             const date = new Date(lecture.start ?? 0)
-                                            let className = lecture.canceled
-                                                ? "lecture-canceled"
-                                                : ""
-                                            if (date > new Date(Date.now())) {
-                                                className += " lecture-future"
-                                            }
-                                            if (lecture.start === null) {
-                                                className += " lecture-prepaid"
-                                            }
+                                            const className = classNames(
+                                                "lecture",
+                                                "lecture_card",
+                                                {
+                                                    "lecture-canceled": lecture.canceled,
+                                                    "lecture-future": date > new Date(Date.now()),
+                                                    "lecture-prepaid": lecture.start === null,
+                                                },
+                                            )
                                             return (
                                                 <ListGroupItem
                                                     key={lecture.id}
-                                                    className={`${className} lecture lecture_card`}
+                                                    className={className}
                                                     data-qa="lecture">
                                                     <div className="lecture_heading">
                                                         <h4>

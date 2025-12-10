@@ -1,4 +1,4 @@
-.LectureGroup {
+.LectureGroup:not(.lecture-canceled) { 
     background-color: #e7e7e7 !important;
 }
 

@@ -123,6 +123,11 @@ module.exports = {
             {
                 selector: "property",
                 format: ["camelCase", "PascalCase", "snake_case", "UPPER_CASE"], // snake_case kvuli DRF API
+                // ignoruj vlastnosti s pomlckami (CSS tridy v classNames objektech)
+                filter: {
+                    regex: "[- ]",
+                    match: false,
+                },
             },
         ],
 

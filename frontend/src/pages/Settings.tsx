@@ -1,6 +1,7 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import { Alert, Col, Container, Label, ListGroup, ListGroupItem, Row, Table } from "reactstrap"
 
@@ -36,7 +37,10 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
         icon={visible ? faCheck : faTimes}
         size="lg"
         {...props}
-        className={visible ? "text-success" : "text-secondary"}
+        className={classNames({
+            "text-success": visible,
+            "text-secondary": !visible,
+        })}
     />
 )
 

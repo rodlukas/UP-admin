@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import Fuse, { IFuseOptions, FuseResult } from "fuse.js"
 import * as React from "react"
 import { NavLink as RouterNavLink, Switch, useLocation } from "react-router-dom"
@@ -128,7 +129,7 @@ const Main: React.FC = () => {
                         search={search}
                         resetSearch={resetSearch}
                     />
-                    <div className={searchVal !== "" ? "d-none" : undefined}>
+                    <div className={classNames({ "d-none": searchVal !== "" })}>
                         <React.Suspense fallback={<Loading />}>
                             <Switch>
                                 <PrivateRoute
