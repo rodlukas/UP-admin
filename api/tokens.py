@@ -4,7 +4,7 @@ Vlastní definice způsobu serializace JWT tokenů.
 
 from rest_framework_simplejwt.serializers import TokenObtainSlidingSerializer
 from rest_framework_simplejwt.models import TokenUser
-from rest_framework_simplejwt.tokens import SlidingToken
+from rest_framework_simplejwt.tokens import Token
 from rest_framework_simplejwt.views import TokenObtainSlidingView
 
 
@@ -16,7 +16,7 @@ class MyTokenObtainSlidingSerializer(TokenObtainSlidingSerializer):
     """
 
     @classmethod
-    def get_token(cls, user: TokenUser) -> SlidingToken:
+    def get_token(cls, user: TokenUser) -> Token:  # type: ignore[override]
         """
         Serializuje JWT token a přidá k němu vlastní claims o uživateli (username, email).
         """

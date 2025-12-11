@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timedelta
-from typing import Union, Optional, List, cast, Type
+from typing import Union, Optional, List, cast, Type, Any
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F, ExpressionWrapper, DateTimeField, Model
@@ -21,7 +21,7 @@ class BaseUtils:
         """
         Pro zaslaný model a jeho pole vrátí help_text z models.py.
         """
-        return model._meta.get_field(field).help_text
+        return model._meta.get_field(field).help_text  # type: ignore[return-value,union-attr]
 
 
 class BaseValidators:

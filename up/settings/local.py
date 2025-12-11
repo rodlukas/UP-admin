@@ -11,6 +11,6 @@ ALLOWED_HOSTS = ["*"]
 # CSP
 CSPURL_LOCALHOST = ("http://*:3000",)
 
-CSP_STYLE_SRC = CSP_STYLE_SRC + CSPURL_LOCALHOST
-CSP_CONNECT_SRC = CSP_CONNECT_SRC + CSPURL_LOCALHOST + ("ws://*:3000",)
-CSP_SCRIPT_SRC = CSP_SCRIPT_SRC + CSPURL_LOCALHOST + ("'unsafe-eval'", "'unsafe-inline'")
+CSP_STYLE_SRC = CSP_STYLE_SRC + CSPURL_LOCALHOST  # type: ignore[assignment]
+CSP_CONNECT_SRC = CSP_CONNECT_SRC + CSPURL_LOCALHOST + ("ws://*:3000",)  # type: ignore[assignment]
+CSP_SCRIPT_SRC = CSP_SCRIPT_SRC + CSPURL_LOCALHOST + ("'unsafe-eval'", "'unsafe-inline'")  # type: ignore[assignment]
