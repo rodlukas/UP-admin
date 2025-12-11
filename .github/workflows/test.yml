@@ -65,7 +65,7 @@ jobs:
 
             # otestuj typy v backendu pres mypy
             - name: 🔍 Python - run tests
-              run: mypy .
+              run: pipenv run mypy .
 
             # PostgreSQL
             # - build custom PSQL container image with CZ locale
