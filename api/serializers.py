@@ -366,7 +366,7 @@ class AttendanceSerializer(serializers.ModelSerializer[Attendance]):
         # v pripade skupiny zkus vyuzit pocitadla predplacenych lekci
         if obj.lecture.group is not None:
             try:
-                prepaid_cnt = cast(
+                prepaid_cnt = cast(  # type: ignore[redundant-cast]
                     int,
                     obj.lecture.group.memberships.values("prepaid_cnt").get(client=obj.client)[
                         "prepaid_cnt"
@@ -548,7 +548,7 @@ class LectureSerializer(serializers.ModelSerializer[Lecture]):
             # jedna se stale o clena skupiny (nebo neni pozadovano projeveni zmen klientu), proved prislusne upravy
             attendancestate_old = attendance.attendancestate
             # uprava ucasti
-            attendance = super().update(attendance, attendance_data)
+            attendance = super().update(attendance, attendance_data)  # type: ignore[arg-type,assignment]
             # proved korekce poctu predplacenych lekci
             LectureHelpers.lecture_corrections(
                 instance, attendance, canceled_old, attendancestate_old
@@ -584,11 +584,12 @@ class LectureSerializer(serializers.ModelSerializer[Lecture]):
 
         # pro nove predplacene lekce proved jen jednoduchou kontrolu (nelze menit parametry platby)
         if "start" in data and data["start"] is None:
+            # TODO: vylepsit kod, aby se dal napsat rozumne typovane
             attendances = []
             if "attendances" in data:
                 attendances = data["attendances"]
             elif self.instance:
-                attendances = self.instance.attendances
+                attendances = self.instance.attendances  # type: ignore[assignment]
             for attendance in attendances:
                 LectureHelpers.validate_prepaid_non_changable_paid_state(attendance)
             return data
