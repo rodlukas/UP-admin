@@ -4,7 +4,7 @@ import {
     AttendanceStatePutApi,
     AttendanceStateType,
 } from "../../types/models"
-import { requestData } from "../request"
+import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 
 const baseUrl = API_URLS.attendanceStates.url
@@ -14,7 +14,7 @@ type List = Item[]
 
 /** Získá všechny stavy účasti. */
 function getAll(): Promise<List> {
-    return requestData<List>({
+    return axiosRequestData<List>({
         url: baseUrl,
         method: API_METHODS.get,
     })
@@ -22,7 +22,7 @@ function getAll(): Promise<List> {
 
 /** Aktualizuje (PUT) stav účasti. */
 function update(context: AttendanceStatePutApi): Promise<Item> {
-    return requestData<Item>({
+    return axiosRequestData<Item>({
         url: `${baseUrl}${context.id}${API_DELIM}`,
         method: API_METHODS.put,
         data: context,
@@ -31,7 +31,7 @@ function update(context: AttendanceStatePutApi): Promise<Item> {
 
 /** Aktualizuje (PATCH) stav účasti. */
 function patch(context: AttendanceStatePatchApi): Promise<Item> {
-    return requestData<Item>({
+    return axiosRequestData<Item>({
         url: `${baseUrl}${context.id}${API_DELIM}`,
         method: API_METHODS.patch,
         data: context,
@@ -40,7 +40,7 @@ function patch(context: AttendanceStatePatchApi): Promise<Item> {
 
 /** Smaže stav účasti. */
 function remove(id: Item["id"]): Promise<AttendanceStateType> {
-    return requestData<AttendanceStateType>({
+    return axiosRequestData<AttendanceStateType>({
         url: `${baseUrl}${id}${API_DELIM}`,
         method: API_METHODS.remove,
     })
@@ -48,7 +48,7 @@ function remove(id: Item["id"]): Promise<AttendanceStateType> {
 
 /** Přidá stav účasti. */
 function create(context: AttendanceStatePostApi): Promise<Item> {
-    return requestData<Item>({
+    return axiosRequestData<Item>({
         url: baseUrl,
         method: API_METHODS.post,
         data: context,

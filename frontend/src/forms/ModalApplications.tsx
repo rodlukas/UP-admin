@@ -5,7 +5,6 @@ import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
 import { ApplicationType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
 
 import FormApplications from "./FormApplications"
 import { DummyApplication } from "./helpers/dummies"
@@ -13,16 +12,14 @@ import { DummyApplication } from "./helpers/dummies"
 type Props = {
     /** Zájemce o kurz. */
     currentApplication?: ApplicationType
-    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
-    refresh: fEmptyVoid
 }
 
 /** Modální okno s formulářem pro zájemce o kurzy. */
-const ModalApplications: React.FC<Props> = ({ currentApplication, refresh }) => {
+const ModalApplications: React.FC<Props> = ({ currentApplication }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose] = useModal()
 
     function onModalClose(): void {
-        processOnModalClose(refresh)
+        processOnModalClose()
     }
 
     return (

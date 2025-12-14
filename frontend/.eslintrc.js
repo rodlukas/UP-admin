@@ -96,7 +96,7 @@ module.exports = {
         "@typescript-eslint/no-shadow": ["error"],
         "@typescript-eslint/consistent-type-definitions": ["error", "type"],
         "@typescript-eslint/no-explicit-any": 0,
-        "@typescript-eslint/no-floating-promises": 0, // TODO aktivovat po oprave #66
+        "@typescript-eslint/no-floating-promises": "error",
         "@typescript-eslint/no-unsafe-assignment": 0,
         "@typescript-eslint/no-unsafe-call": 0,
         "@typescript-eslint/no-unsafe-member-access": 0,

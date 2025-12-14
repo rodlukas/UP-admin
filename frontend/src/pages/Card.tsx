@@ -2,8 +2,13 @@ import classNames from "classnames"
 import * as React from "react"
 import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
-import ClientService from "../api/services/ClientService"
-import GroupService from "../api/services/GroupService"
+import {
+    useClient,
+    useGroup,
+    useGroupsFromClient,
+    useLecturesFromClient,
+    useLecturesFromGroup,
+} from "../api/hooks"
 import APP_URLS from "../APP_URLS"
 import Attendances from "../components/Attendances"
 import BackButton from "../components/buttons/BackButton"
@@ -32,12 +37,12 @@ import {
     courseDuration,
     DefaultValuesForLecture,
     getDefaultValuesForLecture,
-    getLecturesgroupedByCourses,
+    groupObjectsByCourses,
     GroupedObjectsByCourses,
     pageTitle,
 } from "../global/utils"
 import { ModalClientsGroupsData } from "../types/components"
-import { ClientType, GroupType, LectureType, MembershipType } from "../types/models"
+import { ClientType, GroupType, LectureType } from "../types/models"
 import { CustomRouteComponentProps, Model } from "../types/types"
 import "./Card.css"
 
@@ -45,340 +50,242 @@ type ParamProps = { id: Model["id"] }
 
 type Props = CustomRouteComponentProps<ParamProps> & AttendanceStatesContextProps
 
-type State = {
-    /** Zobrazený objekt v kartě - klient/skupina. */
-    object: ClientType | GroupType | null
-    /** Pole lekcí roztříděných podle kurzů. */
-    lectures: GroupedObjectsByCourses<LectureType>
-    /** Skupiny, ve kterých je klient členem. */
-    groupsOfClient: GroupType[]
-    /** Počet zbývajících požadavků na načtení. */
-    pendingLoadingCnt: number
-    /** Předpočítané výchozí hodnoty pro přidávanou lekci. */
-    defaultValuesForLecture?: DefaultValuesForLecture
-}
-
 /** Stránka s kartou klienta nebo skupiny. */
-class Card extends React.Component<Props, State> {
-    isClientPage = (): boolean => this.props.match.path.includes(APP_URLS.klienti.url)
+const Card: React.FC<Props> = (props) => {
+    const isClientPage = React.useCallback((): boolean => {
+        return props.match.path.includes(APP_URLS.klienti.url)
+    }, [props.match.path])
 
-    isClient = (object: State["object"]): object is ClientType =>
+    const id = props.match.params.id
+    const isClientPageValue = isClientPage()
+
+    const isClient = (object: ClientType | GroupType | null): object is ClientType =>
         Boolean(object && "phone" in object)
 
-    isGroup = (object: State["object"]): object is GroupType => Boolean(object && "name" in object)
+    const isGroup = (object: ClientType | GroupType | null): object is GroupType =>
+        Boolean(object && "name" in object)
 
-    state: State = {
-        object: null,
-        lectures: [],
-        groupsOfClient: [],
-        pendingLoadingCnt: this.isClientPage() ? 3 : 2,
-        defaultValuesForLecture: undefined, // pro FormLecture, aby se vybral velmi pravdepodobny kurz/datum a cas pri pridavani lekce
-    }
+    const clientQuery = useClient(isClientPageValue ? id : undefined)
+    const groupQuery = useGroup(!isClientPageValue ? id : undefined)
+    const groupsOfClientQuery = useGroupsFromClient(isClientPageValue ? id : undefined)
+    const lecturesFromClientQuery = useLecturesFromClient(isClientPageValue ? id : undefined, false)
+    const lecturesFromGroupQuery = useLecturesFromGroup(!isClientPageValue ? id : undefined, false)
 
-    loadingDone = (): void =>
-        this.setState((prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt - 1 }))
-
-    getId = (): Model["id"] => this.props.match.params.id
-    getPrevId = (prevProps: Props): Model["id"] => prevProps.match.params.id
-    wasClientPage = (prevProps: Props): boolean =>
-        prevProps.match.path.includes(APP_URLS.klienti.url)
-
-    componentDidMount(): void {
-        this.getObject()
-        this.getLectures()
-        if (this.isClientPage()) {
-            this.getGroupsOfClient()
+    /** Klient nebo skupina zobrazená na kartě. */
+    const object: ClientType | GroupType | null = React.useMemo(() => {
+        if (isClientPageValue) {
+            return clientQuery.data ?? null
         }
-    }
+        return groupQuery.data ?? null
+    }, [isClientPageValue, clientQuery.data, groupQuery.data])
 
-    refreshObjectFromModal = (data: ModalClientsGroupsData): void => {
-        if (!data?.isDeleted) {
-            this.setState(
-                (prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt + 1 }),
-                () => this.getObject(),
-            )
-        } else {
-            this.props.history.push(
-                this.isClientPage() ? APP_URLS.klienti.url : APP_URLS.skupiny.url,
-            )
+    /** Skupiny, jejichž členem je zobrazený klient. */
+    const groupsOfClient: GroupType[] = React.useMemo(() => {
+        return groupsOfClientQuery.data ?? []
+    }, [groupsOfClientQuery.data])
+
+    /** Lekce zobrazeného klienta nebo skupiny, seskupené podle kurzů. */
+    const lectures: GroupedObjectsByCourses<LectureType> = React.useMemo(() => {
+        const lecturesData = isClientPageValue
+            ? lecturesFromClientQuery.data
+            : lecturesFromGroupQuery.data
+        if (!lecturesData) {
+            return []
         }
-    }
+        return groupObjectsByCourses(lecturesData)
+    }, [isClientPageValue, lecturesFromClientQuery.data, lecturesFromGroupQuery.data])
 
-    refresh = (all = true): void => {
-        if (this.isClientPage() && all) {
-            this.setState(
-                (prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt + 3 }),
-                () => {
-                    this.getObject()
-                    this.getLectures()
-                    this.getGroupsOfClient()
-                },
-            )
-        } else {
-            this.setState(
-                (prevState) => ({ pendingLoadingCnt: prevState.pendingLoadingCnt + 2 }),
-                () => {
-                    this.getObject()
-                    this.getLectures()
-                },
-            )
+    /** Výchozí hodnoty pro přidání nové lekce (kurz, datum, čas). */
+    const defaultValuesForLecture: DefaultValuesForLecture | undefined = React.useMemo(() => {
+        if (lectures.length === 0) {
+            return undefined
         }
-    }
+        return getDefaultValuesForLecture(lectures)
+    }, [lectures])
 
-    // pro prechazeni napr. mezi klientem a skupinou (napr. pri kliknuti na skupinu v karte klienta)
-    componentDidUpdate(prevProps: Readonly<Props>): void {
-        if (
-            this.getId() !== this.getPrevId(prevProps) ||
-            this.isClientPage() !== this.wasClientPage(prevProps)
-        ) {
-            this.refresh()
+    // Aktualizace title
+    React.useEffect(() => {
+        if (object) {
+            const titleName = isClient(object) ? clientName(object) : object.name
+            const pageName = isClient(object)
+                ? APP_URLS.klienti_karta.title
+                : APP_URLS.skupiny_karta.title
+            document.title = pageTitle(`${titleName} – ${pageName}`)
         }
-    }
+    }, [object])
 
-    refreshAfterLectureChanges = (): void => {
-        this.refresh(false)
-    }
+    const isLoading =
+        (isClientPageValue ? clientQuery.isLoading : groupQuery.isLoading) ||
+        (isClientPageValue ? groupsOfClientQuery.isLoading : false) ||
+        (isClientPageValue
+            ? lecturesFromClientQuery.isLoading
+            : lecturesFromGroupQuery.isLoading) ||
+        !props.attendanceStatesContext.isLoaded
 
-    goBack = (): void => {
-        this.props.history.goBack()
-    }
-
-    getGroupsOfClient = (id = this.getId()): void => {
-        GroupService.getAllFromClient(id).then((groupsOfClient) =>
-            this.setState({ groupsOfClient }, this.loadingDone),
-        )
-    }
-
-    getObject = (isClient = this.isClientPage(), id = this.getId()): void => {
-        const service = isClient ? ClientService : GroupService
-        const request: Promise<ClientType | GroupType> = service.get(id)
-        request.then((object) => {
-            this.refreshTitle(object)
-            this.setState({ object }, this.loadingDone)
-        })
-    }
-
-    refreshTitle = (object: GroupType | ClientType): void => {
-        const titleName = this.isClient(object) ? clientName(object) : object.name
-        const pageName = this.isClient(object)
-            ? APP_URLS.klienti_karta.title
-            : APP_URLS.skupiny_karta.title
-        document.title = pageTitle(`${titleName} – ${pageName}`)
-    }
-
-    getLectures = (): void => {
-        const request = getLecturesgroupedByCourses(this.getId(), this.isClientPage())
-        request.then((lecturesGroupedByCourses) => {
-            this.setState(
-                {
-                    lectures: lecturesGroupedByCourses,
-                    defaultValuesForLecture: getDefaultValuesForLecture(lecturesGroupedByCourses),
-                },
-                this.loadingDone,
-            )
-        })
-    }
-
-    // uprava nadrazeneho objektu (tohoto) po uprave v synovi (prepaid_cnt)
-    funcRefreshPrepaidCnt = (
-        id: MembershipType["id"],
-        prepaidCnt: MembershipType["prepaid_cnt"],
-    ): void => {
-        this.setState((prevState) => {
-            const newLoadingState = {
-                pendingLoadingCnt: prevState.pendingLoadingCnt + 1,
+    const refreshObjectFromModal = React.useCallback(
+        (data: ModalClientsGroupsData): void => {
+            if (data?.isDeleted) {
+                props.history.push(isClientPageValue ? APP_URLS.klienti.url : APP_URLS.skupiny.url)
             }
-            if (this.isClient(prevState.object) || prevState.object === null) {
-                // ...prevState kvuli https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18365
-                return {
-                    ...prevState,
-                    ...newLoadingState,
-                }
-            }
-            let successUpdateCnt = 0
-            const memberships = prevState.object.memberships.map((membership) => {
-                if (membership.id === id) {
-                    successUpdateCnt++
-                    return { ...membership, prepaid_cnt: prepaidCnt }
-                } else {
-                    return membership
-                }
-            })
-            if (successUpdateCnt !== 1) {
-                throw new Error(
-                    "Nepodařilo se správně aktualizovat počet předplacených lekcí v nadřazené komponentě",
-                )
-            }
-            return {
-                object: { ...prevState.object, memberships },
-                ...newLoadingState,
-            }
-        }, this.getLectures)
-    }
+        },
+        [props.history, isClientPageValue],
+    )
 
-    render(): React.ReactNode {
-        const { object, lectures, defaultValuesForLecture, groupsOfClient, pendingLoadingCnt } =
-            this.state
-        return (
-            <>
-                <Container>
-                    <Heading
-                        title={
-                            <>
-                                {`Karta ${this.isClientPage() ? "klienta" : "skupiny"}`}:{" "}
-                                {this.isClient(object) ? (
-                                    <ClientName client={object} bold />
-                                ) : (
-                                    object && <GroupName group={object} bold />
-                                )}
-                            </>
-                        }
-                        buttons={
-                            <>
-                                <BackButton onClick={this.goBack} />
-                                {this.isClient(object) ? (
-                                    <ModalClients
-                                        currentClient={object}
-                                        refresh={this.refreshObjectFromModal}
-                                    />
-                                ) : (
-                                    object && (
-                                        <ModalGroups
-                                            currentGroup={object}
-                                            refresh={this.refreshObjectFromModal}
-                                        />
-                                    )
-                                )}
-                                <ModalLectures
-                                    defaultValuesForLecture={defaultValuesForLecture}
-                                    object={object}
-                                    refresh={this.refreshAfterLectureChanges}
+    const goBack = React.useCallback((): void => {
+        props.history.goBack()
+    }, [props.history])
+
+    return (
+        <>
+            <Container>
+                <Heading
+                    title={
+                        <>
+                            {`Karta ${isClientPageValue ? "klienta" : "skupiny"}`}:{" "}
+                            {isClient(object) ? (
+                                <ClientName client={object} bold />
+                            ) : (
+                                object && <GroupName group={object} bold />
+                            )}
+                        </>
+                    }
+                    buttons={
+                        <>
+                            <BackButton onClick={goBack} />
+                            {isClient(object) ? (
+                                <ModalClients
+                                    currentClient={object}
+                                    refresh={(data) =>
+                                        refreshObjectFromModal(data as ModalClientsGroupsData)
+                                    }
                                 />
-                            </>
-                        }
-                    />
-                </Container>
-                {pendingLoadingCnt === 0 && this.props.attendanceStatesContext.isLoaded ? (
-                    <Container>
-                        <div className="CardInfo">
-                            {object && !object.active && (
-                                <Alert color="warning" className="mt-0">
-                                    {this.isClient(object)
-                                        ? TEXTS.WARNING_INACTIVE_CLIENT
-                                        : TEXTS.WARNING_INACTIVE_GROUP}
-                                </Alert>
+                            ) : (
+                                object && (
+                                    <ModalGroups
+                                        currentGroup={object}
+                                        refresh={(data) =>
+                                            refreshObjectFromModal(data as ModalClientsGroupsData)
+                                        }
+                                    />
+                                )
                             )}
-                            {this.isClient(object) && (
-                                <ListGroup>
-                                    <ListGroupItem>
-                                        <b>Telefon:</b> <ClientPhone phone={object.phone} />
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>E-mail:</b> <ClientEmail email={object.email} />
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>Skupiny:</b> <GroupsList groups={groupsOfClient} />
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>Poznámka:</b> <ClientNote note={object.note} />
-                                    </ListGroupItem>
-                                </ListGroup>
-                            )}
-                        </div>
-                        {this.isGroup(object) && (
-                            <PrepaidCounters
-                                isGroupActive={object.active}
-                                memberships={object.memberships}
-                                funcRefreshPrepaidCnt={this.funcRefreshPrepaidCnt}
+                            <ModalLectures
+                                defaultValuesForLecture={defaultValuesForLecture}
+                                object={object}
                             />
+                        </>
+                    }
+                />
+            </Container>
+            {!isLoading ? (
+                <Container>
+                    <div className="CardInfo">
+                        {object && !object.active && (
+                            <Alert color="warning" className="mt-0">
+                                {isClient(object)
+                                    ? TEXTS.WARNING_INACTIVE_CLIENT
+                                    : TEXTS.WARNING_INACTIVE_GROUP}
+                            </Alert>
                         )}
-                        <h2>Lekce</h2>
-                        <Row className="justify-content-center">
-                            {lectures.map((courseLectures) => (
-                                <Col
-                                    key={courseLectures.course.id}
-                                    sm="10"
-                                    md="8"
-                                    lg="6"
-                                    xl={this.isGroup(object) ? 5 : 4}
-                                    data-qa="card_course">
-                                    <ListGroup>
-                                        <ListGroupItem
-                                            style={{ background: courseLectures.course.color }}>
-                                            <h4
-                                                className="text-center mb-0 Card_courseHeading"
-                                                data-qa="card_course_name">
-                                                {courseLectures.course.name}
-                                            </h4>
-                                        </ListGroupItem>
-                                        {courseLectures.objects.map((lecture) => {
-                                            // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
-                                            const date = new Date(lecture.start ?? 0)
-                                            const className = classNames(
-                                                "lecture",
-                                                "lecture_card",
-                                                {
-                                                    "lecture-canceled": lecture.canceled,
-                                                    "lecture-future": date > new Date(Date.now()),
-                                                    "lecture-prepaid": lecture.start === null,
-                                                },
-                                            )
-                                            return (
-                                                <ListGroupItem
-                                                    key={lecture.id}
-                                                    className={className}
-                                                    data-qa="lecture">
-                                                    <div className="lecture_heading">
-                                                        <h4>
-                                                            <span
-                                                                data-qa="lecture_start"
-                                                                id={`Card_CourseDuration_${lecture.id}`}>
-                                                                {lecture.start !== null
-                                                                    ? `${prettyDateWithDayYear(
-                                                                          date,
-                                                                      )} – ${prettyTime(date)}`
-                                                                    : "Předplacená lekce"}
-                                                            </span>
-                                                            <UncontrolledTooltipWrapper
-                                                                target={`Card_CourseDuration_${lecture.id}`}>
-                                                                {courseDuration(lecture.duration)}
-                                                            </UncontrolledTooltipWrapper>
-                                                        </h4>
-                                                        <LectureNumber lecture={lecture} />
-                                                        <ModalLectures
-                                                            object={object}
-                                                            currentLecture={lecture}
-                                                            refresh={
-                                                                this.refreshAfterLectureChanges
-                                                            }
-                                                        />
-                                                    </div>
-                                                    <div className="lecture_content">
-                                                        <Attendances
-                                                            lecture={lecture}
-                                                            funcRefresh={
-                                                                this.refreshAfterLectureChanges
-                                                            }
-                                                            showClient={this.isGroup(object)}
-                                                        />
-                                                    </div>
-                                                </ListGroupItem>
-                                            )
-                                        })}
-                                    </ListGroup>
-                                </Col>
-                            ))}
-                            {lectures.length === 0 && (
-                                <p className="text-muted text-center">Žádné lekce</p>
-                            )}
-                        </Row>
-                    </Container>
-                ) : (
-                    <Loading />
-                )}
-            </>
-        )
-    }
+                        {isClient(object) && (
+                            <ListGroup>
+                                <ListGroupItem>
+                                    <b>Telefon:</b> <ClientPhone phone={object.phone} />
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <b>E-mail:</b> <ClientEmail email={object.email} />
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <b>Skupiny:</b> <GroupsList groups={groupsOfClient} />
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <b>Poznámka:</b> <ClientNote note={object.note} />
+                                </ListGroupItem>
+                            </ListGroup>
+                        )}
+                    </div>
+                    {isGroup(object) && (
+                        <PrepaidCounters
+                            isGroupActive={object.active}
+                            memberships={object.memberships}
+                        />
+                    )}
+                    <h2>Lekce</h2>
+                    <Row className="justify-content-center">
+                        {lectures.map((courseLectures) => (
+                            <Col
+                                key={courseLectures.course.id}
+                                sm="10"
+                                md="8"
+                                lg="6"
+                                xl={isGroup(object) ? 5 : 4}
+                                data-qa="card_course">
+                                <ListGroup>
+                                    <ListGroupItem
+                                        style={{ background: courseLectures.course.color }}>
+                                        <h4
+                                            className="text-center mb-0 Card_courseHeading"
+                                            data-qa="card_course_name">
+                                            {courseLectures.course.name}
+                                        </h4>
+                                    </ListGroupItem>
+                                    {courseLectures.objects.map((lecture) => {
+                                        // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
+                                        const date = new Date(lecture.start ?? 0)
+                                        const className = classNames("lecture", "lecture_card", {
+                                            "lecture-canceled": lecture.canceled,
+                                            "lecture-future": date > new Date(Date.now()),
+                                            "lecture-prepaid": lecture.start === null,
+                                        })
+                                        return (
+                                            <ListGroupItem
+                                                key={lecture.id}
+                                                className={className}
+                                                data-qa="lecture">
+                                                <div className="lecture_heading">
+                                                    <h4>
+                                                        <span
+                                                            data-qa="lecture_start"
+                                                            id={`Card_CourseDuration_${lecture.id}`}>
+                                                            {lecture.start !== null
+                                                                ? `${prettyDateWithDayYear(
+                                                                      date,
+                                                                  )} – ${prettyTime(date)}`
+                                                                : "Předplacená lekce"}
+                                                        </span>
+                                                        <UncontrolledTooltipWrapper
+                                                            target={`Card_CourseDuration_${lecture.id}`}>
+                                                            {courseDuration(lecture.duration)}
+                                                        </UncontrolledTooltipWrapper>
+                                                    </h4>
+                                                    <LectureNumber lecture={lecture} />
+                                                    <ModalLectures
+                                                        object={object}
+                                                        currentLecture={lecture}
+                                                    />
+                                                </div>
+                                                <div className="lecture_content">
+                                                    <Attendances
+                                                        lecture={lecture}
+                                                        showClient={isGroup(object)}
+                                                    />
+                                                </div>
+                                            </ListGroupItem>
+                                        )
+                                    })}
+                                </ListGroup>
+                            </Col>
+                        ))}
+                        {lectures.length === 0 && (
+                            <p className="text-muted text-center">Žádné lekce</p>
+                        )}
+                    </Row>
+                </Container>
+            ) : (
+                <Loading />
+            )}
+        </>
+    )
 }
 
 export default WithAttendanceStatesContext(Card)

@@ -6,7 +6,7 @@ import APP_URLS from "../APP_URLS"
 import Notification from "../components/Notification"
 import history from "../global/history"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
-import { AuthorizationType, TokenCodedType } from "../types/models"
+import { AuthorizationType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
 import Token from "./Token"
@@ -35,107 +35,95 @@ type AuthContextInterface = Context | undefined
 /** Context pro správu přihlášení uživatele. */
 const AuthContext = React.createContext<AuthContextInterface>(undefined)
 
-type Props = {}
+// prevod na sekundy (decoded.exp je v sekundach)
+const getCurrentDate = (): number => Date.now() / 1000
 
-class AuthProvider extends React.Component<Props, State> {
-    state: State = {
-        isLoading: false,
-        isAuth: false,
-    }
+const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [isLoading, setIsLoading] = React.useState(false)
+    const [isAuth, setIsAuth] = React.useState(false)
 
-    componentDidMount(): void {
-        this.isAuthenticated(false)
-    }
-
-    // prevod na sekundy (decoded.exp je v sekundach)
-    static getCurrentDate(): number {
-        return Date.now() / 1000
-    }
-
-    logout = (): void => {
-        Token.remove()
-        this.isAuthenticated(false)
-        // z jakekoliv stranky presmeruj uzivatele na prihlaseni (napr. na strance nenalezeno ho to jinak ponecha i po
-        // odhlaseni
-        history.push(APP_URLS.prihlasit.url)
-    }
-
-    isAuthenticated = (refreshExpiringToken = true): void => {
+    const isAuthenticated = React.useCallback((refreshExpiringToken = true): void => {
         const token = Token.get()
-        this.setState({
-            isAuth: token !== null && !this.isTokenExpired(token, refreshExpiringToken),
-        })
-    }
+        if (token === null) {
+            setIsAuth(false)
+            return
+        }
 
-    isTokenExpired = (token: TokenCodedType, refreshExpiringToken: boolean): boolean => {
         try {
             const decodedToken = Token.decodeToken(token)
             if (refreshExpiringToken) {
-                const dif = decodedToken.exp - AuthProvider.getCurrentDate()
+                const dif = decodedToken.exp - getCurrentDate()
                 Token.logToConsole(token, decodedToken, dif)
                 if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
                     // token jeste plati, ale prodluz jeho platnost
-                    this.refreshToken(token)
+                    const data = { token }
+                    LoginService.refresh(data)
+                        .then(({ token: newToken }) => {
+                            Token.save(newToken)
+                            setIsAuth(true)
+                        })
+                        .catch(() => {
+                            setIsAuth(false)
+                            toast(
+                                <Notification
+                                    type={toast.TYPE.WARNING}
+                                    text="Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!"
+                                />,
+                                {
+                                    type: toast.TYPE.WARNING,
+                                },
+                            )
+                        })
+                    return
                 }
             }
             // je zaslany token expirovany? (pokud byl odeslan pozadavek na prodlouzeni platnosti, bere se i tak
             // platnost puvodniho tokenu)
-            return decodedToken.exp < AuthProvider.getCurrentDate()
+            setIsAuth(decodedToken.exp >= getCurrentDate())
         } catch (err) {
             console.error(err)
-            return true
+            setIsAuth(false)
         }
-    }
+    }, [])
 
-    refreshToken = (oldToken: TokenCodedType): void => {
-        const data = { token: oldToken }
-        LoginService.refresh(data)
-            .then(({ token }) => {
-                Token.save(token)
-                this.isAuthenticated(false)
-            })
-            .catch(() => {
-                this.isAuthenticated(false)
-                toast(
-                    <Notification
-                        type={toast.TYPE.WARNING}
-                        text="Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!"
-                    />,
-                    {
-                        type: toast.TYPE.WARNING,
-                    },
-                )
-            })
-    }
-
-    login = (credentials: AuthorizationType): void => {
-        this.setAuthLoading(true)
+    const login = React.useCallback((credentials: AuthorizationType): void => {
+        setIsLoading(true)
         LoginService.authenticate(credentials)
             .then(({ token }) => {
                 Token.save(token)
-                this.setAuthLoading(false)
+                setIsLoading(false)
             })
-            .catch(() => this.setAuthLoading(false))
-    }
+            .catch(() => setIsLoading(false))
+    }, [])
 
-    setAuthLoading = (newLoading: boolean): void => this.setState({ isLoading: newLoading })
+    const logout = React.useCallback((): void => {
+        Token.remove()
+        isAuthenticated(false)
+        // z jakekoliv stranky presmeruj uzivatele na prihlaseni (napr. na strance nenalezeno ho to jinak ponecha i po
+        // odhlaseni
+        history.push(APP_URLS.prihlasit.url)
+    }, [isAuthenticated])
 
-    componentDidUpdate(_prevProps: Props, prevState: State): void {
-        if (prevState.isLoading && !this.state.isLoading) {
-            this.isAuthenticated(false)
+    React.useEffect(() => {
+        isAuthenticated(false)
+    }, [isAuthenticated])
+
+    React.useEffect(() => {
+        if (!isLoading) {
+            isAuthenticated(false)
         }
-    }
+    }, [isLoading, isAuthenticated])
 
-    render = (): React.ReactNode => (
+    return (
         <AuthContext.Provider
             value={{
-                isAuth: this.state.isAuth,
-                isLoading: this.state.isLoading,
-                isAuthenticated: this.isAuthenticated,
-                logout: this.logout,
-                login: this.login,
+                isAuth,
+                isLoading,
+                isAuthenticated,
+                logout,
+                login,
             }}>
-            {this.props.children}
+            {children}
         </AuthContext.Provider>
     )
 }

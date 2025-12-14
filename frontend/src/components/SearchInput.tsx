@@ -18,11 +18,11 @@ type Props = {
 /** Komponenta zobrazující pole pro vyhledávání. */
 const SearchInput: React.FC<Props> = (props) => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
-    const { funcRefresh: clientsActiveContextFuncRefresh } = useClientsActiveContext()
+    const { funcHardRefresh: clientsActiveContextFuncHardRefresh } = useClientsActiveContext()
 
     React.useEffect(() => {
-        clientsActiveContextFuncRefresh()
-    }, [clientsActiveContextFuncRefresh])
+        clientsActiveContextFuncHardRefresh()
+    }, [clientsActiveContextFuncHardRefresh])
 
     function onSearchChange(e: React.ChangeEvent<HTMLInputElement>): void {
         props.onSearchChange(e.currentTarget.value)

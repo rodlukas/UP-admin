@@ -11,50 +11,50 @@ import { CustomRouteComponentProps } from "../types/types"
 
 type Props = CustomRouteComponentProps
 
-type State = {
-    /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní. */
-    updateType: number
-}
-
 /** Stránka s hlavním přehledem - dnešní lekce a banka. */
-export default class Dashboard extends React.Component<Props, State> {
-    state: State = {
-        updateType: DASHBOARDDAY_UPDATE_TYPE.NONE,
-    }
+const Dashboard: React.FC<Props> = () => {
+    /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní. */
+    const [updateType, setUpdateTypeState] = React.useState<DASHBOARDDAY_UPDATE_TYPE>(
+        DASHBOARDDAY_UPDATE_TYPE.NONE,
+    )
 
-    getDate = (): string => toISODate(new Date())
+    const getDate = React.useCallback((): string => toISODate(new Date()), [])
 
-    setUpdateType = (): void =>
-        this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED }, () =>
-            this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.NONE }),
-        )
+    const setUpdateType = React.useCallback((): void => {
+        setUpdateTypeState(DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED)
+    }, [])
 
-    render(): React.ReactNode {
-        return (
-            <Container>
-                <Row className="justify-content-center">
-                    <Col sm="11" md="8" lg="8" xl="6">
-                        <Heading
-                            title={
-                                <>
-                                    Dnešní lekce{" "}
-                                    <ModalLecturesWizard refresh={this.setUpdateType} />
-                                </>
-                            }
-                        />
-                        <DashboardDay
-                            date={this.getDate()}
-                            setUpdateType={this.setUpdateType}
-                            updateType={this.state.updateType}
-                            withoutWaiting
-                        />
-                    </Col>
-                    <Col sm="11" md="8" lg="8" xl="6">
-                        <Heading title="Bankovní účet" />
-                        <Bank />
-                    </Col>
-                </Row>
-            </Container>
-        )
-    }
+    React.useEffect(() => {
+        if (updateType === DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED) {
+            setUpdateTypeState(DASHBOARDDAY_UPDATE_TYPE.NONE)
+        }
+    }, [updateType])
+
+    return (
+        <Container>
+            <Row className="justify-content-center">
+                <Col sm="11" md="8" lg="8" xl="6">
+                    <Heading
+                        title={
+                            <>
+                                Dnešní lekce <ModalLecturesWizard />
+                            </>
+                        }
+                    />
+                    <DashboardDay
+                        date={getDate()}
+                        setUpdateType={setUpdateType}
+                        updateType={updateType}
+                        withoutWaiting
+                    />
+                </Col>
+                <Col sm="11" md="8" lg="8" xl="6">
+                    <Heading title="Bankovní účet" />
+                    <Bank />
+                </Col>
+            </Row>
+        </Container>
+    )
 }
+
+export default Dashboard

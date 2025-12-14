@@ -1,8 +1,7 @@
 import * as React from "react"
 import { Col, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 
-import ApplicationService from "../api/services/ApplicationService"
-import ClientService from "../api/services/ClientService"
+import { useClients, useCreateApplication, useUpdateApplication } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Loading from "../components/Loading"
@@ -36,186 +35,167 @@ type Props = CoursesVisibleContextProps & {
     setFormDirty: fEmptyVoid
 }
 
-type State = {
-    /** Kurz. */
-    course: ApplicationPostApiDummy["course"]
-    /** Klient. */
-    client: ApplicationPostApiDummy["client"]
-    /** Poznámka k zájemci o kurz. */
-    note: ApplicationPostApiDummy["note"]
-    /** Pole klientů. */
-    clients: ClientType[]
-    /** Probíhá načítání (true). */
-    isLoading: boolean
-    /** Formulář byl odeslán (true). */
-    isSubmit: boolean
-}
-
 /** Formulář pro zájemce o kurzy. */
-class FormApplications extends React.Component<Props, State> {
-    isApplication = (application: Props["application"]): application is ApplicationType =>
+const FormApplications: React.FC<Props> = (props) => {
+    const isApplication = (application: Props["application"]): application is ApplicationType =>
         "id" in application
 
-    state: State = {
-        course: this.props.application.course,
-        client: this.props.application.client,
-        note: this.props.application.note,
-        clients: [],
-        isLoading: true,
-        isSubmit: false,
-    }
+    const { data: clientsData = [], isLoading: clientsLoading } = useClients()
+    const createApplication = useCreateApplication()
+    const updateApplication = useUpdateApplication()
 
-    onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.props.setFormDirty()
-        const target = e.currentTarget
-        const value = target.type === "checkbox" ? target.checked : target.value
-        // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState((prevState) => ({
-            ...prevState,
-            [target.id]: value,
-        }))
-    }
+    /** Kurz zájemce. */
+    const [course, setCourse] = React.useState<ApplicationPostApiDummy["course"]>(
+        props.application.course,
+    )
+    /** Klient. */
+    const [client, setClient] = React.useState<ApplicationPostApiDummy["client"]>(
+        props.application.client,
+    )
+    /** Poznámka k zájemci o kurz. */
+    const [note, setNote] = React.useState<ApplicationPostApiDummy["note"]>(props.application.note)
 
-    onSelectChange = (name: "course" | "client", obj?: CourseType | ClientType | null): void => {
-        this.props.setFormDirty()
-        if (obj === undefined) {
-            obj = null
-        }
-        // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState((prevState) => ({
-            ...prevState,
-            [name]: obj,
-        }))
-    }
+    const onChange = React.useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>): void => {
+            props.setFormDirty()
+            const target = e.currentTarget
+            const value = target.type === "checkbox" ? target.checked : target.value
+            if (target.id === "note") {
+                setNote(value as string)
+            }
+        },
+        [props],
+    )
 
-    onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault()
-        const { course, client, note } = this.state
-        const courseId = course!.id
-        const clientId = client!.id
-        let request: Promise<ApplicationType>
-        const dataPost: ApplicationPostApi = { course_id: courseId, client_id: clientId, note }
-        if (this.isApplication(this.props.application)) {
-            const dataPut: ApplicationPutApi = { ...dataPost, id: this.props.application.id }
-            request = ApplicationService.update(dataPut)
-        } else {
-            request = ApplicationService.create(dataPost)
-        }
-        this.setState({ isSubmit: true }, () => {
-            request
-                .then(() => this.props.funcForceClose())
-                .catch(() => this.setState({ isSubmit: false }))
-        })
-    }
+    const onSelectChange = React.useCallback(
+        (name: "course" | "client", obj?: CourseType | ClientType | null): void => {
+            props.setFormDirty()
+            if (obj === undefined) {
+                obj = null
+            }
+            if (name === "course") {
+                setCourse(obj as CourseType | null)
+            } else if (name === "client") {
+                setClient(obj as ClientType | null)
+            }
+        },
+        [props],
+    )
 
-    close = (): void => {
-        this.props.funcClose()
-    }
+    const isApplicationValue = isApplication(props.application)
 
-    processAdditionOfClient = (newClient: ClientType): void => {
-        this.props.setFormDirty()
-        this.setState({
-            client: newClient,
-        })
-    }
+    const onSubmit = React.useCallback(
+        (e: React.FormEvent<HTMLFormElement>): void => {
+            e.preventDefault()
+            const courseId = course!.id
+            const clientId = client!.id
+            const dataPost: ApplicationPostApi = { course_id: courseId, client_id: clientId, note }
 
-    getClientsAfterAddition = (): void => {
-        this.setState({ isLoading: true }, this.getClients)
-    }
+            if (isApplication(props.application)) {
+                const dataPut: ApplicationPutApi = { ...dataPost, id: props.application.id }
+                updateApplication.mutate(dataPut, {
+                    onSuccess: () => {
+                        props.funcForceClose()
+                    },
+                })
+            } else {
+                createApplication.mutate(dataPost, {
+                    onSuccess: () => {
+                        props.funcForceClose()
+                    },
+                })
+            }
+        },
+        [course, client, note, props, createApplication, updateApplication],
+    )
 
-    getClients = (): void => {
-        ClientService.getAll().then((clients) =>
-            this.setState({
-                clients,
-                isLoading: false,
-            }),
-        )
-    }
+    const close = React.useCallback((): void => {
+        props.funcClose()
+    }, [props])
 
-    componentDidMount(): void {
-        this.getClients()
-        this.props.coursesVisibleContext.funcRefresh()
-    }
+    const processAdditionOfClient = React.useCallback(
+        (newClient: ClientType): void => {
+            props.setFormDirty()
+            setClient(newClient)
+        },
+        [props],
+    )
 
-    render(): React.ReactNode {
-        const { client, clients, course, note } = this.state
-        return (
-            <Form onSubmit={this.onSubmit} data-qa="form_application">
-                <ModalHeader toggle={this.close}>
-                    {this.isApplication(this.props.application) ? "Úprava" : "Přidání"} zájemce o
-                    kurz
-                </ModalHeader>
-                <ModalBody>
-                    {!this.props.coursesVisibleContext.isLoaded || this.state.isLoading ? (
-                        <Loading />
-                    ) : (
-                        <>
-                            <FormGroup row className="required">
-                                <Label for="client" sm={3}>
-                                    Klient
-                                </Label>
-                                <Col sm={9}>
-                                    <SelectClient
-                                        required
-                                        value={client}
-                                        options={clients}
-                                        onChangeCallback={this.onSelectChange}
-                                    />
-                                    <Or
-                                        content={
-                                            <ModalClients
-                                                refresh={this.getClientsAfterAddition}
-                                                processAdditionOfClient={
-                                                    this.processAdditionOfClient
-                                                }
-                                                withOr
-                                            />
-                                        }
-                                    />
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row className="required">
-                                <Label for="course" sm={3}>
-                                    Kurz
-                                </Label>
-                                <Col sm={9}>
-                                    <SelectCourse
-                                        required
-                                        value={course}
-                                        onChangeCallback={this.onSelectChange}
-                                        options={this.props.coursesVisibleContext.courses}
-                                    />
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label for="note" sm={3}>
-                                    Poznámka
-                                </Label>
-                                <Col sm={9}>
-                                    <Input
-                                        type="textarea"
-                                        id="note"
-                                        value={note}
-                                        onChange={this.onChange}
-                                        data-qa="application_field_note"
-                                        spellCheck
-                                    />
-                                </Col>
-                            </FormGroup>
-                        </>
-                    )}
-                </ModalBody>
-                <ModalFooter>
-                    <CancelButton onClick={this.close} />{" "}
-                    <SubmitButton
-                        loading={this.state.isSubmit}
-                        data-qa="button_submit_application"
-                        content={this.isApplication(this.props.application) ? "Uložit" : "Přidat"}
-                    />
-                </ModalFooter>
-            </Form>
-        )
-    }
+    const isLoading = clientsLoading || !props.coursesVisibleContext.isLoaded
+    const isSubmit = createApplication.isPending || updateApplication.isPending
+
+    return (
+        <Form onSubmit={onSubmit} data-qa="form_application">
+            <ModalHeader toggle={close}>
+                {isApplicationValue ? "Úprava" : "Přidání"} zájemce o kurz
+            </ModalHeader>
+            <ModalBody>
+                {isLoading ? (
+                    <Loading />
+                ) : (
+                    <>
+                        <FormGroup row className="required">
+                            <Label for="client" sm={3}>
+                                Klient
+                            </Label>
+                            <Col sm={9}>
+                                <SelectClient
+                                    required
+                                    value={client}
+                                    options={clientsData}
+                                    onChangeCallback={onSelectChange}
+                                />
+                                <Or
+                                    content={
+                                        <ModalClients
+                                            processAdditionOfClient={processAdditionOfClient}
+                                            withOr
+                                        />
+                                    }
+                                />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row className="required">
+                            <Label for="course" sm={3}>
+                                Kurz
+                            </Label>
+                            <Col sm={9}>
+                                <SelectCourse
+                                    required
+                                    value={course}
+                                    onChangeCallback={onSelectChange}
+                                    options={props.coursesVisibleContext.courses}
+                                />
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Label for="note" sm={3}>
+                                Poznámka
+                            </Label>
+                            <Col sm={9}>
+                                <Input
+                                    type="textarea"
+                                    id="note"
+                                    value={note}
+                                    onChange={onChange}
+                                    data-qa="application_field_note"
+                                    spellCheck
+                                />
+                            </Col>
+                        </FormGroup>
+                    </>
+                )}
+            </ModalBody>
+            <ModalFooter>
+                <CancelButton onClick={close} />{" "}
+                <SubmitButton
+                    loading={isSubmit}
+                    data-qa="button_submit_application"
+                    content={isApplicationValue ? "Uložit" : "Přidat"}
+                />
+            </ModalFooter>
+        </Form>
+    )
 }
 
 export default WithCoursesVisibleContext(FormApplications)

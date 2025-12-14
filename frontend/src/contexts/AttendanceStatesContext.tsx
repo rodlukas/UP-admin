@@ -1,21 +1,24 @@
+import { useQueryClient } from "@tanstack/react-query"
 import * as React from "react"
 
-import AttendanceStateService from "../api/services/AttendanceStateService"
-import { getDisplayName, noop } from "../global/utils"
+import { useAttendanceStates } from "../api/hooks"
+import { getDisplayName } from "../global/utils"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { AttendanceStateType } from "../types/models"
-import { fFunction } from "../types/types"
+import { fEmptyVoid } from "../types/types"
 
 type StateContext = {
     /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
+    /** Probíhá načítání dat na pozadí (true) - refetch. */
+    isFetching: boolean
     /** Pole se stavy účastí. */
     attendancestates: AttendanceStateType[]
 }
 
 type Context = StateContext & {
-    /** Funkce pro načtení/obnovení dat v kontextu. */
-    funcRefresh: (callback?: fFunction) => void
+    /** Funkce pro obnovení dat v kontextu. */
+    funcRefresh: fEmptyVoid
 }
 
 type AttendanceStatesContextInterface = Context | undefined
@@ -24,37 +27,23 @@ type AttendanceStatesContextInterface = Context | undefined
 const AttendanceStatesContext = React.createContext<AttendanceStatesContextInterface>(undefined)
 
 /** Provider kontextu se stavy účastí. */
-export class AttendanceStatesProvider extends React.Component<{}, StateContext> {
-    state: StateContext = {
-        isLoaded: false,
-        attendancestates: [],
-    }
+export const AttendanceStatesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { data: attendancestates = [], isLoading, isFetching } = useAttendanceStates()
+    const queryClient = useQueryClient()
 
-    componentDidMount(): void {
-        this.getAttendanceStates()
-    }
+    const funcRefresh = React.useCallback(() => {
+        void queryClient.invalidateQueries({ queryKey: ["attendanceStates"] })
+    }, [queryClient])
 
-    getAttendanceStates = (callback = noop): void =>
-        this.setState({ isLoaded: false }, () => {
-            AttendanceStateService.getAll().then((attendancestates) =>
-                this.setState(
-                    {
-                        attendancestates,
-                        isLoaded: true,
-                    },
-                    callback,
-                ),
-            )
-        })
-
-    render = (): React.ReactNode => (
+    return (
         <AttendanceStatesContext.Provider
             value={{
-                attendancestates: this.state.attendancestates,
-                funcRefresh: this.getAttendanceStates,
-                isLoaded: this.state.isLoaded,
+                attendancestates,
+                funcRefresh,
+                isLoaded: !isLoading,
+                isFetching,
             }}>
-            {this.props.children}
+            {children}
         </AttendanceStatesContext.Provider>
     )
 }
@@ -70,7 +59,7 @@ type AttendanceStatesContextPropsInternal = {
     attendanceStatesContext: AttendanceStatesContextInterface
 }
 
-type ComponentWithCoursesVisibleContextProps<P> = Omit<
+type ComponentWithAttendanceStatesContextProps<P> = Omit<
     P,
     keyof AttendanceStatesContextPropsInternal
 >
@@ -78,9 +67,9 @@ type ComponentWithCoursesVisibleContextProps<P> = Omit<
 /** HOC komponenta pro kontext se stavy účasti. */
 const WithAttendanceStatesContext = <P,>(
     WrappedComponent: React.ComponentType<P>,
-): React.ComponentType<ComponentWithCoursesVisibleContextProps<P>> => {
+): React.ComponentType<ComponentWithAttendanceStatesContextProps<P>> => {
     const ComponentWithAttendanceStatesContext = (
-        props: ComponentWithCoursesVisibleContextProps<P>,
+        props: ComponentWithAttendanceStatesContextProps<P>,
     ) => (
         <AttendanceStatesContext.Consumer>
             {(attendanceStatesContext) => {
@@ -98,7 +87,7 @@ const WithAttendanceStatesContext = <P,>(
             }}
         </AttendanceStatesContext.Consumer>
     )
-    ComponentWithAttendanceStatesContext.displayName = `WithCoursesVisibleContext(${getDisplayName<P>(
+    ComponentWithAttendanceStatesContext.displayName = `WithAttendanceStatesContext(${getDisplayName<P>(
         WrappedComponent,
     )})`
     return ComponentWithAttendanceStatesContext

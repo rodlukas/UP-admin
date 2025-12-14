@@ -14,8 +14,6 @@ type Props = {
     currentLecture?: LectureType
     /** Výchozí hodnoty pro lekci. */
     defaultValuesForLecture?: DefaultValuesForLecture
-    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
-    refresh?: fEmptyVoid
     /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
     object?: ClientType | GroupType | null
     /** Funkce, která se zavolá při jakémkoliv zavírání modálního okna. */
@@ -32,20 +30,13 @@ type Props = {
  */
 const ModalLecturesCore: React.FC<Props> = ({
     currentLecture,
-    refresh,
     object,
     defaultValuesForLecture,
     funcCloseCallback,
     shouldModalOpen = false,
     date = "",
 }) => {
-    const [isModal, toggleModal, toggleModalForce, setFormDirty, setModal, processOnModalClose] =
-        useModal()
-
-    function onModalClose(): void {
-        processOnModalClose(refresh)
-    }
-
+    const [isModal, toggleModal, toggleModalForce, setFormDirty, setModal] = useModal()
     function funcWrapper(func: () => boolean): void {
         if (func()) {
             funcCloseCallback()
@@ -62,8 +53,7 @@ const ModalLecturesCore: React.FC<Props> = ({
             isOpen={isModal}
             toggle={(): void => funcWrapper(toggleModal)}
             size="lg"
-            className="ModalFormLecture"
-            onClosed={onModalClose}>
+            className="ModalFormLecture">
             {object && (
                 <FormLectures
                     lecture={currentLecture ?? DummyLecture}

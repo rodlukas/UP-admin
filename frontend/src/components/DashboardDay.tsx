@@ -2,7 +2,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 
-import LectureService from "../api/services/LectureService"
+import { useLecturesFromDay } from "../api/hooks"
 import {
     AttendanceStatesContextProps,
     WithAttendanceStatesContext,
@@ -18,8 +18,7 @@ import {
     toISODate,
 } from "../global/funcDateTime"
 import { courseDuration } from "../global/utils"
-import { LectureTypeWithDate } from "../types/models"
-import { fEmptyVoid, TimeoutType } from "../types/types"
+import { fEmptyVoid } from "../types/types"
 
 import Attendances from "./Attendances"
 import Celebration from "./Celebration"
@@ -41,75 +40,43 @@ type Props = AttendanceStatesContextProps & {
     setUpdateType: fEmptyVoid
 }
 
-type State = {
-    /** Pole lekcí pro daný den. */
-    lectures: LectureTypeWithDate[]
-    /** Probíhá načítání (true). */
-    isLoading: boolean
-}
-
 /** Komponenta zobrazující lekce pro jeden zadaný den. */
-class DashboardDay extends React.Component<Props, State> {
-    state: State = {
-        lectures: [],
-        isLoading: true,
-    }
+const DashboardDay: React.FC<Props> = (props) => {
+    const getDate = (): Date => new Date(props.date)
+    const prevUpdateTypeRef = React.useRef<DASHBOARDDAY_UPDATE_TYPE>(props.updateType)
+    const prevDateRef = React.useRef<string>(props.date)
 
-    timeoutId: TimeoutType
+    const {
+        data: lectures = [],
+        isLoading,
+        isFetching,
+        refetch,
+    } = useLecturesFromDay(toISODate(getDate()), true)
 
-    getDate = (): Date => new Date(this.props.date)
-
-    getLectures = (): void => {
-        this.setState({ isLoading: true }, () => {
-            LectureService.getAllFromDayOrdered(toISODate(this.getDate()), true).then((lectures) =>
-                this.setState({
-                    lectures,
-                    isLoading: false,
-                }),
-            )
-        })
-    }
-
-    componentDidMount(): void {
-        this.getLectures()
-    }
-
-    componentWillUnmount(): void {
-        window.clearTimeout(this.timeoutId)
-    }
-
-    componentDidUpdate(prevProps: Props): void {
+    React.useEffect(() => {
+        // Provést refetch pouze když se updateType změnil z NONE na DAY_UNCHANGED
+        // (např. se upravil stav účasti na stejném dni)
+        // Pro DAY_CHANGED není potřeba, React Query už automaticky refetchuje při změně date prop
         if (
-            this.props.updateType !== DASHBOARDDAY_UPDATE_TYPE.NONE &&
-            prevProps.updateType === DASHBOARDDAY_UPDATE_TYPE.NONE
+            props.updateType === DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED &&
+            prevUpdateTypeRef.current === DASHBOARDDAY_UPDATE_TYPE.NONE
         ) {
-            // pokud se nema uplatnit prodleva nebo se nemeni den (napr. se upravil jen stav ucasti)
-            if (
-                this.props.withoutWaiting === true ||
-                (this.props.date === prevProps.date &&
-                    this.props.updateType === DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED)
-            ) {
-                this.getLectures()
-            }
-            // zpozdeni pro usetreni requestu pri rychlem preklikavani tydnu v diari
-            else {
-                window.clearTimeout(this.timeoutId)
-                this.setState(
-                    { isLoading: true },
-                    () => (this.timeoutId = window.setTimeout(this.getLectures, 700)),
-                )
-            }
+            void refetch()
         }
-    }
+        prevUpdateTypeRef.current = props.updateType
+        prevDateRef.current = props.date
+    }, [props.updateType, props.date, refetch])
 
-    render(): React.ReactNode {
-        const { lectures, isLoading } = this.state
-        const title = prettyDateWithLongDayYearIfDiff(this.getDate())
-        const isUserCelebratingResult = isUserCelebrating(this.getDate())
-        return (
+    const title = prettyDateWithLongDayYearIfDiff(getDate())
+    const isUserCelebratingResult = isUserCelebrating(getDate())
+
+    const showLoading = isLoading || !props.attendanceStatesContext.isLoaded
+
+    return (
+        <div className="DashboardDay_wrapper">
             <ListGroup>
                 <ListGroupItem
-                    color={isToday(this.getDate()) ? "primary" : ""}
+                    color={isToday(getDate()) ? "primary" : ""}
                     className="text-center DashboardDay_date">
                     <h4
                         className={`mb-0 text-nowrap d-inline-block ${
@@ -120,14 +87,14 @@ class DashboardDay extends React.Component<Props, State> {
                         <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
                     </h4>
                     <ModalLecturesWizard
-                        refresh={this.props.setUpdateType}
-                        date={this.props.date}
+                        date={props.date}
                         dropdownClassName="float-right"
                         dropdownSize="sm"
                         dropdownDirection="up"
+                        isFetching={isFetching && !isLoading}
                     />
                 </ListGroupItem>
-                {isLoading || !this.props.attendanceStatesContext.isLoaded ? (
+                {showLoading ? (
                     <ListGroupItem className="lecture">
                         <Loading />
                     </ListGroupItem>
@@ -158,7 +125,6 @@ class DashboardDay extends React.Component<Props, State> {
                                     <ModalLectures
                                         object={lecture.group ?? lecture.attendances[0].client}
                                         currentLecture={lecture}
-                                        refresh={this.props.setUpdateType}
                                     />
                                 </div>
                                 <div className="lecture_content">
@@ -167,11 +133,7 @@ class DashboardDay extends React.Component<Props, State> {
                                             <GroupName group={lecture.group} title link />
                                         </h5>
                                     )}
-                                    <Attendances
-                                        lecture={lecture}
-                                        funcRefresh={this.props.setUpdateType}
-                                        showClient
-                                    />
+                                    <Attendances lecture={lecture} showClient />
                                 </div>
                             </ListGroupItem>
                         )
@@ -184,8 +146,8 @@ class DashboardDay extends React.Component<Props, State> {
                     </ListGroupItem>
                 )}
             </ListGroup>
-        )
-    }
+        </div>
+    )
 }
 
 export default WithAttendanceStatesContext(DashboardDay)

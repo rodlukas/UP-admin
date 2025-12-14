@@ -3,7 +3,6 @@ import * as React from "react"
 import { Badge } from "reactstrap"
 
 import { AttendanceType, LectureType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
 
 import AttendancePaidButton from "./AttendancePaidButton"
 import AttendanceRemindPay from "./AttendanceRemindPay"
@@ -17,19 +16,13 @@ type AttendanceProps = {
     attendance: AttendanceType
     /** Zobraz jméno klienta (true). */
     showClient: boolean
-    /** Funkce, která se zavolá po aktualizaci účasti. */
-    funcRefresh: fEmptyVoid
 }
 
 /** Komponenta zobrazující jednotlivou účast klienta na dané lekci. */
-const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false, funcRefresh }) => (
+const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false }) => (
     <li data-qa="lecture_attendance">
         {showClient && <ClientName client={attendance.client} link />}{" "}
-        <AttendancePaidButton
-            paid={attendance.paid}
-            attendanceId={attendance.id}
-            funcRefresh={funcRefresh}
-        />{" "}
+        <AttendancePaidButton paid={attendance.paid} attendanceId={attendance.id} />{" "}
         {attendance.number && (
             <>
                 <Badge color="secondary" pill className="AttendanceNumber font-weight-bold">
@@ -41,7 +34,6 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
         <AttendanceSelectAttendanceState
             value={attendance.attendancestate}
             attendanceId={attendance.id}
-            funcRefresh={funcRefresh}
         />
     </li>
 )
@@ -51,24 +43,17 @@ type AttendancesProps = {
     lecture: LectureType
     /** Zobraz jméno klienta (true). */
     showClient?: boolean
-    /** Funkce, která se zavolá po aktualizaci účasti. */
-    funcRefresh: AttendanceProps["funcRefresh"]
 }
 
 /** Komponenta zobrazující účasti všech klientů na dané lekci. */
-const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false, funcRefresh }) => {
+const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false }) => {
     const className = classNames("Attendances", {
         AttendancesGroup: lecture.group,
     })
     return (
         <ul className={className}>
             {lecture.attendances.map((attendance) => (
-                <Attendance
-                    attendance={attendance}
-                    key={attendance.id}
-                    showClient={showClient}
-                    funcRefresh={funcRefresh}
-                />
+                <Attendance attendance={attendance} key={attendance.id} showClient={showClient} />
             ))}
         </ul>
     )

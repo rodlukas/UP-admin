@@ -1,10 +1,11 @@
+import { useQueryClient } from "@tanstack/react-query"
 import * as React from "react"
 
-import CourseService from "../api/services/CourseService"
-import { getDisplayName, noop } from "../global/utils"
+import { useVisibleCourses } from "../api/hooks"
+import { getDisplayName } from "../global/utils"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { CourseType } from "../types/models"
-import { fEmptyVoid, fFunction } from "../types/types"
+import { fEmptyVoid } from "../types/types"
 
 type StateContext = {
     /** Data v kontextu jsou načtená (true). */
@@ -13,15 +14,8 @@ type StateContext = {
     courses: CourseType[]
 }
 
-type State = StateContext & {
-    /** Načtení dat do kontextu už bylo vyžádáno (true). */
-    loadRequested: boolean
-}
-
 type Context = StateContext & {
-    /** Funkce pro načtení dat do kontextu, pokud ještě o načtení nikdo nepožádal. */
-    funcRefresh: (callback?: fFunction) => void
-    /** Funkce pro obnovení již načtených dat v kontextu. */
+    /** Funkce pro obnovení dat v kontextu. */
     funcHardRefresh: fEmptyVoid
 }
 
@@ -31,53 +25,22 @@ type CoursesVisibleContextInterface = Context | undefined
 const CoursesVisibleContext = React.createContext<CoursesVisibleContextInterface>(undefined)
 
 /** Provider kontextu s viditelnými kurzy. */
-export class CoursesVisibleProvider extends React.Component<{}, State> {
-    state: State = {
-        loadRequested: false,
-        isLoaded: false,
-        courses: [],
-    }
+export const CoursesVisibleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { data: courses = [], isLoading, isFetching } = useVisibleCourses()
+    const queryClient = useQueryClient()
 
-    getCourses = (callback = noop): void => {
-        // pokud jeste nikdo nepozadal o nacteni kurzu, pozadej a nacti je
-        if (!this.state.loadRequested) {
-            this.setState({ loadRequested: true }, () => {
-                CourseService.getVisible().then((courses) =>
-                    this.setState(
-                        {
-                            courses,
-                            isLoaded: true,
-                        },
-                        callback,
-                    ),
-                )
-            })
-        }
-    }
+    const hardRefreshCourses = React.useCallback(() => {
+        void queryClient.invalidateQueries({ queryKey: ["courses", { type: "visible" }] })
+    }, [queryClient])
 
-    hardRefreshCourses = (): void => {
-        // pokud uz je v pameti nactena stara verze kurzu, obnov je (pokud k nacteni jeste nedoslo, nic nedelej)
-        if (this.state.loadRequested) {
-            this.setState({ isLoaded: false }, () => {
-                CourseService.getVisible().then((courses) =>
-                    this.setState({
-                        courses,
-                        isLoaded: true,
-                    }),
-                )
-            })
-        }
-    }
-
-    render = (): React.ReactNode => (
+    return (
         <CoursesVisibleContext.Provider
             value={{
-                courses: this.state.courses,
-                funcRefresh: this.getCourses,
-                funcHardRefresh: this.hardRefreshCourses,
-                isLoaded: this.state.isLoaded,
+                courses,
+                funcHardRefresh: hardRefreshCourses,
+                isLoaded: !isLoading && !isFetching,
             }}>
-            {this.props.children}
+            {children}
         </CoursesVisibleContext.Provider>
     )
 }

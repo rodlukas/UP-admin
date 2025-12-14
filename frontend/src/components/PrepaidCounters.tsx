@@ -13,7 +13,7 @@ import {
     Row,
 } from "reactstrap"
 
-import MembershipService from "../api/services/MembershipService"
+import { usePatchMembership } from "../api/hooks"
 import { TEXTS } from "../global/constants"
 import { MembershipType } from "../types/models"
 
@@ -25,11 +25,6 @@ import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 type Props = {
     /** Pole se členstvími všech klientů. */
     memberships: MembershipType[]
-    /** Funkce, která se zavolá po aktualizaci počtu předplacených lekcí. */
-    funcRefreshPrepaidCnt: (
-        id: MembershipType["id"],
-        prepaidCnt: MembershipType["prepaid_cnt"],
-    ) => void
     /** Skupina je aktivní (true). */
     isGroupActive: boolean
 }
@@ -42,6 +37,8 @@ type PrepaidCntObjectsType = Record<number, MembershipType["prepaid_cnt"]>
 
 /** Komponenta zobrazující počítadla předplacených lekcí pro členy skupiny. */
 const PrepaidCounters: React.FC<Props> = (props) => {
+    const patchMembership = usePatchMembership()
+
     const createPrepaidCntObjects = React.useCallback(() => {
         const objects: PrepaidCntObjectsType = {}
         props.memberships.forEach((membership) => (objects[membership.id] = membership.prepaid_cnt))
@@ -54,21 +51,22 @@ const PrepaidCounters: React.FC<Props> = (props) => {
         setPrepaidCnts(createPrepaidCntObjects())
     }, [createPrepaidCntObjects])
 
-    function onChange(e: React.ChangeEvent<HTMLInputElement>): void {
-        const target = e.currentTarget
-        const value = Number(target.value)
-        const id = Number(target.dataset.id!)
-        setPrepaidCnts((prevPrepaidCnts) => {
-            // vytvorime kopii prepaidCnts (ma jen jednu uroven -> staci melka kopie)
-            const newPrepaidCnts = { ...prevPrepaidCnts }
-            newPrepaidCnts[id] = value
-            return newPrepaidCnts
-        })
-        const data = { id, prepaid_cnt: value }
-        MembershipService.patch(data).then(() => {
-            props.funcRefreshPrepaidCnt(id, value)
-        })
-    }
+    const onChange = React.useCallback(
+        (e: React.ChangeEvent<HTMLInputElement>): void => {
+            const target = e.currentTarget
+            const value = Number(target.value)
+            const id = Number(target.dataset.id!)
+            setPrepaidCnts((prevPrepaidCnts) => {
+                // vytvorime kopii prepaidCnts (ma jen jednu uroven -> staci melka kopie)
+                const newPrepaidCnts = { ...prevPrepaidCnts }
+                newPrepaidCnts[id] = value
+                return newPrepaidCnts
+            })
+            const data = { id, prepaid_cnt: value }
+            patchMembership.mutate(data)
+        },
+        [patchMembership],
+    )
 
     function onFocus(e: React.ChangeEvent<HTMLInputElement>): void {
         e.currentTarget.select()
