@@ -13,18 +13,23 @@ const MockContexts: React.FC = (props) => (
             clients: data.clients,
             funcHardRefresh: noop,
             isLoaded: true,
+            isLoading: false,
+            isFetching: false,
         }}>
         <GroupsActiveContext.Provider
             value={{
                 groups: data.groups,
                 funcHardRefresh: noop,
                 isLoaded: true,
+                isLoading: false,
+                isFetching: false,
             }}>
             <AttendanceStatesContext.Provider
                 value={{
                     attendancestates: data.attendancestates,
                     funcRefresh: noop,
                     isLoaded: true,
+                    isFetching: false,
                 }}>
                 {props.children}
             </AttendanceStatesContext.Provider>
