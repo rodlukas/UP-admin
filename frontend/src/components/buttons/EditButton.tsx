@@ -25,6 +25,7 @@ const EditButton: React.FC<Props> = ({ content = "Upravit", onClick, contentId, 
         </Button>
         <UncontrolledTooltipWrapper
             target={`EditButton_${makeIdFromString(content)}_${contentId}`}
+            // aby se tooltip po zavreni modalu nezobrazoval
             trigger="hover">
             {content}
         </UncontrolledTooltipWrapper>
