@@ -1,6 +1,7 @@
 from behave import when, then, use_step_matcher
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -62,7 +63,7 @@ def insert_to_form(context, verify_current_data=False):
             and context.old_visible == visible_checkbox.is_selected()
         )
     # smaz vsechny udaje
-    name_field.clear()
+    name_field.send_keys(Keys.CONTROL, "a", Keys.DELETE)
     # vloz nove udaje
     if (context.visible and not visible_checkbox.is_selected()) or (
         not context.visible and visible_checkbox.is_selected()
