@@ -23,7 +23,9 @@ const EditButton: React.FC<Props> = ({ content = "Upravit", onClick, contentId, 
             {...props}>
             <FontAwesomeIcon icon={faPencil} />
         </Button>
-        <UncontrolledTooltipWrapper target={`EditButton_${makeIdFromString(content)}_${contentId}`}>
+        <UncontrolledTooltipWrapper
+            target={`EditButton_${makeIdFromString(content)}_${contentId}`}
+            trigger="hover">
             {content}
         </UncontrolledTooltipWrapper>
     </>

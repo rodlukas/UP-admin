@@ -63,7 +63,7 @@ def insert_to_form(context, verify_current_data=False):
             and context.old_visible == visible_checkbox.is_selected()
         )
     # smaz vsechny udaje
-    name_field.send_keys(Keys.CONTROL, "a", Keys.DELETE)
+    name_field.clear()
     # vloz nove udaje
     if (context.visible and not visible_checkbox.is_selected()) or (
         not context.visible and visible_checkbox.is_selected()
