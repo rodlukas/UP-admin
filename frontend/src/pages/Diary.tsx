@@ -129,23 +129,17 @@ const Diary: React.FC<Props> = (props) => {
         }
     }, [onKeyDown, refreshTitle])
 
-    const prevParamsRef = React.useRef(props.match.params)
+    const prevRequiredMondayRef = React.useRef<Date>(getRequiredMonday())
     React.useEffect(() => {
-        // pokud se datum ktery pozadujeme shoduje s tim ve stavu, nic neupdatuj
-        if (isEqualDate(new Date(week[0]), getRequiredMonday())) {
-            return
-        }
-        // pozadujeme jiny datum, nez jsme meli ve stavu
-        if (
-            props.match.params.year !== prevParamsRef.current.year ||
-            props.match.params.month !== prevParamsRef.current.month ||
-            props.match.params.day !== prevParamsRef.current.day
-        ) {
+        const requiredMonday = getRequiredMonday()
+
+        // aktualizujeme pouze pokud se skutecne zmenilo požadované pondělí
+        if (!isEqualDate(prevRequiredMondayRef.current, requiredMonday)) {
             setWeek(getWeek())
             refreshTitle()
-            prevParamsRef.current = props.match.params
+            prevRequiredMondayRef.current = requiredMonday
         }
-    }, [props.match.params, week, getRequiredMonday, getWeek, refreshTitle])
+    }, [props.match.params, getRequiredMonday, getWeek, refreshTitle])
 
     // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
     return (
