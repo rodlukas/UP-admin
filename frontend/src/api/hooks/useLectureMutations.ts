@@ -10,9 +10,7 @@ export function useCreateLecture() {
     return useMutation<LectureType, unknown, LecturePostApi | LecturePostApi[]>({
         mutationFn: (data) => LectureService.create(data),
         onSuccess: (data) => {
-            // Invalidovat cache pro lekce (invaliduje i ["lectures", "group", ...], ["lectures", "client", ...], ["lectures", "day", ...], atd.)
             void queryClient.invalidateQueries({ queryKey: ["lectures"] })
-            // Pokud se jedná o skupinovou lekci, invalidovat také cache pro skupiny (kvůli aktualizaci prepaid_cnt)
             if (data.group) {
                 void queryClient.invalidateQueries({ queryKey: ["groups"] })
             }
@@ -27,11 +25,8 @@ export function useUpdateLecture() {
     return useMutation<LectureType, unknown, LecturePutApi>({
         mutationFn: (data) => LectureService.update(data),
         onSuccess: (data) => {
-            // Aktualizovat konkrétní lekci v cache
             queryClient.setQueryData(["lectures", data.id], data)
-            // Invalidovat cache pro lekce (invaliduje i ["lectures", "group", ...], ["lectures", "client", ...], ["lectures", "day", ...], atd.)
             void queryClient.invalidateQueries({ queryKey: ["lectures"] })
-            // Pokud se jedná o skupinovou lekci, invalidovat také cache pro skupiny (kvůli aktualizaci prepaid_cnt)
             if (data.group) {
                 void queryClient.invalidateQueries({ queryKey: ["groups"] })
             }
@@ -46,9 +41,7 @@ export function useDeleteLecture() {
     return useMutation<LectureType, unknown, LectureType["id"]>({
         mutationFn: (id) => LectureService.remove(id),
         onSuccess: (data) => {
-            // Invalidovat cache pro lekce (invaliduje i ["lectures", "group", ...], ["lectures", "client", ...], ["lectures", "day", ...], atd.)
             void queryClient.invalidateQueries({ queryKey: ["lectures"] })
-            // Pokud se jednalo o skupinovou lekci, invalidovat také cache pro skupiny (kvůli aktualizaci prepaid_cnt)
             if (data.group) {
                 void queryClient.invalidateQueries({ queryKey: ["groups"] })
             }

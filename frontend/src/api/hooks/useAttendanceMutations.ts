@@ -10,7 +10,6 @@ export function usePatchAttendance() {
     return useMutation<AttendanceType, unknown, AttendancePatchApi>({
         mutationFn: (data) => AttendanceService.patch(data),
         onSuccess: () => {
-            // Invalidovat lekce, protože účast se může změnit (invaliduje i ["lectures", "group", ...], ["lectures", "client", ...], ["lectures", "day", ...], atd.)
             void queryClient.invalidateQueries({ queryKey: ["lectures"] })
         },
     })

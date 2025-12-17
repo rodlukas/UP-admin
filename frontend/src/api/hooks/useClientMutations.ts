@@ -10,7 +10,6 @@ export function useCreateClient() {
     return useMutation<ClientType, unknown, ClientPostApi>({
         mutationFn: (data) => ClientService.create(data),
         onSuccess: () => {
-            // Invalidovat cache pro klienty (invaliduje i ["clients", "active"], ["clients", "inactive"], atd.)
             void queryClient.invalidateQueries({ queryKey: ["clients"] })
         },
     })
@@ -23,11 +22,8 @@ export function useUpdateClient() {
     return useMutation<ClientType, unknown, ClientPutApi>({
         mutationFn: (data) => ClientService.update(data),
         onSuccess: (data) => {
-            // Aktualizovat konkrétního klienta v cache
             queryClient.setQueryData(["clients", data.id], data)
-            // Invalidovat cache pro klienty (invaliduje i ["clients", "active"], ["clients", "inactive"], atd.)
             void queryClient.invalidateQueries({ queryKey: ["clients"] })
-            // Invalidovat skupiny, protože změna klienta může ovlivnit skupiny (např. změna active)
             void queryClient.invalidateQueries({ queryKey: ["groups"] })
         },
     })
@@ -40,9 +36,7 @@ export function useDeleteClient() {
     return useMutation<ClientType, unknown, ClientType["id"]>({
         mutationFn: (id) => ClientService.remove(id),
         onSuccess: () => {
-            // Invalidovat cache pro klienty (invaliduje i ["clients", "active"], ["clients", "inactive"], atd.)
             void queryClient.invalidateQueries({ queryKey: ["clients"] })
-            // Invalidovat skupiny, protože smazání klienta může ovlivnit skupiny
             void queryClient.invalidateQueries({ queryKey: ["groups"] })
         },
     })

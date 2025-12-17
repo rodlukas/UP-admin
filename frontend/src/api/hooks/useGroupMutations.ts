@@ -10,7 +10,6 @@ export function useCreateGroup() {
     return useMutation<GroupType, unknown, GroupPostApi>({
         mutationFn: (data) => GroupService.create(data),
         onSuccess: () => {
-            // Invalidovat cache pro skupiny (invaliduje i ["groups", "active"], ["groups", "inactive"], atd.)
             void queryClient.invalidateQueries({ queryKey: ["groups"] })
         },
     })
@@ -23,9 +22,7 @@ export function useUpdateGroup() {
     return useMutation<GroupType, unknown, GroupPutApi>({
         mutationFn: (data) => GroupService.update(data),
         onSuccess: (data) => {
-            // Aktualizovat konkrétní skupinu v cache
             queryClient.setQueryData(["groups", data.id], data)
-            // Invalidovat cache pro skupiny (invaliduje i ["groups", "active"], ["groups", "inactive"], atd.)
             void queryClient.invalidateQueries({ queryKey: ["groups"] })
         },
     })
@@ -38,7 +35,6 @@ export function useDeleteGroup() {
     return useMutation<GroupType, unknown, GroupType["id"]>({
         mutationFn: (id) => GroupService.remove(id),
         onSuccess: () => {
-            // Invalidovat cache pro skupiny (invaliduje i ["groups", "active"], ["groups", "inactive"], atd.)
             void queryClient.invalidateQueries({ queryKey: ["groups"] })
         },
     })

@@ -25,9 +25,7 @@ export function useUpdateCourse() {
     return useMutation<CourseType, unknown, CoursePutApi>({
         mutationFn: (data) => CourseService.update(data),
         onSuccess: () => {
-            // Invalidovat cache pro kurzy (invaliduje i ["courses", "visible"], atd.)
             void queryClient.invalidateQueries({ queryKey: ["courses"] })
-            // Invalidovat skupiny, protože změna kurzu může ovlivnit skupiny
             void queryClient.invalidateQueries({ queryKey: ["groups"] })
         },
     })
@@ -40,9 +38,7 @@ export function useDeleteCourse() {
     return useMutation<CourseType, unknown, CourseType["id"]>({
         mutationFn: (id) => CourseService.remove(id),
         onSuccess: () => {
-            // Invalidovat cache pro kurzy (invaliduje i ["courses", "visible"], atd.)
             void queryClient.invalidateQueries({ queryKey: ["courses"] })
-            // Invalidovat skupiny, protože smazání kurzu může ovlivnit skupiny
             void queryClient.invalidateQueries({ queryKey: ["groups"] })
         },
     })
