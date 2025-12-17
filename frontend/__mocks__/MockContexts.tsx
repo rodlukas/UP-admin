@@ -6,7 +6,7 @@ import { GroupsActiveContext } from "../src/contexts/GroupsActiveContext"
 
 import * as data from "./data.json"
 
-const MockContexts: React.FC = (props) => (
+const MockContexts: React.FC<{ children: React.ReactNode }> = (props) => (
     <ClientsActiveContext.Provider
         value={{
             clients: data.clients,

@@ -6,4 +6,6 @@ module.exports = {
         "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
     },
     testEnvironment: "jsdom",
+    // axios je psan v ES modules, takze musime ignorovat transformaci
+    transformIgnorePatterns: ["node_modules/(?!(axios)/)"],
 }
