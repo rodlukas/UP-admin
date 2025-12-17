@@ -12,8 +12,6 @@ type Props = CustomRouteComponentProps
 
 /** Stránka s hlavním přehledem - dnešní lekce a banka. */
 const Dashboard: React.FC<Props> = () => {
-    const getDate = React.useCallback((): string => toISODate(new Date()), [])
-
     return (
         <Container>
             <Row className="justify-content-center">
@@ -25,7 +23,7 @@ const Dashboard: React.FC<Props> = () => {
                             </>
                         }
                     />
-                    <DashboardDay date={getDate()} withoutWaiting />
+                    <DashboardDay date={toISODate(new Date())} withoutWaiting />
                 </Col>
                 <Col sm="11" md="8" lg="8" xl="6">
                     <Heading title="Bankovní účet" />
