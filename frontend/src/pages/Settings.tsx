@@ -75,24 +75,21 @@ const Settings: React.FC<Props> = (props) => {
         }
     }, [props.attendanceStatesContext.isLoaded, props.attendanceStatesContext.attendancestates])
 
-    const onChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>): void => {
-            const target = e.currentTarget
-            const value = Number(target.value)
-            if (target.id === "state_default_id") {
-                setAttendanceStateDefaultId(value)
-            } else if (target.id === "state_excused_id") {
-                setAttendanceStateExcusedId(value)
-            }
-            const attrApi = target.dataset.attribute
-            if (attrApi) {
-                // odesli na API patch pozadavek
-                const data = { id: value, [attrApi]: true }
-                patchAttendanceState.mutate(data)
-            }
-        },
-        [patchAttendanceState],
-    )
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const target = e.currentTarget
+        const value = Number(target.value)
+        if (target.id === "state_default_id") {
+            setAttendanceStateDefaultId(value)
+        } else if (target.id === "state_excused_id") {
+            setAttendanceStateExcusedId(value)
+        }
+        const attrApi = target.dataset.attribute
+        if (attrApi) {
+            // odesli na API patch pozadavek
+            const data = { id: value, [attrApi]: true }
+            patchAttendanceState.mutate(data)
+        }
+    }
 
     const isLoading = coursesLoading || !props.attendanceStatesContext.isLoaded
     const isFetching = coursesFetching || props.attendanceStatesContext.isFetching

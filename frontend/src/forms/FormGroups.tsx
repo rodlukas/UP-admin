@@ -88,43 +88,37 @@ const FormGroups: React.FC<Props> = (props) => {
         getMembersOfGroup(isGroup(props.group) ? props.group.memberships : []),
     )
 
-    const onSelectChange = React.useCallback(
-        (
-            fieldName: "members" | "course",
-            obj?: CourseType | readonly ClientType[] | ClientType | null,
-        ): void => {
-            props.setFormDirty()
-            // react-select muze vratit null (napr. pri smazani vsech) nebo undefined, udrzujme tedy stav konzistentni
-            if (fieldName === "members") {
-                if (!obj) {
-                    setMembers([])
-                } else if (Array.isArray(obj)) {
-                    setMembers([...obj])
-                }
-            } else if (fieldName === "course") {
-                if (!obj) {
-                    setCourse(null)
-                } else {
-                    setCourse(obj as CourseType)
-                }
+    const onSelectChange = (
+        fieldName: "members" | "course",
+        obj?: CourseType | readonly ClientType[] | ClientType | null,
+    ): void => {
+        props.setFormDirty()
+        // react-select muze vratit null (napr. pri smazani vsech) nebo undefined, udrzujme tedy stav konzistentni
+        if (fieldName === "members") {
+            if (!obj) {
+                setMembers([])
+            } else if (Array.isArray(obj)) {
+                setMembers([...obj])
             }
-        },
-        [props],
-    )
+        } else if (fieldName === "course") {
+            if (!obj) {
+                setCourse(null)
+            } else {
+                setCourse(obj as CourseType)
+            }
+        }
+    }
 
-    const onChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>): void => {
-            props.setFormDirty()
-            const target = e.currentTarget
-            const value = target.type === "checkbox" ? target.checked : target.value
-            if (target.id === "name") {
-                setName(value as string)
-            } else if (target.id === "active") {
-                setActive(value as boolean)
-            }
-        },
-        [props],
-    )
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        props.setFormDirty()
+        const target = e.currentTarget
+        const value = target.type === "checkbox" ? target.checked : target.value
+        if (target.id === "name") {
+            setName(value as string)
+        } else if (target.id === "active") {
+            setActive(value as boolean)
+        }
+    }
 
     const onSubmit = React.useCallback(
         (e: React.FormEvent<HTMLFormElement>): void => {

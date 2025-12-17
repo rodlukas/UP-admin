@@ -117,12 +117,9 @@ const Diary: React.FC<Props> = (props) => {
     )
 
     // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)
-    const removeFocusAfterClick = React.useCallback(
-        (e: React.MouseEvent<HTMLButtonElement>): void => {
-            e.currentTarget.blur()
-        },
-        [],
-    )
+    const removeFocusAfterClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.currentTarget.blur()
+    }
 
     React.useEffect(() => {
         document.addEventListener("keydown", onKeyDown)

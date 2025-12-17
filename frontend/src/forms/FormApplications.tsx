@@ -55,32 +55,29 @@ const FormApplications: React.FC<Props> = (props) => {
     /** Poznámka k zájemci o kurz. */
     const [note, setNote] = React.useState<ApplicationPostApiDummy["note"]>(props.application.note)
 
-    const onChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>): void => {
-            props.setFormDirty()
-            const target = e.currentTarget
-            const value = target.type === "checkbox" ? target.checked : target.value
-            if (target.id === "note") {
-                setNote(value as string)
-            }
-        },
-        [props],
-    )
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        props.setFormDirty()
+        const target = e.currentTarget
+        const value = target.type === "checkbox" ? target.checked : target.value
+        if (target.id === "note") {
+            setNote(value as string)
+        }
+    }
 
-    const onSelectChange = React.useCallback(
-        (name: "course" | "client", obj?: CourseType | ClientType | null): void => {
-            props.setFormDirty()
-            if (obj === undefined) {
-                obj = null
-            }
-            if (name === "course") {
-                setCourse(obj as CourseType | null)
-            } else if (name === "client") {
-                setClient(obj as ClientType | null)
-            }
-        },
-        [props],
-    )
+    const onSelectChange = (
+        name: "course" | "client",
+        obj?: CourseType | ClientType | null,
+    ): void => {
+        props.setFormDirty()
+        if (obj === undefined) {
+            obj = null
+        }
+        if (name === "course") {
+            setCourse(obj as CourseType | null)
+        } else if (name === "client") {
+            setClient(obj as ClientType | null)
+        }
+    }
 
     const isApplicationValue = isApplication(props.application)
 
@@ -109,17 +106,14 @@ const FormApplications: React.FC<Props> = (props) => {
         [course, client, note, props, createApplication, updateApplication],
     )
 
-    const close = React.useCallback((): void => {
+    const close = (): void => {
         props.funcClose()
-    }, [props])
+    }
 
-    const processAdditionOfClient = React.useCallback(
-        (newClient: ClientType): void => {
-            props.setFormDirty()
-            setClient(newClient)
-        },
-        [props],
-    )
+    const processAdditionOfClient = (newClient: ClientType): void => {
+        props.setFormDirty()
+        setClient(newClient)
+    }
 
     const isLoading = clientsLoading || !props.coursesVisibleContext.isLoaded
     const isSubmit = createApplication.isPending || updateApplication.isPending

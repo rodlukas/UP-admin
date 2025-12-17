@@ -80,25 +80,22 @@ const FormSettings: React.FC<Props> = (props) => {
         isCourse(props.object) ? props.object.color : undefined,
     )
 
-    const onChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>): void => {
-            props.setFormDirty()
-            const target = e.currentTarget
-            const value = target.type === "checkbox" ? target.checked : target.value
-            if (target.id === "name") {
-                setName(value as string)
-            } else if (target.id === "visible") {
-                setVisible(value as boolean)
-            } else if (target.id === "duration") {
-                setDuration(Number(value))
-            }
-        },
-        [props],
-    )
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        props.setFormDirty()
+        const target = e.currentTarget
+        const value = target.type === "checkbox" ? target.checked : target.value
+        if (target.id === "name") {
+            setName(value as string)
+        } else if (target.id === "visible") {
+            setVisible(value as boolean)
+        } else if (target.id === "duration") {
+            setDuration(Number(value))
+        }
+    }
 
-    const onChangeColor = React.useCallback((newColor: string): void => {
+    const onChangeColor = (newColor: string): void => {
         setColor(newColor)
-    }, [])
+    }
 
     const onSubmit = React.useCallback(
         (e: React.FormEvent<HTMLFormElement>): void => {
@@ -164,9 +161,9 @@ const FormSettings: React.FC<Props> = (props) => {
         ],
     )
 
-    const close = React.useCallback((): void => {
+    const close = (): void => {
         props.funcClose()
-    }, [props])
+    }
 
     const handleDelete = React.useCallback(
         (id: Model["id"]): void => {

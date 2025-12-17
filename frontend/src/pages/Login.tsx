@@ -38,7 +38,7 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
         // - v idealnim svete zde bude jen: authContextLogin(values)
         const valuesCurrent: AuthorizationType = {
             username: usernameField.current ? usernameField.current.value : values.username,
-            password: passwordField.current ? passwordField.current.value : values.username,
+            password: passwordField.current ? passwordField.current.value : values.password,
         }
         void authContextLogin(valuesCurrent)
     }

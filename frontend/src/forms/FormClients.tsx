@@ -60,35 +60,32 @@ const FormClients: React.FC<Props> = (props) => {
     /** Klient je aktivní (true). */
     const [active, setActive] = React.useState(props.client.active)
 
-    const onChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>): void => {
-            props.setFormDirty()
-            const target = e.currentTarget
-            let value = target.type === "checkbox" ? target.checked : target.value
-            // pri psani rozdeluj cislo na trojice
-            if (target.id === "phone") {
-                value = (value as string)
-                    .replace(/([0-9]{3})([^\s])/, "$1 $2")
-                    .replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
-                setPhone(value)
-            }
-            // nastav velke pocatecni pismeno ve jmenu i prijmeni klienta
-            else if (target.id === "firstname") {
-                value = capitalizeString(value as string)
-                setFirstname(value)
-            } else if (target.id === "surname") {
-                value = capitalizeString(value as string)
-                setSurname(value)
-            } else if (target.id === "email") {
-                setEmail(value as string)
-            } else if (target.id === "note") {
-                setNote(value as string)
-            } else if (target.id === "active") {
-                setActive(value as boolean)
-            }
-        },
-        [props],
-    )
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        props.setFormDirty()
+        const target = e.currentTarget
+        let value = target.type === "checkbox" ? target.checked : target.value
+        // pri psani rozdeluj cislo na trojice
+        if (target.id === "phone") {
+            value = (value as string)
+                .replace(/([0-9]{3})([^\s])/, "$1 $2")
+                .replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
+            setPhone(value)
+        }
+        // nastav velke pocatecni pismeno ve jmenu i prijmeni klienta
+        else if (target.id === "firstname") {
+            value = capitalizeString(value as string)
+            setFirstname(value)
+        } else if (target.id === "surname") {
+            value = capitalizeString(value as string)
+            setSurname(value)
+        } else if (target.id === "email") {
+            setEmail(value as string)
+        } else if (target.id === "note") {
+            setNote(value as string)
+        } else if (target.id === "active") {
+            setActive(value as boolean)
+        }
+    }
 
     const onSubmit = React.useCallback(
         (e: React.FormEvent<HTMLFormElement>): void => {
@@ -121,9 +118,9 @@ const FormClients: React.FC<Props> = (props) => {
         [firstname, surname, email, phone, note, active, props, createClient, updateClient],
     )
 
-    const close = React.useCallback((): void => {
+    const close = (): void => {
         props.funcClose()
-    }, [props])
+    }
 
     const handleDelete = React.useCallback(
         (id: ClientType["id"]): void => {

@@ -76,9 +76,7 @@ const Card: React.FC<Props> = (props) => {
     }, [isClientPageValue, clientQuery.data, groupQuery.data])
 
     /** Skupiny, jejichž členem je zobrazený klient. */
-    const groupsOfClient: GroupType[] = React.useMemo(() => {
-        return groupsOfClientQuery.data ?? []
-    }, [groupsOfClientQuery.data])
+    const groupsOfClient: GroupType[] = groupsOfClientQuery.data ?? []
 
     /** Lekce zobrazeného klienta nebo skupiny, seskupené podle kurzů. */
     const lectures: GroupedObjectsByCourses<LectureType> = React.useMemo(() => {
@@ -127,9 +125,9 @@ const Card: React.FC<Props> = (props) => {
         [props.history, isClientPageValue],
     )
 
-    const goBack = React.useCallback((): void => {
+    const goBack = (): void => {
         props.history.goBack()
-    }, [props.history])
+    }
 
     return (
         <>
