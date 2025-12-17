@@ -23,11 +23,11 @@ type State = {
 
 type Context = State & {
     /** Funkce pro přihlášení uživatele. */
-    login: (credentials: AuthorizationType) => void
+    login: (credentials: AuthorizationType) => Promise<void>
     /** Funkce pro odhlášení uživatele. */
     logout: fEmptyVoid
     /** Funkce pro zjištění, zda je uživatel přihlášen (případně obnoví token s blížící se expirací). */
-    isAuthenticated: (refreshExpiringToken?: boolean) => void
+    isAuthenticated: (refreshExpiringToken?: boolean) => Promise<void>
 }
 
 type AuthContextInterface = Context | undefined
@@ -42,27 +42,27 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     const [isLoading, setIsLoading] = React.useState(false)
     const [isAuth, setIsAuth] = React.useState(false)
 
-    const isAuthenticated = React.useCallback((refreshExpiringToken = true): void => {
-        const token = Token.get()
-        if (token === null) {
-            setIsAuth(false)
-            return
-        }
+    const isAuthenticated = React.useCallback(
+        async (refreshExpiringToken = true): Promise<void> => {
+            const token = Token.get()
+            if (token === null) {
+                setIsAuth(false)
+                return
+            }
 
-        try {
-            const decodedToken = Token.decodeToken(token)
-            if (refreshExpiringToken) {
-                const dif = decodedToken.exp - getCurrentDate()
-                Token.logToConsole(token, decodedToken, dif)
-                if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
-                    // token jeste plati, ale prodluz jeho platnost
-                    const data = { token }
-                    LoginService.refresh(data)
-                        .then(({ token: newToken }) => {
+            try {
+                const decodedToken = Token.decodeToken(token)
+                if (refreshExpiringToken) {
+                    const dif = decodedToken.exp - getCurrentDate()
+                    Token.logToConsole(token, decodedToken, dif)
+                    if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
+                        // token jeste plati, ale prodluz jeho platnost
+                        try {
+                            const data = { token }
+                            const { token: newToken } = await LoginService.refresh(data)
                             Token.save(newToken)
                             setIsAuth(true)
-                        })
-                        .catch(() => {
+                        } catch {
                             setIsAuth(false)
                             toast(
                                 <Notification
@@ -73,48 +73,48 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                                     type: toast.TYPE.WARNING,
                                 },
                             )
-                        })
-                    return
+                        }
+                        return
+                    }
                 }
+                // je zaslany token expirovany? (pokud byl odeslan pozadavek na prodlouzeni platnosti, bere se i tak
+                // platnost puvodniho tokenu)
+                setIsAuth(decodedToken.exp >= getCurrentDate())
+            } catch (err) {
+                console.error(err)
+                setIsAuth(false)
             }
-            // je zaslany token expirovany? (pokud byl odeslan pozadavek na prodlouzeni platnosti, bere se i tak
-            // platnost puvodniho tokenu)
-            setIsAuth(decodedToken.exp >= getCurrentDate())
-        } catch (err) {
-            console.error(err)
-            setIsAuth(false)
-        }
-    }, [])
+        },
+        [],
+    )
 
-    const login = React.useCallback((credentials: AuthorizationType): void => {
+    const login = React.useCallback(async (credentials: AuthorizationType): Promise<void> => {
         setIsLoading(true)
-        LoginService.authenticate(credentials)
-            .then(({ token }) => {
-                Token.save(token)
-            })
-            .catch(() => {
-                // Chyba při přihlášení - uživatel uvidí notifikaci z globálního error handleru
-            })
-            .finally(() => {
-                setIsLoading(false)
-            })
+        try {
+            const { token } = await LoginService.authenticate(credentials)
+            Token.save(token)
+        } catch {
+            // Chyba při přihlášení - uživatel uvidí notifikaci z globálního error handleru
+        } finally {
+            setIsLoading(false)
+        }
     }, [])
 
     const logout = React.useCallback((): void => {
         Token.remove()
-        isAuthenticated(false)
+        void isAuthenticated(false)
         // z jakekoliv stranky presmeruj uzivatele na prihlaseni (napr. na strance nenalezeno ho to jinak ponecha i po
         // odhlaseni
         history.push(APP_URLS.prihlasit.url)
     }, [isAuthenticated])
 
     React.useEffect(() => {
-        isAuthenticated(false)
+        void isAuthenticated(false)
     }, [isAuthenticated])
 
     React.useEffect(() => {
         if (!isLoading) {
-            isAuthenticated(false)
+            void isAuthenticated(false)
         }
     }, [isLoading, isAuthenticated])
 
