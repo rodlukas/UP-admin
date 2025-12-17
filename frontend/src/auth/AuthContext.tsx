@@ -91,9 +91,13 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         LoginService.authenticate(credentials)
             .then(({ token }) => {
                 Token.save(token)
+            })
+            .catch(() => {
+                // Chyba při přihlášení - uživatel uvidí notifikaci z globálního error handleru
+            })
+            .finally(() => {
                 setIsLoading(false)
             })
-            .catch(() => setIsLoading(false))
     }, [])
 
     const logout = React.useCallback((): void => {
