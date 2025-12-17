@@ -39,6 +39,7 @@ module.exports = {
         "react-hooks",
         "prettier",
         "@typescript-eslint",
+        "@tanstack/query",
         "jest-dom",
         "testing-library",
     ],
@@ -69,6 +70,8 @@ module.exports = {
         "plugin:jsx-a11y/recommended",
 
         "plugin:prettier/recommended",
+
+        "plugin:@tanstack/query/recommended",
 
         "plugin:jest-dom/recommended",
         "plugin:testing-library/react",
