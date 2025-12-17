@@ -1,11 +1,9 @@
-import { useQueryClient } from "@tanstack/react-query"
 import * as React from "react"
 
 import { useAttendanceStates } from "../api/hooks"
 import { getDisplayName } from "../global/utils"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { AttendanceStateType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
 
 type StateContext = {
     /** Data v kontextu jsou načtená (true). */
@@ -16,10 +14,7 @@ type StateContext = {
     attendancestates: AttendanceStateType[]
 }
 
-type Context = StateContext & {
-    /** Funkce pro obnovení dat v kontextu. */
-    funcRefresh: fEmptyVoid
-}
+type Context = StateContext
 
 type AttendanceStatesContextInterface = Context | undefined
 
@@ -29,17 +24,11 @@ const AttendanceStatesContext = React.createContext<AttendanceStatesContextInter
 /** Provider kontextu se stavy účastí. */
 export const AttendanceStatesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { data: attendancestates = [], isLoading, isFetching } = useAttendanceStates()
-    const queryClient = useQueryClient()
-
-    const funcRefresh = React.useCallback(() => {
-        void queryClient.invalidateQueries({ queryKey: ["attendanceStates"] })
-    }, [queryClient])
 
     return (
         <AttendanceStatesContext.Provider
             value={{
                 attendancestates,
-                funcRefresh,
                 isLoaded: !isLoading,
                 isFetching,
             }}>
