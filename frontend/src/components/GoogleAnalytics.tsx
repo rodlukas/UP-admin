@@ -13,7 +13,7 @@ type Props = RouteComponentProps & { options: ReactGA.FieldsObject }
  * https://github.com/react-ga/react-ga/wiki/React-Router-v4-withTracker
  */
 const GoogleAnalytics: React.FC<Props> = (props) => {
-    const logPageChange = React.useCallback(
+    const trackPage = React.useCallback(
         (page: string): void => {
             const { location } = window
             ReactGA.set({
@@ -28,19 +28,8 @@ const GoogleAnalytics: React.FC<Props> = (props) => {
 
     React.useEffect(() => {
         const page = props.location.pathname + props.location.search
-        logPageChange(page)
-    }, [props.location.pathname, props.location.search, logPageChange])
-
-    const prevLocationRef = React.useRef(props.location)
-    React.useEffect(() => {
-        const currentPage = prevLocationRef.current.pathname + prevLocationRef.current.search
-        const nextPage = props.location.pathname + props.location.search
-
-        if (currentPage !== nextPage) {
-            logPageChange(nextPage)
-            prevLocationRef.current = props.location
-        }
-    }, [props.location, logPageChange])
+        trackPage(page)
+    }, [props.location.pathname, props.location.search, trackPage])
 
     return null
 }
