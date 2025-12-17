@@ -1,4 +1,4 @@
-import { QueryClient } from "@tanstack/react-query"
+import { MutationCache, QueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import * as React from "react"
 import { toast, ToastOptions } from "react-toastify"
@@ -106,9 +106,9 @@ function handleError(axiosError: AxiosError): void {
     }
 }
 
-/** Vytvoří QueryClient s globálním error handlingem. */
+/** Vytvoří QueryClient s globálním error handlingem a automatickou invalidací. */
 export function createQueryClient(): QueryClient {
-    return new QueryClient({
+    const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
                 retry: 1,
@@ -145,5 +145,17 @@ export function createQueryClient(): QueryClient {
                 },
             },
         },
+        // Globální invalidace všech queries po každé úspěšné mutaci.
+        // Viz: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
+        mutationCache: new MutationCache({
+            onSuccess: () => {
+                // Invalidovat všechny queries po každé úspěšné mutaci.
+                // Invalidace pouze refetchuje aktivní queries a označí ostatní jako stale,
+                // takže se refetchují až když budou potřeba.
+                void queryClient.invalidateQueries()
+            },
+        }),
     })
+
+    return queryClient
 }
