@@ -4,6 +4,7 @@ import { Modal } from "reactstrap"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
+import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
 
 import FormClients from "./FormClients"
@@ -17,7 +18,7 @@ type Props = {
     /** Funkce, která se zavolá po úspěšném přidání klienta (spolu s daty o klientovi). */
     processAdditionOfClient?: (newClient: ClientType) => void
     /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
-    refresh?: (data: { active?: boolean } | null) => void
+    refresh?: (data: ModalClientsData) => void
 }
 
 /** Modální okno s formulářem pro klienty. Včetně tlačítek pro vyvolání přidání/úpravy. */
@@ -53,8 +54,8 @@ const ModalClients: React.FC<Props> = ({
                 autoFocus={false}
                 onClosed={(): void => {
                     processOnModalClose(() => {
-                        if (refresh && tempData) {
-                            refresh(tempData as { active?: boolean })
+                        if (refresh && tempData !== null) {
+                            refresh(tempData)
                         }
                     })
                 }}>

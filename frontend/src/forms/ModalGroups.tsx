@@ -4,6 +4,7 @@ import { Modal } from "reactstrap"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
+import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
 
 import FormGroups from "./FormGroups"
@@ -17,7 +18,7 @@ type Props = {
     /** Funkce, která se zavolá po úspěšném přidání skupiny (spolu s daty o skupině). */
     processAdditionOfGroup?: (newGroup: GroupType) => void
     /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
-    refresh?: (data: { active?: boolean } | null) => void
+    refresh?: (data: ModalGroupsData) => void
 }
 
 /** Modální okno s formulářem pro skupiny. Včetně tlačítek pro vyvolání přidání/úpravy. */
@@ -53,8 +54,8 @@ const ModalGroups: React.FC<Props> = ({
                 autoFocus={false}
                 onClosed={(): void => {
                     processOnModalClose(() => {
-                        if (refresh && tempData) {
-                            refresh(tempData as { active?: boolean })
+                        if (refresh && tempData !== null) {
+                            refresh(tempData)
                         }
                     })
                 }}>
