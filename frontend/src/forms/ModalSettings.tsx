@@ -23,10 +23,6 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE }) => {
     const typeButtons = TYPE === EDIT_TYPE.COURSE ? "kurz" : "stav účasti"
     const typeQa = TYPE === EDIT_TYPE.COURSE ? "course" : "attendancestate"
 
-    function onModalClose(): void {
-        processOnModalClose()
-    }
-
     return (
         <>
             {currentObject ? (
@@ -43,7 +39,11 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE }) => {
                     data-qa={`button_add_${typeQa}`}
                 />
             )}
-            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
+            <Modal
+                isOpen={isModal}
+                toggle={toggleModal}
+                autoFocus={false}
+                onClosed={processOnModalClose}>
                 <FormSettings
                     object={
                         currentObject ??

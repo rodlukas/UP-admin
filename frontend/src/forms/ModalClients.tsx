@@ -30,14 +30,6 @@ const ModalClients: React.FC<Props> = ({
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose, tempData] =
         useModal()
 
-    function onModalClose(): void {
-        processOnModalClose(() => {
-            if (refresh && tempData) {
-                refresh(tempData as { active?: boolean })
-            }
-        })
-    }
-
     return (
         <>
             {currentClient ? (
@@ -55,7 +47,17 @@ const ModalClients: React.FC<Props> = ({
                     data-qa="button_add_client"
                 />
             )}
-            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
+            <Modal
+                isOpen={isModal}
+                toggle={toggleModal}
+                autoFocus={false}
+                onClosed={(): void => {
+                    processOnModalClose(() => {
+                        if (refresh && tempData) {
+                            refresh(tempData as { active?: boolean })
+                        }
+                    })
+                }}>
                 <FormClients
                     client={currentClient ?? DummyClient}
                     funcClose={toggleModal}

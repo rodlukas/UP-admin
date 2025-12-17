@@ -91,7 +91,7 @@ type Props = AttendanceStatesContextProps &
         /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
         funcClose: () => boolean | void
         /** Funkce, která zavře modální okno s formulářem (po úspěšně provedeném požadavku v rámci formuláře). */
-        funcForceClose: (modalSubmitted?: boolean, data?: never) => boolean | void
+        funcForceClose: () => boolean | void
         /** Funkce, která se volá při změně údajů ve formuláři. */
         setFormDirty: fEmptyVoid
     }

@@ -48,7 +48,7 @@ type Props = {
     /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
     funcClose: () => boolean
     /** Funkce, která zavře modální okno s formulářem (po úspěšně provedeném požadavku v rámci formuláře). */
-    funcForceClose: (modalSubmitted?: boolean, data?: never) => boolean
+    funcForceClose: () => boolean
     /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
 }

@@ -30,14 +30,6 @@ const ModalGroups: React.FC<Props> = ({
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose, tempData] =
         useModal()
 
-    function onModalClose(): void {
-        processOnModalClose(() => {
-            if (refresh && tempData) {
-                refresh(tempData as { active?: boolean })
-            }
-        })
-    }
-
     return (
         <>
             {currentGroup ? (
@@ -55,7 +47,17 @@ const ModalGroups: React.FC<Props> = ({
                     data-qa="button_add_group"
                 />
             )}
-            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
+            <Modal
+                isOpen={isModal}
+                toggle={toggleModal}
+                autoFocus={false}
+                onClosed={(): void => {
+                    processOnModalClose(() => {
+                        if (refresh && tempData) {
+                            refresh(tempData as { active?: boolean })
+                        }
+                    })
+                }}>
                 <FormGroups
                     group={currentGroup ?? DummyGroup}
                     funcClose={toggleModal}

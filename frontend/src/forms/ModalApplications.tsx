@@ -18,10 +18,6 @@ type Props = {
 const ModalApplications: React.FC<Props> = ({ currentApplication }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose] = useModal()
 
-    function onModalClose(): void {
-        processOnModalClose()
-    }
-
     return (
         <>
             {currentApplication ? (
@@ -38,7 +34,11 @@ const ModalApplications: React.FC<Props> = ({ currentApplication }) => {
                     data-qa="button_add_application"
                 />
             )}
-            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
+            <Modal
+                isOpen={isModal}
+                toggle={toggleModal}
+                autoFocus={false}
+                onClosed={processOnModalClose}>
                 <FormApplications
                     application={currentApplication ?? DummyApplication}
                     funcClose={toggleModal}
