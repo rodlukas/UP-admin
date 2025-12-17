@@ -15,6 +15,7 @@ import {
     toISODate,
 } from "../global/funcDateTime"
 import { courseDuration } from "../global/utils"
+import { DEFAULT_DELAY, useDelayedValue } from "../hooks/useDelayedValue"
 
 import Attendances from "./Attendances"
 import Celebration from "./Celebration"
@@ -37,11 +38,14 @@ const DashboardDay: React.FC<Props> = (props) => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const getDate = (): Date => new Date(props.date)
 
+    /** Datum, pro které se má načíst data (může být zpožděno při rychlém překlikávání). */
+    const delayedDate = useDelayedValue(props.date, DEFAULT_DELAY, props.withoutWaiting)
+
     const {
         data: lectures = [],
         isLoading,
         isFetching,
-    } = useLecturesFromDay(toISODate(getDate()), true)
+    } = useLecturesFromDay(toISODate(new Date(delayedDate)), true)
 
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())
