@@ -24,10 +24,7 @@ const Clients: React.FC<Props> = () => {
     const [active, setActive] = React.useState(true)
     const { data: inactiveClients = [], isLoading: inactiveLoading } = useInactiveClients(!active)
 
-    const isLoading = (): boolean =>
-        active
-            ? clientsActiveContext.isLoading && clientsActiveContext.clients.length === 0
-            : inactiveLoading && inactiveClients.length === 0
+    const isLoading = (): boolean => (active ? clientsActiveContext.isLoading : inactiveLoading)
 
     const getClientsData = (): ClientType[] =>
         active ? clientsActiveContext.clients : inactiveClients

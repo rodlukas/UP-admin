@@ -30,9 +30,6 @@ const Applications: React.FC<Props> = () => {
         return groupObjectsByCourses<ApplicationType>(applicationsData)
     }, [applicationsData])
 
-    // Zobrazit loading pouze při prvním načítání, ne při background refetch
-    const showLoading = isLoading && applications.length === 0
-
     const handleDelete = (id: ApplicationType["id"]): void => {
         deleteApplication.mutate(id)
     }
@@ -45,7 +42,7 @@ const Applications: React.FC<Props> = () => {
                     buttons={<ModalApplications />}
                     isFetching={isFetching && applications.length > 0}
                 />
-                {showLoading ? (
+                {isLoading ? (
                     <Loading />
                 ) : (
                     <>

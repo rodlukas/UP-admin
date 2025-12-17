@@ -26,10 +26,7 @@ const Groups: React.FC<Props> = () => {
     const [active, setActive] = React.useState(true)
     const { data: inactiveGroups = [], isLoading: inactiveLoading } = useInactiveGroups(!active)
 
-    const isLoading = (): boolean =>
-        active
-            ? groupsActiveContext.isLoading && groupsActiveContext.groups.length === 0
-            : inactiveLoading && inactiveGroups.length === 0
+    const isLoading = (): boolean => (active ? groupsActiveContext.isLoading : inactiveLoading)
 
     const getGroupsData = (): GroupType[] => (active ? groupsActiveContext.groups : inactiveGroups)
 
