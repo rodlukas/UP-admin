@@ -178,7 +178,7 @@ const FormGroups: React.FC<Props> = (props) => {
         [props],
     )
 
-    const isLoading = clientsLoading || !props.coursesVisibleContext.isLoaded
+    const isLoading = clientsLoading || props.coursesVisibleContext.isLoading
     const isSubmit = createGroup.isPending || updateGroup.isPending
 
     return (

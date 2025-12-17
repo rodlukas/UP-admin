@@ -114,7 +114,7 @@ const Card: React.FC<Props> = (props) => {
         (isClientPageValue
             ? lecturesFromClientQuery.isLoading
             : lecturesFromGroupQuery.isLoading) ||
-        !props.attendanceStatesContext.isLoaded
+        props.attendanceStatesContext.isLoading
 
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {

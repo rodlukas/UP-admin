@@ -115,7 +115,7 @@ const FormApplications: React.FC<Props> = (props) => {
         setClient(newClient)
     }
 
-    const isLoading = clientsLoading || !props.coursesVisibleContext.isLoaded
+    const isLoading = clientsLoading || props.coursesVisibleContext.isLoading
     const isSubmit = createApplication.isPending || updateApplication.isPending
 
     return (

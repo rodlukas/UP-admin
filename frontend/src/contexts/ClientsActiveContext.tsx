@@ -7,8 +7,6 @@ import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { ClientActiveType } from "../types/models"
 
 type StateContext = {
-    /** Data v kontextu jsou načtená (true). */
-    isLoaded: boolean
     /** Probíhá první načítání dat (true) - data ještě nejsou načtená. */
     isLoading: boolean
     /** Probíhá načítání dat na pozadí (true). */
@@ -33,7 +31,6 @@ export const ClientsActiveProvider: React.FC<{ children: React.ReactNode }> = ({
         <ClientsActiveContext.Provider
             value={{
                 clients,
-                isLoaded: !isLoading && !isFetching,
                 isLoading,
                 isFetching,
             }}>

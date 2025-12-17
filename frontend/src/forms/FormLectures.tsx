@@ -544,7 +544,7 @@ const FormLectures: React.FC<Props> = (props) => {
     )
 
     const isLoading =
-        !props.coursesVisibleContext.isLoaded || !props.attendanceStatesContext.isLoaded
+        props.coursesVisibleContext.isLoading || props.attendanceStatesContext.isLoading
 
     return (
         <Form onSubmit={onSubmit} data-qa="form_lecture">
@@ -861,7 +861,7 @@ const FormLectures: React.FC<Props> = (props) => {
                     loading={isSubmit}
                     content={isLecture(props.lecture) ? "Uložit" : "Přidat"}
                     data-qa="button_submit_lecture"
-                    disabled={!props.coursesVisibleContext.isLoaded}
+                    disabled={props.coursesVisibleContext.isLoading}
                 />
                 {isLecture(props.lecture) &&
                     !isClient(props.object) &&
@@ -871,7 +871,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                 loading={isSubmit}
                                 onClick={(e): void => onSubmit(e, true)}
                                 id="FormLectures_SubmitWithClientChanges"
-                                disabled={!props.coursesVisibleContext.isLoaded}
+                                disabled={props.coursesVisibleContext.isLoading}
                                 content="Uložit + projevit změny v klientech"
                             />
                             <UncontrolledTooltipWrapper target="FormLectures_SubmitWithClientChanges">

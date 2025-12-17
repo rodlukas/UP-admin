@@ -53,11 +53,11 @@ const Main: React.FC = () => {
     const escPress = useKeyPress("Escape")
 
     const search = React.useCallback(() => {
-        if (searchVal !== "" && clientsActiveContext.isLoaded) {
+        if (searchVal !== "" && !clientsActiveContext.isLoading) {
             const results = new Fuse(clientsActiveContext.clients, searchOptions).search(searchVal)
             setFoundResults(results)
         }
-    }, [searchVal, clientsActiveContext.clients, clientsActiveContext.isLoaded])
+    }, [searchVal, clientsActiveContext.clients, clientsActiveContext.isLoading])
 
     function resetSearch(): void {
         setFoundResults([])

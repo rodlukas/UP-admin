@@ -64,7 +64,7 @@ const Settings: React.FC<Props> = (props) => {
     >(undefined)
 
     React.useEffect(() => {
-        if (props.attendanceStatesContext.isLoaded) {
+        if (!props.attendanceStatesContext.isLoading) {
             const attendanceStates = props.attendanceStatesContext.attendancestates
             const defaultElem = attendanceStates.find((elem) => elem.default)
             const defaultId = defaultElem !== undefined ? defaultElem.id : undefined
@@ -73,7 +73,7 @@ const Settings: React.FC<Props> = (props) => {
             setAttendanceStateDefaultId(defaultId)
             setAttendanceStateExcusedId(excusedId)
         }
-    }, [props.attendanceStatesContext.isLoaded, props.attendanceStatesContext.attendancestates])
+    }, [props.attendanceStatesContext.isLoading, props.attendanceStatesContext.attendancestates])
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const target = e.currentTarget
@@ -91,7 +91,7 @@ const Settings: React.FC<Props> = (props) => {
         }
     }
 
-    const isLoading = coursesLoading || !props.attendanceStatesContext.isLoaded
+    const isLoading = coursesLoading || props.attendanceStatesContext.isLoading
     const isFetching = coursesFetching || props.attendanceStatesContext.isFetching
     return (
         <>

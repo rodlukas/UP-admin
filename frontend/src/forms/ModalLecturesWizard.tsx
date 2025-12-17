@@ -173,8 +173,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     {isClient !== undefined && (
                         <>
                             {isLoading ||
-                            (isClient && !props.clientsActiveContext.isLoaded) ||
-                            (!isClient && !props.groupsActiveContext.isLoaded) ? (
+                            (isClient && props.clientsActiveContext.isLoading) ||
+                            (!isClient && props.groupsActiveContext.isLoading) ? (
                                 <Loading
                                     text={
                                         isLoading

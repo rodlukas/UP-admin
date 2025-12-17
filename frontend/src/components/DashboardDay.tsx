@@ -48,7 +48,7 @@ const DashboardDay: React.FC<Props> = (props) => {
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())
 
-    const showLoading = isLoading || !props.attendanceStatesContext.isLoaded
+    const showLoading = isLoading || props.attendanceStatesContext.isLoading
 
     return (
         <ListGroup className="DashboardDay_wrapper">

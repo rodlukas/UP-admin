@@ -6,8 +6,10 @@ import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { CourseType } from "../types/models"
 
 type StateContext = {
-    /** Data v kontextu jsou načtená (true). */
-    isLoaded: boolean
+    /** Probíhá první načítání dat (true) - data ještě nejsou načtená. */
+    isLoading: boolean
+    /** Probíhá načítání dat na pozadí (true). */
+    isFetching: boolean
     /** Pole s viditelnými kurzy. */
     courses: CourseType[]
 }
@@ -27,7 +29,8 @@ export const CoursesVisibleProvider: React.FC<{ children: React.ReactNode }> = (
         <CoursesVisibleContext.Provider
             value={{
                 courses,
-                isLoaded: !isLoading && !isFetching,
+                isLoading,
+                isFetching,
             }}>
             {children}
         </CoursesVisibleContext.Provider>
