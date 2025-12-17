@@ -1,5 +1,5 @@
 {
     "low": true,
     "report-type": "summary",
-    "allowlist": ["bootstrap", "cookie"]
+    "allowlist": ["cookie", "webpack-dev-server"]
 }
