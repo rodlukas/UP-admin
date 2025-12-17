@@ -73,80 +73,78 @@ const DashboardDay: React.FC<Props> = (props) => {
     const showLoading = isLoading || !props.attendanceStatesContext.isLoaded
 
     return (
-        <div className="DashboardDay_wrapper">
-            <ListGroup>
-                <ListGroupItem
-                    color={isToday(getDate()) ? "primary" : ""}
-                    className="text-center DashboardDay_date">
-                    <h4
-                        className={`mb-0 text-nowrap d-inline-block ${
-                            isUserCelebratingResult === USER_CELEBRATION.NOTHING
-                                ? "celebration_none"
-                                : "celebration"
-                        }`}>
-                        <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
-                    </h4>
-                    <ModalLecturesWizard
-                        date={props.date}
-                        dropdownClassName="float-right"
-                        dropdownSize="sm"
-                        dropdownDirection="up"
-                        isFetching={isFetching && !isLoading}
-                    />
+        <ListGroup className="DashboardDay_wrapper">
+            <ListGroupItem
+                color={isToday(getDate()) ? "primary" : ""}
+                className="text-center DashboardDay_date">
+                <h4
+                    className={`mb-0 text-nowrap d-inline-block ${
+                        isUserCelebratingResult === USER_CELEBRATION.NOTHING
+                            ? "celebration_none"
+                            : "celebration"
+                    }`}>
+                    <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
+                </h4>
+                <ModalLecturesWizard
+                    date={props.date}
+                    dropdownClassName="float-right"
+                    dropdownSize="sm"
+                    dropdownDirection="up"
+                    isFetching={isFetching && !isLoading}
+                />
+            </ListGroupItem>
+            {showLoading ? (
+                <ListGroupItem className="lecture">
+                    <Loading />
                 </ListGroupItem>
-                {showLoading ? (
-                    <ListGroupItem className="lecture">
-                        <Loading />
-                    </ListGroupItem>
-                ) : lectures.length > 0 ? (
-                    lectures.map((lecture) => {
-                        const className = classNames("lecture", "lecture_dashboardday", {
-                            LectureGroup: lecture.group,
-                            "lecture-canceled": lecture.canceled,
-                        })
-                        return (
-                            <ListGroupItem key={lecture.id} data-qa="lecture" className={className}>
-                                <div
-                                    className="lecture_heading"
-                                    style={{ background: lecture.course.color }}>
-                                    <h4>
-                                        <span
-                                            id={`Card_CourseDuration_${lecture.id}`}
-                                            className="font-weight-bold">
-                                            {prettyTime(new Date(lecture.start))}
-                                        </span>
-                                        <UncontrolledTooltipWrapper
-                                            target={`Card_CourseDuration_${lecture.id}`}>
-                                            {courseDuration(lecture.duration)}
-                                        </UncontrolledTooltipWrapper>
-                                    </h4>
-                                    <CourseName course={lecture.course} />
-                                    <LectureNumber lecture={lecture} colorize />
-                                    <ModalLectures
-                                        object={lecture.group ?? lecture.attendances[0].client}
-                                        currentLecture={lecture}
-                                    />
-                                </div>
-                                <div className="lecture_content">
-                                    {lecture.group && (
-                                        <h5>
-                                            <GroupName group={lecture.group} title link />
-                                        </h5>
-                                    )}
-                                    <Attendances lecture={lecture} showClient />
-                                </div>
-                            </ListGroupItem>
-                        )
+            ) : lectures.length > 0 ? (
+                lectures.map((lecture) => {
+                    const className = classNames("lecture", "lecture_dashboardday", {
+                        LectureGroup: lecture.group,
+                        "lecture-canceled": lecture.canceled,
                     })
-                ) : (
-                    <ListGroupItem className="lecture lecture_free">
-                        <ListGroupItemHeading className="text-muted text-center">
-                            Volno
-                        </ListGroupItemHeading>
-                    </ListGroupItem>
-                )}
-            </ListGroup>
-        </div>
+                    return (
+                        <ListGroupItem key={lecture.id} data-qa="lecture" className={className}>
+                            <div
+                                className="lecture_heading"
+                                style={{ background: lecture.course.color }}>
+                                <h4>
+                                    <span
+                                        id={`Card_CourseDuration_${lecture.id}`}
+                                        className="font-weight-bold">
+                                        {prettyTime(new Date(lecture.start))}
+                                    </span>
+                                    <UncontrolledTooltipWrapper
+                                        target={`Card_CourseDuration_${lecture.id}`}>
+                                        {courseDuration(lecture.duration)}
+                                    </UncontrolledTooltipWrapper>
+                                </h4>
+                                <CourseName course={lecture.course} />
+                                <LectureNumber lecture={lecture} colorize />
+                                <ModalLectures
+                                    object={lecture.group ?? lecture.attendances[0].client}
+                                    currentLecture={lecture}
+                                />
+                            </div>
+                            <div className="lecture_content">
+                                {lecture.group && (
+                                    <h5>
+                                        <GroupName group={lecture.group} title link />
+                                    </h5>
+                                )}
+                                <Attendances lecture={lecture} showClient />
+                            </div>
+                        </ListGroupItem>
+                    )
+                })
+            ) : (
+                <ListGroupItem className="lecture lecture_free">
+                    <ListGroupItemHeading className="text-muted text-center">
+                        Volno
+                    </ListGroupItemHeading>
+                </ListGroupItem>
+            )}
+        </ListGroup>
     )
 }
 
