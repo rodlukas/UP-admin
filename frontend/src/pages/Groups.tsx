@@ -14,6 +14,7 @@ import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
 import { TEXTS } from "../global/constants"
 import { areAllMembersActive } from "../global/utils"
+import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
 
@@ -34,7 +35,7 @@ const Groups: React.FC<Props> = () => {
         setActive(newActive)
     }
 
-    const refreshFromModal = (data: { active?: boolean } | null): void => {
+    const refreshFromModal = (data: ModalGroupsData): void => {
         if (data?.active !== undefined) {
             refresh(data.active)
         }

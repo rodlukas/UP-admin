@@ -12,6 +12,7 @@ import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
+import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
 
@@ -33,7 +34,7 @@ const Clients: React.FC<Props> = () => {
         setActive(newActive)
     }
 
-    const refreshFromModal = (data: { active?: boolean } | null): void => {
+    const refreshFromModal = (data: ModalClientsData): void => {
         if (data?.active !== undefined) {
             refresh(data.active)
         }
