@@ -12,7 +12,6 @@ import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
-import { DASHBOARDDAY_UPDATE_TYPE } from "../global/constants"
 import {
     addDays,
     DAYS_IN_WEEK,
@@ -77,10 +76,6 @@ const Diary: React.FC<Props> = (props) => {
         [props.match.params],
     )
 
-    /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní. */
-    const [updateType, setUpdateTypeState] = React.useState<DASHBOARDDAY_UPDATE_TYPE>(
-        DASHBOARDDAY_UPDATE_TYPE.NONE,
-    )
     /** Pole se dny v zobrazeném týdnu. */
     const [week, setWeek] = React.useState<string[]>(getWeek())
 
@@ -105,21 +100,6 @@ const Diary: React.FC<Props> = (props) => {
             )} – ${prettyDateWithYearIfDiff(getFridayDate())})`,
         )
     }, [getRequiredMonday, getFridayDate])
-
-    const setUpdateType = React.useCallback(
-        (
-            newUpdateType: DASHBOARDDAY_UPDATE_TYPE = DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED,
-        ): void => {
-            setUpdateTypeState(newUpdateType)
-        },
-        [],
-    )
-
-    React.useEffect(() => {
-        if (updateType === DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED) {
-            setUpdateTypeState(DASHBOARDDAY_UPDATE_TYPE.NONE)
-        }
-    }, [updateType])
 
     const onKeyDown = React.useCallback(
         (e: KeyboardEvent): void => {
@@ -166,10 +146,9 @@ const Diary: React.FC<Props> = (props) => {
         ) {
             setWeek(getWeek())
             refreshTitle()
-            setUpdateType(DASHBOARDDAY_UPDATE_TYPE.DAY_CHANGED)
             prevParamsRef.current = props.match.params
         }
-    }, [props.match.params, week, getRequiredMonday, getWeek, refreshTitle, setUpdateType])
+    }, [props.match.params, week, getRequiredMonday, getWeek, refreshTitle])
 
     // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
     return (
@@ -224,11 +203,7 @@ const Diary: React.FC<Props> = (props) => {
                 <Row>
                     {week.map((day, index) => (
                         <Col key={index} md="6" lg="" className="Diary_day">
-                            <DashboardDay
-                                date={day}
-                                setUpdateType={setUpdateType}
-                                updateType={updateType}
-                            />
+                            <DashboardDay date={day} />
                         </Col>
                     ))}
                 </Row>

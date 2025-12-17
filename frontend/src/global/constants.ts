@@ -13,16 +13,6 @@ export enum EDIT_TYPE {
     COURSE = 1,
 }
 
-/** Typ aktualizace komponent DashboardDay. */
-export enum DASHBOARDDAY_UPDATE_TYPE {
-    /** Neproběhla žádná aktualizace. */
-    NONE = 0,
-    /** Aktualizace proběhla a změnil se den, který komponenta zobrazuje. */
-    DAY_CHANGED = 1,
-    /** Aktualizace proběhla, ale NEzměnil se den, který komponenta zobrazuje. */
-    DAY_UNCHANGED = 2,
-}
-
 /** Prefix hlavičky s JWT tokenem. */
 export const JWT_HEADER_PREFIX = "Bearer "
 

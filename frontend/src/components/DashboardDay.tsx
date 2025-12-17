@@ -9,7 +9,7 @@ import {
 } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
-import { DASHBOARDDAY_UPDATE_TYPE, USER_CELEBRATION } from "../global/constants"
+import { USER_CELEBRATION } from "../global/constants"
 import {
     isToday,
     isUserCelebrating,
@@ -18,7 +18,6 @@ import {
     toISODate,
 } from "../global/funcDateTime"
 import { courseDuration } from "../global/utils"
-import { fEmptyVoid } from "../types/types"
 
 import Attendances from "./Attendances"
 import Celebration from "./Celebration"
@@ -34,38 +33,17 @@ type Props = AttendanceStatesContextProps & {
     withoutWaiting?: boolean
     /** Datum pro zobrazované lekce. */
     date: string
-    /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní (aktualizaci požaduje rodič). */
-    updateType: DASHBOARDDAY_UPDATE_TYPE
-    /** Funkce, která se zavolá po nějaké aktualizaci v rámci komponenty. */
-    setUpdateType: fEmptyVoid
 }
 
 /** Komponenta zobrazující lekce pro jeden zadaný den. */
 const DashboardDay: React.FC<Props> = (props) => {
     const getDate = (): Date => new Date(props.date)
-    const prevUpdateTypeRef = React.useRef<DASHBOARDDAY_UPDATE_TYPE>(props.updateType)
-    const prevDateRef = React.useRef<string>(props.date)
 
     const {
         data: lectures = [],
         isLoading,
         isFetching,
-        refetch,
     } = useLecturesFromDay(toISODate(getDate()), true)
-
-    React.useEffect(() => {
-        // Provést refetch pouze když se updateType změnil z NONE na DAY_UNCHANGED
-        // (např. se upravil stav účasti na stejném dni)
-        // Pro DAY_CHANGED není potřeba, React Query už automaticky refetchuje při změně date prop
-        if (
-            props.updateType === DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED &&
-            prevUpdateTypeRef.current === DASHBOARDDAY_UPDATE_TYPE.NONE
-        ) {
-            void refetch()
-        }
-        prevUpdateTypeRef.current = props.updateType
-        prevDateRef.current = props.date
-    }, [props.updateType, props.date, refetch])
 
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())
