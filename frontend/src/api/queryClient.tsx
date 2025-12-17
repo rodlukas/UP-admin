@@ -80,10 +80,8 @@ function handleError(axiosError: AxiosError): void {
     const errorResponse = axiosError.response
     const djangoError = parseDjangoError(axiosError)
 
-    // Logování do konzole
     logErrorToConsole(axiosError, djangoError)
 
-    // Zobrazení notifikace
     const errorMessage = getErrorMessage(errorResponse, djangoError)
     const toastOptions: ToastOptions = {
         type: toast.TYPE.ERROR,
@@ -113,24 +111,20 @@ export function createQueryClient(): QueryClient {
     return new QueryClient({
         defaultOptions: {
             queries: {
-                // Automaticky zruší requesty při unmount komponenty
                 retry: 1,
                 refetchOnWindowFocus: false,
-                // Globální error handling pro queries
                 onError: (error: unknown) => {
                     handleError(error as AxiosError)
                 },
             },
             mutations: {
-                // Globální error handling pro mutations
                 onError: (error: unknown) => {
                     handleError(error as AxiosError)
                 },
-                // Zobrazit success notifikaci pro mutations
-                // Používáme onSettled místo onSuccess, protože onSettled se volá vždy,
-                // i když je definován lokální onSuccess v mutate() volání
+                // Globální success notifikace pro všechny mutations.
+                // Používáme onSettled místo onSuccess: onSettled se volá vždy (i když je v mutate()
+                // definován lokální onSuccess), takže globální notifikace se zobrazí vždy při úspěchu.
                 onSettled: (data, error) => {
-                    // Zobrazit success notifikaci pouze pokud není chyba
                     if (!error && data !== undefined) {
                         toast(<Notification type={toast.TYPE.SUCCESS} />, {
                             type: toast.TYPE.SUCCESS,
