@@ -141,7 +141,6 @@ const Diary: React.FC<Props> = (props) => {
         }
     }, [props.match.params, getRequiredMonday, getWeek, refreshTitle])
 
-    // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
     return (
         <>
             <Container>
@@ -192,6 +191,7 @@ const Diary: React.FC<Props> = (props) => {
             </Container>
             <Container fluid>
                 <Row>
+                    {/* je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md */}
                     {week.map((day, index) => (
                         <Col key={index} md="6" lg="" className="Diary_day">
                             <DashboardDay date={day} />
