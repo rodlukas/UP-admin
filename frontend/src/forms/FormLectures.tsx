@@ -121,10 +121,6 @@ const FormLectures: React.FC<Props> = (props) => {
         return true
     }
 
-    const getAttendanceStatesData = React.useCallback((): AttendanceStateType[] => {
-        return props.attendanceStatesContext.attendancestates
-    }, [props.attendanceStatesContext.attendancestates])
-
     const getMembers = React.useCallback((memberships: { client: ClientType }[]): ClientType[] => {
         // map se provadi nad hodnotami MembershipType | AttendanceType
         return memberships.map((member) => member.client)
@@ -153,7 +149,7 @@ const FormLectures: React.FC<Props> = (props) => {
     }, [props.object, props.defaultValuesForLecture])
 
     const getDefaultStateIndex = React.useCallback((): AttendanceStateType["id"] | undefined => {
-        const attendanceStates = getAttendanceStatesData()
+        const attendanceStates = props.attendanceStatesContext.attendancestates
         if (attendanceStates.length) {
             const res = attendanceStates.find((elem) => elem.default === true)
             if (res !== undefined) {
@@ -164,10 +160,10 @@ const FormLectures: React.FC<Props> = (props) => {
             }
         }
         return undefined
-    }, [getAttendanceStatesData])
+    }, [props.attendanceStatesContext.attendancestates])
 
     const getExcusedStateIndex = React.useCallback((): AttendanceStateType["id"] | undefined => {
-        const attendanceStates = getAttendanceStatesData()
+        const attendanceStates = props.attendanceStatesContext.attendancestates
         if (attendanceStates.length) {
             const res = attendanceStates.find((elem) => elem.excused === true)
             if (res !== undefined) {
@@ -175,7 +171,7 @@ const FormLectures: React.FC<Props> = (props) => {
             }
         }
         return undefined
-    }, [getAttendanceStatesData])
+    }, [props.attendanceStatesContext.attendancestates])
 
     const createAttendanceStateObjects = React.useCallback((): AtStateWithEmpty => {
         const objects: AtStateWithEmpty = {}
@@ -749,7 +745,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 data-id={member.id}
                                                 required
                                                 data-qa="lecture_select_attendance_attendancestate">
-                                                {getAttendanceStatesData().map(
+                                                {props.attendanceStatesContext.attendancestates.map(
                                                     (attendancestate) =>
                                                         // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                                         (attendancestate.visible ||

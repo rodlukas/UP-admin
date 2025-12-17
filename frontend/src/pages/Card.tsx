@@ -52,12 +52,8 @@ type Props = CustomRouteComponentProps<ParamProps> & AttendanceStatesContextProp
 
 /** Stránka s kartou klienta nebo skupiny. */
 const Card: React.FC<Props> = (props) => {
-    const isClientPage = React.useCallback((): boolean => {
-        return props.match.path.includes(APP_URLS.klienti.url)
-    }, [props.match.path])
-
     const id = props.match.params.id
-    const isClientPageValue = isClientPage()
+    const isClientPageValue = props.match.path.includes(APP_URLS.klienti.url)
 
     const isClient = (object: ClientType | GroupType | null): object is ClientType =>
         Boolean(object && "phone" in object)

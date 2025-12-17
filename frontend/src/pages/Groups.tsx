@@ -37,21 +37,15 @@ const Groups: React.FC<Props> = (props) => {
     const getGroupsData = (): GroupType[] =>
         active ? props.groupsActiveContext.groups : inactiveGroups
 
-    const refresh = React.useCallback(
-        (newActive: boolean = active): void => {
-            setActive(newActive)
-        },
-        [active],
-    )
+    const refresh = (newActive: boolean = active): void => {
+        setActive(newActive)
+    }
 
-    const refreshFromModal = React.useCallback(
-        (data: { active?: boolean } | null): void => {
-            if (data?.active !== undefined) {
-                refresh(data.active)
-            }
-        },
-        [refresh],
-    )
+    const refreshFromModal = (data: { active?: boolean } | null): void => {
+        if (data?.active !== undefined) {
+            refresh(data.active)
+        }
+    }
 
     return (
         <Container>

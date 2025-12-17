@@ -63,25 +63,17 @@ const Settings: React.FC<Props> = (props) => {
         AttendanceStateType["id"] | undefined
     >(undefined)
 
-    const getAttendanceStatesData = React.useCallback((): AttendanceStateType[] => {
-        return props.attendanceStatesContext.attendancestates
-    }, [props.attendanceStatesContext.attendancestates])
-
-    const findStateIndexes = React.useCallback((): void => {
-        const attendanceStates = getAttendanceStatesData()
-        const defaultElem = attendanceStates.find((elem) => elem.default)
-        const defaultId = defaultElem !== undefined ? defaultElem.id : undefined
-        const excusedElem = attendanceStates.find((elem) => elem.excused)
-        const excusedId = excusedElem !== undefined ? excusedElem.id : undefined
-        setAttendanceStateDefaultId(defaultId)
-        setAttendanceStateExcusedId(excusedId)
-    }, [getAttendanceStatesData])
-
     React.useEffect(() => {
         if (props.attendanceStatesContext.isLoaded) {
-            findStateIndexes()
+            const attendanceStates = props.attendanceStatesContext.attendancestates
+            const defaultElem = attendanceStates.find((elem) => elem.default)
+            const defaultId = defaultElem !== undefined ? defaultElem.id : undefined
+            const excusedElem = attendanceStates.find((elem) => elem.excused)
+            const excusedId = excusedElem !== undefined ? excusedElem.id : undefined
+            setAttendanceStateDefaultId(defaultId)
+            setAttendanceStateExcusedId(excusedId)
         }
-    }, [props.attendanceStatesContext.isLoaded, findStateIndexes])
+    }, [props.attendanceStatesContext.isLoaded, props.attendanceStatesContext.attendancestates])
 
     const onChange = React.useCallback(
         (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -133,28 +125,32 @@ const Settings: React.FC<Props> = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {getAttendanceStatesData().map((attendancestate) => (
-                                            <tr key={attendancestate.id} data-qa="attendancestate">
-                                                <td data-qa="attendancestate_name">
-                                                    {attendancestate.name}
-                                                </td>
-                                                <td className="text-center">
-                                                    <Visible
-                                                        visible={attendancestate.visible}
-                                                        data-qa="attendancestate_visible"
-                                                    />
-                                                </td>
-                                                <td className="text-right text-md-right">
-                                                    <ModalSettings
-                                                        TYPE={EDIT_TYPE.STATE}
-                                                        currentObject={attendancestate}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        {props.attendanceStatesContext.attendancestates.map(
+                                            (attendancestate) => (
+                                                <tr
+                                                    key={attendancestate.id}
+                                                    data-qa="attendancestate">
+                                                    <td data-qa="attendancestate_name">
+                                                        {attendancestate.name}
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <Visible
+                                                            visible={attendancestate.visible}
+                                                            data-qa="attendancestate_visible"
+                                                        />
+                                                    </td>
+                                                    <td className="text-right text-md-right">
+                                                        <ModalSettings
+                                                            TYPE={EDIT_TYPE.STATE}
+                                                            currentObject={attendancestate}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ),
+                                        )}
                                     </tbody>
                                 </Table>
-                                {getAttendanceStatesData().length === 0 && (
+                                {props.attendanceStatesContext.attendancestates.length === 0 && (
                                     <p className="text-muted text-center">Žádné stavy účasti</p>
                                 )}
                                 <hr />
@@ -193,7 +189,7 @@ const Settings: React.FC<Props> = (props) => {
                                                     <option disabled value="default">
                                                         Vyberte stav...
                                                     </option>
-                                                    {getAttendanceStatesData().map(
+                                                    {props.attendanceStatesContext.attendancestates.map(
                                                         (attendancestate) =>
                                                             // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
                                                             attendancestate.visible && (
@@ -225,7 +221,7 @@ const Settings: React.FC<Props> = (props) => {
                                                     <option disabled value="default">
                                                         Vyberte stav...
                                                     </option>
-                                                    {getAttendanceStatesData().map(
+                                                    {props.attendanceStatesContext.attendancestates.map(
                                                         (attendancestate) =>
                                                             // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
                                                             attendancestate.visible && (

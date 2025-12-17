@@ -91,7 +91,7 @@ const Diary: React.FC<Props> = (props) => {
         [getRequiredMonday],
     )
 
-    const getCurrentMonday = React.useCallback((): Date => getMonday(new Date()), [])
+    const getCurrentMonday = (): Date => getMonday(new Date())
 
     const refreshTitle = React.useCallback((): void => {
         document.title = pageTitle(

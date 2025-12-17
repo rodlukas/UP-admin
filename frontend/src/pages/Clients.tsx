@@ -35,21 +35,15 @@ const Clients: React.FC<Props> = (props) => {
     const getClientsData = (): ClientType[] =>
         active ? props.clientsActiveContext.clients : inactiveClients
 
-    const refresh = React.useCallback(
-        (newActive: boolean = active): void => {
-            setActive(newActive)
-        },
-        [active],
-    )
+    const refresh = (newActive: boolean = active): void => {
+        setActive(newActive)
+    }
 
-    const refreshFromModal = React.useCallback(
-        (data: { active?: boolean } | null): void => {
-            if (data?.active !== undefined) {
-                refresh(data.active)
-            }
-        },
-        [refresh],
-    )
+    const refreshFromModal = (data: { active?: boolean } | null): void => {
+        if (data?.active !== undefined) {
+            refresh(data.active)
+        }
+    }
 
     return (
         <Container>
