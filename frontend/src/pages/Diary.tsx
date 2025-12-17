@@ -133,7 +133,7 @@ const Diary: React.FC<Props> = (props) => {
     React.useEffect(() => {
         const requiredMonday = getRequiredMonday()
 
-        // aktualizujeme pouze pokud se skutecne zmenilo požadované pondělí
+        // aktualizujeme pouze pokud se skutecne zmenil pozadovany pocatek tydne
         if (!isEqualDate(prevRequiredMondayRef.current, requiredMonday)) {
             setWeek(getWeek())
             refreshTitle()
