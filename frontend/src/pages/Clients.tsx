@@ -10,30 +10,27 @@ import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
-import {
-    ClientsActiveContextProps,
-    WithClientsActiveContext,
-} from "../contexts/ClientsActiveContext"
+import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { ClientType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
 
-type Props = CustomRouteComponentProps & ClientsActiveContextProps
+type Props = CustomRouteComponentProps
 
 /** Stránka s klienty. */
-const Clients: React.FC<Props> = (props) => {
+const Clients: React.FC<Props> = () => {
+    const clientsActiveContext = useClientsActiveContext()
     /** Je vybráno zobrazení aktivních klientů (true). */
     const [active, setActive] = React.useState(true)
     const { data: inactiveClients = [], isLoading: inactiveLoading } = useInactiveClients(!active)
 
     const isLoading = (): boolean =>
         active
-            ? props.clientsActiveContext.isLoading &&
-              props.clientsActiveContext.clients.length === 0
+            ? clientsActiveContext.isLoading && clientsActiveContext.clients.length === 0
             : inactiveLoading && inactiveClients.length === 0
 
     const getClientsData = (): ClientType[] =>
-        active ? props.clientsActiveContext.clients : inactiveClients
+        active ? clientsActiveContext.clients : inactiveClients
 
     const refresh = (newActive: boolean = active): void => {
         setActive(newActive)
@@ -66,8 +63,7 @@ const Clients: React.FC<Props> = (props) => {
                 }
                 isFetching={
                     active
-                        ? props.clientsActiveContext.isFetching &&
-                          props.clientsActiveContext.clients.length > 0
+                        ? clientsActiveContext.isFetching && clientsActiveContext.clients.length > 0
                         : false
                 }
             />
@@ -127,4 +123,4 @@ const Clients: React.FC<Props> = (props) => {
     )
 }
 
-export default WithClientsActiveContext(Clients)
+export default Clients

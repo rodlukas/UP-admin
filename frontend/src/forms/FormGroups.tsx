@@ -19,10 +19,7 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import GroupName from "../components/GroupName"
 import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
-import {
-    CoursesVisibleContextProps,
-    WithCoursesVisibleContext,
-} from "../contexts/CoursesVisibleContext"
+import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { clientName } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import {
@@ -42,7 +39,7 @@ import ReactSelectWrapper from "./helpers/ReactSelectWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
-type Props = CoursesVisibleContextProps & {
+type Props = {
     /** Skupina. */
     group: GroupType | GroupPostApiDummy
     /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
@@ -57,6 +54,7 @@ type Props = CoursesVisibleContextProps & {
 
 /** Formulář pro skupiny. */
 const FormGroups: React.FC<Props> = (props) => {
+    const coursesVisibleContext = useCoursesVisibleContext()
     const isGroup = (group: Props["group"]): group is GroupType => "id" in group
 
     const { data: clientsData = [], isLoading: clientsLoading } = useClients()
@@ -178,7 +176,7 @@ const FormGroups: React.FC<Props> = (props) => {
         [props],
     )
 
-    const isLoading = clientsLoading || props.coursesVisibleContext.isLoading
+    const isLoading = clientsLoading || coursesVisibleContext.isLoading
     const isSubmit = createGroup.isPending || updateGroup.isPending
 
     return (
@@ -218,7 +216,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                     required
                                     value={course}
                                     onChangeCallback={onSelectChange}
-                                    options={props.coursesVisibleContext.courses}
+                                    options={coursesVisibleContext.courses}
                                 />
                             </Col>
                         </FormGroup>
@@ -314,4 +312,4 @@ const FormGroups: React.FC<Props> = (props) => {
     )
 }
 
-export default WithCoursesVisibleContext(FormGroups)
+export default FormGroups

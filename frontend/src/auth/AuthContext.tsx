@@ -1,6 +1,7 @@
 import * as React from "react"
 import { toast } from "react-toastify"
 
+import { useLogin } from "../api/hooks"
 import LoginService from "../api/services/LoginService"
 import APP_URLS from "../APP_URLS"
 import Notification from "../components/Notification"
@@ -14,14 +15,11 @@ import Token from "./Token"
 /** Hodnota zbývající platnosti tokenu, při které dojde k požadavku na jeho obnovení. */
 const AUTH_REFRESH_THRESHOLD = 60 * 65 // sekundy -> 65 minut
 
-type State = {
-    /** Probíhá načítání (true). */
-    isLoading: boolean
+type Context = {
     /** Uživatel je přihlášen (true). */
     isAuth: boolean
-}
-
-type Context = State & {
+    /** Probíhá načítání (true). */
+    isLoading: boolean
     /** Funkce pro přihlášení uživatele. */
     login: (credentials: AuthorizationType) => Promise<void>
     /** Funkce pro odhlášení uživatele. */
@@ -39,8 +37,8 @@ const AuthContext = React.createContext<AuthContextInterface>(undefined)
 const getCurrentDate = (): number => Date.now() / 1000
 
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [isLoading, setIsLoading] = React.useState(false)
     const [isAuth, setIsAuth] = React.useState(false)
+    const loginMutation = useLogin()
 
     const isAuthenticated = React.useCallback(
         async (refreshExpiringToken = true): Promise<void> => {
@@ -88,17 +86,12 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         [],
     )
 
-    const login = React.useCallback(async (credentials: AuthorizationType): Promise<void> => {
-        setIsLoading(true)
-        try {
-            const { token } = await LoginService.authenticate(credentials)
-            Token.save(token)
-        } catch {
-            // Chyba při přihlášení - uživatel uvidí notifikaci z globálního error handleru
-        } finally {
-            setIsLoading(false)
-        }
-    }, [])
+    const login = React.useCallback(
+        async (credentials: AuthorizationType): Promise<void> => {
+            await loginMutation.mutateAsync(credentials)
+        },
+        [loginMutation],
+    )
 
     const logout = React.useCallback((): void => {
         Token.remove()
@@ -113,16 +106,16 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }, [isAuthenticated])
 
     React.useEffect(() => {
-        if (!isLoading) {
+        if (!loginMutation.isPending) {
             void isAuthenticated(false)
         }
-    }, [isLoading, isAuthenticated])
+    }, [loginMutation.isPending, isAuthenticated])
 
     return (
         <AuthContext.Provider
             value={{
                 isAuth,
-                isLoading,
+                isLoading: loginMutation.isPending,
                 isAuthenticated,
                 logout,
                 login,

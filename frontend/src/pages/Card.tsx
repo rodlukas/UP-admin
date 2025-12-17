@@ -23,10 +23,7 @@ import LectureNumber from "../components/LectureNumber"
 import Loading from "../components/Loading"
 import PrepaidCounters from "../components/PrepaidCounters"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
-import {
-    AttendanceStatesContextProps,
-    WithAttendanceStatesContext,
-} from "../contexts/AttendanceStatesContext"
+import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
 import ModalLectures from "../forms/ModalLectures"
@@ -48,10 +45,11 @@ import "./Card.css"
 
 type ParamProps = { id: Model["id"] }
 
-type Props = CustomRouteComponentProps<ParamProps> & AttendanceStatesContextProps
+type Props = CustomRouteComponentProps<ParamProps>
 
 /** Stránka s kartou klienta nebo skupiny. */
 const Card: React.FC<Props> = (props) => {
+    const attendanceStatesContext = useAttendanceStatesContext()
     const id = props.match.params.id
     const isClientPageValue = props.match.path.includes(APP_URLS.klienti.url)
 
@@ -114,7 +112,7 @@ const Card: React.FC<Props> = (props) => {
         (isClientPageValue
             ? lecturesFromClientQuery.isLoading
             : lecturesFromGroupQuery.isLoading) ||
-        props.attendanceStatesContext.isLoading
+        attendanceStatesContext.isLoading
 
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
@@ -282,4 +280,4 @@ const Card: React.FC<Props> = (props) => {
     )
 }
 
-export default WithAttendanceStatesContext(Card)
+export default Card

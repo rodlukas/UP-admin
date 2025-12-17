@@ -14,11 +14,8 @@ import { Direction } from "reactstrap/lib/Dropdown"
 
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
-import {
-    ClientsActiveContextProps,
-    WithClientsActiveContext,
-} from "../contexts/ClientsActiveContext"
-import { GroupsActiveContextProps, WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
+import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
+import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { prettyDate } from "../global/funcDateTime"
 import {
     DefaultValuesForLecture,
@@ -37,25 +34,26 @@ import ModalGroups from "./ModalGroups"
 import ModalLecturesCore from "./ModalLecturesCore"
 import "./ModalLecturesWizard.css"
 
-type Props = ClientsActiveContextProps &
-    GroupsActiveContextProps & {
-        /** Datum lekce. */
-        date?: string
-        /** CSS třída pro dropdown pro výběr klient/skupina. */
-        dropdownClassName?: string
-        /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
-        dropdownSize?: string
-        /** Směr otevírání dropdownu pro výběr klient/skupina. */
-        dropdownDirection?: Direction
-        /** Probíhá načítání dat (true) - zobrazí spinner na tlačítku. */
-        isFetching?: boolean
-    }
+type Props = {
+    /** Datum lekce. */
+    date?: string
+    /** CSS třída pro dropdown pro výběr klient/skupina. */
+    dropdownClassName?: string
+    /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
+    dropdownSize?: string
+    /** Směr otevírání dropdownu pro výběr klient/skupina. */
+    dropdownDirection?: Direction
+    /** Probíhá načítání dat (true) - zobrazí spinner na tlačítku. */
+    isFetching?: boolean
+}
 
 /**
  * Modální okno s průvodcem pro přidání lekce.
  * Umožní volbu/vytvoření konkrétního klienta/skupiny. Poté umožní přidání samotné lekce.
  */
 const ModalLecturesWizard: React.FC<Props> = (props) => {
+    const clientsActiveContext = useClientsActiveContext()
+    const groupsActiveContext = useGroupsActiveContext()
     /** Uživatel chce přidávat lekci pro klienta (true, jinak přidává pro skupinu). */
     const [isClient, setIsClientState] = React.useState<boolean | undefined>(undefined)
     /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
@@ -173,8 +171,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     {isClient !== undefined && (
                         <>
                             {isLoading ||
-                            (isClient && props.clientsActiveContext.isLoading) ||
-                            (!isClient && props.groupsActiveContext.isLoading) ? (
+                            (isClient && clientsActiveContext.isLoading) ||
+                            (!isClient && groupsActiveContext.isLoading) ? (
                                 <Loading
                                     text={
                                         isLoading
@@ -188,7 +186,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                 <>
                                     <SelectClient
                                         value={object as ClientType}
-                                        options={props.clientsActiveContext.clients}
+                                        options={clientsActiveContext.clients}
                                         onChangeCallback={onSelectChange}
                                     />
                                     <Or
@@ -212,7 +210,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                         onChange={(newValue): void =>
                                             onSelectChange("group", newValue)
                                         }
-                                        options={props.groupsActiveContext.groups}
+                                        options={groupsActiveContext.groups}
                                         placeholder={"Vyberte existující skupinu..."}
                                         required
                                         autoFocus
@@ -244,4 +242,4 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
     )
 }
 
-export default WithClientsActiveContext(WithGroupsActiveContext(ModalLecturesWizard))
+export default ModalLecturesWizard

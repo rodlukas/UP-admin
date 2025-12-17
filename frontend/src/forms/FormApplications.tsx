@@ -5,10 +5,7 @@ import { useClients, useCreateApplication, useUpdateApplication } from "../api/h
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import Loading from "../components/Loading"
-import {
-    CoursesVisibleContextProps,
-    WithCoursesVisibleContext,
-} from "../contexts/CoursesVisibleContext"
+import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import {
     ApplicationPostApi,
     ApplicationPostApiDummy,
@@ -24,7 +21,7 @@ import SelectClient from "./helpers/SelectClient"
 import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
-type Props = CoursesVisibleContextProps & {
+type Props = {
     /** Zájemce o kurz. */
     application: ApplicationType | ApplicationPostApiDummy
     /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
@@ -37,6 +34,7 @@ type Props = CoursesVisibleContextProps & {
 
 /** Formulář pro zájemce o kurzy. */
 const FormApplications: React.FC<Props> = (props) => {
+    const coursesVisibleContext = useCoursesVisibleContext()
     const isApplication = (application: Props["application"]): application is ApplicationType =>
         "id" in application
 
@@ -115,7 +113,7 @@ const FormApplications: React.FC<Props> = (props) => {
         setClient(newClient)
     }
 
-    const isLoading = clientsLoading || props.coursesVisibleContext.isLoading
+    const isLoading = clientsLoading || coursesVisibleContext.isLoading
     const isSubmit = createApplication.isPending || updateApplication.isPending
 
     return (
@@ -158,7 +156,7 @@ const FormApplications: React.FC<Props> = (props) => {
                                     required
                                     value={course}
                                     onChangeCallback={onSelectChange}
-                                    options={props.coursesVisibleContext.courses}
+                                    options={coursesVisibleContext.courses}
                                 />
                             </Col>
                         </FormGroup>
@@ -192,4 +190,4 @@ const FormApplications: React.FC<Props> = (props) => {
     )
 }
 
-export default WithCoursesVisibleContext(FormApplications)
+export default FormApplications

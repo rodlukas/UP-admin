@@ -9,10 +9,6 @@ import ClientPhone from "../components/ClientPhone"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
-import {
-    CoursesVisibleContextProps,
-    WithCoursesVisibleContext,
-} from "../contexts/CoursesVisibleContext"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
 import { GroupedObjectsByCourses, groupObjectsByCourses } from "../global/utils"
@@ -20,7 +16,7 @@ import { ApplicationType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
 import "./Applications.css"
 
-type Props = CustomRouteComponentProps & CoursesVisibleContextProps
+type Props = CustomRouteComponentProps
 
 /** Stránka se zájemci o kurzy. */
 const Applications: React.FC<Props> = () => {
@@ -151,4 +147,4 @@ const Applications: React.FC<Props> = () => {
     )
 }
 
-export default WithCoursesVisibleContext(Applications)
+export default Applications

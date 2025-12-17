@@ -31,14 +31,8 @@ import GroupName from "../components/GroupName"
 import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
-import {
-    AttendanceStatesContextProps,
-    WithAttendanceStatesContext,
-} from "../contexts/AttendanceStatesContext"
-import {
-    CoursesVisibleContextProps,
-    WithCoursesVisibleContext,
-} from "../contexts/CoursesVisibleContext"
+import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
+import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import {
     DEFAULT_LECTURE_DURATION_GROUP,
     DEFAULT_LECTURE_DURATION_SINGLE,
@@ -78,26 +72,27 @@ type AtPaid = Record<number, boolean>
 /** ID klienta: poznámka k účasti. */
 type AtNote = Record<number, AttendanceType["note"]>
 
-type Props = AttendanceStatesContextProps &
-    CoursesVisibleContextProps & {
-        /** Lekce. */
-        lecture: LectureType | LecturePostApiDummy | LectureTypeWithDate
-        /** Datum lekce. */
-        date: string
-        /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
-        object: ClientType | GroupType
-        /** Výchozí hodnoty pro lekci. */
-        defaultValuesForLecture?: DefaultValuesForLecture
-        /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
-        funcClose: () => boolean | void
-        /** Funkce, která zavře modální okno s formulářem (po úspěšně provedeném požadavku v rámci formuláře). */
-        funcForceClose: () => boolean | void
-        /** Funkce, která se volá při změně údajů ve formuláři. */
-        setFormDirty: fEmptyVoid
-    }
+type Props = {
+    /** Lekce. */
+    lecture: LectureType | LecturePostApiDummy | LectureTypeWithDate
+    /** Datum lekce. */
+    date: string
+    /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
+    object: ClientType | GroupType
+    /** Výchozí hodnoty pro lekci. */
+    defaultValuesForLecture?: DefaultValuesForLecture
+    /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
+    funcClose: () => boolean | void
+    /** Funkce, která zavře modální okno s formulářem (po úspěšně provedeném požadavku v rámci formuláře). */
+    funcForceClose: () => boolean | void
+    /** Funkce, která se volá při změně údajů ve formuláři. */
+    setFormDirty: fEmptyVoid
+}
 
 /** Formulář pro lekce. */
 const FormLectures: React.FC<Props> = (props) => {
+    const attendanceStatesContext = useAttendanceStatesContext()
+    const coursesVisibleContext = useCoursesVisibleContext()
     const createLecture = useCreateLecture()
     const updateLecture = useUpdateLecture()
     const deleteLecture = useDeleteLecture()
@@ -148,7 +143,7 @@ const FormLectures: React.FC<Props> = (props) => {
     }, [props.object, props.defaultValuesForLecture])
 
     const getDefaultStateIndex = React.useCallback((): AttendanceStateType["id"] | undefined => {
-        const attendanceStates = props.attendanceStatesContext.attendancestates
+        const attendanceStates = attendanceStatesContext.attendancestates
         if (attendanceStates.length) {
             const res = attendanceStates.find((elem) => elem.default === true)
             if (res !== undefined) {
@@ -159,10 +154,10 @@ const FormLectures: React.FC<Props> = (props) => {
             }
         }
         return undefined
-    }, [props.attendanceStatesContext.attendancestates])
+    }, [attendanceStatesContext.attendancestates])
 
     const getExcusedStateIndex = React.useCallback((): AttendanceStateType["id"] | undefined => {
-        const attendanceStates = props.attendanceStatesContext.attendancestates
+        const attendanceStates = attendanceStatesContext.attendancestates
         if (attendanceStates.length) {
             const res = attendanceStates.find((elem) => elem.excused === true)
             if (res !== undefined) {
@@ -170,7 +165,7 @@ const FormLectures: React.FC<Props> = (props) => {
             }
         }
         return undefined
-    }, [props.attendanceStatesContext.attendancestates])
+    }, [attendanceStatesContext.attendancestates])
 
     const createAttendanceStateObjects = React.useCallback((): AtStateWithEmpty => {
         const objects: AtStateWithEmpty = {}
@@ -542,8 +537,7 @@ const FormLectures: React.FC<Props> = (props) => {
         [deleteLecture, props],
     )
 
-    const isLoading =
-        props.coursesVisibleContext.isLoading || props.attendanceStatesContext.isLoading
+    const isLoading = coursesVisibleContext.isLoading || attendanceStatesContext.isLoading
 
     return (
         <Form onSubmit={onSubmit} data-qa="form_lecture">
@@ -675,7 +669,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     required
                                     value={course}
                                     onChangeCallback={onSelectChange}
-                                    options={props.coursesVisibleContext.courses}
+                                    options={coursesVisibleContext.courses}
                                     isDisabled={!isClient(props.object)}
                                 />
                             </Col>
@@ -744,7 +738,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 data-id={member.id}
                                                 required
                                                 data-qa="lecture_select_attendance_attendancestate">
-                                                {props.attendanceStatesContext.attendancestates.map(
+                                                {attendanceStatesContext.attendancestates.map(
                                                     (attendancestate) =>
                                                         // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
                                                         (attendancestate.visible ||
@@ -860,7 +854,7 @@ const FormLectures: React.FC<Props> = (props) => {
                     loading={isSubmit}
                     content={isLecture(props.lecture) ? "Uložit" : "Přidat"}
                     data-qa="button_submit_lecture"
-                    disabled={props.coursesVisibleContext.isLoading}
+                    disabled={coursesVisibleContext.isLoading}
                 />
                 {isLecture(props.lecture) &&
                     !isClient(props.object) &&
@@ -870,7 +864,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                 loading={isSubmit}
                                 onClick={(e): void => onSubmit(e, true)}
                                 id="FormLectures_SubmitWithClientChanges"
-                                disabled={props.coursesVisibleContext.isLoading}
+                                disabled={coursesVisibleContext.isLoading}
                                 content="Uložit + projevit změny v klientech"
                             />
                             <UncontrolledTooltipWrapper target="FormLectures_SubmitWithClientChanges">
@@ -884,4 +878,4 @@ const FormLectures: React.FC<Props> = (props) => {
     )
 }
 
-export default WithAttendanceStatesContext(WithCoursesVisibleContext(FormLectures))
+export default FormLectures

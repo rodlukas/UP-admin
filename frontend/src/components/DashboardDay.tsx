@@ -3,10 +3,7 @@ import * as React from "react"
 import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 
 import { useLecturesFromDay } from "../api/hooks"
-import {
-    AttendanceStatesContextProps,
-    WithAttendanceStatesContext,
-} from "../contexts/AttendanceStatesContext"
+import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
 import { USER_CELEBRATION } from "../global/constants"
@@ -28,7 +25,7 @@ import LectureNumber from "./LectureNumber"
 import Loading from "./Loading"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
-type Props = AttendanceStatesContextProps & {
+type Props = {
     /** Při požadavcích na API nedělej prodlevu (true) - prodleva se hodí při rychlém překlikávání mezi dny v diáři. */
     withoutWaiting?: boolean
     /** Datum pro zobrazované lekce. */
@@ -37,6 +34,7 @@ type Props = AttendanceStatesContextProps & {
 
 /** Komponenta zobrazující lekce pro jeden zadaný den. */
 const DashboardDay: React.FC<Props> = (props) => {
+    const attendanceStatesContext = useAttendanceStatesContext()
     const getDate = (): Date => new Date(props.date)
 
     const {
@@ -48,7 +46,7 @@ const DashboardDay: React.FC<Props> = (props) => {
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())
 
-    const showLoading = isLoading || props.attendanceStatesContext.isLoading
+    const showLoading = isLoading || attendanceStatesContext.isLoading
 
     return (
         <ListGroup className="DashboardDay_wrapper">
@@ -126,4 +124,4 @@ const DashboardDay: React.FC<Props> = (props) => {
     )
 }
 
-export default WithAttendanceStatesContext(DashboardDay)
+export default DashboardDay

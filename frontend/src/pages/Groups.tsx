@@ -10,32 +10,28 @@ import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
-import {
-    CoursesVisibleContextProps,
-    WithCoursesVisibleContext,
-} from "../contexts/CoursesVisibleContext"
-import { GroupsActiveContextProps, WithGroupsActiveContext } from "../contexts/GroupsActiveContext"
+import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
 import { TEXTS } from "../global/constants"
 import { areAllMembersActive } from "../global/utils"
 import { GroupType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
 
-type Props = CustomRouteComponentProps & GroupsActiveContextProps & CoursesVisibleContextProps
+type Props = CustomRouteComponentProps
 
 /** Stránka se skupinami. */
-const Groups: React.FC<Props> = (props) => {
+const Groups: React.FC<Props> = () => {
+    const groupsActiveContext = useGroupsActiveContext()
     /** Je vybráno zobrazení aktivních skupin (true). */
     const [active, setActive] = React.useState(true)
     const { data: inactiveGroups = [], isLoading: inactiveLoading } = useInactiveGroups(!active)
 
     const isLoading = (): boolean =>
         active
-            ? props.groupsActiveContext.isLoading && props.groupsActiveContext.groups.length === 0
+            ? groupsActiveContext.isLoading && groupsActiveContext.groups.length === 0
             : inactiveLoading && inactiveGroups.length === 0
 
-    const getGroupsData = (): GroupType[] =>
-        active ? props.groupsActiveContext.groups : inactiveGroups
+    const getGroupsData = (): GroupType[] => (active ? groupsActiveContext.groups : inactiveGroups)
 
     const refresh = (newActive: boolean = active): void => {
         setActive(newActive)
@@ -68,8 +64,7 @@ const Groups: React.FC<Props> = (props) => {
                 }
                 isFetching={
                     active
-                        ? props.groupsActiveContext.isFetching &&
-                          props.groupsActiveContext.groups.length > 0
+                        ? groupsActiveContext.isFetching && groupsActiveContext.groups.length > 0
                         : false
                 }
             />
@@ -132,4 +127,4 @@ const Groups: React.FC<Props> = (props) => {
     )
 }
 
-export default WithCoursesVisibleContext(WithGroupsActiveContext(Groups))
+export default Groups

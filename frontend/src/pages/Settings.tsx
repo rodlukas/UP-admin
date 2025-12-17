@@ -14,10 +14,7 @@ import CourseCircle from "../components/CourseCircle"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
-import {
-    AttendanceStatesContextProps,
-    WithAttendanceStatesContext,
-} from "../contexts/AttendanceStatesContext"
+import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
@@ -43,10 +40,11 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
     />
 )
 
-type Props = CustomRouteComponentProps & AttendanceStatesContextProps
+type Props = CustomRouteComponentProps
 
 /** Stránka s nastavením - správa kurzů, stavů účasti, info o aplikaci. */
-const Settings: React.FC<Props> = (props) => {
+const Settings: React.FC<Props> = () => {
+    const attendanceStatesContext = useAttendanceStatesContext()
     const {
         data: courses = [],
         isLoading: coursesLoading,
@@ -64,8 +62,8 @@ const Settings: React.FC<Props> = (props) => {
     >(undefined)
 
     React.useEffect(() => {
-        if (!props.attendanceStatesContext.isLoading) {
-            const attendanceStates = props.attendanceStatesContext.attendancestates
+        if (!attendanceStatesContext.isLoading) {
+            const attendanceStates = attendanceStatesContext.attendancestates
             const defaultElem = attendanceStates.find((elem) => elem.default)
             const defaultId = defaultElem !== undefined ? defaultElem.id : undefined
             const excusedElem = attendanceStates.find((elem) => elem.excused)
@@ -73,7 +71,7 @@ const Settings: React.FC<Props> = (props) => {
             setAttendanceStateDefaultId(defaultId)
             setAttendanceStateExcusedId(excusedId)
         }
-    }, [props.attendanceStatesContext.isLoading, props.attendanceStatesContext.attendancestates])
+    }, [attendanceStatesContext.isLoading, attendanceStatesContext.attendancestates])
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const target = e.currentTarget
@@ -91,8 +89,8 @@ const Settings: React.FC<Props> = (props) => {
         }
     }
 
-    const isLoading = coursesLoading || props.attendanceStatesContext.isLoading
-    const isFetching = coursesFetching || props.attendanceStatesContext.isFetching
+    const isLoading = coursesLoading || attendanceStatesContext.isLoading
+    const isFetching = coursesFetching || attendanceStatesContext.isFetching
     return (
         <>
             <Container>
@@ -122,7 +120,7 @@ const Settings: React.FC<Props> = (props) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {props.attendanceStatesContext.attendancestates.map(
+                                        {attendanceStatesContext.attendancestates.map(
                                             (attendancestate) => (
                                                 <tr
                                                     key={attendancestate.id}
@@ -147,7 +145,7 @@ const Settings: React.FC<Props> = (props) => {
                                         )}
                                     </tbody>
                                 </Table>
-                                {props.attendanceStatesContext.attendancestates.length === 0 && (
+                                {attendanceStatesContext.attendancestates.length === 0 && (
                                     <p className="text-muted text-center">Žádné stavy účasti</p>
                                 )}
                                 <hr />
@@ -186,7 +184,7 @@ const Settings: React.FC<Props> = (props) => {
                                                     <option disabled value="default">
                                                         Vyberte stav...
                                                     </option>
-                                                    {props.attendanceStatesContext.attendancestates.map(
+                                                    {attendanceStatesContext.attendancestates.map(
                                                         (attendancestate) =>
                                                             // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
                                                             attendancestate.visible && (
@@ -218,7 +216,7 @@ const Settings: React.FC<Props> = (props) => {
                                                     <option disabled value="default">
                                                         Vyberte stav...
                                                     </option>
-                                                    {props.attendanceStatesContext.attendancestates.map(
+                                                    {attendanceStatesContext.attendancestates.map(
                                                         (attendancestate) =>
                                                             // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
                                                             attendancestate.visible && (
@@ -332,4 +330,4 @@ const Settings: React.FC<Props> = (props) => {
     )
 }
 
-export default WithAttendanceStatesContext(Settings)
+export default Settings
