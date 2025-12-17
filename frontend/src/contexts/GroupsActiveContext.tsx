@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query"
 import * as React from "react"
 
 import { useActiveGroups } from "../api/hooks"
@@ -6,7 +5,6 @@ import { useAuthContext } from "../auth/AuthContext"
 import { getDisplayName } from "../global/utils"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { GroupType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
 
 type StateContext = {
     /** Data v kontextu jsou načtená (true). */
@@ -19,10 +17,7 @@ type StateContext = {
     groups: GroupType[]
 }
 
-type Context = StateContext & {
-    /** Funkce pro obnovení dat v kontextu. */
-    funcHardRefresh: fEmptyVoid
-}
+type Context = StateContext
 
 type GroupsActiveContextInterface = Context | undefined
 
@@ -33,17 +28,11 @@ const GroupsActiveContext = React.createContext<GroupsActiveContextInterface>(un
 export const GroupsActiveProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { isAuth } = useAuthContext()
     const { data: groups = [], isLoading, isFetching } = useActiveGroups(isAuth)
-    const queryClient = useQueryClient()
-
-    const hardRefreshGroups = React.useCallback(() => {
-        void queryClient.invalidateQueries({ queryKey: ["groups", { type: "active" }] })
-    }, [queryClient])
 
     return (
         <GroupsActiveContext.Provider
             value={{
                 groups,
-                funcHardRefresh: hardRefreshGroups,
                 isLoaded: !isLoading && !isFetching,
                 isLoading,
                 isFetching,

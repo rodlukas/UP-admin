@@ -1,23 +1,18 @@
-import { useQueryClient } from "@tanstack/react-query"
 import * as React from "react"
 
 import { useVisibleCourses } from "../api/hooks"
 import { getDisplayName } from "../global/utils"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { CourseType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
 
 type StateContext = {
     /** Data v kontextu jsou načtená (true). */
     isLoaded: boolean
-    /** Pole s viditelnými klienty. */
+    /** Pole s viditelnými kurzy. */
     courses: CourseType[]
 }
 
-type Context = StateContext & {
-    /** Funkce pro obnovení dat v kontextu. */
-    funcHardRefresh: fEmptyVoid
-}
+type Context = StateContext
 
 type CoursesVisibleContextInterface = Context | undefined
 
@@ -27,17 +22,11 @@ const CoursesVisibleContext = React.createContext<CoursesVisibleContextInterface
 /** Provider kontextu s viditelnými kurzy. */
 export const CoursesVisibleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { data: courses = [], isLoading, isFetching } = useVisibleCourses()
-    const queryClient = useQueryClient()
-
-    const hardRefreshCourses = React.useCallback(() => {
-        void queryClient.invalidateQueries({ queryKey: ["courses", { type: "visible" }] })
-    }, [queryClient])
 
     return (
         <CoursesVisibleContext.Provider
             value={{
                 courses,
-                funcHardRefresh: hardRefreshCourses,
                 isLoaded: !isLoading && !isFetching,
             }}>
             {children}

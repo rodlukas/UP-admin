@@ -11,7 +11,6 @@ const MockContexts: React.FC = (props) => (
     <ClientsActiveContext.Provider
         value={{
             clients: data.clients,
-            funcHardRefresh: noop,
             isLoaded: true,
             isLoading: false,
             isFetching: false,
@@ -19,7 +18,6 @@ const MockContexts: React.FC = (props) => (
         <GroupsActiveContext.Provider
             value={{
                 groups: data.groups,
-                funcHardRefresh: noop,
                 isLoaded: true,
                 isLoading: false,
                 isFetching: false,

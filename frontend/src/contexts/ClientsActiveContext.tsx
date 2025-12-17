@@ -1,4 +1,3 @@
-import { useQueryClient } from "@tanstack/react-query"
 import * as React from "react"
 
 import { useActiveClients } from "../api/hooks"
@@ -6,7 +5,6 @@ import { useAuthContext } from "../auth/AuthContext"
 import { getDisplayName } from "../global/utils"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { ClientActiveType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
 
 type StateContext = {
     /** Data v kontextu jsou načtená (true). */
@@ -19,10 +17,7 @@ type StateContext = {
     clients: ClientActiveType[]
 }
 
-type Context = StateContext & {
-    /** Funkce pro obnovení dat v kontextu. */
-    funcHardRefresh: fEmptyVoid
-}
+type Context = StateContext
 
 type ClientsActiveContextInterface = Context | undefined
 
@@ -33,17 +28,11 @@ const ClientsActiveContext = React.createContext<ClientsActiveContextInterface>(
 export const ClientsActiveProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { isAuth } = useAuthContext()
     const { data: clients = [], isLoading, isFetching } = useActiveClients(isAuth)
-    const queryClient = useQueryClient()
-
-    const hardRefreshClients = React.useCallback(() => {
-        void queryClient.invalidateQueries({ queryKey: ["clients", { type: "active" }] })
-    }, [queryClient])
 
     return (
         <ClientsActiveContext.Provider
             value={{
                 clients,
-                funcHardRefresh: hardRefreshClients,
                 isLoaded: !isLoading && !isFetching,
                 isLoading,
                 isFetching,
