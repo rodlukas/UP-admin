@@ -124,8 +124,19 @@ export function createQueryClient(): QueryClient {
                 // Globální success notifikace pro všechny mutations.
                 // Používáme onSettled místo onSuccess: onSettled se volá vždy (i když je v mutate()
                 // definován lokální onSuccess), takže globální notifikace se zobrazí vždy při úspěchu.
-                onSettled: (data, error) => {
+                onSettled: (data, error, variables) => {
                     if (!error && data !== undefined) {
+                        const isLogin =
+                            variables &&
+                            typeof variables === "object" &&
+                            "username" in variables &&
+                            "password" in variables
+
+                        // Notifikaci potlačíme pro login
+                        // TODO vyresit lepe, ale pravdepodobne az s react-query 5
+                        if (isLogin) {
+                            return
+                        }
                         toast(<Notification type={toast.TYPE.SUCCESS} />, {
                             type: toast.TYPE.SUCCESS,
                             autoClose: 4000,
