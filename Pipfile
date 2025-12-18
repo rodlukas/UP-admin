@@ -18,7 +18,6 @@ requests = "~=2.32.5"
 sentry-sdk = {extras = ["django"], version = "~=2.48.0"}
 setuptools = "*"
 uritemplate = "~=4.2.0"
-urllib3 = "~=1.26.20"
 vulture = "~=2.14.0"
 whitenoise = "~=6.11.0"
 
