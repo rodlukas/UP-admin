@@ -126,6 +126,71 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
 
     const title = `Přidat lekci na ${props.date ? prettyDate(new Date(props.date)) : "nějaký den"}`
 
+    /**
+     * Vrací text pro Loading komponentu při výpočtu optimálních hodnot.
+     * @returns Text pro zobrazení v Loading komponentě
+     */
+    const getLoadingText = React.useCallback((): string => {
+        const datePart = isClient ? ", čas a kurz" : " a čas"
+        const objectPart = isClient ? "klienta" : "skupinu"
+        return `Vypočítávám optimální datum${datePart} pro ${objectPart}`
+    }, [isClient])
+
+    /**
+     * Vrací komponentu pro výběr klienta nebo skupiny podle hodnoty isClient.
+     */
+    const renderClientOrGroupSelect = React.useCallback((): React.ReactElement => {
+        if (isClient) {
+            return (
+                <>
+                    <SelectClient
+                        value={object as ClientType}
+                        options={clientsActiveContext.clients}
+                        onChangeCallback={onSelectChange}
+                    />
+                    <Or
+                        content={
+                            <ModalClients
+                                processAdditionOfClient={processAdditionOfGroupOrClient}
+                                withOr
+                            />
+                        }
+                    />
+                </>
+            )
+        }
+        return (
+            <>
+                <ReactSelectWrapper<GroupType>
+                    {...reactSelectIds("group")}
+                    value={object as GroupType}
+                    getOptionLabel={(option): string => option.name}
+                    getOptionValue={(option): string => option.id.toString()}
+                    onChange={(newValue): void => onSelectChange("group", newValue)}
+                    options={groupsActiveContext.groups}
+                    placeholder={"Vyberte existující skupinu..."}
+                    required
+                    autoFocus
+                />
+                <Or
+                    content={
+                        <ModalGroups
+                            processAdditionOfGroup={processAdditionOfGroupOrClient}
+                            withOr
+                        />
+                    }
+                />
+            </>
+        )
+    }, [
+        isClient,
+        object,
+        clientsActiveContext.clients,
+        groupsActiveContext.groups,
+        onSelectChange,
+        processAdditionOfGroupOrClient,
+    ])
+
     return (
         <>
             <div className="ModalLecturesWizard">
@@ -165,7 +230,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                 autoFocus={false}>
                 <ModalHeader toggle={toggleModalSelect}>
                     Přidání lekce &ndash; výběr{" "}
-                    {isClient ? "klienta" : isClient !== undefined ? "skupiny" : ""}
+                    {isClient === true ? "klienta" : isClient === false ? "skupiny" : ""}
                 </ModalHeader>
                 <ModalBody>
                     {isClient !== undefined && (
@@ -173,59 +238,9 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                             {isLoading ||
                             (isClient && clientsActiveContext.isLoading) ||
                             (!isClient && groupsActiveContext.isLoading) ? (
-                                <Loading
-                                    text={
-                                        isLoading
-                                            ? `Vypočítávám optimální datum${
-                                                  isClient ? ", čas a kurz" : " a čas"
-                                              } pro ${isClient ? "klienta" : "skupinu"}`
-                                            : undefined
-                                    }
-                                />
-                            ) : isClient ? (
-                                <>
-                                    <SelectClient
-                                        value={object as ClientType}
-                                        options={clientsActiveContext.clients}
-                                        onChangeCallback={onSelectChange}
-                                    />
-                                    <Or
-                                        content={
-                                            <ModalClients
-                                                processAdditionOfClient={
-                                                    processAdditionOfGroupOrClient
-                                                }
-                                                withOr
-                                            />
-                                        }
-                                    />
-                                </>
+                                <Loading text={isLoading ? getLoadingText() : undefined} />
                             ) : (
-                                <>
-                                    <ReactSelectWrapper<GroupType>
-                                        {...reactSelectIds("group")}
-                                        value={object as GroupType}
-                                        getOptionLabel={(option): string => option.name}
-                                        getOptionValue={(option): string => option.id.toString()}
-                                        onChange={(newValue): void =>
-                                            onSelectChange("group", newValue)
-                                        }
-                                        options={groupsActiveContext.groups}
-                                        placeholder={"Vyberte existující skupinu..."}
-                                        required
-                                        autoFocus
-                                    />
-                                    <Or
-                                        content={
-                                            <ModalGroups
-                                                processAdditionOfGroup={
-                                                    processAdditionOfGroupOrClient
-                                                }
-                                                withOr
-                                            />
-                                        }
-                                    />
-                                </>
+                                renderClientOrGroupSelect()
                             )}
                         </>
                     )}

@@ -93,16 +93,16 @@ const FormGroups: React.FC<Props> = (props) => {
         props.setFormDirty()
         // react-select muze vratit null (napr. pri smazani vsech) nebo undefined, udrzujme tedy stav konzistentni
         if (fieldName === "members") {
-            if (!obj) {
-                setMembers([])
-            } else if (Array.isArray(obj)) {
+            if (Array.isArray(obj)) {
                 setMembers([...obj])
+            } else {
+                setMembers([])
             }
         } else if (fieldName === "course") {
-            if (!obj) {
-                setCourse(null)
-            } else {
+            if (obj) {
                 setCourse(obj as CourseType)
+            } else {
+                setCourse(null)
             }
         }
     }

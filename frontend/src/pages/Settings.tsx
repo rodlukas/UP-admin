@@ -65,9 +65,9 @@ const Settings: React.FC<Props> = () => {
         if (!attendanceStatesContext.isLoading) {
             const attendanceStates = attendanceStatesContext.attendancestates
             const defaultElem = attendanceStates.find((elem) => elem.default)
-            const defaultId = defaultElem !== undefined ? defaultElem.id : undefined
+            const defaultId = defaultElem?.id
             const excusedElem = attendanceStates.find((elem) => elem.excused)
-            const excusedId = excusedElem !== undefined ? excusedElem.id : undefined
+            const excusedId = excusedElem?.id
             setAttendanceStateDefaultId(defaultId)
             setAttendanceStateExcusedId(excusedId)
         }

@@ -18,6 +18,21 @@ import "./Applications.css"
 
 type Props = CustomRouteComponentProps
 
+/**
+ * Vrací správnou koncovku pro slovo "zájemc" podle počtu.
+ * @param cnt Počet zájemců
+ * @returns Koncovka: "e" pro 1, "i" pro 2-4, "ů" pro 5+
+ */
+const getZajemciSuffix = (cnt: number): string => {
+    if (cnt === 1) {
+        return "e"
+    }
+    if (cnt > 1 && cnt < 5) {
+        return "i"
+    }
+    return "ů"
+}
+
 /** Stránka se zájemci o kurzy. */
 const Applications: React.FC<Props> = () => {
     const { data: applicationsData, isLoading, isFetching } = useApplications()
@@ -73,8 +88,7 @@ const Applications: React.FC<Props> = () => {
                                                 <span data-qa="applications_for_course_cnt">
                                                     {cnt}
                                                 </span>{" "}
-                                                zájemc
-                                                {cnt === 1 ? "e" : cnt > 1 && cnt < 5 ? "i" : "ů"}
+                                                zájemc{getZajemciSuffix(cnt)}
                                             </Badge>
                                         </h4>
                                     </ListGroupItem>

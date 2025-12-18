@@ -26,7 +26,7 @@ export function useBank() {
             const response = await BankService.getAll()
             if (response.status !== 200) {
                 // z API dorazi jen status_info, provedeme merge se zbytkem init hodnot
-                return Object.assign({ ...bankDataApiInit }, response.data)
+                return { ...bankDataApiInit, ...response.data }
             }
             return response.data
         },

@@ -264,10 +264,11 @@ const FormLectures: React.FC<Props> = (props) => {
         if (isClient(props.object) && props.defaultValuesForLecture) {
             return props.defaultValuesForLecture.course
         }
-        if (!isClient(props.object)) {
+        if (isClient(props.object)) {
+            return null
+        } else {
             return props.object.course
         }
-        return null
     })
     /** Trvání lekce. */
     const [duration, setDuration] = React.useState<LectureType["duration"]>(() => {
@@ -454,7 +455,7 @@ const FormLectures: React.FC<Props> = (props) => {
             const data = {
                 duration,
                 canceled,
-                group_id: !isClient(props.object) ? props.object.id : null,
+                group_id: isClient(props.object) ? null : props.object.id,
                 start: prepaid ? null : start,
                 refresh_clients: refreshClients,
                 ...(isClient(props.object) && { course_id: courseId }),

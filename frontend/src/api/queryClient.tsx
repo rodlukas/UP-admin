@@ -36,8 +36,8 @@ function getErrorMessage(
     if (djangoError && typeof djangoError === "object") {
         return (
             <ul>
-                {Object.keys(djangoError).map((field, index) => (
-                    <li key={`err${index}`}>
+                {Object.keys(djangoError).map((field) => (
+                    <li key={field}>
                         <span className="font-weight-bold">{field}: </span>
                         <span className="font-italic">{String(djangoError[field])}</span>
                     </li>

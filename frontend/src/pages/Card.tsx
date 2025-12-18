@@ -47,26 +47,28 @@ type ParamProps = { id: Model["id"] }
 
 type Props = CustomRouteComponentProps<ParamProps>
 
+type ClientOrGroup = ClientType | GroupType | null
+
 /** Stránka s kartou klienta nebo skupiny. */
 const Card: React.FC<Props> = (props) => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const id = props.match.params.id
     const isClientPageValue = props.match.path.includes(APP_URLS.klienti.url)
 
-    const isClient = (object: ClientType | GroupType | null): object is ClientType =>
+    const isClient = (object: ClientOrGroup): object is ClientType =>
         Boolean(object && "phone" in object)
 
-    const isGroup = (object: ClientType | GroupType | null): object is GroupType =>
+    const isGroup = (object: ClientOrGroup): object is GroupType =>
         Boolean(object && "name" in object)
 
     const clientQuery = useClient(isClientPageValue ? id : undefined)
-    const groupQuery = useGroup(!isClientPageValue ? id : undefined)
+    const groupQuery = useGroup(isClientPageValue ? undefined : id)
     const groupsOfClientQuery = useGroupsFromClient(isClientPageValue ? id : undefined)
     const lecturesFromClientQuery = useLecturesFromClient(isClientPageValue ? id : undefined, false)
-    const lecturesFromGroupQuery = useLecturesFromGroup(!isClientPageValue ? id : undefined, false)
+    const lecturesFromGroupQuery = useLecturesFromGroup(isClientPageValue ? undefined : id, false)
 
     /** Klient nebo skupina zobrazená na kartě. */
-    const object: ClientType | GroupType | null = React.useMemo(() => {
+    const object: ClientOrGroup = React.useMemo(() => {
         if (isClientPageValue) {
             return clientQuery.data ?? null
         }
@@ -169,7 +171,9 @@ const Card: React.FC<Props> = (props) => {
                     }
                 />
             </Container>
-            {!isLoading ? (
+            {isLoading ? (
+                <Loading />
+            ) : (
                 <Container>
                     <div className="CardInfo">
                         {object && !object.active && (
@@ -273,8 +277,6 @@ const Card: React.FC<Props> = (props) => {
                         )}
                     </Row>
                 </Container>
-            ) : (
-                <Loading />
             )}
         </>
     )
