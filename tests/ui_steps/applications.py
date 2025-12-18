@@ -144,12 +144,10 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: applications_cnt(driver) > context.old_applications_cnt
     )
-    helpers.wait_loading_cycle(context.browser)
+    helpers.wait_modal_closed(context.browser)
     # je zadost opravdu pridana?
     assert find_application_with_context(context)
     assert showed_applications_cnts_for_courses_matches(context.browser)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the application is updated")

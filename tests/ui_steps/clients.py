@@ -112,11 +112,9 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) > context.old_clients_cnt
     )
-    helpers.wait_loading_cycle(context.browser)
+    helpers.wait_modal_closed(context.browser)
     # je klient opravdu pridany?
     assert find_client_with_context(context)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the client is updated")
@@ -140,11 +138,9 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) < context.old_clients_cnt
     )
-    helpers.wait_loading_cycle(context.browser)
+    helpers.wait_modal_closed(context.browser)
     # je klient opravdu smazany?
     assert not helpers.find_client(context, context.full_name)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the client "{full_name}"')

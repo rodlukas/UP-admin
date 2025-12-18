@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
-WAIT_TIME = 10
+WAIT_TIME = 5
 WAIT_TIME_SHORT = 3
 
 
@@ -146,6 +146,11 @@ def is_modal_class_attr_present(driver):
     # pridano jak overeni kompletne zavreneho modalu, viz https://github.com/rodlukas/UP-admin/issues/95
     body_class_attrs = driver.find_element_by_tag_name("body").get_attribute("class").split()
     return "modal-open" in body_class_attrs
+
+
+def wait_modal_closed(driver):
+    # pockej na zavreni modalu
+    WebDriverWait(driver, WAIT_TIME).until_not(lambda d: is_modal_class_attr_present(d))
 
 
 def wait_switching_available(driver, form_name):

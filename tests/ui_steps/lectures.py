@@ -318,11 +318,9 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: lectures_cnt(driver) > context.old_lectures_cnt
     )
-    helpers.wait_loading_cycle(context.browser)
+    helpers.wait_modal_closed(context.browser)
     # je lekce opravdu pridana?
     assert find_lecture_with_context(context)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the lecture is updated")
@@ -374,11 +372,9 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: lectures_cnt(driver) < context.old_lectures_cnt
     )
-    helpers.wait_loading_cycle(context.browser)
+    helpers.wait_modal_closed(context.browser)
     # je lekce opravdu smazana?
     assert not find_lecture(context, context.date, context.time)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the lecture of the client "{client}" at "{date}", "{time}"')
