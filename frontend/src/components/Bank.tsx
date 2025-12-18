@@ -68,22 +68,61 @@ const Bank: React.FC = () => {
     const isDataProblem = Boolean(bankDataApi.status_info)
     const isLoadingState = isLoading || isFetching
 
+    const getBalanceText = (): React.ReactNode => {
+        if (balance === null) {
+            return isDataProblem ? "neznámý" : "načítání"
+        }
+        return <span className="font-weight-bold text-nowrap">{prettyAmount(balance)}</span>
+    }
+
+    const renderTableBody = (): React.ReactNode => {
+        if (isDataProblem) {
+            return <TableInfo text={bankDataApi.status_info} color="text-danger" />
+        }
+        if (
+            bankDataApi.accountStatement.transactionList.transaction.length === 0 &&
+            !isLoadingState
+        ) {
+            return <TableInfo text="Žádné nedávné transakce" />
+        }
+        return bankDataApi.accountStatement.transactionList.transaction.map((transaction) => {
+            const date = new Date(transaction.column0.value.split("+")[0])
+            const amount = transaction.column1.value
+            const messageObj = transaction.column16
+            const id = transaction.column22.value
+            const commentObj = transaction.column25
+            const duplicates = messageObj && commentObj && messageObj.value === commentObj.value
+            const targetAccountOwnerObj = transaction.column10
+            const amountClassName = amount < 0 ? " text-danger" : ""
+            return (
+                <tr key={id} className={isToday(date) ? "table-warning" : undefined}>
+                    <td colSpan={duplicates ? 2 : undefined} data-gdpr>
+                        {commentObj?.value ??
+                            (targetAccountOwnerObj?.value ? (
+                                `Vlastník protiúčtu: ${targetAccountOwnerObj.value}`
+                            ) : (
+                                <NoInfo />
+                            ))}
+                    </td>
+                    {!duplicates && <td data-gdpr>{messageObj ? messageObj.value : <NoInfo />}</td>}
+                    <td className="text-right text-nowrap" style={{ minWidth: "6em" }}>
+                        {prettyDateWithDayYearIfDiff(date, true)}
+                    </td>
+                    <td
+                        className={`${amountClassName} font-weight-bold text-right text-nowrap`}
+                        style={{ minWidth: "7em" }}>
+                        {prettyAmount(amount)}
+                    </td>
+                </tr>
+            )
+        })
+    }
+
     return (
         <ListGroup>
             <ListGroupItem color={isLackOfMoney ? "danger" : "success"}>
                 <h4 className="text-center">
-                    Aktuální stav:{" "}
-                    {balance === null ? (
-                        isDataProblem ? (
-                            "neznámý"
-                        ) : (
-                            "načítání"
-                        )
-                    ) : (
-                        <span className="font-weight-bold text-nowrap">
-                            {prettyAmount(balance)}
-                        </span>
-                    )}{" "}
+                    Aktuální stav: {getBalanceText()}{" "}
                     {isLackOfMoney && rentPrice !== null && (
                         <>
                             <UncontrolledTooltipWrapper target="Bank_RentWarning">
@@ -140,59 +179,7 @@ const Bank: React.FC = () => {
                             <th className="text-right">Suma</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {isDataProblem ? (
-                            <TableInfo text={bankDataApi.status_info} color="text-danger" />
-                        ) : bankDataApi.accountStatement.transactionList.transaction.length === 0 &&
-                          !isLoadingState ? (
-                            <TableInfo text="Žádné nedávné transakce" />
-                        ) : (
-                            bankDataApi.accountStatement.transactionList.transaction.map(
-                                (transaction) => {
-                                    const date = new Date(transaction.column0.value.split("+")[0])
-                                    const amount = transaction.column1.value
-                                    const messageObj = transaction.column16
-                                    const id = transaction.column22.value
-                                    const commentObj = transaction.column25
-                                    const duplicates =
-                                        messageObj &&
-                                        commentObj &&
-                                        messageObj.value === commentObj.value
-                                    const targetAccountOwnerObj = transaction.column10
-                                    const amountClassName = amount < 0 ? " text-danger" : ""
-                                    return (
-                                        <tr
-                                            key={id}
-                                            className={isToday(date) ? "table-warning" : undefined}>
-                                            <td colSpan={duplicates ? 2 : undefined} data-gdpr>
-                                                {commentObj?.value ??
-                                                    (targetAccountOwnerObj?.value ? (
-                                                        `Vlastník protiúčtu: ${targetAccountOwnerObj.value}`
-                                                    ) : (
-                                                        <NoInfo />
-                                                    ))}
-                                            </td>
-                                            {!duplicates && (
-                                                <td data-gdpr>
-                                                    {messageObj ? messageObj.value : <NoInfo />}
-                                                </td>
-                                            )}
-                                            <td
-                                                className="text-right text-nowrap"
-                                                style={{ minWidth: "6em" }}>
-                                                {prettyDateWithDayYearIfDiff(date, true)}
-                                            </td>
-                                            <td
-                                                className={`${amountClassName} font-weight-bold text-right text-nowrap`}
-                                                style={{ minWidth: "7em" }}>
-                                                {prettyAmount(amount)}
-                                            </td>
-                                        </tr>
-                                    )
-                                },
-                            )
-                        )}
-                    </tbody>
+                    <tbody>{renderTableBody()}</tbody>
                 </Table>
                 <div className="text-center text-muted font-italic">
                     <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší než{" "}

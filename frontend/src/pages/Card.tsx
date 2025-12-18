@@ -129,6 +129,37 @@ const Card: React.FC<Props> = (props) => {
         props.history.goBack()
     }
 
+    const renderLecture = (lecture: LectureType): React.ReactElement => {
+        // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
+        const date = new Date(lecture.start ?? 0)
+        const className = classNames("lecture", "lecture_card", {
+            "lecture-canceled": lecture.canceled,
+            "lecture-future": date > new Date(Date.now()),
+            "lecture-prepaid": lecture.start === null,
+        })
+        return (
+            <ListGroupItem key={lecture.id} className={className} data-qa="lecture">
+                <div className="lecture_heading">
+                    <h4>
+                        <span data-qa="lecture_start" id={`Card_CourseDuration_${lecture.id}`}>
+                            {lecture.start !== null
+                                ? `${prettyDateWithDayYear(date)} – ${prettyTime(date)}`
+                                : "Předplacená lekce"}
+                        </span>
+                        <UncontrolledTooltipWrapper target={`Card_CourseDuration_${lecture.id}`}>
+                            {courseDuration(lecture.duration)}
+                        </UncontrolledTooltipWrapper>
+                    </h4>
+                    <LectureNumber lecture={lecture} />
+                    <ModalLectures object={object} currentLecture={lecture} />
+                </div>
+                <div className="lecture_content">
+                    <Attendances lecture={lecture} showClient={isGroup(object)} />
+                </div>
+            </ListGroupItem>
+        )
+    }
+
     return (
         <>
             <Container>
@@ -225,50 +256,7 @@ const Card: React.FC<Props> = (props) => {
                                             {courseLectures.course.name}
                                         </h4>
                                     </ListGroupItem>
-                                    {courseLectures.objects.map((lecture) => {
-                                        // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
-                                        const date = new Date(lecture.start ?? 0)
-                                        const className = classNames("lecture", "lecture_card", {
-                                            "lecture-canceled": lecture.canceled,
-                                            "lecture-future": date > new Date(Date.now()),
-                                            "lecture-prepaid": lecture.start === null,
-                                        })
-                                        return (
-                                            <ListGroupItem
-                                                key={lecture.id}
-                                                className={className}
-                                                data-qa="lecture">
-                                                <div className="lecture_heading">
-                                                    <h4>
-                                                        <span
-                                                            data-qa="lecture_start"
-                                                            id={`Card_CourseDuration_${lecture.id}`}>
-                                                            {lecture.start !== null
-                                                                ? `${prettyDateWithDayYear(
-                                                                      date,
-                                                                  )} – ${prettyTime(date)}`
-                                                                : "Předplacená lekce"}
-                                                        </span>
-                                                        <UncontrolledTooltipWrapper
-                                                            target={`Card_CourseDuration_${lecture.id}`}>
-                                                            {courseDuration(lecture.duration)}
-                                                        </UncontrolledTooltipWrapper>
-                                                    </h4>
-                                                    <LectureNumber lecture={lecture} />
-                                                    <ModalLectures
-                                                        object={object}
-                                                        currentLecture={lecture}
-                                                    />
-                                                </div>
-                                                <div className="lecture_content">
-                                                    <Attendances
-                                                        lecture={lecture}
-                                                        showClient={isGroup(object)}
-                                                    />
-                                                </div>
-                                            </ListGroupItem>
-                                        )
-                                    })}
+                                    {courseLectures.objects.map(renderLecture)}
                                 </ListGroup>
                             </Col>
                         ))}
