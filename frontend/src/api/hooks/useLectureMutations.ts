@@ -7,6 +7,9 @@ import LectureService from "../services/LectureService"
 export function useCreateLecture() {
     return useMutation<LectureType, unknown, LecturePostApi | LecturePostApi[]>({
         mutationFn: (data) => LectureService.create(data),
+        meta: {
+            successMessage: "Lekce uložena",
+        },
     })
 }
 
@@ -14,6 +17,9 @@ export function useCreateLecture() {
 export function useUpdateLecture() {
     return useMutation<LectureType, unknown, LecturePutApi>({
         mutationFn: (data) => LectureService.update(data),
+        meta: {
+            successMessage: "Lekce uložena",
+        },
     })
 }
 
@@ -21,5 +27,8 @@ export function useUpdateLecture() {
 export function useDeleteLecture() {
     return useMutation<LectureType, unknown, LectureType["id"]>({
         mutationFn: (id) => LectureService.remove(id),
+        meta: {
+            successMessage: "Lekce smazána",
+        },
     })
 }

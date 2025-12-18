@@ -7,5 +7,8 @@ import MembershipService from "../services/MembershipService"
 export function usePatchMembership() {
     return useMutation<MembershipType, unknown, MembershipPatchApi>({
         mutationFn: (data) => MembershipService.patch(data),
+        meta: {
+            successMessage: "Předplacené lekce uloženy",
+        },
     })
 }

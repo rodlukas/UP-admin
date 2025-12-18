@@ -17,7 +17,9 @@ type Props = {
 
 /** Komponenta zobrazující tlačítko pro platbu klienta za danou lekci. */
 const AttendancePaidButton: React.FC<Props> = (props) => {
-    const patchAttendance = usePatchAttendance()
+    const patchAttendance = usePatchAttendance({
+        successMessage: "Stav platby za lekci uložen",
+    })
 
     const onClick = React.useCallback((): void => {
         const newPaid = !props.paid

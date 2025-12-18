@@ -15,7 +15,9 @@ type Props = {
 /** Komponenta zobrazující box pro výběr stavu účasti klienta na dané lekci. */
 const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
     const { attendancestates } = useAttendanceStatesContext()
-    const patchAttendance = usePatchAttendance()
+    const patchAttendance = usePatchAttendance({
+        successMessage: "Stav účasti klienta uložen",
+    })
 
     const onChange = React.useCallback(
         (e: React.ChangeEvent<HTMLInputElement>): void => {

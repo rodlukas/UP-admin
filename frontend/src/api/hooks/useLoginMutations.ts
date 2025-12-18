@@ -11,5 +11,8 @@ export function useLogin() {
         onSuccess: (data) => {
             Token.save(data.token)
         },
+        meta: {
+            skipSuccessNotification: true,
+        },
     })
 }

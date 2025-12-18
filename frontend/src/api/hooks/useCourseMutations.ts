@@ -7,6 +7,9 @@ import CourseService from "../services/CourseService"
 export function useCreateCourse() {
     return useMutation<CourseType, unknown, CoursePostApi>({
         mutationFn: (data) => CourseService.create(data),
+        meta: {
+            successMessage: "Kurz uložen",
+        },
     })
 }
 
@@ -14,6 +17,9 @@ export function useCreateCourse() {
 export function useUpdateCourse() {
     return useMutation<CourseType, unknown, CoursePutApi>({
         mutationFn: (data) => CourseService.update(data),
+        meta: {
+            successMessage: "Kurz uložen",
+        },
     })
 }
 
@@ -21,5 +27,8 @@ export function useUpdateCourse() {
 export function useDeleteCourse() {
     return useMutation<CourseType, unknown, CourseType["id"]>({
         mutationFn: (id) => CourseService.remove(id),
+        meta: {
+            successMessage: "Kurz smazán",
+        },
     })
 }

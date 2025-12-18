@@ -8,26 +8,33 @@ type Props = {
     text?: ErrMsg
     /** Typ toast notifikace. */
     type: ToastTypeOptions
+    /** Vlastní nadpis notifikace. Pokud není zadán, použije se výchozí. */
+    heading?: string
+}
+
+const NOTIFICATION_CONFIG: Partial<
+    Record<ToastTypeOptions, { emoji: string; defaultHeading: string }>
+> = {
+    [toast.TYPE.ERROR]: { emoji: "⛔", defaultHeading: "CHYBA" },
+    [toast.TYPE.WARNING]: { emoji: "⚠️", defaultHeading: "UPOZORNĚNÍ" },
+    [toast.TYPE.SUCCESS]: { emoji: "✅", defaultHeading: "ULOŽENO" },
+    [toast.TYPE.INFO]: { emoji: "ℹ️", defaultHeading: "INFO" },
+    [toast.TYPE.DEFAULT]: { emoji: "", defaultHeading: "" },
 }
 
 /** Komponenta zobrazující úroveň upozornění v rámci notifikace. */
-const Notification: React.FC<Props> = ({ text = "", type }) => {
-    let heading = ""
-    switch (type) {
-        case toast.TYPE.ERROR:
-            heading = "⛔ CHYBA"
-            break
-        case toast.TYPE.WARNING:
-            heading = "⚠️ UPOZORNĚNÍ"
-            break
-        case toast.TYPE.SUCCESS:
-            heading = "✅ ÚSPĚŠNĚ ULOŽENO"
-            break
+const Notification: React.FC<Props> = ({ text = "", type, heading: customHeading }) => {
+    const { emoji, defaultHeading } = NOTIFICATION_CONFIG[type] ?? {
+        emoji: "",
+        defaultHeading: "",
     }
+    const heading = customHeading ?? defaultHeading
 
     return (
         <>
-            <h6 className="font-weight-bold">{heading}</h6>
+            <h6 className="font-weight-bold">
+                {emoji} {heading}
+            </h6>
             {text}
         </>
     )

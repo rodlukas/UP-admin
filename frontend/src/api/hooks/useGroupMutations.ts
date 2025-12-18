@@ -7,6 +7,9 @@ import GroupService from "../services/GroupService"
 export function useCreateGroup() {
     return useMutation<GroupType, unknown, GroupPostApi>({
         mutationFn: (data) => GroupService.create(data),
+        meta: {
+            successMessage: "Skupina uložena",
+        },
     })
 }
 
@@ -14,6 +17,9 @@ export function useCreateGroup() {
 export function useUpdateGroup() {
     return useMutation<GroupType, unknown, GroupPutApi>({
         mutationFn: (data) => GroupService.update(data),
+        meta: {
+            successMessage: "Skupina uložena",
+        },
     })
 }
 
@@ -21,5 +27,8 @@ export function useUpdateGroup() {
 export function useDeleteGroup() {
     return useMutation<GroupType, unknown, GroupType["id"]>({
         mutationFn: (id) => GroupService.remove(id),
+        meta: {
+            successMessage: "Skupina smazána",
+        },
     })
 }

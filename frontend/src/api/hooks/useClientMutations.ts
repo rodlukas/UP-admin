@@ -7,6 +7,9 @@ import ClientService from "../services/ClientService"
 export function useCreateClient() {
     return useMutation<ClientType, unknown, ClientPostApi>({
         mutationFn: (data) => ClientService.create(data),
+        meta: {
+            successMessage: "Klient uložen",
+        },
     })
 }
 
@@ -14,6 +17,9 @@ export function useCreateClient() {
 export function useUpdateClient() {
     return useMutation<ClientType, unknown, ClientPutApi>({
         mutationFn: (data) => ClientService.update(data),
+        meta: {
+            successMessage: "Klient uložen",
+        },
     })
 }
 
@@ -21,5 +27,8 @@ export function useUpdateClient() {
 export function useDeleteClient() {
     return useMutation<ClientType, unknown, ClientType["id"]>({
         mutationFn: (id) => ClientService.remove(id),
+        meta: {
+            successMessage: "Klient smazán",
+        },
     })
 }

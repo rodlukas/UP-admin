@@ -7,6 +7,9 @@ import ApplicationService from "../services/ApplicationService"
 export function useCreateApplication() {
     return useMutation<ApplicationType, unknown, ApplicationPostApi>({
         mutationFn: (data) => ApplicationService.create(data),
+        meta: {
+            successMessage: "Zájemce o kurz uložen",
+        },
     })
 }
 
@@ -14,6 +17,9 @@ export function useCreateApplication() {
 export function useUpdateApplication() {
     return useMutation<ApplicationType, unknown, ApplicationPutApi>({
         mutationFn: (data) => ApplicationService.update(data),
+        meta: {
+            successMessage: "Zájemce o kurz uložen",
+        },
     })
 }
 
@@ -21,5 +27,8 @@ export function useUpdateApplication() {
 export function useDeleteApplication() {
     return useMutation<ApplicationType, unknown, ApplicationType["id"]>({
         mutationFn: (id) => ApplicationService.remove(id),
+        meta: {
+            successMessage: "Zájemce o kurz smazán",
+        },
     })
 }

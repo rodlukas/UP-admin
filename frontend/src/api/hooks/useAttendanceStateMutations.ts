@@ -12,6 +12,9 @@ import AttendanceStateService from "../services/AttendanceStateService"
 export function useCreateAttendanceState() {
     return useMutation<AttendanceStateType, unknown, AttendanceStatePostApi>({
         mutationFn: (data) => AttendanceStateService.create(data),
+        meta: {
+            successMessage: "Stav účasti uložen",
+        },
     })
 }
 
@@ -19,6 +22,9 @@ export function useCreateAttendanceState() {
 export function useUpdateAttendanceState() {
     return useMutation<AttendanceStateType, unknown, AttendanceStatePutApi>({
         mutationFn: (data) => AttendanceStateService.update(data),
+        meta: {
+            successMessage: "Stav účasti uložen",
+        },
     })
 }
 
@@ -26,6 +32,9 @@ export function useUpdateAttendanceState() {
 export function usePatchAttendanceState() {
     return useMutation<AttendanceStateType, unknown, AttendanceStatePatchApi>({
         mutationFn: (data) => AttendanceStateService.patch(data),
+        meta: {
+            successMessage: "Změna konfigurace stavů účasti uložena",
+        },
     })
 }
 
@@ -33,5 +42,8 @@ export function usePatchAttendanceState() {
 export function useDeleteAttendanceState() {
     return useMutation<AttendanceStateType, unknown, AttendanceStateType["id"]>({
         mutationFn: (id) => AttendanceStateService.remove(id),
+        meta: {
+            successMessage: "Stav účasti smazán",
+        },
     })
 }

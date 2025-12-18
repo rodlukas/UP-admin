@@ -121,38 +121,28 @@ export function createQueryClient(): QueryClient {
                 onError: (error: unknown) => {
                     handleError(error as AxiosError)
                 },
-                // Globální success notifikace pro všechny mutations.
-                // Používáme onSettled místo onSuccess: onSettled se volá vždy (i když je v mutate()
-                // definován lokální onSuccess), takže globální notifikace se zobrazí vždy při úspěchu.
-                onSettled: (data, error, variables) => {
-                    if (!error && data !== undefined) {
-                        const isLogin =
-                            variables &&
-                            typeof variables === "object" &&
-                            "username" in variables &&
-                            "password" in variables
-
-                        // Notifikaci potlačíme pro login
-                        // TODO vyresit lepe, ale pravdepodobne az s react-query 5
-                        if (isLogin) {
-                            return
-                        }
-                        toast(<Notification type={toast.TYPE.SUCCESS} />, {
-                            type: toast.TYPE.SUCCESS,
-                            autoClose: 4000,
-                        })
-                    }
-                },
             },
         },
-        // Globální invalidace všech queries po každé úspěšné mutaci.
-        // Viz: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
         mutationCache: new MutationCache({
-            onSuccess: () => {
+            onSuccess: (_data, _variables, _context, mutation) => {
                 // Invalidovat všechny queries po každé úspěšné mutaci.
                 // Invalidace pouze refetchuje aktivní queries a označí ostatní jako stale,
                 // takže se refetchují až když budou potřeba.
+                // Viz: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
                 void queryClient.invalidateQueries()
+
+                // Notifikaci potlačíme, pokud je v meta nastaveno skipSuccessNotification
+                if (mutation.options.meta?.skipSuccessNotification) {
+                    return
+                }
+
+                // Získáme success zprávu z mutation meta, pokud je k dispozici
+                const successMessage = mutation.options.meta?.successMessage as string | undefined
+
+                toast(<Notification type={toast.TYPE.SUCCESS} text={successMessage} />, {
+                    type: toast.TYPE.SUCCESS,
+                    autoClose: 4000,
+                })
             },
         }),
     })
