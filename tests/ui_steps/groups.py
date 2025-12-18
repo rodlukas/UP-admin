@@ -103,6 +103,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) > context.old_groups_cnt
     )
+    helpers.wait_loading_cycle(context.browser)
     # je skupina opravdu pridana?
     assert find_group_with_context(context)
     # over, ze je modalni okno kompletne zavrene
@@ -130,6 +131,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) < context.old_groups_cnt
     )
+    helpers.wait_loading_cycle(context.browser)
     # je skupina opravdu smazana?
     assert not helpers.find_group(context, context.name)
     # over, ze je modalni okno kompletne zavrene

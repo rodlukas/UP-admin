@@ -112,6 +112,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) > context.old_clients_cnt
     )
+    helpers.wait_loading_cycle(context.browser)
     # je klient opravdu pridany?
     assert find_client_with_context(context)
     # over, ze je modalni okno kompletne zavrene
@@ -139,6 +140,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) < context.old_clients_cnt
     )
+    helpers.wait_loading_cycle(context.browser)
     # je klient opravdu smazany?
     assert not helpers.find_client(context, context.full_name)
     # over, ze je modalni okno kompletne zavrene

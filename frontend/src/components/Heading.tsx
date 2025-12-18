@@ -28,6 +28,7 @@ const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = 
                         spin
                         size="sm"
                         className="ml-2 text-muted"
+                        data-qa="loading"
                     />
                 )}
             </h1>

@@ -90,6 +90,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: attendancestates_cnt(driver) > context.old_attendancestates_cnt
     )
+    helpers.wait_loading_cycle(context.browser)
     # je stav ucasti opravdu pridany?
     assert find_attendancestate_with_context(context)
     # over, ze je modalni okno kompletne zavrene
@@ -113,6 +114,7 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: attendancestates_cnt(driver) < context.old_attendancestates_cnt
     )
+    helpers.wait_loading_cycle(context.browser)
     # je stav ucasti opravdu smazany?
     assert not find_attendancestate(context, context.name)
     # over, ze je modalni okno kompletne zavrene
