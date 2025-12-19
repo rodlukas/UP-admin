@@ -142,7 +142,8 @@ technologies:
 -   [TypeScript 5](https://www.typescriptlang.org/),
 -   [Bootstrap 4](https://getbootstrap.com/) (with [Reactstrap](https://reactstrap.github.io/)),
 -   [React Router 5](https://reacttraining.com/react-router/),
--   [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry)
+-   [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry),
+-   [Tanstack Query (formerly React Query)](https://tanstack.com/query/)
 -   [a další...](/frontend/package.json)
 
 Main tools used for the frontend development:
@@ -206,7 +207,6 @@ title and color (except for the production).
     -   **User flow analysis** thanks to the integration of
         [Google Analytics](https://analytics.google.com/) (via a module
         [react-ga](https://github.com/react-ga/react-ga)).
-    -   [Slack](https://slack.com/)
 -   [audit-ci](https://github.com/IBM/audit-ci) is used for automated security review of the
     project's dependency tree on the CI.
 -   Various **standards are enforced**: [PEP 8](https://pep8.org),
@@ -442,6 +442,9 @@ was migrated to GitHub Actions.
 
 Automated continuous code analysis was ensured among others by [LGTM](https://lgtm.com/) until
 November 2022 when it was replaced by its successor [GitHub CodeQL](https://codeql.github.com/).
+
+Similarly, other static code analysis tools have changed over time, and some have disappeared
+despite their contribution, or have evolved into larger tools, e.g. CodeBeat, DeepCode.
 
 ### PaaS
 

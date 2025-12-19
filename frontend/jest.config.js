@@ -6,6 +6,5 @@ module.exports = {
         "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
     },
     testEnvironment: "jest-fixed-jsdom",
-    // Transformovat MSW a jeho závislosti (ESM moduly)
     transformIgnorePatterns: ["node_modules/(?!(msw|until-async)/)"],
 }

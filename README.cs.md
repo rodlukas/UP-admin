@@ -138,7 +138,8 @@ technologiích:
 -   [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package
-    Registry)
+    Registry),
+-   [Tanstack Query (dříve React Query)](https://tanstack.com/query/)
 -   [a další...](/frontend/package.json)
 
 Vývoj frontendu je postaven především na:
@@ -202,7 +203,6 @@ barevným štítkem v horním menu (kromě produkce).
     -   **Sledování toku uživatelů** umožňuje napojení na
         [Google Analytics](https://analytics.google.com/) (přes modul
         [react-ga](https://github.com/react-ga/react-ga)).
-    -   [Slack](https://slack.com/)
 -   [audit-ci](https://github.com/IBM/audit-ci) se používá pro automatizovanou kontrolu zranitelných
     závislostí projektu na CI.
 -   Aplikace **respektuje standardy** [PEP 8](https://pep8.org),
@@ -439,6 +439,9 @@ migraci na GitHub Actions.
 
 Automatickou průběžnou analýzu a kontrolu kódu zajišťoval mj. [LGTM](https://lgtm.com/) až do
 listopadu 2022, kdy byl nahrazen svým nástupcem [GitHub CodeQL](https://codeql.github.com/).
+
+Stejně tak se postupem času měnily další nástroje pro statickou analýzu kódu a některé už i přes
+svůj přínos zanikly, nebo se z nich staly větší nástroje, např. CodeBeat, DeepCode.
 
 ### PaaS
 
