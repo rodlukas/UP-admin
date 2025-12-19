@@ -32,7 +32,7 @@ Feature: Operations with courses
       # chybejici doba trvani kurzu
       | Rozvoj grafomotoriky | False      |          | #00B16A |
 
-  @edit @courses
+  @edit @courses @ttt
   Scenario: Edit course
     When user updates the data of course "Kurz Slabika" to name "Kurz Slabika 2", visibility "False", duration "55" and color "#2EA0BA"
     Then the course is updated

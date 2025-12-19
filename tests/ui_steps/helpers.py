@@ -26,7 +26,7 @@ def submit_form(context, button_name):
     # klikni na tlacitko s danym data-qa atributem
     # - klasicke element.submit() se nepouziva proto, ze netestuje typicke chovani uzivatele - kliknuti na tlacitko
     #   ulozeni, ale odeslani Enterem, tedy napr. pokud by bylo tlacitko disabled, testy projdou, ale uzivateli to nejde
-    button = context.browser.find_element_by_css_selector(f"[data-qa={button_name}]")
+    button = context.browser.find_element(By.CSS_SELECTOR, f"[data-qa={button_name}]")
     button.click()
 
 
@@ -90,49 +90,49 @@ def react_select_insert(driver, element, value):
     element.send_keys(value)
     try:
         # najdi moznosti react-selectu, moznosti maji id zacinajici danym stringem
-        found_option = driver.find_element_by_css_selector("[role='option']")
+        found_option = driver.find_element(By.CSS_SELECTOR, "[role='option']")
     except NoSuchElementException:
         pass
     else:
         found_option.click()
     # zavri react-select kliknutim na dropdown ikonu (jinak muze prekryvat jine elementy)
-    driver.find_element_by_css_selector(f".{element.get_attribute('id')}__indicators").click()
+    driver.find_element(By.CSS_SELECTOR, f".{element.get_attribute('id')}__indicators").click()
 
 
 def open_settings(driver):
-    driver.find_element_by_css_selector("[data-qa=menu_settings]").click()
+    driver.find_element(By.CSS_SELECTOR, "[data-qa=menu_settings]").click()
 
 
 def open_groups(driver):
-    driver.find_element_by_css_selector("[data-qa=menu_groups]").click()
+    driver.find_element(By.CSS_SELECTOR, "[data-qa=menu_groups]").click()
 
 
 def open_clients(driver):
-    driver.find_element_by_css_selector("[data-qa=menu_clients]").click()
+    driver.find_element(By.CSS_SELECTOR, "[data-qa=menu_clients]").click()
 
 
 def toggle_switcher_active(driver, active):
     button_str = "button_switcher_active" if active else "button_switcher_inactive"
-    driver.find_element_by_css_selector(f"[data-qa={button_str}]").click()
+    driver.find_element(By.CSS_SELECTOR, f"[data-qa={button_str}]").click()
 
 
 def get_clients(driver, active):
     toggle_switcher_active(driver, active)
     # pockej na nacteni
     wait_loading_ends(driver)
-    return driver.find_elements_by_css_selector("[data-qa=client]")
+    return driver.find_elements(By.CSS_SELECTOR, "[data-qa=client]")
 
 
 def get_groups(driver, active):
     toggle_switcher_active(driver, active)
     # pockej na nacteni
     wait_loading_ends(driver)
-    return driver.find_elements_by_css_selector("[data-qa=group]")
+    return driver.find_elements(By.CSS_SELECTOR, "[data-qa=group]")
 
 
 def close_modal(driver):
     # zavri modalni okno
-    driver.find_element_by_class_name("close").click()
+    driver.find_element(By.CLASS_NAME, "close").click()
     # pokud se zobrazi alert s upozornenim na neulozene zmeny, zavri ho
     try:
         wait_for_alert_and_accept(driver)
@@ -144,7 +144,7 @@ def close_modal(driver):
 def is_modal_class_attr_present(driver):
     # zjisti, zda je u body tag znacici otevrene modal okno
     # pridano jak overeni kompletne zavreneho modalu, viz https://github.com/rodlukas/UP-admin/issues/95
-    body_class_attrs = driver.find_element_by_tag_name("body").get_attribute("class").split()
+    body_class_attrs = driver.find_element(By.TAG_NAME, "body").get_attribute("class").split()
     return "modal-open" in body_class_attrs
 
 
@@ -171,16 +171,16 @@ def _find_group_with_activity(activity, context, name, open_card=False, validate
     groups = get_groups(context.browser, activity)
     # najdi skupinu s udaji v parametrech
     for group in groups:
-        found_name_element = group.find_element_by_css_selector("[data-qa=group_name]")
+        found_name_element = group.find_element(By.CSS_SELECTOR, "[data-qa=group_name]")
         found_name = found_name_element.text
         found_group = None
         # srovnej identifikatory
         if found_name == name:
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-            found_course = group.find_element_by_css_selector("[data-qa=course_name]").text
+            found_course = group.find_element(By.CSS_SELECTOR, "[data-qa=course_name]").text
             found_members = [
                 element.text
-                for element in group.find_elements_by_css_selector("[data-qa=client_name]")
+                for element in group.find_elements(By.CSS_SELECTOR, "[data-qa=client_name]")
             ]
             if not validate_context or (
                 validate_context
@@ -217,14 +217,14 @@ def _find_client_with_activity(activity, context, full_name, open_card, **data):
     clients = get_clients(context.browser, activity)
     # najdi klienta s udaji v parametrech
     for client in clients:
-        found_name_element = client.find_element_by_css_selector("[data-qa=client_name]")
+        found_name_element = client.find_element(By.CSS_SELECTOR, "[data-qa=client_name]")
         found_name = found_name_element.text
         found_client = None
         # srovnej identifikatory
         if found_name == full_name:
-            found_phone = client.find_element_by_css_selector("[data-qa=client_phone]").text
-            found_email = client.find_element_by_css_selector("[data-qa=client_email]").text
-            found_note = client.find_element_by_css_selector("[data-qa=client_note]").text
+            found_phone = client.find_element(By.CSS_SELECTOR, "[data-qa=client_phone]").text
+            found_email = client.find_element(By.CSS_SELECTOR, "[data-qa=client_email]").text
+            found_note = client.find_element(By.CSS_SELECTOR, "[data-qa=client_note]").text
             found_phone_value = common_helpers.shrink_str(found_phone)
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             if not data or (

@@ -18,7 +18,7 @@ def clients_cnt(driver):
 
 
 def open_clients(driver):
-    driver.find_element_by_css_selector("[data-qa=menu_clients]").click()
+    driver.find_element(By.CSS_SELECTOR, "[data-qa=menu_clients]").click()
 
 
 def find_client_with_context(context):
@@ -45,17 +45,17 @@ def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
     # priprav pole z formulare
-    firstname_field = context.browser.find_element_by_css_selector(
-        "[data-qa=client_field_firstname]"
+    firstname_field = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=client_field_firstname]"
     )
-    surname_field = context.browser.find_element_by_css_selector("[data-qa=client_field_surname]")
-    phone_field = context.browser.find_element_by_css_selector("[data-qa=client_field_phone]")
-    email_field = context.browser.find_element_by_css_selector("[data-qa=client_field_email]")
-    note_field = context.browser.find_element_by_css_selector("[data-qa=client_field_note]")
-    active_checkbox = context.browser.find_element_by_css_selector(
-        "[data-qa=client_checkbox_active]"
+    surname_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=client_field_surname]")
+    phone_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=client_field_phone]")
+    email_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=client_field_email]")
+    note_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=client_field_note]")
+    active_checkbox = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=client_checkbox_active]"
     )
-    active_label = context.browser.find_element_by_css_selector("[data-qa=client_label_active]")
+    active_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=client_label_active]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
         assert (
@@ -156,15 +156,15 @@ def step_impl(context, full_name):
     # najdi klienta a klikni u nej na Upravit
     client_to_delete = helpers.find_client(context, full_name)
     assert client_to_delete
-    button_edit_client = client_to_delete.find_element_by_css_selector(
-        "[data-qa=button_edit_client]"
+    button_edit_client = client_to_delete.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_edit_client]"
     )
     button_edit_client.click()
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
     # klikni na smazat
-    button_delete_client = context.browser.find_element_by_css_selector(
-        "[data-qa=button_delete_client]"
+    button_delete_client = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_delete_client]"
     )
     button_delete_client.click()
     # a potvrd smazani
@@ -206,7 +206,7 @@ def step_impl(context, firstname, surname, phone, email, note, active):
     # uloz puvodni pocet klientu
     save_old_clients_cnt_to_context(context)
     # klikni na Pridat klienta
-    button_add_client = context.browser.find_element_by_css_selector("[data-qa=button_add_client]")
+    button_add_client = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_add_client]")
     button_add_client.click()
     # vloz vsechny udaje do formulare
     insert_to_form(context)
@@ -233,8 +233,8 @@ def step_impl(
     # najdi klienta a klikni u nej na Upravit
     client_to_update = helpers.find_client(context, cur_full_name)
     assert client_to_update
-    button_edit_client = client_to_update.find_element_by_css_selector(
-        "[data-qa=button_edit_client]"
+    button_edit_client = client_to_update.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_edit_client]"
     )
     button_edit_client.click()
     # over spravne zobrazene udaje ve formulari a vloz do nej vsechny udaje

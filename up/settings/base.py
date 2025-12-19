@@ -25,6 +25,7 @@ env = environ.Env(
     MANUAL_PRODUCTION=(bool, False),  # pro simulaci produkcni verze nastavit: True (nutne i pro CI)
     SECRET_KEY=str,  # tajny klic pro Django
     SENTRY_DSN=(str, ""),  # DSN klic pro Sentry
+    TESTS_BROWSER=(str, "firefox"),  # prohlizec pro UI testy: "firefox" nebo "chrome"
     TESTS_HEADLESS=(bool, True),  # indikace headless mode pro testy UI
     TESTS_RUNNING=(bool, False),  # indikace bezicich testu
 )
@@ -40,6 +41,7 @@ BANK_ACTIVE = env("BANK_ACTIVE")
 BANK_RENT_PRICE = env("BANK_RENT_PRICE")
 ENVIRONMENT = env("ENVIRONMENT")
 FIO_API_KEY = env("FIO_API_KEY")
+TESTS_BROWSER = env("TESTS_BROWSER")
 TESTS_HEADLESS = env("TESTS_HEADLESS")
 DEPLOYED = env("DEPLOYED")
 MANUAL_PRODUCTION = env("MANUAL_PRODUCTION")
