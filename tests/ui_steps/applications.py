@@ -140,41 +140,40 @@ def save_old_applications_cnt_to_context(context):
 
 @then("the application is added")
 def step_impl(context):
-    # pockej na pridani zadosti
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi zadost s novymi udaji
+    # pockej na pridani zadosti
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_application_with_context(context)
     )
+    # over, ze sedi pocet zadosti
+    assert applications_cnt(context.browser) > context.old_applications_cnt
     assert showed_applications_cnts_for_courses_matches(context.browser)
 
 
 @then("the application is updated")
 def step_impl(context):
-    # pockej na update zadosti
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi zadost s novymi udaji
+    # pockej na update zadosti
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_application_with_context(context)
     )
+    # over, ze sedi pocet zadosti
     assert applications_cnt(context.browser) == context.old_applications_cnt
     assert showed_applications_cnts_for_courses_matches(context.browser)
 
 
 @then("the application is deleted")
 def step_impl(context):
-    # pockej na smazani zadosti
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - zadost by nemela byt nalezena
+    # pockej na smazani zadosti
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: not find_application(context, context.client, context.course)
     )
+    # over, ze sedi pocet zadosti
+    assert applications_cnt(context.browser) < context.old_applications_cnt
     assert showed_applications_cnts_for_courses_matches(context.browser)
 
 

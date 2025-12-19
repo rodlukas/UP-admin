@@ -97,39 +97,38 @@ def save_old_groups_cnt_to_context(context):
 
 @then("the group is added")
 def step_impl(context):
-    # pockej na pridani skupiny
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi skupinu s novymi udaji
+    # pockej na pridani skupiny
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_group_with_context(context)
     )
+    # over, ze sedi pocet skupin
+    assert groups_cnt(context.browser) > context.old_groups_cnt
 
 
 @then("the group is updated")
 def step_impl(context):
-    # pockej na update skupiny
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi skupinu s novymi udaji
+    # pockej na update skupiny
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_group_with_context(context)
     )
+    # over, ze sedi pocet skupin
     assert groups_cnt(context.browser) == context.old_groups_cnt
 
 
 @then("the group is deleted")
 def step_impl(context):
-    # pockej na smazani skupiny
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - skupina by nemela byt nalezena
+    # pockej na smazani skupiny
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: not helpers.find_group(context, context.name)
     )
+    # over, ze sedi pocet skupin
+    assert groups_cnt(context.browser) < context.old_groups_cnt
 
 
 @when('user deletes the group "{name}"')

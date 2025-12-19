@@ -315,33 +315,30 @@ def choose_attendancestate(found_attendance, new_attendancestate):
 
 @then("the lecture is added")
 def step_impl(context):
-    # pockej na pridani lekce
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
+    # pockej na pridani lekce
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_lecture_with_context(context)
     )
+    # over, ze sedi pocet lekci
+    assert lectures_cnt(context.browser) > context.old_lectures_cnt
 
 
 @then("the lecture is updated")
 def step_impl(context):
-    # pockej na update lekci
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
+    # pockej na update lekci
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_lecture_with_context(context)
     )
+    # over, ze sedi pocet lekci
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
 
 
 @then("the paid state of the attendance is updated")
 def step_impl(context):
-    # pockej na update lekci
-    helpers.wait_loading_cycle(context.browser)
     # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: verify_paid(
@@ -352,8 +349,6 @@ def step_impl(context):
 
 @then("the attendance state of the attendance is updated")
 def step_impl(context):
-    # pockej na update lekci
-    helpers.wait_loading_cycle(context.browser)
     # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: verify_attendancestate(
@@ -375,14 +370,14 @@ def step_impl(context):
 
 @then("the lecture is deleted")
 def step_impl(context):
-    # pockej na smazani lekce
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - lekce by nemela byt nalezena
+    # pockej na smazani lekce
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: not find_lecture(context, context.date, context.time)
     )
+    # over, ze sedi pocet lekci
+    assert lectures_cnt(context.browser) < context.old_lectures_cnt
 
 
 @when('user deletes the lecture of the client "{client}" at "{date}", "{time}"')

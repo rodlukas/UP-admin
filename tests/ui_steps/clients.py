@@ -106,39 +106,38 @@ def wait_switching_available(driver):
 
 @then("the client is added")
 def step_impl(context):
-    # pockej na pridani klienta
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi klienta s novymi udaji
+    # pockej na pridani klienta
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_client_with_context(context)
     )
+    # over, ze sedi pocet klientu
+    assert clients_cnt(context.browser) > context.old_clients_cnt
 
 
 @then("the client is updated")
 def step_impl(context):
-    # pockej na update klientu
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi klienta s novymi udaji
+    # pockej na update klientu
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_client_with_context(context)
     )
+    # over, ze sedi pocet klientu
     assert clients_cnt(context.browser) == context.old_clients_cnt
 
 
 @then("the client is deleted")
 def step_impl(context):
-    # pockej na smazani klienta
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - klient by nemel byt nalezen
+    # pockej na smazani klienta
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: not helpers.find_client(context, context.full_name)
     )
+    # over, ze sedi pocet klientu
+    assert clients_cnt(context.browser) < context.old_clients_cnt
 
 
 @when('user deletes the client "{full_name}"')

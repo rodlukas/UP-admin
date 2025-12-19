@@ -96,6 +96,7 @@ def insert_to_form(context, verify_current_data=False):
     color_field.send_keys(Keys.TAB)  # zavreni okna s vyberem barvy
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
+        print(context.old_color, color_title(color_field_value))
         assert (
             context.old_name == name_field.get_attribute("value")
             and context.old_visible == visible_checkbox.is_selected()
@@ -137,39 +138,38 @@ def save_old_courses_cnt_to_context(context):
 
 @then("the course is added")
 def step_impl(context):
-    # pockej na pridani kurzu
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi kurz s novymi udaji
+    # pockej na pridani kurzu
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_course_with_context(context)
     )
+    # over, ze sedi pocet kurzu
+    assert courses_cnt(context.browser) > context.old_courses_cnt
 
 
 @then("the course is updated")
 def step_impl(context):
-    # pockej na update kurzu
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi kurz s novymi udaji
+    # pockej na update kurzu
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_course_with_context(context)
     )
+    # over, ze sedi pocet kurzu
     assert courses_cnt(context.browser) == context.old_courses_cnt
 
 
 @then("the course is deleted")
 def step_impl(context):
-    # pockej na smazani kurzu
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - kurz by nemel byt nalezen
+    # pockej na smazani kurzu
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: not find_course(context, context.name)
     )
+    # over, ze sedi pocet kurzu
+    assert courses_cnt(context.browser) < context.old_courses_cnt
 
 
 @when('user deletes the course "{name}"')

@@ -88,39 +88,38 @@ def save_old_attendancestates_cnt_to_context(context):
 
 @then("the attendance state is added")
 def step_impl(context):
-    # pockej na pridani stavu ucasti
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi stav ucasti s novymi udaji
+    # pockej na pridani stavu ucasti
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_attendancestate_with_context(context)
     )
+    # over, ze sedi pocet stavu ucasti
+    assert attendancestates_cnt(context.browser) > context.old_attendancestates_cnt
 
 
 @then("the attendance state is updated")
 def step_impl(context):
-    # pockej na update stavu ucasti
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - najdi stav ucasti s novymi udaji
+    # pockej na update stavu ucasti
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_attendancestate_with_context(context)
     )
+    # over, ze sedi pocet stavu ucasti
     assert attendancestates_cnt(context.browser) == context.old_attendancestates_cnt
 
 
 @then("the attendance state is deleted")
 def step_impl(context):
-    # pockej na smazani stavu ucasti
-    helpers.wait_loading_cycle(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej az se data aktualizuji v DOM - stav ucasti by nemel byt nalezen
+    # pockej na smazani stavu ucasti
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: not find_attendancestate(context, context.name)
     )
+    # over, ze sedi pocet stavu ucasti
+    assert attendancestates_cnt(context.browser) < context.old_attendancestates_cnt
 
 
 @when('user deletes the attendance state "{name}"')
