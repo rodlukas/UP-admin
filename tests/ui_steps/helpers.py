@@ -45,14 +45,8 @@ def check_fa_bool(visible, classes):
 
 
 def get_tooltip(driver, element):
-    # workaround (dvojite volani move_to) kvuli issue - viz:
-    # - https://github.com/mozilla/geckodriver/issues/1507,
-    # - https://bugzilla.mozilla.org/show_bug.cgi?id=1538486,
-    # - inspirace viz: https://github.com/teamcapybara/capybara/issues/2156
-    # najed mysi na element
-    ActionChains(driver).move_to_element_with_offset(element, 0, 0).move_to_element(
-        element
-    ).perform()
+    # klikni na element
+    element.click()
     # az se zobrazi tooltip, vrat ho
     return WebDriverWait(driver, WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, ".tooltip-inner"))

@@ -154,12 +154,12 @@ def step_impl(context):
 def step_impl(context):
     # pockej na update zadosti
     helpers.wait_loading_cycle(context.browser)
+    # pockej na zavreni modalu
+    helpers.wait_modal_closed(context.browser)
     # ma zadost opravdu nove udaje?
     assert find_application_with_context(context)
     assert applications_cnt(context.browser) == context.old_applications_cnt
     assert showed_applications_cnts_for_courses_matches(context.browser)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the application is deleted")

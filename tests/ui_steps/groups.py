@@ -114,11 +114,11 @@ def step_impl(context):
     wait_switching_available(context.browser)
     # pockej na update skupin
     helpers.wait_loading_cycle(context.browser)
+    # pockej na zavreni modalu
+    helpers.wait_modal_closed(context.browser)
     # ma skupina opravdu nove udaje?
     assert find_group_with_context(context)
     assert groups_cnt(context.browser) == context.old_groups_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the group is deleted")

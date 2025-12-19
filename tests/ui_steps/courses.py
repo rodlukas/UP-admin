@@ -148,11 +148,12 @@ def step_impl(context):
 def step_impl(context):
     # pockej na update kurzu
     helpers.wait_loading_cycle(context.browser)
+    # pockej na zavreni modalu
+    helpers.wait_modal_closed(context.browser)
+    print("course is updated")
     # ma kurz opravdu nove udaje?
     assert find_course_with_context(context)
     assert courses_cnt(context.browser) == context.old_courses_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the course is deleted")
