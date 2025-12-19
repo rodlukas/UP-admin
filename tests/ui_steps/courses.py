@@ -37,9 +37,9 @@ def find_course(context, name, **data):
                 By.CSS_SELECTOR, "[data-qa=course_visible]"
             ).get_attribute("class")
             found_duration = course.find_element(By.CSS_SELECTOR, "[data-qa=course_duration]").text
-            found_color = helpers.get_tooltip(
+            found_color = helpers.get_tooltip_text(
                 context.browser, course.find_element(By.CSS_SELECTOR, "[data-qa=course_color]")
-            ).text
+            )
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             if not data or (
                 data

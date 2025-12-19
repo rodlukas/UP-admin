@@ -66,10 +66,9 @@ def find_lecture(context, date, time, validate_context=False):
         # najdi lekci s danym zacatkem
         for lecture in all_course_lectures:
             found_start = lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]").text
-            found_duration = helpers.get_tooltip(
+            found_duration = helpers.get_tooltip_text(
                 context.browser, lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]")
-            ).text
-            ActionChains(context.browser).move_to_element(context.browser.find_element(By.TAG_NAME, "body")).perform()
+            )
             found_canceled = helpers.check_class_included(
                 lecture.get_attribute("class"), "lecture-canceled"
             )

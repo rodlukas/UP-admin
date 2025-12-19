@@ -44,13 +44,17 @@ def check_fa_bool(visible, classes):
     return False
 
 
-def get_tooltip(driver, element):
-    # najed mysi na element
-    ActionChains(driver).move_to_element(element).perform()
-    # az se zobrazi tooltip, vrat ho
-    return WebDriverWait(driver, WAIT_TIME).until(
+def get_tooltip_text(driver, element):
+    # klikni mysi na element
+    element.click()
+    # az se zobrazi tooltip, uloz jeho text, abys ho mohl vratit
+    tooltip_text = WebDriverWait(driver, WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, ".tooltip-inner"))
-    )
+    ).text
+    # odstran mys z elementu, aby se tooltip skryl
+    ActionChains(driver).move_to_element(driver.find_element(By.TAG_NAME, "body")).perform()
+    # vrat text tooltipu
+    return tooltip_text
 
 
 def check_class_included(classes, class_to_search):

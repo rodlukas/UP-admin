@@ -62,7 +62,7 @@ Feature: Operations with lectures
       | Rod Lukáš | 2018-05-07 | 20:00 | False    | Kurz Slabika | OK              | False | test | 40       |
 
 
-  @edit @lectures
+  @edit @lectures @ttt
   Scenario: Edit single lecture
     When user updates the data of lecture at "2018-05-07", "20:00" to date "2018-05-08", time "21:00", course "Předškolák s ADHD", duration "88", canceled "True", attendance of the client "Rodová Petra" is: "OK", paid "False", note "test"
     Then the lecture is updated
