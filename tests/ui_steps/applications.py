@@ -168,12 +168,12 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na smazani zadosti
+    # pockej na smazani zadosti (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: not find_application(context, context.client, context.course)
+        lambda driver: applications_cnt(driver) < context.old_applications_cnt
     )
-    # over, ze sedi pocet zadosti
-    assert applications_cnt(context.browser) < context.old_applications_cnt
+    # over, ze zadost opravdu neni nalezena
+    assert not find_application(context, context.client, context.course)
     assert showed_applications_cnts_for_courses_matches(context.browser)
 
 

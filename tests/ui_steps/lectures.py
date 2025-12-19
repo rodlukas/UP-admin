@@ -372,12 +372,12 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na smazani lekce
+    # pockej na smazani lekce (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: not find_lecture(context, context.date, context.time)
+        lambda driver: lectures_cnt(driver) < context.old_lectures_cnt
     )
-    # over, ze sedi pocet lekci
-    assert lectures_cnt(context.browser) < context.old_lectures_cnt
+    # over, ze lekce opravdu neni nalezena
+    assert not find_lecture(context, context.date, context.time)
 
 
 @when('user deletes the lecture of the client "{client}" at "{date}", "{time}"')

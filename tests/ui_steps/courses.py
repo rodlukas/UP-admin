@@ -164,12 +164,12 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na smazani kurzu
+    # pockej na smazani kurzu (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: not find_course(context, context.name)
+        lambda driver: courses_cnt(driver) < context.old_courses_cnt
     )
-    # over, ze sedi pocet kurzu
-    assert courses_cnt(context.browser) < context.old_courses_cnt
+    # over, ze kurz opravdu neni nalezen
+    assert not find_course(context, context.name)
 
 
 @when('user deletes the course "{name}"')

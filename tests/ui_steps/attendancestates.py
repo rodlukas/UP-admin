@@ -114,12 +114,12 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na smazani stavu ucasti
+    # pockej na smazani stavu ucasti (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: not find_attendancestate(context, context.name)
+        lambda driver: attendancestates_cnt(driver) < context.old_attendancestates_cnt
     )
-    # over, ze sedi pocet stavu ucasti
-    assert attendancestates_cnt(context.browser) < context.old_attendancestates_cnt
+    # over, ze stav ucasti opravdu neni nalezen
+    assert not find_attendancestate(context, context.name)
 
 
 @when('user deletes the attendance state "{name}"')

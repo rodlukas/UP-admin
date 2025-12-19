@@ -132,12 +132,12 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na smazani klienta
+    # pockej na smazani klienta (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: not helpers.find_client(context, context.full_name)
+        lambda driver: clients_cnt(driver) < context.old_clients_cnt
     )
-    # over, ze sedi pocet klientu
-    assert clients_cnt(context.browser) < context.old_clients_cnt
+    # over, ze klient opravdu neni nalezen
+    assert not helpers.find_client(context, context.full_name)
 
 
 @when('user deletes the client "{full_name}"')
