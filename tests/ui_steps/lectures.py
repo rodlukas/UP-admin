@@ -316,46 +316,52 @@ def choose_attendancestate(found_attendance, new_attendancestate):
 @then("the lecture is added")
 def step_impl(context):
     # pockej na pridani lekce
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: lectures_cnt(driver) > context.old_lectures_cnt
-    )
+    helpers.wait_loading_cycle(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # je lekce opravdu pridana?
-    assert find_lecture_with_context(context)
+    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_lecture_with_context(context)
+    )
 
 
 @then("the lecture is updated")
 def step_impl(context):
     # pockej na update lekci
     helpers.wait_loading_cycle(context.browser)
-    # ma lekce opravdu nove udaje?
-    assert find_lecture_with_context(context)
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
+    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_lecture_with_context(context)
+    )
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the paid state of the attendance is updated")
 def step_impl(context):
     # pockej na update lekci
     helpers.wait_loading_cycle(context.browser)
-    # najdi upravovanou lekci
-    lecture_to_update = find_lecture(context, context.date, context.time)
-    assert lecture_to_update
-    # ma lekce opravdu nove udaje?
-    assert verify_paid(lecture_to_update, context.new_paid)
+    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: verify_paid(
+            find_lecture(context, context.date, context.time), context.new_paid
+        )
+    )
 
 
 @then("the attendance state of the attendance is updated")
 def step_impl(context):
     # pockej na update lekci
     helpers.wait_loading_cycle(context.browser)
-    # najdi upravovanou lekci
-    lecture_to_update = find_lecture(context, context.date, context.time)
-    assert lecture_to_update
-    # ma lekce opravdu nove udaje?
-    assert verify_attendancestate(lecture_to_update, context.new_attendancestate)
+    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: verify_attendancestate(
+            find_lecture(context, context.date, context.time), context.new_attendancestate
+        )
+    )
     # pokud se lekce nove zmenila na omluvenou a byla zaplacena, over pridani nahradni lekce
+    lecture_to_update = find_lecture(context, context.date, context.time)
     excused_attendancestate = common_helpers.get_excused_attendancestate()
     if (
         context.cur_attendancestate != excused_attendancestate
@@ -370,12 +376,13 @@ def step_impl(context):
 @then("the lecture is deleted")
 def step_impl(context):
     # pockej na smazani lekce
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: lectures_cnt(driver) < context.old_lectures_cnt
-    )
+    helpers.wait_loading_cycle(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # je lekce opravdu smazana?
-    assert not find_lecture(context, context.date, context.time)
+    # pockej az se data aktualizuji v DOM - lekce by nemela byt nalezena
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: not find_lecture(context, context.date, context.time)
+    )
 
 
 @when('user deletes the lecture of the client "{client}" at "{date}", "{time}"')

@@ -54,7 +54,9 @@ def insert_to_form(context, verify_current_data=False):
     visible_checkbox = context.browser.find_element(
         By.CSS_SELECTOR, "[data-qa=settings_checkbox_visible]"
     )
-    visible_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=settings_label_visible]")
+    visible_label = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_label_visible]"
+    )
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
         assert (
@@ -87,34 +89,38 @@ def save_old_attendancestates_cnt_to_context(context):
 @then("the attendance state is added")
 def step_impl(context):
     # pockej na pridani stavu ucasti
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: attendancestates_cnt(driver) > context.old_attendancestates_cnt
-    )
+    helpers.wait_loading_cycle(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # je stav ucasti opravdu pridany?
-    assert find_attendancestate_with_context(context)
+    # pockej az se data aktualizuji v DOM - najdi stav ucasti s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_attendancestate_with_context(context)
+    )
 
 
 @then("the attendance state is updated")
 def step_impl(context):
     # pockej na update stavu ucasti
     helpers.wait_loading_cycle(context.browser)
-    # ma stav ucasti opravdu nove udaje?
-    assert find_attendancestate_with_context(context)
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
+    # pockej az se data aktualizuji v DOM - najdi stav ucasti s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_attendancestate_with_context(context)
+    )
     assert attendancestates_cnt(context.browser) == context.old_attendancestates_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the attendance state is deleted")
 def step_impl(context):
     # pockej na smazani stavu ucasti
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: attendancestates_cnt(driver) < context.old_attendancestates_cnt
-    )
+    helpers.wait_loading_cycle(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # je stav ucasti opravdu smazany?
-    assert not find_attendancestate(context, context.name)
+    # pockej az se data aktualizuji v DOM - stav ucasti by nemel byt nalezen
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: not find_attendancestate(context, context.name)
+    )
 
 
 @when('user deletes the attendance state "{name}"')

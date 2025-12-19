@@ -106,41 +106,39 @@ def wait_switching_available(driver):
 
 @then("the client is added")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
-    wait_switching_available(context.browser)
     # pockej na pridani klienta
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: clients_cnt(driver) > context.old_clients_cnt
-    )
+    helpers.wait_loading_cycle(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # je klient opravdu pridany?
-    assert find_client_with_context(context)
+    # pockej az se data aktualizuji v DOM - najdi klienta s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_client_with_context(context)
+    )
 
 
 @then("the client is updated")
 def step_impl(context):
     # pockej na update klientu
     helpers.wait_loading_cycle(context.browser)
-    # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
-    wait_switching_available(context.browser)
-    # ma klient opravdu nove udaje?
-    assert find_client_with_context(context)
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
+    # pockej az se data aktualizuji v DOM - najdi klienta s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_client_with_context(context)
+    )
     assert clients_cnt(context.browser) == context.old_clients_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the client is deleted")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
-    wait_switching_available(context.browser)
     # pockej na smazani klienta
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: clients_cnt(driver) < context.old_clients_cnt
-    )
+    helpers.wait_loading_cycle(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # je klient opravdu smazany?
-    assert not helpers.find_client(context, context.full_name)
+    # pockej az se data aktualizuji v DOM - klient by nemel byt nalezen
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: not helpers.find_client(context, context.full_name)
+    )
 
 
 @when('user deletes the client "{full_name}"')

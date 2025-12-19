@@ -97,41 +97,39 @@ def save_old_groups_cnt_to_context(context):
 
 @then("the group is added")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
-    wait_switching_available(context.browser)
     # pockej na pridani skupiny
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: groups_cnt(driver) > context.old_groups_cnt
-    )
+    helpers.wait_loading_cycle(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # je skupina opravdu pridana?
-    assert find_group_with_context(context)
+    # pockej az se data aktualizuji v DOM - najdi skupinu s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_group_with_context(context)
+    )
 
 
 @then("the group is updated")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
-    wait_switching_available(context.browser)
-    # pockej na update skupin
+    # pockej na update skupiny
     helpers.wait_loading_cycle(context.browser)
-    # ma skupina opravdu nove udaje?
-    assert find_group_with_context(context)
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
+    # pockej az se data aktualizuji v DOM - najdi skupinu s novymi udaji
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_group_with_context(context)
+    )
     assert groups_cnt(context.browser) == context.old_groups_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the group is deleted")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
-    wait_switching_available(context.browser)
     # pockej na smazani skupiny
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: groups_cnt(driver) < context.old_groups_cnt
-    )
+    helpers.wait_loading_cycle(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # je skupina opravdu smazana?
-    assert not helpers.find_group(context, context.name)
+    # pockej az se data aktualizuji v DOM - skupina by nemela byt nalezena
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: not helpers.find_group(context, context.name)
+    )
 
 
 @when('user deletes the group "{name}"')
