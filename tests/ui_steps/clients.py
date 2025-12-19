@@ -123,11 +123,11 @@ def step_impl(context):
     helpers.wait_loading_cycle(context.browser)
     # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
     wait_switching_available(context.browser)
-    # pockej na zavreni modalu
-    helpers.wait_modal_closed(context.browser)
     # ma klient opravdu nove udaje?
     assert find_client_with_context(context)
     assert clients_cnt(context.browser) == context.old_clients_cnt
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the client is deleted")

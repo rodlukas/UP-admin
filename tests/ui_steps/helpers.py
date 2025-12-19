@@ -45,8 +45,8 @@ def check_fa_bool(visible, classes):
 
 
 def get_tooltip(driver, element):
-    # klikni na element
-    element.click()
+    # najed mysi na element
+    ActionChains(driver).move_to_element(element).perform()
     # az se zobrazi tooltip, vrat ho
     return WebDriverWait(driver, WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, ".tooltip-inner"))

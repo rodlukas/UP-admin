@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
 
 from tests import common_helpers
 
@@ -68,6 +69,7 @@ def find_lecture(context, date, time, validate_context=False):
             found_duration = helpers.get_tooltip(
                 context.browser, lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]")
             ).text
+            ActionChains(context.browser).move_to_element(context.browser.find_element(By.TAG_NAME, "body")).perform()
             found_canceled = helpers.check_class_included(
                 lecture.get_attribute("class"), "lecture-canceled"
             )
@@ -327,11 +329,11 @@ def step_impl(context):
 def step_impl(context):
     # pockej na update lekci
     helpers.wait_loading_cycle(context.browser)
-    # pockej na zavreni modalu
-    helpers.wait_modal_closed(context.browser)
     # ma lekce opravdu nove udaje?
     assert find_lecture_with_context(context)
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
+    # over, ze je modalni okno kompletne zavrene
+    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the paid state of the attendance is updated")

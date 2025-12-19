@@ -116,6 +116,14 @@ const Card: React.FC<Props> = (props) => {
             : lecturesFromGroupQuery.isLoading) ||
         attendanceStatesContext.isLoading
 
+    const isFetching =
+        (isClientPageValue ? clientQuery.isFetching : groupQuery.isFetching) ||
+        (isClientPageValue ? groupsOfClientQuery.isFetching : false) ||
+        (isClientPageValue
+            ? lecturesFromClientQuery.isFetching
+            : lecturesFromGroupQuery.isFetching) ||
+        attendanceStatesContext.isLoading
+
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
             if (data?.isDeleted) {
@@ -174,6 +182,7 @@ const Card: React.FC<Props> = (props) => {
                             )}
                         </>
                     }
+                    isFetching={isFetching}
                     buttons={
                         <>
                             <BackButton onClick={goBack} />
