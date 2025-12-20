@@ -207,6 +207,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                             icon={props.isFetching ? faSpinnerThird : faPlus}
                             size="lg"
                             spin={props.isFetching}
+                            data-qa={props.isFetching ? "loading" : undefined}
                         />
                     </DropdownToggle>
                     <UncontrolledTooltipWrapper

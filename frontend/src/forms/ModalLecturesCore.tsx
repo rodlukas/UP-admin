@@ -36,7 +36,8 @@ const ModalLecturesCore: React.FC<Props> = ({
     shouldModalOpen = false,
     date = "",
 }) => {
-    const [isModal, toggleModal, toggleModalForce, setFormDirty, setModal] = useModal()
+    const [isModal, toggleModal, toggleModalForce, setFormDirty, setModal, processOnModalClose] =
+        useModal()
     function funcWrapper(func: () => boolean): void {
         if (func()) {
             funcCloseCallback()
@@ -53,7 +54,8 @@ const ModalLecturesCore: React.FC<Props> = ({
             isOpen={isModal}
             toggle={(): void => funcWrapper(toggleModal)}
             size="lg"
-            className="ModalFormLecture">
+            className="ModalFormLecture"
+            onClosed={processOnModalClose}>
             {object && (
                 <FormLectures
                     lecture={currentLecture ?? DummyLecture}
