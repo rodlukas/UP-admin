@@ -89,7 +89,7 @@ const FormSettings: React.FC<Props> = (props) => {
         } else if (target.id === "visible") {
             setVisible(value as boolean)
         } else if (target.id === "duration") {
-            setDuration(Number(value))
+            setDuration(value === "" ? undefined : Number(value))
         }
     }
 
@@ -248,7 +248,7 @@ const FormSettings: React.FC<Props> = (props) => {
                                     <Input
                                         type="number"
                                         id="duration"
-                                        value={duration}
+                                        value={duration ?? ""}
                                         onChange={onChange}
                                         required
                                         min="1"

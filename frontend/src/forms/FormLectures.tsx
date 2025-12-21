@@ -271,12 +271,14 @@ const FormLectures: React.FC<Props> = (props) => {
         }
     })
     /** Trvání lekce. */
-    const [duration, setDuration] = React.useState<LectureType["duration"]>(() => {
-        if (isLecture(props.lecture)) {
-            return props.lecture.duration
-        }
-        return computeDuration()
-    })
+    const [duration, setDuration] = React.useState<LecturePostApiDummy["duration"] | undefined>(
+        () => {
+            if (isLecture(props.lecture)) {
+                return props.lecture.duration
+            }
+            return computeDuration()
+        },
+    )
     /** Zrušení lekce není možné upravit (true). */
     const [canceledDisabled, setCanceledDisabled] = React.useState(false)
     /** Formulář byl odeslán (true). */
@@ -379,7 +381,7 @@ const FormLectures: React.FC<Props> = (props) => {
             } else if (target.id === "time") {
                 setTime(value as string)
             } else if (target.id === "duration") {
-                setDuration(Number(value))
+                setDuration(value === "" ? undefined : Number(value))
             } else if (target.id === "prepaidCnt") {
                 setPrepaidCnt(Number(value))
             }
@@ -453,7 +455,7 @@ const FormLectures: React.FC<Props> = (props) => {
             const start = `${date} ${time}`
             const courseId = course!.id
             const data = {
-                duration,
+                duration: duration!,
                 canceled,
                 group_id: isClient(props.object) ? null : props.object.id,
                 start: prepaid ? null : start,
@@ -684,7 +686,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     <Input
                                         type="number"
                                         id="duration"
-                                        value={duration}
+                                        value={duration ?? ""}
                                         onChange={onChange}
                                         required
                                         min="1"
