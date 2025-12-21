@@ -23,8 +23,8 @@ def check_login(context):
     helpers.wait_loading_ends(context.browser)
     # pokud je viditelne tlacitko pro odhlaseni, doslo k uspesnemu prihlaseni
     try:
-        context.button_logout = context.browser.find_element_by_css_selector(
-            "[data-qa=button_logout]"
+        context.button_logout = context.browser.find_element(
+            By.CSS_SELECTOR, "[data-qa=button_logout]"
         )
         button_logout_visible = True
     except NoSuchElementException:
@@ -46,8 +46,8 @@ def login(context, username, password):
     # pockej az bude dostupny prihlasovaci formular
     wait_form_login_visible(context.browser)
     # vloz prihlasovaci udaje do formulare
-    username_field = context.browser.find_element_by_css_selector("[data-qa=login_field_username]")
-    password_field = context.browser.find_element_by_css_selector("[data-qa=login_field_password]")
+    username_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=login_field_username]")
+    password_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=login_field_password]")
     username_field.send_keys(username)
     password_field.send_keys(password)
     # prihlas se

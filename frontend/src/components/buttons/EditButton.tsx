@@ -23,7 +23,11 @@ const EditButton: React.FC<Props> = ({ content = "Upravit", onClick, contentId, 
             {...props}>
             <FontAwesomeIcon icon={faPencil} />
         </Button>
-        <UncontrolledTooltipWrapper target={`EditButton_${makeIdFromString(content)}_${contentId}`}>
+        <UncontrolledTooltipWrapper
+            target={`EditButton_${makeIdFromString(content)}_${contentId}`}
+            // aby se tooltip po zavreni modalu nezobrazoval
+            // vypada to jako nesystemove reseni, ale jde o domenove reseni diky provazanosti modalu a edit buttonu
+            trigger="hover">
             {content}
         </UncontrolledTooltipWrapper>
     </>

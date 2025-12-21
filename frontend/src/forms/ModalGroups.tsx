@@ -3,7 +3,6 @@ import { Modal } from "reactstrap"
 
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
-import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import useModal from "../hooks/useModal"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
@@ -19,7 +18,7 @@ type Props = {
     /** Funkce, která se zavolá po úspěšném přidání skupiny (spolu s daty o skupině). */
     processAdditionOfGroup?: (newGroup: GroupType) => void
     /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
-    refresh: (data: ModalGroupsData) => void
+    refresh?: (data: ModalGroupsData) => void
 }
 
 /** Modální okno s formulářem pro skupiny. Včetně tlačítek pro vyvolání přidání/úpravy. */
@@ -31,16 +30,6 @@ const ModalGroups: React.FC<Props> = ({
 }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose, tempData] =
         useModal()
-
-    const groupsActiveContext = useGroupsActiveContext()
-
-    function onModalClose(): void {
-        processOnModalClose(() => {
-            refresh(tempData)
-            // projeveni zmen do aktivnich skupin
-            groupsActiveContext.funcHardRefresh()
-        })
-    }
 
     return (
         <>
@@ -59,7 +48,17 @@ const ModalGroups: React.FC<Props> = ({
                     data-qa="button_add_group"
                 />
             )}
-            <Modal isOpen={isModal} toggle={toggleModal} autoFocus={false} onClosed={onModalClose}>
+            <Modal
+                isOpen={isModal}
+                toggle={toggleModal}
+                autoFocus={false}
+                onClosed={(): void => {
+                    processOnModalClose(() => {
+                        if (refresh && tempData !== null) {
+                            refresh(tempData)
+                        }
+                    })
+                }}>
                 <FormGroups
                     group={currentGroup ?? DummyGroup}
                     funcClose={toggleModal}

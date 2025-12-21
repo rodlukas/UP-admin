@@ -15,7 +15,7 @@ from tests.ui_steps import helpers, login_logout
 
 
 def get_courses(driver):
-    return driver.find_elements_by_css_selector("[data-qa=course]")
+    return driver.find_elements(By.CSS_SELECTOR, "[data-qa=course]")
 
 
 def courses_cnt(driver):
@@ -30,16 +30,16 @@ def find_course(context, name, **data):
     all_courses = get_courses(context.browser)
     # najdi kurz s udaji v parametrech
     for course in all_courses:
-        found_name = course.find_element_by_css_selector("[data-qa=course_name]").text
+        found_name = course.find_element(By.CSS_SELECTOR, "[data-qa=course_name]").text
         # srovnej identifikatory
         if found_name == name:
-            found_visible_classes = course.find_element_by_css_selector(
-                "[data-qa=course_visible]"
+            found_visible_classes = course.find_element(
+                By.CSS_SELECTOR, "[data-qa=course_visible]"
             ).get_attribute("class")
-            found_duration = course.find_element_by_css_selector("[data-qa=course_duration]").text
-            found_color = helpers.get_tooltip(
-                context.browser, course.find_element_by_css_selector("[data-qa=course_color]")
-            ).text
+            found_duration = course.find_element(By.CSS_SELECTOR, "[data-qa=course_duration]").text
+            found_color = helpers.get_tooltip_text(
+                context.browser, course.find_element(By.CSS_SELECTOR, "[data-qa=course_color]")
+            )
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             if not data or (
                 data
@@ -68,8 +68,8 @@ def find_course_with_context(context):
 
 def course_color_prepare(context, color_button):
     color_button.click()
-    color_field = context.browser.find_element_by_css_selector(
-        "[data-qa=course_color_picker] input"
+    color_field = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=course_color_picker] input"
     )
     return color_field
 
@@ -78,22 +78,25 @@ def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     helpers.wait_form_settings_visible(context.browser)
     # priprav pole z formulare
-    name_field = context.browser.find_element_by_css_selector("[data-qa=settings_field_name]")
-    visible_checkbox = context.browser.find_element_by_css_selector(
-        "[data-qa=settings_checkbox_visible]"
+    name_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=settings_field_name]")
+    visible_checkbox = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_checkbox_visible]"
     )
-    visible_label = context.browser.find_element_by_css_selector("[data-qa=settings_label_visible]")
-    duration_field = context.browser.find_element_by_css_selector(
-        "[data-qa=settings_field_duration]"
+    visible_label = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_label_visible]"
     )
-    color_button = context.browser.find_element_by_css_selector(
-        "[data-qa=course_button_color]"
+    duration_field = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_field_duration]"
+    )
+    color_button = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=course_button_color]"
     )  # tlacitko pro otevreni okna s vyberem barvy
     color_field = course_color_prepare(context, color_button)  # pole se zvolenou barvou
     color_field_value = color_field.get_attribute("value")  # ziskani hodnoty barvy
     color_field.send_keys(Keys.TAB)  # zavreni okna s vyberem barvy
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
+        print(context.old_color, color_title(color_field_value))
         assert (
             context.old_name == name_field.get_attribute("value")
             and context.old_visible == visible_checkbox.is_selected()
@@ -135,37 +138,38 @@ def save_old_courses_cnt_to_context(context):
 
 @then("the course is added")
 def step_impl(context):
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
     # pockej na pridani kurzu
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: courses_cnt(driver) > context.old_courses_cnt
+        lambda driver: find_course_with_context(context)
     )
-    # je kurz opravdu pridany?
-    assert find_course_with_context(context)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
+    # over, ze sedi pocet kurzu
+    assert courses_cnt(context.browser) > context.old_courses_cnt
 
 
 @then("the course is updated")
 def step_impl(context):
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
     # pockej na update kurzu
-    helpers.wait_loading_cycle(context.browser)
-    # ma kurz opravdu nove udaje?
-    assert find_course_with_context(context)
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_course_with_context(context)
+    )
+    # over, ze sedi pocet kurzu
     assert courses_cnt(context.browser) == context.old_courses_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the course is deleted")
 def step_impl(context):
-    # pockej na smazani kurzu
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
+    # pockej na smazani kurzu (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: courses_cnt(driver) < context.old_courses_cnt
     )
-    # je kurz opravdu smazany?
+    # over, ze kurz opravdu neni nalezen
     assert not find_course(context, context.name)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the course "{name}"')
@@ -179,8 +183,8 @@ def step_impl(context, name):
     # najdi kurz a klikni u nej na Upravit
     course_to_update = find_course(context, context.name)
     assert course_to_update
-    button_edit_course = course_to_update.find_element_by_css_selector(
-        "[data-qa=button_edit_course]"
+    button_edit_course = course_to_update.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_edit_course]"
     )
     button_edit_course.click()
     # uloz puvodni pocet kurzu
@@ -188,8 +192,8 @@ def step_impl(context, name):
     # pockej az bude viditelny formular
     helpers.wait_form_settings_visible(context.browser)
     # klikni na smazat
-    button_delete_course = context.browser.find_element_by_css_selector(
-        "[data-qa=settings_button_delete]"
+    button_delete_course = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_button_delete]"
     )
     button_delete_course.click()
     # a potvrd smazani
@@ -223,8 +227,8 @@ def step_impl(context, cur_name, new_name, new_visible, new_duration, new_color)
     # najdi kurz a klikni u nej na Upravit
     course_to_update = find_course(context, cur_name)
     assert course_to_update
-    button_edit_course = course_to_update.find_element_by_css_selector(
-        "[data-qa=button_edit_course]"
+    button_edit_course = course_to_update.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_edit_course]"
     )
     button_edit_course.click()
     # uloz puvodni pocet kurzu
@@ -248,7 +252,7 @@ def step_impl(context, name, visible, duration, color):
     helpers.open_settings(context.browser)
     # pockej na nacteni a pak klikni na Pridat kurz
     helpers.wait_loading_ends(context.browser)
-    button_add_course = context.browser.find_element_by_css_selector("[data-qa=button_add_course]")
+    button_add_course = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_add_course]")
     button_add_course.click()
     # uloz puvodni pocet kurzu
     save_old_courses_cnt_to_context(context)

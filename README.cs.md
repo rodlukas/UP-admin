@@ -23,7 +23,7 @@
     <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
     <a href="https://deepscan.io/dashboard#view=project&tid=8194&pid=10346&bid=141965"><img src="https://deepscan.io/api/teams/8194/projects/10346/branches/141965/badge/grade.svg" alt="DeepScan grade"></a>
-    <a href="https://codebeat.co/projects/github-com-rodlukas-up-admin-master"><img alt="codebeat badge" src="https://codebeat.co/badges/7ee3ee4d-8e68-4088-8ccd-7a0e57e71a9e" /></a>
+    <a href="https://snyk.io/"><img src="https://img.shields.io/badge/Snyk%20security-monitored-purple" alt="Snyk security"></a>
     <br>
     <a href="https://stackshare.io/rodlukas/upadmin"><img alt="StackShare" src="http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square"></a>
     <a href="https://github.com/prettier/prettier"><img alt="Code style (js): prettier" src="https://img.shields.io/badge/code_style_(js)-prettier-ff69b4.svg?style=flat-square"></a>
@@ -37,8 +37,7 @@
 <p align="center">
     <a href="https://sentry.io/organizations/rodlukas/issues/?project=1247206">Sentry</a> · 
     <a href="https://fly.io/dashboard">Fly.io</a> · 
-    <a href="https://uspesnyprvnacek.slack.com/messages">Slack</a> · 
-    <a href="https://www.deepcode.ai/">DeepCode</a> · 
+    <a href="https://app.snyk.io/org/rodlukas/projects?groupBy=targets&searchQuery=UP-admin">Snyk</a> · 
     <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a>
 </p>
 
@@ -139,7 +138,8 @@ technologiích:
 -   [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package
-    Registry)
+    Registry),
+-   [Tanstack Query (dříve React Query)](https://tanstack.com/query/)
 -   [a další...](/frontend/package.json)
 
 Vývoj frontendu je postaven především na:
@@ -203,7 +203,6 @@ barevným štítkem v horním menu (kromě produkce).
     -   **Sledování toku uživatelů** umožňuje napojení na
         [Google Analytics](https://analytics.google.com/) (přes modul
         [react-ga](https://github.com/react-ga/react-ga)).
-    -   [Slack](https://slack.com/)
 -   [audit-ci](https://github.com/IBM/audit-ci) se používá pro automatizovanou kontrolu zranitelných
     závislostí projektu na CI.
 -   Aplikace **respektuje standardy** [PEP 8](https://pep8.org),
@@ -440,6 +439,9 @@ migraci na GitHub Actions.
 
 Automatickou průběžnou analýzu a kontrolu kódu zajišťoval mj. [LGTM](https://lgtm.com/) až do
 listopadu 2022, kdy byl nahrazen svým nástupcem [GitHub CodeQL](https://codeql.github.com/).
+
+Stejně tak se postupem času měnily další nástroje pro statickou analýzu kódu a některé už i přes
+svůj přínos zanikly, nebo se z nich staly větší nástroje, např. CodeBeat, DeepCode.
 
 ### PaaS
 

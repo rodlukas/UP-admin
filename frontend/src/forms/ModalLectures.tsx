@@ -4,7 +4,6 @@ import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import { DefaultValuesForLecture } from "../global/utils"
 import { ClientType, GroupType, LectureType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
 
 import ModalLecturesCore from "./ModalLecturesCore"
 
@@ -13,8 +12,6 @@ type Props = {
     currentLecture?: LectureType
     /** Výchozí hodnoty pro lekci. */
     defaultValuesForLecture?: DefaultValuesForLecture
-    /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
-    refresh?: fEmptyVoid
     /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
     object?: ClientType | GroupType | null
 }
@@ -23,12 +20,7 @@ type Props = {
  * Kostra modálního okna s formulářem pro lekce. Včetně tlačítek pro vyvolání přidání/úpravy.
  * Práci s modálním oknem má na starosti potomek ModalLecturesCore.
  */
-const ModalLectures: React.FC<Props> = ({
-    currentLecture,
-    refresh,
-    object,
-    defaultValuesForLecture,
-}) => {
+const ModalLectures: React.FC<Props> = ({ currentLecture, object, defaultValuesForLecture }) => {
     const [shouldModalOpen, setShouldModalOpen] = React.useState(false)
     return (
         <>
@@ -48,7 +40,6 @@ const ModalLectures: React.FC<Props> = ({
             )}
             <ModalLecturesCore
                 currentLecture={currentLecture}
-                refresh={refresh}
                 object={object}
                 defaultValuesForLecture={defaultValuesForLecture}
                 shouldModalOpen={shouldModalOpen}

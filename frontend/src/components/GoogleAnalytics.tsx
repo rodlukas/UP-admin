@@ -12,34 +12,26 @@ type Props = RouteComponentProps & { options: ReactGA.FieldsObject }
  * Vychází z: https://vanja.gavric.org/blog/integrate-google-analytics-with-react-router-v4/ a
  * https://github.com/react-ga/react-ga/wiki/React-Router-v4-withTracker
  */
-class GoogleAnalytics extends React.Component<Props> {
-    componentDidMount(): void {
-        const page = this.props.location.pathname + this.props.location.search
-        this.logPageChange(page)
-    }
+const GoogleAnalytics: React.FC<Props> = (props) => {
+    const trackPage = React.useCallback(
+        (page: string): void => {
+            const { location } = window
+            ReactGA.set({
+                page,
+                location: `${location.origin}${page}`,
+                ...props.options,
+            })
+            ReactGA.pageview(page)
+        },
+        [props.options],
+    )
 
-    componentDidUpdate(prevProps: Props): void {
-        const currentPage = prevProps.location.pathname + prevProps.location.search
-        const nextPage = this.props.location.pathname + this.props.location.search
+    React.useEffect(() => {
+        const page = props.location.pathname + props.location.search
+        trackPage(page)
+    }, [props.location.pathname, props.location.search, trackPage])
 
-        if (currentPage !== nextPage) {
-            this.logPageChange(nextPage)
-        }
-    }
-
-    logPageChange(page: string): void {
-        const { location } = window
-        ReactGA.set({
-            page,
-            location: `${location.origin}${page}`,
-            ...this.props.options,
-        })
-        ReactGA.pageview(page)
-    }
-
-    render(): React.ReactNode {
-        return null
-    }
+    return null
 }
 
 const RouteTracker = (): React.ReactElement => <Route component={GoogleAnalytics} />

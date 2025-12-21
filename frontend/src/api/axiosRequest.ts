@@ -26,4 +26,10 @@ const axiosRequest = <T>(options: AxiosRequestConfig): AxiosPromise<T> => {
     return axiosInstance(options)
 }
 
+/** Wrapper pro axios, který automaticky extrahuje data z response. */
+export const axiosRequestData = async <T>(options: AxiosRequestConfig): Promise<T> => {
+    const response = await axiosRequest<T>(options)
+    return response.data
+}
+
 export default axiosRequest

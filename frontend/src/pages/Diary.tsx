@@ -12,7 +12,6 @@ import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
-import { DASHBOARDDAY_UPDATE_TYPE } from "../global/constants"
 import {
     addDays,
     DAYS_IN_WEEK,
@@ -53,169 +52,155 @@ type ParamsProps = {
 
 type Props = CustomRouteComponentProps<ParamsProps>
 
-type State = {
-    /** Typ aktualizace komponenty se dnem - pro propagaci aktualizací dalších dní. */
-    updateType: number
-    /** Pole se dny v zobrazeném týdnu. */
-    week: string[]
+const parseDateFromParams = (params: ParamsProps): Date => {
+    if (params.month != null && params.year != null && params.day != null) {
+        return new Date(Number(params.year), Number(params.month) - 1, Number(params.day))
+    } else {
+        return new Date()
+    }
+}
+
+const serializeDateUrl = (date: Date): string => {
+    return `${APP_URLS.diar.url}/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
 }
 
 /** Stránka s diářem. */
-export default class Diary extends React.Component<Props, State> {
-    getRequiredMonday = (): Date => getMonday(Diary.parseDateFromParams(this.props.match.params))
-    getWeek = (): string[] => getSerializedWeek(Diary.parseDateFromParams(this.props.match.params))
+const Diary: React.FC<Props> = (props) => {
+    const getRequiredMonday = React.useCallback(
+        (): Date => getMonday(parseDateFromParams(props.match.params)),
+        [props.match.params],
+    )
 
-    state: State = {
-        updateType: DASHBOARDDAY_UPDATE_TYPE.NONE,
-        week: this.getWeek(),
-    }
+    const getWeek = React.useCallback(
+        (): string[] => getSerializedWeek(parseDateFromParams(props.match.params)),
+        [props.match.params],
+    )
 
-    getFridayDate = (): Date => new Date(this.state.week[4])
+    /** Pole se dny v zobrazeném týdnu. */
+    const [week, setWeek] = React.useState<string[]>(getWeek())
 
-    getNextMondaySerialized = (): string =>
-        Diary.serializeDateUrl(addDays(this.getRequiredMonday(), DAYS_IN_WEEK))
+    const getFridayDate = React.useCallback((): Date => new Date(week[4]), [week])
 
-    getPrevMondaySerialized = (): string =>
-        Diary.serializeDateUrl(addDays(this.getRequiredMonday(), -DAYS_IN_WEEK))
+    const getNextMondaySerialized = React.useCallback(
+        (): string => serializeDateUrl(addDays(getRequiredMonday(), DAYS_IN_WEEK)),
+        [getRequiredMonday],
+    )
 
-    getCurrentMonday = (): Date => getMonday(new Date())
+    const getPrevMondaySerialized = React.useCallback(
+        (): string => serializeDateUrl(addDays(getRequiredMonday(), -DAYS_IN_WEEK)),
+        [getRequiredMonday],
+    )
 
-    componentDidMount(): void {
-        document.addEventListener("keydown", this.onKeyDown)
-        this.refreshTitle()
-    }
+    const getCurrentMonday = (): Date => getMonday(new Date())
 
-    componentWillUnmount(): void {
-        document.removeEventListener("keydown", this.onKeyDown)
-    }
-
-    refreshTitle(): void {
+    const refreshTitle = React.useCallback((): void => {
         document.title = pageTitle(
             `${APP_URLS.diar.title} (${prettyDateWithYearIfDiff(
-                this.getRequiredMonday(),
-            )} – ${prettyDateWithYearIfDiff(this.getFridayDate())})`,
+                getRequiredMonday(),
+            )} – ${prettyDateWithYearIfDiff(getFridayDate())})`,
         )
-    }
+    }, [getRequiredMonday, getFridayDate])
 
-    componentDidUpdate(prevProps: Props, prevState: State): void {
-        // pokud se datum ktery pozadujeme shoduje s tim ve stavu, nic neupdatuj
-        if (isEqualDate(new Date(prevState.week[0]), this.getRequiredMonday())) {
-            return
-        }
-        // pozadujeme jiny datum, nez jsme meli ve stavu
-        if (
-            this.props.match.params.year !== prevProps.match.params.year ||
-            this.props.match.params.month !== prevProps.match.params.month ||
-            this.props.match.params.day !== prevProps.match.params.day
-        ) {
-            this.setState({ week: this.getWeek() }, () => {
-                this.refreshTitle()
-                this.setUpdateType(DASHBOARDDAY_UPDATE_TYPE.DAY_CHANGED)
-            })
-        }
-    }
-
-    onKeyDown = (e: KeyboardEvent): void => {
-        // akce provadej jen kdyz neni otevrene modalni okno
-        if (!isModalShown()) {
-            const key = e.key
-            if (key === "ArrowLeft") {
-                this.props.history.push(this.getPrevMondaySerialized())
-            } else if (key === "ArrowRight") {
-                this.props.history.push(this.getNextMondaySerialized())
+    const onKeyDown = React.useCallback(
+        (e: KeyboardEvent): void => {
+            // akce provadej jen kdyz neni otevrene modalni okno
+            if (!isModalShown()) {
+                const key = e.key
+                if (key === "ArrowLeft") {
+                    props.history.push(getPrevMondaySerialized())
+                } else if (key === "ArrowRight") {
+                    props.history.push(getNextMondaySerialized())
+                }
             }
-        }
-    }
-
-    static parseDateFromParams(params: ParamsProps): Date {
-        if (params.month != null && params.year != null && params.day != null) {
-            return new Date(Number(params.year), Number(params.month) - 1, Number(params.day))
-        } else {
-            return new Date()
-        }
-    }
-
-    static serializeDateUrl(date: Date): string {
-        return `${APP_URLS.diar.url}/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
-    }
+        },
+        [props.history, getPrevMondaySerialized, getNextMondaySerialized],
+    )
 
     // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)
-    removeFocusAfterClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    const removeFocusAfterClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.currentTarget.blur()
     }
 
-    setUpdateType = (newUpdateType = DASHBOARDDAY_UPDATE_TYPE.DAY_UNCHANGED): void =>
-        this.setState({ updateType: newUpdateType }, () =>
-            this.setState({ updateType: DASHBOARDDAY_UPDATE_TYPE.NONE }),
-        )
+    React.useEffect(() => {
+        document.addEventListener("keydown", onKeyDown)
+        refreshTitle()
+        return () => {
+            document.removeEventListener("keydown", onKeyDown)
+        }
+    }, [onKeyDown, refreshTitle])
 
-    render(): React.ReactNode {
-        // je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md
-        return (
-            <>
-                <Container>
-                    <Heading
-                        fluid
-                        title={
-                            <>
-                                Týden <TitleDate date={this.getRequiredMonday()} /> –{" "}
-                                <TitleDate date={this.getFridayDate()} />
-                            </>
-                        }
-                        buttons={
-                            <>
-                                <Link to={this.getPrevMondaySerialized()} id="Diary_PrevWeek">
-                                    <FontAwesomeIcon
-                                        icon={faChevronCircleLeft}
-                                        className="Diary_arrowBtn text-muted"
-                                    />
-                                </Link>
-                                <UncontrolledTooltipWrapper target="Diary_PrevWeek">
-                                    Předchozí týden
-                                </UncontrolledTooltipWrapper>{" "}
-                                <Link to={this.getNextMondaySerialized()} id="Diary_NextWeek">
-                                    <FontAwesomeIcon
-                                        icon={faChevronCircleRight}
-                                        className="Diary_arrowBtn text-muted"
-                                    />
-                                </Link>
-                                <UncontrolledTooltipWrapper target="Diary_NextWeek">
-                                    Další týden
-                                </UncontrolledTooltipWrapper>{" "}
-                                <Link to={APP_URLS.diar.url} id="Diary_Today">
-                                    <Button
-                                        color="secondary"
-                                        disabled={isEqualDate(
-                                            this.getCurrentMonday(),
-                                            this.getRequiredMonday(),
-                                        )}
-                                        onClick={this.removeFocusAfterClick}
-                                        className="align-top">
-                                        Dnes
-                                    </Button>
-                                </Link>
-                                <UncontrolledTooltipWrapper target="Diary_Today">
-                                    {prettyDateWithLongDayYear(new Date())}
-                                </UncontrolledTooltipWrapper>{" "}
-                                <ModalLecturesWizard refresh={this.setUpdateType} />
-                            </>
-                        }
-                    />
-                </Container>
-                <Container fluid>
-                    <Row>
-                        {this.state.week.map((day, index) => (
-                            <Col key={index} md="6" lg="" className="Diary_day">
-                                <DashboardDay
-                                    date={day}
-                                    setUpdateType={this.setUpdateType}
-                                    updateType={this.state.updateType}
+    const prevRequiredMondayRef = React.useRef<Date>(getRequiredMonday())
+    React.useEffect(() => {
+        const requiredMonday = getRequiredMonday()
+
+        // aktualizujeme pouze pokud se skutecne zmenil pozadovany pocatek tydne
+        if (!isEqualDate(prevRequiredMondayRef.current, requiredMonday)) {
+            setWeek(getWeek())
+            refreshTitle()
+            prevRequiredMondayRef.current = requiredMonday
+        }
+    }, [props.match.params, getRequiredMonday, getWeek, refreshTitle])
+
+    return (
+        <>
+            <Container>
+                <Heading
+                    fluid
+                    title={
+                        <>
+                            Týden <TitleDate date={getRequiredMonday()} /> –{" "}
+                            <TitleDate date={getFridayDate()} />
+                        </>
+                    }
+                    buttons={
+                        <>
+                            <Link to={getPrevMondaySerialized()} id="Diary_PrevWeek">
+                                <FontAwesomeIcon
+                                    icon={faChevronCircleLeft}
+                                    className="Diary_arrowBtn text-muted"
                                 />
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-            </>
-        )
-    }
+                            </Link>
+                            <UncontrolledTooltipWrapper target="Diary_PrevWeek">
+                                Předchozí týden
+                            </UncontrolledTooltipWrapper>{" "}
+                            <Link to={getNextMondaySerialized()} id="Diary_NextWeek">
+                                <FontAwesomeIcon
+                                    icon={faChevronCircleRight}
+                                    className="Diary_arrowBtn text-muted"
+                                />
+                            </Link>
+                            <UncontrolledTooltipWrapper target="Diary_NextWeek">
+                                Další týden
+                            </UncontrolledTooltipWrapper>{" "}
+                            <Link to={APP_URLS.diar.url} id="Diary_Today">
+                                <Button
+                                    color="secondary"
+                                    disabled={isEqualDate(getCurrentMonday(), getRequiredMonday())}
+                                    onClick={removeFocusAfterClick}
+                                    className="align-top">
+                                    Dnes
+                                </Button>
+                            </Link>
+                            <UncontrolledTooltipWrapper target="Diary_Today">
+                                {prettyDateWithLongDayYear(new Date())}
+                            </UncontrolledTooltipWrapper>{" "}
+                            <ModalLecturesWizard />
+                        </>
+                    }
+                />
+            </Container>
+            <Container fluid>
+                <Row>
+                    {/* je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md */}
+                    {week.map((day) => (
+                        <Col key={day} md="6" lg="" className="Diary_day">
+                            <DashboardDay date={day} />
+                        </Col>
+                    ))}
+                </Row>
+            </Container>
+        </>
+    )
 }
+
+export default Diary

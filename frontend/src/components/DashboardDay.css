@@ -19,3 +19,7 @@
 .lecture_dashboardday .lecture_heading {
     color: white;
 }
+
+.DashboardDay_wrapper {
+    position: relative;
+}

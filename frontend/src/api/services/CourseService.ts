@@ -1,5 +1,5 @@
 import { CoursePostApi, CoursePutApi, CourseType } from "../../types/models"
-import { requestData } from "../request"
+import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 
 const baseUrl = API_URLS.courses.url
@@ -9,7 +9,7 @@ type List = Item[]
 
 /** Získá všechny kurzy. */
 function getAll(): Promise<List> {
-    return requestData<List>({
+    return axiosRequestData<List>({
         url: baseUrl,
         method: API_METHODS.get,
     })
@@ -17,7 +17,7 @@ function getAll(): Promise<List> {
 
 /** Získá viditelné kurzy. */
 function getVisible(): Promise<List> {
-    return requestData<List>({
+    return axiosRequestData<List>({
         url: `${baseUrl}?${API_URLS.courses.filters.visible}=true`,
         method: API_METHODS.get,
     })
@@ -25,7 +25,7 @@ function getVisible(): Promise<List> {
 
 /** Aktualizuje (PUT) kurz. */
 function update(context: CoursePutApi): Promise<Item> {
-    return requestData<Item>({
+    return axiosRequestData<Item>({
         url: `${baseUrl}${context.id}${API_DELIM}`,
         method: API_METHODS.put,
         data: context,
@@ -34,7 +34,7 @@ function update(context: CoursePutApi): Promise<Item> {
 
 /** Smaže kurz. */
 function remove(id: Item["id"]): Promise<CourseType> {
-    return requestData<CourseType>({
+    return axiosRequestData<CourseType>({
         url: `${baseUrl}${id}${API_DELIM}`,
         method: API_METHODS.remove,
     })
@@ -42,7 +42,7 @@ function remove(id: Item["id"]): Promise<CourseType> {
 
 /** Přidá kurz. */
 function create(context: CoursePostApi): Promise<Item> {
-    return requestData<Item>({
+    return axiosRequestData<Item>({
         url: baseUrl,
         method: API_METHODS.post,
         data: context,

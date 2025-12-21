@@ -32,22 +32,22 @@ def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
     # priprav pole z formulare
-    name_field = context.browser.find_element_by_css_selector("[data-qa=group_field_name]")
-    course_field = context.browser.find_element_by_id("course")
-    members_field = context.browser.find_element_by_id("members")
-    active_checkbox = context.browser.find_element_by_css_selector(
-        "[data-qa=group_checkbox_active]"
+    name_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=group_field_name]")
+    course_field = context.browser.find_element(By.ID, "course")
+    members_field = context.browser.find_element(By.ID, "members")
+    active_checkbox = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=group_checkbox_active]"
     )
-    active_label = context.browser.find_element_by_css_selector("[data-qa=group_label_active]")
+    active_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=group_label_active]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
         # ziskej aktualni hodnoty z react-selectu
         members_field_values = [
             element.text
-            for element in context.browser.find_elements_by_css_selector(".members__multi-value")
+            for element in context.browser.find_elements(By.CSS_SELECTOR, ".members__multi-value")
         ]
-        course_field_value = context.browser.find_element_by_css_selector(
-            ".course__single-value"
+        course_field_value = context.browser.find_element(
+            By.CSS_SELECTOR, ".course__single-value"
         ).text
         assert (
             context.old_group_name == name_field.get_attribute("value")
@@ -97,43 +97,38 @@ def save_old_groups_cnt_to_context(context):
 
 @then("the group is added")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
-    wait_switching_available(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
     # pockej na pridani skupiny
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: groups_cnt(driver) > context.old_groups_cnt
+        lambda driver: find_group_with_context(context)
     )
-    # je skupina opravdu pridana?
-    assert find_group_with_context(context)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
+    # over, ze sedi pocet skupin
+    assert groups_cnt(context.browser) > context.old_groups_cnt
 
 
 @then("the group is updated")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
-    wait_switching_available(context.browser)
-    # pockej na update skupin
-    helpers.wait_loading_cycle(context.browser)
-    # ma skupina opravdu nove udaje?
-    assert find_group_with_context(context)
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
+    # pockej na update skupiny
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_group_with_context(context)
+    )
+    # over, ze sedi pocet skupin
     assert groups_cnt(context.browser) == context.old_groups_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the group is deleted")
 def step_impl(context):
-    # pockej az bude mozne prepinat mezi ne/aktivnimi skupinami
-    wait_switching_available(context.browser)
-    # pockej na smazani skupiny
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
+    # pockej na smazani skupiny (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) < context.old_groups_cnt
     )
-    # je skupina opravdu smazana?
+    # over, ze skupina opravdu neni nalezena
     assert not helpers.find_group(context, context.name)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the group "{name}"')
@@ -149,13 +144,13 @@ def step_impl(context, name):
     # najdi skupinu a klikni u ni na Upravit
     group_to_update = helpers.find_group(context, context.name)
     assert group_to_update
-    button_edit_group = group_to_update.find_element_by_css_selector("[data-qa=button_edit_group]")
+    button_edit_group = group_to_update.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_group]")
     button_edit_group.click()
     # pockej az bude viditelny formular
     wait_form_visible(context.browser)
     # klikni na smazat
-    button_delete_group = context.browser.find_element_by_css_selector(
-        "[data-qa=button_delete_group]"
+    button_delete_group = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_delete_group]"
     )
     button_delete_group.click()
     # a potvrd smazani
@@ -227,7 +222,7 @@ def step_impl(
     # najdi skupinu a klikni u ni na Upravit
     group_to_update = helpers.find_group(context, cur_name)
     assert group_to_update
-    button_edit_group = group_to_update.find_element_by_css_selector("[data-qa=button_edit_group]")
+    button_edit_group = group_to_update.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_group]")
     button_edit_group.click()
     # over spravne zobrazene udaje ve formulari a vloz do nej vsechny udaje
     insert_to_form(context, True)
@@ -251,7 +246,7 @@ def step_impl(context, name, course, active, member_full_name1, member_full_name
     # uloz puvodni pocet skupin
     save_old_groups_cnt_to_context(context)
     # klikni na Pridat skupinu
-    button_add_group = context.browser.find_element_by_css_selector("[data-qa=button_add_group]")
+    button_add_group = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_add_group]")
     button_add_group.click()
     # vloz vsechny udaje do formulare
     insert_to_form(context)

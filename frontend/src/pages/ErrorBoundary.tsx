@@ -12,7 +12,9 @@ import { noop } from "../global/utils"
 import { TokenDecodedType } from "../types/models"
 import { CustomRouteComponentProps, fEmptyVoid } from "../types/types"
 
-type Props = CustomRouteComponentProps
+type Props = CustomRouteComponentProps & {
+    children: React.ReactNode
+}
 
 type State = {
     /** Vyskytla se chyba (true). */

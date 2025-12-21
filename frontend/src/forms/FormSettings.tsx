@@ -16,8 +16,14 @@ import {
     ModalHeader,
 } from "reactstrap"
 
-import AttendanceStateService from "../api/services/AttendanceStateService"
-import CourseService from "../api/services/CourseService"
+import {
+    useCreateAttendanceState,
+    useCreateCourse,
+    useDeleteAttendanceState,
+    useDeleteCourse,
+    useUpdateAttendanceState,
+    useUpdateCourse,
+} from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
@@ -42,214 +48,260 @@ type Props = {
     /** Funkce, která zavře modální okno s formulářem (když uživatel chce explicitně formulář zavřít). */
     funcClose: () => boolean
     /** Funkce, která zavře modální okno s formulářem (po úspěšně provedeném požadavku v rámci formuláře). */
-    funcForceClose: (modalSubmitted?: boolean, data?: never) => boolean
+    funcForceClose: () => boolean
     /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
 }
 
-type State = {
-    /** Název kurzu/stavu účasti. */
-    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-    name: CoursePostApiDummy["name"] | AttendanceStatePostApiDummy["name"]
-    /** Kurz/stav účasti je viditelný (true). */
-    // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-    visible: CoursePostApiDummy["visible"] | AttendanceStatePostApiDummy["visible"]
-    /** Trvání kurzu. */
-    duration?: CoursePostApiDummy["duration"]
-    /** Barva kurzu. */
-    color?: CoursePostApiDummy["color"]
-    /** Formulář byl odeslán (true). */
-    isSubmit: boolean
-}
-
-export default class FormSettings extends React.Component<Props, State> {
-    isObject = (object: Props["object"]): object is CourseType | AttendanceStateType =>
+const FormSettings: React.FC<Props> = (props) => {
+    const isObject = (object: Props["object"]): object is CourseType | AttendanceStateType =>
         "id" in object
 
-    isCourse = (object: Props["object"]): object is CourseType | CoursePostApiDummy =>
+    const isCourse = (object: Props["object"]): object is CourseType | CoursePostApiDummy =>
         "duration" in object
 
-    state: State = {
-        name: this.props.object.name,
-        visible: this.props.object.visible,
-        duration: this.isCourse(this.props.object) ? this.props.object.duration : undefined,
-        color: this.isCourse(this.props.object) ? this.props.object.color : undefined,
-        isSubmit: false,
-    }
+    const createCourse = useCreateCourse()
+    const updateCourse = useUpdateCourse()
+    const deleteCourse = useDeleteCourse()
+    const createAttendanceState = useCreateAttendanceState()
+    const updateAttendanceState = useUpdateAttendanceState()
+    const deleteAttendanceState = useDeleteAttendanceState()
 
-    onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.props.setFormDirty()
+    /** Název kurzu/stavu účasti. */
+    const [name, setName] = React.useState(props.object.name)
+    /** Kurz/stav účasti je viditelný (true). */
+    const [visible, setVisible] = React.useState(props.object.visible)
+    /** Trvání kurzu. */
+    const [duration, setDuration] = React.useState<number | undefined>(
+        isCourse(props.object) ? props.object.duration : undefined,
+    )
+    /** Barva kurzu. */
+    const [color, setColor] = React.useState<string | undefined>(
+        isCourse(props.object) ? props.object.color : undefined,
+    )
+
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        props.setFormDirty()
         const target = e.currentTarget
         const value = target.type === "checkbox" ? target.checked : target.value
-        // prevState kvuli https://github.com/Microsoft/TypeScript/issues/13948
-        this.setState((prevState) => ({
-            ...prevState,
-            [target.id]: value,
-        }))
-    }
-
-    onChangeColor = (newColor: string): void => this.setState({ color: newColor })
-
-    onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault()
-        const { name, visible, duration, color } = this.state
-        let request: Promise<CourseType | AttendanceStateType>
-        if (this.isCourse(this.props.object)) {
-            const durationCourse = duration!
-            const colorCourse = color!
-            const dataPost: CoursePostApi = {
-                name,
-                visible,
-                duration: durationCourse,
-                color: colorCourse,
-            }
-            if (this.isObject(this.props.object)) {
-                const dataPut: CoursePutApi = { ...dataPost, id: this.props.object.id }
-                request = CourseService.update(dataPut)
-            } else {
-                request = CourseService.create(dataPost)
-            }
-        } else {
-            const dataPost: AttendanceStatePostApi = { name, visible }
-            if (this.isObject(this.props.object)) {
-                const dataPut: AttendanceStatePutApi = { ...dataPost, id: this.props.object.id }
-                request = AttendanceStateService.update(dataPut)
-            } else {
-                request = AttendanceStateService.create(dataPost)
-            }
+        if (target.id === "name") {
+            setName(value as string)
+        } else if (target.id === "visible") {
+            setVisible(value as boolean)
+        } else if (target.id === "duration") {
+            setDuration(value === "" ? undefined : Number(value))
         }
-        this.setState({ isSubmit: true }, (): void => {
-            request
-                .then(() => this.props.funcForceClose())
-                .catch(() => this.setState({ isSubmit: false }))
-        })
     }
 
-    close = (): void => {
-        this.props.funcClose()
+    const onChangeColor = (newColor: string): void => {
+        setColor(newColor)
     }
 
-    delete = (id: Model["id"]): void => {
-        const service = this.isCourse(this.props.object) ? CourseService : AttendanceStateService
-        const request: Promise<CourseType | AttendanceStateType> = service.remove(id)
-        request.then(() => this.props.funcForceClose())
+    const onSubmit = React.useCallback(
+        (e: React.FormEvent<HTMLFormElement>): void => {
+            e.preventDefault()
+
+            if (isCourse(props.object)) {
+                const durationCourse = duration!
+                const colorCourse = color!
+                const dataPost: CoursePostApi = {
+                    name,
+                    visible,
+                    duration: durationCourse,
+                    color: colorCourse,
+                }
+                if (isObject(props.object)) {
+                    const dataPut: CoursePutApi = {
+                        ...dataPost,
+                        id: props.object.id,
+                    }
+                    updateCourse.mutate(dataPut, {
+                        onSuccess: () => {
+                            props.funcForceClose()
+                        },
+                    })
+                } else {
+                    createCourse.mutate(dataPost, {
+                        onSuccess: () => {
+                            props.funcForceClose()
+                        },
+                    })
+                }
+            } else {
+                const dataPost: AttendanceStatePostApi = { name, visible }
+                if (isObject(props.object)) {
+                    const dataPut: AttendanceStatePutApi = {
+                        ...dataPost,
+                        id: props.object.id,
+                    }
+                    updateAttendanceState.mutate(dataPut, {
+                        onSuccess: () => {
+                            props.funcForceClose()
+                        },
+                    })
+                } else {
+                    createAttendanceState.mutate(dataPost, {
+                        onSuccess: () => {
+                            props.funcForceClose()
+                        },
+                    })
+                }
+            }
+        },
+        [
+            name,
+            visible,
+            duration,
+            color,
+            props,
+            createCourse,
+            updateCourse,
+            createAttendanceState,
+            updateAttendanceState,
+        ],
+    )
+
+    const close = (): void => {
+        props.funcClose()
     }
 
-    render(): React.ReactNode {
-        const { name, visible, duration, color } = this.state
-        const type = this.isCourse(this.props.object) ? "kurz" : "stav"
-        return (
-            <Form onSubmit={this.onSubmit} data-qa="form_settings">
-                <ModalHeader toggle={this.close}>
-                    {this.isObject(this.props.object) ? "Úprava" : "Přidání"} {type}u: {name}
-                </ModalHeader>
-                <ModalBody>
-                    <FormGroup row className="required">
-                        <Label for="name" sm={3}>
-                            Název
-                        </Label>
-                        <Col sm={9}>
-                            <Input
-                                type="text"
-                                id="name"
-                                value={name}
-                                onChange={this.onChange}
-                                required
-                                autoFocus
-                                data-qa="settings_field_name"
-                                spellCheck
-                            />
-                        </Col>
-                    </FormGroup>
-                    <FormGroup row className="align-items-center">
-                        <Label for="visible" sm={3} data-qa="settings_label_visible">
-                            Viditelnost
-                        </Label>
-                        <Col sm={9}>
-                            <CustomInput
-                                type="checkbox"
-                                id="visible"
-                                label="Bude zobrazováno"
-                                checked={visible}
-                                onChange={this.onChange}
-                                data-qa="settings_checkbox_visible"
-                            />
-                        </Col>
-                    </FormGroup>
-                    {this.isCourse(this.props.object) && (
-                        <>
-                            <FormGroup row className="align-items-center required">
-                                <Label for="duration" sm={3} className="FormSettings_labelDuration">
-                                    Trvání (min.){" "}
-                                    <small className="text-secondary text-nowrap">
-                                        (pro jednotlivce)
-                                    </small>
-                                </Label>
-                                <Col sm={9}>
-                                    <InputGroup>
-                                        <InputGroupAddon addonType="prepend">
-                                            <Label className="input-group-text" for="duration">
-                                                <FontAwesomeIcon icon={faHourglass} fixedWidth />
-                                            </Label>
-                                        </InputGroupAddon>
-                                        <Input
-                                            type="number"
-                                            id="duration"
-                                            value={duration}
-                                            onChange={this.onChange}
-                                            required
-                                            min="1"
-                                            data-qa="settings_field_duration"
-                                        />
-                                    </InputGroup>
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row className="align-items-center required">
-                                <ColorPicker color={color!} onChange={this.onChangeColor} />
-                            </FormGroup>
-                        </>
-                    )}
-                    {this.isObject(this.props.object) && (
-                        <FormGroup row className="border-top pt-3">
-                            <Label sm={3} className="text-muted">
-                                Smazání
+    const handleDelete = React.useCallback(
+        (id: Model["id"]): void => {
+            if (isCourse(props.object)) {
+                deleteCourse.mutate(id, {
+                    onSuccess: () => {
+                        props.funcForceClose()
+                    },
+                })
+            } else {
+                deleteAttendanceState.mutate(id, {
+                    onSuccess: () => {
+                        props.funcForceClose()
+                    },
+                })
+            }
+        },
+        [props, deleteCourse, deleteAttendanceState],
+    )
+
+    const type = isCourse(props.object) ? "kurz" : "stav"
+    const isSubmit =
+        createCourse.isPending ||
+        updateCourse.isPending ||
+        createAttendanceState.isPending ||
+        updateAttendanceState.isPending
+
+    return (
+        <Form onSubmit={onSubmit} data-qa="form_settings">
+            <ModalHeader toggle={close}>
+                {isObject(props.object) ? "Úprava" : "Přidání"} {type}u: {name}
+            </ModalHeader>
+            <ModalBody>
+                <FormGroup row className="required">
+                    <Label for="name" sm={3}>
+                        Název
+                    </Label>
+                    <Col sm={9}>
+                        <Input
+                            type="text"
+                            id="name"
+                            value={name}
+                            onChange={onChange}
+                            required
+                            autoFocus
+                            data-qa="settings_field_name"
+                            spellCheck
+                        />
+                    </Col>
+                </FormGroup>
+                <FormGroup row className="align-items-center">
+                    <Label for="visible" sm={3} data-qa="settings_label_visible">
+                        Viditelnost
+                    </Label>
+                    <Col sm={9}>
+                        <CustomInput
+                            type="checkbox"
+                            id="visible"
+                            label="Bude zobrazováno"
+                            checked={visible}
+                            onChange={onChange}
+                            data-qa="settings_checkbox_visible"
+                        />
+                    </Col>
+                </FormGroup>
+                {isCourse(props.object) && (
+                    <>
+                        <FormGroup row className="align-items-center required">
+                            <Label for="duration" sm={3} className="FormSettings_labelDuration">
+                                Trvání (min.){" "}
+                                <small className="text-secondary text-nowrap">
+                                    (pro jednotlivce)
+                                </small>
                             </Label>
                             <Col sm={9}>
-                                <Alert color="warning">
-                                    <p>
-                                        Lze smazat pouze pokud není příslušný {type} použit u žádné
-                                        lekce
-                                        {this.isCourse(this.props.object) &&
-                                            ", smažou se také všichni zájemci o tento kurz"}
-                                    </p>
-                                    <DeleteButton
-                                        content={type}
-                                        onClick={(): void => {
-                                            if (
-                                                this.isObject(this.props.object) &&
-                                                window.confirm(
-                                                    `Opravdu chcete smazat ${type} ${name}?`,
-                                                )
-                                            ) {
-                                                this.delete(this.props.object.id)
-                                            }
-                                        }}
-                                        data-qa="settings_button_delete"
+                                <InputGroup>
+                                    <InputGroupAddon addonType="prepend">
+                                        <Label className="input-group-text" for="duration">
+                                            <FontAwesomeIcon icon={faHourglass} fixedWidth />
+                                        </Label>
+                                    </InputGroupAddon>
+                                    <Input
+                                        type="number"
+                                        id="duration"
+                                        value={duration ?? ""}
+                                        onChange={onChange}
+                                        required
+                                        min="1"
+                                        data-qa="settings_field_duration"
                                     />
-                                </Alert>
+                                </InputGroup>
                             </Col>
                         </FormGroup>
-                    )}
-                </ModalBody>
-                <ModalFooter>
-                    <CancelButton onClick={this.close} />{" "}
-                    <SubmitButton
-                        loading={this.state.isSubmit}
-                        data-qa="button_submit_settings"
-                        content={this.isObject(this.props.object) ? "Uložit" : "Přidat"}
-                    />
-                </ModalFooter>
-            </Form>
-        )
-    }
+                        <FormGroup row className="align-items-center required">
+                            <ColorPicker color={color!} onChange={onChangeColor} />
+                        </FormGroup>
+                    </>
+                )}
+                {isObject(props.object) && (
+                    <FormGroup row className="border-top pt-3">
+                        <Label sm={3} className="text-muted">
+                            Smazání
+                        </Label>
+                        <Col sm={9}>
+                            <Alert color="warning">
+                                <p>
+                                    Lze smazat pouze pokud není příslušný {type} použit u žádné
+                                    lekce
+                                    {isCourse(props.object) &&
+                                        ", smažou se také všichni zájemci o tento kurz"}
+                                </p>
+                                <DeleteButton
+                                    content={type}
+                                    onClick={(): void => {
+                                        if (
+                                            isObject(props.object) &&
+                                            window.confirm(`Opravdu chcete smazat ${type} ${name}?`)
+                                        ) {
+                                            handleDelete(props.object.id)
+                                        }
+                                    }}
+                                    data-qa="settings_button_delete"
+                                />
+                            </Alert>
+                        </Col>
+                    </FormGroup>
+                )}
+            </ModalBody>
+            <ModalFooter>
+                <CancelButton onClick={close} />{" "}
+                <SubmitButton
+                    loading={isSubmit}
+                    data-qa="button_submit_settings"
+                    content={isObject(props.object) ? "Uložit" : "Přidat"}
+                />
+            </ModalFooter>
+        </Form>
+    )
 }
+
+export default FormSettings

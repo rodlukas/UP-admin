@@ -14,7 +14,7 @@ from tests.ui_steps import helpers, login_logout
 
 
 def get_attendancestates(driver):
-    return driver.find_elements_by_css_selector("[data-qa=attendancestate]")
+    return driver.find_elements(By.CSS_SELECTOR, "[data-qa=attendancestate]")
 
 
 def attendancestates_cnt(driver):
@@ -25,13 +25,13 @@ def find_attendancestate(context, name, **data):
     all_attendancestates = get_attendancestates(context.browser)
     # najdi stav ucasti s udaji v parametrech
     for attendancestate in all_attendancestates:
-        found_name = attendancestate.find_element_by_css_selector(
-            "[data-qa=attendancestate_name]"
+        found_name = attendancestate.find_element(
+            By.CSS_SELECTOR, "[data-qa=attendancestate_name]"
         ).text
         # srovnej identifikatory
         if found_name == name:
-            found_visible_classes = attendancestate.find_element_by_css_selector(
-                "[data-qa=attendancestate_visible]"
+            found_visible_classes = attendancestate.find_element(
+                By.CSS_SELECTOR, "[data-qa=attendancestate_visible]"
             ).get_attribute("class")
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             if not data or (data and helpers.check_fa_bool(data["visible"], found_visible_classes)):
@@ -50,11 +50,13 @@ def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     helpers.wait_form_settings_visible(context.browser)
     # priprav pole z formulare
-    name_field = context.browser.find_element_by_css_selector("[data-qa=settings_field_name]")
-    visible_checkbox = context.browser.find_element_by_css_selector(
-        "[data-qa=settings_checkbox_visible]"
+    name_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=settings_field_name]")
+    visible_checkbox = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_checkbox_visible]"
     )
-    visible_label = context.browser.find_element_by_css_selector("[data-qa=settings_label_visible]")
+    visible_label = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_label_visible]"
+    )
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
         assert (
@@ -86,37 +88,38 @@ def save_old_attendancestates_cnt_to_context(context):
 
 @then("the attendance state is added")
 def step_impl(context):
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
     # pockej na pridani stavu ucasti
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: attendancestates_cnt(driver) > context.old_attendancestates_cnt
+        lambda driver: find_attendancestate_with_context(context)
     )
-    # je stav ucasti opravdu pridany?
-    assert find_attendancestate_with_context(context)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
+    # over, ze sedi pocet stavu ucasti
+    assert attendancestates_cnt(context.browser) > context.old_attendancestates_cnt
 
 
 @then("the attendance state is updated")
 def step_impl(context):
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
     # pockej na update stavu ucasti
-    helpers.wait_loading_cycle(context.browser)
-    # ma stav ucasti opravdu nove udaje?
-    assert find_attendancestate_with_context(context)
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: find_attendancestate_with_context(context)
+    )
+    # over, ze sedi pocet stavu ucasti
     assert attendancestates_cnt(context.browser) == context.old_attendancestates_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @then("the attendance state is deleted")
 def step_impl(context):
-    # pockej na smazani stavu ucasti
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
+    # pockej na smazani stavu ucasti (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: attendancestates_cnt(driver) < context.old_attendancestates_cnt
     )
-    # je stav ucasti opravdu smazany?
+    # over, ze stav ucasti opravdu neni nalezen
     assert not find_attendancestate(context, context.name)
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when('user deletes the attendance state "{name}"')
@@ -130,8 +133,8 @@ def step_impl(context, name):
     # najdi stav ucasti a klikni u nej na Upravit
     attendancestate_to_update = find_attendancestate(context, context.name)
     assert attendancestate_to_update
-    button_edit_attendancestate = attendancestate_to_update.find_element_by_css_selector(
-        "[data-qa=button_edit_attendancestate]"
+    button_edit_attendancestate = attendancestate_to_update.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_edit_attendancestate]"
     )
     button_edit_attendancestate.click()
     # uloz puvodni pocet stavu ucasti
@@ -139,8 +142,8 @@ def step_impl(context, name):
     # pockej az bude viditelny formular
     helpers.wait_form_settings_visible(context.browser)
     # klikni na smazat
-    button_delete_attendancestate = context.browser.find_element_by_css_selector(
-        "[data-qa=settings_button_delete]"
+    button_delete_attendancestate = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_button_delete]"
     )
     button_delete_attendancestate.click()
     # a potvrd smazani
@@ -173,8 +176,8 @@ def step_impl(context, cur_name, new_name, new_visible):
     # najdi stav ucasti a klikni u nej na Upravit
     attendancestate_to_update = find_attendancestate(context, cur_name)
     assert attendancestate_to_update
-    button_edit_attendancestate = attendancestate_to_update.find_element_by_css_selector(
-        "[data-qa=button_edit_attendancestate]"
+    button_edit_attendancestate = attendancestate_to_update.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_edit_attendancestate]"
     )
     button_edit_attendancestate.click()
     # uloz puvodni pocet stavu ucasti
@@ -196,8 +199,8 @@ def step_impl(context, name, visible):
     helpers.open_settings(context.browser)
     # pockej na nacteni a pak klikni na Pridat stav ucasti
     helpers.wait_loading_ends(context.browser)
-    button_add_attendancestate = context.browser.find_element_by_css_selector(
-        "[data-qa=button_add_attendancestate]"
+    button_add_attendancestate = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_add_attendancestate]"
     )
     button_add_attendancestate.click()
     # uloz puvodni pocet stavu ucasti

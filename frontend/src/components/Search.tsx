@@ -45,7 +45,7 @@ const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch 
                         buttons={<BackButton onClick={resetSearch} content="Zrušit vyhledávání" />}
                     />
                     <ListGroup>
-                        {!clientsActiveContext.isLoaded ? (
+                        {clientsActiveContext.isLoading ? (
                             <Loading />
                         ) : (
                             <>

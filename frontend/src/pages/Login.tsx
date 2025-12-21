@@ -38,15 +38,15 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
         // - v idealnim svete zde bude jen: authContextLogin(values)
         const valuesCurrent: AuthorizationType = {
             username: usernameField.current ? usernameField.current.value : values.username,
-            password: passwordField.current ? passwordField.current.value : values.username,
+            password: passwordField.current ? passwordField.current.value : values.password,
         }
-        authContextLogin(valuesCurrent)
+        void authContextLogin(valuesCurrent)
     }
 
     React.useEffect(() => {
         // pokud dojde k přesměrování po neúspěšném požadavku (401), je potřeba okamžitě zjistit, zda je potřeba
         // upravit stav AuthContext (jinak cyklení)
-        authContextIsAuthenticated(false)
+        void authContextIsAuthenticated(false)
     }, [authContextIsAuth, authContextIsAuthenticated])
 
     const redirectedFrom = props.location.state ? props.location.state.from : "/"
