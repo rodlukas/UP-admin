@@ -87,23 +87,13 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
             // casu, pak klienta/skupinu (a tato data) teprve uloz (diky tomu se az pak zobrazi formular) a nacitani skryj
             // pro priste
             setIsLoading(true)
-            const currentIsClient = isClient
-            const currentObjectId = obj.id
 
-            const request = getLecturesgroupedByCourses(currentObjectId, currentIsClient)
+            const request = getLecturesgroupedByCourses(obj.id, isClient)
             void request
                 .then((lecturesGroupedByCourses) => {
-                    // Zkontroluj, zda se isClient nezměnil během requestu (tj. nezačal nový požadavek)
-                    setIsClientState((latestIsClient) => {
-                        if (latestIsClient === currentIsClient) {
-                            setDefaultValuesForLecture(
-                                getDefaultValuesForLecture(lecturesGroupedByCourses),
-                            )
-                            setObject(obj)
-                            setModalSelectDone(true)
-                        }
-                        return latestIsClient
-                    })
+                    setDefaultValuesForLecture(getDefaultValuesForLecture(lecturesGroupedByCourses))
+                    setObject(obj)
+                    setModalSelectDone(true)
                 })
                 .finally(() => {
                     setIsLoading(false)
@@ -118,7 +108,6 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
 
     const processAdditionOfGroupOrClient = React.useCallback(
         (newObject: ClientType | GroupType): void => {
-            // Použij stejnou logiku jako při výběru ze selectu - načti výchozí hodnoty a otevři modal s formulářem
             onSelectChange("", newObject)
         },
         [onSelectChange],
