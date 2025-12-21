@@ -97,7 +97,7 @@ const Card: React.FC<Props> = (props) => {
         return getDefaultValuesForLecture(lectures)
     }, [lectures])
 
-    // Aktualizace title
+    // aktualizace title
     React.useEffect(() => {
         if (object) {
             const titleName = isClient(object) ? clientName(object) : object.name

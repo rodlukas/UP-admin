@@ -125,13 +125,13 @@ export function createQueryClient(): QueryClient {
         },
         mutationCache: new MutationCache({
             onSuccess: (_data, _variables, _context, mutation) => {
-                // Invalidovat všechny queries po každé úspěšné mutaci.
+                // Invalidujeme všechny queries po každé úspěšné mutaci.
                 // Invalidace pouze refetchuje aktivní queries a označí ostatní jako stale,
                 // takže se refetchují až když budou potřeba.
                 // Viz: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
                 void queryClient.invalidateQueries()
 
-                // Notifikaci potlačíme, pokud je v meta nastaveno skipSuccessNotification
+                // Notifikace potlačíme, pokud je v meta nastaveno skipSuccessNotification
                 if (mutation.options.meta?.skipSuccessNotification) {
                     return
                 }
