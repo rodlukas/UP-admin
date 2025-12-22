@@ -9,10 +9,14 @@ const StylelintPlugin = require("stylelint-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const ESLintPlugin = require("eslint-webpack-plugin")
 
-// bez .local by nefungovalo na iOS
-const hostName = `${os.hostname().toLowerCase()}.local`
 const port = 3000
-const urlLocal = `http://${hostName}:${port}/`
+// Ziskani sitove IP adresy (univerzalni pro Windows i macOS)
+const networkIP =
+    Object.values(os.networkInterfaces())
+        .flat()
+        .find((iface) => (iface.family === "IPv4" || iface.family === 4) && !iface.internal)
+        ?.address || "localhost"
+const urlLocal = `http://${networkIP}:${port}/`
 const urlProduction = "/static/assets/"
 const pathBuild = path.resolve(__dirname, "build", "assets")
 const htmlFile = "react-autogenerate.html"
@@ -122,7 +126,7 @@ module.exports = {
     },
     devServer: {
         // pro povoleni pristupu odkudkoliv (a z Djanga)
-        allowedHosts: ["0.0.0.0", hostName],
+        allowedHosts: ["0.0.0.0"],
         compress: true,
         client: {
             overlay: true,
