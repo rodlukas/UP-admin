@@ -70,7 +70,7 @@ def find_lecture(context, date, time, validate_context=False):
                 context.browser, lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]")
             )
             found_canceled = helpers.check_class_included(
-                lecture.get_attribute("class"), "lecture-canceled"
+                lecture.get_attribute("class"), "lectureCanceled"
             )
             # srovnej identifikatory
             start = common_helpers.prepare_start(date, time)
