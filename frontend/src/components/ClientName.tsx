@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 import APP_URLS from "../APP_URLS"
 import { ClientType } from "../types/models"
 
-import "./ClientName.css"
 import ConditionalWrapper from "./ConditionalWrapper"
 
 type InputClient = ClientType | Pick<ClientType, "firstname" | "surname">
@@ -36,13 +35,20 @@ type ClientNameProps = {
     link?: boolean
     /** Zobraz jméno klienta tučně (true). */
     bold?: boolean
+    /** Dodatečná CSS třída. */
+    className?: string
 }
 
 /** Komponenta pro jednotné zobrazení jména klienta napříč aplikací. */
-const ClientName: React.FC<ClientNameProps> = ({ client, link = false, bold = false }) => {
+const ClientName: React.FC<ClientNameProps> = ({
+    client,
+    link = false,
+    bold = false,
+    className,
+}) => {
     const PlainClientNameComponent: React.FC = () => <PlainClientName client={client} bold={bold} />
     return (
-        <span className="ClientName">
+        <span className={className}>
             {"id" in client && link ? (
                 <Link to={`${APP_URLS.klienti.url}/${client.id}`}>
                     <PlainClientNameComponent />

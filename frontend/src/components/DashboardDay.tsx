@@ -20,8 +20,9 @@ import { DEFAULT_DELAY, useDelayedValue } from "../hooks/useDelayedValue"
 import Attendances from "./Attendances"
 import Celebration from "./Celebration"
 import CourseName from "./CourseName"
-import "./DashboardDay.css"
+import styles from "./DashboardDay.module.css"
 import GroupName from "./GroupName"
+import lectureStyles from "./Lecture.module.css"
 import LectureNumber from "./LectureNumber"
 import Loading from "./Loading"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
@@ -53,16 +54,19 @@ const DashboardDay: React.FC<Props> = (props) => {
     const showLoading = isLoading || attendanceStatesContext.isLoading
 
     return (
-        <ListGroup className="DashboardDay_wrapper">
+        <ListGroup className={styles.dashboardDayWrapper}>
             <ListGroupItem
                 color={isToday(getDate()) ? "primary" : ""}
-                className="text-center DashboardDay_date">
+                className={classNames("text-center", styles.dashboardDayDate)}>
                 <h4
-                    className={`mb-0 text-nowrap d-inline-block ${
+                    className={classNames(
+                        "mb-0",
+                        "text-nowrap",
+                        "d-inline-block",
                         isUserCelebratingResult === USER_CELEBRATION.NOTHING
-                            ? "celebration_none"
-                            : "celebration"
-                    }`}>
+                            ? styles.celebrationNone
+                            : "celebration",
+                    )}>
                     <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
                 </h4>
                 <ModalLecturesWizard
@@ -74,19 +78,23 @@ const DashboardDay: React.FC<Props> = (props) => {
                 />
             </ListGroupItem>
             {showLoading ? (
-                <ListGroupItem className="lecture">
+                <ListGroupItem className={lectureStyles.lecture}>
                     <Loading />
                 </ListGroupItem>
             ) : lectures.length > 0 ? (
                 lectures.map((lecture) => {
-                    const className = classNames("lecture", "lecture_dashboardday", {
-                        LectureGroup: lecture.group,
-                        "lecture-canceled": lecture.canceled,
+                    const className = classNames(lectureStyles.lecture, {
+                        [styles.lectureGroup]: lecture.group && !lecture.canceled,
+                        [lectureStyles.lectureCanceled]: lecture.canceled,
+                        [styles.lectureCanceledDashboardday]: lecture.canceled,
                     })
                     return (
                         <ListGroupItem key={lecture.id} data-qa="lecture" className={className}>
                             <div
-                                className="lecture_heading"
+                                className={classNames(
+                                    lectureStyles.lectureHeading,
+                                    styles.lectureHeading,
+                                )}
                                 style={{ background: lecture.course.color }}>
                                 <h4>
                                     <span
@@ -99,14 +107,21 @@ const DashboardDay: React.FC<Props> = (props) => {
                                         {courseDuration(lecture.duration)}
                                     </UncontrolledTooltipWrapper>
                                 </h4>
-                                <CourseName course={lecture.course} />
-                                <LectureNumber lecture={lecture} colorize />
+                                <CourseName course={lecture.course} className={styles.courseName} />
+                                <LectureNumber
+                                    lecture={lecture}
+                                    colorize
+                                    className={classNames(
+                                        lectureStyles.lectureNumber,
+                                        styles.lectureNumber,
+                                    )}
+                                />
                                 <ModalLectures
                                     object={lecture.group ?? lecture.attendances[0].client}
                                     currentLecture={lecture}
                                 />
                             </div>
-                            <div className="lecture_content">
+                            <div className={lectureStyles.lectureContent}>
                                 {lecture.group && (
                                     <h5>
                                         <GroupName group={lecture.group} title link />
@@ -118,7 +133,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                     )
                 })
             ) : (
-                <ListGroupItem className="lecture lecture_free">
+                <ListGroupItem className={classNames(lectureStyles.lecture, styles.lectureFree)}>
                     <ListGroupItemHeading className="text-muted text-center">
                         Volno
                     </ListGroupItemHeading>

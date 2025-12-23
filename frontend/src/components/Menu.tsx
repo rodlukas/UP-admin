@@ -9,7 +9,7 @@ import AuthChecking from "../auth/AuthChecking"
 import { useAuthContext } from "../auth/AuthContext"
 import { fEmptyVoid, QA } from "../types/types"
 
-import "./Menu.css"
+import styles from "./Menu.module.css"
 import SearchInput from "./SearchInput"
 
 type Props = {
@@ -34,7 +34,12 @@ type MyNavLinkProps = {
 const Menu: React.FC<Props> = (props) => {
     const authContext = useAuthContext()
     const MyNavLink: React.FC<MyNavLinkProps> = (otherProps) => (
-        <NavLink onClick={props.closeNavbar} tag={RouterNavLink} {...otherProps} />
+        <NavLink
+            onClick={props.closeNavbar}
+            tag={RouterNavLink}
+            {...otherProps}
+            activeClassName="active"
+        />
     )
     const onClickLogout = () => {
         // pri odhlaseni chceme zavrit menu
@@ -52,7 +57,7 @@ const Menu: React.FC<Props> = (props) => {
                     />
                     <Nav className="ml-auto" navbar>
                         <NavItem>
-                            <MyNavLink exact activeClassName="active" to={APP_URLS.prehled.url}>
+                            <MyNavLink exact to={APP_URLS.prehled.url}>
                                 Přehled
                             </MyNavLink>
                         </NavItem>
@@ -84,7 +89,7 @@ const Menu: React.FC<Props> = (props) => {
                                 href="https://uspesnyprvnacek.cz/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="NavExternalLink">
+                                className={styles.navExternalLink}>
                                 Web&nbsp;
                                 <FontAwesomeIcon icon={faExternalLink} />
                             </NavLink>

@@ -8,7 +8,8 @@ import { Col, InputGroup, InputGroupAddon, Label } from "reactstrap"
 
 import Notification from "../../components/Notification"
 import UncontrolledTooltipWrapper from "../../components/UncontrolledTooltipWrapper"
-import "./ColorPicker.css"
+
+import styles from "./ColorPicker.module.css"
 
 type Props = {
     /** Barva kurzu. */
@@ -71,7 +72,7 @@ const ColorPicker: React.FC<Props> = (props) => {
                         type="button"
                         data-qa="course_button_color"
                         onFocus={togglePicker}
-                        className="ColorPickerInput"
+                        className={styles.colorPickerInput}
                         onClick={togglePicker}>
                         <div style={{ background: props.color }} />
                     </button>
@@ -80,7 +81,7 @@ const ColorPicker: React.FC<Props> = (props) => {
                     </UncontrolledTooltipWrapper>
                     {isPickerVisible ? (
                         <div
-                            className="ColorPickerWindow"
+                            className={styles.colorPickerWindow}
                             data-qa="course_color_picker"
                             onMouseLeave={closePicker}
                             onBlur={closePicker}>

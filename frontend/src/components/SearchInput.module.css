@@ -1,42 +1,42 @@
-.Search input,
-.Search .input-group-text {
+.search input,
+.search .label {
     background-color: rgb(255 255 255 / 0.07);
     border: 0;
 }
 
-.Search .input-group-text {
+.search .label {
     color: #6c757d;
 }
 
-.Search input {
+.search input {
     color: white;
 }
 
-.Search input:focus {
+.search input:focus {
     background-color: rgb(255 255 255 / 0.11);
     box-shadow: none;
     color: white;
 }
 
-.Search {
+.search {
     margin-left: auto;
     max-width: 25rem;
 }
 
-.Search .input-group-prepend {
+.search .iconWrapper {
     margin-right: 0;
 }
 
 @media (max-width: 991.98px) {
     /* pri hamburger menu pridej horni mezeru k vyhledavacimu poli a vycentruj ho */
-    .Search {
+    .search {
         margin: 0.5rem auto;
     }
 }
 
 @media (min-width: 992px) {
     /* pri klasickem menu pridej pravou mezeru k vyhledavacimu poli */
-    .Search {
+    .search {
         margin-right: 1rem;
     }
 }

@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Button, ButtonGroup } from "reactstrap"
-import "./ActiveSwitcher.css"
-import "./buttons.css"
+
+import styles from "./ActiveSwitcher.module.css"
 
 type Props = {
     /** Je vybráno zobrazení aktivních klientů/skupin (true). */
@@ -22,7 +22,7 @@ const ActiveSwitcher: React.FC<Props> = (props) => {
     }
 
     return (
-        <ButtonGroup className="ActiveSwitcher">
+        <ButtonGroup className={styles.activeSwitcher}>
             <Button
                 color="secondary"
                 data-value={true}

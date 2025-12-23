@@ -5,7 +5,7 @@ import * as React from "react"
 import { prettyPhone } from "../global/utils"
 import { ClientType } from "../types/models"
 
-import "./ClientPhone.css"
+import styles from "./ClientPhone.module.css"
 import NoInfo from "./NoInfo"
 
 type Props = {
@@ -19,7 +19,11 @@ type Props = {
 const ClientPhone: React.FC<Props> = ({ phone, icon = false }) => {
     if (phone !== "") {
         return (
-            <a href={`tel:+420${phone}`} data-qa="client_phone" className="ClientPhone" data-gdpr>
+            <a
+                href={`tel:+420${phone}`}
+                data-qa="client_phone"
+                className={styles.clientPhone}
+                data-gdpr>
                 {icon && (
                     <FontAwesomeIcon
                         flip="horizontal"

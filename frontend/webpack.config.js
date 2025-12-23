@@ -60,7 +60,42 @@ module.exports = {
                 },
             },
             {
+                // CSS Modules - pro soubory s .module.css
+                test: /\.module\.css$/i,
+                use: [
+                    isProduction ? MiniCssExtractPlugin.loader : "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            esModule: false,
+                            modules: {
+                                mode: "local",
+                                localIdentName: isProduction
+                                    ? "[hash:base64:8]"
+                                    : "[name]__[local]--[hash:base64:5]",
+                                exportLocalsConvention: "asIs",
+                            },
+                            importLoaders: 1,
+                            sourceMap: true,
+                        },
+                    },
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            postcssOptions: {
+                                plugins: isProduction
+                                    ? ["postcss-preset-env", "cssnano"]
+                                    : ["postcss-preset-env"],
+                            },
+                            sourceMap: true,
+                        },
+                    },
+                ],
+            },
+            {
+                // Globální CSS - pro běžné .css soubory (Bootstrap, index.css, Main.css)
                 test: /\.css$/i,
+                exclude: /\.module\.css$/i,
                 use: [
                     isProduction ? MiniCssExtractPlugin.loader : "style-loader",
                     {
@@ -71,7 +106,9 @@ module.exports = {
                         loader: "postcss-loader",
                         options: {
                             postcssOptions: {
-                                plugins: ["postcss-preset-env", "cssnano"],
+                                plugins: isProduction
+                                    ? ["postcss-preset-env", "cssnano"]
+                                    : ["postcss-preset-env"],
                             },
                             sourceMap: true,
                         },
@@ -84,7 +121,8 @@ module.exports = {
         new ESLintPlugin({ extensions: ["js", "jsx", "ts", "tsx"] }),
         new StylelintPlugin({
             emitWarning: true,
-            files: "src/*.css",
+            files: "src/**/*.css",
+            configFile: path.resolve(__dirname, ".stylelintrc.json"),
         }),
         new MiniCssExtractPlugin({
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",

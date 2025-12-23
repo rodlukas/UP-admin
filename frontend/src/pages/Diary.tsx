@@ -3,6 +3,7 @@ import {
     faChevronCircleLeft,
     faChevronCircleRight,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import { Link } from "react-router-dom"
 import { Button, Col, Container, Row } from "reactstrap"
@@ -24,7 +25,8 @@ import {
 } from "../global/funcDateTime"
 import { isModalShown, pageTitle } from "../global/utils"
 import { CustomRouteComponentProps } from "../types/types"
-import "./Diary.css"
+
+import styles from "./Diary.module.css"
 
 type TitleDateProps = {
     /** Datum, který se má zobrazit. */
@@ -34,9 +36,9 @@ type TitleDateProps = {
 /** Pomocná komponenta zobrazující datum v záhlaví diáře. */
 const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
     <span
-        className={`TitleDate font-weight-bold text-center ${
-            isNotCurrentYear(date) ? "TitleDate-long" : ""
-        }`}>
+        className={classNames(styles.titleDate, "font-weight-bold", "text-center", {
+            [styles.titleDateLong]: isNotCurrentYear(date),
+        })}>
         {prettyDateWithYearIfDiff(date)}
     </span>
 )
@@ -157,7 +159,7 @@ const Diary: React.FC<Props> = (props) => {
                             <Link to={getPrevMondaySerialized()} id="Diary_PrevWeek">
                                 <FontAwesomeIcon
                                     icon={faChevronCircleLeft}
-                                    className="Diary_arrowBtn text-muted"
+                                    className={classNames(styles.arrowBtn, "text-muted")}
                                 />
                             </Link>
                             <UncontrolledTooltipWrapper target="Diary_PrevWeek">
@@ -166,7 +168,7 @@ const Diary: React.FC<Props> = (props) => {
                             <Link to={getNextMondaySerialized()} id="Diary_NextWeek">
                                 <FontAwesomeIcon
                                     icon={faChevronCircleRight}
-                                    className="Diary_arrowBtn text-muted"
+                                    className={classNames(styles.arrowBtn, "text-muted")}
                                 />
                             </Link>
                             <UncontrolledTooltipWrapper target="Diary_NextWeek">
@@ -193,7 +195,7 @@ const Diary: React.FC<Props> = (props) => {
                 <Row>
                     {/* je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md */}
                     {week.map((day) => (
-                        <Col key={day} md="6" lg="" className="Diary_day">
+                        <Col key={day} md="6" lg="" className={styles.diaryDay}>
                             <DashboardDay date={day} />
                         </Col>
                     ))}

@@ -44,15 +44,6 @@ h3 {
     font-weight: 600;
 }
 
-label {
-    user-select: none;
-}
-
-/* pro spravne zarovnani labelu u checkboxu */
-.custom-control {
-    display: inline-block !important;
-}
-
 /**************************** FORMS ****************************/
 
 /* hvezdicka oznacujici povinna pole */
@@ -60,6 +51,15 @@ label {
     color: #dc3545;
     content: "*";
     margin-left: 0.3em;
+}
+
+label {
+    user-select: none;
+}
+
+/* pro spravne zarovnani labelu u checkboxu */
+.custom-control {
+    display: inline-block !important;
 }
 
 /**************************** TABLE ****************************/
@@ -98,6 +98,11 @@ h1 .badge {
     vertical-align: middle; /* zarovnani badge na middle, protoze ma mensi font-size nez h1 */
 }
 
+/* kontrastnejsi barva pozadi badge */
+.badge-light {
+    background-color: #eaeaea;
+}
+
 /**************************** REACT-TOASTIFY ****************************/
 
 /* vychozi zluta je spatne citelna s bilym textem */
@@ -132,80 +137,4 @@ h1 .badge {
 .gdpr .client__single-value {
     background-color: currentcolor !important;
     user-select: none;
-}
-
-/**************************** BOOTSTRAP ****************************/
-
-/* kontrastnejsi barva pozadi badge */
-.badge-light {
-    background-color: #eaeaea;
-}
-
-/**************************** LEKCE (tam, kde se pouziva Attendances.tsx) ****************************/
-.lecture-future {
-    background-color: #fff3cd !important;
-}
-
-.lecture-prepaid {
-    background-color: #d4edda !important;
-}
-
-.lecture-canceled {
-    background-color: #f8d7da !important;
-}
-
-.lecture {
-    padding: 0 0 0.75rem !important;
-}
-
-.lecture_heading {
-    align-items: center;
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    margin-bottom: 0.1rem;
-    padding: 0 0 0 1rem;
-}
-
-@media (max-width: 575.98px) {
-    .lecture_heading {
-        flex-wrap: wrap;
-    }
-}
-
-.lecture_content h5 {
-    margin-bottom: 0.2rem;
-    margin-top: 0.4rem;
-}
-
-.lecture_heading .btn {
-    border-radius: 0.25rem 0 0 0.25rem;
-}
-
-.lecture_heading h4 {
-    display: inline-block;
-    margin: 0;
-}
-
-.lecture_content {
-    padding: 0 1rem;
-}
-
-.lecture_free {
-    padding-top: 1rem !important;
-}
-
-.lecture-canceled h4 span {
-    display: inline-block;
-    position: relative;
-}
-
-.lecture-canceled h4 span::after {
-    border-bottom: 2px solid rgb(255 0 0 / 0.6);
-    color: #fff;
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: 100%;
 }

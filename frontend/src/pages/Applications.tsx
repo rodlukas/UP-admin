@@ -1,3 +1,4 @@
+import classNames from "classnames"
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
@@ -14,7 +15,8 @@ import { prettyDateWithYear } from "../global/funcDateTime"
 import { GroupedObjectsByCourses, groupObjectsByCourses } from "../global/utils"
 import { ApplicationType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
-import "./Applications.css"
+
+import styles from "./Applications.module.css"
 
 type Props = CustomRouteComponentProps
 
@@ -72,10 +74,10 @@ const Applications: React.FC<Props> = () => {
                                 <ListGroup
                                     key={courseApplications.course.id}
                                     data-qa="applications_for_course"
-                                    className="Applications_course">
+                                    className={styles.course}>
                                     <ListGroupItem
                                         style={{ background: courseApplications.course.color }}>
-                                        <h4 className="mb-0 Applications_courseHeading">
+                                        <h4 className={classNames("mb-0", styles.courseHeading)}>
                                             <span data-qa="application_course">
                                                 {courseApplications.course.name}
                                             </span>{" "}
@@ -84,7 +86,10 @@ const Applications: React.FC<Props> = () => {
                                                 style={{
                                                     color: courseApplications.course.color,
                                                 }}
-                                                className="font-weight-bold">
+                                                className={classNames(
+                                                    "font-weight-bold",
+                                                    styles.courseHeadingBadge,
+                                                )}>
                                                 <span data-qa="applications_for_course_cnt">
                                                     {cnt}
                                                 </span>{" "}

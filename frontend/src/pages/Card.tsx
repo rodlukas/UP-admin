@@ -19,6 +19,7 @@ import ClientPhone from "../components/ClientPhone"
 import GroupName from "../components/GroupName"
 import GroupsList from "../components/GroupsList"
 import Heading from "../components/Heading"
+import lectureStyles from "../components/Lecture.module.css"
 import LectureNumber from "../components/LectureNumber"
 import Loading from "../components/Loading"
 import PrepaidCounters from "../components/PrepaidCounters"
@@ -41,7 +42,8 @@ import {
 import { ModalClientsGroupsData } from "../types/components"
 import { ClientType, GroupType, LectureType } from "../types/models"
 import { CustomRouteComponentProps, Model } from "../types/types"
-import "./Card.css"
+
+import styles from "./Card.module.css"
 
 type ParamProps = { id: Model["id"] }
 
@@ -140,14 +142,14 @@ const Card: React.FC<Props> = (props) => {
     const renderLecture = (lecture: LectureType): React.ReactElement => {
         // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
         const date = new Date(lecture.start ?? 0)
-        const className = classNames("lecture", "lecture_card", {
-            "lecture-canceled": lecture.canceled,
-            "lecture-future": date > new Date(Date.now()),
-            "lecture-prepaid": lecture.start === null,
+        const className = classNames(lectureStyles.lecture, styles.lectureCard, {
+            [lectureStyles.lectureCanceled]: lecture.canceled,
+            [styles.lectureFuture]: date > new Date(Date.now()),
+            [styles.lecturePrepaid]: lecture.start === null,
         })
         return (
             <ListGroupItem key={lecture.id} className={className} data-qa="lecture">
-                <div className="lecture_heading">
+                <div className={lectureStyles.lectureHeading}>
                     <h4>
                         <span data-qa="lecture_start" id={`Card_CourseDuration_${lecture.id}`}>
                             {lecture.start !== null
@@ -158,10 +160,10 @@ const Card: React.FC<Props> = (props) => {
                             {courseDuration(lecture.duration)}
                         </UncontrolledTooltipWrapper>
                     </h4>
-                    <LectureNumber lecture={lecture} />
+                    <LectureNumber lecture={lecture} className={lectureStyles.lectureNumber} />
                     <ModalLectures object={object} currentLecture={lecture} />
                 </div>
-                <div className="lecture_content">
+                <div className={lectureStyles.lectureContent}>
                     <Attendances lecture={lecture} showClient={isGroup(object)} />
                 </div>
             </ListGroupItem>
@@ -215,7 +217,7 @@ const Card: React.FC<Props> = (props) => {
                 <Loading />
             ) : (
                 <Container>
-                    <div className="CardInfo">
+                    <div className={styles.cardInfo}>
                         {object && !object.active && (
                             <Alert color="warning" className="mt-0">
                                 {isClient(object)
@@ -260,7 +262,11 @@ const Card: React.FC<Props> = (props) => {
                                     <ListGroupItem
                                         style={{ background: courseLectures.course.color }}>
                                         <h4
-                                            className="text-center mb-0 Card_courseHeading"
+                                            className={classNames(
+                                                "text-center",
+                                                "mb-0",
+                                                styles.courseHeading,
+                                            )}
                                             data-qa="card_course_name">
                                             {courseLectures.course.name}
                                         </h4>
