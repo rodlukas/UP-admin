@@ -56,6 +56,12 @@ konkrétní sady tedy stačí tyto příkazy:
 > aplikaci) vidět, stačí upravit v [souboru .env](../.env) řádek s `TESTS_HEADLESS` na:
 > `TESTS_HEADLESS=False`.
 
+> **Info k dalším prohlížečům:** E2E testy jsou dále připraveny i pro spouštění s Google Chrome,
+> stačí nainstalovat
+> [Chrome s chromedriverem](https://developer.chrome.com/docs/chromedriver/downloads/version-selection),
+> konkrétně [zde](https://googlechromelabs.github.io/chrome-for-testing/) a následně upravit v
+> [souboru .env](../.env) řádek s `TESTS_BROWSER` na: `TESTS_BROWSER=chrome`.
+
 Testování lze ještě dále zúžit na **konkrétní testovanou část či operaci (označené tzv. _tagem_)** z
 dané sady testů (_stage_). Pro jednoduchost jsou _tagy_ pro testované části totožné s názvy souborů
 testových scénářů (`features/*.features`) i implementací testů (`api_steps/*.py` a `ui_steps/*.py`).
