@@ -89,7 +89,11 @@ const DashboardDay: React.FC<Props> = (props) => {
                         [styles.lectureCanceledDashboardday]: lecture.canceled,
                     })
                     return (
-                        <ListGroupItem key={lecture.id} data-qa="lecture" className={className}>
+                        <ListGroupItem
+                            key={lecture.id}
+                            data-qa="lecture"
+                            className={className}
+                            {...(lecture.canceled && { "data-qa-canceled": "true" })}>
                             <div
                                 className={classNames(
                                     lectureStyles.lectureHeading,

@@ -148,7 +148,11 @@ const Card: React.FC<Props> = (props) => {
             [styles.lecturePrepaid]: lecture.start === null,
         })
         return (
-            <ListGroupItem key={lecture.id} className={className} data-qa="lecture">
+            <ListGroupItem
+                key={lecture.id}
+                className={className}
+                data-qa="lecture"
+                {...(lecture.canceled && { "data-qa-canceled": "true" })}>
                 <div className={lectureStyles.lectureHeading}>
                     <h4>
                         <span data-qa="lecture_start" id={`Card_CourseDuration_${lecture.id}`}>
