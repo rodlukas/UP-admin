@@ -39,7 +39,7 @@ import {
 } from "../types/models"
 import { fEmptyVoid, Model } from "../types/types"
 
-import styles from "./FormSettings.module.css"
+import * as styles from "./FormSettings.css"
 import ColorPicker from "./helpers/ColorPicker"
 
 type Props = {

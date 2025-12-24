@@ -8,7 +8,7 @@ import { fEmptyVoid } from "../types/types"
 
 import FormLectures from "./FormLectures"
 import { DummyLecture } from "./helpers/dummies"
-import styles from "./ModalLecturesCore.module.css"
+import * as styles from "./ModalLecturesCore.css"
 
 type Props = {
     /** Lekce. */

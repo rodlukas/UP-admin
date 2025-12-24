@@ -1,7 +1,7 @@
 import classNames from "classnames"
 import * as React from "react"
 
-import styles from "./Or.module.css"
+import * as styles from "./Or.css"
 
 type Props = {
     /** Jakýkoliv uzel JSX pro zobrazení jakožto alternativní možnost přidání místo volby stávající entity. */

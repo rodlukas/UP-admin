@@ -19,7 +19,7 @@ import ClientPhone from "../components/ClientPhone"
 import GroupName from "../components/GroupName"
 import GroupsList from "../components/GroupsList"
 import Heading from "../components/Heading"
-import lectureStyles from "../components/Lecture.module.css"
+import * as lectureStyles from "../components/Lecture.css"
 import LectureNumber from "../components/LectureNumber"
 import Loading from "../components/Loading"
 import PrepaidCounters from "../components/PrepaidCounters"
@@ -43,7 +43,7 @@ import { ModalClientsGroupsData } from "../types/components"
 import { ClientType, GroupType, LectureType } from "../types/models"
 import { CustomRouteComponentProps, Model } from "../types/types"
 
-import styles from "./Card.module.css"
+import * as styles from "./Card.css"
 
 type ParamProps = { id: Model["id"] }
 

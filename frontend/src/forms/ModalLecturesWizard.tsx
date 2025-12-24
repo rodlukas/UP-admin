@@ -33,7 +33,7 @@ import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
 import ModalGroups from "./ModalGroups"
 import ModalLecturesCore from "./ModalLecturesCore"
-import styles from "./ModalLecturesWizard.module.css"
+import * as styles from "./ModalLecturesWizard.css"
 
 type Props = {
     /** Datum lekce. */

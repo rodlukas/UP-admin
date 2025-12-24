@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { GITHUB_REPO_URL } from "../global/constants"
 
-import styles from "./AppCommit.module.css"
+import * as styles from "./AppCommit.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {

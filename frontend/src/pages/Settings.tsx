@@ -21,7 +21,7 @@ import { EDIT_TYPE } from "../global/constants"
 import { AttendanceStateType } from "../types/models"
 import { CustomRouteComponentProps, QA } from "../types/types"
 
-import styles from "./Settings.module.css"
+import * as styles from "./Settings.css"
 
 type VisibleProps = QA & {
     /** Kurz/stav účasti je viditelný (true). */

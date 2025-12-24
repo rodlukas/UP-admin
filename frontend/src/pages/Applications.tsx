@@ -16,7 +16,7 @@ import { GroupedObjectsByCourses, groupObjectsByCourses } from "../global/utils"
 import { ApplicationType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
 
-import styles from "./Applications.module.css"
+import * as styles from "./Applications.css"
 
 type Props = CustomRouteComponentProps
 

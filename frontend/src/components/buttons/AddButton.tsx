@@ -4,7 +4,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { Button, ButtonProps } from "reactstrap"
 
-import styles from "./buttons.module.css"
+import * as styles from "./buttons.css"
 
 type Props = ButtonProps & {
     /** Text v tlačítku. */
@@ -14,12 +14,15 @@ type Props = ButtonProps & {
 }
 
 /** Tlačítko pro přidání objektu v aplikaci. */
-const AddButton: React.FC<Props> = ({ content, onClick, small = false, ...props }) => {
-    const className = classNames({
-        [styles.smallButton]: small,
-    })
+const AddButton: React.FC<Props> = ({ content, onClick, small = false, className, ...props }) => {
+    const mergedClassName = classNames(
+        {
+            [styles.smallButton]: small,
+        },
+        className,
+    )
     return (
-        <Button color="info" className={className} onClick={onClick} {...props}>
+        <Button color="info" className={mergedClassName} onClick={onClick} {...props}>
             <FontAwesomeIcon icon={faPlus} className={styles.btnIcon} />
             {content}
         </Button>

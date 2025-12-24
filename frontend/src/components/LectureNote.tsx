@@ -3,7 +3,7 @@ import { Badge } from "reactstrap"
 
 import { AttendanceType } from "../types/models"
 
-import styles from "./LectureNote.module.css"
+import * as styles from "./LectureNote.css"
 
 type Props = {
     /** Účast klienta na lekci. */

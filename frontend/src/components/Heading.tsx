@@ -4,7 +4,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { Col, Row } from "reactstrap"
 
-import styles from "./Heading.module.css"
+import * as styles from "./Heading.css"
 
 type Props = {
     /** Jakýkoliv uzel JSX tvořící nadpis. */

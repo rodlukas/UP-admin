@@ -4,7 +4,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { Input, InputGroup, InputGroupAddon, Label } from "reactstrap"
 
-import styles from "./SearchInput.module.css"
+import * as styles from "./SearchInput.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {

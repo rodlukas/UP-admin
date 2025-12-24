@@ -7,7 +7,7 @@ import { GroupType } from "../types/models"
 
 import ConditionalWrapper from "./ConditionalWrapper"
 import CourseCircle from "./CourseCircle"
-import styles from "./GroupName.module.css"
+import * as styles from "./GroupName.css"
 
 type InputGroup = GroupType | Pick<GroupType, "name">
 

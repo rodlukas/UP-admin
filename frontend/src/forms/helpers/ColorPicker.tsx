@@ -9,7 +9,7 @@ import { Col, InputGroup, InputGroupAddon, Label } from "reactstrap"
 import Notification from "../../components/Notification"
 import UncontrolledTooltipWrapper from "../../components/UncontrolledTooltipWrapper"
 
-import styles from "./ColorPicker.module.css"
+import * as styles from "./ColorPicker.css"
 
 type Props = {
     /** Barva kurzu. */

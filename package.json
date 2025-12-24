@@ -14,7 +14,7 @@
         "frontend:test": "cd frontend && npm run test",
         "frontend:audit": "cd frontend && npm run audit",
         "frontend:lint:js": "cd frontend && npm run lint:js",
-        "frontend:lint:css": "cd frontend && prettier ./src/**/*.css --write && npm run lint:css"
+        "frontend:lint:css": "cd frontend && npm run lint:css"
     },
     "devDependencies": {
         "husky": "^9.1.7",
@@ -24,7 +24,7 @@
         "frontend/src/**/*.+(js|jsx|ts|tsx)": [
             "npm run frontend:lint:js"
         ],
-        "frontend/src/**/*.css": [
+        "frontend/src/**/*.css.ts": [
             "npm run frontend:lint:css"
         ]
     }

@@ -26,7 +26,7 @@ import {
 import { isModalShown, pageTitle } from "../global/utils"
 import { CustomRouteComponentProps } from "../types/types"
 
-import styles from "./Diary.module.css"
+import * as styles from "./Diary.css"
 
 type TitleDateProps = {
     /** Datum, který se má zobrazit. */

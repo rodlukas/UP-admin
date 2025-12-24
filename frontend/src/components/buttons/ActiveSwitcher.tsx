@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Button, ButtonGroup } from "reactstrap"
 
-import styles from "./ActiveSwitcher.module.css"
+import * as styles from "./ActiveSwitcher.css"
 
 type Props = {
     /** Je vybráno zobrazení aktivních klientů/skupin (true). */

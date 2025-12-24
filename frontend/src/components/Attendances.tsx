@@ -6,7 +6,7 @@ import { AttendanceType, LectureType } from "../types/models"
 
 import AttendancePaidButton from "./AttendancePaidButton"
 import AttendanceRemindPay from "./AttendanceRemindPay"
-import styles from "./Attendances.module.css"
+import * as styles from "./Attendances.css"
 import AttendanceSelectAttendanceState from "./AttendanceSelectAttendanceState"
 import ClientName from "./ClientName"
 import LectureNote from "./LectureNote"

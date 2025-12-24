@@ -1,7 +1,7 @@
 import classNames from "classnames"
 import * as React from "react"
 
-import styles from "./CourseCircle.module.css"
+import * as styles from "./CourseCircle.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {

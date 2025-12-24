@@ -56,7 +56,7 @@ import {
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
-import styles from "./FormLectures.module.css"
+import * as styles from "./FormLectures.css"
 import CustomInputWrapper from "./helpers/CustomInputWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 

@@ -5,9 +5,9 @@ const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
-const StylelintPlugin = require("stylelint-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const ESLintPlugin = require("eslint-webpack-plugin")
+const { VanillaExtractPlugin } = require("@vanilla-extract/webpack-plugin")
 
 const port = 3000
 // Ziskani sitove IP adresy (univerzalni pro Windows i macOS)
@@ -49,7 +49,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(ts|js)x?$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /\.css\.ts$/],
                 loader: "babel-loader",
                 options: {
                     cacheDirectory: true,
@@ -60,42 +60,23 @@ module.exports = {
                 },
             },
             {
-                // CSS Modules - pro soubory s .module.css
-                test: /\.module\.css$/i,
+                // Vanilla Extract - pro soubory generované vanilla-extract (.vanilla.css)
+                test: /\.vanilla\.css$/i,
                 use: [
                     isProduction ? MiniCssExtractPlugin.loader : "style-loader",
                     {
                         loader: "css-loader",
                         options: {
-                            esModule: false,
-                            modules: {
-                                mode: "local",
-                                localIdentName: isProduction
-                                    ? "[hash:base64:8]"
-                                    : "[name]__[local]--[hash:base64:5]",
-                                exportLocalsConvention: "asIs",
-                            },
-                            importLoaders: 1,
-                            sourceMap: true,
-                        },
-                    },
-                    {
-                        loader: "postcss-loader",
-                        options: {
-                            postcssOptions: {
-                                plugins: isProduction
-                                    ? ["postcss-preset-env", "cssnano"]
-                                    : ["postcss-preset-env"],
-                            },
+                            url: false,
                             sourceMap: true,
                         },
                     },
                 ],
             },
             {
-                // Globální CSS - pro běžné .css soubory (Bootstrap, index.css, Main.css)
+                // Globální CSS - pro běžné .css soubory (Bootstrap, react-toastify, atd.)
                 test: /\.css$/i,
-                exclude: /\.module\.css$/i,
+                exclude: /\.vanilla\.css$/i,
                 use: [
                     isProduction ? MiniCssExtractPlugin.loader : "style-loader",
                     {
@@ -118,12 +99,12 @@ module.exports = {
         ],
     },
     plugins: [
-        new ESLintPlugin({ extensions: ["js", "jsx", "ts", "tsx"] }),
-        new StylelintPlugin({
-            emitWarning: true,
-            files: "src/**/*.css",
-            configFile: path.resolve(__dirname, ".stylelintrc.json"),
+        new VanillaExtractPlugin({
+            identifiers: isProduction ? "short" : "debug",
         }),
+        new ESLintPlugin({ extensions: ["js", "jsx", "ts", "tsx"] }),
+        // StylelintPlugin removed - vanilla-extract .css.ts files are validated by TypeScript
+        // and vanilla-extract's own validation. Stylelint only works with plain CSS files.
         new MiniCssExtractPlugin({
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
             chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",

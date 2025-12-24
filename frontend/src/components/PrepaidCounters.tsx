@@ -19,7 +19,7 @@ import { TEXTS } from "../global/constants"
 import { MembershipType } from "../types/models"
 
 import ClientName from "./ClientName"
-import styles from "./PrepaidCounters.module.css"
+import * as styles from "./PrepaidCounters.css"
 import Tooltip from "./Tooltip"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 

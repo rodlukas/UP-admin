@@ -5,7 +5,7 @@ import * as React from "react"
 import { prettyPhone } from "../global/utils"
 import { ClientType } from "../types/models"
 
-import styles from "./ClientPhone.module.css"
+import * as styles from "./ClientPhone.css"
 import NoInfo from "./NoInfo"
 
 type Props = {

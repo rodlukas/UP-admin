@@ -9,7 +9,7 @@ import AuthChecking from "../auth/AuthChecking"
 import { useAuthContext } from "../auth/AuthContext"
 import { fEmptyVoid, QA } from "../types/types"
 
-import styles from "./Menu.module.css"
+import * as styles from "./Menu.css"
 import SearchInput from "./SearchInput"
 
 type Props = {
