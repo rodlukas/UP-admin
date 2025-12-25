@@ -5,9 +5,9 @@ const HtmlWebpackHarddiskPlugin = require("html-webpack-harddisk-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
-const StylelintPlugin = require("stylelint-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const ESLintPlugin = require("eslint-webpack-plugin")
+const { VanillaExtractPlugin } = require("@vanilla-extract/webpack-plugin")
 
 const port = 3000
 // Ziskani sitove IP adresy (univerzalni pro Windows i macOS)
@@ -49,7 +49,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(ts|js)x?$/,
-                exclude: /node_modules/,
+                exclude: [/node_modules/, /\.css\.ts$/],
                 loader: "babel-loader",
                 options: {
                     cacheDirectory: true,
@@ -60,7 +60,23 @@ module.exports = {
                 },
             },
             {
+                // Vanilla Extract - pro soubory generované vanilla-extract (.vanilla.css)
+                test: /\.vanilla\.css$/i,
+                use: [
+                    isProduction ? MiniCssExtractPlugin.loader : "style-loader",
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: false,
+                            sourceMap: true,
+                        },
+                    },
+                ],
+            },
+            {
+                // Globální CSS - pro běžné .css soubory (Bootstrap, react-toastify, atd.)
                 test: /\.css$/i,
+                exclude: /\.vanilla\.css$/i,
                 use: [
                     isProduction ? MiniCssExtractPlugin.loader : "style-loader",
                     {
@@ -71,7 +87,9 @@ module.exports = {
                         loader: "postcss-loader",
                         options: {
                             postcssOptions: {
-                                plugins: ["postcss-preset-env", "cssnano"],
+                                plugins: isProduction
+                                    ? ["postcss-preset-env", "cssnano"]
+                                    : ["postcss-preset-env"],
                             },
                             sourceMap: true,
                         },
@@ -81,11 +99,10 @@ module.exports = {
         ],
     },
     plugins: [
-        new ESLintPlugin({ extensions: ["js", "jsx", "ts", "tsx"] }),
-        new StylelintPlugin({
-            emitWarning: true,
-            files: "src/*.css",
+        new VanillaExtractPlugin({
+            identifiers: isProduction ? "short" : "debug",
         }),
+        new ESLintPlugin({ extensions: ["js", "jsx", "ts", "tsx"] }),
         new MiniCssExtractPlugin({
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
             chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",

@@ -150,10 +150,11 @@ Main tools used for the frontend development:
 
 -   [Webpack 5](https://webpack.js.org/) with custom configuration (local and production) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
--   [Babel 7](https://babeljs.io/),
 -   [Typescript 5](https://www.typescriptlang.org/) – static type checking,
+-   [vanilla-extract](https://vanilla-extract.style/) - type-safe static CSS,
 -   [ESlint 8](https://eslint.org/) and [stylelint](https://stylelint.io/) – linters for static code
     analysis,
+-   [Babel 7](https://babeljs.io/),
 -   [husky](https://github.com/typicode/husky) and
     [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (eslint, stylelint)
 -   and [React Hot Loader](https://github.com/gaearon/react-hot-loader) – for

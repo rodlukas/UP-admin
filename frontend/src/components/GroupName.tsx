@@ -7,6 +7,7 @@ import { GroupType } from "../types/models"
 
 import ConditionalWrapper from "./ConditionalWrapper"
 import CourseCircle from "./CourseCircle"
+import * as styles from "./GroupName.css"
 
 type InputGroup = GroupType | Pick<GroupType, "name">
 
@@ -60,11 +61,17 @@ const GroupName: React.FC<GroupNameProps> = ({
         <PlainName group={group} title={title} bold={bold} />
     )
     return (
-        <span className="ClientName GroupName">
+        <span>
             {"id" in group && link ? (
                 <Link to={`${APP_URLS.skupiny.url}/${group.id}`}>
                     <span className={classNames({ "text-nowrap": noWrap })}>
-                        {showCircle && <CourseCircle color={group.course.color} size={0.5} />}
+                        {showCircle && (
+                            <CourseCircle
+                                color={group.course.color}
+                                size={0.5}
+                                className={styles.courseCircle}
+                            />
+                        )}
                         <PlainGroupNameComponent />
                     </span>
                 </Link>

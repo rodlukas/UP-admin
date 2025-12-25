@@ -20,7 +20,8 @@ import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
 import { AttendanceStateType } from "../types/models"
 import { CustomRouteComponentProps, QA } from "../types/types"
-import "./Settings.css"
+
+import * as styles from "./Settings.css"
 
 type VisibleProps = QA & {
     /** Kurz/stav účasti je viditelný (true). */
@@ -283,7 +284,7 @@ const Settings: React.FC<Props> = () => {
                             </Col>
                         </Row>
                         <hr />
-                        <p className="text-center Settings_Footer">
+                        <p className={classNames("text-center", styles.footer)}>
                             <span className="font-weight-bold">Verze aplikace:</span>{" "}
                             <AppCommit pageId="Settings" />
                             {" ("}
@@ -313,7 +314,7 @@ const Settings: React.FC<Props> = () => {
                                 API dokumentace
                             </a>
                         </p>
-                        <p className="text-center Settings_Footer">
+                        <p className={classNames("text-center", styles.footer)}>
                             S láskou vytvořil{" "}
                             <a
                                 href="https://lukasrod.cz/"

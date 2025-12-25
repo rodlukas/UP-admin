@@ -127,8 +127,9 @@ module.exports = {
                 selector: "property",
                 format: ["camelCase", "PascalCase", "snake_case", "UPPER_CASE"], // snake_case kvuli DRF API
                 // ignoruj vlastnosti s pomlckami (CSS tridy v classNames objektech)
+                // a CSS selektory v vanilla-extract (zacina s & nebo obsahuje : nebo @)
                 filter: {
-                    regex: "[- ]",
+                    regex: "[- ]|^&|:|^@",
                     match: false,
                 },
             },

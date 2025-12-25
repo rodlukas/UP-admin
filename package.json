@@ -24,7 +24,7 @@
         "frontend/src/**/*.+(js|jsx|ts|tsx)": [
             "npm run frontend:lint:js"
         ],
-        "frontend/src/**/*.css": [
+        "frontend/src/**/*.css.ts": [
             "npm run frontend:lint:css"
         ]
     }

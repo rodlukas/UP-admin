@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSackDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import {
     Col,
@@ -18,7 +19,7 @@ import { TEXTS } from "../global/constants"
 import { MembershipType } from "../types/models"
 
 import ClientName from "./ClientName"
-import "./PrepaidCounters.css"
+import * as styles from "./PrepaidCounters.css"
 import Tooltip from "./Tooltip"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
@@ -94,11 +95,10 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                         addonType="prepend"
                                         id={`PrepaidCounters${membership.id}`}>
                                         <Label
-                                            className={`input-group-text ${
-                                                prepaidCnts[membership.id] > 0
-                                                    ? "PrepaidCountersLabelPrepaid"
-                                                    : ""
-                                            }`}
+                                            className={classNames("input-group-text", {
+                                                [styles.prepaidCountersLabelPrepaid]:
+                                                    prepaidCnts[membership.id] > 0,
+                                            })}
                                             for={`prepaid_cnt${membership.id}`}>
                                             <FontAwesomeIcon icon={faSackDollar} fixedWidth />
                                         </Label>
@@ -111,7 +111,7 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                         data-id={membership.id}
                                         onFocus={onFocus}
                                         id={`prepaid_cnt${membership.id}`}
-                                        className="PrepaidCountersInput"
+                                        className={styles.prepaidCountersInput}
                                     />
                                 </InputGroup>
                                 <UncontrolledTooltipWrapper

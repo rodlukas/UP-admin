@@ -69,9 +69,7 @@ def find_lecture(context, date, time, validate_context=False):
             found_duration = helpers.get_tooltip_text(
                 context.browser, lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]")
             )
-            found_canceled = helpers.check_class_included(
-                lecture.get_attribute("class"), "lecture-canceled"
-            )
+            found_canceled = lecture.get_attribute("data-qa-canceled") == "true"
             # srovnej identifikatory
             start = common_helpers.prepare_start(date, time)
             start = f"{start.day}. {start.month}. {start.year} – {start.hour}:{start.minute:02}"

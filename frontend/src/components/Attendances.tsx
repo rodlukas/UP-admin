@@ -6,7 +6,7 @@ import { AttendanceType, LectureType } from "../types/models"
 
 import AttendancePaidButton from "./AttendancePaidButton"
 import AttendanceRemindPay from "./AttendanceRemindPay"
-import "./Attendances.css"
+import * as styles from "./Attendances.css"
 import AttendanceSelectAttendanceState from "./AttendanceSelectAttendanceState"
 import ClientName from "./ClientName"
 import LectureNote from "./LectureNote"
@@ -21,11 +21,14 @@ type AttendanceProps = {
 /** Komponenta zobrazující jednotlivou účast klienta na dané lekci. */
 const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false }) => (
     <li data-qa="lecture_attendance">
-        {showClient && <ClientName client={attendance.client} link />}{" "}
+        {showClient && <ClientName client={attendance.client} link className={styles.clientName} />}{" "}
         <AttendancePaidButton paid={attendance.paid} attendanceId={attendance.id} />{" "}
         {attendance.number && (
             <>
-                <Badge color="secondary" pill className="AttendanceNumber font-weight-bold">
+                <Badge
+                    color="secondary"
+                    pill
+                    className={classNames(styles.attendanceNumber, "font-weight-bold")}>
                     {attendance.number}
                 </Badge>{" "}
             </>
@@ -47,8 +50,8 @@ type AttendancesProps = {
 
 /** Komponenta zobrazující účasti všech klientů na dané lekci. */
 const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false }) => {
-    const className = classNames("Attendances", {
-        AttendancesGroup: lecture.group,
+    const className = classNames(styles.attendances, {
+        [styles.attendancesGroup]: lecture.group,
     })
     return (
         <ul className={className}>

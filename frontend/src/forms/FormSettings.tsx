@@ -39,7 +39,7 @@ import {
 } from "../types/models"
 import { fEmptyVoid, Model } from "../types/types"
 
-import "./FormSettings.css"
+import * as styles from "./FormSettings.css"
 import ColorPicker from "./helpers/ColorPicker"
 
 type Props = {
@@ -232,7 +232,7 @@ const FormSettings: React.FC<Props> = (props) => {
                 {isCourse(props.object) && (
                     <>
                         <FormGroup row className="align-items-center required">
-                            <Label for="duration" sm={3} className="FormSettings_labelDuration">
+                            <Label for="duration" sm={3} className={styles.labelDuration}>
                                 Trvání (min.){" "}
                                 <small className="text-secondary text-nowrap">
                                     (pro jednotlivce)

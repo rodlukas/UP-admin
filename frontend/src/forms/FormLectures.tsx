@@ -56,7 +56,7 @@ import {
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
-import "./FormLectures.css"
+import * as styles from "./FormLectures.css"
 import CustomInputWrapper from "./helpers/CustomInputWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 
@@ -577,7 +577,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                         {!isLecture(props.lecture) && (
                                             <Input
                                                 type="number"
-                                                className="FormLectures_prepaidLectureCnt"
+                                                className={styles.prepaidLectureCnt}
                                                 disabled={!prepaid}
                                                 id="prepaidCnt"
                                                 value={prepaidCnt}

@@ -3,7 +3,8 @@ import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
 import { Col, Row } from "reactstrap"
-import "./Heading.css"
+
+import * as styles from "./Heading.css"
 
 type Props = {
     /** Jakýkoliv uzel JSX tvořící nadpis. */
@@ -18,7 +19,13 @@ type Props = {
 
 /** Komponenta pro jednotné zobrazení nadpisu stránky napříč aplikací. */
 const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = false }) => (
-    <Row className="justify-content-sm-end my-3 Heading align-items-center">
+    <Row
+        className={classNames(
+            "justify-content-sm-end",
+            "my-3",
+            styles.heading,
+            "align-items-center",
+        )}>
         <Col md={6} className={classNames({ "text-md-right": fluid })}>
             <h1>
                 {title}
@@ -35,7 +42,7 @@ const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = 
         </Col>
         <Col
             md={6}
-            className={classNames({ "text-md-left": fluid }, "HeadingButtons", "text-right")}>
+            className={classNames({ "text-md-left": fluid }, styles.headingButtons, "text-right")}>
             {buttons}
         </Col>
     </Row>

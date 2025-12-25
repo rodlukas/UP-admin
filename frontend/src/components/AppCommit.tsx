@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { GITHUB_REPO_URL } from "../global/constants"
 
-import "./AppCommit.css"
+import * as styles from "./AppCommit.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
@@ -16,7 +16,7 @@ const AppCommit: React.FC<Props> = ({ pageId }) => (
         <a
             href={`${GITHUB_REPO_URL}/commit/%GIT_COMMIT`}
             target="_blank"
-            className="AppCommit"
+            className={styles.appCommit}
             rel="noopener noreferrer"
             id={`AppCommit_${pageId}`}>
             %GIT_COMMIT

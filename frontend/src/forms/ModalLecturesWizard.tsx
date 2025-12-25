@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import {
     DropdownItem,
@@ -32,7 +33,7 @@ import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
 import ModalGroups from "./ModalGroups"
 import ModalLecturesCore from "./ModalLecturesCore"
-import "./ModalLecturesWizard.css"
+import * as styles from "./ModalLecturesWizard.css"
 
 type Props = {
     /** Datum lekce. */
@@ -182,10 +183,10 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
 
     return (
         <>
-            <div className="ModalLecturesWizard">
+            <div className={styles.modalLecturesWizard}>
                 <UncontrolledButtonDropdown
                     direction={props.dropdownDirection}
-                    className={props.dropdownClassName}>
+                    className={classNames(props.dropdownClassName, styles.dropdownToggle)}>
                     <DropdownToggle
                         caret
                         size={props.dropdownSize}

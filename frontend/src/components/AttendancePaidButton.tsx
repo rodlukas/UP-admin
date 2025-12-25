@@ -5,7 +5,7 @@ import * as React from "react"
 
 import { usePatchAttendance } from "../api/hooks"
 
-import "./AttendancePaidButton.css"
+import * as styles from "./AttendancePaidButton.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
@@ -28,7 +28,9 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
         patchAttendance.mutate(data)
     }, [props.paid, props.attendanceId, patchAttendance])
 
-    const className = classNames("AttendancePaidButton", {
+    const className = classNames(styles.attendancePaidButton, {
+        [styles.attendancePaidButtonSuccess]: props.paid,
+        [styles.attendancePaidButtonDanger]: !props.paid,
         "text-success": props.paid,
         "text-danger": !props.paid,
     })
