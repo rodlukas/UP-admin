@@ -1,10 +1,10 @@
 import { style } from "@vanilla-extract/css"
 
 export const attendancePaidButton = style({
-    cursor: "pointer",
     position: "relative",
     top: "0.06rem",
     transition: "color 0.15s ease-in-out",
+    cursor: "pointer",
 })
 
 export const attendancePaidButtonSuccess = style({

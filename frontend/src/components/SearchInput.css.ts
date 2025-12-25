@@ -20,8 +20,8 @@ export const label = style({
 })
 
 globalStyle(`${search} input, ${search} ${label}`, {
-    backgroundColor: "rgb(255 255 255 / 0.07)",
     border: 0,
+    backgroundColor: "rgb(255 255 255 / 0.07)",
 })
 
 globalStyle(`${search} input`, {
@@ -29,8 +29,8 @@ globalStyle(`${search} input`, {
 })
 
 globalStyle(`${search} input:focus`, {
-    backgroundColor: "rgb(255 255 255 / 0.11)",
     boxShadow: "none",
+    backgroundColor: "rgb(255 255 255 / 0.11)",
     color: "white",
 })
 

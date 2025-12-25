@@ -1,8 +1,8 @@
 import { style } from "@vanilla-extract/css"
 
 export const prepaidCountersInput = style({
-    fontWeight: 600,
     minWidth: "3.75rem",
+    fontWeight: 600,
 })
 
 export const prepaidCountersLabelPrepaid = style({

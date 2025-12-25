@@ -33,6 +33,7 @@ export default class Token {
     }
 
     static logToConsole(token: TokenCodedType, decoded: TokenDecodedType, dif: number): void {
+        // eslint-disable-next-line no-console
         console.info(
             `%ctoken:\t${token}\ncas:\t${prettyDateTime(new Date())}\nvyprsi:\t${prettyDateTime(
                 new Date(decoded.exp * 1000),

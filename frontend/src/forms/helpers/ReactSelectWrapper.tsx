@@ -59,7 +59,7 @@ const ReactSelectWrapper = <Option, IsMulti extends boolean = false>(
 
                     return {
                         ...provided,
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
+                         
                         "&:hover": {
                             boxShadow: state.isFocused ? FOCUS_BOX_SHADOW : "none",
                             outline: 0,

@@ -13,6 +13,6 @@ export const courseHeading = style({
 })
 
 export const courseHeadingBadge = style({
-    backgroundColor: "white",
     marginLeft: "0.3rem",
+    backgroundColor: "white",
 })

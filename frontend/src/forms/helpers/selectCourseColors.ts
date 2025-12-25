@@ -9,7 +9,7 @@ const PLACEHOLDER_DOT_COLOR = "#ccc"
 const dot = (color = "transparent"): CSSObjectWithLabel => ({
     alignItems: "center",
     display: "flex",
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     
     ":before": {
         backgroundColor: color,
         borderRadius: 14,
@@ -44,7 +44,7 @@ export const selectStyles: StylesConfig<CourseType> = {
                     ? "white"
                     : "black"
                 : data.color,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
+             
             ":active": {
                 ...styles[":active"],
                 backgroundColor: isSelected ? data.color : color.alpha(0.3).css(),
