@@ -25,7 +25,6 @@ import ErrorBoundary from "./pages/ErrorBoundary"
 config.autoAddCss = false
 
 // CI provede substituci stringu za URL, promenna prostredi ale musi existovat, jinak nefunguje (proto podminka)
- 
 if (isHosted() && isValidUrl("%SENTRY_DSN")) {
     Sentry.init({
         dsn: "%SENTRY_DSN",

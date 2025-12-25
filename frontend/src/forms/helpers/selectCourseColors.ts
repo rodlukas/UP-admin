@@ -9,7 +9,6 @@ const PLACEHOLDER_DOT_COLOR = "#ccc"
 const dot = (color = "transparent"): CSSObjectWithLabel => ({
     alignItems: "center",
     display: "flex",
-     
     ":before": {
         backgroundColor: color,
         borderRadius: 14,
@@ -44,7 +43,6 @@ export const selectStyles: StylesConfig<CourseType> = {
                     ? "white"
                     : "black"
                 : data.color,
-             
             ":active": {
                 ...styles[":active"],
                 backgroundColor: isSelected ? data.color : color.alpha(0.3).css(),
