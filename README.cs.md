@@ -2,7 +2,7 @@
     <img src="./admin/static/admin/android-chrome-192x192.png" alt="ÚPadmin logo" width="72">
 </p>
 
-<h3 align="center">ÚPadmin</h1>
+<h2 align="center">ÚPadmin</h2>
 
 <p align="center">
     Webová aplikace pro projekt <strong><a href="https://uspesnyprvnacek.cz/">Úspěšný prvňáček</a></strong>.
@@ -88,7 +88,7 @@ V následujícím seznamu jsou nejdůležitější funkce, která aplikace posky
 -   automatické vytváření předplacených náhrad lekcí při omluvě předem/zrušení ze strany lektorky,
 -   upozornění, že má klient příště platit,
 -   výpočet pořadového čísla lekce s ohledem na účast klientů,
--   vyhledávání klientů (fuzzy vyhledávání)
+-   vyhledávání klientů (fuzzy vyhledávání),
 -   konfigurace kurzů a stavů účasti včetně např. intuitivního nastavení zvolené barvy pro kurz,
 -   propojení s API _Fio banky_ – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu,
 -   automatický odhad kurzu, data a času pro nově přidávané lekce,
@@ -148,11 +148,10 @@ Vývoj frontendu je postaven především na:
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Typescript 5](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
 -   [vanilla-extract](https://vanilla-extract.style/) - typově bezpečná statická CSS,
--   [ESlint 8](https://eslint.org/) a [stylelint](https://stylelint.io/) – lintery pro statickou
-    analýzu kódu,
+-   [ESlint 8](https://eslint.org/) – linter pro statickou analýzu kódu,
 -   [Babel 7](https://babeljs.io/),
 -   [husky](https://github.com/typicode/husky) a
-    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit kontroly (eslint, stylelint)
+    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit kontroly (eslint, prettier)
 -   a [React Hot Loader](https://github.com/gaearon/react-hot-loader) – pro
     [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
@@ -458,7 +457,7 @@ PostgreSQL databázi se všemi daty. Instance `staging` a `demo` byly ukončeny 
 ### Kontejnerizace
 
 Vzhledem k tomu, že aplikace byla původně nasazena na [Heroku PaaS](https://www.heroku.com/) s
-použitím jejich [Builpacks](https://devcenter.heroku.com/articles/buildpacks), nepoužívala žádnou
+použitím jejich [Buildpacks](https://devcenter.heroku.com/articles/buildpacks), nepoužívala žádnou
 formu kontejnerizace. Tento přístup měl své výhody i nevýhody. Ale vzhledem k příchodu jiných PaaS
 jako [Fly.io](https://fly.io/) byla vyžadována migrace na kontejnery. To vedlo k plně
 kontejnerizované aplikaci založené na Dockeru (a publikovaném obrazu v Github Container Registry). S

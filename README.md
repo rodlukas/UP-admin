@@ -2,7 +2,7 @@
     <img src="./admin/static/admin/android-chrome-192x192.png" alt="ÚPadmin logo" width="72">
 </p>
 
-<h3 align="center">ÚPadmin</h1>
+<h2 align="center">ÚPadmin</h2>
 
 <p align="center">
     Web application for the project <strong><a href="https://uspesnyprvnacek.cz/">Úspěšný prvňáček</a></strong>.
@@ -91,7 +91,7 @@ exhaustive)_:
     lecturer,
 -   notification of the next lecture payment,
 -   lecture number computation with respect to clients' attendances,
--   searching for clients (fuzzy searching)
+-   searching for clients (fuzzy searching),
 -   course and attendance state configuration including e.g. an intuitive course color selection,
 -   integration with the API of _Fio bank_ – on the main page there is a pretty overview of the
     latest bank transactions,
@@ -152,11 +152,10 @@ Main tools used for the frontend development:
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
 -   [Typescript 5](https://www.typescriptlang.org/) – static type checking,
 -   [vanilla-extract](https://vanilla-extract.style/) - type-safe static CSS,
--   [ESlint 8](https://eslint.org/) and [stylelint](https://stylelint.io/) – linters for static code
-    analysis,
+-   [ESlint 8](https://eslint.org/) – linter for static code analysis,
 -   [Babel 7](https://babeljs.io/),
 -   [husky](https://github.com/typicode/husky) and
-    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (eslint, stylelint)
+    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (eslint, prettier)
 -   and [React Hot Loader](https://github.com/gaearon/react-hot-loader) – for
     [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
@@ -461,9 +460,9 @@ The instances `staging` and `demo` were terminated without replacement.
 
 ### Containerization
 
-Since the app was historically deployed to [Heroku PaaS](https://www.heroku.com/) using theirs
-[Builpacks](https://devcenter.heroku.com/articles/buildpacks), it didn't use any form of
-containerization. This approach had it's advantages and disadvantages. However, with the arrival of
+Since the app was historically deployed to [Heroku PaaS](https://www.heroku.com/) using their
+[Buildpacks](https://devcenter.heroku.com/articles/buildpacks), it didn't use any form of
+containerization. This approach had its advantages and disadvantages. However, with the arrival of
 other PaaS like [Fly.io](https://fly.io/) migration to container approach was required. These
 efforts led to fully containerized app based on Docker (and published image in Github Container
 Registry). With the help of the newly introduced Docker Compose V2 the README Install & Run
