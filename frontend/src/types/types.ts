@@ -18,7 +18,6 @@ export type CustomRouteProps = RouteProps & {
 
 /** React prop pro QA (využívá Selenium). */
 export type QA = {
-     
     "data-qa"?: string
 }
 
