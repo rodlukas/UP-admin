@@ -105,24 +105,24 @@ globalStyle(".badge-light", {
 
 // vychozi zluta je spatne citelna s bilym textem
 globalStyle(".Toastify__toast--warning", {
-    background: "#e7b90f",
+    background: "#e7b90f !important",
 })
 
 // vychozi text podle bootstrapu, nikoliv podle toastify
 globalStyle(".Toastify__toast", {
-    fontFamily: "unset",
+    fontFamily: "unset !important",
 })
 
 // aby notifikace neprekryvala menu
 globalStyle(".Toastify__toast-container--top-right", {
-    top: "unset",
+    top: "unset !important",
 })
 
 /**************************** DJANGO-DEBUG-TOOLBAR ****************************/
 
 // zaridi, aby tlacitko DDT nikdy neprekazelo notifikacim (to je dulezite predevsim pro UI testy)
 globalStyle("#djDebugToolbarHandle", {
-    top: "380px",
+    top: "380px !important",
 })
 
 /**************************** GDPR ****************************/
@@ -131,7 +131,7 @@ globalStyle("#djDebugToolbarHandle", {
 globalStyle(
     ".gdpr [data-gdpr], .gdpr .memberships__option, .gdpr .client__option, .gdpr .memberships__multi-value__label, .gdpr .client__single-value",
     {
-        backgroundColor: "currentcolor",
+        backgroundColor: "currentcolor !important",
         userSelect: "none",
     },
 )

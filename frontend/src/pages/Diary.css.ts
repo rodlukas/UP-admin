@@ -29,7 +29,7 @@ export const arrowBtn = style({
     fontSize: "2rem",
     selectors: {
         "&:hover": {
-            color: "#5a6268",
+            color: "#5a6268 !important",
         },
     },
 })
