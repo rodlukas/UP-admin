@@ -102,7 +102,9 @@ module.exports = {
         new VanillaExtractPlugin({
             identifiers: isProduction ? "short" : "debug",
         }),
-        new ESLintPlugin({ extensions: ["js", "jsx", "ts", "tsx"] }),
+        new ESLintPlugin({
+            extensions: ["js", "jsx", "ts", "tsx"],
+        }),
         new MiniCssExtractPlugin({
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
             chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",

@@ -24,9 +24,9 @@ globalStyle(`${attendances} p`, {
 export const attendancesGroup = style({})
 
 export const clientName = style({
+    marginRight: "0.2rem",
     fontSize: "1.25rem",
     fontWeight: 500,
-    marginRight: "0.2rem",
     selectors: {
         [`${attendancesGroup} &`]: {
             fontSize: "1.15rem",

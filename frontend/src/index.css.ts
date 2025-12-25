@@ -47,9 +47,9 @@ globalStyle("h3", {
 
 // hvezdicka oznacujici povinna pole
 globalStyle(".form-group.required .col-form-label::after", {
+    marginLeft: "0.3em",
     color: "#dc3545",
     content: '"*"',
-    marginLeft: "0.3em",
 })
 
 globalStyle("label", {
@@ -79,17 +79,17 @@ globalStyle(".table th", {
 })
 
 globalStyle(".table .thead-light th", {
-    backgroundColor: "#d7d6d6",
     borderColor: "#bbbec2",
+    backgroundColor: "#d7d6d6",
     color: "#41464b",
 })
 
 /**************************** BADGE ****************************/
 globalStyle(".badge", {
-    fontSize: "1rem",
-    fontWeight: 600,
     verticalAlign: "bottom",
-    whiteSpace: "normal", // aby se text zalamoval a nepretekal
+    whiteSpace: "normal",
+    fontSize: "1rem",
+    fontWeight: 600, // aby se text zalamoval a nepretekal
 })
 
 globalStyle("h1 .badge", {
@@ -105,24 +105,24 @@ globalStyle(".badge-light", {
 
 // vychozi zluta je spatne citelna s bilym textem
 globalStyle(".Toastify__toast--warning", {
-    background: "#e7b90f",
+    background: "#e7b90f !important",
 })
 
 // vychozi text podle bootstrapu, nikoliv podle toastify
 globalStyle(".Toastify__toast", {
-    fontFamily: "unset",
+    fontFamily: "unset !important",
 })
 
 // aby notifikace neprekryvala menu
 globalStyle(".Toastify__toast-container--top-right", {
-    top: "unset",
+    top: "unset !important",
 })
 
 /**************************** DJANGO-DEBUG-TOOLBAR ****************************/
 
 // zaridi, aby tlacitko DDT nikdy neprekazelo notifikacim (to je dulezite predevsim pro UI testy)
 globalStyle("#djDebugToolbarHandle", {
-    top: "380px",
+    top: "380px !important",
 })
 
 /**************************** GDPR ****************************/
@@ -131,7 +131,7 @@ globalStyle("#djDebugToolbarHandle", {
 globalStyle(
     ".gdpr [data-gdpr], .gdpr .memberships__option, .gdpr .client__option, .gdpr .memberships__multi-value__label, .gdpr .client__single-value",
     {
-        backgroundColor: "currentcolor",
+        backgroundColor: "currentcolor !important",
         userSelect: "none",
     },
 )

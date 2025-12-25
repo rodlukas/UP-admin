@@ -23,13 +23,13 @@ export const diaryDay = style({
 })
 
 export const arrowBtn = style({
+    transition: "color 0.15s ease-in-out",
+    marginTop: "0.15rem",
     cursor: "pointer",
     fontSize: "2rem",
-    marginTop: "0.15rem",
-    transition: "color 0.15s ease-in-out",
     selectors: {
         "&:hover": {
-            color: "#5a6268",
+            color: "#5a6268 !important",
         },
     },
 })

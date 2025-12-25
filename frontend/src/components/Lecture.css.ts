@@ -11,24 +11,24 @@ export const lectureCanceled = style({
 })
 
 globalStyle(`${lectureCanceled} h4 span`, {
-    display: "inline-block",
     position: "relative",
+    display: "inline-block",
 })
 
 globalStyle(`${lectureCanceled} h4 span::after`, {
+    position: "absolute",
+    top: "50%",
+    right: 0,
     borderBottom: "2px solid rgb(255 0 0 / 0.6)",
+    width: "100%",
     color: "#fff",
     content: '""',
-    position: "absolute",
-    right: 0,
-    top: "50%",
-    width: "100%",
 })
 
 export const lectureHeading = style({
-    alignItems: "center",
     display: "flex",
     flexFlow: "row",
+    alignItems: "center",
     justifyContent: "space-between",
     marginBottom: "0.1rem",
     padding: "0 0 0 1rem",
@@ -49,8 +49,8 @@ export const lectureContent = style({
 })
 
 globalStyle(`${lectureContent} h5`, {
-    marginBottom: "0.2rem",
     marginTop: "0.4rem",
+    marginBottom: "0.2rem",
 })
 
 export const lectureNumber = style({

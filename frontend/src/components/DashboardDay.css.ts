@@ -36,7 +36,7 @@ export const lectureNumber = style({
 })
 
 export const lectureFree = style({
-    paddingTop: "1rem",
+    paddingTop: "1rem !important",
 })
 
 export const dashboardDayWrapper = style({
