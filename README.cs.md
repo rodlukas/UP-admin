@@ -146,10 +146,11 @@ Vývoj frontendu je postaven především na:
 
 -   [Webpack 5](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
     [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
--   [Babel 7](https://babeljs.io/),
 -   [Typescript 5](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
+-   [vanilla-extract](https://vanilla-extract.style/) - typově bezpečná statická CSS,
 -   [ESlint 8](https://eslint.org/) a [stylelint](https://stylelint.io/) – lintery pro statickou
     analýzu kódu,
+-   [Babel 7](https://babeljs.io/),
 -   [husky](https://github.com/typicode/husky) a
     [lint-staged](https://github.com/okonet/lint-staged) – pre-commit kontroly (eslint, stylelint)
 -   a [React Hot Loader](https://github.com/gaearon/react-hot-loader) – pro

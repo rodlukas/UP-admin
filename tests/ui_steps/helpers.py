@@ -60,20 +60,8 @@ def get_tooltip_text(driver, element):
 
 
 def check_class_included(classes, class_to_search):
-    """
-    Zkontroluje, zda je hledaná třída obsažena v seznamu tříd.
-    Pro CSS Modules hledá název uvnitř názvů tříd (substring match),
-    protože CSS Modules přidávají prefix/suffix k názvům tříd.
-    """
     classes_list = classes.split()
-    # Zkus nejdřív přesný match
-    if class_to_search in classes_list:
-        return True
-    # Pro CSS Modules: hledej substring v názvech tříd
-    for class_name in classes_list:
-        if class_to_search in class_name:
-            return True
-    return False
+    return class_to_search in classes_list
 
 
 def wait_form_settings_visible(driver):

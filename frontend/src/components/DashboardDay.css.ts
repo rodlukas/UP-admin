@@ -16,7 +16,6 @@ export const celebrationNone = style({
     },
 })
 
-// Styly pro zrušené lekce v DashboardDay
 export const lectureCanceledDashboardday = style({})
 
 globalStyle(`${lectureCanceledDashboardday} h4 span::after`, {

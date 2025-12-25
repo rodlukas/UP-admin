@@ -103,8 +103,6 @@ module.exports = {
             identifiers: isProduction ? "short" : "debug",
         }),
         new ESLintPlugin({ extensions: ["js", "jsx", "ts", "tsx"] }),
-        // StylelintPlugin removed - vanilla-extract .css.ts files are validated by TypeScript
-        // and vanilla-extract's own validation. Stylelint only works with plain CSS files.
         new MiniCssExtractPlugin({
             filename: isProduction ? `[name].[contenthash:8].css` : "[name].css",
             chunkFilename: isProduction ? `[name].[contenthash:8].chunk.css` : "[name].chunk.css",
