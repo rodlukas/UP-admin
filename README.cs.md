@@ -265,7 +265,7 @@ Minimální požadavky jsou:
     git checkout $(git describe --tags `git rev-list --tags --max-count=1`)
     ```
 
-2.  **Vytvořte vaší lokální konfigurační prostředí ze vzorové konfigurace `.env.template`**:
+2.  **Vytvořte vaše lokální konfigurační prostředí ze vzorové konfigurace `.env.template`**:
 
     ```bash
     cp .env.template .env
@@ -325,7 +325,7 @@ Aplikaci také můžete spustit pouze s Dockerem bez Docker Compose V2, ale je t
     unzip frontend.zip && rm frontend.zip
     ```
 
-3.  **Vytvořte vaší lokální konfiguraci prostředí ze vzorové konfigurace `.env.template`**:
+3.  **Vytvořte vaše lokální konfiguraci prostředí ze vzorové konfigurace `.env.template`**:
 
     ```bash
     cp .env.template .env
@@ -359,7 +359,7 @@ Aplikaci také můžete spustit pouze s Dockerem bez Docker Compose V2, ale je t
     python manage.py createsuperuser
     ```
 
-8.  💡 _(NEPOVINNÉ)_ Na závěr můžeme ještě **naplnit naší databázi
+8.  💡 _(NEPOVINNÉ)_ Na závěr můžeme ještě **naplnit naši databázi
     [předpřipravenými vzorovými daty](scripts/sql/sample_data.pgsql)**, která ukážou fungování
     aplikace a usnadní první použití (obsahují několik klientů, skupin, lekcí, zájemců, kurzů a
     stavů účasti):
