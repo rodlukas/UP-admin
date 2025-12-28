@@ -103,6 +103,7 @@ module.exports = {
             identifiers: isProduction ? "short" : "debug",
         }),
         new ESLintPlugin({
+            failOnError: isProduction,
             extensions: ["js", "jsx", "ts", "tsx"],
         }),
         new MiniCssExtractPlugin({
