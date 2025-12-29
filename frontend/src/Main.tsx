@@ -110,7 +110,7 @@ const Main: React.FC = () => {
                         </Badge>
                     )}
                     {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}
-                    {authContext.isAuth && <NavbarToggler onClick={toggleNavbar} />}
+                    <NavbarToggler onClick={toggleNavbar} />
                     <Collapse isOpen={isMenuOpened} navbar>
                         <Menu
                             closeNavbar={closeNavbar}
@@ -125,11 +125,7 @@ const Main: React.FC = () => {
                     [styles.isAuthenticated]: authContext.isAuth,
                 })}>
                 <ErrorBoundary>
-                    <ToastContainer
-                        position="top-right"
-                        theme="colored"
-                        transition={Slide}
-                    />
+                    <ToastContainer position="top-right" theme="colored" transition={Slide} />
                     <Search
                         foundResults={foundResults}
                         searchVal={searchVal}
