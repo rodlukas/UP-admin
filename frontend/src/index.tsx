@@ -10,7 +10,6 @@ import { Router } from "react-router-dom"
 
 import { createQueryClient } from "./api/queryClient"
 import { AuthProvider } from "./auth/AuthContext"
-import GA from "./components/GoogleAnalytics"
 import { ClientsActiveProvider } from "./contexts/ClientsActiveContext"
 import { GroupsActiveProvider } from "./contexts/GroupsActiveContext"
 import { getEnvName, isHosted } from "./global/funcEnvironments"
@@ -39,7 +38,6 @@ const App: React.FC = () => (
     <QueryClientProvider client={queryClient}>
         <Router history={history}>
             <ErrorBoundary>
-                {GA.init() && <GA.RouteTracker />}
                 <AuthProvider>
                     <ClientsActiveProvider>
                         <GroupsActiveProvider>
