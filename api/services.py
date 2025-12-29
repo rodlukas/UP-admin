@@ -10,7 +10,7 @@ from rest_framework.response import Response
 class Bank:
     """
     Zprostředkovává komunikaci s Fio API pro získání seznamu posledních transakcí.
-    Postaveno na Fio API v1.6.21 (13. 2. 2020).
+    Postaveno na Fio API v1.9 (15.10.2025).
     Dokumentace Fio API: https://www.fio.cz/docs/cz/API_Bankovnictvi.pdf
     """
 
@@ -24,6 +24,7 @@ class Bank:
         status.HTTP_500_INTERNAL_SERVER_ERROR: "neexistující/neplatný token",
         status.HTTP_503_SERVICE_UNAVAILABLE: "API banky nefunguje",
         status.HTTP_404_NOT_FOUND: "špatně zaslaný dotaz na banku",
+        status.HTTP_413_REQUEST_ENTITY_TOO_LARGE: "příliš mnoho transakcí",
     }
 
     def get_transactions(self) -> Response:

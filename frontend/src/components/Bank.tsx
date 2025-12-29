@@ -170,7 +170,7 @@ const Bank: React.FC = () => {
                 </div>
             </ListGroupItem>
             <ListGroupItem>
-                <Table responsive striped>
+                <Table responsive striped borderless>
                     <thead>
                         <tr>
                             <th>Poznámka</th>
@@ -181,7 +181,7 @@ const Bank: React.FC = () => {
                     </thead>
                     <tbody>{renderTableBody()}</tbody>
                 </Table>
-                <div className="text-center text-muted fst-italic">
+                <div className="text-center text-muted mt-3">
                     <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší než{" "}
                     <UncontrolledTooltipWrapper target="Bank_days">
                         {bankDataApi.accountStatement.info.dateStart

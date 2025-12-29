@@ -1,15 +1,26 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faLock, faUser } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Redirect } from "react-router-dom"
-import { Card, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap"
+import {
+    Card,
+    Container,
+    Form,
+    FormGroup,
+    Input,
+    InputGroup,
+    InputGroupText,
+    Label,
+} from "reactstrap"
 
-import APP_URLS from "../APP_URLS"
 import { useAuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
-import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import useForm from "../hooks/useForm"
 import { AuthorizationType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
+
+import * as styles from "./Login.css"
 
 /** Stránka s přihlášením. */
 const Login: React.FC<CustomRouteComponentProps> = (props) => {
@@ -57,51 +68,67 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
         return <Loading text="Probíhá přihlašování" />
     }
     return (
-        <Container>
-            <Heading title={APP_URLS.prihlasit.title} />
-            <Row>
-                <Col md="9" lg="6">
-                    <Card className="p-4">
-                        <Form onSubmit={handleSubmit} data-qa="form_login">
-                            <FormGroup row>
-                                <Label for="username" sm={4}>
-                                    Uživatelské jméno
+        <Container className={styles.loginContainer}>
+            <Card className={styles.loginCard}>
+                <div className={styles.logoContainer}>
+                    <img
+                        src="/static/admin/android-chrome-512x512.png"
+                        alt="ÚPadmin Logo"
+                        className={styles.logo}
+                    />
+                </div>
+                <h1 className={styles.title}>
+                    ÚP<sub>admin</sub>
+                </h1>
+                <p className={styles.subtitle}>Přihlaste se do administračního systému</p>
+                <Form onSubmit={handleSubmit} data-qa="form_login">
+                    <FormGroup>
+                        <InputGroup>
+                            <InputGroupText>
+                                <Label for="username">
+                                    <FontAwesomeIcon icon={faUser} fixedWidth />
                                 </Label>
-                                <Col sm={8}>
-                                    <Input
-                                        type="text"
-                                        id="username"
-                                        value={values.username}
-                                        innerRef={usernameField}
-                                        onChange={handleChange}
-                                        required
-                                        autoCapitalize="none"
-                                        autoFocus
-                                        data-qa="login_field_username"
-                                    />
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label for="password" sm={4}>
-                                    Heslo
+                            </InputGroupText>
+                            <Input
+                                type="text"
+                                id="username"
+                                value={values.username}
+                                innerRef={usernameField}
+                                onChange={handleChange}
+                                required
+                                autoCapitalize="none"
+                                autoFocus
+                                placeholder="Uživatelské jméno"
+                                data-qa="login_field_username"
+                            />
+                        </InputGroup>
+                    </FormGroup>
+                    <FormGroup>
+                        <InputGroup>
+                            <InputGroupText>
+                                <Label for="password">
+                                    <FontAwesomeIcon icon={faLock} fixedWidth />
                                 </Label>
-                                <Col sm={8}>
-                                    <Input
-                                        type="password"
-                                        id="password"
-                                        value={values.password}
-                                        innerRef={passwordField}
-                                        onChange={handleChange}
-                                        required
-                                        data-qa="login_field_password"
-                                    />
-                                </Col>
-                            </FormGroup>
-                            <SubmitButton data-qa="button_submit_login" content="Přihlásit" />
-                        </Form>
-                    </Card>
-                </Col>
-            </Row>
+                            </InputGroupText>
+                            <Input
+                                type="password"
+                                id="password"
+                                value={values.password}
+                                innerRef={passwordField}
+                                onChange={handleChange}
+                                required
+                                placeholder="Heslo"
+                                data-qa="login_field_password"
+                            />
+                        </InputGroup>
+                    </FormGroup>
+                    <SubmitButton
+                        data-qa="button_submit_login"
+                        content="Přihlásit"
+                        className={styles.submitButton}
+                    />
+                </Form>
+            </Card>
         </Container>
     )
 }

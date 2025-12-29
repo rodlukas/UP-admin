@@ -112,40 +112,46 @@ const Settings: React.FC<Props> = () => {
                         <Row>
                             <Col md={6}>
                                 <h2>Stavy účasti</h2>
-                                <Table striped responsive size="sm" className="table-custom">
-                                    <thead className="table-light">
-                                        <tr>
-                                            <th>Název</th>
-                                            <th className="text-center">Viditelný</th>
-                                            <th className="text-end text-md-end">Akce</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {attendanceStatesContext.attendancestates.map(
-                                            (attendancestate) => (
-                                                <tr
-                                                    key={attendancestate.id}
-                                                    data-qa="attendancestate">
-                                                    <td data-qa="attendancestate_name">
-                                                        {attendancestate.name}
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <Visible
-                                                            visible={attendancestate.visible}
-                                                            data-qa="attendancestate_visible"
-                                                        />
-                                                    </td>
-                                                    <td className="text-end text-md-end">
-                                                        <ModalSettings
-                                                            TYPE={EDIT_TYPE.STATE}
-                                                            currentObject={attendancestate}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            ),
-                                        )}
-                                    </tbody>
-                                </Table>
+                                {attendanceStatesContext.attendancestates.length > 0 && (
+                                    <Table
+                                        striped
+                                        responsive
+                                        size="sm"
+                                        className="table-custom table-shadow">
+                                        <thead className="table-light">
+                                            <tr>
+                                                <th>Název</th>
+                                                <th className="text-center">Viditelný</th>
+                                                <th className="text-end text-md-end">Akce</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {attendanceStatesContext.attendancestates.map(
+                                                (attendancestate) => (
+                                                    <tr
+                                                        key={attendancestate.id}
+                                                        data-qa="attendancestate">
+                                                        <td data-qa="attendancestate_name">
+                                                            {attendancestate.name}
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <Visible
+                                                                visible={attendancestate.visible}
+                                                                data-qa="attendancestate_visible"
+                                                            />
+                                                        </td>
+                                                        <td className="text-end text-md-end">
+                                                            <ModalSettings
+                                                                TYPE={EDIT_TYPE.STATE}
+                                                                currentObject={attendancestate}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                ),
+                                            )}
+                                        </tbody>
+                                    </Table>
+                                )}
                                 {attendanceStatesContext.attendancestates.length === 0 && (
                                     <p className="text-muted text-center">Žádné stavy účasti</p>
                                 )}
@@ -203,9 +209,7 @@ const Settings: React.FC<Props> = () => {
                                     <ListGroupItem>
                                         <Row>
                                             <Label for="state_excused_id" sm={7}>
-                                                <span className="fw-bold">
-                                                    „klient je omluven“
-                                                </span>
+                                                <span className="fw-bold">„klient je omluven“</span>
                                             </Label>
                                             <Col sm={5}>
                                                 <CustomInputWrapper
@@ -236,48 +240,54 @@ const Settings: React.FC<Props> = () => {
                             </Col>
                             <Col md={6}>
                                 <h2>Kurzy</h2>
-                                <Table striped responsive size="sm" className="table-custom">
-                                    <thead className="table-light">
-                                        <tr>
-                                            <th>Název</th>
-                                            <th className="text-center">Viditelný</th>
-                                            <th className="text-center">Barva</th>
-                                            <th className="text-center">Trvání</th>
-                                            <th className="text-end text-md-end">Akce</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {courses.map((course) => (
-                                            <tr key={course.id} data-qa="course">
-                                                <td data-qa="course_name">{course.name}</td>
-                                                <td className="text-center">
-                                                    <Visible
-                                                        visible={course.visible}
-                                                        data-qa="course_visible"
-                                                    />
-                                                </td>
-                                                <td className="text-center">
-                                                    <CourseCircle
-                                                        color={course.color}
-                                                        size={1.7}
-                                                        showTitle
-                                                    />
-                                                </td>
-                                                <td
-                                                    data-qa="course_duration"
-                                                    className="text-center">
-                                                    {course.duration}
-                                                </td>
-                                                <td className="text-end text-md-end">
-                                                    <ModalSettings
-                                                        TYPE={EDIT_TYPE.COURSE}
-                                                        currentObject={course}
-                                                    />
-                                                </td>
+                                {courses.length > 0 && (
+                                    <Table
+                                        striped
+                                        responsive
+                                        size="sm"
+                                        className="table-custom table-shadow">
+                                        <thead className="table-light">
+                                            <tr>
+                                                <th>Název</th>
+                                                <th className="text-center">Viditelný</th>
+                                                <th className="text-center">Barva</th>
+                                                <th className="text-center">Trvání (min.)</th>
+                                                <th className="text-end text-md-end">Akce</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                        </thead>
+                                        <tbody>
+                                            {courses.map((course) => (
+                                                <tr key={course.id} data-qa="course">
+                                                    <td data-qa="course_name">{course.name}</td>
+                                                    <td className="text-center">
+                                                        <Visible
+                                                            visible={course.visible}
+                                                            data-qa="course_visible"
+                                                        />
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <CourseCircle
+                                                            color={course.color}
+                                                            size={1.7}
+                                                            showTitle
+                                                        />
+                                                    </td>
+                                                    <td
+                                                        data-qa="course_duration"
+                                                        className="text-center">
+                                                        {course.duration}
+                                                    </td>
+                                                    <td className="text-end text-md-end">
+                                                        <ModalSettings
+                                                            TYPE={EDIT_TYPE.COURSE}
+                                                            currentObject={course}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                )}
                                 {courses.length === 0 && (
                                     <p className="text-muted text-center">Žádné kurzy</p>
                                 )}

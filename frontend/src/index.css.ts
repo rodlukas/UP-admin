@@ -4,13 +4,13 @@ globalStyle("html, body, .main, .root", {
     backgroundColor: "#ecf0f5",
 })
 
-globalStyle(".main", {
-    paddingTop: "3.5rem", // 56px
-})
-
 // aby tlacitka s odkazem nemely pointer
 globalStyle("a .btn.disabled", {
     cursor: "default",
+})
+
+globalStyle(".list-group, .table-responsive:has(>.table-shadow)", {
+    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
 })
 
 globalStyle(".breadcrumb", {
@@ -100,6 +100,16 @@ globalStyle(".table .table-light th", {
     borderColor: "#bbbec2",
     backgroundColor: "#d7d6d6",
     color: "#41464b",
+})
+
+globalStyle(".table", {
+    marginBottom: "0",
+    borderRadius: "0.375rem",
+    overflow: "hidden",
+})
+
+globalStyle(".table-responsive", {
+    borderRadius: "0.375rem",
 })
 
 /**************************** BADGE ****************************/

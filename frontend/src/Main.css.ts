@@ -1,4 +1,4 @@
-import { globalStyle } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
 globalStyle(".navbar .badge", {
     "@media": {
@@ -7,6 +7,10 @@ globalStyle(".navbar .badge", {
             marginRight: "1rem",
         },
     },
+})
+
+export const isAuthenticated = style({
+    paddingTop: "3.5rem", // 56px
 })
 
 globalStyle(".nav-content", {

@@ -584,6 +584,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 value={prepaidCnt}
                                                 required={prepaid}
                                                 onChange={onChange}
+                                                min="1"
                                             />
                                         )}
                                     </>

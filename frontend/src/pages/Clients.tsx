@@ -65,55 +65,59 @@ const Clients: React.FC<Props> = () => {
                         : false
                 }
             />
-            <Table striped size="sm" responsive className="table-custom">
-                <thead className="table-light">
-                    <tr>
-                        <th>Příjmení a jméno</th>
-                        <th className="d-none d-md-table-cell">Telefon</th>
-                        <th style={{ wordBreak: "keep-all" }} className="d-none d-md-table-cell">
-                            E-mail
-                        </th>
-                        <th className="d-none d-sm-table-cell">Poznámka</th>
-                        <th className="text-end text-md-end">Akce</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {isLoading() ? (
+            {getClientsData().length > 0 && (
+                <Table striped size="sm" responsive className="table-custom">
+                    <thead className="table-light">
                         <tr>
-                            <td colSpan={5}>
-                                <Loading />
-                            </td>
+                            <th>Příjmení a jméno</th>
+                            <th className="d-none d-md-table-cell">Telefon</th>
+                            <th
+                                style={{ wordBreak: "keep-all" }}
+                                className="d-none d-md-table-cell">
+                                E-mail
+                            </th>
+                            <th className="d-none d-sm-table-cell">Poznámka</th>
+                            <th className="text-end text-md-end">Akce</th>
                         </tr>
-                    ) : (
-                        <>
-                            {getClientsData().map((client) => (
-                                <tr key={client.id} data-qa="client">
-                                    <td style={{ minWidth: "13em", width: "13em" }}>
-                                        <ClientName client={client} link />
-                                    </td>
-                                    <td
-                                        style={{ minWidth: "7em" }}
-                                        className="d-none d-md-table-cell">
-                                        <ClientPhone phone={client.phone} />
-                                    </td>
-                                    <td className="d-none d-md-table-cell">
-                                        <ClientEmail email={client.email} />
-                                    </td>
-                                    <td className="d-none d-sm-table-cell">
-                                        <ClientNote note={client.note} />
-                                    </td>
-                                    <td className="text-end text-md-end">
-                                        <ModalClients
-                                            currentClient={client}
-                                            refresh={refreshFromModal}
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                        </>
-                    )}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {isLoading() ? (
+                            <tr>
+                                <td colSpan={5}>
+                                    <Loading />
+                                </td>
+                            </tr>
+                        ) : (
+                            <>
+                                {getClientsData().map((client) => (
+                                    <tr key={client.id} data-qa="client">
+                                        <td style={{ minWidth: "13em", width: "13em" }}>
+                                            <ClientName client={client} link />
+                                        </td>
+                                        <td
+                                            style={{ minWidth: "7em" }}
+                                            className="d-none d-md-table-cell">
+                                            <ClientPhone phone={client.phone} />
+                                        </td>
+                                        <td className="d-none d-md-table-cell">
+                                            <ClientEmail email={client.email} />
+                                        </td>
+                                        <td className="d-none d-sm-table-cell">
+                                            <ClientNote note={client.note} />
+                                        </td>
+                                        <td className="text-end text-md-end">
+                                            <ModalClients
+                                                currentClient={client}
+                                                refresh={refreshFromModal}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </>
+                        )}
+                    </tbody>
+                </Table>
+            )}
             {getClientsData().length === 0 && !isLoading() && (
                 <p className="text-muted text-center">Žádní klienti</p>
             )}
