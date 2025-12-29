@@ -1,3 +1,4 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
@@ -76,18 +77,19 @@ const Applications: React.FC<Props> = () => {
                                     data-qa="applications_for_course"
                                     className={styles.course}>
                                     <ListGroupItem
-                                        style={{ background: courseApplications.course.color }}>
+                                        className={styles.courseHeadingItem}
+                                        style={assignInlineVars(styles.applicationsVars, {
+                                            courseBackground: courseApplications.course.color,
+                                            badgeColor: courseApplications.course.color,
+                                        })}>
                                         <h4 className={classNames("mb-0", styles.courseHeading)}>
                                             <span data-qa="application_course">
                                                 {courseApplications.course.name}
                                             </span>{" "}
                                             <Badge
                                                 pill
-                                                style={{
-                                                    color: courseApplications.course.color,
-                                                }}
                                                 className={classNames(
-                                                    "font-weight-bold",
+                                                    "fw-bold",
                                                     styles.courseHeadingBadge,
                                                 )}>
                                                 <span data-qa="applications_for_course_cnt">
@@ -110,6 +112,7 @@ const Applications: React.FC<Props> = () => {
                                                 </Col>
                                                 <Col md="5" className="mt-md-0 mt-1">
                                                     <Badge
+                                                        className="text-dark"
                                                         color="light"
                                                         id="Applications_DateAdded"
                                                         data-qa="application_created_at">
@@ -129,7 +132,7 @@ const Applications: React.FC<Props> = () => {
                                                         />
                                                     )}
                                                 </Col>
-                                                <Col className="text-right mt-1 mt-md-0" md="2">
+                                                <Col className="text-end mt-1 mt-md-0" md="2">
                                                     <ModalApplications
                                                         currentApplication={application}
                                                     />{" "}

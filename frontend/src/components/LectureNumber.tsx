@@ -1,8 +1,11 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 import { Badge } from "reactstrap"
 
 import { LectureType } from "../types/models"
+
+import * as styles from "./LectureNumber.css"
 
 type Props = {
     /** Lekce. */
@@ -11,19 +14,35 @@ type Props = {
     colorize?: boolean
     /** Dodatečná CSS třída. */
     className?: string
+    color?: "secondary" | "light"
 }
 
 /** Komponenta zobrazující pořadové číslo lekce. */
-const LectureNumber: React.FC<Props> = ({ lecture, colorize = false, className }) => {
+const LectureNumber: React.FC<Props> = ({
+    lecture,
+    colorize = false,
+    className,
+    color = "secondary",
+}) => {
     if (lecture.number === null) {
         return null
     }
     return (
         <Badge
-            color="secondary"
+            color={color}
             pill
-            className={classNames("font-weight-bold", className)}
-            style={colorize ? { color: lecture.course.color } : undefined}>
+            className={classNames(
+                "fw-bold",
+                colorize ? styles.lectureNumber : undefined,
+                className,
+            )}
+            style={
+                colorize
+                    ? assignInlineVars(styles.lectureNumberVars, {
+                          color: lecture.course.color,
+                      })
+                    : undefined
+            }>
             {lecture.number}
         </Badge>
     )

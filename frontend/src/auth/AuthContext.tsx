@@ -64,11 +64,11 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                             setIsAuth(false)
                             toast(
                                 <Notification
-                                    type={toast.TYPE.WARNING}
+                                    type="warning"
                                     text="Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!"
                                 />,
                                 {
-                                    type: toast.TYPE.WARNING,
+                                    type: "warning",
                                 },
                             )
                         }

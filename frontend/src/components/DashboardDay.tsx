@@ -1,3 +1,4 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
@@ -71,7 +72,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                 </h4>
                 <ModalLecturesWizard
                     date={props.date}
-                    dropdownClassName="float-right"
+                    dropdownClassName="float-end"
                     dropdownSize="sm"
                     dropdownDirection="up"
                     isFetching={isFetching && !isLoading}
@@ -99,11 +100,13 @@ const DashboardDay: React.FC<Props> = (props) => {
                                     lectureStyles.lectureHeading,
                                     styles.lectureHeading,
                                 )}
-                                style={{ background: lecture.course.color }}>
+                                style={assignInlineVars(styles.dashboardDayVars, {
+                                    courseBackground: lecture.course.color,
+                                })}>
                                 <h4>
                                     <span
                                         id={`Card_CourseDuration_${lecture.id}`}
-                                        className="font-weight-bold">
+                                        className="fw-bold">
                                         {prettyTime(new Date(lecture.start))}
                                     </span>
                                     <UncontrolledTooltipWrapper
@@ -119,6 +122,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                                         lectureStyles.lectureNumber,
                                         styles.lectureNumber,
                                     )}
+                                    color="light"
                                 />
                                 <ModalLectures
                                     object={lecture.group ?? lecture.attendances[0].client}

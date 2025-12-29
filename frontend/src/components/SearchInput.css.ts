@@ -16,10 +16,15 @@ export const search = style({
 })
 
 export const label = style({
+    marginBottom: 0,
     color: "#6c757d",
 })
 
-globalStyle(`${search} input, ${search} ${label}`, {
+export const iconWrapper = style({
+    marginRight: 0,
+})
+
+globalStyle(`${search} input, ${iconWrapper}`, {
     border: 0,
     backgroundColor: "rgb(255 255 255 / 0.07)",
 })
@@ -28,12 +33,12 @@ globalStyle(`${search} input`, {
     color: "white",
 })
 
-globalStyle(`${search} input:focus`, {
-    boxShadow: "none",
-    backgroundColor: "rgb(255 255 255 / 0.11)",
-    color: "white",
+globalStyle(`${search} input::placeholder`, {
+    color: "#6c757d",
 })
 
-export const iconWrapper = style({
-    marginRight: 0,
+globalStyle(`${search} input:focus`, {
+    boxShadow: "none",
+    backgroundColor: "rgb(255 255 255 / 0.03)",
+    color: "white",
 })

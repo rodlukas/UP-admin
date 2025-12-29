@@ -1,8 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSearch } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import classNames from "classnames"
 import * as React from "react"
-import { Input, InputGroup, InputGroupAddon, Label } from "reactstrap"
+import { Input, InputGroup, InputGroupText, Label } from "reactstrap"
 
 import * as styles from "./SearchInput.css"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
@@ -22,14 +21,13 @@ const SearchInput: React.FC<Props> = (props) => {
 
     return (
         <InputGroup className={styles.search}>
-            <InputGroupAddon
+            <InputGroupText
                 id="search-icon-wrapper"
-                addonType="prepend"
                 className={styles.iconWrapper}>
-                <Label className={classNames(styles.label, "input-group-text")} for="search">
+                <Label className={styles.label} for="search">
                     <FontAwesomeIcon icon={faSearch} fixedWidth />
                 </Label>
-            </InputGroupAddon>
+            </InputGroupText>
             <UncontrolledTooltipWrapper placement="left" target="search-icon-wrapper">
                 Vyhledávání klientů
             </UncontrolledTooltipWrapper>

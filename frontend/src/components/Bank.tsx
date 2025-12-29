@@ -42,14 +42,14 @@ const Bank: React.FC = () => {
     const bankDataApi: BankType = bankDataApiRaw
     /** Manuální obnovení dat je zakázané (true). */
     const [isRefreshDisabled, setIsRefreshDisabled] = React.useState(true)
-    const timeoutIdRef = React.useRef<TimeoutType>()
+    const timeoutIdRef = React.useRef<TimeoutType>(undefined)
 
     React.useEffect(() => {
         // po zadanem poctu sekund povol tlacitko refresh
         timeoutIdRef.current = window.setTimeout(
             () => setIsRefreshDisabled(false),
             REFRESH_TIMEOUT * 1000,
-        )
+        ) as TimeoutType
         return () => {
             if (timeoutIdRef.current) {
                 window.clearTimeout(timeoutIdRef.current)
@@ -72,7 +72,7 @@ const Bank: React.FC = () => {
         if (balance === null) {
             return isDataProblem ? "neznámý" : "načítání"
         }
-        return <span className="font-weight-bold text-nowrap">{prettyAmount(balance)}</span>
+        return <span className="fw-bold text-nowrap">{prettyAmount(balance)}</span>
     }
 
     const renderTableBody = (): React.ReactNode => {
@@ -105,11 +105,11 @@ const Bank: React.FC = () => {
                             ))}
                     </td>
                     {!duplicates && <td data-gdpr>{messageObj ? messageObj.value : <NoInfo />}</td>}
-                    <td className="text-right text-nowrap" style={{ minWidth: "6em" }}>
+                    <td className="text-end text-nowrap" style={{ minWidth: "6em" }}>
                         {prettyDateWithDayYearIfDiff(date, true)}
                     </td>
                     <td
-                        className={`${amountClassName} font-weight-bold text-right text-nowrap`}
+                        className={`${amountClassName} fw-bold text-end text-nowrap`}
                         style={{ minWidth: "7em" }}>
                         {prettyAmount(amount)}
                     </td>
@@ -127,7 +127,7 @@ const Bank: React.FC = () => {
                         <>
                             <UncontrolledTooltipWrapper target="Bank_RentWarning">
                                 Na účtu není dostatek peněz (alespoň{" "}
-                                <span className="font-weight-bold text-nowrap">
+                                <span className="fw-bold text-nowrap">
                                     {prettyAmount(rentPrice)}
                                 </span>
                                 ) pro zaplacení nájmu!
@@ -141,9 +141,9 @@ const Bank: React.FC = () => {
                         </>
                     )}
                 </h4>
-                <div className="text-right">
+                <div className="text-end">
                     {bankDataApi.fetch_timestamp !== null && (
-                        <span className="font-italic align-middle mr-1">
+                        <span className="fst-italic align-middle me-1">
                             Čas výpisu:{" "}
                             {prettyTimeWithSeconds(new Date(bankDataApi.fetch_timestamp))}
                         </span>
@@ -175,13 +175,13 @@ const Bank: React.FC = () => {
                         <tr>
                             <th>Poznámka</th>
                             <th>Zpráva pro příjemce</th>
-                            <th className="text-right">Datum</th>
-                            <th className="text-right">Suma</th>
+                            <th className="text-end">Datum</th>
+                            <th className="text-end">Suma</th>
                         </tr>
                     </thead>
                     <tbody>{renderTableBody()}</tbody>
                 </Table>
-                <div className="text-center text-muted font-italic">
+                <div className="text-center text-muted fst-italic">
                     <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší než{" "}
                     <UncontrolledTooltipWrapper target="Bank_days">
                         {bankDataApi.accountStatement.info.dateStart

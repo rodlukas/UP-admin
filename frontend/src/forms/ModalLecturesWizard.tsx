@@ -11,7 +11,6 @@ import {
     ModalHeader,
     UncontrolledButtonDropdown,
 } from "reactstrap"
-import { Direction } from "reactstrap/lib/Dropdown"
 
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
@@ -43,7 +42,7 @@ type Props = {
     /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
     dropdownSize?: string
     /** Směr otevírání dropdownu pro výběr klient/skupina. */
-    dropdownDirection?: Direction
+    dropdownDirection?: "up" | "down" | "left" | "right" | "start" | "end"
     /** Probíhá načítání dat (true) - zobrazí spinner na tlačítku. */
     isFetching?: boolean
 }
@@ -185,13 +184,15 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         <>
             <div className={styles.modalLecturesWizard}>
                 <UncontrolledButtonDropdown
-                    direction={props.dropdownDirection}
+                    {...(props.dropdownDirection
+                        ? { direction: props.dropdownDirection as any }
+                        : {})}
                     className={classNames(props.dropdownClassName, styles.dropdownToggle)}>
                     <DropdownToggle
                         caret
                         size={props.dropdownSize}
                         id={`ModalLecturesWizard_${props.date ?? ""}`}
-                        color="info"
+                        color="primary"
                         disabled={props.isFetching}>
                         <FontAwesomeIcon
                             icon={props.isFetching ? faSpinnerThird : faPlus}
@@ -205,7 +206,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                         target={`ModalLecturesWizard_${props.date ?? ""}`}>
                         {title}
                     </UncontrolledTooltipWrapper>
-                    <DropdownMenu right>
+                    <DropdownMenu end>
                         <DropdownItem onClick={(): void => setClient(true)}>
                             přidat lekci <strong>klienta</strong>...
                         </DropdownItem>

@@ -26,15 +26,15 @@ const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = 
             styles.heading,
             "align-items-center",
         )}>
-        <Col md={6} className={classNames({ "text-md-right": fluid })}>
-            <h1>
+        <Col md={6} className={classNames({ "text-md-end": fluid })}>
+            <h1 className="mb-0">
                 {title}
                 {isFetching && (
                     <FontAwesomeIcon
                         icon={faSpinnerThird}
                         spin
                         size="sm"
-                        className="ml-2 text-muted"
+                        className="ms-2 text-muted"
                         data-qa="loading"
                     />
                 )}
@@ -42,7 +42,7 @@ const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = 
         </Col>
         <Col
             md={6}
-            className={classNames({ "text-md-left": fluid }, styles.headingButtons, "text-right")}>
+            className={classNames({ "text-md-start": fluid }, styles.headingButtons, "text-end")}>
             {buttons}
         </Col>
     </Row>

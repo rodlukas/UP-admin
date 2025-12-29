@@ -38,7 +38,6 @@ const ModalLectures: React.FC<Props> = ({ currentLecture, object, defaultValuesF
                     content="Přidat lekci"
                     onClick={(): void => setShouldModalOpen(true)}
                     data-qa="button_add_lecture"
-                    className={styles.button}
                 />
             )}
             <ModalLecturesCore

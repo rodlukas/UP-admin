@@ -1,4 +1,9 @@
-import { style } from "@vanilla-extract/css"
+import { createThemeContract, style } from "@vanilla-extract/css"
+
+export const applicationsVars = createThemeContract({
+    courseBackground: "",
+    badgeColor: "",
+})
 
 export const course = style({
     selectors: {
@@ -12,7 +17,12 @@ export const courseHeading = style({
     color: "white",
 })
 
+export const courseHeadingItem = style({
+    backgroundColor: `${applicationsVars.courseBackground} !important`,
+})
+
 export const courseHeadingBadge = style({
     marginLeft: "0.3rem",
-    backgroundColor: "white",
+    backgroundColor: "white !important",
+    color: `${applicationsVars.badgeColor} !important`,
 })

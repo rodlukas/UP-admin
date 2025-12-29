@@ -28,7 +28,7 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false 
                 <Badge
                     color="secondary"
                     pill
-                    className={classNames(styles.attendanceNumber, "font-weight-bold")}>
+                    className={classNames(styles.attendanceNumber, "fw-bold")}>
                     {attendance.number}
                 </Badge>{" "}
             </>

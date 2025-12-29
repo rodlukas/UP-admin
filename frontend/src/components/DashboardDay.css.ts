@@ -1,4 +1,8 @@
-import { globalStyle, style } from "@vanilla-extract/css"
+import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
+
+export const dashboardDayVars = createThemeContract({
+    courseBackground: "",
+})
 
 export const lectureGroup = style({
     backgroundColor: "#e7e7e7",
@@ -23,6 +27,7 @@ globalStyle(`${lectureCanceledDashboardday} h4 span::after`, {
 })
 
 export const lectureHeading = style({
+    backgroundColor: `${dashboardDayVars.courseBackground} !important`,
     color: "white",
 })
 

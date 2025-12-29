@@ -126,7 +126,7 @@ const FormApplications: React.FC<Props> = (props) => {
                     <Loading />
                 ) : (
                     <>
-                        <FormGroup row className="required">
+                        <FormGroup row className="form-group-required">
                             <Label for="client" sm={3}>
                                 Klient
                             </Label>
@@ -147,7 +147,7 @@ const FormApplications: React.FC<Props> = (props) => {
                                 />
                             </Col>
                         </FormGroup>
-                        <FormGroup row className="required">
+                        <FormGroup row className="form-group-required">
                             <Label for="course" sm={3}>
                                 Kurz
                             </Label>

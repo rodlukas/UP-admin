@@ -10,7 +10,7 @@ export const attendancePaidButton = style({
 export const attendancePaidButtonSuccess = style({
     selectors: {
         "&:hover": {
-            color: "#218838 !important",
+            color: "#13663f !important",
         },
     },
 })
@@ -18,7 +18,7 @@ export const attendancePaidButtonSuccess = style({
 export const attendancePaidButtonDanger = style({
     selectors: {
         "&:hover": {
-            color: "#c82333 !important",
+            color: "#c72332 !important",
         },
     },
 })

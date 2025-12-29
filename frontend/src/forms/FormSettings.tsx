@@ -4,12 +4,11 @@ import * as React from "react"
 import {
     Alert,
     Col,
-    CustomInput,
     Form,
     FormGroup,
     Input,
     InputGroup,
-    InputGroupAddon,
+    InputGroupText,
     Label,
     ModalBody,
     ModalFooter,
@@ -197,7 +196,7 @@ const FormSettings: React.FC<Props> = (props) => {
                 {isObject(props.object) ? "Úprava" : "Přidání"} {type}u: {name}
             </ModalHeader>
             <ModalBody>
-                <FormGroup row className="required">
+                <FormGroup row className="form-group-required">
                     <Label for="name" sm={3}>
                         Název
                     </Label>
@@ -219,19 +218,21 @@ const FormSettings: React.FC<Props> = (props) => {
                         Viditelnost
                     </Label>
                     <Col sm={9}>
-                        <CustomInput
+                        <Input
                             type="checkbox"
                             id="visible"
-                            label="Bude zobrazováno"
                             checked={visible}
                             onChange={onChange}
                             data-qa="settings_checkbox_visible"
                         />
+                        <Label for="visible" check>
+                            Bude zobrazováno
+                        </Label>
                     </Col>
                 </FormGroup>
                 {isCourse(props.object) && (
                     <>
-                        <FormGroup row className="align-items-center required">
+                        <FormGroup row className="align-items-center form-group-required">
                             <Label for="duration" sm={3} className={styles.labelDuration}>
                                 Trvání (min.){" "}
                                 <small className="text-secondary text-nowrap">
@@ -240,11 +241,11 @@ const FormSettings: React.FC<Props> = (props) => {
                             </Label>
                             <Col sm={9}>
                                 <InputGroup>
-                                    <InputGroupAddon addonType="prepend">
-                                        <Label className="input-group-text" for="duration">
+                                    <InputGroupText>
+                                        <Label for="duration">
                                             <FontAwesomeIcon icon={faHourglass} fixedWidth />
                                         </Label>
-                                    </InputGroupAddon>
+                                    </InputGroupText>
                                     <Input
                                         type="number"
                                         id="duration"
@@ -257,39 +258,44 @@ const FormSettings: React.FC<Props> = (props) => {
                                 </InputGroup>
                             </Col>
                         </FormGroup>
-                        <FormGroup row className="align-items-center required">
+                        <FormGroup row className="align-items-center form-group-required">
                             <ColorPicker color={color!} onChange={onChangeColor} />
                         </FormGroup>
                     </>
                 )}
                 {isObject(props.object) && (
-                    <FormGroup row className="border-top pt-3">
-                        <Label sm={3} className="text-muted">
-                            Smazání
-                        </Label>
-                        <Col sm={9}>
-                            <Alert color="warning">
-                                <p>
-                                    Lze smazat pouze pokud není příslušný {type} použit u žádné
-                                    lekce
-                                    {isCourse(props.object) &&
-                                        ", smažou se také všichni zájemci o tento kurz"}
-                                </p>
-                                <DeleteButton
-                                    content={type}
-                                    onClick={(): void => {
-                                        if (
-                                            isObject(props.object) &&
-                                            window.confirm(`Opravdu chcete smazat ${type} ${name}?`)
-                                        ) {
-                                            handleDelete(props.object.id)
-                                        }
-                                    }}
-                                    data-qa="settings_button_delete"
-                                />
-                            </Alert>
-                        </Col>
-                    </FormGroup>
+                    <>
+                        <hr />
+                        <FormGroup row>
+                            <Label sm={3} className="text-muted">
+                                Smazání
+                            </Label>
+                            <Col sm={9}>
+                                <Alert color="warning">
+                                    <p>
+                                        Lze smazat pouze pokud není příslušný {type} použit u žádné
+                                        lekce
+                                        {isCourse(props.object) &&
+                                            ", smažou se také všichni zájemci o tento kurz"}
+                                    </p>
+                                    <DeleteButton
+                                        content={type}
+                                        onClick={(): void => {
+                                            if (
+                                                isObject(props.object) &&
+                                                window.confirm(
+                                                    `Opravdu chcete smazat ${type} ${name}?`,
+                                                )
+                                            ) {
+                                                handleDelete(props.object.id)
+                                            }
+                                        }}
+                                        data-qa="settings_button_delete"
+                                    />
+                                </Alert>
+                            </Col>
+                        </FormGroup>
+                    </>
                 )}
             </ModalBody>
             <ModalFooter>

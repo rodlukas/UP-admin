@@ -1,13 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSackDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import classNames from "classnames"
 import * as React from "react"
 import {
     Col,
     Container,
     Input,
     InputGroup,
-    InputGroupAddon,
+    InputGroupText,
     Label,
     ListGroup,
     ListGroupItem,
@@ -91,18 +90,13 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                     )}
                                 </h5>
                                 <InputGroup>
-                                    <InputGroupAddon
-                                        addonType="prepend"
-                                        id={`PrepaidCounters${membership.id}`}>
-                                        <Label
-                                            className={classNames("input-group-text", {
-                                                [styles.prepaidCountersLabelPrepaid]:
-                                                    prepaidCnts[membership.id] > 0,
-                                            })}
-                                            for={`prepaid_cnt${membership.id}`}>
+                                    <InputGroupText
+                                        id={`PrepaidCounters${membership.id}`}
+                                        className={styles.prepaidCountersInputGroupLabel}>
+                                        <Label for={`prepaid_cnt${membership.id}`}>
                                             <FontAwesomeIcon icon={faSackDollar} fixedWidth />
                                         </Label>
-                                    </InputGroupAddon>
+                                    </InputGroupText>
                                     <Input
                                         type="number"
                                         value={prepaidCnts[membership.id]}

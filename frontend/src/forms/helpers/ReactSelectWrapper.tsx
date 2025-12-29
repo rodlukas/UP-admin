@@ -10,7 +10,7 @@ import { TEXTS } from "../../global/constants"
  */
 const Input = <Option, IsMulti extends boolean = false>(
     props: InputProps<Option, IsMulti>,
-): JSX.Element => {
+): React.ReactElement => {
     const [menuWasOpen, setMenuWasOpen] = React.useState(false)
 
     return (
@@ -35,19 +35,20 @@ const Input = <Option, IsMulti extends boolean = false>(
     )
 }
 
-const FOCUS_BORDER_COLOR = "#80bdff"
-const FOCUS_BOX_SHADOW = "0 0 0 0.2rem rgba(0, 123, 255, 0.25)"
+const FOCUS_BORDER_COLOR = "#86b7fe"
+const FOCUS_BOX_SHADOW = "0 0 0 0.25rem rgba(13, 110, 253, 0.25)"
+const BORDER_COLOR = "#dee2e6"
 
 /** Wrapper pro react-select komponentu pro použití nadefinovaného react-selectu napříč aplikací. */
 const ReactSelectWrapper = <Option, IsMulti extends boolean = false>(
     props: Props<Option, IsMulti>,
-): JSX.Element => (
+): React.ReactElement => (
     <Select<Option, IsMulti>
         {...props}
         styles={{
             ...props.styles,
             ...{
-                // Boostrap 4 styling pro react-select
+                // Boostrap 5 styling pro react-select
                 control: (provided, state) => {
                     const focusStyles = state.isFocused
                         ? {
@@ -59,6 +60,7 @@ const ReactSelectWrapper = <Option, IsMulti extends boolean = false>(
 
                     return {
                         ...provided,
+                        borderColor: BORDER_COLOR,
                         "&:hover": {
                             boxShadow: state.isFocused ? FOCUS_BOX_SHADOW : "none",
                             outline: 0,

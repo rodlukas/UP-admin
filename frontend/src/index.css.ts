@@ -27,6 +27,15 @@ globalStyle(".modal", {
     WebkitOverflowScrolling: "touch",
 })
 
+globalStyle(".modal hr", {
+    opacity: 1,
+    borderColor: "#dee2e6",
+})
+
+globalStyle(".list-group-item", {
+    borderColor: "rgba(0,0,0,.125)",
+})
+
 globalStyle("b", {
     fontWeight: 600,
 })
@@ -46,7 +55,7 @@ globalStyle("h3", {
 /**************************** FORMS ****************************/
 
 // hvezdicka oznacujici povinna pole
-globalStyle(".form-group.required .col-form-label::after", {
+globalStyle(".form-group-required .col-form-label::after", {
     marginLeft: "0.3em",
     color: "#dc3545",
     content: '"*"',
@@ -57,8 +66,17 @@ globalStyle("label", {
 })
 
 // pro spravne zarovnani labelu u checkboxu
-globalStyle(".custom-control", {
+// V Bootstrap 5 se .custom-control změnilo na .form-check
+globalStyle(".form-check", {
     display: "inline-block",
+})
+
+globalStyle(".form-check-label", {
+    marginLeft: "0.3em",
+})
+
+globalStyle(".input-group-text .form-label", {
+    marginBottom: 0,
 })
 
 /**************************** TABLE ****************************/
@@ -78,7 +96,7 @@ globalStyle(".table th", {
     borderTop: 0,
 })
 
-globalStyle(".table .thead-light th", {
+globalStyle(".table .table-light th", {
     borderColor: "#bbbec2",
     backgroundColor: "#d7d6d6",
     color: "#41464b",
@@ -101,10 +119,14 @@ globalStyle(".badge-light", {
     backgroundColor: "#eaeaea",
 })
 
+globalStyle(".rounded-pill", {
+    padding: ".25em .6em",
+})
+
 /**************************** REACT-TOASTIFY ****************************/
 
 // vychozi zluta je spatne citelna s bilym textem
-globalStyle(".Toastify__toast--warning", {
+globalStyle('.Toastify__toast[data-type="warning"]', {
     background: "#e7b90f !important",
 })
 

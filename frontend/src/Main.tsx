@@ -2,7 +2,7 @@ import classNames from "classnames"
 import Fuse, { IFuseOptions, FuseResult } from "fuse.js"
 import * as React from "react"
 import { NavLink as RouterNavLink, Switch, useLocation } from "react-router-dom"
-import { toast, ToastContainer } from "react-toastify"
+import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { Badge, Collapse, Navbar, NavbarBrand, NavbarToggler } from "reactstrap"
 
@@ -98,31 +98,29 @@ const Main: React.FC = () => {
 
     return (
         <div className={getEnvName()}>
-            <Navbar className="bg-dark" expand="lg" dark fixed="top">
-                <div className="container">
-                    <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
-                        ÚP<sub>admin</sub>
-                    </NavbarBrand>
-                    {isEnvLocal() && <Badge color="light">Vývojová verze</Badge>}
-                    {isEnvTesting() && (
-                        <Badge color="primary">
-                            Testing <AppCommit pageId="Main" />
-                        </Badge>
-                    )}
-                    {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}
-                    {authContext.isAuth && <NavbarToggler onClick={toggleNavbar} />}
-                    <Collapse isOpen={isMenuOpened} navbar>
-                        <Menu
-                            closeNavbar={closeNavbar}
-                            onSearchChange={onSearchChange}
-                            searchVal={searchVal}
-                        />
-                    </Collapse>
-                </div>
+            <Navbar className="bg-dark" expand="lg" dark fixed="top" container={true}>
+                <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
+                    ÚP<sub>admin</sub>
+                </NavbarBrand>
+                {isEnvLocal() && <Badge color="light">Vývojová verze</Badge>}
+                {isEnvTesting() && (
+                    <Badge color="primary">
+                        Testing <AppCommit pageId="Main" />
+                    </Badge>
+                )}
+                {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}
+                {authContext.isAuth && <NavbarToggler onClick={toggleNavbar} />}
+                <Collapse isOpen={isMenuOpened} navbar>
+                    <Menu
+                        closeNavbar={closeNavbar}
+                        onSearchChange={onSearchChange}
+                        searchVal={searchVal}
+                    />
+                </Collapse>
             </Navbar>
             <main className="main mb-4">
                 <ErrorBoundary>
-                    <ToastContainer position={toast.POSITION.TOP_RIGHT} />
+                    <ToastContainer position="top-right" theme="colored" />
                     <Search
                         foundResults={foundResults}
                         searchVal={searchVal}

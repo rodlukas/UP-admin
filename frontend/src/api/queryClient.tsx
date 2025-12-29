@@ -1,7 +1,7 @@
-import { MutationCache, QueryClient } from "@tanstack/react-query"
+import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import * as React from "react"
-import { toast, ToastOptions } from "react-toastify"
+import { toast } from "react-toastify"
 
 import APP_URLS from "../APP_URLS"
 import Token from "../auth/Token"
@@ -38,7 +38,7 @@ function getErrorMessage(
             <ul>
                 {Object.keys(djangoError).map((field) => (
                     <li key={field}>
-                        <span className="font-weight-bold">{field}: </span>
+                        <span className="fw-bold">{field}: </span>
                         <span className="font-italic">{String(djangoError[field])}</span>
                     </li>
                 ))}
@@ -83,11 +83,9 @@ function handleError(axiosError: AxiosError): void {
     logErrorToConsole(axiosError, djangoError)
 
     const errorMessage = getErrorMessage(errorResponse, djangoError)
-    const toastOptions: ToastOptions = {
-        type: toast.TYPE.ERROR,
+    toast.error(<Notification text={errorMessage} type="error" />, {
         autoClose: 15000,
-    }
-    toast(<Notification text={errorMessage} type={toast.TYPE.ERROR} />, toastOptions)
+    })
 
     // Speciální zpracování pro určité status kódy
     if (errorResponse) {
@@ -113,17 +111,17 @@ export function createQueryClient(): QueryClient {
             queries: {
                 retry: 1,
                 refetchOnWindowFocus: false,
-                onError: (error: unknown) => {
-                    handleError(error as AxiosError)
-                },
-            },
-            mutations: {
-                onError: (error: unknown) => {
-                    handleError(error as AxiosError)
-                },
             },
         },
+        queryCache: new QueryCache({
+            onError: (error: unknown) => {
+                handleError(error as AxiosError)
+            },
+        }),
         mutationCache: new MutationCache({
+            onError: (error: unknown) => {
+                handleError(error as AxiosError)
+            },
             onSuccess: (_data, _variables, _context, mutation) => {
                 // Invalidujeme všechny queries po každé úspěšné mutaci.
                 // Invalidace pouze refetchuje aktivní queries a označí ostatní jako stale,
@@ -139,8 +137,7 @@ export function createQueryClient(): QueryClient {
                 // Získáme success zprávu z mutation meta, pokud je k dispozici
                 const successMessage = mutation.options.meta?.successMessage as string | undefined
 
-                toast(<Notification type={toast.TYPE.SUCCESS} text={successMessage} />, {
-                    type: toast.TYPE.SUCCESS,
+                toast.success(<Notification type="success" text={successMessage} />, {
                     autoClose: 4000,
                 })
             },

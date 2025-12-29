@@ -7,6 +7,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const ESLintPlugin = require("eslint-webpack-plugin")
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin")
 const { VanillaExtractPlugin } = require("@vanilla-extract/webpack-plugin")
 
 const port = 3000
@@ -24,7 +25,6 @@ const htmlSource = path.resolve(__dirname, "src", "index.html")
 const htmlTarget = path.resolve(__dirname, "..", "admin", "templates")
 
 // pouziva se cross-env pro crossplatform nastaveni env promenne
-// napr. kvuli https://github.com/gaearon/react-hot-loader#what-about-production
 const isProduction = process.env.NODE_ENV === "production"
 
 const isBundleAnalyze = process.env.BUNDLE_ANALYZE === "true"
@@ -38,13 +38,10 @@ const isBundleAnalyze = process.env.BUNDLE_ANALYZE === "true"
 module.exports = {
     mode: process.env.NODE_ENV,
     resolve: {
-        alias: {
-            // react-hot-loader
-            "react-dom": "@hot-loader/react-dom",
-        },
-        extensions: [".ts", ".tsx", ".js", ".jsx"],
+        extensions: [".ts", ".tsx", ".js", ".jsx", ".mjs"],
+        mainFields: ["browser", "module", "main"],
     },
-    entry: ["react-hot-loader/patch", "./src/index"],
+    entry: "./src/index",
     module: {
         rules: [
             {
@@ -102,6 +99,10 @@ module.exports = {
         new VanillaExtractPlugin({
             identifiers: isProduction ? "short" : "debug",
         }),
+        !isProduction &&
+            new ReactRefreshWebpackPlugin({
+                overlay: false, // overlay je už nastaveno v devServer.client.overlay
+            }),
         new ESLintPlugin({
             failOnError: isProduction,
             extensions: ["js", "jsx", "ts", "tsx"],
@@ -134,7 +135,7 @@ module.exports = {
         new HtmlWebpackHarddiskPlugin({
             outputPath: htmlTarget,
         }),
-    ],
+    ].filter(Boolean), // odstranění false hodnot (ReactRefreshWebpackPlugin v produkci)
 
     output: {
         // nazvy souboru odpovidaji https://create-react-app.dev/docs/production-build/

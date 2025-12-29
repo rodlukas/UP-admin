@@ -113,11 +113,11 @@ const Settings: React.FC<Props> = () => {
                             <Col md={6}>
                                 <h2>Stavy účasti</h2>
                                 <Table striped responsive size="sm" className="table-custom">
-                                    <thead className="thead-light">
+                                    <thead className="table-light">
                                         <tr>
                                             <th>Název</th>
                                             <th className="text-center">Viditelný</th>
-                                            <th className="text-right text-md-right">Akce</th>
+                                            <th className="text-end text-md-end">Akce</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -135,7 +135,7 @@ const Settings: React.FC<Props> = () => {
                                                             data-qa="attendancestate_visible"
                                                         />
                                                     </td>
-                                                    <td className="text-right text-md-right">
+                                                    <td className="text-end text-md-end">
                                                         <ModalSettings
                                                             TYPE={EDIT_TYPE.STATE}
                                                             currentObject={attendancestate}
@@ -170,7 +170,7 @@ const Settings: React.FC<Props> = () => {
                                     <ListGroupItem>
                                         <Row>
                                             <Label for="state_default_id" sm={7}>
-                                                <span className="font-weight-bold">
+                                                <span className="fw-bold">
                                                     „klient se zúčastní“
                                                 </span>{" "}
                                                 (výchozí stav)
@@ -203,7 +203,7 @@ const Settings: React.FC<Props> = () => {
                                     <ListGroupItem>
                                         <Row>
                                             <Label for="state_excused_id" sm={7}>
-                                                <span className="font-weight-bold">
+                                                <span className="fw-bold">
                                                     „klient je omluven“
                                                 </span>
                                             </Label>
@@ -237,13 +237,13 @@ const Settings: React.FC<Props> = () => {
                             <Col md={6}>
                                 <h2>Kurzy</h2>
                                 <Table striped responsive size="sm" className="table-custom">
-                                    <thead className="thead-light">
+                                    <thead className="table-light">
                                         <tr>
                                             <th>Název</th>
                                             <th className="text-center">Viditelný</th>
                                             <th className="text-center">Barva</th>
                                             <th className="text-center">Trvání</th>
-                                            <th className="text-right text-md-right">Akce</th>
+                                            <th className="text-end text-md-end">Akce</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -268,7 +268,7 @@ const Settings: React.FC<Props> = () => {
                                                     className="text-center">
                                                     {course.duration}
                                                 </td>
-                                                <td className="text-right text-md-right">
+                                                <td className="text-end text-md-end">
                                                     <ModalSettings
                                                         TYPE={EDIT_TYPE.COURSE}
                                                         currentObject={course}
@@ -285,7 +285,7 @@ const Settings: React.FC<Props> = () => {
                         </Row>
                         <hr />
                         <p className={classNames("text-center", styles.footer)}>
-                            <span className="font-weight-bold">Verze aplikace:</span>{" "}
+                            <span className="fw-bold">Verze aplikace:</span>{" "}
                             <AppCommit pageId="Settings" />
                             {" ("}
                             <AppRelease />

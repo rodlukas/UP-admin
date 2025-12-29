@@ -4,7 +4,7 @@ import chroma from "chroma-js"
 import * as React from "react"
 import { ChromePicker } from "react-color"
 import { toast } from "react-toastify"
-import { Col, InputGroup, InputGroupAddon, Label } from "reactstrap"
+import { Col, InputGroup, InputGroupText, Label } from "reactstrap"
 
 import Notification from "../../components/Notification"
 import UncontrolledTooltipWrapper from "../../components/UncontrolledTooltipWrapper"
@@ -29,13 +29,13 @@ const ColorPicker: React.FC<Props> = (props) => {
         if (chroma.contrast(chroma(color), "white") < 2) {
             toast(
                 <Notification
-                    type={toast.TYPE.WARNING}
+                    type="warning"
                     text="Zvolená barva je málo kontrastní k bílé a byla by špatně vidět, zvolte více kontrastnější."
                 />,
                 {
                     toastId: customToastId,
                     autoClose: false,
-                    type: toast.TYPE.WARNING,
+                    type: "warning",
                 },
             )
         } else {
@@ -62,11 +62,11 @@ const ColorPicker: React.FC<Props> = (props) => {
             </Label>
             <Col sm={9}>
                 <InputGroup>
-                    <InputGroupAddon addonType="prepend">
-                        <Label className="input-group-text" for="color" onClick={togglePicker}>
+                    <InputGroupText>
+                        <Label for="color" onClick={togglePicker}>
                             <FontAwesomeIcon icon={faPalette} fixedWidth />
                         </Label>
-                    </InputGroupAddon>
+                    </InputGroupText>
                     <button
                         id="color"
                         type="button"

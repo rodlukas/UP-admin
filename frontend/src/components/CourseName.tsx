@@ -1,7 +1,11 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic"
+import classNames from "classnames"
 import * as React from "react"
 import { Badge } from "reactstrap"
 
 import { CourseType } from "../types/models"
+
+import * as styles from "./CourseName.css"
 
 type Props = {
     /** Kurz. */
@@ -16,8 +20,10 @@ const CourseName: React.FC<Props> = ({ course, className }) => (
         color="secondary"
         pill
         data-qa="course_name"
-        style={{ background: course.color }}
-        className={className}>
+        style={assignInlineVars(styles.courseNameVars, {
+            color: course.color,
+        })}
+        className={classNames(styles.courseName, className)}>
         {course.name}
     </Badge>
 )

@@ -66,7 +66,7 @@ const Clients: React.FC<Props> = () => {
                 }
             />
             <Table striped size="sm" responsive className="table-custom">
-                <thead className="thead-light">
+                <thead className="table-light">
                     <tr>
                         <th>Příjmení a jméno</th>
                         <th className="d-none d-md-table-cell">Telefon</th>
@@ -74,7 +74,7 @@ const Clients: React.FC<Props> = () => {
                             E-mail
                         </th>
                         <th className="d-none d-sm-table-cell">Poznámka</th>
-                        <th className="text-right text-md-right">Akce</th>
+                        <th className="text-end text-md-end">Akce</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,7 +102,7 @@ const Clients: React.FC<Props> = () => {
                                     <td className="d-none d-sm-table-cell">
                                         <ClientNote note={client.note} />
                                     </td>
-                                    <td className="text-right text-md-right">
+                                    <td className="text-end text-md-end">
                                         <ModalClients
                                             currentClient={client}
                                             refresh={refreshFromModal}

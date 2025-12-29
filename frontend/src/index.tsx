@@ -5,8 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import * as React from "react"
 import "bootstrap/dist/css/bootstrap.css"
-import { render } from "react-dom"
-import { hot } from "react-hot-loader/root"
+import { createRoot } from "react-dom/client"
 import { Router } from "react-router-dom"
 
 import { createQueryClient } from "./api/queryClient"
@@ -54,7 +53,8 @@ const App: React.FC = () => (
     </QueryClientProvider>
 )
 
-// react-hot-loader export
-export default hot(App)
-
-render(<App />, document.getElementById("root"))
+const container = document.getElementById("root")
+if (container) {
+    const root = createRoot(container)
+    root.render(<App />)
+}

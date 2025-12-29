@@ -67,12 +67,12 @@ const Groups: React.FC<Props> = () => {
                 }
             />
             <Table striped size="sm" responsive className="table-custom">
-                <thead className="thead-light">
+                <thead className="table-light">
                     <tr>
                         <th>Název</th>
                         <th className="d-none d-sm-table-cell">Kurz</th>
                         <th>Členové</th>
-                        <th className="text-right text-md-right">Akce</th>
+                        <th className="text-end text-md-end">Akce</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,7 +106,7 @@ const Groups: React.FC<Props> = () => {
                                     <td>
                                         <ClientsList memberships={group.memberships} />
                                     </td>
-                                    <td className="text-right text-md-right">
+                                    <td className="text-end text-md-end">
                                         <ModalGroups
                                             currentGroup={group}
                                             refresh={refreshFromModal}

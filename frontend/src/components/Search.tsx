@@ -72,7 +72,7 @@ const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch 
                                             <Col md="3">
                                                 {item.email && <ClientEmail email={item.email} />}
                                             </Col>
-                                            <Col className="text-right mt-1 mt-md-0" md="1">
+                                            <Col className="text-end mt-1 mt-md-0" md="1">
                                                 <ModalClients
                                                     currentClient={item}
                                                     refresh={search}

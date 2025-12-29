@@ -12,3 +12,11 @@ globalStyle(".navbar .badge", {
 globalStyle(".nav-content", {
     maxWidth: "900px",
 })
+
+globalStyle(".main a, .modal a", {
+    textDecoration: "none",
+})
+
+globalStyle(".main a:hover, .modal a:hover", {
+    textDecoration: "underline",
+})

@@ -21,8 +21,8 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
         isLoading: authContextIsLoading,
     } = useAuthContext()
 
-    const usernameField = React.useRef<HTMLInputElement>(null)
-    const passwordField = React.useRef<HTMLInputElement>(null)
+    const usernameField = React.useRef<HTMLInputElement | null>(null)
+    const passwordField = React.useRef<HTMLInputElement | null>(null)
 
     const [values, handleChange, handleSubmit] = useForm<AuthorizationType>(
         {
