@@ -132,7 +132,7 @@ def get_groups(driver, active):
 
 def close_modal(driver):
     # zavri modalni okno
-    driver.find_element(By.CLASS_NAME, "close").click()
+    driver.find_element(By.CSS_SELECTOR, "[aria-label=Close]").click()
     # pokud se zobrazi alert s upozornenim na neulozene zmeny, zavri ho
     try:
         wait_for_alert_and_accept(driver)

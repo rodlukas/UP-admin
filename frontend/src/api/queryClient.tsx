@@ -114,7 +114,11 @@ export function createQueryClient(): QueryClient {
             },
         },
         queryCache: new QueryCache({
-            onError: (error: unknown) => {
+            onError: (error: unknown, query) => {
+                // Notifikace potlačíme, pokud je v meta nastaveno skipErrorNotification
+                if (query.meta?.skipErrorNotification) {
+                    return
+                }
                 handleError(error as AxiosError)
             },
         }),

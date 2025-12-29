@@ -30,5 +30,8 @@ export function useBank() {
             }
             return response.data
         },
+        meta: {
+            skipErrorNotification: true,
+        },
     })
 }
