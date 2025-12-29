@@ -28,7 +28,9 @@
         "allowSyntheticDefaultImports": false,
 
         // aktivace isolatedModules pro zamezeni nekompatibilite s Babel, viz https://devblogs.microsoft.com/typescript/typescript-and-babel-7/
-        "isolatedModules": true
+        "isolatedModules": true,
+
+        "types": ["jest", "@testing-library/jest-dom", "node"]
     },
     "include": ["./src/", "/*.ts", "./__mocks__/"],
     "exclude": ["node_modules", "build", "/*.js"]

@@ -3,7 +3,10 @@ module.exports = {
     moduleNameMapper: {
         "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
             "<rootDir>/__mocks__/fileMock.js",
-        "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
+    },
+    transform: {
+        "\\.css\\.ts$": "@vanilla-extract/jest-transform",
+        "^(?!.*\\.css\\.ts$).+\\.(ts|tsx|js|jsx)$": "babel-jest",
     },
     testEnvironment: "jest-fixed-jsdom",
     transformIgnorePatterns: ["node_modules/(?!(msw|until-async)/)"],
