@@ -9,7 +9,7 @@ globalStyle("a .btn.disabled", {
     cursor: "default",
 })
 
-globalStyle(".list-group, .table-responsive:has(>.table-shadow)", {
+globalStyle(".list-group, .table-responsive:has(>.table-custom)", {
     boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
 })
 

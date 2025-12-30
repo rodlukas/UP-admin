@@ -117,7 +117,7 @@ const Settings: React.FC<Props> = () => {
                                         striped
                                         responsive
                                         size="sm"
-                                        className="table-custom table-shadow">
+                                        className="table-custom">
                                         <thead className="table-light">
                                             <tr>
                                                 <th>Název</th>
@@ -245,7 +245,7 @@ const Settings: React.FC<Props> = () => {
                                         striped
                                         responsive
                                         size="sm"
-                                        className="table-custom table-shadow">
+                                        className="table-custom">
                                         <thead className="table-light">
                                             <tr>
                                                 <th>Název</th>

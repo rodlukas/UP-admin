@@ -68,7 +68,7 @@ const Groups: React.FC<Props> = () => {
             />
 
             {getGroupsData().length > 0 && (
-                <Table striped size="sm" responsive className="table-custom table-shadow">
+                <Table striped size="sm" responsive className="table-custom">
                     <thead className="table-light">
                         <tr>
                             <th>Název</th>
