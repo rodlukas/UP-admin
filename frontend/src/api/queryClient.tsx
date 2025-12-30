@@ -83,7 +83,7 @@ function handleError(axiosError: AxiosError): void {
     logErrorToConsole(axiosError, djangoError)
 
     const errorMessage = getErrorMessage(errorResponse, djangoError)
-    toast.error(<Notification text={errorMessage} type="error" />, {
+    toast.error(<Notification text={errorMessage} />, {
         autoClose: 15000,
     })
 
@@ -141,7 +141,7 @@ export function createQueryClient(): QueryClient {
                 // Získáme success zprávu z mutation meta, pokud je k dispozici
                 const successMessage = mutation.options.meta?.successMessage as string | undefined
 
-                toast.success(<Notification type="success" text={successMessage} />, {
+                toast.success(<Notification text={successMessage} />, {
                     autoClose: 4000,
                 })
             },
