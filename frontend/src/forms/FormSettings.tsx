@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHourglass } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { useColor } from "react-color-palette"
+import { toast } from "react-toastify"
 import {
     Alert,
     Col,
@@ -40,7 +41,7 @@ import {
 import { fEmptyVoid, Model } from "../types/types"
 
 import * as styles from "./FormSettings.css"
-import ColorPicker from "./helpers/ColorPicker"
+import ColorPicker, { COLOR_PICKER_VALIDATION_TOAST_ID } from "./helpers/ColorPicker"
 
 type Props = {
     /** Kurz/stav účasti. */
@@ -111,12 +112,14 @@ const FormSettings: React.FC<Props> = (props) => {
                     }
                     updateCourse.mutate(dataPut, {
                         onSuccess: () => {
+                            toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
                             props.funcForceClose()
                         },
                     })
                 } else {
                     createCourse.mutate(dataPost, {
                         onSuccess: () => {
+                            toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
                             props.funcForceClose()
                         },
                     })
@@ -156,6 +159,7 @@ const FormSettings: React.FC<Props> = (props) => {
     )
 
     const close = (): void => {
+        toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
         props.funcClose()
     }
 

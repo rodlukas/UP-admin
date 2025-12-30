@@ -9,7 +9,7 @@ import Notification from "../../components/Notification"
 
 import * as styles from "./ColorPicker.css"
 
-const customToastId = "ColorPicker"
+export const COLOR_PICKER_VALIDATION_TOAST_ID = "ColorPickerValidation"
 
 type Props = {
     /** Barva kurzu. */
@@ -26,12 +26,12 @@ const ColorPicker: React.FC<Props> = (props) => {
             toast.warning(
                 <Notification text="Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět, zvolte více kontrastnější." />,
                 {
-                    toastId: customToastId,
+                    toastId: COLOR_PICKER_VALIDATION_TOAST_ID,
                     autoClose: false,
                 },
             )
         } else {
-            toast.dismiss(customToastId)
+            toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
         }
     }, [])
 
