@@ -38,7 +38,7 @@ const ColorPicker: React.FC<Props> = (props) => {
     const handleChange = React.useCallback(
         (newColor: IColor): void => {
             validateColor(newColor.hex)
-            // Převedeme hex na uppercase, at jsme konzistentni se zbytkem UI
+            // prevedeme hex na uppercase, at jsme konzistentni se zbytkem UI
             props.onChange({
                 ...newColor,
                 hex: newColor.hex.toUpperCase(),
@@ -49,11 +49,11 @@ const ColorPicker: React.FC<Props> = (props) => {
 
     return (
         <FormGroup row className="align-items-start form-group-required">
-            <Label for="hex" sm={3}>
+            <Label for="hex" sm={3} data-qa="settings_label_color">
                 Barva
             </Label>
             <Col sm={9}>
-                <div className={styles.colorPickerContainer} data-qa="course_color_picker">
+                <div className={styles.colorPickerContainer} data-qa="settings_color_picker">
                     <ReactColorPicker
                         height={130}
                         hideAlpha

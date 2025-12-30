@@ -85,18 +85,18 @@ def insert_to_form(context, verify_current_data=False):
     duration_field = context.browser.find_element(
         By.CSS_SELECTOR, "[data-qa=settings_field_duration]"
     )
-    color_picker = context.browser.find_element(
-        By.CSS_SELECTOR, "[data-qa=course_color_picker]"
+    color_picker_component = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=settings_color_picker]"
     )  # cely widget s color pickerem
-    color_field = course_color_prepare(color_picker)  # pole se zvolenou barvou
-    color_field_value = color_field.get_attribute("value")  # ziskani hodnoty barvy
+    color_field = course_color_prepare(color_picker_component)  # pole se zvolenou barvou
+    color_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=settings_label_color]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
         assert (
             context.old_name == name_field.get_attribute("value")
             and context.old_visible == visible_checkbox.is_selected()
             and context.old_duration == duration_field.get_attribute("value")
-            and context.old_color == color_title(color_field_value)
+            and context.old_color == color_title(color_field.get_attribute("value"))
         )
     # smaz vsechny udaje
     name_field.clear()
@@ -111,7 +111,7 @@ def insert_to_form(context, verify_current_data=False):
     duration_field.send_keys(context.duration)
     # klikni na label color pickeru aby se oznacil cela hodnota inputu a nasledne ji preplacni tou novou hodnotou,
     # bylo by fajn to delat klasicky pres clear a send_keys, ale bohuzel si to se seleniem a default hodnotou z knihovny color pickeru nerozumi
-    context.browser.find_element(By.CLASS_NAME, "rcp-field-label").click()
+    color_label.click()
     color_field.send_keys(context.color)
     print(color_field.get_attribute("value"))
 
