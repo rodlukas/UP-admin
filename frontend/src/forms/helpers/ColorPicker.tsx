@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ColorPicker as ReactColorPicker } from "react-color-palette"
+import { ColorPicker as ReactColorPicker, type IColor } from "react-color-palette"
 import "react-color-palette/css"
 import { Col, FormGroup, Label } from "reactstrap"
 
@@ -7,13 +7,24 @@ import * as styles from "./ColorPicker.css"
 
 type Props = {
     /** Barva kurzu. */
-    color: (typeof ReactColorPicker)["color"]
+    color: IColor
     /** Funkce, která se zavolá při změně barvy kurzu. */
-    onChange: (typeof ReactColorPicker)["onChange"]
+    onChange: (color: IColor) => void
 }
 
 /** Komponenta pro pole s výběrem barvy kurzu. */
 const ColorPicker: React.FC<Props> = (props) => {
+    const handleChange = React.useCallback(
+        (newColor: IColor): void => {
+            // Převedeme hex na uppercase, at jsme konzistentni se zbytkem UI
+            props.onChange({
+                ...newColor,
+                hex: newColor.hex.toUpperCase(),
+            })
+        },
+        [props],
+    )
+
     return (
         <FormGroup row className="align-items-start form-group-required">
             <Label for="hex" sm={3}>
@@ -26,7 +37,7 @@ const ColorPicker: React.FC<Props> = (props) => {
                         hideAlpha
                         hideInput={["rgb", "hsv"]}
                         color={props.color}
-                        onChange={props.onChange}
+                        onChange={handleChange}
                     />
                 </div>
             </Col>

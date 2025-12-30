@@ -11,6 +11,7 @@ import {
     ModalHeader,
     UncontrolledButtonDropdown,
 } from "reactstrap"
+import { Direction } from "reactstrap/types/lib/Dropdown"
 
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
@@ -42,7 +43,7 @@ type Props = {
     /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
     dropdownSize?: string
     /** Směr otevírání dropdownu pro výběr klient/skupina. */
-    dropdownDirection?: "up" | "down" | "left" | "right" | "start" | "end"
+    dropdownDirection?: Direction
     /** Probíhá načítání dat (true) - zobrazí spinner na tlačítku. */
     isFetching?: boolean
 }
@@ -184,9 +185,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         <>
             <div className={styles.modalLecturesWizard}>
                 <UncontrolledButtonDropdown
-                    {...(props.dropdownDirection
-                        ? { direction: props.dropdownDirection as any }
-                        : {})}
+                    direction={props.dropdownDirection}
                     className={classNames(props.dropdownClassName, styles.dropdownToggle)}>
                     <DropdownToggle
                         caret
