@@ -113,7 +113,6 @@ def insert_to_form(context, verify_current_data=False):
     # bylo by fajn to delat klasicky pres clear a send_keys, ale bohuzel si to se seleniem a default hodnotou z knihovny color pickeru nerozumi
     color_label.click()
     color_field.send_keys(context.color)
-    print(color_field.get_attribute("value"))
 
 
 def load_data_to_context(context, name, visible, duration, color):
