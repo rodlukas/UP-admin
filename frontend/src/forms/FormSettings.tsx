@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faHourglass } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
+import { useColor } from "react-color-palette"
 import {
     Alert,
     Col,
@@ -75,9 +76,7 @@ const FormSettings: React.FC<Props> = (props) => {
         isCourse(props.object) ? props.object.duration : undefined,
     )
     /** Barva kurzu. */
-    const [color, setColor] = React.useState<string | undefined>(
-        isCourse(props.object) ? props.object.color : undefined,
-    )
+    const [color, setColor] = useColor(isCourse(props.object) ? props.object.color : "#000000")
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         props.setFormDirty()
@@ -92,22 +91,18 @@ const FormSettings: React.FC<Props> = (props) => {
         }
     }
 
-    const onChangeColor = (newColor: string): void => {
-        setColor(newColor)
-    }
-
     const onSubmit = React.useCallback(
         (e: React.FormEvent<HTMLFormElement>): void => {
             e.preventDefault()
 
             if (isCourse(props.object)) {
                 const durationCourse = duration!
-                const colorCourse = color!
+                const colorCourse = color
                 const dataPost: CoursePostApi = {
                     name,
                     visible,
                     duration: durationCourse,
-                    color: colorCourse,
+                    color: colorCourse.hex,
                 }
                 if (isObject(props.object)) {
                     const dataPut: CoursePutApi = {
@@ -258,9 +253,7 @@ const FormSettings: React.FC<Props> = (props) => {
                                 </InputGroup>
                             </Col>
                         </FormGroup>
-                        <FormGroup row className="align-items-center form-group-required">
-                            <ColorPicker color={color!} onChange={onChangeColor} />
-                        </FormGroup>
+                        <ColorPicker color={color} onChange={setColor} />
                     </>
                 )}
                 {isObject(props.object) && (

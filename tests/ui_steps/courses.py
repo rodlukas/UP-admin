@@ -66,11 +66,8 @@ def find_course_with_context(context):
     )
 
 
-def course_color_prepare(context, color_button):
-    color_button.click()
-    color_field = context.browser.find_element(
-        By.CSS_SELECTOR, "[data-qa=course_color_picker] input"
-    )
+def course_color_prepare(color_picker):
+    color_field = color_picker.find_element(By.CLASS_NAME, "rcp-field-input")
     return color_field
 
 
@@ -88,15 +85,13 @@ def insert_to_form(context, verify_current_data=False):
     duration_field = context.browser.find_element(
         By.CSS_SELECTOR, "[data-qa=settings_field_duration]"
     )
-    color_button = context.browser.find_element(
-        By.CSS_SELECTOR, "[data-qa=course_button_color]"
-    )  # tlacitko pro otevreni okna s vyberem barvy
-    color_field = course_color_prepare(context, color_button)  # pole se zvolenou barvou
+    color_picker = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=course_color_picker]"
+    )  # cely widget s color pickerem
+    color_field = course_color_prepare(color_picker)  # pole se zvolenou barvou
     color_field_value = color_field.get_attribute("value")  # ziskani hodnoty barvy
-    color_field.send_keys(Keys.TAB)  # zavreni okna s vyberem barvy
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
-        print(context.old_color, color_title(color_field_value))
         assert (
             context.old_name == name_field.get_attribute("value")
             and context.old_visible == visible_checkbox.is_selected()
@@ -106,6 +101,7 @@ def insert_to_form(context, verify_current_data=False):
     # smaz vsechny udaje
     name_field.clear()
     duration_field.clear()
+    color_field.clear()  # tohle kvuli vnitrni implementaci color pickeru nic nedela (resp. to tam da default hodnotu)
     # vloz nove udaje
     if (context.visible and not visible_checkbox.is_selected()) or (
         not context.visible and visible_checkbox.is_selected()
@@ -113,12 +109,11 @@ def insert_to_form(context, verify_current_data=False):
         visible_label.click()
     name_field.send_keys(context.name)
     duration_field.send_keys(context.duration)
-    # otevreni okna s vyberem barvy, smazani aktualni barvy, vlozeni nove a zavreni okna
-    # nejde pouzit .clear(), protoze vyvola onBlur (zrusi focus na element) a zavre se okno s vyberem barvy
-    color_field = course_color_prepare(context, color_button)
-    color_field.send_keys(Keys.CONTROL, "a", Keys.DELETE)
+    # klikni na label color pickeru aby se oznacil cela hodnota inputu a nasledne ji preplacni tou novou hodnotou,
+    # bylo by fajn to delat klasicky pres clear a send_keys, ale bohuzel si to se seleniem a default hodnotou z knihovny color pickeru nerozumi
+    context.browser.find_element(By.CLASS_NAME, "rcp-field-label").click()
     color_field.send_keys(context.color)
-    color_field.send_keys(Keys.TAB)
+    print(color_field.get_attribute("value"))
 
 
 def load_data_to_context(context, name, visible, duration, color):

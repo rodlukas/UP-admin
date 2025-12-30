@@ -1,103 +1,36 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPalette } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import chroma from "chroma-js"
 import * as React from "react"
-import { ChromePicker } from "react-color"
-import { toast } from "react-toastify"
-import { Col, InputGroup, InputGroupText, Label } from "reactstrap"
-
-import Notification from "../../components/Notification"
-import UncontrolledTooltipWrapper from "../../components/UncontrolledTooltipWrapper"
+import { ColorPicker as ReactColorPicker } from "react-color-palette"
+import "react-color-palette/css"
+import { Col, FormGroup, Label } from "reactstrap"
 
 import * as styles from "./ColorPicker.css"
 
 type Props = {
     /** Barva kurzu. */
-    color: string
+    color: (typeof ReactColorPicker)["color"]
     /** Funkce, která se zavolá při změně barvy kurzu. */
-    onChange: (newColor: string) => void
+    onChange: (typeof ReactColorPicker)["onChange"]
 }
-
-const customToastId = "ColorPicker"
 
 /** Komponenta pro pole s výběrem barvy kurzu. */
 const ColorPicker: React.FC<Props> = (props) => {
-    const [isPickerVisible, setIsPickerVisible] = React.useState(false)
-
-    const validateColor = React.useCallback((color: string): void => {
-        // pokud barvy nejsou dostatecne kontrastni a jeste neni zobrazene upozorneni, zobraz ho
-        if (chroma.contrast(chroma(color), "white") < 2) {
-            toast(
-                <Notification
-                    type="warning"
-                    text="Zvolená barva je málo kontrastní k bílé a byla by špatně vidět, zvolte více kontrastnější."
-                />,
-                {
-                    toastId: customToastId,
-                    autoClose: false,
-                    type: "warning",
-                },
-            )
-        } else {
-            toast.dismiss(customToastId)
-        }
-    }, [])
-
-    const togglePicker = React.useCallback((): void => {
-        if (!isPickerVisible) {
-            validateColor(props.color)
-        }
-        setIsPickerVisible((prev) => !prev)
-    }, [isPickerVisible, props.color, validateColor])
-
-    const closePicker = React.useCallback((): void => {
-        setIsPickerVisible(false)
-        toast.dismiss(customToastId)
-    }, [])
-
     return (
-        <>
-            <Label for="color" sm={3} onClick={togglePicker}>
+        <FormGroup row className="align-items-start form-group-required">
+            <Label for="hex" sm={3}>
                 Barva
             </Label>
             <Col sm={9}>
-                <InputGroup>
-                    <InputGroupText>
-                        <Label for="color" onClick={togglePicker}>
-                            <FontAwesomeIcon icon={faPalette} fixedWidth />
-                        </Label>
-                    </InputGroupText>
-                    <button
-                        id="color"
-                        type="button"
-                        data-qa="course_button_color"
-                        onFocus={togglePicker}
-                        className={styles.colorPickerInput}
-                        onClick={togglePicker}>
-                        <div style={{ background: props.color }} />
-                    </button>
-                    <UncontrolledTooltipWrapper placement="right" target="color">
-                        Změnit barvu
-                    </UncontrolledTooltipWrapper>
-                    {isPickerVisible ? (
-                        <div
-                            className={styles.colorPickerWindow}
-                            data-qa="course_color_picker"
-                            onMouseLeave={closePicker}
-                            onBlur={closePicker}>
-                            <ChromePicker
-                                disableAlpha
-                                color={props.color}
-                                onChange={(newColor): void => {
-                                    props.onChange(newColor.hex)
-                                    validateColor(newColor.hex)
-                                }}
-                            />
-                        </div>
-                    ) : null}
-                </InputGroup>
+                <div className={styles.colorPickerContainer} data-qa="course_color_picker">
+                    <ReactColorPicker
+                        height={130}
+                        hideAlpha
+                        hideInput={["rgb", "hsv"]}
+                        color={props.color}
+                        onChange={props.onChange}
+                    />
+                </div>
             </Col>
-        </>
+        </FormGroup>
     )
 }
 
