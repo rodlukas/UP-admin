@@ -136,7 +136,7 @@ globalStyle(".rounded-pill", {
 /**************************** REACT-TOASTIFY ****************************/
 
 // vychozi zluta je spatne citelna s bilym textem
-globalStyle('.Toastify__toast[data-type="warning"]', {
+globalStyle(".Toastify__toast--warning", {
     background: "#e7b90f !important",
 })
 

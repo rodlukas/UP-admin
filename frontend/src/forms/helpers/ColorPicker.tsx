@@ -1,9 +1,15 @@
+import chroma from "chroma-js"
 import * as React from "react"
 import { ColorPicker as ReactColorPicker, type IColor } from "react-color-palette"
 import "react-color-palette/css"
+import { toast } from "react-toastify"
 import { Col, FormGroup, Label } from "reactstrap"
 
+import Notification from "../../components/Notification"
+
 import * as styles from "./ColorPicker.css"
+
+const customToastId = "ColorPicker"
 
 type Props = {
     /** Barva kurzu. */
@@ -14,15 +20,31 @@ type Props = {
 
 /** Komponenta pro pole s výběrem barvy kurzu. */
 const ColorPicker: React.FC<Props> = (props) => {
+    const validateColor = React.useCallback((color: string): void => {
+        // pokud barvy nejsou dostatecne kontrastni a jeste neni zobrazene upozorneni, zobraz ho
+        if (chroma.contrast(chroma(color), "white") < 2) {
+            toast.warning(
+                <Notification text="Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět, zvolte více kontrastnější." />,
+                {
+                    toastId: customToastId,
+                    autoClose: false,
+                },
+            )
+        } else {
+            toast.dismiss(customToastId)
+        }
+    }, [])
+
     const handleChange = React.useCallback(
         (newColor: IColor): void => {
+            validateColor(newColor.hex)
             // Převedeme hex na uppercase, at jsme konzistentni se zbytkem UI
             props.onChange({
                 ...newColor,
                 hex: newColor.hex.toUpperCase(),
             })
         },
-        [props],
+        [props, validateColor],
     )
 
     return (
