@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSackDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import {
     Col,
@@ -92,7 +93,10 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                 <InputGroup>
                                     <InputGroupText
                                         id={`PrepaidCounters${membership.id}`}
-                                        className={styles.prepaidCountersInputGroupLabel}>
+                                        className={classNames({
+                                            [styles.prepaidCountersInputGroupLabel]:
+                                                prepaidCnts[membership.id] > 0,
+                                        })}>
                                         <Label for={`prepaid_cnt${membership.id}`}>
                                             <FontAwesomeIcon icon={faSackDollar} fixedWidth />
                                         </Label>
