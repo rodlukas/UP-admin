@@ -2,7 +2,11 @@
 Vlastní definice způsobu serializace JWT tokenů.
 """
 
+from typing import Any
+
 from drf_spectacular.utils import extend_schema
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainSlidingSerializer
 from rest_framework_simplejwt.models import TokenUser
 from rest_framework_simplejwt.tokens import Token
@@ -42,7 +46,7 @@ class MyTokenObtainSlidingView(TokenObtainSlidingView):
         description="Získá JWT token pro autentizaci. Vyžaduje username a password.",
         tags=["Autentizace"],
     )
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return super().post(request, *args, **kwargs)
 
 
@@ -56,5 +60,5 @@ class MyTokenRefreshSlidingView(TokenRefreshSlidingView):
         description="Obnoví JWT token pomocí stávajícího tokenu.",
         tags=["Autentizace"],
     )
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return super().post(request, *args, **kwargs)
