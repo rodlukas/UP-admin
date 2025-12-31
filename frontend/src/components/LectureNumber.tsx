@@ -14,6 +14,7 @@ type Props = {
     colorize?: boolean
     /** Dodatečná CSS třída. */
     className?: string
+    /** Barva pozadí. */
     color?: "secondary" | "light"
 }
 

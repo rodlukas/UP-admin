@@ -5,6 +5,5 @@ export const courseNameVars = createThemeContract({
 })
 
 export const courseName = style({
-    // pouzije CSS custom property pro barvu pozadi z theme contractu
     backgroundColor: `${courseNameVars.color} !important`,
 })
