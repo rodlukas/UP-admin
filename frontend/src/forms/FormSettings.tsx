@@ -79,6 +79,14 @@ const FormSettings: React.FC<Props> = (props) => {
     /** Barva kurzu. */
     const [color, setColor] = useColor(isCourse(props.object) ? props.object.color : "#000000")
 
+    const onChangeColor = React.useCallback(
+        (newColor: ReturnType<typeof useColor>[0]): void => {
+            props.setFormDirty()
+            setColor(newColor)
+        },
+        [props, setColor],
+    )
+
     const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         props.setFormDirty()
         const target = e.currentTarget
@@ -257,7 +265,7 @@ const FormSettings: React.FC<Props> = (props) => {
                                 </InputGroup>
                             </Col>
                         </FormGroup>
-                        <ColorPicker color={color} onChange={setColor} />
+                        <ColorPicker color={color} onChange={onChangeColor} />
                     </>
                 )}
                 {isObject(props.object) && (

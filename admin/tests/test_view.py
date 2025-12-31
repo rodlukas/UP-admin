@@ -20,3 +20,19 @@ class ViewTest(SimpleTestCase):
         response = self.client.get("/", secure=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "react-autogenerate.html")
+
+    def test_openapi_schema_status_code(self) -> None:
+        """
+        Zkontroluje, zda je dostupná OpenAPI schema.
+        """
+        response = self.client.get("/api/open-api/", secure=True)
+        self.assertEqual(response.status_code, 200)
+        # zkontroluj, ze response obsahuje JSON s OpenAPI schema
+        self.assertIn("openapi", response.json())
+
+    def test_swagger_ui_status_code(self) -> None:
+        """
+        Zkontroluje, zda je dostupná Swagger UI dokumentace.
+        """
+        response = self.client.get("/api/docs/", secure=True)
+        self.assertEqual(response.status_code, 200)

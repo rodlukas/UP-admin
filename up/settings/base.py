@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "admin.apps.AdminConfig",
     "rest_framework",
+    "drf_spectacular",
     "api.apps.ApiConfig",
     "django_filters",
     "debug_toolbar",
@@ -81,7 +82,58 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+}
+
+# drf-spectacular konfigurace
+SPECTACULAR_SETTINGS = {
+    "TITLE": "ÚPadmin API",
+    "DESCRIPTION": "Dokumentace *REST API* pro aplikaci **ÚPadmin**. **[Přejít do aplikace](/)**",
+    "VERSION": "1.0.0",
+    "SWAGGER_UI_FAVICON_HREF": "/static/admin/favicon.ico",
+    "TAGS": [
+        {
+            "name": "Klienti",
+            "description": "Operace pro správu klientů.",
+        },
+        {
+            "name": "Stavy účasti",
+            "description": "Operace pro správu stavů účastí klientů na lekcích.",
+        },
+        {
+            "name": "Členství ve skupině",
+            "description": "Operace pro správu členství klientů ve skupinách. Členství je entita obsahující počty předplacených skupinových lekcí.",
+        },
+        {
+            "name": "Účasti",
+            "description": "Operace pro správu účasti klienta na lekci. Účast je entita obsahující stav platby, stav účasti, poznámku.",
+        },
+        {
+            "name": "Skupiny",
+            "description": "Operace pro správu skupin klientů.",
+        },
+        {
+            "name": "Kurzy",
+            "description": "Operace pro správu kurzů, na které mohou klienti docházet.",
+        },
+        {
+            "name": "Zájemci o kurzy",
+            "description": "Operace pro správu zájemců o účast na kurzech.",
+        },
+        {
+            "name": "Lekce",
+            "description": "Operace pro správu jednotlivých lekcí.",
+        },
+        {
+            "name": "Bankovní transakce",
+            "description": "Operace pro získání výpisu transakcí z bankovního účtu.",
+        },
+        {
+            "name": "Autentizace",
+            "description": "Operace pro získání a obnovení JWT tokenů pro autentizaci.",
+        },
+    ],
 }
 SIMPLE_JWT = {
     # pouzivaji se Sliding tokens - 1 a tentyz token pro autentizaci i refresh
@@ -174,8 +226,8 @@ CSPURL_GOOGLE_FONTS_STYLE = "fonts.googleapis.com"
 CSPURL_GOOGLE_FONTS_FONT = "fonts.gstatic.com"
 # CSP pro Sentry
 CSPURL_SENTRY = "https://*.sentry.io"
-# CSP pro unpkg.com
-CSPURL_UNPKG = "https://unpkg.com"
+# CSP pro cdn.jsdelivr.net (openapi docs)
+CSPURL_JSDELIVR_NET = "https://cdn.jsdelivr.net"
 
 CSP_SELF = "'self'"
 CSP_NONE = "'none'"
@@ -186,15 +238,15 @@ CSP_STYLE_SRC = (
     CSP_SELF,
     "'unsafe-inline'",
     CSPURL_GOOGLE_FONTS_STYLE,
-    CSPURL_UNPKG,
-)  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari
+    CSPURL_JSDELIVR_NET,
+)  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
 CSP_CONNECT_SRC = (CSP_SELF, CSPURL_GOOGLE_ANALYTICS, CSPURL_SENTRY)
 CSP_SCRIPT_SRC = (
     CSP_SELF,
     CSPURL_SENTRY,
     CSPURL_GOOGLE_ANALYTICS,
     CSPURL_GOOGLE_ANALYTICS_SSL,
-    CSPURL_UNPKG,
+    CSPURL_JSDELIVR_NET,
 )
 CSP_FONT_SRC = (CSP_SELF, CSPURL_GOOGLE_FONTS_FONT)
 CSP_IMG_SRC = (CSP_SELF, CSPURL_GOOGLE_ANALYTICS, "data:")
