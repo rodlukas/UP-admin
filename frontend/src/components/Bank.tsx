@@ -91,7 +91,7 @@ const Bank: React.FC = () => {
             const messageObj = transaction.column16
             const id = transaction.column22.value
             const commentObj = transaction.column25
-            const duplicates = messageObj && commentObj && messageObj.value === commentObj.value
+            const duplicates = messageObj && messageObj.value === commentObj?.value
             const targetAccountOwnerObj = transaction.column10
             const amountClassName = amount < 0 ? " text-danger" : ""
             return (
