@@ -132,52 +132,50 @@ const Main: React.FC = () => {
                         search={search}
                         resetSearch={resetSearch}
                     />
-                    <div className={classNames({ "d-none": searchVal !== "" })}>
-                        <React.Suspense fallback={<Loading />}>
-                            <Switch>
-                                <PrivateRoute
-                                    path={APP_URLS.prehled.url}
-                                    component={Dashboard}
-                                    title={APP_URLS.prehled.title}
-                                    exact
-                                />
-                                <Page
-                                    path={APP_URLS.prihlasit.url}
-                                    component={Login}
-                                    title={APP_URLS.prihlasit.title}
-                                />
-                                <PrivateRoute
-                                    path={APP_URLS.skupiny.url}
-                                    component={Groups}
-                                    title={APP_URLS.skupiny.title}
-                                    exact
-                                />
-                                <PrivateRoute
-                                    path={`${APP_URLS.diar.url}/:year?/:month?/:day?`}
-                                    component={Diary}
-                                />
-                                <PrivateRoute
-                                    path={APP_URLS.klienti.url}
-                                    component={Clients}
-                                    title={APP_URLS.klienti.title}
-                                    exact
-                                />
-                                <PrivateRoute path={APP_URLS.klienti_karta.url} component={Card} />
-                                <PrivateRoute path={APP_URLS.skupiny_karta.url} component={Card} />
-                                <PrivateRoute
-                                    path={APP_URLS.zajemci.url}
-                                    component={Applications}
-                                    title={APP_URLS.zajemci.title}
-                                />
-                                <PrivateRoute
-                                    path={APP_URLS.nastaveni.url}
-                                    component={Settings}
-                                    title={APP_URLS.nastaveni.title}
-                                />
-                                <Page component={NotFound} title={APP_URLS.nenalezeno.title} />
-                            </Switch>
-                        </React.Suspense>
-                    </div>
+                    <React.Suspense fallback={<Loading />}>
+                        <Switch>
+                            <PrivateRoute
+                                path={APP_URLS.prehled.url}
+                                component={Dashboard}
+                                title={APP_URLS.prehled.title}
+                                exact
+                            />
+                            <Page
+                                path={APP_URLS.prihlasit.url}
+                                component={Login}
+                                title={APP_URLS.prihlasit.title}
+                            />
+                            <PrivateRoute
+                                path={APP_URLS.skupiny.url}
+                                component={Groups}
+                                title={APP_URLS.skupiny.title}
+                                exact
+                            />
+                            <PrivateRoute
+                                path={`${APP_URLS.diar.url}/:year?/:month?/:day?`}
+                                component={Diary}
+                            />
+                            <PrivateRoute
+                                path={APP_URLS.klienti.url}
+                                component={Clients}
+                                title={APP_URLS.klienti.title}
+                                exact
+                            />
+                            <PrivateRoute path={APP_URLS.klienti_karta.url} component={Card} />
+                            <PrivateRoute path={APP_URLS.skupiny_karta.url} component={Card} />
+                            <PrivateRoute
+                                path={APP_URLS.zajemci.url}
+                                component={Applications}
+                                title={APP_URLS.zajemci.title}
+                            />
+                            <PrivateRoute
+                                path={APP_URLS.nastaveni.url}
+                                component={Settings}
+                                title={APP_URLS.nastaveni.title}
+                            />
+                            <Page component={NotFound} title={APP_URLS.nenalezeno.title} />
+                        </Switch>
+                    </React.Suspense>
                 </ErrorBoundary>
             </main>
         </div>

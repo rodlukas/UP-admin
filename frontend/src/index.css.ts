@@ -27,6 +27,10 @@ globalStyle(".modal", {
     WebkitOverflowScrolling: "touch",
 })
 
+globalStyle(".modal", {
+    backdropFilter: "blur(4px)",
+})
+
 globalStyle(".modal hr", {
     opacity: 1,
     borderColor: "#dee2e6",
