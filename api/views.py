@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 from rest_framework import viewsets, mixins
 from rest_framework.filters import OrderingFilter
 from rest_framework.request import Request
@@ -418,6 +418,12 @@ class BankView(APIView):
         summary="Výpis transakcí",
         description="Vrátí výpis transakcí z bankovního účtu.",
         tags=["Bankovní transakce"],
+        responses={
+            200: OpenApiResponse(description="Výpis transakcí z bankovního účtu."),
+            500: OpenApiResponse(
+                description="Chyba při získávání dat z banky. Obsahuje status_info s popisem chyby."
+            ),
+        },
     )
     @method_decorator(cache_page(60))
     def get(self, request: Request) -> Response:
