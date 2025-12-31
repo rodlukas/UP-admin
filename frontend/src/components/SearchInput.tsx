@@ -9,7 +9,7 @@ import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 type Props = {
     /** Funkce, která se zavolá při úpravě vyhledávaného výrazu. */
     onSearchChange: (newSearchVal: string) => void
-    /** Vyhledávaný výraz. */
+    /** Hledaný výraz. */
     searchVal: string
 }
 
@@ -21,19 +21,17 @@ const SearchInput: React.FC<Props> = (props) => {
 
     return (
         <InputGroup className={styles.search}>
-            <InputGroupText
-                id="search-icon-wrapper"
-                className={styles.iconWrapper}>
+            <InputGroupText id="search-icon-wrapper" className={styles.iconWrapper}>
                 <Label className={styles.label} for="search">
                     <FontAwesomeIcon icon={faSearch} fixedWidth />
                 </Label>
             </InputGroupText>
             <UncontrolledTooltipWrapper placement="left" target="search-icon-wrapper">
-                Vyhledávání klientů
+                Hledání klientů
             </UncontrolledTooltipWrapper>
             <Input
                 onChange={onSearchChange}
-                placeholder="Vyhledat klienta..."
+                placeholder="Hledat klienta..."
                 value={props.searchVal}
                 type="search"
                 id="search"

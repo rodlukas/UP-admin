@@ -17,7 +17,7 @@ type Props = {
     closeNavbar: fEmptyVoid
     /** Funkce, která se zavolá při úpravě vyhledávaného výrazu. */
     onSearchChange: (newSearchVal: string) => void
-    /** Vyhledávaný výraz. */
+    /** Hledaný výraz. */
     searchVal: string
 }
 

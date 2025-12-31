@@ -17,7 +17,7 @@ import * as styles from "./Search.css"
 type Props = {
     /** Výsledky vyhledávání klientů. */
     foundResults: FuseResult<ClientActiveType>[]
-    /** Vyhledávaný výraz. */
+    /** Hledaný výraz. */
     searchVal: string
     /** Funkce pro zahájení vyhledávání klientů. */
     search: fEmptyVoid
@@ -28,6 +28,16 @@ type Props = {
 /** Komponenta zobrazující výsledky vyhledávání - seznam klientů. */
 const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch }) => {
     const clientsActiveContext = useClientsActiveContext()
+
+    React.useEffect(() => {
+        if (searchVal !== "") {
+            document.body.style.overflow = "hidden"
+            return () => {
+                document.body.style.overflow = ""
+            }
+        }
+        return undefined
+    }, [searchVal])
 
     return (
         <>
@@ -50,7 +60,7 @@ const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch 
                             <Heading
                                 title={
                                     <>
-                                        Vyhledaní klienti{" "}
+                                        Nalezení klienti{" "}
                                         <Badge color="secondary" pill>
                                             {foundResults.length}
                                         </Badge>
