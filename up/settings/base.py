@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "admin.apps.AdminConfig",
     "rest_framework",
+    "rest_framework_simplejwt",
     "drf_spectacular",
     "api.apps.ApiConfig",
     "django_filters",
