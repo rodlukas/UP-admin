@@ -50,6 +50,12 @@ const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch 
                 return
             }
 
+            // Pokud je otevřený Bootstrap modal, necháme ho zpracovat Tab sám
+            const openModal = document.querySelector(".modal.show")
+            if (openModal) {
+                return
+            }
+
             const focusableElements = getFocusableElements()
             if (focusableElements.length === 0) {
                 return
