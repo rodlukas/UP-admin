@@ -99,10 +99,9 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_group_with_context(context)
     )
-    # pockej, az se zvysi pocet skupin
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: groups_cnt(driver) > context.old_groups_cnt
-    )
+    # over, ze sedi pocet skupin
+    print("OLD:", context.old_groups_cnt, "NOW:", groups_cnt(context.browser))
+    assert groups_cnt(context.browser) > context.old_groups_cnt
 
 
 @then("the group is updated")
@@ -113,10 +112,9 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_group_with_context(context)
     )
-    # pockej, az se ustali stejny pocet skupin jako predtim
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: groups_cnt(driver) == context.old_groups_cnt
-    )
+    # over, ze sedi pocet skupin
+    print("OLD:", context.old_groups_cnt, "NOW:", groups_cnt(context.browser))
+    assert groups_cnt(context.browser) == context.old_groups_cnt
 
 
 @then("the group is deleted")
@@ -185,10 +183,9 @@ def step_impl(context):
         helpers.close_modal(context.browser)
         # pockej az bude modalni okno kompletne zavrene
         helpers.wait_modal_closed(context.browser)
-        # pockej, az se ustali stejny pocet skupin jako predtim
-        WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-            lambda driver: groups_cnt(driver) == context.old_groups_cnt
-        )
+        # over, ze pocet skupin se nezmenil
+        print("OLD:", context.old_groups_cnt, "NOW:", groups_cnt(context.browser))
+        assert groups_cnt(context.browser) == context.old_groups_cnt
 
 
 @when(
