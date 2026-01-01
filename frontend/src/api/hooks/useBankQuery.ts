@@ -1,22 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-import { BankErrorType, BankSuccessType, BankType } from "../../types/models"
+import { BankErrorType, BankType } from "../../types/models"
 import BankService from "../services/BankService"
-
-export const bankDataApiInit: BankSuccessType = {
-    accountStatement: {
-        info: {
-            closingBalance: 0,
-            dateStart: undefined,
-        },
-        transactionList: {
-            transaction: [],
-        },
-    },
-    fetch_timestamp: 0,
-    rent_price: 0,
-}
 
 /** Hook pro získání výpisů z banky. */
 export function useBank() {

@@ -8,11 +8,11 @@ import {
 import * as React from "react"
 import { ListGroup, ListGroupItem, Table } from "reactstrap"
 
-import { bankDataApiInit, useBank } from "../api/hooks"
+import { useBank } from "../api/hooks"
 import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"
-import { BankType, BankSuccessType } from "../types/models"
+import { BankType, BankSuccessType, BankErrorType } from "../types/models"
 import { TimeoutType } from "../types/types"
 
 import CustomButton from "./buttons/CustomButton"
@@ -22,6 +22,16 @@ import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 /** Type guard pro rozlišení úspěšné a chybové odpovědi z banky. */
 function isBankSuccess(data: BankType): data is BankSuccessType {
     return "accountStatement" in data
+}
+
+/** Bezpečný type guard pro úspěšná bankovní data (akceptuje i undefined). */
+function isBankSuccessSafe(data: BankType | undefined): data is BankSuccessType {
+    return !!data && isBankSuccess(data)
+}
+
+/** Type guard pro chybovou odpověď banky (akceptuje i undefined). */
+function isBankError(data: BankType | undefined): data is BankErrorType {
+    return !!data && typeof data === "object" && "error_info" in data
 }
 
 /** Doba, po kterou nelze ručně provést opakované načtení dat z API. */
@@ -43,7 +53,7 @@ const TableInfo: React.FC<TableInfoProps> = ({ text, color = "text-muted" }) => 
 
 /** Komponenta zobrazující přehled transakcí z banky. */
 const Bank: React.FC = () => {
-    const { data: bankDataApi = bankDataApiInit, isLoading, refetch, isFetching } = useBank()
+    const { data: bankData, isLoading, refetch, isFetching } = useBank()
     /** Manuální obnovení dat je zakázané (true). */
     const [isRefreshDisabled, setIsRefreshDisabled] = React.useState(true)
     const timeoutIdRef = React.useRef<TimeoutType>(undefined)
@@ -59,24 +69,28 @@ const Bank: React.FC = () => {
                 window.clearTimeout(timeoutIdRef.current)
             }
         }
-    }, [bankDataApi])
+    }, [bankData])
 
     const onClick = React.useCallback((): void => {
         setIsRefreshDisabled(true)
         void refetch()
     }, [refetch])
 
-    const isDataProblem = !isBankSuccess(bankDataApi)
-    const balance = isDataProblem ? null : bankDataApi.accountStatement.info.closingBalance
-    const rentPrice = isDataProblem ? null : bankDataApi.rent_price
-    const isLackOfMoney = balance !== null && rentPrice !== null && balance < rentPrice
+    const isSuccess = isBankSuccessSafe(bankData)
+    const isError = isBankError(bankData)
+    const isLackOfMoney =
+        isSuccess && bankData.accountStatement.info.closingBalance < bankData.rent_price
     const isLoadingState = isLoading || isFetching
 
     const getBalanceText = (): React.ReactNode => {
-        if (balance === null) {
-            return isDataProblem ? "neznámý" : "načítání"
+        if (!isSuccess) {
+            return isLoadingState ? "načítání" : "neznámý"
         }
-        return <span className="fw-bold text-nowrap">{prettyAmount(balance)}</span>
+        return (
+            <span className="fw-bold text-nowrap">
+                {prettyAmount(bankData.accountStatement.info.closingBalance)}
+            </span>
+        )
     }
 
     const renderTableBody = (data: BankSuccessType): React.ReactNode => {
@@ -122,12 +136,12 @@ const Bank: React.FC = () => {
             <ListGroupItem color={isLackOfMoney ? "danger" : "success"}>
                 <h4 className="text-center">
                     Aktuální stav: {getBalanceText()}{" "}
-                    {isLackOfMoney && rentPrice !== null && (
+                    {isLackOfMoney && (
                         <>
                             <UncontrolledTooltipWrapper target="Bank_RentWarning">
                                 Na účtu není dostatek peněz (alespoň{" "}
                                 <span className="fw-bold text-nowrap">
-                                    {prettyAmount(rentPrice)}
+                                    {prettyAmount(bankData.rent_price)}
                                 </span>
                                 ) pro zaplacení nájmu!
                             </UncontrolledTooltipWrapper>
@@ -141,10 +155,9 @@ const Bank: React.FC = () => {
                     )}
                 </h4>
                 <div className="text-end">
-                    {!isDataProblem && (
+                    {isSuccess && (
                         <span className="fst-italic align-middle me-1">
-                            Čas výpisu:{" "}
-                            {prettyTimeWithSeconds(new Date(bankDataApi.fetch_timestamp))}
+                            Čas výpisu: {prettyTimeWithSeconds(new Date(bankData.fetch_timestamp))}
                         </span>
                     )}{" "}
                     <CustomButton
@@ -169,9 +182,7 @@ const Bank: React.FC = () => {
                 </div>
             </ListGroupItem>
             <ListGroupItem>
-                {isDataProblem ? (
-                    <p className="text-danger text-center">{bankDataApi.error_info}</p>
-                ) : (
+                {isSuccess ? (
                     <Table responsive striped borderless>
                         <thead>
                             <tr>
@@ -181,9 +192,11 @@ const Bank: React.FC = () => {
                                 <th className="text-end">Suma</th>
                             </tr>
                         </thead>
-                        <tbody>{renderTableBody(bankDataApi)}</tbody>
+                        <tbody>{renderTableBody(bankData)}</tbody>
                     </Table>
-                )}
+                ) : isError ? (
+                    <p className="text-danger text-center">{bankData.error_info}</p>
+                ) : null}
                 <div className="text-center text-muted mt-3">
                     <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší než{" "}
                     <strong id="Bank_days">30 dnů</strong> lze zobrazit pouze{" "}
