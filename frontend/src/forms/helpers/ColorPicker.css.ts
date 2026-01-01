@@ -9,7 +9,7 @@ export const colorPickerContainer = style({
 globalStyle(".rcp-root", {
     border: "1px solid #dee2e6",
     borderRadius: "0.375rem",
-    // @ts-expect-error - vanilla-extract nepodporuje CSS proměnné přímo, ale funguje to
+    // @ts-expect-error - vanilla-extract nepodporuje CSS promenne naprimo, ale funguje to
     "--rcp-background-color": "#f8f9fa",
     "--rcp-field-input-color": "black",
 })
