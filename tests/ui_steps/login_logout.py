@@ -19,6 +19,8 @@ def get_jwt_from_local_storage(driver):
 
 
 def check_login(context):
+    # pockej na nacteni hlavni stranky (aby nedoslo ke zbytecnemu preruseni pozadavku)
+    helpers.wait_loading_ends(context.browser)
     # pockej az bude viditelne tlacitko pro odhlaseni, doslo k uspesnemu prihlaseni
     try:
         context.button_logout = WebDriverWait(context.browser, helpers.WAIT_TIME).until(
