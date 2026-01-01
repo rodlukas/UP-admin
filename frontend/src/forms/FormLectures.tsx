@@ -5,6 +5,7 @@ import {
     faClock,
     faHourglass,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import {
     Alert,
@@ -766,9 +767,11 @@ const FormLectures: React.FC<Props> = (props) => {
                                         <Label
                                             for={`atPaid${member.id}`}
                                             data-qa="lecture_label_attendance_paid"
-                                            className={`mb-0 fw-bold ${
-                                                atPaid[member.id] ? "text-success" : "text-danger"
-                                            }`}
+                                            className={classNames(
+                                                "mb-0",
+                                                "fw-bold",
+                                                atPaid[member.id] ? "text-success" : "text-danger",
+                                            )}
                                             check>
                                             Platba
                                         </Label>{" "}

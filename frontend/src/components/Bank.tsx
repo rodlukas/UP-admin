@@ -5,6 +5,7 @@ import {
     faInfoCircle,
     faSyncAlt,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import { ListGroup, ListGroupItem, Table } from "reactstrap"
 
@@ -41,7 +42,7 @@ type TableInfoProps = {
 
 /** Pomocná komponenta pro výpis hlášky místo transakcí v tabulce. */
 const TableInfo: React.FC<TableInfoProps> = ({ text, color = "text-muted" }) => (
-    <tr className={`${color} text-center`}>
+    <tr className={classNames(color, "text-center")}>
         <td colSpan={4}>{text}</td>
     </tr>
 )
@@ -100,9 +101,8 @@ const Bank: React.FC = () => {
             const commentObj = transaction.column25
             const duplicates = messageObj && messageObj.value === commentObj?.value
             const targetAccountOwnerObj = transaction.column10
-            const amountClassName = amount < 0 ? " text-danger" : ""
             return (
-                <tr key={id} className={isToday(date) ? "table-warning" : undefined}>
+                <tr key={id} className={classNames({ "table-warning": isToday(date) })}>
                     <td colSpan={duplicates ? 2 : undefined} data-gdpr>
                         {commentObj?.value ??
                             (targetAccountOwnerObj?.value ? (
@@ -116,7 +116,9 @@ const Bank: React.FC = () => {
                         {prettyDateWithDayYearIfDiff(date, true)}
                     </td>
                     <td
-                        className={`${amountClassName} fw-bold text-end text-nowrap`}
+                        className={classNames("fw-bold", "text-end", "text-nowrap", {
+                            "text-danger": amount < 0,
+                        })}
                         style={{ minWidth: "7em" }}>
                         {prettyAmount(amount)}
                     </td>
