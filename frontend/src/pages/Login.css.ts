@@ -10,7 +10,7 @@ export const loginContainer = style({
 
 export const loginCard = style({
     border: "1px solid #e9ecef",
-    borderRadius: "12px",
+    borderRadius: "0.375rem",
     boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
     backgroundColor: "white",
     padding: "2.5rem",
@@ -27,7 +27,6 @@ export const logoContainer = style({
 
 export const logo = style({
     filter: "drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))",
-    objectFit: "contain",
     width: "90px",
     height: "90px",
 })
@@ -35,8 +34,6 @@ export const logo = style({
 export const title = style({
     marginBottom: "0.5rem",
     textAlign: "center",
-    letterSpacing: "-0.02em",
-    color: "#212529",
     fontSize: "2rem",
     fontWeight: 700,
 })
@@ -44,7 +41,6 @@ export const title = style({
 export const subtitle = style({
     marginBottom: "2rem",
     textAlign: "center",
-    color: "#6c757d",
     fontSize: "0.95rem",
     fontWeight: 400,
 })

@@ -39,7 +39,7 @@ export const searchContainer = style({
     zIndex: 1021,
     margin: "0 auto",
     marginBottom: "2rem",
-    borderRadius: "0 0 0.5rem 0.5rem",
+    borderRadius: "0 0 0.375rem 0.375rem",
     boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
     backgroundColor: "white",
     padding: "0 1rem 2rem",

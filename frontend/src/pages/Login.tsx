@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLock, faUser } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import { Redirect } from "react-router-dom"
 import {
@@ -73,14 +74,16 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
                 <div className={styles.logoContainer}>
                     <img
                         src="/static/admin/android-chrome-512x512.png"
-                        alt="ÚPadmin Logo"
+                        alt="ÚPadmin logo"
                         className={styles.logo}
                     />
                 </div>
                 <h1 className={styles.title}>
                     ÚP<sub>admin</sub>
                 </h1>
-                <p className={styles.subtitle}>Přihlaste se do administračního systému</p>
+                <p className={classNames(styles.subtitle, "text-muted")}>
+                    Přihlaste se do administračního systému
+                </p>
                 <Form onSubmit={handleSubmit} data-qa="form_login">
                     <FormGroup>
                         <InputGroup>
