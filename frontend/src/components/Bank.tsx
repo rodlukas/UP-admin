@@ -12,12 +12,17 @@ import { bankDataApiInit, useBank } from "../api/hooks"
 import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"
-import { BankType } from "../types/models"
+import { BankType, BankSuccessType } from "../types/models"
 import { TimeoutType } from "../types/types"
 
 import CustomButton from "./buttons/CustomButton"
 import NoInfo from "./NoInfo"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
+
+/** Type guard pro rozlišení úspěšné a chybové odpovědi z banky. */
+function isBankSuccess(data: BankType): data is BankSuccessType {
+    return "accountStatement" in data
+}
 
 /** Doba, po kterou nelze ručně provést opakované načtení dat z API. */
 const REFRESH_TIMEOUT = 60 // sekundy
@@ -38,8 +43,7 @@ const TableInfo: React.FC<TableInfoProps> = ({ text, color = "text-muted" }) => 
 
 /** Komponenta zobrazující přehled transakcí z banky. */
 const Bank: React.FC = () => {
-    const { data: bankDataApiRaw = bankDataApiInit, isLoading, refetch, isFetching } = useBank()
-    const bankDataApi: BankType = bankDataApiRaw
+    const { data: bankDataApi = bankDataApiInit, isLoading, refetch, isFetching } = useBank()
     /** Manuální obnovení dat je zakázané (true). */
     const [isRefreshDisabled, setIsRefreshDisabled] = React.useState(true)
     const timeoutIdRef = React.useRef<TimeoutType>(undefined)
@@ -62,10 +66,10 @@ const Bank: React.FC = () => {
         void refetch()
     }, [refetch])
 
-    const balance = bankDataApi.accountStatement.info.closingBalance
-    const rentPrice = bankDataApi.rent_price
+    const isDataProblem = !isBankSuccess(bankDataApi)
+    const balance = isDataProblem ? null : bankDataApi.accountStatement.info.closingBalance
+    const rentPrice = isDataProblem ? null : bankDataApi.rent_price
     const isLackOfMoney = balance !== null && rentPrice !== null && balance < rentPrice
-    const isDataProblem = Boolean(bankDataApi.status_info)
     const isLoadingState = isLoading || isFetching
 
     const getBalanceText = (): React.ReactNode => {
@@ -75,17 +79,12 @@ const Bank: React.FC = () => {
         return <span className="fw-bold text-nowrap">{prettyAmount(balance)}</span>
     }
 
-    const renderTableBody = (): React.ReactNode => {
-        if (isDataProblem) {
-            return <TableInfo text={bankDataApi.status_info} color="text-danger" />
-        }
-        if (
-            bankDataApi.accountStatement.transactionList.transaction.length === 0 &&
-            !isLoadingState
-        ) {
+    const renderTableBody = (data: BankSuccessType): React.ReactNode => {
+        if (data.accountStatement.transactionList.transaction.length === 0 && !isLoadingState) {
             return <TableInfo text="Žádné nedávné transakce" />
         }
-        return bankDataApi.accountStatement.transactionList.transaction.map((transaction) => {
+
+        return data.accountStatement.transactionList.transaction.map((transaction) => {
             const date = new Date(transaction.column0.value.split("+")[0])
             const amount = transaction.column1.value
             const messageObj = transaction.column16
@@ -142,7 +141,7 @@ const Bank: React.FC = () => {
                     )}
                 </h4>
                 <div className="text-end">
-                    {bankDataApi.fetch_timestamp !== null && (
+                    {!isDataProblem && (
                         <span className="fst-italic align-middle me-1">
                             Čas výpisu:{" "}
                             {prettyTimeWithSeconds(new Date(bankDataApi.fetch_timestamp))}
@@ -170,29 +169,23 @@ const Bank: React.FC = () => {
                 </div>
             </ListGroupItem>
             <ListGroupItem>
-                <Table responsive striped borderless>
-                    <thead>
-                        <tr>
-                            <th>Poznámka</th>
-                            <th>Zpráva pro příjemce</th>
-                            <th className="text-end">Datum</th>
-                            <th className="text-end">Suma</th>
-                        </tr>
-                    </thead>
-                    <tbody>{renderTableBody()}</tbody>
-                </Table>
+                {isDataProblem ? (
+                    <p className="text-danger text-center">{bankDataApi.error_info}</p>
+                ) : (
+                    <Table responsive striped borderless>
+                        <thead>
+                            <tr>
+                                <th>Poznámka</th>
+                                <th>Zpráva pro příjemce</th>
+                                <th className="text-end">Datum</th>
+                                <th className="text-end">Suma</th>
+                            </tr>
+                        </thead>
+                        <tbody>{renderTableBody(bankDataApi)}</tbody>
+                    </Table>
+                )}
                 <div className="text-center text-muted mt-3">
                     <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší než{" "}
-                    <UncontrolledTooltipWrapper target="Bank_days">
-                        {bankDataApi.accountStatement.info.dateStart
-                            ? prettyDateWithDayYearIfDiff(
-                                  new Date(
-                                      bankDataApi.accountStatement.info.dateStart.split("+")[0],
-                                  ),
-                                  true,
-                              )
-                            : "neznámý datum"}
-                    </UncontrolledTooltipWrapper>
                     <strong id="Bank_days">30 dnů</strong> lze zobrazit pouze{" "}
                     <a href={BANKING_URL} target="_blank" rel="noopener noreferrer">
                         v bankovnictví <FontAwesomeIcon icon={faExternalLink} size="xs" />

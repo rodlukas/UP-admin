@@ -1,21 +1,21 @@
 import { useQuery } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 
-import { BankType } from "../../types/models"
+import { BankErrorType, BankSuccessType, BankType } from "../../types/models"
 import BankService from "../services/BankService"
 
-export const bankDataApiInit: BankType = {
+export const bankDataApiInit: BankSuccessType = {
     accountStatement: {
         info: {
-            closingBalance: null,
+            closingBalance: 0,
             dateStart: undefined,
         },
         transactionList: {
             transaction: [],
         },
     },
-    fetch_timestamp: null,
-    rent_price: null,
-    status_info: undefined,
+    fetch_timestamp: 0,
+    rent_price: 0,
 }
 
 /** Hook pro získání výpisů z banky. */
@@ -23,12 +23,21 @@ export function useBank() {
     return useQuery<BankType>({
         queryKey: ["bank"],
         queryFn: async () => {
-            const response = await BankService.getAll()
-            if (response.status !== 200) {
-                // z API dorazi jen status_info, provedeme merge se zbytkem init hodnot
-                return { ...bankDataApiInit, ...response.data }
+            try {
+                return await BankService.getAll()
+            } catch (error) {
+                if (error instanceof AxiosError && error.response?.data) {
+                    const errorData = error.response.data
+                    if (
+                        typeof errorData === "object" &&
+                        errorData !== null &&
+                        "error_info" in errorData
+                    ) {
+                        return errorData as BankErrorType
+                    }
+                }
+                return { error_info: "Neznámá chyba při získávání dat z banky." }
             }
-            return response.data
         },
         meta: {
             skipErrorNotification: true,

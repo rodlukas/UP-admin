@@ -421,7 +421,7 @@ class BankView(APIView):
         responses={
             200: OpenApiResponse(description="Výpis transakcí z bankovního účtu."),
             500: OpenApiResponse(
-                description="Chyba při získávání dat z banky. Obsahuje status_info s popisem chyby."
+                description="Chyba při získávání dat z banky. Obsahuje error_info s popisem chyby."
             ),
         },
     )

@@ -91,12 +91,13 @@ export type AttendanceStateType = Model & {
  * Informace z banky.
  * Dokumentace vychází z Fio API dokumentace: https://www.fio.cz/docs/cz/API_Bankovnictvi.pdf
  */
-export type BankType = {
+/** Úspěšná odpověď z banky s daty. */
+export type BankSuccessType = {
     accountStatement: {
         /** Informace o účtu. */
         info: {
             /** Konečný zůstatek na účtu na konci zvoleného období. */
-            closingBalance: number | null
+            closingBalance: number
             /** Počátek zvoleného období ve tvaru rrrr-mm-dd+GMT. */
             dateStart?: string
         }
@@ -119,12 +120,20 @@ export type BankType = {
         }
     }
     /** Časová značka informací z banky. */
-    fetch_timestamp: number | null
+    fetch_timestamp: number
     /** Výše nájmu lektorky. */
-    rent_price: number | null
-    /** Popis chyby v případě neúspěšného stažení dat z banky. */
-    status_info?: string
+    rent_price: number
+    error_info?: never
 }
+
+/** Chybová odpověď z banky. */
+export type BankErrorType = {
+    /** Popis chyby v případě neúspěšného stažení dat z banky. */
+    error_info: string
+}
+
+/** Typ pro odpověď z banky - buď úspěšná s daty, nebo chybová pouze se error_info. */
+export type BankType = BankSuccessType | BankErrorType
 
 /* *************************************************************************************************
 Dummy modely pro formuláře.

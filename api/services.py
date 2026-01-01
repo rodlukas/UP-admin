@@ -104,5 +104,5 @@ class Bank:
         """
         Generuje výstupní data o chybě.
         """
-        output_data = {"status_info": f"Data se nepodařilo stáhnout – {err_msg}."}
+        output_data = {"error_info": f"Data se nepodařilo stáhnout – {err_msg}."}
         return output_data, status.HTTP_500_INTERNAL_SERVER_ERROR
