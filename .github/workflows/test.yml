@@ -105,7 +105,7 @@ jobs:
             - name: 🔍 Run E2E API tests
               run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
             - name: 🔍 Run E2E UI tests
-              run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
+              run: pipenv run coverage run -a manage.py behave --stage=ui
             - name: 📝 Generate test reports
               run: |
                   pipenv run coverage report
