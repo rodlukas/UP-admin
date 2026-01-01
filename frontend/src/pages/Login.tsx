@@ -16,7 +16,6 @@ import {
 
 import { useAuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
-import Loading from "../components/Loading"
 import useForm from "../hooks/useForm"
 import { AuthorizationType } from "../types/models"
 import { CustomRouteComponentProps } from "../types/types"
@@ -64,9 +63,6 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
     const redirectedFrom = props.location.state ? props.location.state.from : "/"
     if (authContextIsAuth) {
         return <Redirect to={redirectedFrom} />
-    }
-    if (authContextIsLoading) {
-        return <Loading text="Probíhá přihlašování" />
     }
     return (
         <Container className={styles.loginContainer}>
@@ -129,6 +125,7 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
                         data-qa="button_submit_login"
                         content="Přihlásit"
                         className={styles.submitButton}
+                        loading={authContextIsLoading}
                     />
                 </Form>
             </Card>
