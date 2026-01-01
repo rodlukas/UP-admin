@@ -217,16 +217,11 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 
 # CSP
-# CSP pro Google Analytics, viz https://developers.google.com/tag-manager/web/csp#universal_analytics_google_analytics
-CSPURL_GOOGLE_ANALYTICS = "https://www.google-analytics.com"
-CSPURL_GOOGLE_ANALYTICS_SSL = "https://ssl.google-analytics.com"
 # CSP pro Google Fonts
 CSPURL_GOOGLE_FONTS_STYLE = "fonts.googleapis.com"
 CSPURL_GOOGLE_FONTS_FONT = "fonts.gstatic.com"
 # CSP pro Sentry
 CSPURL_SENTRY = "https://*.sentry.io"
-# CSP pro cdn.jsdelivr.net (openapi docs)
-CSPURL_JSDELIVR_NET = "https://cdn.jsdelivr.net"
 
 CSP_SELF = "'self'"
 CSP_NONE = "'none'"
@@ -237,18 +232,14 @@ CSP_STYLE_SRC = (
     CSP_SELF,
     "'unsafe-inline'",
     CSPURL_GOOGLE_FONTS_STYLE,
-    CSPURL_JSDELIVR_NET,
 )  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
-CSP_CONNECT_SRC = (CSP_SELF, CSPURL_GOOGLE_ANALYTICS, CSPURL_SENTRY, CSPURL_JSDELIVR_NET)
+CSP_CONNECT_SRC = (CSP_SELF, CSPURL_SENTRY)
 CSP_SCRIPT_SRC = (
     CSP_SELF,
     CSPURL_SENTRY,
-    CSPURL_GOOGLE_ANALYTICS,
-    CSPURL_GOOGLE_ANALYTICS_SSL,
-    CSPURL_JSDELIVR_NET,
 )
 CSP_FONT_SRC = (CSP_SELF, CSPURL_GOOGLE_FONTS_FONT)
-CSP_IMG_SRC = (CSP_SELF, CSPURL_GOOGLE_ANALYTICS, "data:")
+CSP_IMG_SRC = (CSP_SELF, "data:")
 CSP_FRAME_ANCESTORS = (CSP_NONE,)
 CSP_FORM_ACTION = (CSP_NONE,)
 CSP_BASE_URI = (CSP_NONE,)
