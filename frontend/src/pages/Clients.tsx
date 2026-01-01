@@ -119,7 +119,9 @@ const Clients: React.FC<Props> = () => {
                 </Table>
             )}
             {getClientsData().length === 0 && !isLoading() && (
-                <p className="text-muted text-center">Žádní klienti</p>
+                <p className="text-muted text-center">
+                    Žádní {active ? "aktivní" : "neaktivní"} klienti
+                </p>
             )}
         </Container>
     )

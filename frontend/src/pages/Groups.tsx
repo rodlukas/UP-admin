@@ -122,7 +122,9 @@ const Groups: React.FC<Props> = () => {
                 </Table>
             )}
             {getGroupsData().length === 0 && !isLoading() && (
-                <p className="text-muted text-center">Žádné skupiny</p>
+                <p className="text-muted text-center">
+                    Žádné {active ? "aktivní" : "neaktivní"} skupiny
+                </p>
             )}
         </Container>
     )

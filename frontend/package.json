@@ -100,6 +100,7 @@
         "bootstrap": "^5.3.8",
         "chroma-js": "^3.2.0",
         "classnames": "^2.5.1",
+        "focus-trap-react": "^11.0.4",
         "fuse.js": "^7.1.0",
         "history": "^4.10.1",
         "jwt-decode": "^4.0.0",

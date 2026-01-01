@@ -1,3 +1,4 @@
+import { FocusTrap } from "focus-trap-react"
 import { FuseResult } from "fuse.js"
 import * as React from "react"
 import { Badge, CloseButton, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
@@ -44,79 +45,98 @@ const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch 
             {searchVal !== "" && (
                 <div
                     className={styles.searchOverlay}
-                    onClick={resetSearch}
+                    onMouseDown={(e) => {
+                        // Zavři dialog pouze pokud byl klik na overlay, ne na kontejner
+                        if (e.target === e.currentTarget) {
+                            resetSearch()
+                        }
+                    }}
                     onKeyDown={(e) => {
                         if (e.key === "Escape") {
                             resetSearch()
                         }
                     }}
-                    role="presentation"
+                    role="button"
+                    tabIndex={-1}
                     aria-label="Výsledky vyhledávání">
-                    <div
-                        className={styles.searchContainer}
-                        onClick={(e) => e.stopPropagation()}
-                        role="presentation">
-                        <Container>
-                            <Heading
-                                title={
-                                    <>
-                                        Nalezení klienti{" "}
-                                        <Badge color="secondary" pill>
-                                            {foundResults.length}
-                                        </Badge>
-                                    </>
-                                }
-                                buttons={
-                                    <CloseButton
-                                        onClick={resetSearch}
-                                        aria-label="Zavřít vyhledávání"
-                                    />
-                                }
-                            />
-                            {clientsActiveContext.isLoading && <Loading />}
-                            {foundResults.length > 0 && !clientsActiveContext.isLoading && (
-                                <ListGroup>
-                                    {foundResults.map(({ item }) => (
-                                        <ListGroupItem key={item.id}>
-                                            <Row className="align-items-center">
-                                                {" "}
-                                                <Col md="6">
-                                                    <h5 className="mb-0 d-inline-block">
-                                                        <ClientName client={item} link />
-                                                    </h5>
-                                                    {item.note !== "" && (
-                                                        <span className="text-secondary">
-                                                            {" "}
-                                                            &ndash; {item.note}
-                                                        </span>
-                                                    )}
-                                                </Col>
-                                                <Col md="2">
-                                                    {item.phone && (
-                                                        <ClientPhone phone={item.phone} icon />
-                                                    )}
-                                                </Col>
-                                                <Col md="3">
-                                                    {item.email && (
-                                                        <ClientEmail email={item.email} />
-                                                    )}
-                                                </Col>
-                                                <Col className="text-end mt-1 mt-md-0" md="1">
-                                                    <ModalClients
-                                                        currentClient={item}
-                                                        refresh={search}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                        </ListGroupItem>
-                                    ))}
-                                </ListGroup>
-                            )}
-                            {foundResults.length === 0 && !clientsActiveContext.isLoading && (
-                                <p className="text-muted text-center">Žádní klienti nenalezeni</p>
-                            )}
-                        </Container>
-                    </div>
+                    <FocusTrap
+                        active={searchVal !== ""}
+                        focusTrapOptions={{
+                            clickOutsideDeactivates: false,
+                            escapeDeactivates: false,
+                            initialFocus: false, // Nechá focus tam, kde už je (v search inputu)
+                        }}>
+                        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+                        <div
+                            className={styles.searchContainer}
+                            onMouseDown={(e) => e.stopPropagation()}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="search-dialog-title">
+                            <Container>
+                                <Heading
+                                    title={
+                                        <span id="search-dialog-title">
+                                            Nalezení klienti{" "}
+                                            <Badge color="secondary" pill>
+                                                {foundResults.length}
+                                            </Badge>
+                                        </span>
+                                    }
+                                    buttons={
+                                        <CloseButton
+                                            onClick={resetSearch}
+                                            aria-label="Zavřít vyhledávání"
+                                        />
+                                    }
+                                />
+                                {clientsActiveContext.isLoading && <Loading />}
+                                {foundResults.length > 0 && !clientsActiveContext.isLoading && (
+                                    <ListGroup>
+                                        {foundResults.map(({ item }) => (
+                                            <ListGroupItem key={item.id}>
+                                                <Row className="align-items-center">
+                                                    {" "}
+                                                    <Col md="6">
+                                                        <h5 className="mb-0 d-inline-block">
+                                                            <ClientName client={item} link />
+                                                        </h5>
+                                                        {item.note !== "" && (
+                                                            <span className="text-secondary">
+                                                                {" "}
+                                                                &ndash; {item.note}
+                                                            </span>
+                                                        )}
+                                                    </Col>
+                                                    <Col md="2">
+                                                        {item.phone && (
+                                                            <ClientPhone phone={item.phone} icon />
+                                                        )}
+                                                    </Col>
+                                                    <Col md="3">
+                                                        {item.email && (
+                                                            <ClientEmail email={item.email} />
+                                                        )}
+                                                    </Col>
+                                                    <Col className="text-end mt-1 mt-md-0" md="1">
+                                                        <ModalClients
+                                                            currentClient={item}
+                                                            refresh={search}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                            </ListGroupItem>
+                                        ))}
+                                    </ListGroup>
+                                )}
+                                {foundResults.length === 0 && !clientsActiveContext.isLoading && (
+                                    <p className="text-muted text-center">
+                                        Žádní klienti nenalezeni
+                                    </p>
+                                )}
+                            </Container>
+                        </div>
+                    </FocusTrap>
                 </div>
             )}
         </>
