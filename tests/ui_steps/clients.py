@@ -108,8 +108,10 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_client_with_context(context)
     )
-    # over, ze sedi pocet klientu
-    assert clients_cnt(context.browser) > context.old_clients_cnt
+    # pockej, az se zvysi pocet klientu (stabilni overeni)
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: clients_cnt(driver) > context.old_clients_cnt
+    )
 
 
 @then("the client is updated")
@@ -120,8 +122,10 @@ def step_impl(context):
     WebDriverWait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: find_client_with_context(context)
     )
-    # over, ze sedi pocet klientu
-    assert clients_cnt(context.browser) == context.old_clients_cnt
+    # pockej, az se ustali stejny pocet klientu jako predtim
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: clients_cnt(driver) == context.old_clients_cnt
+    )
 
 
 @then("the client is deleted")
@@ -179,8 +183,10 @@ def step_impl(context):
     helpers.close_modal(context.browser)
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # over, ze zadny klient nepribyl
-    assert clients_cnt(context.browser) == context.old_clients_cnt
+    # pockej, az se ustali stejny pocet klientu jako predtim (stabilni overeni)
+    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: clients_cnt(driver) == context.old_clients_cnt
+    )
 
 
 use_step_matcher("re")
