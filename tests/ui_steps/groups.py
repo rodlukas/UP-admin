@@ -100,7 +100,6 @@ def step_impl(context):
         lambda driver: find_group_with_context(context)
     )
     # over, ze sedi pocet skupin
-    print("OLD:", context.old_groups_cnt, "NOW:", groups_cnt(context.browser))
     assert groups_cnt(context.browser) > context.old_groups_cnt
 
 
@@ -113,7 +112,6 @@ def step_impl(context):
         lambda driver: find_group_with_context(context)
     )
     # over, ze sedi pocet skupin
-    print("OLD:", context.old_groups_cnt, "NOW:", groups_cnt(context.browser))
     assert groups_cnt(context.browser) == context.old_groups_cnt
 
 
@@ -184,7 +182,6 @@ def step_impl(context):
         # pockej az bude modalni okno kompletne zavrene
         helpers.wait_modal_closed(context.browser)
         # over, ze pocet skupin se nezmenil
-        print("OLD:", context.old_groups_cnt, "NOW:", groups_cnt(context.browser))
         assert groups_cnt(context.browser) == context.old_groups_cnt
 
 

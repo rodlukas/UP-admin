@@ -109,7 +109,6 @@ def step_impl(context):
         lambda driver: find_client_with_context(context)
     )
     # over, ze sedi pocet klientu
-    print("OLD:", context.old_clients_cnt, "NOW:", clients_cnt(context.browser))
     assert clients_cnt(context.browser) > context.old_clients_cnt
 
 
@@ -122,7 +121,6 @@ def step_impl(context):
         lambda driver: find_client_with_context(context)
     )
     # over, ze sedi pocet klientu
-    print("OLD:", context.old_clients_cnt, "NOW:", clients_cnt(context.browser))
     assert clients_cnt(context.browser) == context.old_clients_cnt
 
 
@@ -182,7 +180,6 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # over, ze zadny klient nepribyl
-    print("OLD:", context.old_clients_cnt, "NOW:", clients_cnt(context.browser))
     assert clients_cnt(context.browser) == context.old_clients_cnt
 
 

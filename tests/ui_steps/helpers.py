@@ -12,13 +12,13 @@ WAIT_TIME_VERY_SHORT = 0.5
 
 
 def wait_loading_cycle(driver):
-    # kratka kontrola, zda se spinner objevi se zpozdenim; pokud ano, pockej na jeho konec
+    # kratka kontrola, zda se loading objevi se zpozdenim; pokud ano, pockej na jeho konec
     try:
         WebDriverWait(driver, WAIT_TIME_VERY_SHORT).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=loading]"))
         )
     except TimeoutException:
-        # spinner se neobjevil v ramci kratkeho casu, nepokracuj v cekani
+        # loading se neobjevil v ramci kratkeho casu, nepokracuj v cekani
         return
     else:
         wait_loading_ends(driver)
