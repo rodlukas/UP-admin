@@ -62,7 +62,7 @@ const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch 
             }
 
             const firstElement = focusableElements[0]
-            const lastElement = focusableElements[focusableElements.length - 1]
+            const lastElement = focusableElements.at(-1)!
             const activeElement = document.activeElement as HTMLElement
 
             // Pokud není žádný prvek ve focusu nebo je mimo dialog, nastav focus na první
