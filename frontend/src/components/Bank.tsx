@@ -72,7 +72,6 @@ const Bank: React.FC = () => {
     }, [refetch])
 
     const isSuccess = isBankSuccess(bankData)
-    const isError = isBankError(bankData)
     const isLackOfMoney =
         isSuccess && bankData.accountStatement.info.closingBalance < bankData.rent_price
     const isLoadingState = isLoading || isFetching
@@ -126,6 +125,28 @@ const Bank: React.FC = () => {
         })
     }
 
+    const renderMainContent = (): React.ReactNode => {
+        if (isBankSuccess(bankData)) {
+            return (
+                <Table responsive striped borderless>
+                    <thead>
+                        <tr>
+                            <th>Poznámka</th>
+                            <th>Zpráva pro příjemce</th>
+                            <th className="text-end">Datum</th>
+                            <th className="text-end">Suma</th>
+                        </tr>
+                    </thead>
+                    <tbody>{renderTableBody(bankData)}</tbody>
+                </Table>
+            )
+        }
+        if (isBankError(bankData)) {
+            return <p className="text-danger text-center">{bankData.error_info}</p>
+        }
+        return null
+    }
+
     return (
         <ListGroup>
             <ListGroupItem color={isLackOfMoney ? "danger" : "success"}>
@@ -177,21 +198,7 @@ const Bank: React.FC = () => {
                 </div>
             </ListGroupItem>
             <ListGroupItem>
-                {isSuccess ? (
-                    <Table responsive striped borderless>
-                        <thead>
-                            <tr>
-                                <th>Poznámka</th>
-                                <th>Zpráva pro příjemce</th>
-                                <th className="text-end">Datum</th>
-                                <th className="text-end">Suma</th>
-                            </tr>
-                        </thead>
-                        <tbody>{renderTableBody(bankData)}</tbody>
-                    </Table>
-                ) : isError ? (
-                    <p className="text-danger text-center">{bankData.error_info}</p>
-                ) : null}
+                {renderMainContent()}
                 <div className="text-center text-muted mt-3">
                     <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší než{" "}
                     <strong id="Bank_days">30 dnů</strong> lze zobrazit pouze{" "}
