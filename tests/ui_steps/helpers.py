@@ -153,19 +153,6 @@ def wait_modal_closed(driver):
     WebDriverWait(driver, WAIT_TIME).until_not(lambda d: is_modal_class_attr_present(d))
 
 
-def wait_switching_available(driver, form_name):
-    WebDriverWait(driver, WAIT_TIME_SHORT).until_not(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, f"[data-qa={form_name}]"))
-    )
-    try:
-        notification = WebDriverWait(driver, WAIT_TIME_SHORT).until(
-            EC.element_to_be_clickable((By.CLASS_NAME, "Toastify__close-button"))
-        )
-        notification.click()
-    except TimeoutException:
-        pass
-
-
 def _find_group_with_activity(activity, context, name, open_card=False, validate_context=False):
     # nacti skupiny s prislusnou ne/aktivitou
     groups = get_groups(context.browser, activity)
