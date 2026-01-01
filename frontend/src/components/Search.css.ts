@@ -1,6 +1,5 @@
 import { keyframes, style } from "@vanilla-extract/css"
 
-// Jemný fade-in efekt
 const fadeIn = keyframes({
     from: {
         opacity: 0,
@@ -12,8 +11,8 @@ const fadeIn = keyframes({
 
 export const searchOverlay = style({
     position: "fixed",
-    zIndex: 1020, // Bootstrap navbar má z-index 1030, takže 1020 je pod ním
-    top: "56px", // Výška navbaru (56px) - desktop
+    zIndex: 1020, // Bootstrap navbar ma z-index 1030
+    top: "56px", // vyska navbaru (56px) - desktop
     right: 0,
     bottom: 0,
     left: 0,
@@ -27,9 +26,8 @@ export const searchOverlay = style({
     animation: `${fadeIn} 0.15s ease-out`,
     "@media": {
         "(max-width: 991.98px)": {
-            // Na mobilu začíná overlay pod search inputem (navbar 56px + search input ~40px)
-            zIndex: 1040, // Vyšší než navbar (1030), aby byl nad rozbaleným menu
-            top: "106px", // Výška navbaru (56px) + search input (~40px)
+            zIndex: 1040, // vyssi nez navbar (1030), aby byl nad rozbalenym menu
+            top: "106px", // vyska navbaru (56px) + search input (~50px)
         },
     },
 })

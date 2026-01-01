@@ -86,7 +86,6 @@ REST_FRAMEWORK = {
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
-# drf-spectacular konfigurace
 SPECTACULAR_SETTINGS = {
     "TITLE": "ÚPadmin API",
     "DESCRIPTION": "Dokumentace *REST API* pro aplikaci **ÚPadmin**. **[Přejít do aplikace](/)**",

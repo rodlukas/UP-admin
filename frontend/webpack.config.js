@@ -99,10 +99,7 @@ module.exports = {
         new VanillaExtractPlugin({
             identifiers: isProduction ? "short" : "debug",
         }),
-        !isProduction &&
-            new ReactRefreshWebpackPlugin({
-                overlay: false, // overlay je už nastaveno v devServer.client.overlay
-            }),
+        !isProduction && new ReactRefreshWebpackPlugin(),
         new ESLintPlugin({
             failOnError: isProduction,
             extensions: ["js", "jsx", "ts", "tsx"],
@@ -135,7 +132,7 @@ module.exports = {
         new HtmlWebpackHarddiskPlugin({
             outputPath: htmlTarget,
         }),
-    ].filter(Boolean), // odstranění false hodnot (ReactRefreshWebpackPlugin v produkci)
+    ].filter(Boolean), // odstraneni false hodnot
 
     output: {
         // nazvy souboru odpovidaji https://create-react-app.dev/docs/production-build/
