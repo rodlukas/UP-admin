@@ -19,14 +19,9 @@ import CustomButton from "./buttons/CustomButton"
 import NoInfo from "./NoInfo"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
-/** Type guard pro rozlišení úspěšné a chybové odpovědi z banky. */
-function isBankSuccess(data: BankType): data is BankSuccessType {
-    return "accountStatement" in data
-}
-
-/** Bezpečný type guard pro úspěšná bankovní data (akceptuje i undefined). */
-function isBankSuccessSafe(data: BankType | undefined): data is BankSuccessType {
-    return !!data && isBankSuccess(data)
+/** Type guard pro úspěšná bankovní data. */
+function isBankSuccess(data: BankType | undefined): data is BankSuccessType {
+    return !!data && "accountStatement" in data
 }
 
 /** Type guard pro chybovou odpověď banky (akceptuje i undefined). */
@@ -76,7 +71,7 @@ const Bank: React.FC = () => {
         void refetch()
     }, [refetch])
 
-    const isSuccess = isBankSuccessSafe(bankData)
+    const isSuccess = isBankSuccess(bankData)
     const isError = isBankError(bankData)
     const isLackOfMoney =
         isSuccess && bankData.accountStatement.info.closingBalance < bankData.rent_price
