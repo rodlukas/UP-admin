@@ -25,7 +25,7 @@ def check_login(context):
             EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=button_logout]"))
         )
         button_logout_visible = True
-    except NoSuchElementException:
+    except TimeoutException:
         button_logout_visible = False
     # v localstorage musi byt token
     jwt = get_jwt_from_local_storage(context.browser)
