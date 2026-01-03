@@ -190,7 +190,7 @@ const Bank: React.FC = () => {
                             <FontAwesomeIcon icon={faSyncAlt} size="lg" spin={isLoadingState} />
                         }
                     />
-                    <UncontrolledTooltipWrapper target="Bank" placement="top">
+                    <UncontrolledTooltipWrapper target="Bank">
                         {isRefreshDisabled ? `Výpis lze obnovit jednou za minutu` : "Obnovit výpis"}
                     </UncontrolledTooltipWrapper>{" "}
                 </div>

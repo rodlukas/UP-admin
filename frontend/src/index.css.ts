@@ -22,20 +22,6 @@ globalStyle(".container", {
     maxWidth: "1500px",
 })
 
-// pro plynule scrollovani v modal oknu - viz https://github.com/twbs/bootstrap/issues/17695
-globalStyle(".modal", {
-    WebkitOverflowScrolling: "touch",
-})
-
-globalStyle(".modal", {
-    backdropFilter: "blur(4px)",
-})
-
-globalStyle(".modal hr", {
-    opacity: 1,
-    borderColor: "#dee2e6",
-})
-
 globalStyle(".list-group-item", {
     borderColor: "rgba(0,0,0,.125)",
 })
@@ -96,6 +82,22 @@ globalStyle(".form-check-label", {
 
 globalStyle(".input-group-text .form-label", {
     marginBottom: 0,
+})
+
+/**************************** MODAL ****************************/
+
+// pro plynule scrollovani v modal oknu - viz https://github.com/twbs/bootstrap/issues/17695
+globalStyle(".modal", {
+    WebkitOverflowScrolling: "touch",
+})
+
+globalStyle(".modal", {
+    backdropFilter: "blur(4px)",
+})
+
+globalStyle(".modal hr", {
+    opacity: 1,
+    borderColor: "#dee2e6",
 })
 
 /**************************** TABLE ****************************/
