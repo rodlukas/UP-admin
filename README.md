@@ -138,9 +138,9 @@ Responsive JS _([TypeScript](https://www.typescriptlang.org/))_ web app, specifi
 ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) built on these
 technologies:
 
--   [React 17](https://reactjs.org/),
+-   [React 19](https://react.dev/),
 -   [TypeScript 5](https://www.typescriptlang.org/),
--   [Bootstrap 4](https://getbootstrap.com/) (with [Reactstrap](https://reactstrap.github.io/)),
+-   [Bootstrap 5](https://getbootstrap.com/) (with [Reactstrap 9](https://reactstrap.github.io/)),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry),
 -   [Tanstack Query (formerly React Query)](https://tanstack.com/query/)
@@ -156,7 +156,7 @@ Main tools used for the frontend development:
 -   [Babel 7](https://babeljs.io/),
 -   [husky](https://github.com/typicode/husky) and
     [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (ESlint, Prettier)
--   and [React Hot Loader](https://github.com/gaearon/react-hot-loader) – for
+-   and [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – for
     [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 The app is **resilient against JS errors** thanks to
