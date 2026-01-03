@@ -16,6 +16,7 @@ import { prettyAmount } from "../global/utils"
 import { BankType, BankSuccessType, BankErrorType } from "../types/models"
 import { TimeoutType } from "../types/types"
 
+import * as styles from "./Bank.css"
 import CustomButton from "./buttons/CustomButton"
 import NoInfo from "./NoInfo"
 import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
@@ -151,8 +152,10 @@ const Bank: React.FC = () => {
 
     return (
         <ListGroup>
-            <ListGroupItem color={isLackOfMoney ? "danger" : "success"}>
-                <h4 className="text-center">
+            <ListGroupItem
+                color={isLackOfMoney ? "danger" : "success"}
+                className={styles.bankTitle}>
+                <h4 className={classNames("text-center", "mb-0")}>
                     Aktuální stav: {getBalanceText()}{" "}
                     {isLackOfMoney && (
                         <>
@@ -172,32 +175,6 @@ const Bank: React.FC = () => {
                         </>
                     )}
                 </h4>
-                <div className="text-end">
-                    {isSuccess && (
-                        <span className="fst-italic align-middle me-1">
-                            Čas výpisu: {prettyTimeWithSeconds(new Date(bankData.fetch_timestamp))}
-                        </span>
-                    )}{" "}
-                    <CustomButton
-                        onClick={onClick}
-                        disabled={isRefreshDisabled}
-                        id="Bank"
-                        content={
-                            <FontAwesomeIcon icon={faSyncAlt} size="lg" spin={isLoadingState} />
-                        }
-                    />
-                    <UncontrolledTooltipWrapper target="Bank">
-                        {isRefreshDisabled ? "Výpis lze obnovit jednou za minutu" : "Obnovit výpis"}
-                    </UncontrolledTooltipWrapper>{" "}
-                    <a
-                        href={BANKING_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-secondary">
-                        Bankovnictví{" "}
-                        <FontAwesomeIcon icon={faExternalLink} transform="right-2" size="sm" />
-                    </a>
-                </div>
             </ListGroupItem>
             <ListGroupItem>
                 {renderMainContent()}
@@ -208,6 +185,25 @@ const Bank: React.FC = () => {
                         v bankovnictví <FontAwesomeIcon icon={faExternalLink} size="xs" />
                     </a>
                     .
+                </div>
+                <div className="text-end text-muted mt-3">
+                    {isSuccess && (
+                        <span className="fst-italic align-middle me-1">
+                            Čas výpisu: {prettyTimeWithSeconds(new Date(bankData.fetch_timestamp))}
+                        </span>
+                    )}{" "}
+                    <CustomButton
+                        onClick={onClick}
+                        disabled={isRefreshDisabled}
+                        id="Bank"
+                        size="sm"
+                        content={
+                            <FontAwesomeIcon icon={faSyncAlt} size="lg" spin={isLoadingState} />
+                        }
+                    />
+                    <UncontrolledTooltipWrapper target="Bank">
+                        {isRefreshDisabled ? "Výpis lze obnovit jednou za minutu" : "Obnovit výpis"}
+                    </UncontrolledTooltipWrapper>{" "}
                 </div>
             </ListGroupItem>
         </ListGroup>

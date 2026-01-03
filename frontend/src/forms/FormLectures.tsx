@@ -572,6 +572,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 onChangePrepaid()
                                                 onChange(e)
                                             }}
+                                            className={styles.prepaidCheckbox}
                                         />
                                         <Label for="prepaid" check>
                                             Předplaceno

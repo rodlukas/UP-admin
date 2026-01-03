@@ -9,8 +9,14 @@ type Props = Omit<ButtonProps, "content"> & {
 }
 
 /** Obecné tlačítko v rámci aplikace. */
-const CustomButton: React.FC<Props> = ({ onClick = noop, content = "", disabled = false, id }) => (
-    <Button color="secondary" disabled={disabled} onClick={onClick} id={id}>
+const CustomButton: React.FC<Props> = ({
+    onClick = noop,
+    content = "",
+    disabled = false,
+    id,
+    ...props
+}) => (
+    <Button color="secondary" disabled={disabled} onClick={onClick} id={id} {...props}>
         {content}
     </Button>
 )

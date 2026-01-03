@@ -46,14 +46,29 @@ globalStyle("b", {
 
 globalStyle("h2", {
     color: "#41464b",
-    fontSize: "1.8rem",
+    fontSize: "calc(1.2rem + 1vw)",
     fontWeight: 600,
+    "@media": {
+        "(min-width: 992px)": {
+            fontSize: "1.7rem",
+        },
+    },
 })
 
 globalStyle("h3", {
     color: "#41464b",
     fontSize: "1.5rem",
     fontWeight: 600,
+})
+
+globalStyle("h1", {
+    fontSize: "calc(1.375rem + 1.5vw)",
+    fontWeight: 600,
+    "@media": {
+        "(min-width: 992px)": {
+            fontSize: "2rem",
+        },
+    },
 })
 
 /**************************** FORMS ****************************/

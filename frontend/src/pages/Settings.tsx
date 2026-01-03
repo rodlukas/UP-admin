@@ -113,11 +113,7 @@ const Settings: React.FC<Props> = () => {
                             <Col md={6}>
                                 <h2>Stavy účasti</h2>
                                 {attendanceStatesContext.attendancestates.length > 0 && (
-                                    <Table
-                                        striped
-                                        responsive
-                                        size="sm"
-                                        className="table-custom">
+                                    <Table striped responsive size="sm" className="table-custom">
                                         <thead className="table-light">
                                             <tr>
                                                 <th>Název</th>
@@ -172,7 +168,7 @@ const Settings: React.FC<Props> = () => {
                                     Pro správné fungování aplikace je třeba některým (viditelným)
                                     stavům účasti přiřadit zvláštní vlastnosti podle jejich významu:
                                 </p>
-                                <ListGroup>
+                                <ListGroup className="mt-2 mb-4">
                                     <ListGroupItem>
                                         <Row>
                                             <Label for="state_default_id" sm={7}>
@@ -241,11 +237,7 @@ const Settings: React.FC<Props> = () => {
                             <Col md={6}>
                                 <h2>Kurzy</h2>
                                 {courses.length > 0 && (
-                                    <Table
-                                        striped
-                                        responsive
-                                        size="sm"
-                                        className="table-custom">
+                                    <Table striped responsive size="sm" className="table-custom">
                                         <thead className="table-light">
                                             <tr>
                                                 <th>Název</th>
