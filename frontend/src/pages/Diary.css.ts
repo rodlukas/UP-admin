@@ -22,6 +22,10 @@ export const diaryDay = style({
     },
 })
 
+export const disabledLink = style({
+    cursor: "default",
+})
+
 export const arrowBtn = style({
     transition: "color 0.15s ease-in-out",
     marginTop: "0.15rem",
@@ -29,7 +33,7 @@ export const arrowBtn = style({
     fontSize: "2rem",
     selectors: {
         "&:hover": {
-            color: "#5a6268 !important",
+            color: "#414448 !important",
         },
     },
 })

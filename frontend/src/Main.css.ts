@@ -1,4 +1,4 @@
-import { globalStyle } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
 globalStyle(".navbar .badge", {
     "@media": {
@@ -9,6 +9,18 @@ globalStyle(".navbar .badge", {
     },
 })
 
+export const isAuthenticated = style({
+    paddingTop: "3.5rem", // 56px
+})
+
 globalStyle(".nav-content", {
     maxWidth: "900px",
+})
+
+globalStyle(".main a, .modal a", {
+    textDecoration: "none",
+})
+
+globalStyle(".main a:hover, .modal a:hover", {
+    textDecoration: "underline",
 })

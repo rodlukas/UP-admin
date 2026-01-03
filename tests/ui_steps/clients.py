@@ -100,10 +100,6 @@ def save_old_clients_cnt_to_context(context):
     context.old_clients_cnt = clients_cnt(context.browser)
 
 
-def wait_switching_available(driver):
-    helpers.wait_switching_available(driver, "form_client")
-
-
 @then("the client is added")
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
@@ -181,8 +177,8 @@ def step_impl(context):
     assert form_client_visible
     # zavri formular
     helpers.close_modal(context.browser)
-    # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
-    wait_switching_available(context.browser)
+    # pockej az bude modalni okno kompletne zavrene
+    helpers.wait_modal_closed(context.browser)
     # over, ze zadny klient nepribyl
     assert clients_cnt(context.browser) == context.old_clients_cnt
 

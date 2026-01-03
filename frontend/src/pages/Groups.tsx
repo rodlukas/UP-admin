@@ -66,60 +66,65 @@ const Groups: React.FC<Props> = () => {
                         : false
                 }
             />
-            <Table striped size="sm" responsive className="table-custom">
-                <thead className="thead-light">
-                    <tr>
-                        <th>Název</th>
-                        <th className="d-none d-sm-table-cell">Kurz</th>
-                        <th>Členové</th>
-                        <th className="text-right text-md-right">Akce</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {isLoading() ? (
+
+            {getGroupsData().length > 0 && (
+                <Table striped size="sm" responsive className="table-custom">
+                    <thead className="table-light">
                         <tr>
-                            <td colSpan={4}>
-                                <Loading />
-                            </td>
+                            <th>Název</th>
+                            <th className="d-none d-sm-table-cell">Kurz</th>
+                            <th>Členové</th>
+                            <th className="text-end text-md-end">Akce</th>
                         </tr>
-                    ) : (
-                        <>
-                            {getGroupsData().map((group) => (
-                                <tr key={group.id} data-qa="group">
-                                    <td>
-                                        <GroupName group={group} link noWrap />{" "}
-                                        {group.active &&
-                                            !areAllMembersActive(group.memberships) && (
-                                                <Tooltip
-                                                    postfix={`Group_ActiveGroupWithInactiveClientAlert_${group.id}`}
-                                                    placement="right"
-                                                    size="1x"
-                                                    text={
-                                                        TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
-                                                    }
-                                                />
-                                            )}
-                                    </td>
-                                    <td className="d-none d-sm-table-cell">
-                                        <CourseName course={group.course} />
-                                    </td>
-                                    <td>
-                                        <ClientsList memberships={group.memberships} />
-                                    </td>
-                                    <td className="text-right text-md-right">
-                                        <ModalGroups
-                                            currentGroup={group}
-                                            refresh={refreshFromModal}
-                                        />
-                                    </td>
-                                </tr>
-                            ))}
-                        </>
-                    )}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {isLoading() ? (
+                            <tr>
+                                <td colSpan={4}>
+                                    <Loading />
+                                </td>
+                            </tr>
+                        ) : (
+                            <>
+                                {getGroupsData().map((group) => (
+                                    <tr key={group.id} data-qa="group">
+                                        <td>
+                                            <GroupName group={group} link noWrap />{" "}
+                                            {group.active &&
+                                                !areAllMembersActive(group.memberships) && (
+                                                    <Tooltip
+                                                        postfix={`Group_ActiveGroupWithInactiveClientAlert_${group.id}`}
+                                                        placement="right"
+                                                        size="1x"
+                                                        text={
+                                                            TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
+                                                        }
+                                                    />
+                                                )}
+                                        </td>
+                                        <td className="d-none d-sm-table-cell">
+                                            <CourseName course={group.course} />
+                                        </td>
+                                        <td>
+                                            <ClientsList memberships={group.memberships} />
+                                        </td>
+                                        <td className="text-end text-md-end">
+                                            <ModalGroups
+                                                currentGroup={group}
+                                                refresh={refreshFromModal}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </>
+                        )}
+                    </tbody>
+                </Table>
+            )}
             {getGroupsData().length === 0 && !isLoading() && (
-                <p className="text-muted text-center">Žádné skupiny</p>
+                <p className="text-muted text-center">
+                    Žádné {active ? "aktivní" : "neaktivní"} skupiny
+                </p>
             )}
         </Container>
     )

@@ -27,9 +27,8 @@ const ClientPhone: React.FC<Props> = ({ phone, icon = false }) => {
                 {icon && (
                     <FontAwesomeIcon
                         flip="horizontal"
-                        transform="left-5"
                         icon={faPhone}
-                        className="align-middle"
+                        className="align-middle me-1"
                     />
                 )}
                 {prettyPhone(phone)}

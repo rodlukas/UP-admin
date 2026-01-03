@@ -5,7 +5,7 @@ export const prepaidCountersInput = style({
     fontWeight: 600,
 })
 
-export const prepaidCountersLabelPrepaid = style({
+export const prepaidCountersInputGroupLabel = style({
     backgroundColor: "#28a745",
     color: "white",
 })

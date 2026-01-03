@@ -2,7 +2,7 @@ import classNames from "classnames"
 import Fuse, { IFuseOptions, FuseResult } from "fuse.js"
 import * as React from "react"
 import { NavLink as RouterNavLink, Switch, useLocation } from "react-router-dom"
-import { toast, ToastContainer } from "react-toastify"
+import { Slide, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { Badge, Collapse, Navbar, NavbarBrand, NavbarToggler } from "reactstrap"
 
@@ -19,7 +19,7 @@ import { getEnvName, isEnvDemo, isEnvLocal, isEnvTesting } from "./global/funcEn
 import lazySafe from "./global/lazySafe"
 import { isModalShown } from "./global/utils"
 import useKeyPress from "./hooks/useKeyPress"
-import "./Main.css"
+import * as styles from "./Main.css"
 import ErrorBoundary from "./pages/ErrorBoundary"
 import { ClientActiveType } from "./types/models"
 
@@ -98,8 +98,8 @@ const Main: React.FC = () => {
 
     return (
         <div className={getEnvName()}>
-            <Navbar className="bg-dark" expand="lg" dark fixed="top">
-                <div className="container">
+            {authContext.isAuth && (
+                <Navbar className="bg-dark" expand="lg" dark fixed="top" container={true}>
                     <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
                         ÚP<sub>admin</sub>
                     </NavbarBrand>
@@ -110,7 +110,7 @@ const Main: React.FC = () => {
                         </Badge>
                     )}
                     {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}
-                    {authContext.isAuth && <NavbarToggler onClick={toggleNavbar} />}
+                    <NavbarToggler onClick={toggleNavbar} />
                     <Collapse isOpen={isMenuOpened} navbar>
                         <Menu
                             closeNavbar={closeNavbar}
@@ -118,63 +118,64 @@ const Main: React.FC = () => {
                             searchVal={searchVal}
                         />
                     </Collapse>
-                </div>
-            </Navbar>
-            <main className="main mb-4">
+                </Navbar>
+            )}
+            <main
+                className={classNames("main", "mb-4", {
+                    [styles.isAuthenticated]: authContext.isAuth,
+                })}>
                 <ErrorBoundary>
-                    <ToastContainer position={toast.POSITION.TOP_RIGHT} />
+                    <ToastContainer position="top-right" theme="colored" transition={Slide} />
                     <Search
                         foundResults={foundResults}
                         searchVal={searchVal}
                         search={search}
                         resetSearch={resetSearch}
                     />
-                    <div className={classNames({ "d-none": searchVal !== "" })}>
-                        <React.Suspense fallback={<Loading />}>
-                            <Switch>
-                                <PrivateRoute
-                                    path={APP_URLS.prehled.url}
-                                    component={Dashboard}
-                                    title={APP_URLS.prehled.title}
-                                    exact
-                                />
-                                <Page
-                                    path={APP_URLS.prihlasit.url}
-                                    component={Login}
-                                    title={APP_URLS.prihlasit.title}
-                                />
-                                <PrivateRoute
-                                    path={APP_URLS.skupiny.url}
-                                    component={Groups}
-                                    title={APP_URLS.skupiny.title}
-                                    exact
-                                />
-                                <PrivateRoute
-                                    path={`${APP_URLS.diar.url}/:year?/:month?/:day?`}
-                                    component={Diary}
-                                />
-                                <PrivateRoute
-                                    path={APP_URLS.klienti.url}
-                                    component={Clients}
-                                    title={APP_URLS.klienti.title}
-                                    exact
-                                />
-                                <PrivateRoute path={APP_URLS.klienti_karta.url} component={Card} />
-                                <PrivateRoute path={APP_URLS.skupiny_karta.url} component={Card} />
-                                <PrivateRoute
-                                    path={APP_URLS.zajemci.url}
-                                    component={Applications}
-                                    title={APP_URLS.zajemci.title}
-                                />
-                                <PrivateRoute
-                                    path={APP_URLS.nastaveni.url}
-                                    component={Settings}
-                                    title={APP_URLS.nastaveni.title}
-                                />
-                                <Page component={NotFound} title={APP_URLS.nenalezeno.title} />
-                            </Switch>
-                        </React.Suspense>
-                    </div>
+                    <React.Suspense fallback={<Loading />}>
+                        <Switch>
+                            <PrivateRoute
+                                path={APP_URLS.prehled.url}
+                                component={Dashboard}
+                                title={APP_URLS.prehled.title}
+                                exact
+                            />
+                            <Page
+                                path={APP_URLS.prihlasit.url}
+                                component={Login}
+                                title={APP_URLS.prihlasit.title}
+                            />
+                            <PrivateRoute
+                                path={APP_URLS.skupiny.url}
+                                component={Groups}
+                                title={APP_URLS.skupiny.title}
+                                exact
+                            />
+                            <PrivateRoute
+                                path={`${APP_URLS.diar.url}/:year?/:month?/:day?`}
+                                component={Diary}
+                            />
+                            <PrivateRoute
+                                path={APP_URLS.klienti.url}
+                                component={Clients}
+                                title={APP_URLS.klienti.title}
+                                exact
+                            />
+                            <PrivateRoute path={APP_URLS.klienti_karta.url} component={Card} />
+                            <PrivateRoute path={APP_URLS.skupiny_karta.url} component={Card} />
+                            <PrivateRoute
+                                path={APP_URLS.zajemci.url}
+                                component={Applications}
+                                title={APP_URLS.zajemci.title}
+                            />
+                            <PrivateRoute
+                                path={APP_URLS.nastaveni.url}
+                                component={Settings}
+                                title={APP_URLS.nastaveni.title}
+                            />
+                            <Page component={NotFound} title={APP_URLS.nenalezeno.title} />
+                        </Switch>
+                    </React.Suspense>
                 </ErrorBoundary>
             </main>
         </div>

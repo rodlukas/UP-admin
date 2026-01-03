@@ -13,3 +13,7 @@ globalStyle(".form-group > div:not(:last-child)", {
         },
     },
 })
+
+export const prepaidCheckbox = style({
+    verticalAlign: "baseline",
+})

@@ -1,42 +1,30 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
-// mnoho z nasledujicich stylu koresponduje se styly bootstrap inputu
+// mnoho z nasledujicich stylu koresponduje se styly Bootstrap 5
 
-export const colorPickerInput = style({
-    display: "inline-block",
-    border: "1px solid #ced4da",
-    borderRadius: "0 0.25rem 0.25rem 0",
-    background: "white",
-    cursor: "pointer",
-    padding: "0.375rem",
-    height: "calc(1.5em + 0.75rem + 2px)",
-    selectors: {
-        "&:focus": {
-            outline: 0,
-            borderColor: "#80bdff",
-            boxShadow: "0 0 0 0.2rem rgb(0 123 255 / 0.25)",
-            backgroundColor: "#fff",
-            color: "#495057",
-        },
-    },
+export const colorPickerContainer = style({
+    width: "100%",
 })
 
-globalStyle(`${colorPickerInput} > div`, {
-    borderRadius: "0.25rem",
-    width: "3rem",
-    height: "100%",
+globalStyle(".rcp-root", {
+    border: "1px solid #dee2e6",
+    borderRadius: "0.375rem",
+    // @ts-expect-error - vanilla-extract nepodporuje CSS promenne naprimo, ale funguje to
+    "--rcp-background-color": "#f8f9fa",
+    "--rcp-field-input-color": "black",
 })
 
-export const colorPickerWindow = style({
-    position: "absolute",
-    zIndex: 2,
-    // rozsireni okraju, kam se da najet mysi bez zavreni okna
-    top: "-1rem",
-    left: "-1rem",
-    padding: "1rem",
+globalStyle(".rcp-saturation", {
+    borderRadius: "0.375rem 0.375rem 0 0",
 })
 
-// chrome-picker obsahuje hardcoded font-family s nedostupnym fontem
-globalStyle(".chrome-picker", {
-    fontFamily: "unset",
+globalStyle(".rcp-field-input", {
+    border: "1px solid #dee2e6",
+    backgroundColor: "white",
+    color: "black",
+})
+
+globalStyle(".rcp-field-input:focus", {
+    borderColor: "#86b7fe",
+    boxShadow: "0 0 0 0.25rem rgba(13, 110, 253, 0.25)",
 })

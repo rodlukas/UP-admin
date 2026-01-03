@@ -2,12 +2,11 @@ import * as React from "react"
 import {
     Alert,
     Col,
-    CustomInput,
     Form,
     FormGroup,
     Input,
     InputGroup,
-    InputGroupAddon,
+    InputGroupText,
     Label,
     ModalBody,
     ModalFooter,
@@ -141,7 +140,7 @@ const FormClients: React.FC<Props> = (props) => {
                 <ClientName client={{ firstname, surname }} bold />
             </ModalHeader>
             <ModalBody>
-                <FormGroup row className="required">
+                <FormGroup row className="form-group-required">
                     <Label for="firstname" sm={2}>
                         Jméno
                     </Label>
@@ -158,7 +157,7 @@ const FormClients: React.FC<Props> = (props) => {
                         />
                     </Col>
                 </FormGroup>
-                <FormGroup row className="required">
+                <FormGroup row className="form-group-required">
                     <Label for="surname" sm={2}>
                         Příjmení
                     </Label>
@@ -194,11 +193,9 @@ const FormClients: React.FC<Props> = (props) => {
                     </Label>
                     <Col sm={10}>
                         <InputGroup>
-                            <InputGroupAddon addonType="prepend">
-                                <Label className="input-group-text" for="phone">
-                                    +420
-                                </Label>
-                            </InputGroupAddon>
+                            <InputGroupText>
+                                <Label for="phone">+420</Label>
+                            </InputGroupText>
                             <Input
                                 type="tel"
                                 id="phone"
@@ -231,47 +228,52 @@ const FormClients: React.FC<Props> = (props) => {
                         Aktivní
                     </Label>
                     <Col sm={10}>
-                        <CustomInput
+                        <Input
                             type="checkbox"
                             id="active"
                             checked={active}
-                            label="Je aktivní"
                             onChange={onChange}
                             data-qa="client_checkbox_active"
-                        />{" "}
+                        />
+                        <Label for="active" check>
+                            Je aktivní
+                        </Label>{" "}
                         {!active && (
                             <Tooltip postfix="active" text={TEXTS.WARNING_INACTIVE_CLIENT_INFO} />
                         )}
                     </Col>
                 </FormGroup>
                 {isClient(props.client) && (
-                    <FormGroup row className="border-top pt-3">
-                        <Label sm={2} className="text-muted">
-                            Smazání
-                        </Label>
-                        <Col sm={10}>
-                            <Alert color="warning">
-                                <p>
-                                    Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také
-                                    všechny jeho zájmy o kurzy a členství ve skupinách
-                                </p>
-                                <DeleteButton
-                                    content="klienta"
-                                    onClick={(): void => {
-                                        if (
-                                            isClient(props.client) &&
-                                            window.confirm(
-                                                `Opravdu chcete smazat klienta ${firstname} ${surname}?`,
-                                            )
-                                        ) {
-                                            handleDelete(props.client.id)
-                                        }
-                                    }}
-                                    data-qa="button_delete_client"
-                                />
-                            </Alert>
-                        </Col>
-                    </FormGroup>
+                    <>
+                        <hr />
+                        <FormGroup row>
+                            <Label sm={2} className="text-muted">
+                                Smazání
+                            </Label>
+                            <Col sm={10}>
+                                <Alert color="warning">
+                                    <p>
+                                        Klienta lze smazat pouze pokud nemá žádné lekce, smažou se
+                                        také všechny jeho zájmy o kurzy a členství ve skupinách
+                                    </p>
+                                    <DeleteButton
+                                        content="klienta"
+                                        onClick={(): void => {
+                                            if (
+                                                isClient(props.client) &&
+                                                window.confirm(
+                                                    `Opravdu chcete smazat klienta ${firstname} ${surname}?`,
+                                                )
+                                            ) {
+                                                handleDelete(props.client.id)
+                                            }
+                                        }}
+                                        data-qa="button_delete_client"
+                                    />
+                                </Alert>
+                            </Col>
+                        </FormGroup>
+                    </>
                 )}
             </ModalBody>
             <ModalFooter>

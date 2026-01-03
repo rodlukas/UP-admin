@@ -11,7 +11,7 @@ import {
     ModalHeader,
     UncontrolledButtonDropdown,
 } from "reactstrap"
-import { Direction } from "reactstrap/lib/Dropdown"
+import { Direction } from "reactstrap/types/lib/Dropdown"
 
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
@@ -191,7 +191,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                         caret
                         size={props.dropdownSize}
                         id={`ModalLecturesWizard_${props.date ?? ""}`}
-                        color="info"
+                        color="primary"
                         disabled={props.isFetching}>
                         <FontAwesomeIcon
                             icon={props.isFetching ? faSpinnerThird : faPlus}
@@ -205,7 +205,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                         target={`ModalLecturesWizard_${props.date ?? ""}`}>
                         {title}
                     </UncontrolledTooltipWrapper>
-                    <DropdownMenu right>
+                    <DropdownMenu end>
                         <DropdownItem onClick={(): void => setClient(true)}>
                             přidat lekci <strong>klienta</strong>...
                         </DropdownItem>

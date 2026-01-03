@@ -4,13 +4,13 @@ globalStyle("html, body, .main, .root", {
     backgroundColor: "#ecf0f5",
 })
 
-globalStyle(".main", {
-    paddingTop: "3.5rem", // 56px
-})
-
 // aby tlacitka s odkazem nemely pointer
 globalStyle("a .btn.disabled", {
     cursor: "default",
+})
+
+globalStyle(".list-group, .table-responsive:has(>.table-custom)", {
+    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
 })
 
 globalStyle(".breadcrumb", {
@@ -22,9 +22,8 @@ globalStyle(".container", {
     maxWidth: "1500px",
 })
 
-// pro plynule scrollovani v modal oknu - viz https://github.com/twbs/bootstrap/issues/17695
-globalStyle(".modal", {
-    WebkitOverflowScrolling: "touch",
+globalStyle(".list-group-item", {
+    borderColor: "rgba(0,0,0,.125)",
 })
 
 globalStyle("b", {
@@ -33,8 +32,13 @@ globalStyle("b", {
 
 globalStyle("h2", {
     color: "#41464b",
-    fontSize: "1.8rem",
+    fontSize: "calc(1.2rem + 1vw)",
     fontWeight: 600,
+    "@media": {
+        "(min-width: 992px)": {
+            fontSize: "1.7rem",
+        },
+    },
 })
 
 globalStyle("h3", {
@@ -43,10 +47,20 @@ globalStyle("h3", {
     fontWeight: 600,
 })
 
+globalStyle("h1", {
+    fontSize: "calc(1.375rem + 1.5vw)",
+    fontWeight: 600,
+    "@media": {
+        "(min-width: 992px)": {
+            fontSize: "2rem",
+        },
+    },
+})
+
 /**************************** FORMS ****************************/
 
 // hvezdicka oznacujici povinna pole
-globalStyle(".form-group.required .col-form-label::after", {
+globalStyle(".form-group-required .col-form-label::after", {
     marginLeft: "0.3em",
     color: "#dc3545",
     content: '"*"',
@@ -57,8 +71,33 @@ globalStyle("label", {
 })
 
 // pro spravne zarovnani labelu u checkboxu
-globalStyle(".custom-control", {
+// V Bootstrap 5 se .custom-control změnilo na .form-check
+globalStyle(".form-check", {
     display: "inline-block",
+})
+
+globalStyle(".form-check-label", {
+    marginLeft: "0.3em",
+})
+
+globalStyle(".input-group-text .form-label", {
+    marginBottom: 0,
+})
+
+/**************************** MODAL ****************************/
+
+// pro plynule scrollovani v modal oknu - viz https://github.com/twbs/bootstrap/issues/17695
+globalStyle(".modal", {
+    WebkitOverflowScrolling: "touch",
+})
+
+globalStyle(".modal", {
+    backdropFilter: "blur(4px)",
+})
+
+globalStyle(".modal hr", {
+    opacity: 1,
+    borderColor: "#dee2e6",
 })
 
 /**************************** TABLE ****************************/
@@ -78,10 +117,20 @@ globalStyle(".table th", {
     borderTop: 0,
 })
 
-globalStyle(".table .thead-light th", {
+globalStyle(".table .table-light th", {
     borderColor: "#bbbec2",
     backgroundColor: "#d7d6d6",
     color: "#41464b",
+})
+
+globalStyle(".table", {
+    marginBottom: "0",
+    borderRadius: "0.375rem",
+    overflow: "hidden",
+})
+
+globalStyle(".table-responsive", {
+    borderRadius: "0.375rem",
 })
 
 /**************************** BADGE ****************************/
@@ -99,6 +148,10 @@ globalStyle("h1 .badge", {
 // kontrastnejsi barva pozadi badge
 globalStyle(".badge-light", {
     backgroundColor: "#eaeaea",
+})
+
+globalStyle(".rounded-pill", {
+    padding: ".25em .6em",
 })
 
 /**************************** REACT-TOASTIFY ****************************/

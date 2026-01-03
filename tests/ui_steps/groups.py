@@ -87,10 +87,6 @@ def load_id_data_to_context(context, name):
     context.name = name
 
 
-def wait_switching_available(driver):
-    helpers.wait_switching_available(driver, "form_group")
-
-
 def save_old_groups_cnt_to_context(context):
     context.old_groups_cnt = groups_cnt(context.browser)
 
@@ -183,11 +179,10 @@ def step_impl(context):
         assert form_group_visible
         # zavri formular
         helpers.close_modal(context.browser)
-        # pockej az bude mozne prepinat mezi ne/aktivnimi klienty
-        wait_switching_available(context.browser)
+        # pockej az bude modalni okno kompletne zavrene
+        helpers.wait_modal_closed(context.browser)
+        # over, ze pocet skupin se nezmenil
         assert groups_cnt(context.browser) == context.old_groups_cnt
-    # over, ze je modalni okno kompletne zavrene
-    assert not helpers.is_modal_class_attr_present(context.browser)
 
 
 @when(

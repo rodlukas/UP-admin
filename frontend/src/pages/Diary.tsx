@@ -36,7 +36,7 @@ type TitleDateProps = {
 /** Pomocná komponenta zobrazující datum v záhlaví diáře. */
 const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
     <span
-        className={classNames(styles.titleDate, "font-weight-bold", "text-center", {
+        className={classNames(styles.titleDate, "fw-bold", "text-center", {
             [styles.titleDateLong]: isNotCurrentYear(date),
         })}>
         {prettyDateWithYearIfDiff(date)}
@@ -174,7 +174,15 @@ const Diary: React.FC<Props> = (props) => {
                             <UncontrolledTooltipWrapper target="Diary_NextWeek">
                                 Další týden
                             </UncontrolledTooltipWrapper>{" "}
-                            <Link to={APP_URLS.diar.url} id="Diary_Today">
+                            <Link
+                                to={APP_URLS.diar.url}
+                                id="Diary_Today"
+                                className={classNames({
+                                    [styles.disabledLink]: isEqualDate(
+                                        getCurrentMonday(),
+                                        getRequiredMonday(),
+                                    ),
+                                })}>
                                 <Button
                                     color="secondary"
                                     disabled={isEqualDate(getCurrentMonday(), getRequiredMonday())}

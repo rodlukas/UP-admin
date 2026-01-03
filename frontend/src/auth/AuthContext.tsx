@@ -62,14 +62,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                             setIsAuth(true)
                         } catch {
                             setIsAuth(false)
-                            toast(
-                                <Notification
-                                    type={toast.TYPE.WARNING}
-                                    text="Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!"
-                                />,
-                                {
-                                    type: toast.TYPE.WARNING,
-                                },
+                            toast.warning(
+                                <Notification text="Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!" />,
                             )
                         }
                         return

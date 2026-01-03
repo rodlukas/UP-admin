@@ -133,9 +133,9 @@ Responzivní JS _([TypeScript](https://www.typescriptlang.org/))_ webová aplika
 ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto
 technologiích:
 
--   [React 17](https://reactjs.org/),
+-   [React 19](https://react.dev/),
 -   [TypeScript 5](https://www.typescriptlang.org/),
--   [Bootstrap 4](https://getbootstrap.com/) (s [Reactstrap](https://reactstrap.github.io/)em),
+-   [Bootstrap 5](https://getbootstrap.com/) (s [Reactstrap 9](https://reactstrap.github.io/)em),
 -   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package
     Registry),
@@ -152,7 +152,7 @@ Vývoj frontendu je postaven především na:
 -   [Babel 7](https://babeljs.io/),
 -   [husky](https://github.com/typicode/husky) a
     [lint-staged](https://github.com/okonet/lint-staged) – pre-commit kontroly (ESlint, Prettier)
--   a [React Hot Loader](https://github.com/gaearon/react-hot-loader) – pro
+-   a [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – pro
     [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 Aplikace je **odolná proti pádům JS** díky

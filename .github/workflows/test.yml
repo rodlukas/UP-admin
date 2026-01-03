@@ -24,6 +24,9 @@ jobs:
             # priprav prostredi
             - name: ☁️ Checkout repo
               uses: actions/checkout@v6
+              with:
+                  # pro PR checkoutni commit z PR branch místo merge commitu
+                  ref: ${{ github.event.pull_request.head.sha || github.sha }}
             - name: 🔧 Setup node
               uses: actions/setup-node@v6
               with:

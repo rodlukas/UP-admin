@@ -8,16 +8,18 @@ from tests import common_helpers
 
 WAIT_TIME = 5
 WAIT_TIME_SHORT = 3
+WAIT_TIME_VERY_SHORT = 0.5
 
 
 def wait_loading_cycle(driver):
-    # pockej na loading, pokud se ukaze, pockej, az skonci
+    # kratka kontrola, zda se loading objevi se zpozdenim; pokud ano, pockej na jeho konec
     try:
-        WebDriverWait(driver, WAIT_TIME).until(
+        WebDriverWait(driver, WAIT_TIME_VERY_SHORT).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=loading]"))
         )
     except TimeoutException:
-        pass
+        # loading se neobjevil v ramci kratkeho casu, nepokracuj v cekani
+        return
     else:
         wait_loading_ends(driver)
 
@@ -118,21 +120,21 @@ def toggle_switcher_active(driver, active):
 
 def get_clients(driver, active):
     toggle_switcher_active(driver, active)
-    # pockej na nacteni
-    wait_loading_ends(driver)
+    # pockej na pripadny loading cyklus (robustnejsi nez pouze ends)
+    wait_loading_cycle(driver)
     return driver.find_elements(By.CSS_SELECTOR, "[data-qa=client]")
 
 
 def get_groups(driver, active):
     toggle_switcher_active(driver, active)
-    # pockej na nacteni
-    wait_loading_ends(driver)
+    # pockej na pripadny loading cyklus (robustnejsi nez pouze ends)
+    wait_loading_cycle(driver)
     return driver.find_elements(By.CSS_SELECTOR, "[data-qa=group]")
 
 
 def close_modal(driver):
     # zavri modalni okno
-    driver.find_element(By.CLASS_NAME, "close").click()
+    driver.find_element(By.CSS_SELECTOR, "[aria-label=Close]").click()
     # pokud se zobrazi alert s upozornenim na neulozene zmeny, zavri ho
     try:
         wait_for_alert_and_accept(driver)
@@ -151,19 +153,6 @@ def is_modal_class_attr_present(driver):
 def wait_modal_closed(driver):
     # pockej na zavreni modalu
     WebDriverWait(driver, WAIT_TIME).until_not(lambda d: is_modal_class_attr_present(d))
-
-
-def wait_switching_available(driver, form_name):
-    WebDriverWait(driver, WAIT_TIME_SHORT).until_not(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, f"[data-qa={form_name}]"))
-    )
-    try:
-        notification = WebDriverWait(driver, WAIT_TIME_SHORT).until(
-            EC.element_to_be_clickable((By.CLASS_NAME, "Toastify__close-button"))
-        )
-        notification.click()
-    except TimeoutException:
-        pass
 
 
 def _find_group_with_activity(activity, context, name, open_card=False, validate_context=False):

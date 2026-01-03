@@ -7,26 +7,36 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
-from rest_framework.schemas import get_schema_view
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from csp.decorators import csp_update
+
+# CSP pro cdn.jsdelivr.net (openapi docs)
+CSPURL_JSDELIVR_NET = "https://cdn.jsdelivr.net"
+
 
 urlpatterns = [
     # API mapovani
     path("api/v1/", include("api.urls")),
     # favicona pro starsi prohlizece
     path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("admin/favicon.ico"))),
-    # dynamicke OpenAPI schema
+    # OpenAPI schema
+    path("api/open-api/", SpectacularAPIView.as_view(), name="schema"),
+    # Swagger UI dokumentace API (CSP úprava jen pro tuto view)
     path(
-        "api/open-api/",
-        get_schema_view(
-            title="ÚPadmin API",
-            description="Dokumentace *REST API* pro aplikaci **ÚPadmin**. **[Přejít do aplikace](/)**",
-            version="1.0.0",
-            urlconf="api.urls",
-        ),
-        name="openapi-schema",
+        "api/docs/",
+        csp_update(
+            script_src=(
+                CSPURL_JSDELIVR_NET, "'unsafe-inline'",
+            ),
+            connect_src=(
+                CSPURL_JSDELIVR_NET,
+            ),
+            style_src=(
+                CSPURL_JSDELIVR_NET,
+            ),
+        )(SpectacularSwaggerView.as_view(url_name="schema")),
+        name="swagger-ui",
     ),
-    # Swagger UI dokumentace API
-    path("api/docs/", TemplateView.as_view(template_name="swagger-ui.html"), name="swagger-ui"),
     # vychozi stranka (serviruje React aplikaci)
     re_path(r"^", TemplateView.as_view(template_name="react-autogenerate.html")),
 ]

@@ -21,12 +21,12 @@ const SubmitButton: React.FC<Props> = ({
 }) => (
     <Button
         color="primary"
-        className="float-right"
+        className="float-end"
         type="submit"
         {...props}
         disabled={loading || disabled}>
         {content}
-        {loading && <FontAwesomeIcon icon={faSpinnerThird} size="lg" spin className="ml-2" />}
+        {loading && <FontAwesomeIcon icon={faSpinnerThird} size="lg" spin className="ms-2" />}
     </Button>
 )
 

@@ -2,7 +2,6 @@ import * as React from "react"
 import {
     Alert,
     Col,
-    CustomInput,
     Form,
     FormGroup,
     Input,
@@ -190,7 +189,7 @@ const FormGroups: React.FC<Props> = (props) => {
                     <Loading />
                 ) : (
                     <>
-                        <FormGroup row className="required">
+                        <FormGroup row className="form-group-required">
                             <Label for="name" sm={2}>
                                 Název
                             </Label>
@@ -207,7 +206,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                 />
                             </Col>
                         </FormGroup>
-                        <FormGroup row className="required">
+                        <FormGroup row className="form-group-required">
                             <Label for="course" sm={2}>
                                 Kurz
                             </Label>
@@ -254,14 +253,16 @@ const FormGroups: React.FC<Props> = (props) => {
                                 Aktivní
                             </Label>
                             <Col sm={10}>
-                                <CustomInput
+                                <Input
                                     type="checkbox"
                                     id="active"
                                     checked={active}
-                                    label="Je aktivní"
                                     onChange={onChange}
                                     data-qa="group_checkbox_active"
-                                />{" "}
+                                />
+                                <Label for="active" check>
+                                    Je aktivní
+                                </Label>{" "}
                                 {!active && (
                                     <Tooltip
                                         postfix="active"
@@ -271,30 +272,33 @@ const FormGroups: React.FC<Props> = (props) => {
                             </Col>
                         </FormGroup>
                         {isGroup(props.group) && (
-                            <FormGroup row className="border-top pt-3">
-                                <Label sm={2} className="text-muted">
-                                    Smazání
-                                </Label>
-                                <Col sm={10}>
-                                    <Alert color="warning">
-                                        <p>Nenávratně smaže skupinu i s jejími lekcemi</p>
-                                        <DeleteButton
-                                            content="skupinu"
-                                            onClick={(): void => {
-                                                if (
-                                                    isGroup(props.group) &&
-                                                    window.confirm(
-                                                        `Opravdu chcete smazat skupinu ${name}?`,
-                                                    )
-                                                ) {
-                                                    handleDelete(props.group.id)
-                                                }
-                                            }}
-                                            data-qa="button_delete_group"
-                                        />
-                                    </Alert>
-                                </Col>
-                            </FormGroup>
+                            <>
+                                <hr />
+                                <FormGroup row>
+                                    <Label sm={2} className="text-muted">
+                                        Smazání
+                                    </Label>
+                                    <Col sm={10}>
+                                        <Alert color="warning">
+                                            <p>Nenávratně smaže skupinu i s jejími lekcemi</p>
+                                            <DeleteButton
+                                                content="skupinu"
+                                                onClick={(): void => {
+                                                    if (
+                                                        isGroup(props.group) &&
+                                                        window.confirm(
+                                                            `Opravdu chcete smazat skupinu ${name}?`,
+                                                        )
+                                                    ) {
+                                                        handleDelete(props.group.id)
+                                                    }
+                                                }}
+                                                data-qa="button_delete_group"
+                                            />
+                                        </Alert>
+                                    </Col>
+                                </FormGroup>
+                            </>
                         )}
                     </>
                 )}

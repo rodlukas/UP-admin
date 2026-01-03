@@ -7,7 +7,7 @@ import {
     Container,
     Input,
     InputGroup,
-    InputGroupAddon,
+    InputGroupText,
     Label,
     ListGroup,
     ListGroupItem,
@@ -91,18 +91,16 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                     )}
                                 </h5>
                                 <InputGroup>
-                                    <InputGroupAddon
-                                        addonType="prepend"
-                                        id={`PrepaidCounters${membership.id}`}>
-                                        <Label
-                                            className={classNames("input-group-text", {
-                                                [styles.prepaidCountersLabelPrepaid]:
-                                                    prepaidCnts[membership.id] > 0,
-                                            })}
-                                            for={`prepaid_cnt${membership.id}`}>
+                                    <InputGroupText
+                                        id={`PrepaidCounters${membership.id}`}
+                                        className={classNames({
+                                            [styles.prepaidCountersInputGroupLabel]:
+                                                prepaidCnts[membership.id] > 0,
+                                        })}>
+                                        <Label for={`prepaid_cnt${membership.id}`}>
                                             <FontAwesomeIcon icon={faSackDollar} fixedWidth />
                                         </Label>
-                                    </InputGroupAddon>
+                                    </InputGroupText>
                                     <Input
                                         type="number"
                                         value={prepaidCnts[membership.id]}

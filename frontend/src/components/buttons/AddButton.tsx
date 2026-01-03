@@ -22,7 +22,7 @@ const AddButton: React.FC<Props> = ({ content, onClick, small = false, className
         className,
     )
     return (
-        <Button color="info" className={mergedClassName} onClick={onClick} {...props}>
+        <Button color="primary" className={mergedClassName} onClick={onClick} {...props}>
             <FontAwesomeIcon icon={faPlus} className={styles.btnIcon} />
             {content}
         </Button>

@@ -19,15 +19,13 @@ def get_jwt_from_local_storage(driver):
 
 
 def check_login(context):
-    # pockej na nacteni hlavni stranky (aby nedoslo ke zbytecnemu preruseni pozadavku)
-    helpers.wait_loading_ends(context.browser)
-    # pokud je viditelne tlacitko pro odhlaseni, doslo k uspesnemu prihlaseni
+    # pockej az bude viditelne tlacitko pro odhlaseni, doslo k uspesnemu prihlaseni
     try:
-        context.button_logout = context.browser.find_element(
-            By.CSS_SELECTOR, "[data-qa=button_logout]"
+        context.button_logout = WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=button_logout]"))
         )
         button_logout_visible = True
-    except NoSuchElementException:
+    except TimeoutException:
         button_logout_visible = False
     # v localstorage musi byt token
     jwt = get_jwt_from_local_storage(context.browser)

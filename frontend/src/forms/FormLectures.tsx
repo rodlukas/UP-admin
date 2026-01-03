@@ -5,16 +5,16 @@ import {
     faClock,
     faHourglass,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import {
     Alert,
     Col,
-    CustomInput,
     Form,
     FormGroup,
     Input,
     InputGroup,
-    InputGroupAddon,
+    InputGroupText,
     Label,
     ModalBody,
     ModalFooter,
@@ -562,16 +562,19 @@ const FormLectures: React.FC<Props> = (props) => {
                             <Col sm={4}>
                                 {isClient(props.object) && (
                                     <>
-                                        <CustomInput
+                                        <Input
                                             type="checkbox"
                                             id="prepaid"
                                             checked={prepaid}
-                                            onChange={(e): void => {
+                                            onChange={(
+                                                e: React.ChangeEvent<HTMLInputElement>,
+                                            ): void => {
                                                 onChangePrepaid()
                                                 onChange(e)
                                             }}
+                                            className={styles.prepaidCheckbox}
                                         />
-                                        <Label for="prepaid" className="mb-0">
+                                        <Label for="prepaid" check>
                                             Předplaceno
                                         </Label>
                                         {!isLecture(props.lecture) && (
@@ -583,6 +586,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 value={prepaidCnt}
                                                 required={prepaid}
                                                 onChange={onChange}
+                                                min="1"
                                             />
                                         )}
                                     </>
@@ -590,11 +594,11 @@ const FormLectures: React.FC<Props> = (props) => {
                             </Col>
                             <Col sm={4}>
                                 <InputGroup id="FormLectures_Date">
-                                    <InputGroupAddon addonType="prepend">
-                                        <Label className="input-group-text" for="date">
+                                    <InputGroupText>
+                                        <Label for="date">
                                             <FontAwesomeIcon icon={faCalendarAlt} fixedWidth />
                                         </Label>
-                                    </InputGroupAddon>
+                                    </InputGroupText>
                                     <Input
                                         type="date"
                                         id="date"
@@ -615,11 +619,11 @@ const FormLectures: React.FC<Props> = (props) => {
                             </Col>
                             <Col sm={4}>
                                 <InputGroup id="FormLectures_Time">
-                                    <InputGroupAddon addonType="prepend">
-                                        <Label className="input-group-text" for="time">
+                                    <InputGroupText>
+                                        <Label for="time">
                                             <FontAwesomeIcon icon={faClock} fixedWidth />
                                         </Label>
-                                    </InputGroupAddon>
+                                    </InputGroupText>
                                     <Input
                                         type="time"
                                         id="time"
@@ -638,7 +642,7 @@ const FormLectures: React.FC<Props> = (props) => {
                         </FormGroup>
                         <FormGroup row className="align-items-center">
                             <Col sm={4}>
-                                <CustomInput
+                                <Input
                                     type="checkbox"
                                     id="canceled"
                                     checked={canceled}
@@ -646,10 +650,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     disabled={canceledDisabled}
                                     data-qa="lecture_checkbox_canceled"
                                 />
-                                <Label
-                                    for="canceled"
-                                    data-qa="lecture_label_canceled"
-                                    className="mb-0">
+                                <Label for="canceled" data-qa="lecture_label_canceled" check>
                                     Zrušeno
                                 </Label>{" "}
                                 {canceledDisabled && (
@@ -678,11 +679,11 @@ const FormLectures: React.FC<Props> = (props) => {
                             </Col>
                             <Col sm={4}>
                                 <InputGroup id="FormLectures_Duration">
-                                    <InputGroupAddon addonType="prepend">
-                                        <Label className="input-group-text" for="duration">
+                                    <InputGroupText>
+                                        <Label for="duration">
                                             <FontAwesomeIcon icon={faHourglass} fixedWidth />
                                         </Label>
-                                    </InputGroupAddon>
+                                    </InputGroupText>
                                     <Input
                                         type="number"
                                         id="duration"
@@ -725,13 +726,9 @@ const FormLectures: React.FC<Props> = (props) => {
                                 <FormGroup row className="align-items-center">
                                     <Col sm={4}>
                                         <InputGroup>
-                                            <InputGroupAddon addonType="prepend">
-                                                <Label
-                                                    className="input-group-text"
-                                                    for={`atState${member.id}`}>
-                                                    účast
-                                                </Label>
-                                            </InputGroupAddon>
+                                            <InputGroupText>
+                                                <Label for={`atState${member.id}`}>účast</Label>
+                                            </InputGroupText>
                                             <CustomInputWrapper
                                                 type="select"
                                                 name="atState"
@@ -758,7 +755,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                         </InputGroup>
                                     </Col>
                                     <Col sm={2} className="text-sm-center">
-                                        <CustomInput
+                                        <Input
                                             type="checkbox"
                                             id={`atPaid${member.id}`}
                                             name="atPaid"
@@ -771,9 +768,12 @@ const FormLectures: React.FC<Props> = (props) => {
                                         <Label
                                             for={`atPaid${member.id}`}
                                             data-qa="lecture_label_attendance_paid"
-                                            className={`mb-0 font-weight-bold ${
-                                                atPaid[member.id] ? "text-success" : "text-danger"
-                                            }`}>
+                                            className={classNames(
+                                                "mb-0",
+                                                "fw-bold",
+                                                atPaid[member.id] ? "text-success" : "text-danger",
+                                            )}
+                                            check>
                                             Platba
                                         </Label>{" "}
                                         {prepaid && (
@@ -785,16 +785,14 @@ const FormLectures: React.FC<Props> = (props) => {
                                     </Col>
                                     <Col sm={6}>
                                         <InputGroup id={`FormLectures_Note_${member.id}`}>
-                                            <InputGroupAddon addonType="prepend">
-                                                <Label
-                                                    className="input-group-text"
-                                                    for={`atNote${member.id}`}>
+                                            <InputGroupText>
+                                                <Label for={`atNote${member.id}`}>
                                                     <FontAwesomeIcon
                                                         icon={faClipboardList}
                                                         fixedWidth
                                                     />
                                                 </Label>
-                                            </InputGroupAddon>
+                                            </InputGroupText>
                                             <Input
                                                 type="text"
                                                 name="atNote"
@@ -818,35 +816,41 @@ const FormLectures: React.FC<Props> = (props) => {
                             <p className="text-muted text-center">Žádní účastníci</p>
                         )}
                         {isLecture(props.lecture) && (
-                            <FormGroup row className="border-top pt-3 align-items-center">
-                                <Label sm={3} className="text-muted">
-                                    Smazání
-                                </Label>
-                                <Col sm={9}>
-                                    <DeleteButton
-                                        content="lekci"
-                                        onClick={(): void => {
-                                            const msgDateTime = !prepaid
-                                                ? ` v ${prettyDateWithLongDayYear(
-                                                      new Date(date),
-                                                  )} ${time}`
-                                                : ""
-                                            const msgObjectName = isClient(props.object)
-                                                ? `${props.object.surname} ${props.object.firstname}`
-                                                : props.object.name
-                                            const msgObject = isClient(props.object)
-                                                ? "klienta"
-                                                : "skupiny"
-                                            const msgPrepaid = prepaid ? "předplacenou " : ""
-                                            const msg = `Opravdu chcete smazat ${msgPrepaid}lekci ${msgObject} ${msgObjectName}${msgDateTime}?`
-                                            if (isLecture(props.lecture) && window.confirm(msg)) {
-                                                handleDelete(props.lecture.id)
-                                            }
-                                        }}
-                                        data-qa="button_delete_lecture"
-                                    />
-                                </Col>
-                            </FormGroup>
+                            <>
+                                <hr />
+                                <FormGroup row className="align-items-center">
+                                    <Label sm={3} className="text-muted">
+                                        Smazání
+                                    </Label>
+                                    <Col sm={9}>
+                                        <DeleteButton
+                                            content="lekci"
+                                            onClick={(): void => {
+                                                const msgDateTime = !prepaid
+                                                    ? ` v ${prettyDateWithLongDayYear(
+                                                          new Date(date),
+                                                      )} ${time}`
+                                                    : ""
+                                                const msgObjectName = isClient(props.object)
+                                                    ? `${props.object.surname} ${props.object.firstname}`
+                                                    : props.object.name
+                                                const msgObject = isClient(props.object)
+                                                    ? "klienta"
+                                                    : "skupiny"
+                                                const msgPrepaid = prepaid ? "předplacenou " : ""
+                                                const msg = `Opravdu chcete smazat ${msgPrepaid}lekci ${msgObject} ${msgObjectName}${msgDateTime}?`
+                                                if (
+                                                    isLecture(props.lecture) &&
+                                                    window.confirm(msg)
+                                                ) {
+                                                    handleDelete(props.lecture.id)
+                                                }
+                                            }}
+                                            data-qa="button_delete_lecture"
+                                        />
+                                    </Col>
+                                </FormGroup>
+                            </>
                         )}
                     </>
                 )}

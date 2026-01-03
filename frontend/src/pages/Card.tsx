@@ -1,3 +1,4 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
@@ -264,7 +265,10 @@ const Card: React.FC<Props> = (props) => {
                                 data-qa="card_course">
                                 <ListGroup>
                                     <ListGroupItem
-                                        style={{ background: courseLectures.course.color }}>
+                                        className={styles.courseHeadingItem}
+                                        style={assignInlineVars(styles.cardVars, {
+                                            courseBackground: courseLectures.course.color,
+                                        })}>
                                         <h4
                                             className={classNames(
                                                 "text-center",

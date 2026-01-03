@@ -1,7 +1,15 @@
-import { globalStyle, style } from "@vanilla-extract/css"
+import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
+
+export const cardVars = createThemeContract({
+    courseBackground: "",
+})
 
 export const courseHeading = style({
     color: "white",
+})
+
+export const courseHeadingItem = style({
+    backgroundColor: `${cardVars.courseBackground} !important`,
 })
 
 export const lectureCard = style({})

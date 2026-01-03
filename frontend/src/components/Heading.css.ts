@@ -1,12 +1,5 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
-export const heading = style({})
-
-globalStyle(`${heading} h1`, {
-    fontSize: "2rem",
-    fontWeight: 600,
-})
-
 export const headingButtons = style({})
 
 globalStyle(`${headingButtons} > * + *`, {

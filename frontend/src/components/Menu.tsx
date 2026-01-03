@@ -17,7 +17,7 @@ type Props = {
     closeNavbar: fEmptyVoid
     /** Funkce, která se zavolá při úpravě vyhledávaného výrazu. */
     onSearchChange: (newSearchVal: string) => void
-    /** Vyhledávaný výraz. */
+    /** Hledaný výraz. */
     searchVal: string
 }
 
@@ -55,7 +55,7 @@ const Menu: React.FC<Props> = (props) => {
                         onSearchChange={props.onSearchChange}
                         searchVal={props.searchVal}
                     />
-                    <Nav className="ml-auto" navbar>
+                    <Nav className="ms-auto" navbar>
                         <NavItem>
                             <MyNavLink exact to={APP_URLS.prehled.url}>
                                 Přehled
