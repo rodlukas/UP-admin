@@ -11,7 +11,7 @@ import { ListGroup, ListGroupItem, Table } from "reactstrap"
 
 import { useBank } from "../api/hooks"
 import { BANKING_URL } from "../global/constants"
-import { isToday, prettyDateWithDayYearIfDiff, prettyTimeWithSeconds } from "../global/funcDateTime"
+import { isToday, prettyDateWithDayYearIfDiff } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"
 import { BankType, BankSuccessType, BankErrorType } from "../types/models"
 import { TimeoutType } from "../types/types"
@@ -154,8 +154,14 @@ const Bank: React.FC = () => {
         <ListGroup>
             <ListGroupItem
                 color={isLackOfMoney ? "danger" : "success"}
-                className={styles.bankTitle}>
-                <h4 className={classNames("text-center", "mb-0")}>
+                className={classNames("text-center", styles.bankTitle)}>
+                <h4
+                    className={classNames(
+                        "mb-0",
+                        "text-nowrap",
+                        "d-inline-block",
+                        styles.bankTitleText,
+                    )}>
                     Aktuální stav: {getBalanceText()}{" "}
                     {isLackOfMoney && (
                         <>
@@ -175,6 +181,19 @@ const Bank: React.FC = () => {
                         </>
                     )}
                 </h4>
+                <div className="text-muted d-inline float-end" id="Bank">
+                    <CustomButton
+                        onClick={onClick}
+                        disabled={isRefreshDisabled}
+                        size="sm"
+                        content={
+                            <FontAwesomeIcon icon={faSyncAlt} size="lg" spin={isLoadingState} />
+                        }
+                    />
+                    <UncontrolledTooltipWrapper target="Bank">
+                        {isRefreshDisabled ? `Výpis lze obnovit jednou za minutu` : "Obnovit výpis"}
+                    </UncontrolledTooltipWrapper>{" "}
+                </div>
             </ListGroupItem>
             <ListGroupItem>
                 {renderMainContent()}
@@ -185,25 +204,6 @@ const Bank: React.FC = () => {
                         v bankovnictví <FontAwesomeIcon icon={faExternalLink} size="xs" />
                     </a>
                     .
-                </div>
-                <div className="text-end text-muted mt-3">
-                    {isSuccess && (
-                        <span className="fst-italic align-middle me-1">
-                            Čas výpisu: {prettyTimeWithSeconds(new Date(bankData.fetch_timestamp))}
-                        </span>
-                    )}{" "}
-                    <CustomButton
-                        onClick={onClick}
-                        disabled={isRefreshDisabled}
-                        id="Bank"
-                        size="sm"
-                        content={
-                            <FontAwesomeIcon icon={faSyncAlt} size="lg" spin={isLoadingState} />
-                        }
-                    />
-                    <UncontrolledTooltipWrapper target="Bank">
-                        {isRefreshDisabled ? "Výpis lze obnovit jednou za minutu" : "Obnovit výpis"}
-                    </UncontrolledTooltipWrapper>{" "}
                 </div>
             </ListGroupItem>
         </ListGroup>
