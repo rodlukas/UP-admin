@@ -1,11 +1,10 @@
 import * as React from "react"
-import { Redirect } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 
 import APP_URLS from "../APP_URLS"
 import Page from "../components/Page"
 import { AttendanceStatesProvider } from "../contexts/AttendanceStatesContext"
 import { CoursesVisibleProvider } from "../contexts/CoursesVisibleContext"
-import { CustomRouteProps } from "../types/types"
 
 import { useAuthContext } from "./AuthContext"
 
@@ -13,33 +12,25 @@ import { useAuthContext } from "./AuthContext"
  * Komponenta, která rozlišuje ne/přihlášeného uživatele.
  * Na základě toho mu zobrazí příslušný obsah, případně přesměruje na přihlášení.
  */
-const PrivateRoute: React.FC<CustomRouteProps> = ({ component: WrappedComponent, ...rest }) => {
-    const authContext = useAuthContext()
+type PrivateRouteProps = {
+    title?: string
+    children: React.ReactElement
+}
 
-    if (!WrappedComponent) {
-        return null
+const PrivateRoute: React.FC<PrivateRouteProps> = ({ title, children }) => {
+    const authContext = useAuthContext()
+    const location = useLocation()
+
+    if (!authContext.isAuth) {
+        return <Navigate to={APP_URLS.prihlasit.url} state={{ from: location }} replace />
     }
 
     return (
-        <Page
-            {...rest}
-            render={(props): React.ReactNode =>
-                authContext.isAuth ? (
-                    <AttendanceStatesProvider>
-                        <CoursesVisibleProvider>
-                            <WrappedComponent {...props} />
-                        </CoursesVisibleProvider>
-                    </AttendanceStatesProvider>
-                ) : (
-                    <Redirect
-                        to={{
-                            pathname: APP_URLS.prihlasit.url,
-                            state: { from: props.location },
-                        }}
-                    />
-                )
-            }
-        />
+        <Page title={title}>
+            <AttendanceStatesProvider>
+                <CoursesVisibleProvider>{children}</CoursesVisibleProvider>
+            </AttendanceStatesProvider>
+        </Page>
     )
 }
 

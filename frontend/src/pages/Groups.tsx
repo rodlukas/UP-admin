@@ -16,12 +16,8 @@ import { TEXTS } from "../global/constants"
 import { areAllMembersActive } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
-import { CustomRouteComponentProps } from "../types/types"
-
-type Props = CustomRouteComponentProps
-
 /** Stránka se skupinami. */
-const Groups: React.FC<Props> = () => {
+const Groups: React.FC = () => {
     const groupsActiveContext = useGroupsActiveContext()
     /** Je vybráno zobrazení aktivních skupin (true). */
     const [active, setActive] = React.useState(true)

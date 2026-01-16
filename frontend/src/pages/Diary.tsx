@@ -5,7 +5,7 @@ import {
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { Button, Col, Container, Row } from "reactstrap"
 
 import APP_URLS from "../APP_URLS"
@@ -24,7 +24,6 @@ import {
     prettyDateWithYearIfDiff,
 } from "../global/funcDateTime"
 import { isModalShown, pageTitle } from "../global/utils"
-import { CustomRouteComponentProps } from "../types/types"
 
 import * as styles from "./Diary.css"
 
@@ -45,16 +44,14 @@ const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
 
 type ParamsProps = {
     /** Rok. */
-    year: string
+    year?: string
     /** Měsíc. */
-    month: string
+    month?: string
     /** Den. */
-    day: string
+    day?: string
 }
 
-type Props = CustomRouteComponentProps<ParamsProps>
-
-const parseDateFromParams = (params: ParamsProps): Date => {
+const parseDateFromParams = (params: Partial<ParamsProps>): Date => {
     if (params.month != null && params.year != null && params.day != null) {
         return new Date(Number(params.year), Number(params.month) - 1, Number(params.day))
     } else {
@@ -67,15 +64,18 @@ const serializeDateUrl = (date: Date): string => {
 }
 
 /** Stránka s diářem. */
-const Diary: React.FC<Props> = (props) => {
+const Diary: React.FC = () => {
+    const navigate = useNavigate()
+    const params = useParams<ParamsProps>()
+
     const getRequiredMonday = React.useCallback(
-        (): Date => getMonday(parseDateFromParams(props.match.params)),
-        [props.match.params],
+        (): Date => getMonday(parseDateFromParams(params)),
+        [params],
     )
 
     const getWeek = React.useCallback(
-        (): string[] => getSerializedWeek(parseDateFromParams(props.match.params)),
-        [props.match.params],
+        (): string[] => getSerializedWeek(parseDateFromParams(params)),
+        [params],
     )
 
     /** Pole se dny v zobrazeném týdnu. */
@@ -109,13 +109,13 @@ const Diary: React.FC<Props> = (props) => {
             if (!isModalShown()) {
                 const key = e.key
                 if (key === "ArrowLeft") {
-                    props.history.push(getPrevMondaySerialized())
+                    void navigate(getPrevMondaySerialized())
                 } else if (key === "ArrowRight") {
-                    props.history.push(getNextMondaySerialized())
+                    void navigate(getNextMondaySerialized())
                 }
             }
         },
-        [props.history, getPrevMondaySerialized, getNextMondaySerialized],
+        [navigate, getPrevMondaySerialized, getNextMondaySerialized],
     )
 
     // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)
@@ -141,7 +141,7 @@ const Diary: React.FC<Props> = (props) => {
             refreshTitle()
             prevRequiredMondayRef.current = requiredMonday
         }
-    }, [props.match.params, getRequiredMonday, getWeek, refreshTitle])
+    }, [params, getRequiredMonday, getWeek, refreshTitle])
 
     return (
         <>

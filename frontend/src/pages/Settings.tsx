@@ -19,7 +19,7 @@ import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
 import { AttendanceStateType } from "../types/models"
-import { CustomRouteComponentProps, QA } from "../types/types"
+import { QA } from "../types/types"
 
 import * as styles from "./Settings.css"
 
@@ -41,10 +41,8 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
     />
 )
 
-type Props = CustomRouteComponentProps
-
 /** Stránka s nastavením - správa kurzů, stavů účasti, info o aplikaci. */
-const Settings: React.FC<Props> = () => {
+const Settings: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const {
         data: courses = [],

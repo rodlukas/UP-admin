@@ -14,12 +14,8 @@ import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
-import { CustomRouteComponentProps } from "../types/types"
-
-type Props = CustomRouteComponentProps
-
 /** Stránka s klienty. */
-const Clients: React.FC<Props> = () => {
+const Clients: React.FC = () => {
     const clientsActiveContext = useClientsActiveContext()
     /** Je vybráno zobrazení aktivních klientů (true). */
     const [active, setActive] = React.useState(true)

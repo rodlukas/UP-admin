@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faExternalLink } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 import { NavLink as RouterNavLink, NavLinkProps as RouterNavLinkProps } from "react-router-dom"
 import { Button, Nav, NavItem, NavLink } from "reactstrap"
@@ -22,23 +23,22 @@ type Props = {
 }
 
 type MyNavLinkProps = {
-    // react-router podporuje posilani funkci do className/style, reactstrap to ale neumi a TS krici
-    // vypneme si tedy moznost funkci
-    // viz https://github.com/remix-run/react-router/releases/tag/v5.3.0
     className?: string
-    style?: React.CSSProperties | undefined
 } & QA &
     Omit<RouterNavLinkProps, "className">
 
 /** Komponenta zobrazující menu aplikace pro přihlášené uživatele. */
 const Menu: React.FC<Props> = (props) => {
     const authContext = useAuthContext()
-    const MyNavLink: React.FC<MyNavLinkProps> = (otherProps) => (
-        <NavLink
-            onClick={props.closeNavbar}
-            tag={RouterNavLink}
+    const MyNavLink: React.FC<MyNavLinkProps> = ({ className, ...otherProps }) => (
+        <RouterNavLink
             {...otherProps}
-            activeClassName="active"
+            onClick={props.closeNavbar}
+            className={({ isActive }) =>
+                classNames("nav-link", className, {
+                    active: isActive,
+                })
+            }
         />
     )
     const onClickLogout = () => {
@@ -57,7 +57,7 @@ const Menu: React.FC<Props> = (props) => {
                     />
                     <Nav className="ms-auto" navbar>
                         <NavItem>
-                            <MyNavLink exact to={APP_URLS.prehled.url}>
+                            <MyNavLink end to={APP_URLS.prehled.url}>
                                 Přehled
                             </MyNavLink>
                         </NavItem>

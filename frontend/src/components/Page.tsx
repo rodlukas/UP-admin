@@ -1,11 +1,13 @@
 import * as React from "react"
-import { Route } from "react-router-dom"
 
 import { pageTitle } from "../global/utils"
-import { CustomRouteProps } from "../types/types"
+type PageProps = {
+    title?: string
+    children?: React.ReactNode
+}
 
 /** Komponenta zajišťující zobrazení jakékoliv stránky aplikace spolu s příslušným title v prohlížeči. */
-const Page: React.FC<CustomRouteProps> = ({ title, ...rest }) => {
+const Page: React.FC<PageProps> = ({ title, children }) => {
     React.useEffect(() => {
         // nastav title stranky, pokud je pozadovan (jinak si jej potomek resi sam)
         if (title) {
@@ -13,7 +15,7 @@ const Page: React.FC<CustomRouteProps> = ({ title, ...rest }) => {
         }
     }, [title])
 
-    return <Route {...rest} />
+    return <>{children}</>
 }
 
 export default Page

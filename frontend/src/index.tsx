@@ -6,14 +6,13 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import * as React from "react"
 import "bootstrap/dist/css/bootstrap.css"
 import { createRoot } from "react-dom/client"
-import { Router } from "react-router-dom"
+import { BrowserRouter, useNavigate } from "react-router-dom"
 
 import { createQueryClient } from "./api/queryClient"
 import { AuthProvider } from "./auth/AuthContext"
 import { ClientsActiveProvider } from "./contexts/ClientsActiveContext"
 import { GroupsActiveProvider } from "./contexts/GroupsActiveContext"
 import { getEnvName, isHosted } from "./global/funcEnvironments"
-import history from "./global/history"
 import "./index.css"
 import { isValidUrl } from "./global/utils"
 import Main from "./Main"
@@ -31,12 +30,13 @@ if (isHosted() && isValidUrl("%SENTRY_DSN")) {
     })
 }
 
-const queryClient = createQueryClient()
-
 /** Základní kostra aplikace. */
-const App: React.FC = () => (
-    <QueryClientProvider client={queryClient}>
-        <Router history={history}>
+const App: React.FC = () => {
+    const navigate = useNavigate()
+    const queryClient = React.useMemo(() => createQueryClient(navigate), [navigate])
+
+    return (
+        <QueryClientProvider client={queryClient}>
             <ErrorBoundary>
                 <AuthProvider>
                     <ClientsActiveProvider>
@@ -46,13 +46,19 @@ const App: React.FC = () => (
                     </ClientsActiveProvider>
                 </AuthProvider>
             </ErrorBoundary>
-        </Router>
-        <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+    )
+}
+
+const Root: React.FC = () => (
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>
 )
 
 const container = document.getElementById("root")
 if (container) {
     const root = createRoot(container)
-    root.render(<App />)
+    root.render(<Root />)
 }

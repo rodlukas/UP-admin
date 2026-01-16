@@ -1,6 +1,7 @@
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
+import { useMatch, useNavigate, useParams } from "react-router-dom"
 import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
 import {
@@ -42,21 +43,20 @@ import {
 } from "../global/utils"
 import { ModalClientsGroupsData } from "../types/components"
 import { ClientType, GroupType, LectureType } from "../types/models"
-import { CustomRouteComponentProps, Model } from "../types/types"
+import { Model } from "../types/types"
 
 import * as styles from "./Card.css"
-
-type ParamProps = { id: Model["id"] }
-
-type Props = CustomRouteComponentProps<ParamProps>
 
 type ClientOrGroup = ClientType | GroupType | null
 
 /** Stránka s kartou klienta nebo skupiny. */
-const Card: React.FC<Props> = (props) => {
+const Card: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
-    const id = props.match.params.id
-    const isClientPageValue = props.match.path.includes(APP_URLS.klienti.url)
+    const navigate = useNavigate()
+    const params = useParams<{ id: string }>()
+    const isClientPageValue = Boolean(useMatch(APP_URLS.klienti_karta.url))
+    const parsedId = params.id ? Number(params.id) : undefined
+    const id: Model["id"] | undefined = Number.isNaN(parsedId) ? undefined : parsedId
 
     const isClient = (object: ClientOrGroup): object is ClientType =>
         Boolean(object && "phone" in object)
@@ -130,14 +130,14 @@ const Card: React.FC<Props> = (props) => {
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
             if (data?.isDeleted) {
-                props.history.push(isClientPageValue ? APP_URLS.klienti.url : APP_URLS.skupiny.url)
+                void navigate(isClientPageValue ? APP_URLS.klienti.url : APP_URLS.skupiny.url)
             }
         },
-        [props.history, isClientPageValue],
+        [isClientPageValue, navigate],
     )
 
     const goBack = (): void => {
-        props.history.goBack()
+        void navigate(-1)
     }
 
     const renderLecture = (lecture: LectureType): React.ReactElement => {

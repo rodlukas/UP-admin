@@ -1,7 +1,7 @@
 import classNames from "classnames"
 import Fuse, { IFuseOptions, FuseResult } from "fuse.js"
 import * as React from "react"
-import { NavLink as RouterNavLink, Switch, useLocation } from "react-router-dom"
+import { NavLink as RouterNavLink, Route, Routes, useLocation } from "react-router-dom"
 import { Slide, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { Badge, Collapse, Navbar, NavbarBrand, NavbarToggler } from "reactstrap"
@@ -96,11 +96,68 @@ const Main: React.FC = () => {
         setSearchVal(newSearchVal)
     }
 
+    const privateRoutes = [
+        {
+            path: APP_URLS.prehled.url,
+            title: APP_URLS.prehled.title,
+            element: <Dashboard />,
+        },
+        {
+            path: APP_URLS.skupiny.url,
+            title: APP_URLS.skupiny.title,
+            element: <Groups />,
+        },
+        {
+            path: `${APP_URLS.diar.url}/:year?/:month?/:day?`,
+            element: <Diary />,
+        },
+        {
+            path: APP_URLS.klienti.url,
+            title: APP_URLS.klienti.title,
+            element: <Clients />,
+        },
+        {
+            path: APP_URLS.klienti_karta.url,
+            element: <Card />,
+        },
+        {
+            path: APP_URLS.skupiny_karta.url,
+            element: <Card />,
+        },
+        {
+            path: APP_URLS.zajemci.url,
+            title: APP_URLS.zajemci.title,
+            element: <Applications />,
+        },
+        {
+            path: APP_URLS.nastaveni.url,
+            title: APP_URLS.nastaveni.title,
+            element: <Settings />,
+        },
+    ]
+    const publicRoutes = [
+        {
+            path: APP_URLS.prihlasit.url,
+            title: APP_URLS.prihlasit.title,
+            element: <Login />,
+        },
+        {
+            path: APP_URLS.nenalezeno.url,
+            title: APP_URLS.nenalezeno.title,
+            element: <NotFound />,
+        },
+        {
+            path: "*",
+            title: APP_URLS.nenalezeno.title,
+            element: <NotFound />,
+        },
+    ]
+
     return (
         <div className={getEnvName()}>
             {authContext.isAuth && (
                 <Navbar className="bg-dark" expand="lg" dark fixed="top" container={true}>
-                    <NavbarBrand tag={RouterNavLink} exact to="/" onClick={closeNavbar}>
+                    <NavbarBrand tag={RouterNavLink} end to="/" onClick={closeNavbar}>
                         ÚP<sub>admin</sub>
                     </NavbarBrand>
                     {isEnvLocal() && <Badge color="light">Vývojová verze</Badge>}
@@ -133,48 +190,22 @@ const Main: React.FC = () => {
                         resetSearch={resetSearch}
                     />
                     <React.Suspense fallback={<Loading />}>
-                        <Switch>
-                            <PrivateRoute
-                                path={APP_URLS.prehled.url}
-                                component={Dashboard}
-                                title={APP_URLS.prehled.title}
-                                exact
-                            />
-                            <Page
-                                path={APP_URLS.prihlasit.url}
-                                component={Login}
-                                title={APP_URLS.prihlasit.title}
-                            />
-                            <PrivateRoute
-                                path={APP_URLS.skupiny.url}
-                                component={Groups}
-                                title={APP_URLS.skupiny.title}
-                                exact
-                            />
-                            <PrivateRoute
-                                path={`${APP_URLS.diar.url}/:year?/:month?/:day?`}
-                                component={Diary}
-                            />
-                            <PrivateRoute
-                                path={APP_URLS.klienti.url}
-                                component={Clients}
-                                title={APP_URLS.klienti.title}
-                                exact
-                            />
-                            <PrivateRoute path={APP_URLS.klienti_karta.url} component={Card} />
-                            <PrivateRoute path={APP_URLS.skupiny_karta.url} component={Card} />
-                            <PrivateRoute
-                                path={APP_URLS.zajemci.url}
-                                component={Applications}
-                                title={APP_URLS.zajemci.title}
-                            />
-                            <PrivateRoute
-                                path={APP_URLS.nastaveni.url}
-                                component={Settings}
-                                title={APP_URLS.nastaveni.title}
-                            />
-                            <Page component={NotFound} title={APP_URLS.nenalezeno.title} />
-                        </Switch>
+                        <Routes>
+                            {publicRoutes.map(({ path, title, element }) => (
+                                <Route
+                                    key={path}
+                                    path={path}
+                                    element={<Page title={title}>{element}</Page>}
+                                />
+                            ))}
+                            {privateRoutes.map(({ path, title, element }) => (
+                                <Route
+                                    key={path}
+                                    path={path}
+                                    element={<PrivateRoute title={title}>{element}</PrivateRoute>}
+                                />
+                            ))}
+                        </Routes>
                     </React.Suspense>
                 </ErrorBoundary>
             </main>

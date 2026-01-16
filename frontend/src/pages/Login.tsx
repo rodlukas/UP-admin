@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLock, faUser } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
-import { Redirect } from "react-router-dom"
+import { Location, Navigate, useLocation } from "react-router-dom"
 import {
     Card,
     Container,
@@ -18,12 +18,11 @@ import { useAuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
 import useForm from "../hooks/useForm"
 import { AuthorizationType } from "../types/models"
-import { CustomRouteComponentProps } from "../types/types"
 
 import * as styles from "./Login.css"
 
 /** Stránka s přihlášením. */
-const Login: React.FC<CustomRouteComponentProps> = (props) => {
+const Login: React.FC = () => {
     // destructuring kvuli useEffect deps (viz https://github.com/rodlukas/UP-admin/issues/96)
     const {
         isAuth: authContextIsAuth,
@@ -60,9 +59,11 @@ const Login: React.FC<CustomRouteComponentProps> = (props) => {
         void authContextIsAuthenticated(false)
     }, [authContextIsAuth, authContextIsAuthenticated])
 
-    const redirectedFrom = props.location.state ? props.location.state.from : "/"
+    const location = useLocation()
+    const locationState = location.state as { from?: Location } | null
+    const redirectedFrom = locationState?.from ?? { pathname: "/" }
     if (authContextIsAuth) {
-        return <Redirect to={redirectedFrom} />
+        return <Navigate to={redirectedFrom} replace />
     }
     return (
         <Container className={styles.loginContainer}>
