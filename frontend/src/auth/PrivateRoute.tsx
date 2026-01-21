@@ -1,5 +1,5 @@
+import { Navigate, useRouterState } from "@tanstack/react-router"
 import * as React from "react"
-import { Navigate, useLocation } from "react-router-dom"
 
 import APP_URLS from "../APP_URLS"
 import Page from "../components/Page"
@@ -19,10 +19,18 @@ type PrivateRouteProps = {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ title, children }) => {
     const authContext = useAuthContext()
-    const location = useLocation()
+    const locationPathname = useRouterState({
+        select: (state) => state.location.pathname,
+    })
 
     if (!authContext.isAuth) {
-        return <Navigate to={APP_URLS.prihlasit.url} state={{ from: location }} replace />
+        return (
+            <Navigate
+                to={APP_URLS.prihlasit.url}
+                search={{ redirect: locationPathname }}
+                replace
+            />
+        )
     }
 
     return (

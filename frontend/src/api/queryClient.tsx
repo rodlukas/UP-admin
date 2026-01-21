@@ -1,7 +1,6 @@
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import * as React from "react"
-import type { NavigateFunction } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import APP_URLS from "../APP_URLS"
@@ -76,15 +75,18 @@ function logErrorToConsole(
 /**
  * Zpracuje chybu - zobrazí notifikaci a případně přesměruje uživatele.
  */
-function redirectTo(navigate: NavigateFunction | undefined, path: string): void {
+type NavigateFn = (path: string) => void
+
+function redirectTo(getNavigate: (() => NavigateFn | undefined) | undefined, path: string): void {
+    const navigate = getNavigate?.()
     if (navigate) {
-        void navigate(path)
+        navigate(path)
     } else if (typeof window !== "undefined") {
         window.location.assign(path)
     }
 }
 
-function handleError(axiosError: AxiosError, navigate?: NavigateFunction): void {
+function handleError(axiosError: AxiosError, getNavigate?: () => NavigateFn | undefined): void {
     const errorResponse = axiosError.response
     const djangoError = parseDjangoError(axiosError)
 
@@ -105,15 +107,15 @@ function handleError(axiosError: AxiosError, navigate?: NavigateFunction): void 
             // zpatky na puvodni stranku, tedy dojde k zacykleni. Odstranenim tokenu neschopnost frontendu
             // korektne validovat token vyresime.
             Token.remove()
-            redirectTo(navigate, APP_URLS.prihlasit.url)
+            redirectTo(getNavigate, APP_URLS.prihlasit.url)
         } else if (errorResponse.status === 404) {
-            redirectTo(navigate, APP_URLS.nenalezeno.url)
+            redirectTo(getNavigate, APP_URLS.nenalezeno.url)
         }
     }
 }
 
 /** Vytvoří QueryClient s globálním error handlingem a automatickou invalidací. */
-export function createQueryClient(navigate?: NavigateFunction): QueryClient {
+export function createQueryClient(getNavigate?: () => NavigateFn | undefined): QueryClient {
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
@@ -127,12 +129,12 @@ export function createQueryClient(navigate?: NavigateFunction): QueryClient {
                 if (query.meta?.skipErrorNotification) {
                     return
                 }
-                handleError(error as AxiosError, navigate)
+                handleError(error as AxiosError, getNavigate)
             },
         }),
         mutationCache: new MutationCache({
             onError: (error: unknown) => {
-                handleError(error as AxiosError, navigate)
+                handleError(error as AxiosError, getNavigate)
             },
             onSuccess: (_data, _variables, _context, mutation) => {
                 // Invalidujeme všechny queries po každé úspěšné mutaci.

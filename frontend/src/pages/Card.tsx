@@ -1,7 +1,7 @@
+import { useMatch, useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { useMatch, useNavigate, useParams } from "react-router-dom"
 import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
 import {
@@ -53,9 +53,11 @@ type ClientOrGroup = ClientType | GroupType | null
 const Card: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
-    const params = useParams<{ id: string }>()
-    const isClientPageValue = Boolean(useMatch(APP_URLS.klienti_karta.url))
-    const parsedId = params.id ? Number(params.id) : undefined
+    const clientMatch = useMatch({ from: "/klienti/$id", shouldThrow: false })
+    const groupMatch = useMatch({ from: "/skupiny/$id", shouldThrow: false })
+    const isClientPageValue = Boolean(clientMatch)
+    const paramsId = clientMatch?.params.id ?? groupMatch?.params.id
+    const parsedId = paramsId ? Number(paramsId) : undefined
     const id: Model["id"] | undefined = Number.isNaN(parsedId) ? undefined : parsedId
 
     const isClient = (object: ClientOrGroup): object is ClientType =>
@@ -130,14 +132,14 @@ const Card: React.FC = () => {
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
             if (data?.isDeleted) {
-                void navigate(isClientPageValue ? APP_URLS.klienti.url : APP_URLS.skupiny.url)
+                void navigate({ to: isClientPageValue ? APP_URLS.klienti.url : APP_URLS.skupiny.url })
             }
         },
         [isClientPageValue, navigate],
     )
 
     const goBack = (): void => {
-        void navigate(-1)
+        window.history.back()
     }
 
     const renderLecture = (lecture: LectureType): React.ReactElement => {

@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLock, faUser } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Navigate, useSearch } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
-import { Location, Navigate, useLocation } from "react-router-dom"
 import {
     Card,
     Container,
@@ -14,6 +14,7 @@ import {
     Label,
 } from "reactstrap"
 
+import APP_URLS from "../APP_URLS"
 import { useAuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
 import useForm from "../hooks/useForm"
@@ -59,9 +60,8 @@ const Login: React.FC = () => {
         void authContextIsAuthenticated(false)
     }, [authContextIsAuth, authContextIsAuthenticated])
 
-    const location = useLocation()
-    const locationState = location.state as { from?: Location } | null
-    const redirectedFrom = locationState?.from ?? { pathname: "/" }
+    const search = useSearch({ from: APP_URLS.prihlasit.url })
+    const redirectedFrom = search.redirect ?? APP_URLS.prehled.url
     if (authContextIsAuth) {
         return <Navigate to={redirectedFrom} replace />
     }

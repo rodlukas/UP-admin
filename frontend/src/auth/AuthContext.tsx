@@ -1,5 +1,5 @@
+import { useNavigate } from "@tanstack/react-router"
 import * as React from "react"
-import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
 import { useLogin } from "../api/hooks"
@@ -93,7 +93,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         void isAuthenticated(false)
         // z jakekoliv stranky presmeruj uzivatele na prihlaseni (napr. na strance nenalezeno ho to jinak ponecha i po
         // odhlaseni
-        void navigate(APP_URLS.prihlasit.url)
+        void navigate({ to: APP_URLS.prihlasit.url })
     }, [isAuthenticated, navigate])
 
     React.useEffect(() => {

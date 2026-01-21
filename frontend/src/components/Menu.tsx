@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faExternalLink } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Link, LinkProps } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
-import { NavLink as RouterNavLink, NavLinkProps as RouterNavLinkProps } from "react-router-dom"
 import { Button, Nav, NavItem, NavLink } from "reactstrap"
 
 import APP_URLS from "../APP_URLS"
@@ -24,21 +24,30 @@ type Props = {
 
 type MyNavLinkProps = {
     className?: string
+    activeClassName?: string
+    exact?: boolean
 } & QA &
-    Omit<RouterNavLinkProps, "className">
+    Omit<LinkProps, "className">
 
 /** Komponenta zobrazující menu aplikace pro přihlášené uživatele. */
 const Menu: React.FC<Props> = (props) => {
     const authContext = useAuthContext()
-    const MyNavLink: React.FC<MyNavLinkProps> = ({ className, ...otherProps }) => (
-        <RouterNavLink
+    const MyNavLink: React.FC<MyNavLinkProps> = ({
+        className,
+        activeClassName = "active",
+        exact = false,
+        ...otherProps
+    }) => (
+        <Link
             {...otherProps}
             onClick={props.closeNavbar}
-            className={({ isActive }) =>
-                classNames("nav-link", className, {
-                    active: isActive,
-                })
-            }
+            activeOptions={{ exact }}
+            activeProps={{
+                className: classNames("nav-link", className, activeClassName),
+            }}
+            inactiveProps={{
+                className: classNames("nav-link", className),
+            }}
         />
     )
     const onClickLogout = () => {
@@ -57,7 +66,7 @@ const Menu: React.FC<Props> = (props) => {
                     />
                     <Nav className="ms-auto" navbar>
                         <NavItem>
-                            <MyNavLink end to={APP_URLS.prehled.url}>
+                            <MyNavLink exact to={APP_URLS.prehled.url}>
                                 Přehled
                             </MyNavLink>
                         </NavItem>

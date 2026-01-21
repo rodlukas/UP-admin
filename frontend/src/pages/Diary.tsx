@@ -3,9 +3,9 @@ import {
     faChevronCircleLeft,
     faChevronCircleRight,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Link, useMatch, useNavigate } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
-import { Link, useNavigate, useParams } from "react-router-dom"
 import { Button, Col, Container, Row } from "reactstrap"
 
 import APP_URLS from "../APP_URLS"
@@ -59,14 +59,35 @@ const parseDateFromParams = (params: Partial<ParamsProps>): Date => {
     }
 }
 
-const serializeDateUrl = (date: Date): string => {
-    return `${APP_URLS.diar.url}/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
-}
+const getDateParams = (date: Date): { year: string; month: string; day: string } => ({
+    year: String(date.getFullYear()),
+    month: String(date.getMonth() + 1),
+    day: String(date.getDate()),
+})
 
 /** Stránka s diářem. */
 const Diary: React.FC = () => {
     const navigate = useNavigate()
-    const params = useParams<ParamsProps>()
+    const dayMatch = useMatch({
+        from: "/diar/$year/$month/$day",
+        shouldThrow: false,
+    })
+    const monthMatch = useMatch({
+        from: "/diar/$year/$month",
+        shouldThrow: false,
+    })
+    const yearMatch = useMatch({
+        from: "/diar/$year",
+        shouldThrow: false,
+    })
+    const params = React.useMemo(
+        () =>
+            (dayMatch?.params as Partial<ParamsProps> | undefined) ??
+            (monthMatch?.params as Partial<ParamsProps> | undefined) ??
+            (yearMatch?.params as Partial<ParamsProps> | undefined) ??
+            {},
+        [dayMatch?.params, monthMatch?.params, yearMatch?.params],
+    )
 
     const getRequiredMonday = React.useCallback(
         (): Date => getMonday(parseDateFromParams(params)),
@@ -83,13 +104,15 @@ const Diary: React.FC = () => {
 
     const getFridayDate = React.useCallback((): Date => new Date(week[4]), [week])
 
-    const getNextMondaySerialized = React.useCallback(
-        (): string => serializeDateUrl(addDays(getRequiredMonday(), DAYS_IN_WEEK)),
+    const getNextMondayParams = React.useCallback(
+        (): { year: string; month: string; day: string } =>
+            getDateParams(addDays(getRequiredMonday(), DAYS_IN_WEEK)),
         [getRequiredMonday],
     )
 
-    const getPrevMondaySerialized = React.useCallback(
-        (): string => serializeDateUrl(addDays(getRequiredMonday(), -DAYS_IN_WEEK)),
+    const getPrevMondayParams = React.useCallback(
+        (): { year: string; month: string; day: string } =>
+            getDateParams(addDays(getRequiredMonday(), -DAYS_IN_WEEK)),
         [getRequiredMonday],
     )
 
@@ -109,13 +132,19 @@ const Diary: React.FC = () => {
             if (!isModalShown()) {
                 const key = e.key
                 if (key === "ArrowLeft") {
-                    void navigate(getPrevMondaySerialized())
+                    void navigate({
+                        to: "/diar/$year/$month/$day",
+                        params: getPrevMondayParams(),
+                    })
                 } else if (key === "ArrowRight") {
-                    void navigate(getNextMondaySerialized())
+                    void navigate({
+                        to: "/diar/$year/$month/$day",
+                        params: getNextMondayParams(),
+                    })
                 }
             }
         },
-        [navigate, getPrevMondaySerialized, getNextMondaySerialized],
+        [navigate, getPrevMondayParams, getNextMondayParams],
     )
 
     // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)
@@ -156,7 +185,10 @@ const Diary: React.FC = () => {
                     }
                     buttons={
                         <>
-                            <Link to={getPrevMondaySerialized()} id="Diary_PrevWeek">
+                            <Link
+                                to="/diar/$year/$month/$day"
+                                params={getPrevMondayParams()}
+                                id="Diary_PrevWeek">
                                 <FontAwesomeIcon
                                     icon={faChevronCircleLeft}
                                     className={classNames(styles.arrowBtn, "text-muted")}
@@ -165,7 +197,10 @@ const Diary: React.FC = () => {
                             <UncontrolledTooltipWrapper target="Diary_PrevWeek">
                                 Předchozí týden
                             </UncontrolledTooltipWrapper>{" "}
-                            <Link to={getNextMondaySerialized()} id="Diary_NextWeek">
+                            <Link
+                                to="/diar/$year/$month/$day"
+                                params={getNextMondayParams()}
+                                id="Diary_NextWeek">
                                 <FontAwesomeIcon
                                     icon={faChevronCircleRight}
                                     className={classNames(styles.arrowBtn, "text-muted")}

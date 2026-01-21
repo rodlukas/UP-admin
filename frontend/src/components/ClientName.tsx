@@ -1,5 +1,5 @@
+import { Link } from "@tanstack/react-router"
 import * as React from "react"
-import { Link } from "react-router-dom"
 
 import APP_URLS from "../APP_URLS"
 import { ClientType } from "../types/models"

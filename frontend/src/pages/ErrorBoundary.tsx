@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPenNib } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as Sentry from "@sentry/browser"
+import { useRouterState } from "@tanstack/react-router"
 import * as React from "react"
-import { useLocation } from "react-router-dom"
 import { Alert, Container } from "reactstrap"
 
 import Token from "../auth/Token"
@@ -133,8 +133,10 @@ class ErrorBoundary extends React.Component<Props, State> {
 }
 
 const ErrorBoundaryWithLocation: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const location = useLocation()
-    return <ErrorBoundary locationKey={location.key}>{children}</ErrorBoundary>
+    const locationKey = useRouterState({
+        select: (state) => state.location.href,
+    })
+    return <ErrorBoundary locationKey={locationKey}>{children}</ErrorBoundary>
 }
 
 export default ErrorBoundaryWithLocation
