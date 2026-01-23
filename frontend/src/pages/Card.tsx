@@ -1,4 +1,4 @@
-import { useMatch, useNavigate } from "@tanstack/react-router"
+import { useNavigate, useRouterState } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
@@ -53,10 +53,15 @@ type ClientOrGroup = ClientType | GroupType | null
 const Card: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
-    const clientMatch = useMatch({ from: "/klienti/$id", shouldThrow: false })
-    const groupMatch = useMatch({ from: "/skupiny/$id", shouldThrow: false })
-    const isClientPageValue = Boolean(clientMatch)
-    const paramsId = clientMatch?.params.id ?? groupMatch?.params.id
+    const pathname = useRouterState({
+        select: (state) => state.location.pathname,
+    })
+    const pathParts = React.useMemo(() => pathname.split("/").filter(Boolean), [pathname])
+    const klientiSegment = APP_URLS.klienti.url.replace("/", "")
+    const skupinySegment = APP_URLS.skupiny.url.replace("/", "")
+    const isClientPageValue = pathParts[0] === klientiSegment
+    const isGroupPageValue = pathParts[0] === skupinySegment
+    const paramsId = isClientPageValue || isGroupPageValue ? pathParts[1] : undefined
     const parsedId = paramsId ? Number(paramsId) : undefined
     const id: Model["id"] | undefined = Number.isNaN(parsedId) ? undefined : parsedId
 
