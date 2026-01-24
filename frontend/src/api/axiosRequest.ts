@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
 })
 
 // funkce pro simulaci dlouheho pozadavku
-// const sleep = milliseconds => new Promise(resolve => window.setTimeout(resolve, milliseconds))
+// const sleep = milliseconds => new Promise(resolve => globalThis.setTimeout(resolve, milliseconds))
 
 /** Vloží do hlavičky HTTP požadavku JWT token. */
 const setAuthHeader = (): void => {

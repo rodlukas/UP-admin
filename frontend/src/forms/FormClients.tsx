@@ -261,7 +261,7 @@ const FormClients: React.FC<Props> = (props) => {
                                         onClick={(): void => {
                                             if (
                                                 isClient(props.client) &&
-                                                window.confirm(
+                                                globalThis.confirm(
                                                     `Opravdu chcete smazat klienta ${firstname} ${surname}?`,
                                                 )
                                             ) {

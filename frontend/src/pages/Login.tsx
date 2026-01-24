@@ -61,7 +61,9 @@ const Login: React.FC = () => {
     }, [authContextIsAuth, authContextIsAuthenticated])
 
     const redirectFromSearch = React.useMemo(
-        () => new URLSearchParams(window.location.search).get("redirect") ?? undefined,
+        () =>
+            new URLSearchParams(globalThis.location?.search ?? "").get("redirect") ??
+            undefined,
         [],
     )
     const redirectedFrom = redirectFromSearch ?? APP_URLS.prehled.url

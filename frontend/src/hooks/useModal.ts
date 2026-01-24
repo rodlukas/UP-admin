@@ -52,7 +52,7 @@ const useModal = (): UseModal => {
         //  kvuli chovani rodicovskych komponent
         if (
             formState === DIRTY_INDICATORS.CLEAN ||
-            window.confirm("Opravdu chcete zavřít formulář bez uložení změn?")
+            globalThis.confirm("Opravdu chcete zavřít formulář bez uložení změn?")
         ) {
             return toggleModalForce(false)
         }
@@ -80,9 +80,9 @@ const useModal = (): UseModal => {
             }
         }
         if (formState === DIRTY_INDICATORS.DIRTY) {
-            window.addEventListener("beforeunload", beforeUnload)
+            globalThis.addEventListener("beforeunload", beforeUnload)
         }
-        return (): void => window.removeEventListener("beforeunload", beforeUnload)
+        return (): void => globalThis.removeEventListener("beforeunload", beforeUnload)
     }, [formState])
 
     return [

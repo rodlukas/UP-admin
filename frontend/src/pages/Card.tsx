@@ -139,7 +139,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     )
 
     const goBack = (): void => {
-        window.history.back()
+        globalThis.history.back()
     }
 
     const renderLecture = (lecture: LectureType): React.ReactElement => {

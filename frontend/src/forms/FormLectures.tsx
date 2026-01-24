@@ -841,7 +841,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 const msg = `Opravdu chcete smazat ${msgPrepaid}lekci ${msgObject} ${msgObjectName}${msgDateTime}?`
                                                 if (
                                                     isLecture(props.lecture) &&
-                                                    window.confirm(msg)
+                                                    globalThis.confirm(msg)
                                                 ) {
                                                     handleDelete(props.lecture.id)
                                                 }

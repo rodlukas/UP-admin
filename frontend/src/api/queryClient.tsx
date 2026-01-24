@@ -81,8 +81,8 @@ function redirectTo(getNavigate: (() => NavigateFn | undefined) | undefined, pat
     const navigate = getNavigate?.()
     if (navigate) {
         navigate(path)
-    } else if (typeof window !== "undefined") {
-        window.location.assign(path)
+    } else {
+        globalThis.location.assign(path)
     }
 }
 

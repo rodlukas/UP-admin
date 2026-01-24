@@ -136,7 +136,7 @@ const Applications: React.FC = () => {
                                                     <DeleteButton
                                                         onClick={(): void => {
                                                             if (
-                                                                window.confirm(
+                                                                globalThis.confirm(
                                                                     "Opravdu chcete smazat zájemce " +
                                                                         `${application.client.surname} ${application.client.firstname} o ${application.course.name}?`,
                                                                 )

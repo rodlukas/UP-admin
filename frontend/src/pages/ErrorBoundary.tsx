@@ -84,7 +84,7 @@ class ErrorBoundary extends React.Component<Props, State> {
                         Nastala neočekávaná chyba v aplikaci. Zkuste tuto stránku{" "}
                         <CustomButton
                             content={"načíst znovu"}
-                            onClick={() => window.location.reload()}
+                            onClick={() => globalThis.location?.reload()}
                         />
                         .
                     </p>

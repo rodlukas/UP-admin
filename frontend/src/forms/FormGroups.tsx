@@ -286,7 +286,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                                 onClick={(): void => {
                                                     if (
                                                         isGroup(props.group) &&
-                                                        window.confirm(
+                                                        globalThis.confirm(
                                                             `Opravdu chcete smazat skupinu ${name}?`,
                                                         )
                                                     ) {

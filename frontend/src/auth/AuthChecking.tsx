@@ -16,11 +16,11 @@ const AuthChecking: React.FC = () => {
 
     React.useEffect(() => {
         void authContextIsAuthenticated()
-        const intervalId = window.setInterval(() => {
+        const intervalId = globalThis.setInterval(() => {
             void authContextIsAuthenticated()
         }, REFRESH_TOKEN_INTERVAL)
 
-        return (): void => window.clearInterval(intervalId)
+        return (): void => globalThis.clearInterval(intervalId)
     }, [authContextIsAuth, authContextIsAuthenticated])
 
     return null

@@ -26,8 +26,8 @@ type Props = {
 const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
     const [loadingState, setLoadingState] = React.useState(LOADING_STATE.NORMAL_LOADING)
 
-    function setLoadingTimeout(newLoadingState: LOADING_STATE): number {
-        return window.setTimeout(
+    function setLoadingTimeout(newLoadingState: LOADING_STATE): ReturnType<typeof setTimeout> {
+        return globalThis.setTimeout(
             () => setLoadingState(newLoadingState),
             (newLoadingState === LOADING_STATE.LONG_LOADING
                 ? LONG_LOADING_THRESHOLD
@@ -37,12 +37,12 @@ const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
 
     React.useEffect(() => {
         const timeoutId = setLoadingTimeout(LOADING_STATE.LONG_LOADING)
-        return (): void => window.clearTimeout(timeoutId)
+        return (): void => globalThis.clearTimeout(timeoutId)
     }, [])
 
     React.useEffect(() => {
         const timeoutId = setLoadingTimeout(LOADING_STATE.OVERLONG_LOADING)
-        return (): void => window.clearTimeout(timeoutId)
+        return (): void => globalThis.clearTimeout(timeoutId)
     }, [])
 
     return (
@@ -65,7 +65,7 @@ const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
                             </>
                         }
                         onClick={(): void => {
-                            window.location.reload()
+                            globalThis.location?.reload()
                         }}
                     />
                 </Alert>
