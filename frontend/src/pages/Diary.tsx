@@ -70,7 +70,6 @@ const Diary: React.FC = () => {
     const navigate = useNavigate()
     const dayMatch = useMatch({
         from: "/diar/$year/$month/$day",
-        shouldThrow: false,
     })
     const params = React.useMemo(
         () => (dayMatch?.params as Partial<ParamsProps> | undefined) ?? {},
