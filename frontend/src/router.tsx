@@ -32,6 +32,7 @@ const queryClient = createQueryClient(() => {
 
 const rootRoute = createRootRoute({
     component: () => <AppLayout queryClient={queryClient} />,
+    notFoundComponent: () => <Page title={APP_URLS.nenalezeno.title}><NotFound /></Page>,
 })
 
 type ChildRouteConfig = {
@@ -79,8 +80,6 @@ const groupsRoute = createPrivateRoute(APP_URLS.skupiny.url, <Groups />, APP_URL
 
 const diaryRoutes = [
     APP_URLS.diar.url,
-    `${APP_URLS.diar.url}/$year`,
-    `${APP_URLS.diar.url}/$year/$month`,
     `${APP_URLS.diar.url}/$year/$month/$day`,
 ].map((path) => createPrivateRoute(path, <Diary />))
 
@@ -94,7 +93,6 @@ const applicationsRoute = createPrivateRoute(
 )
 const settingsRoute = createPrivateRoute(APP_URLS.nastaveni.url, <Settings />, APP_URLS.nastaveni.title)
 const notFoundRoute = createPageRoute(APP_URLS.nenalezeno.url, <NotFound />, APP_URLS.nenalezeno.title)
-const catchAllRoute = createPageRoute("*", <NotFound />, APP_URLS.nenalezeno.title)
 
 const routeTree = rootRoute.addChildren([
     overviewRoute,
@@ -107,7 +105,6 @@ const routeTree = rootRoute.addChildren([
     applicationsRoute,
     settingsRoute,
     notFoundRoute,
-    catchAllRoute,
 ])
 
 router = createRouter({

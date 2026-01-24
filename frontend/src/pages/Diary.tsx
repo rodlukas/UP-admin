@@ -72,21 +72,9 @@ const Diary: React.FC = () => {
         from: "/diar/$year/$month/$day",
         shouldThrow: false,
     })
-    const monthMatch = useMatch({
-        from: "/diar/$year/$month",
-        shouldThrow: false,
-    })
-    const yearMatch = useMatch({
-        from: "/diar/$year",
-        shouldThrow: false,
-    })
     const params = React.useMemo(
-        () =>
-            (dayMatch?.params as Partial<ParamsProps> | undefined) ??
-            (monthMatch?.params as Partial<ParamsProps> | undefined) ??
-            (yearMatch?.params as Partial<ParamsProps> | undefined) ??
-            {},
-        [dayMatch?.params, monthMatch?.params, yearMatch?.params],
+        () => (dayMatch?.params as Partial<ParamsProps> | undefined) ?? {},
+        [dayMatch?.params],
     )
 
     const getRequiredMonday = React.useCallback(
@@ -104,15 +92,12 @@ const Diary: React.FC = () => {
 
     const getFridayDate = React.useCallback((): Date => new Date(week[4]), [week])
 
-    const getNextMondayParams = React.useCallback(
-        (): { year: string; month: string; day: string } =>
-            getDateParams(addDays(getRequiredMonday(), DAYS_IN_WEEK)),
+    const prevMondayParams = React.useMemo(
+        () => getDateParams(addDays(getRequiredMonday(), -DAYS_IN_WEEK)),
         [getRequiredMonday],
     )
-
-    const getPrevMondayParams = React.useCallback(
-        (): { year: string; month: string; day: string } =>
-            getDateParams(addDays(getRequiredMonday(), -DAYS_IN_WEEK)),
+    const nextMondayParams = React.useMemo(
+        () => getDateParams(addDays(getRequiredMonday(), DAYS_IN_WEEK)),
         [getRequiredMonday],
     )
 
@@ -134,17 +119,17 @@ const Diary: React.FC = () => {
                 if (key === "ArrowLeft") {
                     void navigate({
                         to: "/diar/$year/$month/$day",
-                        params: getPrevMondayParams(),
+                        params: prevMondayParams,
                     })
                 } else if (key === "ArrowRight") {
                     void navigate({
                         to: "/diar/$year/$month/$day",
-                        params: getNextMondayParams(),
+                        params: nextMondayParams,
                     })
                 }
             }
         },
-        [navigate, getPrevMondayParams, getNextMondayParams],
+        [navigate, prevMondayParams, nextMondayParams],
     )
 
     // aby po kliknuti nezustal focus na tlacitku (nedaji se pak pouzivat klavesove sipky)
@@ -187,7 +172,7 @@ const Diary: React.FC = () => {
                         <>
                             <Link
                                 to="/diar/$year/$month/$day"
-                                params={getPrevMondayParams()}
+                                params={prevMondayParams}
                                 id="Diary_PrevWeek">
                                 <FontAwesomeIcon
                                     icon={faChevronCircleLeft}
@@ -199,7 +184,7 @@ const Diary: React.FC = () => {
                             </UncontrolledTooltipWrapper>{" "}
                             <Link
                                 to="/diar/$year/$month/$day"
-                                params={getNextMondayParams()}
+                                params={nextMondayParams}
                                 id="Diary_NextWeek">
                                 <FontAwesomeIcon
                                     icon={faChevronCircleRight}

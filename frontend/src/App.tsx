@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 import * as React from "react"
 
 import { AuthProvider } from "./auth/AuthContext"
@@ -24,6 +25,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ queryClient }) => (
             </AuthProvider>
         </ErrorBoundary>
         <ReactQueryDevtools initialIsOpen={false} />
+        <TanStackRouterDevtools initialIsOpen={false} />
     </QueryClientProvider>
 )
 
