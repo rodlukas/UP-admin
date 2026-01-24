@@ -3,7 +3,7 @@ import {
     faChevronCircleLeft,
     faChevronCircleRight,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import { Link, useMatch, useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate, useParams } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
 import { Button, Col, Container, Row } from "reactstrap"
@@ -51,6 +51,16 @@ type ParamsProps = {
     day?: string
 }
 
+const normalizeParams = (params: unknown): Partial<ParamsProps> => {
+    const record =
+        params && typeof params === "object" ? (params as Record<string, unknown>) : {}
+    return {
+        year: typeof record.year === "string" ? record.year : undefined,
+        month: typeof record.month === "string" ? record.month : undefined,
+        day: typeof record.day === "string" ? record.day : undefined,
+    }
+}
+
 const parseDateFromParams = (params: Partial<ParamsProps>): Date => {
     if (params.month != null && params.year != null && params.day != null) {
         return new Date(Number(params.year), Number(params.month) - 1, Number(params.day))
@@ -68,13 +78,8 @@ const getDateParams = (date: Date): { year: string; month: string; day: string }
 /** Stránka s diářem. */
 const Diary: React.FC = () => {
     const navigate = useNavigate()
-    const dayMatch = useMatch({
-        from: "/diar/$year/$month/$day",
-    })
-    const params = React.useMemo(
-        () => (dayMatch?.params as Partial<ParamsProps> | undefined) ?? {},
-        [dayMatch?.params],
-    )
+    const rawParams = useParams({ strict: false })
+    const params = React.useMemo(() => normalizeParams(rawParams), [rawParams])
 
     const getRequiredMonday = React.useCallback(
         (): Date => getMonday(parseDateFromParams(params)),
