@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faLock, faUser } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import { Navigate, useSearch } from "@tanstack/react-router"
+import { Navigate } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
 import {
@@ -60,8 +60,11 @@ const Login: React.FC = () => {
         void authContextIsAuthenticated(false)
     }, [authContextIsAuth, authContextIsAuthenticated])
 
-    const search = useSearch({ from: APP_URLS.prihlasit.url })
-    const redirectedFrom = search.redirect ?? APP_URLS.prehled.url
+    const redirectFromSearch = React.useMemo(
+        () => new URLSearchParams(window.location.search).get("redirect") ?? undefined,
+        [],
+    )
+    const redirectedFrom = redirectFromSearch ?? APP_URLS.prehled.url
     if (authContextIsAuth) {
         return <Navigate to={redirectedFrom} replace />
     }
