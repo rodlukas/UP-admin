@@ -1,4 +1,4 @@
-import { useNavigate, useRouterState } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
@@ -49,21 +49,16 @@ import * as styles from "./Card.css"
 
 type ClientOrGroup = ClientType | GroupType | null
 
+type CardProps = {
+    id: Model["id"]
+    isClientPage: boolean
+}
+
 /** Stránka s kartou klienta nebo skupiny. */
-const Card: React.FC = () => {
+const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
-    const pathname = useRouterState({
-        select: (state) => state.location.pathname,
-    })
-    const pathParts = React.useMemo(() => pathname.split("/").filter(Boolean), [pathname])
-    const klientiSegment = APP_URLS.klienti.url.replace("/", "")
-    const skupinySegment = APP_URLS.skupiny.url.replace("/", "")
-    const isClientPageValue = pathParts[0] === klientiSegment
-    const isGroupPageValue = pathParts[0] === skupinySegment
-    const paramsId = isClientPageValue || isGroupPageValue ? pathParts[1] : undefined
-    const parsedId = paramsId ? Number(paramsId) : undefined
-    const id: Model["id"] | undefined = Number.isNaN(parsedId) ? undefined : parsedId
+    const isClientPageValue = isClientPage
 
     const isClient = (object: ClientOrGroup): object is ClientType =>
         Boolean(object && "phone" in object)

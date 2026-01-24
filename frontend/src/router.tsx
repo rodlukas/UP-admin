@@ -84,8 +84,25 @@ const diaryRoutes = [
 ].map((path) => createPrivateRoute(path, <Diary />))
 
 const clientsRoute = createPrivateRoute(APP_URLS.klienti.url, <Clients />, APP_URLS.klienti.title)
-const clientCardRoute = createPrivateRoute("/klienti/$id", <Card />)
-const groupCardRoute = createPrivateRoute("/skupiny/$id", <Card />)
+
+const createCardRoute = (path: string, isClientPage: boolean) => {
+    let route: ReturnType<typeof createChildRoute>
+    route = createChildRoute({
+        path,
+        component: () => {
+            const { id } = route.useParams()
+            return (
+                <PrivateRoute>
+                    <Card id={Number(id)} isClientPage={isClientPage} />
+                </PrivateRoute>
+            )
+        },
+    })
+    return route
+}
+
+const clientCardRoute = createCardRoute("/klienti/$id", true)
+const groupCardRoute = createCardRoute("/skupiny/$id", false)
 const applicationsRoute = createPrivateRoute(
     APP_URLS.zajemci.url,
     <Applications />,
