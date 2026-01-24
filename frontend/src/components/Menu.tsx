@@ -26,30 +26,33 @@ type MyNavLinkProps = {
     className?: string
     activeClassName?: string
     exact?: boolean
+    onCloseNavbar: fEmptyVoid
 } & QA &
     Omit<LinkProps, "className">
+
+const MyNavLink: React.FC<MyNavLinkProps> = ({
+    className,
+    activeClassName = "active",
+    exact = false,
+    onCloseNavbar,
+    ...otherProps
+}) => (
+    <Link
+        {...otherProps}
+        onClick={onCloseNavbar}
+        activeOptions={{ exact }}
+        activeProps={{
+            className: classNames("nav-link", className, activeClassName),
+        }}
+        inactiveProps={{
+            className: classNames("nav-link", className),
+        }}
+    />
+)
 
 /** Komponenta zobrazující menu aplikace pro přihlášené uživatele. */
 const Menu: React.FC<Props> = (props) => {
     const authContext = useAuthContext()
-    const MyNavLink: React.FC<MyNavLinkProps> = ({
-        className,
-        activeClassName = "active",
-        exact = false,
-        ...otherProps
-    }) => (
-        <Link
-            {...otherProps}
-            onClick={props.closeNavbar}
-            activeOptions={{ exact }}
-            activeProps={{
-                className: classNames("nav-link", className, activeClassName),
-            }}
-            inactiveProps={{
-                className: classNames("nav-link", className),
-            }}
-        />
-    )
     const onClickLogout = () => {
         // pri odhlaseni chceme zavrit menu
         props.closeNavbar()
@@ -66,30 +69,44 @@ const Menu: React.FC<Props> = (props) => {
                     />
                     <Nav className="ms-auto" navbar>
                         <NavItem>
-                            <MyNavLink exact to={APP_URLS.prehled.url}>
+                            <MyNavLink exact to={APP_URLS.prehled.url} onCloseNavbar={props.closeNavbar}>
                                 Přehled
                             </MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.diar.url}>Diář</MyNavLink>
+                            <MyNavLink to={APP_URLS.diar.url} onCloseNavbar={props.closeNavbar}>
+                                Diář
+                            </MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.klienti.url} data-qa="menu_clients">
+                            <MyNavLink
+                                to={APP_URLS.klienti.url}
+                                data-qa="menu_clients"
+                                onCloseNavbar={props.closeNavbar}>
                                 Klienti
                             </MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.skupiny.url} data-qa="menu_groups">
+                            <MyNavLink
+                                to={APP_URLS.skupiny.url}
+                                data-qa="menu_groups"
+                                onCloseNavbar={props.closeNavbar}>
                                 Skupiny
                             </MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.zajemci.url} data-qa="menu_applications">
+                            <MyNavLink
+                                to={APP_URLS.zajemci.url}
+                                data-qa="menu_applications"
+                                onCloseNavbar={props.closeNavbar}>
                                 Zájemci
                             </MyNavLink>
                         </NavItem>
                         <NavItem>
-                            <MyNavLink to={APP_URLS.nastaveni.url} data-qa="menu_settings">
+                            <MyNavLink
+                                to={APP_URLS.nastaveni.url}
+                                data-qa="menu_settings"
+                                onCloseNavbar={props.closeNavbar}>
                                 Nastavení
                             </MyNavLink>
                         </NavItem>
