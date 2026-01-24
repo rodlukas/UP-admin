@@ -34,7 +34,7 @@ export default function lazySafe(
                     if (curValue === null || curValue !== "true") {
                         // pokud nedoslo k prvnimu reloadu, nastav firstReload="true" a reloadni
                         localStorage.setItem(FIRST_RELOAD_KEY, "true")
-                        window.location.reload()
+                        globalThis.location?.reload()
                     } else {
                         localStorage.removeItem(FIRST_RELOAD_KEY)
                     }

@@ -1,19 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPenNib } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as Sentry from "@sentry/browser"
+import { useRouterState } from "@tanstack/react-router"
 import * as React from "react"
-import { withRouter } from "react-router-dom"
 import { Alert, Container } from "reactstrap"
 
 import Token from "../auth/Token"
 import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"
-import { noop } from "../global/utils"
 import { TokenDecodedType } from "../types/models"
-import { CustomRouteComponentProps, fEmptyVoid } from "../types/types"
 
-type Props = CustomRouteComponentProps & {
+type Props = {
     children: React.ReactNode
+    locationKey: string
 }
 
 type State = {
@@ -39,19 +38,10 @@ class ErrorBoundary extends React.Component<Props, State> {
         errorInfo: undefined,
     }
 
-    unlisten: fEmptyVoid = noop
-
-    componentDidMount(): void {
-        // aby fungoval react-router pri nejake chybe
-        this.unlisten = this.props.history.listen(() => {
-            if (this.state.hasError) {
-                this.setState({ hasError: false })
-            }
-        })
-    }
-
-    componentWillUnmount(): void {
-        this.unlisten()
+    componentDidUpdate(prevProps: Props): void {
+        if (prevProps.locationKey !== this.props.locationKey && this.state.hasError) {
+            this.setState({ hasError: false })
+        }
     }
 
     static getDerivedStateFromError(): Partial<State> {
@@ -94,7 +84,7 @@ class ErrorBoundary extends React.Component<Props, State> {
                         Nastala neočekávaná chyba v aplikaci. Zkuste tuto stránku{" "}
                         <CustomButton
                             content={"načíst znovu"}
-                            onClick={() => window.location.reload()}
+                            onClick={() => globalThis.location?.reload()}
                         />
                         .
                     </p>
@@ -130,9 +120,7 @@ class ErrorBoundary extends React.Component<Props, State> {
                     <Alert color="danger" className="mt-4">
                         <h4 className="alert-heading">Popis chyby</h4>
                         <details className="text-start" style={{ whiteSpace: "pre-wrap" }}>
-                            <summary className="fw-bold">
-                                {this.state.error?.toString()}
-                            </summary>
+                            <summary className="fw-bold">{this.state.error?.toString()}</summary>
                             <small>{this.state.errorInfo?.componentStack}</small>
                         </details>
                     </Alert>
@@ -144,4 +132,11 @@ class ErrorBoundary extends React.Component<Props, State> {
     }
 }
 
-export default withRouter(ErrorBoundary)
+const ErrorBoundaryWithLocation: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const locationKey = useRouterState({
+        select: (state) => state.location.href,
+    })
+    return <ErrorBoundary locationKey={locationKey}>{children}</ErrorBoundary>
+}
+
+export default ErrorBoundaryWithLocation

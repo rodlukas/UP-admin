@@ -1,7 +1,4 @@
-import { Location } from "history"
 import * as React from "react"
-import { RouteProps, StaticContext } from "react-router"
-import { RouteComponentProps } from "react-router-dom"
 
 /** Obecný model, ze kterého vychází všechny entity/modely (mají ID). */
 export type Model = {
@@ -11,11 +8,6 @@ export type Model = {
 /** Chybová zpráva zobrazená uživateli. */
 export type ErrMsg = React.ReactElement | string
 
-/** RouteProps doplněné o další atributy. */
-export type CustomRouteProps = RouteProps & {
-    title?: string
-}
-
 /** React prop pro QA (využívá Selenium). */
 export type QA = {
     "data-qa"?: string
@@ -23,21 +15,6 @@ export type QA = {
 
 /** Typ reprezentující timeoutID při použití setTimeout. */
 export type TimeoutType = number | undefined
-
-/**
- * Custom props pro react-router založené na RouteComponentProps.
- *
- * Viz: https://stackoverflow.com/a/59857898/10045971
- */
-export type CustomRouteComponentProps<Params extends {} = {}> = RouteComponentProps<
-    Params,
-    StaticContext,
-    LocationState
->
-
-type LocationState = {
-    from: Location
-}
 
 /* *************************************************************************************************
 Utility.

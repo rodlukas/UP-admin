@@ -14,7 +14,6 @@ import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff } from "../global/funcDateTime"
 import { prettyAmount } from "../global/utils"
 import { BankType, BankSuccessType, BankErrorType } from "../types/models"
-import { TimeoutType } from "../types/types"
 
 import * as styles from "./Bank.css"
 import CustomButton from "./buttons/CustomButton"
@@ -53,17 +52,17 @@ const Bank: React.FC = () => {
     const { data: bankData, isLoading, refetch, isFetching } = useBank()
     /** Manuální obnovení dat je zakázané (true). */
     const [isRefreshDisabled, setIsRefreshDisabled] = React.useState(true)
-    const timeoutIdRef = React.useRef<TimeoutType>(undefined)
+    const timeoutIdRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
     React.useEffect(() => {
         // po zadanem poctu sekund povol tlacitko refresh
-        timeoutIdRef.current = window.setTimeout(
+        timeoutIdRef.current = globalThis.setTimeout(
             () => setIsRefreshDisabled(false),
             REFRESH_TIMEOUT * 1000,
-        ) as TimeoutType
+        )
         return () => {
-            if (timeoutIdRef.current) {
-                window.clearTimeout(timeoutIdRef.current)
+            if (timeoutIdRef.current !== undefined) {
+                globalThis.clearTimeout(timeoutIdRef.current)
             }
         }
     }, [bankData])

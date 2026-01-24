@@ -141,8 +141,8 @@ technologies:
 -   [React 19](https://react.dev/),
 -   [TypeScript 5](https://www.typescriptlang.org/),
 -   [Bootstrap 5](https://getbootstrap.com/) (with [Reactstrap 9](https://reactstrap.github.io/)),
--   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry),
+-   [Tanstack Router](https://tanstack.com/router/),
 -   [Tanstack Query (formerly React Query)](https://tanstack.com/query/)
 -   [a další...](/frontend/package.json)
 

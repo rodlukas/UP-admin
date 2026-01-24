@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router"
 import * as React from "react"
 import { toast } from "react-toastify"
 
@@ -5,7 +6,6 @@ import { useLogin } from "../api/hooks"
 import LoginService from "../api/services/LoginService"
 import APP_URLS from "../APP_URLS"
 import Notification from "../components/Notification"
-import history from "../global/history"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { AuthorizationType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
@@ -39,6 +39,7 @@ const getCurrentDate = (): number => Date.now() / 1000
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [isAuth, setIsAuth] = React.useState(false)
     const loginMutation = useLogin()
+    const navigate = useNavigate()
 
     const isAuthenticated = React.useCallback(
         async (refreshExpiringToken = true): Promise<void> => {
@@ -92,8 +93,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         void isAuthenticated(false)
         // z jakekoliv stranky presmeruj uzivatele na prihlaseni (napr. na strance nenalezeno ho to jinak ponecha i po
         // odhlaseni
-        history.push(APP_URLS.prihlasit.url)
-    }, [isAuthenticated])
+        void navigate({ to: APP_URLS.prihlasit.url })
+    }, [isAuthenticated, navigate])
 
     React.useEffect(() => {
         void isAuthenticated(false)

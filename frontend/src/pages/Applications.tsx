@@ -15,11 +15,8 @@ import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
 import { GroupedObjectsByCourses, groupObjectsByCourses } from "../global/utils"
 import { ApplicationType } from "../types/models"
-import { CustomRouteComponentProps } from "../types/types"
 
 import * as styles from "./Applications.css"
-
-type Props = CustomRouteComponentProps
 
 /**
  * Vrací správnou koncovku pro slovo "zájemc" podle počtu.
@@ -37,7 +34,7 @@ const getZajemciSuffix = (cnt: number): string => {
 }
 
 /** Stránka se zájemci o kurzy. */
-const Applications: React.FC<Props> = () => {
+const Applications: React.FC = () => {
     const { data: applicationsData, isLoading, isFetching } = useApplications()
     const deleteApplication = useDeleteApplication()
 
@@ -139,7 +136,7 @@ const Applications: React.FC<Props> = () => {
                                                     <DeleteButton
                                                         onClick={(): void => {
                                                             if (
-                                                                window.confirm(
+                                                                globalThis.confirm(
                                                                     "Opravdu chcete smazat zájemce " +
                                                                         `${application.client.surname} ${application.client.firstname} o ${application.course.name}?`,
                                                                 )

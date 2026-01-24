@@ -19,12 +19,14 @@ const RAPID_CHANGE_THRESHOLD = 500
  */
 export function useDelayedValue<T>(value: T, delay: number = DEFAULT_DELAY, immediate = false): T {
     const [delayedValue, setDelayedValue] = React.useState<T>(value)
-    const timeoutRef = React.useRef<number | undefined>(undefined)
+    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
     const lastChangeTimeRef = React.useRef<number>(Date.now())
 
     React.useEffect(() => {
         const cleanup = (): void => {
-            window.clearTimeout(timeoutRef.current)
+            if (timeoutRef.current !== undefined) {
+                globalThis.clearTimeout(timeoutRef.current)
+            }
         }
 
         cleanup()
@@ -38,7 +40,7 @@ export function useDelayedValue<T>(value: T, delay: number = DEFAULT_DELAY, imme
 
             // Pokud je to rychlá změna (během krátkého časového okna), použij zpoždění
             if (timeSinceLastChange < RAPID_CHANGE_THRESHOLD) {
-                timeoutRef.current = window.setTimeout(() => {
+                timeoutRef.current = globalThis.setTimeout(() => {
                     setDelayedValue(value)
                     lastChangeTimeRef.current = Date.now()
                 }, delay)

@@ -1,23 +1,24 @@
 import { QueryClientProvider } from "@tanstack/react-query"
+import { RouterProvider } from "@tanstack/react-router"
 import { render, screen } from "@testing-library/react"
 import * as React from "react"
-import { Router } from "react-router-dom"
 
 import MockContexts from "../../__mocks__/MockContexts"
 import { createQueryClient } from "../api/queryClient"
-import history from "../global/history"
+import { createTestRouter } from "../testUtils/createTestRouter"
 
 import DashboardDay from "./DashboardDay"
 
 test("dashboard day shows lectures for a specific date", async () => {
     const queryClient = createQueryClient()
+    const router = createTestRouter(
+        <MockContexts>
+            <DashboardDay date="2020-09-09" withoutWaiting={true} />
+        </MockContexts>,
+    )
     render(
         <QueryClientProvider client={queryClient}>
-            <Router history={history}>
-                <MockContexts>
-                    <DashboardDay date="2020-09-09" withoutWaiting={true} />
-                </MockContexts>
-            </Router>
+            <RouterProvider router={router} />
         </QueryClientProvider>,
     )
     await screen.findAllByTestId("loading")

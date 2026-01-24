@@ -136,9 +136,9 @@ technologiích:
 -   [React 19](https://react.dev/),
 -   [TypeScript 5](https://www.typescriptlang.org/),
 -   [Bootstrap 5](https://getbootstrap.com/) (s [Reactstrap 9](https://reactstrap.github.io/)em),
--   [React Router 5](https://reacttraining.com/react-router/),
 -   [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package
     Registry),
+-   [Tanstack Router 5](https://tanstack.com/router/),
 -   [Tanstack Query (dříve React Query)](https://tanstack.com/query/)
 -   [a další...](/frontend/package.json)
 

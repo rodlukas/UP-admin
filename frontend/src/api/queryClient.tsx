@@ -7,7 +7,6 @@ import APP_URLS from "../APP_URLS"
 import Token from "../auth/Token"
 import Notification from "../components/Notification"
 import { NOTIFY_TEXT } from "../global/constants"
-import history from "../global/history"
 
 import { parseDjangoError } from "./parseDjangoError"
 
@@ -76,7 +75,18 @@ function logErrorToConsole(
 /**
  * Zpracuje chybu - zobrazí notifikaci a případně přesměruje uživatele.
  */
-function handleError(axiosError: AxiosError): void {
+type NavigateFn = (path: string) => void
+
+function redirectTo(getNavigate: (() => NavigateFn | undefined) | undefined, path: string): void {
+    const navigate = getNavigate?.()
+    if (navigate) {
+        navigate(path)
+    } else {
+        globalThis.location.assign(path)
+    }
+}
+
+function handleError(axiosError: AxiosError, getNavigate?: () => NavigateFn | undefined): void {
     const errorResponse = axiosError.response
     const djangoError = parseDjangoError(axiosError)
 
@@ -97,15 +107,15 @@ function handleError(axiosError: AxiosError): void {
             // zpatky na puvodni stranku, tedy dojde k zacykleni. Odstranenim tokenu neschopnost frontendu
             // korektne validovat token vyresime.
             Token.remove()
-            history.push(APP_URLS.prihlasit.url)
+            redirectTo(getNavigate, APP_URLS.prihlasit.url)
         } else if (errorResponse.status === 404) {
-            history.push(APP_URLS.nenalezeno.url)
+            redirectTo(getNavigate, APP_URLS.nenalezeno.url)
         }
     }
 }
 
 /** Vytvoří QueryClient s globálním error handlingem a automatickou invalidací. */
-export function createQueryClient(): QueryClient {
+export function createQueryClient(getNavigate?: () => NavigateFn | undefined): QueryClient {
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
@@ -119,12 +129,12 @@ export function createQueryClient(): QueryClient {
                 if (query.meta?.skipErrorNotification) {
                     return
                 }
-                handleError(error as AxiosError)
+                handleError(error as AxiosError, getNavigate)
             },
         }),
         mutationCache: new MutationCache({
             onError: (error: unknown) => {
-                handleError(error as AxiosError)
+                handleError(error as AxiosError, getNavigate)
             },
             onSuccess: (_data, _variables, _context, mutation) => {
                 // Invalidujeme všechny queries po každé úspěšné mutaci.

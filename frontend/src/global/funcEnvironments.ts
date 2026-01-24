@@ -1,6 +1,6 @@
 /** Vrátí název domény třetího řádu (subdomény) aktuální aplikace. */
 export function getAppUrl(): string {
-    return window.location.hostname.split(".")[0]
+    return (globalThis.location?.hostname ?? "").split(".")[0]
 }
 
 /** Zjistí, jestli aktuální aplikace běží na testing prostředí. */

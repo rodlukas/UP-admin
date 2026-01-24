@@ -6,12 +6,8 @@ import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
 import { toISODate } from "../global/funcDateTime"
-import { CustomRouteComponentProps } from "../types/types"
-
-type Props = CustomRouteComponentProps
-
 /** Stránka s hlavním přehledem - dnešní lekce a banka. */
-const Dashboard: React.FC<Props> = () => {
+const Dashboard: React.FC = () => {
     return (
         <Container>
             <Row className="justify-content-center">

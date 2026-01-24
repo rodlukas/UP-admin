@@ -288,7 +288,7 @@ const FormSettings: React.FC<Props> = (props) => {
                                         onClick={(): void => {
                                             if (
                                                 isObject(props.object) &&
-                                                window.confirm(
+                                                globalThis.confirm(
                                                     `Opravdu chcete smazat ${type} ${name}?`,
                                                 )
                                             ) {
