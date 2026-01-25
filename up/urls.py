@@ -7,11 +7,29 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from django.views.generic.base import RedirectView
+from copy import deepcopy
+
+from django.utils.csp import CSP
+from django.views.decorators.csp import csp_override
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from csp.decorators import csp_update
 
 # CSP pro cdn.jsdelivr.net (openapi docs)
 CSPURL_JSDELIVR_NET = "https://cdn.jsdelivr.net"
+
+swagger_csp = deepcopy(settings.SECURE_CSP)
+swagger_csp["script-src"] = [
+    *swagger_csp.get("script-src", []),
+    CSPURL_JSDELIVR_NET,
+    CSP.UNSAFE_INLINE,
+]
+swagger_csp["connect-src"] = [
+    *swagger_csp.get("connect-src", []),
+    CSPURL_JSDELIVR_NET,
+]
+swagger_csp["style-src"] = [
+    *swagger_csp.get("style-src", []),
+    CSPURL_JSDELIVR_NET,
+]
 
 
 urlpatterns = [
@@ -24,17 +42,7 @@ urlpatterns = [
     # Swagger UI dokumentace API (CSP úprava jen pro tuto view)
     path(
         "api/docs/",
-        csp_update(
-            script_src=(
-                CSPURL_JSDELIVR_NET, "'unsafe-inline'",
-            ),
-            connect_src=(
-                CSPURL_JSDELIVR_NET,
-            ),
-            style_src=(
-                CSPURL_JSDELIVR_NET,
-            ),
-        )(SpectacularSwaggerView.as_view(url_name="schema")),
+        csp_override(swagger_csp)(SpectacularSwaggerView.as_view(url_name="schema")),
         name="swagger-ui",
     ),
     # vychozi stranka (serviruje React aplikaci)
