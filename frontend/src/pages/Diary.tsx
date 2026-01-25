@@ -226,11 +226,14 @@ const Diary: React.FC = () => {
             <Container fluid>
                 <Row>
                     {/* je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md */}
-                    {week.map((day) => (
-                        <Col key={day} md="6" lg="" className={styles.diaryDay}>
+                    {week.map((day) => {
+                        const weekdayKey = new Date(day).getDay()
+                        return (
+                            <Col key={weekdayKey} md="6" lg="" className={styles.diaryDay}>
                             <DashboardDay date={day} />
-                        </Col>
-                    ))}
+                            </Col>
+                        )
+                    })}
                 </Row>
             </Container>
         </>
