@@ -8,6 +8,7 @@ import sys
 from datetime import timedelta
 
 import environ
+from django.utils.csp import CSP
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -145,7 +146,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "csp.middleware.CSPMiddleware",
+    "django.middleware.csp.ContentSecurityPolicyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -224,24 +225,20 @@ CSPURL_GOOGLE_FONTS_FONT = "fonts.gstatic.com"
 # CSP pro Sentry
 CSPURL_SENTRY = "https://*.sentry.io"
 
-CSP_SELF = "'self'"
-CSP_NONE = "'none'"
-
 # CSP konfigurace
-CSP_DEFAULT_SRC = (CSP_NONE,)
-CSP_STYLE_SRC = (
-    CSP_SELF,
-    "'unsafe-inline'",
-    CSPURL_GOOGLE_FONTS_STYLE,
-)  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
-CSP_CONNECT_SRC = (CSP_SELF, CSPURL_SENTRY)
-CSP_SCRIPT_SRC = (
-    CSP_SELF,
-    CSPURL_SENTRY,
-)
-CSP_FONT_SRC = (CSP_SELF, CSPURL_GOOGLE_FONTS_FONT)
-CSP_IMG_SRC = (CSP_SELF, "data:")
-CSP_FRAME_ANCESTORS = (CSP_NONE,)
-CSP_FORM_ACTION = (CSP_NONE,)
-CSP_BASE_URI = (CSP_NONE,)
-CSP_MANIFEST_SRC = (CSP_SELF,)  # site.webmanifest
+SECURE_CSP = {
+    "default-src": [CSP.NONE],
+    "style-src": [
+        CSP.SELF,
+        CSP.UNSAFE_INLINE,
+        CSPURL_GOOGLE_FONTS_STYLE,
+    ],  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
+    "connect-src": [CSP.SELF, CSPURL_SENTRY],
+    "script-src": [CSP.SELF, CSPURL_SENTRY],
+    "font-src": [CSP.SELF, CSPURL_GOOGLE_FONTS_FONT],
+    "img-src": [CSP.SELF, "data:"],
+    "frame-ancestors": [CSP.NONE],
+    "form-action": [CSP.NONE],
+    "base-uri": [CSP.NONE],
+    "manifest-src": [CSP.SELF],  # site.webmanifest
+}
