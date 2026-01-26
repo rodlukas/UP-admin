@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b506b85bfd837af6a08aeb22dbc76c1575e70b35deb9c73dd7bbd465593956b7"
+            "sha256": "fbf8e00f7eb2cc00145956fb4fc339a9a959c06cdf6e1434d5fda885b59a0d04"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -583,12 +583,12 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:bf2e513eb8144c3298a3bd28ab1a5edb739131ec5c22e045ff93cd7f5319703a",
-                "sha256:fc30c51cbcb8199a219c12cc9c281b5925a4978d212f84229c909636d9f6984e"
+                "sha256:8b0e9d10c784bf7d262c4e5ec5d4ec94127ce206e8738f29a437945fbc219b70",
+                "sha256:95b30ddfb717250edb492926c92b5221f7ef3fbcc2b07579bcd4a27da21d0173"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==80.10.1"
+            "version": "==80.10.2"
         },
         "sqlparse": {
             "hashes": [
@@ -800,19 +800,19 @@
         },
         "cucumber-expressions": {
             "hashes": [
-                "sha256:761b833499c735af25691b294f1a62fb29b52af4cc498a6f77f4fd52ed0715ba",
-                "sha256:b6f31c15def3821ed8313d7c59c3ccd6e5b607ee65b86ad33140a43e8858d1f2"
+                "sha256:8eb5ae46dd03dd37fec1163ace1510529501d7d1868ff372c1ab2cd5aa4543a8",
+                "sha256:f452e6c73258c1677043ad67ad5f538c87284d6b502004720510fb6b7452d9c5"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==18.1.0"
+            "version": "==19.0.0"
         },
         "cucumber-tag-expressions": {
             "hashes": [
-                "sha256:1de26f183b1e8748e881189edd4bcdf4a80d7ed1011ad7b38cf141fcdcc51094",
-                "sha256:acc56dd19b7bd0b931fc7b124ebbb6737def0775be41186ace7f5e566338ce7d"
+                "sha256:36f3eacf49ad24feeb60218db4c51ab114853b3f022f4f3ad790c32b7597faee",
+                "sha256:731302c12bd602309596b35e733c1021b517d4948329803c23ca026e26ef4e99"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==8.1.0"
+            "version": "==9.0.0"
         },
         "django": {
             "hashes": [
