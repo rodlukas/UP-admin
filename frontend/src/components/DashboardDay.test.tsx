@@ -11,7 +11,7 @@ import DashboardDay from "./DashboardDay"
 
 test("dashboard day shows lectures for a specific date", async () => {
     const queryClient = createQueryClient()
-    const router = createTestRouter(
+    const router = await createTestRouter(
         <MockContexts>
             <DashboardDay date="2020-09-09" withoutWaiting={true} />
         </MockContexts>,

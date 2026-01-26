@@ -11,7 +11,7 @@ type Options = {
     path?: string
 }
 
-export function createTestRouter(ui: React.ReactElement, options: Options = {}) {
+export async function createTestRouter(ui: React.ReactElement, options: Options = {}) {
     const path = options.path ?? "/"
     const rootRoute = createRootRoute({
         component: () => <Outlet />,
@@ -22,10 +22,12 @@ export function createTestRouter(ui: React.ReactElement, options: Options = {}) 
         component: () => ui,
     })
     const routeTree = rootRoute.addChildren([indexRoute])
-    return createRouter({
+    const router = createRouter({
         routeTree,
         history: createMemoryHistory({
             initialEntries: [path],
         }),
     })
+    await router.load()
+    return router
 }
