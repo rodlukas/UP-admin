@@ -13,7 +13,7 @@ djangorestframework-simplejwt = "~=5.5.1"
 gunicorn = "~=24.1.1"
 "psycopg2-binary" = "~=2.9.10"
 requests = "~=2.32.5"
-sentry-sdk = {extras = ["django"], version = "~=2.50.0"}
+sentry-sdk = {extras = ["django"], version = "~=2.51.0"}
 setuptools = "*"
 uritemplate = "~=4.2.0"
 vulture = "~=2.14.0"
