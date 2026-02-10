@@ -89,7 +89,7 @@
     "dependencies": {
         "@babel/runtime": "^7.28.6",
         "@fortawesome/fontawesome-svg-core": "~1.2.36",
-        "@fortawesome/free-brands-svg-icons": "~5.15.4",
+        "@fortawesome/free-brands-svg-icons": "~7.1.0",
         "@fortawesome/react-fontawesome": "~0.2.6",
         "@rodlukas/fontawesome-pro-solid-svg-icons": "^5.15.2",
         "@sentry/browser": "^10.38.0",
