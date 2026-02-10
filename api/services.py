@@ -57,7 +57,8 @@ class Bank:
         except requests.exceptions.Timeout:
             return self.process_error(503)
         except requests.exceptions.RequestException as e:
-            return self.process_error(e.response.status_code)
+            status_code = getattr(e.response, "status_code", status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return self.process_error(status_code)
         else:
             return self.process_data(input_data)
 
