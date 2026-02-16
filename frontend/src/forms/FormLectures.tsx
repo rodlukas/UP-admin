@@ -558,7 +558,9 @@ const FormLectures: React.FC<Props> = (props) => {
                     <Loading />
                 ) : (
                     <>
-                        <FormGroup row className="align-items-center">
+                        <FormGroup
+                            row
+                            className={classNames("align-items-center", styles.formGroup)}>
                             <Col sm={4}>
                                 {isClient(props.object) && (
                                     <>
@@ -640,7 +642,9 @@ const FormLectures: React.FC<Props> = (props) => {
                                 </UncontrolledTooltipWrapper>
                             </Col>
                         </FormGroup>
-                        <FormGroup row className="align-items-center">
+                        <FormGroup
+                            row
+                            className={classNames("align-items-center", styles.formGroup)}>
                             <Col sm={4}>
                                 <Input
                                     type="checkbox"
@@ -723,7 +727,9 @@ const FormLectures: React.FC<Props> = (props) => {
                                 {isClient(props.object) && !props.object.active && (
                                     <Alert color="warning">{TEXTS.WARNING_INACTIVE_CLIENT}</Alert>
                                 )}
-                                <FormGroup row className="align-items-center">
+                                <FormGroup
+                                    row
+                                    className={classNames("align-items-center", styles.formGroup)}>
                                     <Col sm={4}>
                                         <InputGroup>
                                             <InputGroupText>
@@ -818,7 +824,12 @@ const FormLectures: React.FC<Props> = (props) => {
                         {isLecture(props.lecture) && (
                             <>
                                 <hr />
-                                <FormGroup row className="align-items-center">
+                                <FormGroup
+                                    row
+                                    className={classNames(
+                                        "align-items-center",
+                                        styles.formGroup,
+                                    )}>
                                     <Label sm={3} className="text-muted">
                                         Smazání
                                     </Label>

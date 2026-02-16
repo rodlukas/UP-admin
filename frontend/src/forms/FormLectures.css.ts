@@ -6,7 +6,9 @@ export const prepaidLectureCnt = style({
     width: "5rem",
 })
 
-globalStyle(".form-group > div:not(:last-child)", {
+export const formGroup = style({})
+
+globalStyle(`${formGroup} > div:not(:last-child)`, {
     "@media": {
         "(max-width: 575.98px)": {
             marginBottom: "1rem",
