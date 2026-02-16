@@ -826,10 +826,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                 <hr />
                                 <FormGroup
                                     row
-                                    className={classNames(
-                                        "align-items-center",
-                                        styles.formGroup,
-                                    )}>
+                                    className={classNames("align-items-center", styles.formGroup)}>
                                     <Label sm={3} className="text-muted">
                                         Smazání
                                     </Label>
