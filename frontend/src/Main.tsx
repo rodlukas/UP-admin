@@ -52,6 +52,8 @@ const Main: React.FC = () => {
 
     React.useEffect(() => {
         resetSearch()
+        // pri odchodu z vyhledavani zavreme menu
+        setIsMenuOpened(false)
     }, [locationPathname])
 
     React.useEffect(() => {
