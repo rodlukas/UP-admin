@@ -41,7 +41,7 @@
         "@types/jest": "^30.0.0",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "@typescript-eslint/eslint-plugin": "^8.55.0",
+        "@typescript-eslint/eslint-plugin": "^8.56.0",
         "@typescript-eslint/parser": "^8.55.0",
         "@vanilla-extract/css": "^1.18.0",
         "@vanilla-extract/dynamic": "^2.1.5",
