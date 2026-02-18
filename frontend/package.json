@@ -64,7 +64,7 @@
         "eslint-plugin-prettier": "^5.5.5",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.0.1",
-        "eslint-plugin-testing-library": "^7.15.4",
+        "eslint-plugin-testing-library": "^7.16.0",
         "eslint-webpack-plugin": "^5.0.2",
         "globals": "^17.3.0",
         "html-webpack-harddisk-plugin": "^2.0.0",
