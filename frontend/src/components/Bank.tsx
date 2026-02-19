@@ -103,7 +103,7 @@ const Bank: React.FC = () => {
             const targetAccountOwnerObj = transaction.column10
             return (
                 <tr key={id} className={classNames({ "table-warning": isToday(date) })}>
-                    <td colSpan={duplicates ? 2 : undefined} data-gdpr>
+                    <td colSpan={duplicates ? 2 : undefined} data-gdpr data-qa="bank_account_owner">
                         {commentObj?.value ??
                             (targetAccountOwnerObj?.value ? (
                                 `Vlastník protiúčtu: ${targetAccountOwnerObj.value}`
@@ -111,7 +111,11 @@ const Bank: React.FC = () => {
                                 <NoInfo />
                             ))}
                     </td>
-                    {!duplicates && <td data-gdpr>{messageObj ? messageObj.value : <NoInfo />}</td>}
+                    {!duplicates && (
+                        <td data-gdpr data-qa="bank_transaction_message">
+                            {messageObj ? messageObj.value : <NoInfo />}
+                        </td>
+                    )}
                     <td className="text-end text-nowrap" style={{ minWidth: "6em" }}>
                         {prettyDateWithDayYearIfDiff(date, true)}
                     </td>
