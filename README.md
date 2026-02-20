@@ -43,21 +43,21 @@
 
 ## Table of Contents
 
--   [Basic description of the app](#basic-description-of-the-app)
-    -   [Key features](#key-features)
-    -   [Used technologies](#used-technologies)
-        -   [Backend](#backend)
-        -   [Frontend](#frontend)
-    -   [Deployed apps and tools](#deployed-apps-and-tools)
--   [Repository structure](#repository-structure)
--   [Run the app](#run-the-app)
-    -   [Requirements](#requirements)
-    -   [Installation & Run](#installation-&-run)
-    -   [Advanced installation without Docker Compose](#advanced-installation-without-docker-compose)
-    -   [Testing](#testing)
--   [Screenshots](#screenshots)
--   [History](#history)
--   [License](#license)
+- [Basic description of the app](#basic-description-of-the-app)
+    - [Key features](#key-features)
+    - [Used technologies](#used-technologies)
+        - [Backend](#backend)
+        - [Frontend](#frontend)
+    - [Deployed apps and tools](#deployed-apps-and-tools)
+- [Repository structure](#repository-structure)
+- [Run the app](#run-the-app)
+    - [Requirements](#requirements)
+    - [Installation & Run](#installation-&-run)
+    - [Advanced installation without Docker Compose](#advanced-installation-without-docker-compose)
+    - [Testing](#testing)
+- [Screenshots](#screenshots)
+- [History](#history)
+- [License](#license)
 
 ## Basic description of this app
 
@@ -79,26 +79,26 @@ course, the development and maintenance of this application continues.
 In the following list there are the most important features offered by this app _(the list is not
 exhaustive)_:
 
--   **storing information about clients and groups of clients attending the lectures of courses**,
--   **storing information about lectures of the clients and groups including the prepaid ones –
-    attendance state, payment, date, time, cancellation, notes**,
--   **keeping track of applicants for the courses**,
--   **3 views for the lectures: in a card of the client/group, diary and on the main page in today's
-    overview**,
--   identifying time conflicting lectures,
--   automatic lecture cancellation for lectures without attendants,
--   automatic creation of the prepaid alternative lecture in case of the excuse or cancellation by a
-    lecturer,
--   notification of the next lecture payment,
--   lecture number computation with respect to clients' attendances,
--   searching for clients (fuzzy searching),
--   course and attendance state configuration including e.g. an intuitive course color selection,
--   integration with the API of _Fio bank_ – on the main page there is a pretty overview of the
-    latest bank transactions,
--   automatic estimation of the course, date and time for newly added lectures,
--   respecting and checking all the restrictions and limitations given by the domain (e.g.
-    duplications),
--   keeping records of active and inactive clients and groups.
+- **storing information about clients and groups of clients attending the lectures of courses**,
+- **storing information about lectures of the clients and groups including the prepaid ones –
+  attendance state, payment, date, time, cancellation, notes**,
+- **keeping track of applicants for the courses**,
+- **3 views for the lectures: in a card of the client/group, diary and on the main page in today's
+  overview**,
+- identifying time conflicting lectures,
+- automatic lecture cancellation for lectures without attendants,
+- automatic creation of the prepaid alternative lecture in case of the excuse or cancellation by a
+  lecturer,
+- notification of the next lecture payment,
+- lecture number computation with respect to clients' attendances,
+- searching for clients (fuzzy searching),
+- course and attendance state configuration including e.g. an intuitive course color selection,
+- integration with the API of _Fio bank_ – on the main page there is a pretty overview of the latest
+  bank transactions,
+- automatic estimation of the course, date and time for newly added lectures,
+- respecting and checking all the restrictions and limitations given by the domain (e.g.
+  duplications),
+- keeping records of active and inactive clients and groups.
 
 ### Used technologies
 
@@ -113,12 +113,12 @@ database.
 
 Includes all the logic and exposes a **REST API** for a client, built on these technologies:
 
--   [Python 3.12](https://www.python.org/),
--   [Django 5](https://www.djangoproject.com/),
--   [Django REST framework 3](https://www.django-rest-framework.org/),
--   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
--   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
--   [and more...](/Pipfile)
+- [Python 3.12](https://www.python.org/),
+- [Django 5](https://www.djangoproject.com/),
+- [Django REST framework 3](https://www.django-rest-framework.org/),
+- [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
+- [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
+- [and more...](/Pipfile)
 
 Django complex SQL queries are highly **optimized** (multiple times speed increase) (see articles
 [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/),
@@ -138,26 +138,26 @@ Responsive JS _([TypeScript](https://www.typescriptlang.org/))_ web app, specifi
 ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) built on these
 technologies:
 
--   [React 19](https://react.dev/),
--   [TypeScript 5](https://www.typescriptlang.org/),
--   [Bootstrap 5](https://getbootstrap.com/) (with [Reactstrap 9](https://reactstrap.github.io/)),
--   [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry),
--   [Tanstack Router](https://tanstack.com/router/),
--   [Tanstack Query (formerly React Query)](https://tanstack.com/query/)
--   [a další...](/frontend/package.json)
+- [React 19](https://react.dev/),
+- [TypeScript 5](https://www.typescriptlang.org/),
+- [Bootstrap 5](https://getbootstrap.com/) (with [Reactstrap 9](https://reactstrap.github.io/)),
+- [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry),
+- [Tanstack Router](https://tanstack.com/router/),
+- [Tanstack Query (formerly React Query)](https://tanstack.com/query/)
+- [a další...](/frontend/package.json)
 
 Main tools used for the frontend development:
 
--   [Webpack 5](https://webpack.js.org/) with custom configuration (local and production) +
-    [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
--   [Typescript 5](https://www.typescriptlang.org/) – static type checking,
--   [vanilla-extract](https://vanilla-extract.style/) - type-safe static CSS,
--   [ESlint 9](https://eslint.org/) – linter for static code analysis,
--   [Babel 7](https://babeljs.io/),
--   [husky](https://github.com/typicode/husky) and
-    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (ESlint, Prettier)
--   and [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – for
-    [HMR](https://webpack.js.org/guides/hot-module-replacement/).
+- [Webpack 5](https://webpack.js.org/) with custom configuration (local and production) +
+  [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
+- [Typescript 5](https://www.typescriptlang.org/) – static type checking,
+- [vanilla-extract](https://vanilla-extract.style/) - type-safe static CSS,
+- [ESlint 9](https://eslint.org/) – linter for static code analysis,
+- [Babel 7](https://babeljs.io/),
+- [husky](https://github.com/typicode/husky) and
+  [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (ESlint, Prettier)
+- and [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – for
+  [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 The app is **resilient against JS errors** thanks to
 **[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**.
@@ -178,54 +178,54 @@ title and color (except for the production).
 
 > **List of environments:**
 >
-> -   **local** – for local development,
-> -   **testing** – the same config as production, each commit is deployed here; debugging mode can
->     be turned on,
-> -   **production** – production version used by a customer, deploy of the releases,
+> - **local** – for local development,
+> - **testing** – the same config as production, each commit is deployed here; debugging mode can be
+>   turned on,
+> - **production** – production version used by a customer, deploy of the releases,
 
--   Deployed apps are **HTTPS-only** (+ advanced security protection, see
-    [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
-    [[2]](https://wsvincent.com/django-best-practices/)).
--   **Automatic code formatting** with **[Black](https://github.com/psf/black)** (Python) and
-    **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), both these
-    tools are integrated with an IDE and perform automatic enhancements.
--   **The apps are connected to more services:**
-    -   **CI and CD** is taken care of by [GitHub Actions](https://github.com/features/actions) –
-        automated build, testing and deployment to various environments, automated execution of
-        advanced scripts for e.g. automated app version addition to app, tokens handling, uploading
-        static assets (frontend) to GitHub Release Assets, integration of cloud service for
-        measuring code coverage.
-    -   **Automated continuous code analysis** including code quality measure, finding zero-days and
-        preventing critical vulnerabilities is taken care of by
-        [GitHub CodeQL](https://codeql.github.com/), [SonarCloud](https://sonarcloud.io/) and
-        [DeepScan](https://deepscan.io/).
-    -   **Error monitoring of backend and frontend** including triage, notifications and integration
-        with the repo is taken care of by [Sentry](https://sentry.io/) (sorted according to the
-        environment, active on deployed apps). Integrated ability to collect **additional feedback
-        upon hitting an error from user** thanks to the connection of Sentry and
-        [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
-    -   **User flow analysis** thanks to the integration of
-        [Google Analytics](https://analytics.google.com/) (via a module
-        [react-ga](https://github.com/react-ga/react-ga)).
--   [audit-ci](https://github.com/IBM/audit-ci) is used for automated security review of the
-    project's dependency tree on the CI.
--   Various **standards are enforced**: [PEP 8](https://pep8.org),
-    [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
--   Developed in IDE _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (takes
-    care of automatic import optimization, automatic code formatting etc.).
--   **Complex tests of the API and UI (E2E)** are an important part of the app, the tests are
-    automatically run on the CI and can also be run in the local environment. A part of the frontend
-    is moreover covered with **unit tests**.
-    -   E2E testing is built on a **BDD framework [behave](https://github.com/behave/behave)** –
-        testing scenarios are written using a natural language (Gherkin), each of the tests is run
-        according to them.
-    -   Unit tests are built on a **[Jest](https://jestjs.io/) framework** and tools like
-        **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
-        (simple React testing utilities),
-        [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers
-        for Jest) and [MSW](https://mswjs.io/) (API mocking).
-    -   **UI (E2E) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
-    -   **Details about the tests are available in [`tests/README.md` (CZ)](tests)**.
+- Deployed apps are **HTTPS-only** (+ advanced security protection, see
+  [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
+  [[2]](https://wsvincent.com/django-best-practices/)).
+- **Automatic code formatting** with **[Black](https://github.com/psf/black)** (Python) and
+  **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), both these
+  tools are integrated with an IDE and perform automatic enhancements.
+- **The apps are connected to more services:**
+    - **CI and CD** is taken care of by [GitHub Actions](https://github.com/features/actions) –
+      automated build, testing and deployment to various environments, automated execution of
+      advanced scripts for e.g. automated app version addition to app, tokens handling, uploading
+      static assets (frontend) to GitHub Release Assets, integration of cloud service for measuring
+      code coverage.
+    - **Automated continuous code analysis** including code quality measure, finding zero-days and
+      preventing critical vulnerabilities is taken care of by
+      [GitHub CodeQL](https://codeql.github.com/), [SonarCloud](https://sonarcloud.io/) and
+      [DeepScan](https://deepscan.io/).
+    - **Error monitoring of backend and frontend** including triage, notifications and integration
+      with the repo is taken care of by [Sentry](https://sentry.io/) (sorted according to the
+      environment, active on deployed apps). Integrated ability to collect **additional feedback
+      upon hitting an error from user** thanks to the connection of Sentry and
+      [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
+    - **User flow analysis** thanks to the integration of
+      [Google Analytics](https://analytics.google.com/) (via a module
+      [react-ga](https://github.com/react-ga/react-ga)).
+- [audit-ci](https://github.com/IBM/audit-ci) is used for automated security review of the project's
+  dependency tree on the CI.
+- Various **standards are enforced**: [PEP 8](https://pep8.org),
+  [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
+- Developed in IDE _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (takes
+  care of automatic import optimization, automatic code formatting etc.).
+- **Complex tests of the API and UI (E2E)** are an important part of the app, the tests are
+  automatically run on the CI and can also be run in the local environment. A part of the frontend
+  is moreover covered with **unit tests**.
+    - E2E testing is built on a **BDD framework [behave](https://github.com/behave/behave)** –
+      testing scenarios are written using a natural language (Gherkin), each of the tests is run
+      according to them.
+    - Unit tests are built on a **[Jest](https://jestjs.io/) framework** and tools like
+      **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
+      (simple React testing utilities),
+      [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers
+      for Jest) and [MSW](https://mswjs.io/) (API mocking).
+    - **UI (E2E) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
+    - **Details about the tests are available in [`tests/README.md` (CZ)](tests)**.
 
 ## Repository structure
 
@@ -257,8 +257,8 @@ run in this tutorial.
 
 Minimum requirements are:
 
--   [Git](https://git-scm.com/downloads),
--   [Docker Desktop with Compose V2](https://www.docker.com/products/docker-desktop/).
+- [Git](https://git-scm.com/downloads),
+- [Docker Desktop with Compose V2](https://www.docker.com/products/docker-desktop/).
 
 ### Installation & Run
 
@@ -407,29 +407,39 @@ The repo contains **complex tests of the API and UI (e2e)** – see the
 
 [![screenshot from the dashboard](docs/screenshots/dashboard.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png)
 
-### Client's / Group's card
+### Client / Group card
 
-[![screenshot from the client's card](docs/screenshots/card-client.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-client.png)
+[![screenshot from the client card](docs/screenshots/card-client.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-client.png)
 
-[![screenshot from the group's card](docs/screenshots/card-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-group.png)
+[![screenshot from the group card](docs/screenshots/card-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-group.png)
 
 ### Applications for courses
 
-[![screenshot from the applications for course](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png)
+[![screenshot of the applications for course](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png)
 
 ### Settings
 
-[![screenshot from the settings](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
+[![screenshot of the settings](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
+
+### Search
+
+[![screenshot of the search](docs/screenshots/search.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/search.png)
+
+### Lists
+
+[![screenshot of the list of groups](docs/screenshots/groups.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/groups.png)
+
+[![screenshot of the list of clients](docs/screenshots/clients.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/clients.png)
 
 ### Forms
 
-#### Edit of a group's lecture
+#### Edit group lecture
 
-[![screenshot from the settings](docs/screenshots/form-lecture.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-lecture.png)
+[![screenshot of the group lecture edit form](docs/screenshots/form-lecture.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-lecture.png)
 
-#### Edit of group's data
+#### Edit group
 
-[![screenshot from the settings](docs/screenshots/form-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png)
+[![screenshot of the group edit](docs/screenshots/form-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png)
 
 ## History
 
