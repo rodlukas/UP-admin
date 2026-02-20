@@ -94,7 +94,7 @@
         "@rodlukas/fontawesome-pro-solid-svg-icons": "^5.15.2",
         "@sentry/browser": "^10.39.0",
         "@tanstack/react-query": "^5.90.21",
-        "@tanstack/react-router-devtools": "^1.161.1",
+        "@tanstack/react-router-devtools": "^1.161.3",
         "axios": "^1.13.5",
         "bootstrap": "^5.3.8",
         "chroma-js": "^3.2.0",
