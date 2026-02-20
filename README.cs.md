@@ -43,21 +43,21 @@
 
 ## Obsah
 
--   [Základní informace o aplikaci](#základní-informace-o-aplikaci)
-    -   [Klíčové funkce](#klíčové-funkce)
-    -   [Použité technologie](#použité-technologie)
-        -   [Backend](#backend)
-        -   [Frontend](#frontend)
-    -   [Nasazené aplikace a nástroje](#nasazené-aplikace-a-nástroje)
--   [Struktura repozitáře](#struktura-repozitáře)
--   [Spuštění aplikace](#spuštění-aplikace)
-    -   [Požadavky](#požadavky)
-    -   [Instalace & spuštění](#instalace-&-spuštění)
-    -   [Pokročilá instalace bez Docker Compose](#pokročilá-instalace-bez-docker-compose)
-    -   [Testování](#testování)
--   [Screenshoty](#screenshoty)
--   [Historie](#historie)
--   [Licence](#licence)
+- [Základní informace o aplikaci](#základní-informace-o-aplikaci)
+    - [Klíčové funkce](#klíčové-funkce)
+    - [Použité technologie](#použité-technologie)
+        - [Backend](#backend)
+        - [Frontend](#frontend)
+    - [Nasazené aplikace a nástroje](#nasazené-aplikace-a-nástroje)
+- [Struktura repozitáře](#struktura-repozitáře)
+- [Spuštění aplikace](#spuštění-aplikace)
+    - [Požadavky](#požadavky)
+    - [Instalace & spuštění](#instalace-&-spuštění)
+    - [Pokročilá instalace bez Docker Compose](#pokročilá-instalace-bez-docker-compose)
+    - [Testování](#testování)
+- [Screenshoty](#screenshoty)
+- [Historie](#historie)
+- [Licence](#licence)
 
 ## Základní informace o této aplikaci
 
@@ -77,23 +77,23 @@ nadále.
 
 V následujícím seznamu jsou nejdůležitější funkce, která aplikace poskytuje (výčet není konečný):
 
--   **evidence klientů a skupin klientů docházejících na lekce kurzů**,
--   **evidence lekcí klientů a skupin včetně předplacených – stav účasti, platba, datum, čas,
-    zrušení, poznámky**,
--   **evidence zájemců o kurzy**,
--   **zobrazení lekcí ve 3 formách: v kartě klienta/skupiny, v diáři a na hlavní stránce v přehledu
-    pro dnešní den**,
--   kontrola časových konfliktů lekcí,
--   automatické rušení lekcí když nikdo nemá přijít,
--   automatické vytváření předplacených náhrad lekcí při omluvě předem/zrušení ze strany lektorky,
--   upozornění, že má klient příště platit,
--   výpočet pořadového čísla lekce s ohledem na účast klientů,
--   vyhledávání klientů (fuzzy vyhledávání),
--   konfigurace kurzů a stavů účasti včetně např. intuitivního nastavení zvolené barvy pro kurz,
--   propojení s API _Fio banky_ – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu,
--   automatický odhad kurzu, data a času pro nově přidávané lekce,
--   respektování a kontrola všech omezení daných danou doménou (např. duplicity),
--   vedení aktivních a neaktivních klientů a skupin.
+- **evidence klientů a skupin klientů docházejících na lekce kurzů**,
+- **evidence lekcí klientů a skupin včetně předplacených – stav účasti, platba, datum, čas, zrušení,
+  poznámky**,
+- **evidence zájemců o kurzy**,
+- **zobrazení lekcí ve 3 formách: v kartě klienta/skupiny, v diáři a na hlavní stránce v přehledu
+  pro dnešní den**,
+- kontrola časových konfliktů lekcí,
+- automatické rušení lekcí když nikdo nemá přijít,
+- automatické vytváření předplacených náhrad lekcí při omluvě předem/zrušení ze strany lektorky,
+- upozornění, že má klient příště platit,
+- výpočet pořadového čísla lekce s ohledem na účast klientů,
+- vyhledávání klientů (fuzzy vyhledávání),
+- konfigurace kurzů a stavů účasti včetně např. intuitivního nastavení zvolené barvy pro kurz,
+- propojení s API _Fio banky_ – na hlavní stránce se přehledně zobrazují nedávné transakce z účtu,
+- automatický odhad kurzu, data a času pro nově přidávané lekce,
+- respektování a kontrola všech omezení daných danou doménou (např. duplicity),
+- vedení aktivních a neaktivních klientů a skupin.
 
 ### Použité technologie
 
@@ -108,12 +108,12 @@ Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **R
 
 Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
 
--   [Python 3.12](https://www.python.org/),
--   [Django 5](https://www.djangoproject.com/),
--   [Django REST framework 3](https://www.django-rest-framework.org/),
--   [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
--   [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
--   [a další...](/Pipfile)
+- [Python 3.12](https://www.python.org/),
+- [Django 5](https://www.djangoproject.com/),
+- [Django REST framework 3](https://www.django-rest-framework.org/),
+- [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
+- [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
+- [a další...](/Pipfile)
 
 V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplexní SQL dotazy** (viz
 články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/),
@@ -133,27 +133,26 @@ Responzivní JS _([TypeScript](https://www.typescriptlang.org/))_ webová aplika
 ([Single-Page-App](https://en.wikipedia.org/wiki/Single-page_application)) postavená na těchto
 technologiích:
 
--   [React 19](https://react.dev/),
--   [TypeScript 5](https://www.typescriptlang.org/),
--   [Bootstrap 5](https://getbootstrap.com/) (s [Reactstrap 9](https://reactstrap.github.io/)em),
--   [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package
-    Registry),
--   [Tanstack Router 5](https://tanstack.com/router/),
--   [Tanstack Query (dříve React Query)](https://tanstack.com/query/)
--   [a další...](/frontend/package.json)
+- [React 19](https://react.dev/),
+- [TypeScript 5](https://www.typescriptlang.org/),
+- [Bootstrap 5](https://getbootstrap.com/) (s [Reactstrap 9](https://reactstrap.github.io/)em),
+- [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package Registry),
+- [Tanstack Router 5](https://tanstack.com/router/),
+- [Tanstack Query (dříve React Query)](https://tanstack.com/query/)
+- [a další...](/frontend/package.json)
 
 Vývoj frontendu je postaven především na:
 
--   [Webpack 5](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
-    [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
--   [Typescript 5](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
--   [vanilla-extract](https://vanilla-extract.style/) - typově bezpečná statická CSS,
--   [ESlint 9](https://eslint.org/) – linter pro statickou analýzu kódu,
--   [Babel 7](https://babeljs.io/),
--   [husky](https://github.com/typicode/husky) a
-    [lint-staged](https://github.com/okonet/lint-staged) – pre-commit kontroly (ESlint, Prettier)
--   a [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – pro
-    [HMR](https://webpack.js.org/guides/hot-module-replacement/).
+- [Webpack 5](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
+  [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
+- [Typescript 5](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
+- [vanilla-extract](https://vanilla-extract.style/) - typově bezpečná statická CSS,
+- [ESlint 9](https://eslint.org/) – linter pro statickou analýzu kódu,
+- [Babel 7](https://babeljs.io/),
+- [husky](https://github.com/typicode/husky) a [lint-staged](https://github.com/okonet/lint-staged)
+  – pre-commit kontroly (ESlint, Prettier)
+- a [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – pro
+  [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 Aplikace je **odolná proti pádům JS** díky
 **[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**. Pro **zrychlení
@@ -174,54 +173,53 @@ barevným štítkem v horním menu (kromě produkce).
 
 > **Seznam prostředí:**
 >
-> -   **lokální** – pro lokální vývoj,
-> -   **testing** – stejná konfigurace jako na produkci, deploy při každém commitu; umožňuje zapnout
->     debugování,
-> -   **produkce** – produkční verze používaná zákazníkem, deploy při release,
+> - **lokální** – pro lokální vývoj,
+> - **testing** – stejná konfigurace jako na produkci, deploy při každém commitu; umožňuje zapnout
+>   debugování,
+> - **produkce** – produkční verze používaná zákazníkem, deploy při release,
 
--   Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz
-    [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
-    [[2]](https://wsvincent.com/django-best-practices/)).
--   Pro **automatické formátování kódů** se používá **[Black](https://github.com/psf/black)**
-    (Python) a **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD),
-    oba nástroje jsou napojené na IDE a provádějí automatické úpravy.
--   **Aplikace jsou napojené na další služby:**
-    -   **CI a CD** má na starost [GitHub Actions](https://github.com/features/actions) –
-        automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné
-        pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny,
-        nahrání sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet
-        pokrytí kódu a další.
-    -   **Automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání
-        potenciálních chyb a zranitelností má na starost
-        [GitHub CodeQL](https://codeql.github.com/), [SonarCloud](https://sonarcloud.io/) a
-        [DeepScan](https://deepscan.io/).
-    -   **Odchytávání chyb na backendu i frontendu** včetně následné evidence, notifikací a
-        propojení s repozitářem zařizuje [Sentry](https://sentry.io/) (tříděné podle typu prostředí,
-        aktivní na všech nasazených aplikacích). Při chybě na frontendu je možné poslat **zpětnou
-        vazbu vázanou ke konkrétní chybě** díky propojení Sentry a
-        [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
-    -   **Sledování toku uživatelů** umožňuje napojení na
-        [Google Analytics](https://analytics.google.com/) (přes modul
-        [react-ga](https://github.com/react-ga/react-ga)).
--   [audit-ci](https://github.com/IBM/audit-ci) se používá pro automatizovanou kontrolu zranitelných
-    závislostí projektu na CI.
--   Aplikace **respektuje standardy** [PEP 8](https://pep8.org),
-    [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
--   Kompletní vývoj aplikace probíhá v IDE
-    _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (řeší automatickou
-    optimalizaci importů, automatické formátování kódů apod.).
--   **Rozsáhlé testy API i UI (E2E)** jsou důležitou částí aplikace, automaticky se spouští na CI a
-    lze je spustit i na lokálním prostředí. Část frontendu je navíc pokryta **unit testy**.
-    -   E2E testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)**
-        – testové scénáře jsou psány přirozeným jazykem (Gherkin), podle nich se spouští konkrétní
-        testy.
-    -   Unit testy jsou postaveny na **frameworku [Jest](https://jestjs.io/)** a nástrojích
-        **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
-        (jednoduché utility pro testování Reactu),
-        [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers
-        pro Jest) a [MSW](https://mswjs.io/) (mockování API).
-    -   Pro **testování UI (E2E)** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
-    -   **Podrobné informace o testech jsou v [`tests/README.md`](tests)**.
+- Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz
+  [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
+  [[2]](https://wsvincent.com/django-best-practices/)).
+- Pro **automatické formátování kódů** se používá **[Black](https://github.com/psf/black)** (Python)
+  a **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), oba
+  nástroje jsou napojené na IDE a provádějí automatické úpravy.
+- **Aplikace jsou napojené na další služby:**
+    - **CI a CD** má na starost [GitHub Actions](https://github.com/features/actions) –
+      automatizovaný build, testování i nasazení na různá prostředí, automaticky prováděné
+      pokročilejší skripty např. pro automatické zapsání verze do aplikace, práci s tokeny, nahrání
+      sestaveného frontendu do assetů k releasu na GitHubu, napojení na služby pro výpočet pokrytí
+      kódu a další.
+    - **Automatickou průběžnou analýzu a kontrolu kódu** včetně hodnocení kvality kódu, hledání
+      potenciálních chyb a zranitelností má na starost [GitHub CodeQL](https://codeql.github.com/),
+      [SonarCloud](https://sonarcloud.io/) a [DeepScan](https://deepscan.io/).
+    - **Odchytávání chyb na backendu i frontendu** včetně následné evidence, notifikací a propojení
+      s repozitářem zařizuje [Sentry](https://sentry.io/) (tříděné podle typu prostředí, aktivní na
+      všech nasazených aplikacích). Při chybě na frontendu je možné poslat **zpětnou vazbu vázanou
+      ke konkrétní chybě** díky propojení Sentry a
+      [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
+    - **Sledování toku uživatelů** umožňuje napojení na
+      [Google Analytics](https://analytics.google.com/) (přes modul
+      [react-ga](https://github.com/react-ga/react-ga)).
+- [audit-ci](https://github.com/IBM/audit-ci) se používá pro automatizovanou kontrolu zranitelných
+  závislostí projektu na CI.
+- Aplikace **respektuje standardy** [PEP 8](https://pep8.org),
+  [12-Factor App](https://12factor.net/), [ROCA](https://roca-style.org/).
+- Kompletní vývoj aplikace probíhá v IDE
+  _[Pycharm (Professional Edition)](https://www.jetbrains.com/pycharm/)_ (řeší automatickou
+  optimalizaci importů, automatické formátování kódů apod.).
+- **Rozsáhlé testy API i UI (E2E)** jsou důležitou částí aplikace, automaticky se spouští na CI a
+  lze je spustit i na lokálním prostředí. Část frontendu je navíc pokryta **unit testy**.
+    - E2E testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** –
+      testové scénáře jsou psány přirozeným jazykem (Gherkin), podle nich se spouští konkrétní
+      testy.
+    - Unit testy jsou postaveny na **frameworku [Jest](https://jestjs.io/)** a nástrojích
+      **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
+      (jednoduché utility pro testování Reactu),
+      [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers
+      pro Jest) a [MSW](https://mswjs.io/) (mockování API).
+    - Pro **testování UI (E2E)** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
+    - **Podrobné informace o testech jsou v [`tests/README.md`](tests)**.
 
 ## Struktura repozitáře
 
@@ -252,8 +250,8 @@ je nejblíže verzi u zákazníka.
 
 Minimální požadavky jsou:
 
--   [Git](https://git-scm.com/downloads),
--   [Docker Desktop s Compose V2](https://www.docker.com/products/docker-desktop/).
+- [Git](https://git-scm.com/downloads),
+- [Docker Desktop s Compose V2](https://www.docker.com/products/docker-desktop/).
 
 ### Instalace & spuštění
 
@@ -417,6 +415,16 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
 ### Nastavení
 
 [![screenshot z nastavení](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
+
+### Vyhledávání
+
+[![screenshot z vyhledávání](docs/screenshots/search.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/search.png)
+
+### Výpisy
+
+[![screenshot z výpisu skupin](docs/screenshots/groups.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/groups.png)
+
+[![screenshot z výpisu klientů](docs/screenshots/clients.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/clients.png)
 
 ### Formuláře
 

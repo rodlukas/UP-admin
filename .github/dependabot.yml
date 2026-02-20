@@ -6,16 +6,28 @@ updates:
           - npm-github
       schedule:
           interval: "daily"
+      groups:
+          npm-all:
+              patterns:
+                  - "*"
 
     - package-ecosystem: "pip"
       directory: "/"
       schedule:
           interval: "daily"
+      groups:
+          pip-all:
+              patterns:
+                  - "*"
 
     - package-ecosystem: "github-actions"
       directory: "/"
       schedule:
           interval: "daily"
+      groups:
+          github-actions-all:
+              patterns:
+                  - "*"
 registries:
     npm-github:
         type: npm-registry
