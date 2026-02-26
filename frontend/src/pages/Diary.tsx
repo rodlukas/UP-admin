@@ -118,22 +118,23 @@ const Diary: React.FC = () => {
 
     const onKeyDown = React.useCallback(
         (e: KeyboardEvent): void => {
-            // akce provadej jen kdyz neni otevrene modalni okno
-            if (!isModalShown()) {
-                const key = e.key
-                if (key === "ArrowLeft") {
-                    trackEvent("diary_navigated", { direction: "prev", method: "keyboard" })
-                    void navigate({
-                        to: "/diar/$year/$month/$day",
-                        params: prevMondayParams,
-                    })
-                } else if (key === "ArrowRight") {
-                    trackEvent("diary_navigated", { direction: "next", method: "keyboard" })
-                    void navigate({
-                        to: "/diar/$year/$month/$day",
-                        params: nextMondayParams,
-                    })
-                }
+            // akce provadej jen kdyz neni otevrene modalni okno a nejde o auto-repeat (drzeni klavesy)
+            if (e.repeat || isModalShown()) {
+                return
+            }
+            const key = e.key
+            if (key === "ArrowLeft") {
+                trackEvent("diary_navigated", { direction: "prev", method: "keyboard" })
+                void navigate({
+                    to: "/diar/$year/$month/$day",
+                    params: prevMondayParams,
+                })
+            } else if (key === "ArrowRight") {
+                trackEvent("diary_navigated", { direction: "next", method: "keyboard" })
+                void navigate({
+                    to: "/diar/$year/$month/$day",
+                    params: nextMondayParams,
+                })
             }
         },
         [navigate, prevMondayParams, nextMondayParams],
@@ -227,6 +228,7 @@ const Diary: React.FC = () => {
                                     disabled={isEqualDate(getCurrentMonday(), getRequiredMonday())}
                                     onClick={(e): void => {
                                         removeFocusAfterClick(e)
+                                        // disabled na <Button> uvnitr <Link> nezabrani onClick – nutna explicitni podminka
                                         if (!isEqualDate(getCurrentMonday(), getRequiredMonday())) {
                                             trackEvent("diary_navigated", {
                                                 direction: "today",

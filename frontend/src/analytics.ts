@@ -70,5 +70,10 @@ export function initAnalytics(
 
     ReactGA.initialize(measurementId, { gtagOptions: { send_page_view: false } })
     initialized = true
-    onRouteResolved(() => ReactGA.send({ hitType: "pageview", page: window.location.href }))
+    onRouteResolved(() =>
+        ReactGA.send({
+            hitType: "pageview",
+            page: globalThis.location.pathname + globalThis.location.search,
+        }),
+    )
 }
