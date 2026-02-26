@@ -132,7 +132,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                                 <ModalLectures
                                     object={lecture.group ?? lecture.attendances[0].client}
                                     currentLecture={lecture}
-                                    source="dashboard_day"
+                                    source={source}
                                 />
                             </div>
                             <div className={lectureStyles.lectureContent}>

@@ -29,7 +29,8 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
         const id = props.attendanceId
         const data = { id, paid: newPaid }
         patchAttendance.mutate(data, {
-            onSuccess: () => trackEvent("attendance_paid_toggled", { source: props.source }),
+            onSuccess: () =>
+                trackEvent("attendance_paid_toggled", { source: props.source, paid: newPaid }),
         })
     }, [props.paid, props.attendanceId, props.source, patchAttendance])
 

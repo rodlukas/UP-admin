@@ -35,9 +35,7 @@ export type AnalyticsSource =
     | "client_card"
     | "clients_page"
     | "dashboard"
-    | "dashboard_day"
     | "diary"
-    | "diary_heading"
     | "group_card"
     | "groups_form"
     | "groups_page"
@@ -65,6 +63,6 @@ export function initAnalytics(
         return
     }
 
-    ReactGA.initialize(measurementId, { gaOptions: { send_page_view: false } })
+    ReactGA.initialize(measurementId, { gtagOptions: { send_page_view: false } })
     onRouteResolved(() => ReactGA.send({ hitType: "pageview", page: window.location.href }))
 }

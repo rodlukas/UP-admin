@@ -32,7 +32,7 @@ const Main: React.FC = () => {
     const [isMenuOpened, setIsMenuOpened] = React.useState(false)
     const [foundResults, setFoundResults] = React.useState<FuseResult<ClientActiveType>[]>([])
     const [searchVal, setSearchVal] = React.useState("")
-    const [searchSessionTracked, setSearchSessionTracked] = React.useState(false)
+    const searchSessionTrackedRef = React.useRef(false)
     const authContext = useAuthContext()
     const clientsActiveContext = useClientsActiveContext()
     const locationPathname = useRouterState({
@@ -44,17 +44,17 @@ const Main: React.FC = () => {
         if (searchVal !== "" && !clientsActiveContext.isLoading) {
             const results = new Fuse(clientsActiveContext.clients, searchOptions).search(searchVal)
             setFoundResults(results)
-            if (!searchSessionTracked) {
+            if (!searchSessionTrackedRef.current) {
                 trackEvent("search_used", { has_results: results.length > 0 })
-                setSearchSessionTracked(true)
+                searchSessionTrackedRef.current = true
             }
         }
-    }, [searchVal, clientsActiveContext.clients, clientsActiveContext.isLoading, searchSessionTracked])
+    }, [searchVal, clientsActiveContext.clients, clientsActiveContext.isLoading])
 
     function resetSearch(): void {
         setFoundResults([])
         setSearchVal("")
-        setSearchSessionTracked(false)
+        searchSessionTrackedRef.current = false
     }
 
     React.useEffect(() => {

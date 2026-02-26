@@ -24,12 +24,9 @@ if (isHosted() && isValidUrl("%SENTRY_DSN")) {
     })
 }
 
-// Google Analytics 4 – sledování zobrazení stránek, spouštět jen na production
-if (isHosted()) {
-    initAnalytics("%GA_MEASUREMENT_ID", (handler) => {
-        router.subscribe("onResolved", handler)
-    })
-}
+initAnalytics("%GA_MEASUREMENT_ID", (handler) => {
+    router.subscribe("onResolved", handler)
+})
 
 /** Základní kostra aplikace. */
 const App: React.FC = () => <RouterProvider router={router} />

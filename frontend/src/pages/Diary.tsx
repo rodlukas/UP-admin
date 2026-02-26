@@ -239,7 +239,7 @@ const Diary: React.FC = () => {
                             <UncontrolledTooltipWrapper target="Diary_Today">
                                 {prettyDateWithLongDayYear(new Date())}
                             </UncontrolledTooltipWrapper>{" "}
-                            <ModalLecturesWizard source="diary_heading" />
+                            <ModalLecturesWizard source="diary" />
                         </>
                     }
                 />

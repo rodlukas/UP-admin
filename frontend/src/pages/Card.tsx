@@ -142,6 +142,8 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         globalThis.history.back()
     }
 
+    const cardSource = isClientPageValue ? "client_card" : "group_card" as const
+
     const renderLecture = (lecture: LectureType): React.ReactElement => {
         // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
         const date = new Date(lecture.start ?? 0)
@@ -168,10 +170,10 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                         </UncontrolledTooltipWrapper>
                     </h4>
                     <LectureNumber lecture={lecture} className={lectureStyles.lectureNumber} />
-                    <ModalLectures object={object} currentLecture={lecture} source={isClientPageValue ? "client_card" : "group_card"} />
+                    <ModalLectures object={object} currentLecture={lecture} source={cardSource} />
                 </div>
                 <div className={lectureStyles.lectureContent}>
-                    <Attendances lecture={lecture} showClient={isGroup(object)} source={isClientPageValue ? "client_card" : "group_card"} />
+                    <Attendances lecture={lecture} showClient={isGroup(object)} source={cardSource} />
                 </div>
             </ListGroupItem>
         )
@@ -217,7 +219,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                             <ModalLectures
                                 defaultValuesForLecture={defaultValuesForLecture}
                                 object={object}
-                                source={isClientPageValue ? "client_card" : "group_card"}
+                                source={cardSource}
                             />
                         </>
                     }
