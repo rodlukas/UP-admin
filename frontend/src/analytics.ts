@@ -42,6 +42,8 @@ export function trackEvent(name: EventName, params?: EventParams): void {
     window.gtag?.("event", name, params)
 }
 
+let isInitialized = false
+
 /**
  * Inicializuje Google Analytics 4. Voláno pouze na produkci s platným Measurement ID.
  * @param measurementId GA4 Measurement ID (formát G-XXXXXXXXXX)
@@ -51,20 +53,25 @@ export function initAnalytics(
     measurementId: string,
     onRouteResolved: (handler: () => void) => void,
 ): void {
-    if (!isEnvProduction() || !/^G-[A-Z0-9]+$/.test(measurementId)) {
+    if (!isEnvProduction() || !/^G-[A-Z0-9]+$/.test(measurementId) || isInitialized) {
         return
     }
+    isInitialized = true
 
     window.dataLayer = window.dataLayer || []
-    window.gtag = (...args: unknown[]) => {
-        window.dataLayer.push(args)
-    }
+    // Musí být function declaration, ne arrow function – gtag.js rozlišuje Arguments objekt
+    // od plain pole; spread vytvoří pole, které se zpracuje jiným (GTM-compat) kódem v gtag.js.
+    window.gtag = function gtag() { window.dataLayer.push(arguments) }
     window.gtag("js", new Date())
     window.gtag("config", measurementId, { send_page_view: false })
 
     const script = document.createElement("script")
     script.async = true
     script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`
+    script.onerror = (): void => {
+        // Selhání načtení (blokátor reklam, CSP) nesmí narušit chod aplikace – trackEvent
+        // zůstane no-op díky optional chaining v každém volání.
+    }
     document.head.appendChild(script)
 
     onRouteResolved(() => {
