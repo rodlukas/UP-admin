@@ -85,8 +85,9 @@ export function initAnalytics(
     script.async = true
     script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`
     script.onerror = (): void => {
-        // Selhání načtení (blokátor reklam, CSP) nesmí narušit chod aplikace – trackEvent
-        // zůstane no-op díky optional chaining v každém volání.
+        // Selhání načtení (blokátor reklam, CSP) nesmí narušit chod aplikace – volání
+        // trackEvent se budou dál zařazovat do dataLayer, ale nikdy nebudou odeslána,
+        // protože gtag.js se nenačetl a frontu nezpracuje.
         // Reset umožní případný retry (např. po obnovení připojení).
         isInitialized = false
     }

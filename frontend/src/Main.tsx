@@ -44,8 +44,8 @@ const Main: React.FC = () => {
         if (searchVal !== "" && !clientsActiveContext.isLoading) {
             const results = new Fuse(clientsActiveContext.clients, searchOptions).search(searchVal)
             setFoundResults(results)
-            if (results.length > 0 && !searchSessionTrackedRef.current) {
-                trackEvent("search_used")
+            if (!searchSessionTrackedRef.current) {
+                trackEvent("search_used", { has_results: results.length > 0 })
                 searchSessionTrackedRef.current = true
             }
         }
