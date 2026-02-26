@@ -128,9 +128,9 @@ const FormClients: React.FC<Props> = (props) => {
 
     const handleDelete = React.useCallback(
         (id: ClientType["id"]): void => {
-            trackEvent("client_deleted", { source: props.source })
             deleteClient.mutate(id, {
                 onSuccess: () => {
+                    trackEvent("client_deleted", { source: props.source })
                     props.funcForceClose(true, { active, isDeleted: true })
                 },
             })

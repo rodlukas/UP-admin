@@ -179,16 +179,16 @@ const FormSettings: React.FC<Props> = (props) => {
     const handleDelete = React.useCallback(
         (id: Model["id"]): void => {
             if (isCourse(props.object)) {
-                trackEvent("course_deleted", { source: "settings_page" })
                 deleteCourse.mutate(id, {
                     onSuccess: () => {
+                        trackEvent("course_deleted", { source: "settings_page" })
                         props.funcForceClose()
                     },
                 })
             } else {
-                trackEvent("attendance_state_deleted", { source: "settings_page" })
                 deleteAttendanceState.mutate(id, {
                     onSuccess: () => {
+                        trackEvent("attendance_state_deleted", { source: "settings_page" })
                         props.funcForceClose()
                     },
                 })

@@ -47,8 +47,11 @@ const Applications: React.FC = () => {
     }, [applicationsData])
 
     const handleDelete = (id: ApplicationType["id"]): void => {
-        trackEvent("application_deleted", { source: "applications_page" })
-        deleteApplication.mutate(id)
+        deleteApplication.mutate(id, {
+            onSuccess: () => {
+                trackEvent("application_deleted", { source: "applications_page" })
+            },
+        })
     }
 
     return (

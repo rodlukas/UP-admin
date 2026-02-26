@@ -537,9 +537,9 @@ const FormLectures: React.FC<Props> = (props) => {
 
     const handleDelete = React.useCallback(
         (id: LectureType["id"]): void => {
-            trackEvent("lecture_deleted", { source: props.source })
             deleteLecture.mutate(id, {
                 onSuccess: () => {
+                    trackEvent("lecture_deleted", { source: props.source })
                     props.funcForceClose()
                 },
             })

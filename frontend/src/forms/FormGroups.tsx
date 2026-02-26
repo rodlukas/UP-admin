@@ -163,9 +163,9 @@ const FormGroups: React.FC<Props> = (props) => {
 
     const handleDelete = React.useCallback(
         (id: GroupType["id"]): void => {
-            trackEvent("group_deleted", { source: props.source })
             deleteGroup.mutate(id, {
                 onSuccess: () => {
+                    trackEvent("group_deleted", { source: props.source })
                     props.funcForceClose(true, { active, isDeleted: true })
                 },
             })
