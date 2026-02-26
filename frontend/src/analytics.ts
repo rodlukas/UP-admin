@@ -71,10 +71,12 @@ export function initAnalytics(
     script.onerror = (): void => {
         // Selhání načtení (blokátor reklam, CSP) nesmí narušit chod aplikace – trackEvent
         // zůstane no-op díky optional chaining v každém volání.
+        // Reset umožní případný retry (např. po obnovení připojení).
+        isInitialized = false
     }
     document.head.appendChild(script)
 
     onRouteResolved(() => {
-        window.gtag?.("event", "page_view", { page_location: globalThis.location.href })
+        window.gtag?.("event", "page_view", { page_location: window.location.href })
     })
 }
