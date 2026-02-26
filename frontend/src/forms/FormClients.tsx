@@ -13,7 +13,7 @@ import {
     ModalHeader,
 } from "reactstrap"
 
-import { trackEvent } from "../analytics"
+import { AnalyticsSource, trackEvent } from "../analytics"
 import { useCreateClient, useDeleteClient, useUpdateClient } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -38,7 +38,7 @@ type Props = {
     /** Funkce, která se zavolá po úspěšném přidání klienta (spolu s daty o klientovi). */
     funcProcessAdditionOfClient?: (newClient: ClientType) => void
     /** Identifikace místa, odkud byl formulář otevřen (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Formulář pro klienty. */

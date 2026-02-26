@@ -3,6 +3,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 
+import { AnalyticsSource } from "../analytics"
 import { useLecturesFromDay } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
@@ -34,7 +35,7 @@ type Props = {
     /** Datum pro zobrazované lekce. */
     date: string
     /** Identifikace místa, odkud je komponenta použita (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Komponenta zobrazující lekce pro jeden zadaný den. */

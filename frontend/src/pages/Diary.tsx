@@ -53,7 +53,8 @@ type ParamsProps = {
 }
 
 const normalizeParams = (params: unknown): Partial<ParamsProps> => {
-    const record = params && typeof params === "object" ? (params as Record<string, unknown>) : {}
+    const record =
+        params && typeof params === "object" ? (params as Record<string, unknown>) : {}
     return {
         year: typeof record.year === "string" ? record.year : undefined,
         month: typeof record.month === "string" ? record.month : undefined,

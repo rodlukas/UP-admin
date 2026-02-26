@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Button, ButtonGroup } from "reactstrap"
 
-import { trackEvent } from "../../analytics"
+import { AnalyticsSource, trackEvent } from "../../analytics"
 
 import * as styles from "./ActiveSwitcher.css"
 
@@ -11,7 +11,7 @@ type Props = {
     /** Funkce, která se zavolá při přepínání. */
     onChange: (active: boolean, ignoreActiveRefresh: boolean) => void
     /** Identifikace místa, odkud byla akce provedena (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Přepínač ne/aktivních skupin/klientů. */

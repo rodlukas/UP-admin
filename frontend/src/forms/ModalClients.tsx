@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Modal } from "reactstrap"
 
+import { AnalyticsSource } from "../analytics"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
@@ -20,7 +21,7 @@ type Props = {
     /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh?: (data: ModalClientsData) => void
     /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Modální okno s formulářem pro klienty. Včetně tlačítek pro vyvolání přidání/úpravy. */

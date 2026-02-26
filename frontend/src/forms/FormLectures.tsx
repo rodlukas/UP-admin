@@ -22,7 +22,7 @@ import {
     UncontrolledAlert,
 } from "reactstrap"
 
-import { trackEvent } from "../analytics"
+import { AnalyticsSource, trackEvent } from "../analytics"
 import { useCreateLecture, useDeleteLecture, useUpdateLecture } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -89,7 +89,7 @@ type Props = {
     /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
     /** Identifikace místa, odkud byl formulář otevřen (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Formulář pro lekce. */

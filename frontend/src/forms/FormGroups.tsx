@@ -11,7 +11,7 @@ import {
     ModalHeader,
 } from "reactstrap"
 
-import { trackEvent } from "../analytics"
+import { AnalyticsSource, trackEvent } from "../analytics"
 import { useClients, useCreateGroup, useDeleteGroup, useUpdateGroup } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -51,7 +51,7 @@ type Props = {
     /** Funkce, která se zavolá po úspěšném přidání skupiny (spolu s daty o skupině). */
     funcProcessAdditionOfGroup?: (newGroup: GroupType) => void
     /** Identifikace místa, odkud byl formulář otevřen (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Formulář pro skupiny. */

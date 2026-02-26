@@ -2,6 +2,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { Badge } from "reactstrap"
 
+import { AnalyticsSource } from "../analytics"
 import { AttendanceType, LectureType } from "../types/models"
 
 import AttendancePaidButton from "./AttendancePaidButton"
@@ -17,7 +18,7 @@ type AttendanceProps = {
     /** Zobraz jméno klienta (true). */
     showClient: boolean
     /** Identifikace místa, odkud je komponenta použita (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Komponenta zobrazující jednotlivou účast klienta na dané lekci. */
@@ -50,7 +51,7 @@ type AttendancesProps = {
     /** Zobraz jméno klienta (true). */
     showClient?: boolean
     /** Identifikace místa, odkud je komponenta použita (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Komponenta zobrazující účasti všech klientů na dané lekci. */

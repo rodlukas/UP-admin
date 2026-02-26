@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { AnalyticsSource } from "../analytics"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import { DefaultValuesForLecture } from "../global/utils"
@@ -16,7 +17,7 @@ type Props = {
     /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
     object?: ClientType | GroupType | null
     /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /**

@@ -13,6 +13,7 @@ import {
 } from "reactstrap"
 import { Direction } from "reactstrap/types/lib/Dropdown"
 
+import { AnalyticsSource } from "../analytics"
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
@@ -47,7 +48,7 @@ type Props = {
     /** Probíhá načítání dat (true) - zobrazí spinner na tlačítku. */
     isFetching?: boolean
     /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /**

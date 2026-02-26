@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { trackEvent } from "../analytics"
+import { AnalyticsSource, trackEvent } from "../analytics"
 import { usePatchAttendance } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
@@ -12,7 +12,7 @@ type Props = {
     /** ID stavu účasti. */
     value: AttendanceStateType["id"]
     /** Identifikace místa, odkud byla akce provedena (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /** Komponenta zobrazující box pro výběr stavu účasti klienta na dané lekci. */
@@ -27,8 +27,9 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
             const newValue = Number(e.currentTarget.value)
             const id = props.attendanceId
             const data = { id, attendancestate: newValue }
-            patchAttendance.mutate(data)
-            trackEvent("attendance_state_changed", { source: props.source })
+            patchAttendance.mutate(data, {
+                onSuccess: () => trackEvent("attendance_state_changed", { source: props.source }),
+            })
         },
         [props.attendanceId, props.source, patchAttendance],
     )

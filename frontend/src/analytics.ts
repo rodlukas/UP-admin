@@ -35,6 +35,22 @@ type EventName =
     | "search_used"
     | "active_filter_toggled"
 
+export type AnalyticsSource =
+    | "applications_form"
+    | "applications_page"
+    | "client_card"
+    | "clients_page"
+    | "dashboard"
+    | "dashboard_day"
+    | "diary"
+    | "diary_heading"
+    | "group_card"
+    | "groups_form"
+    | "groups_page"
+    | "lecture_wizard"
+    | "search"
+    | "settings_page"
+
 type EventParams = Record<string, string | number | boolean>
 
 /** Odešle GA4 custom event. Na neprodukčních prostředích je volání ignorováno (gtag není načteno). */

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Modal } from "reactstrap"
 
+import { AnalyticsSource } from "../analytics"
 import { DefaultValuesForLecture } from "../global/utils"
 import useModal from "../hooks/useModal"
 import { ClientType, GroupType, LectureType } from "../types/models"
@@ -24,7 +25,7 @@ type Props = {
     /** Datum lekce. */
     date?: string
     /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
-    source: string
+    source: AnalyticsSource
 }
 
 /**
