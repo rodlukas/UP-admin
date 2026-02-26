@@ -45,8 +45,13 @@ export type AnalyticsSource =
 
 type EventParams = Record<string, string | number | boolean>
 
+let initialized = false
+
 /** Odešle GA4 custom event. Na neprodukčních prostředích je volání ignorováno (ReactGA není inicializováno). */
 export function trackEvent(name: EventName, params?: EventParams): void {
+    if (!initialized) {
+        return
+    }
     ReactGA.event(name, params)
 }
 
@@ -64,5 +69,6 @@ export function initAnalytics(
     }
 
     ReactGA.initialize(measurementId, { gtagOptions: { send_page_view: false } })
+    initialized = true
     onRouteResolved(() => ReactGA.send({ hitType: "pageview", page: window.location.href }))
 }

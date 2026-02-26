@@ -142,7 +142,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         globalThis.history.back()
     }
 
-    const cardSource = isClientPageValue ? "client_card" : "group_card" as const
+    const cardSource = isClientPageValue ? ("client_card" as const) : ("group_card" as const)
 
     const renderLecture = (lecture: LectureType): React.ReactElement => {
         // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970

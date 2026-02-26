@@ -227,10 +227,12 @@ const Diary: React.FC = () => {
                                     disabled={isEqualDate(getCurrentMonday(), getRequiredMonday())}
                                     onClick={(e): void => {
                                         removeFocusAfterClick(e)
-                                        trackEvent("diary_navigated", {
-                                            direction: "today",
-                                            method: "click",
-                                        })
+                                        if (!isEqualDate(getCurrentMonday(), getRequiredMonday())) {
+                                            trackEvent("diary_navigated", {
+                                                direction: "today",
+                                                method: "click",
+                                            })
+                                        }
                                     }}
                                     className="align-top">
                                     Dnes
