@@ -13,7 +13,7 @@ test("dashboard day shows lectures for a specific date", async () => {
     const queryClient = createQueryClient()
     const router = await createTestRouter(
         <MockContexts>
-            <DashboardDay date="2020-09-09" withoutWaiting={true} />
+            <DashboardDay date="2020-09-09" withoutWaiting={true} source="dashboard" />
         </MockContexts>,
     )
     render(

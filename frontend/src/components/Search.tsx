@@ -171,6 +171,7 @@ const Search: React.FC<Props> = ({ foundResults, searchVal, search, resetSearch 
                                                     <ModalClients
                                                         currentClient={item}
                                                         refresh={search}
+                                                        source="search"
                                                     />
                                                 </Col>
                                             </Row>

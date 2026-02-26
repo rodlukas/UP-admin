@@ -8,6 +8,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { Button, Col, Container, Row } from "reactstrap"
 
+import { trackEvent } from "../analytics"
 import APP_URLS from "../APP_URLS"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
@@ -52,8 +53,7 @@ type ParamsProps = {
 }
 
 const normalizeParams = (params: unknown): Partial<ParamsProps> => {
-    const record =
-        params && typeof params === "object" ? (params as Record<string, unknown>) : {}
+    const record = params && typeof params === "object" ? (params as Record<string, unknown>) : {}
     return {
         year: typeof record.year === "string" ? record.year : undefined,
         month: typeof record.month === "string" ? record.month : undefined,
@@ -121,11 +121,13 @@ const Diary: React.FC = () => {
             if (!isModalShown()) {
                 const key = e.key
                 if (key === "ArrowLeft") {
+                    trackEvent("diary_navigated", { direction: "prev", method: "keyboard" })
                     void navigate({
                         to: "/diar/$year/$month/$day",
                         params: prevMondayParams,
                     })
                 } else if (key === "ArrowRight") {
+                    trackEvent("diary_navigated", { direction: "next", method: "keyboard" })
                     void navigate({
                         to: "/diar/$year/$month/$day",
                         params: nextMondayParams,
@@ -177,7 +179,13 @@ const Diary: React.FC = () => {
                             <Link
                                 to="/diar/$year/$month/$day"
                                 params={prevMondayParams}
-                                id="Diary_PrevWeek">
+                                id="Diary_PrevWeek"
+                                onClick={(): void => {
+                                    trackEvent("diary_navigated", {
+                                        direction: "prev",
+                                        method: "click",
+                                    })
+                                }}>
                                 <FontAwesomeIcon
                                     icon={faChevronCircleLeft}
                                     className={classNames(styles.arrowBtn, "text-muted")}
@@ -189,7 +197,13 @@ const Diary: React.FC = () => {
                             <Link
                                 to="/diar/$year/$month/$day"
                                 params={nextMondayParams}
-                                id="Diary_NextWeek">
+                                id="Diary_NextWeek"
+                                onClick={(): void => {
+                                    trackEvent("diary_navigated", {
+                                        direction: "next",
+                                        method: "click",
+                                    })
+                                }}>
                                 <FontAwesomeIcon
                                     icon={faChevronCircleRight}
                                     className={classNames(styles.arrowBtn, "text-muted")}
@@ -210,7 +224,13 @@ const Diary: React.FC = () => {
                                 <Button
                                     color="secondary"
                                     disabled={isEqualDate(getCurrentMonday(), getRequiredMonday())}
-                                    onClick={removeFocusAfterClick}
+                                    onClick={(e): void => {
+                                        removeFocusAfterClick(e)
+                                        trackEvent("diary_navigated", {
+                                            direction: "today",
+                                            method: "click",
+                                        })
+                                    }}
                                     className="align-top">
                                     Dnes
                                 </Button>
@@ -218,7 +238,7 @@ const Diary: React.FC = () => {
                             <UncontrolledTooltipWrapper target="Diary_Today">
                                 {prettyDateWithLongDayYear(new Date())}
                             </UncontrolledTooltipWrapper>{" "}
-                            <ModalLecturesWizard />
+                            <ModalLecturesWizard source="diary_heading" />
                         </>
                     }
                 />
@@ -230,7 +250,7 @@ const Diary: React.FC = () => {
                         const weekdayKey = new Date(day).getDay()
                         return (
                             <Col key={weekdayKey} md="6" lg="" className={styles.diaryDay}>
-                            <DashboardDay date={day} />
+                                <DashboardDay date={day} source="diary" />
                             </Col>
                         )
                     })}

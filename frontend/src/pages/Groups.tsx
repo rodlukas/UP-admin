@@ -52,8 +52,8 @@ const Groups: React.FC = () => {
                 }
                 buttons={
                     <>
-                        <ActiveSwitcher onChange={refresh} active={active} />
-                        <ModalGroups refresh={refreshFromModal} />
+                        <ActiveSwitcher onChange={refresh} active={active} source="groups_page" />
+                        <ModalGroups refresh={refreshFromModal} source="groups_page" />
                     </>
                 }
                 isFetching={
@@ -108,6 +108,7 @@ const Groups: React.FC = () => {
                                             <ModalGroups
                                                 currentGroup={group}
                                                 refresh={refreshFromModal}
+                                                source="groups_page"
                                             />
                                         </td>
                                     </tr>

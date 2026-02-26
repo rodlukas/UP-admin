@@ -23,6 +23,8 @@ type Props = {
     shouldModalOpen?: boolean
     /** Datum lekce. */
     date?: string
+    /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
+    source: string
 }
 
 /**
@@ -36,6 +38,7 @@ const ModalLecturesCore: React.FC<Props> = ({
     funcCloseCallback,
     shouldModalOpen = false,
     date = "",
+    source,
 }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, setModal, processOnModalClose] =
         useModal()
@@ -70,6 +73,7 @@ const ModalLecturesCore: React.FC<Props> = ({
                         funcWrapper(toggleModalForce)
                     }}
                     setFormDirty={setFormDirty}
+                    source={source}
                 />
             )}
         </Modal>

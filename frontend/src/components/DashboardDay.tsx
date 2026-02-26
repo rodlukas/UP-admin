@@ -33,10 +33,13 @@ type Props = {
     withoutWaiting?: boolean
     /** Datum pro zobrazované lekce. */
     date: string
+    /** Identifikace místa, odkud je komponenta použita (pro analytiku). */
+    source: string
 }
 
 /** Komponenta zobrazující lekce pro jeden zadaný den. */
 const DashboardDay: React.FC<Props> = (props) => {
+    const { source } = props
     const attendanceStatesContext = useAttendanceStatesContext()
     const getDate = (): Date => new Date(props.date)
 
@@ -76,6 +79,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                     dropdownSize="sm"
                     dropdownDirection="up"
                     isFetching={isFetching && !isLoading}
+                    source={source}
                 />
             </ListGroupItem>
             {showLoading ? (
@@ -127,6 +131,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                                 <ModalLectures
                                     object={lecture.group ?? lecture.attendances[0].client}
                                     currentLecture={lecture}
+                                    source="dashboard_day"
                                 />
                             </div>
                             <div className={lectureStyles.lectureContent}>
@@ -135,7 +140,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                                         <GroupName group={lecture.group} title link />
                                     </h5>
                                 )}
-                                <Attendances lecture={lecture} showClient />
+                                <Attendances lecture={lecture} showClient source={source} />
                             </div>
                         </ListGroupItem>
                     )

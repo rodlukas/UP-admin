@@ -15,13 +15,15 @@ type Props = {
     defaultValuesForLecture?: DefaultValuesForLecture
     /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
     object?: ClientType | GroupType | null
+    /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
+    source: string
 }
 
 /**
  * Kostra modálního okna s formulářem pro lekce. Včetně tlačítek pro vyvolání přidání/úpravy.
  * Práci s modálním oknem má na starosti potomek ModalLecturesCore.
  */
-const ModalLectures: React.FC<Props> = ({ currentLecture, object, defaultValuesForLecture }) => {
+const ModalLectures: React.FC<Props> = ({ currentLecture, object, defaultValuesForLecture, source }) => {
     const [shouldModalOpen, setShouldModalOpen] = React.useState(false)
     return (
         <>
@@ -46,6 +48,7 @@ const ModalLectures: React.FC<Props> = ({ currentLecture, object, defaultValuesF
                 defaultValuesForLecture={defaultValuesForLecture}
                 shouldModalOpen={shouldModalOpen}
                 funcCloseCallback={(): void => setShouldModalOpen(false)}
+                source={source}
             />
         </>
     )

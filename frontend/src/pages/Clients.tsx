@@ -51,8 +51,8 @@ const Clients: React.FC = () => {
                 }
                 buttons={
                     <>
-                        <ActiveSwitcher onChange={refresh} active={active} />
-                        <ModalClients refresh={refreshFromModal} />
+                        <ActiveSwitcher onChange={refresh} active={active} source="clients_page" />
+                        <ModalClients refresh={refreshFromModal} source="clients_page" />
                     </>
                 }
                 isFetching={
@@ -105,6 +105,7 @@ const Clients: React.FC = () => {
                                             <ModalClients
                                                 currentClient={client}
                                                 refresh={refreshFromModal}
+                                                source="clients_page"
                                             />
                                         </td>
                                     </tr>

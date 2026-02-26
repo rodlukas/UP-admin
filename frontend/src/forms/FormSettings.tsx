@@ -17,6 +17,7 @@ import {
     ModalHeader,
 } from "reactstrap"
 
+import { trackEvent } from "../analytics"
 import {
     useCreateAttendanceState,
     useCreateCourse,
@@ -120,6 +121,7 @@ const FormSettings: React.FC<Props> = (props) => {
                     }
                     updateCourse.mutate(dataPut, {
                         onSuccess: () => {
+                            trackEvent("course_updated", { source: "settings_page" })
                             toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
                             props.funcForceClose()
                         },
@@ -127,6 +129,7 @@ const FormSettings: React.FC<Props> = (props) => {
                 } else {
                     createCourse.mutate(dataPost, {
                         onSuccess: () => {
+                            trackEvent("course_created", { source: "settings_page" })
                             toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
                             props.funcForceClose()
                         },
@@ -141,12 +144,14 @@ const FormSettings: React.FC<Props> = (props) => {
                     }
                     updateAttendanceState.mutate(dataPut, {
                         onSuccess: () => {
+                            trackEvent("attendance_state_updated", { source: "settings_page" })
                             props.funcForceClose()
                         },
                     })
                 } else {
                     createAttendanceState.mutate(dataPost, {
                         onSuccess: () => {
+                            trackEvent("attendance_state_created", { source: "settings_page" })
                             props.funcForceClose()
                         },
                     })
@@ -174,12 +179,14 @@ const FormSettings: React.FC<Props> = (props) => {
     const handleDelete = React.useCallback(
         (id: Model["id"]): void => {
             if (isCourse(props.object)) {
+                trackEvent("course_deleted", { source: "settings_page" })
                 deleteCourse.mutate(id, {
                     onSuccess: () => {
                         props.funcForceClose()
                     },
                 })
             } else {
+                trackEvent("attendance_state_deleted", { source: "settings_page" })
                 deleteAttendanceState.mutate(id, {
                     onSuccess: () => {
                         props.funcForceClose()

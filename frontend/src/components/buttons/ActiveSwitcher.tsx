@@ -1,6 +1,8 @@
 import * as React from "react"
 import { Button, ButtonGroup } from "reactstrap"
 
+import { trackEvent } from "../../analytics"
+
 import * as styles from "./ActiveSwitcher.css"
 
 type Props = {
@@ -8,6 +10,8 @@ type Props = {
     active: boolean
     /** Funkce, která se zavolá při přepínání. */
     onChange: (active: boolean, ignoreActiveRefresh: boolean) => void
+    /** Identifikace místa, odkud byla akce provedena (pro analytiku). */
+    source: string
 }
 
 /** Přepínač ne/aktivních skupin/klientů. */
@@ -17,6 +21,7 @@ const ActiveSwitcher: React.FC<Props> = (props) => {
         const value = target.dataset.value === "true"
         // pokud doslo ke zmene, propaguj vyse
         if (props.active !== value) {
+            trackEvent("active_filter_toggled", { source: props.source, active: value })
             props.onChange(value, true)
         }
     }

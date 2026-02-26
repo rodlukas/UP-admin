@@ -19,6 +19,8 @@ type Props = {
     processAdditionOfGroup?: (newGroup: GroupType) => void
     /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh?: (data: ModalGroupsData) => void
+    /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
+    source: string
 }
 
 /** Modální okno s formulářem pro skupiny. Včetně tlačítek pro vyvolání přidání/úpravy. */
@@ -27,6 +29,7 @@ const ModalGroups: React.FC<Props> = ({
     withOr = false,
     refresh,
     processAdditionOfGroup,
+    source,
 }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose, tempData] =
         useModal()
@@ -65,6 +68,7 @@ const ModalGroups: React.FC<Props> = ({
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}
                     funcProcessAdditionOfGroup={processAdditionOfGroup}
+                    source={source}
                 />
             </Modal>
         </>

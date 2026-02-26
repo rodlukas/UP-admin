@@ -3,6 +3,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
+import { trackEvent } from "../analytics"
 import { useApplications, useDeleteApplication } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -46,6 +47,7 @@ const Applications: React.FC = () => {
     }, [applicationsData])
 
     const handleDelete = (id: ApplicationType["id"]): void => {
+        trackEvent("application_deleted", { source: "applications_page" })
         deleteApplication.mutate(id)
     }
 

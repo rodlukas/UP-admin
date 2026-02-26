@@ -168,10 +168,10 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                         </UncontrolledTooltipWrapper>
                     </h4>
                     <LectureNumber lecture={lecture} className={lectureStyles.lectureNumber} />
-                    <ModalLectures object={object} currentLecture={lecture} />
+                    <ModalLectures object={object} currentLecture={lecture} source={isClientPageValue ? "client_card" : "group_card"} />
                 </div>
                 <div className={lectureStyles.lectureContent}>
-                    <Attendances lecture={lecture} showClient={isGroup(object)} />
+                    <Attendances lecture={lecture} showClient={isGroup(object)} source={isClientPageValue ? "client_card" : "group_card"} />
                 </div>
             </ListGroupItem>
         )
@@ -201,6 +201,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     refresh={(data) =>
                                         refreshObjectFromModal(data as ModalClientsGroupsData)
                                     }
+                                    source="client_card"
                                 />
                             ) : (
                                 object && (
@@ -209,12 +210,14 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                         refresh={(data) =>
                                             refreshObjectFromModal(data as ModalClientsGroupsData)
                                         }
+                                        source="group_card"
                                     />
                                 )
                             )}
                             <ModalLectures
                                 defaultValuesForLecture={defaultValuesForLecture}
                                 object={object}
+                                source={isClientPageValue ? "client_card" : "group_card"}
                             />
                         </>
                     }

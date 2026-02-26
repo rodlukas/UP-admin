@@ -15,11 +15,11 @@ const Dashboard: React.FC = () => {
                     <Heading
                         title={
                             <>
-                                Dnešní lekce <ModalLecturesWizard />
+                                Dnešní lekce <ModalLecturesWizard source="dashboard" />
                             </>
                         }
                     />
-                    <DashboardDay date={toISODate(new Date())} withoutWaiting />
+                    <DashboardDay date={toISODate(new Date())} withoutWaiting source="dashboard" />
                 </Col>
                 <Col sm="11" md="8" lg="8" xl="6">
                     <Heading title="Bankovní účet" />
