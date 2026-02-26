@@ -1,12 +1,6 @@
-import { isEnvProduction } from "./global/funcEnvironments"
+import ReactGA from "react-ga4"
 
-declare global {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-    interface Window {
-        dataLayer: unknown[]
-        gtag?(...args: unknown[]): void
-    }
-}
+import { isEnvProduction } from "./global/funcEnvironments"
 
 type EventName =
     | "login"
@@ -53,12 +47,10 @@ export type AnalyticsSource =
 
 type EventParams = Record<string, string | number | boolean>
 
-/** Odešle GA4 custom event. Na neprodukčních prostředích je volání ignorováno (gtag není načteno). */
+/** Odešle GA4 custom event. Na neprodukčních prostředích je volání ignorováno (ReactGA není inicializováno). */
 export function trackEvent(name: EventName, params?: EventParams): void {
-    window.gtag?.("event", name, params)
+    ReactGA.event(name, params)
 }
-
-let isInitialized = false
 
 /**
  * Inicializuje Google Analytics 4. Voláno pouze na produkci s platným Measurement ID.
@@ -69,31 +61,10 @@ export function initAnalytics(
     measurementId: string,
     onRouteResolved: (handler: () => void) => void,
 ): void {
-    if (!isEnvProduction() || !/^G-[A-Z0-9]+$/.test(measurementId) || isInitialized) {
+    if (!isEnvProduction() || !/^G-[A-Z0-9]+$/.test(measurementId)) {
         return
     }
-    isInitialized = true
 
-    window.dataLayer = window.dataLayer || []
-    // Musí být function declaration, ne arrow function – gtag.js rozlišuje Arguments objekt
-    // od plain pole; spread vytvoří pole, které se zpracuje jiným (GTM-compat) kódem v gtag.js.
-    window.gtag = function gtag() { window.dataLayer.push(arguments) }
-    window.gtag("js", new Date())
-    window.gtag("config", measurementId, { send_page_view: false })
-
-    const script = document.createElement("script")
-    script.async = true
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`
-    script.onerror = (): void => {
-        // Selhání načtení (blokátor reklam, CSP) nesmí narušit chod aplikace – volání
-        // trackEvent se budou dál zařazovat do dataLayer, ale nikdy nebudou odeslána,
-        // protože gtag.js se nenačetl a frontu nezpracuje.
-        // Reset umožní případný retry (např. po obnovení připojení).
-        isInitialized = false
-    }
-    document.head.appendChild(script)
-
-    onRouteResolved(() => {
-        window.gtag?.("event", "page_view", { page_location: window.location.href })
-    })
+    ReactGA.initialize(measurementId, { gaOptions: { send_page_view: false } })
+    onRouteResolved(() => ReactGA.send({ hitType: "pageview", page: window.location.href }))
 }
