@@ -119,7 +119,7 @@ const Diary: React.FC = () => {
     const onKeyDown = React.useCallback(
         (e: KeyboardEvent): void => {
             // akce provadej jen kdyz neni otevrene modalni okno a nejde o auto-repeat (drzeni klavesy)
-            if (e.repeat || isModalShown()) {
+            if (isModalShown()) {
                 return
             }
             const key = e.key
