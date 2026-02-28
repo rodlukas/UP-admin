@@ -1,7 +1,5 @@
 import ReactGA from "react-ga4"
 
-import { isEnvProduction } from "./global/funcEnvironments"
-
 type EventName =
     | "login"
     | "logout"
@@ -43,7 +41,7 @@ export type AnalyticsSource =
     | "search"
     | "settings_page"
 
-type EventParams = Record<string, string | number | boolean>
+export type EventParams = Record<string, string | number | boolean>
 
 let initialized = false
 
@@ -64,16 +62,16 @@ export function initAnalytics(
     measurementId: string,
     onRouteResolved: (handler: () => void) => void,
 ): void {
-    if (!isEnvProduction() || !/^G-[A-Z0-9]+$/.test(measurementId)) {
+    if (!/^G-[A-Z0-9]+$/.test(measurementId)) {
         return
     }
 
-    ReactGA.initialize(measurementId, { gtagOptions: { send_page_view: false } })
+    ReactGA.initialize(measurementId, { gaOptions: { send_page_view: false } })
     initialized = true
     onRouteResolved(() =>
         ReactGA.send({
             hitType: "pageview",
-            page: globalThis.location.pathname + globalThis.location.search,
+            page_path: globalThis.location.pathname + globalThis.location.search,
         }),
     )
 }

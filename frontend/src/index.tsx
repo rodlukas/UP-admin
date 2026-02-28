@@ -24,7 +24,7 @@ if (isHosted() && isValidUrl("%SENTRY_DSN")) {
     })
 }
 
-initAnalytics("%GA_MEASUREMENT_ID", (handler) => {
+initAnalytics("%GA4_ID%", (handler) => {
     router.subscribe("onResolved", handler)
 })
 
