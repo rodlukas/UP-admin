@@ -50,11 +50,12 @@ def get_tooltip_text(driver, element):
     # klikni mysi na element
     element.click()
     # az se zobrazi tooltip, uloz jeho text, abys ho mohl vratit
-    tooltip_text = (
-        WebDriverWait(driver, WAIT_TIME)
-        .until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".tooltip-inner")))
-        .text
+    # poznamka: .text se vola az po novem find_element, ne na referenci z .until(),
+    # ktera muze byt stale kvuli prekresleni DOM (StaleElementReferenceException)
+    WebDriverWait(driver, WAIT_TIME).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".tooltip-inner"))
     )
+    tooltip_text = driver.find_element(By.CSS_SELECTOR, ".tooltip-inner").text
     # odstran mys z elementu, aby se tooltip skryl
     ActionChains(driver).move_to_element(driver.find_element(By.TAG_NAME, "body")).perform()
     # vrat text tooltipu
