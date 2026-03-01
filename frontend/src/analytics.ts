@@ -63,6 +63,8 @@ export function initAnalytics(
     onRouteResolved: (handler: () => void) => void,
 ): void {
     if (!/^G-[A-Z0-9]+$/.test(measurementId)) {
+        // eslint-disable-next-line no-console
+        console.info("GA not initialized")
         return
     }
 
