@@ -22,6 +22,7 @@ import {
     UncontrolledAlert,
 } from "reactstrap"
 
+import { AnalyticsSource, trackEvent } from "../analytics"
 import { useCreateLecture, useDeleteLecture, useUpdateLecture } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -87,6 +88,8 @@ type Props = {
     funcForceClose: () => boolean | void
     /** Funkce, která se volá při změně údajů ve formuláři. */
     setFormDirty: fEmptyVoid
+    /** Identifikace místa, odkud byl formulář otevřen (pro analytiku). */
+    source: AnalyticsSource
 }
 
 /** Formulář pro lekce. */
@@ -468,6 +471,7 @@ const FormLectures: React.FC<Props> = (props) => {
                 setIsSubmit(true)
                 updateLecture.mutate(dataPut, {
                     onSuccess: () => {
+                        trackEvent("lecture_updated", { source: props.source })
                         props.funcForceClose()
                     },
                     onError: () => {
@@ -490,6 +494,7 @@ const FormLectures: React.FC<Props> = (props) => {
                     setIsSubmit(true)
                     createLecture.mutate(dataArray, {
                         onSuccess: () => {
+                            trackEvent("lecture_created", { source: props.source })
                             props.funcForceClose()
                         },
                         onError: () => {
@@ -501,6 +506,7 @@ const FormLectures: React.FC<Props> = (props) => {
                     setIsSubmit(true)
                     createLecture.mutate(dataPost, {
                         onSuccess: () => {
+                            trackEvent("lecture_created", { source: props.source })
                             props.funcForceClose()
                         },
                         onError: () => {
@@ -533,6 +539,7 @@ const FormLectures: React.FC<Props> = (props) => {
         (id: LectureType["id"]): void => {
             deleteLecture.mutate(id, {
                 onSuccess: () => {
+                    trackEvent("lecture_deleted", { source: props.source })
                     props.funcForceClose()
                 },
             })

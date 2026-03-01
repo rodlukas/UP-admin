@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Modal } from "reactstrap"
 
+import { AnalyticsSource } from "../analytics"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
@@ -19,6 +20,8 @@ type Props = {
     processAdditionOfGroup?: (newGroup: GroupType) => void
     /** Funkce, která se zavolá po zavření modálního okna - obnoví data v rodiči. */
     refresh?: (data: ModalGroupsData) => void
+    /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
+    source: AnalyticsSource
 }
 
 /** Modální okno s formulářem pro skupiny. Včetně tlačítek pro vyvolání přidání/úpravy. */
@@ -27,6 +30,7 @@ const ModalGroups: React.FC<Props> = ({
     withOr = false,
     refresh,
     processAdditionOfGroup,
+    source,
 }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, , processOnModalClose, tempData] =
         useModal()
@@ -65,6 +69,7 @@ const ModalGroups: React.FC<Props> = ({
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}
                     funcProcessAdditionOfGroup={processAdditionOfGroup}
+                    source={source}
                 />
             </Modal>
         </>

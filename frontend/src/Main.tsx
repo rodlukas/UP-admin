@@ -6,6 +6,7 @@ import { Slide, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { Badge, Collapse, Navbar, NavbarBrand, NavbarToggler } from "reactstrap"
 
+import { trackEvent } from "./analytics"
 import { useAuthContext } from "./auth/AuthContext"
 import AppCommit from "./components/AppCommit"
 import Loading from "./components/Loading"
@@ -31,6 +32,7 @@ const Main: React.FC = () => {
     const [isMenuOpened, setIsMenuOpened] = React.useState(false)
     const [foundResults, setFoundResults] = React.useState<FuseResult<ClientActiveType>[]>([])
     const [searchVal, setSearchVal] = React.useState("")
+    const searchSessionTrackedRef = React.useRef(false)
     const authContext = useAuthContext()
     const clientsActiveContext = useClientsActiveContext()
     const locationPathname = useRouterState({
@@ -42,12 +44,17 @@ const Main: React.FC = () => {
         if (searchVal !== "" && !clientsActiveContext.isLoading) {
             const results = new Fuse(clientsActiveContext.clients, searchOptions).search(searchVal)
             setFoundResults(results)
+            if (!searchSessionTrackedRef.current) {
+                trackEvent("search_used", { has_results: results.length > 0 })
+                searchSessionTrackedRef.current = true
+            }
         }
     }, [searchVal, clientsActiveContext.clients, clientsActiveContext.isLoading])
 
     function resetSearch(): void {
         setFoundResults([])
         setSearchVal("")
+        searchSessionTrackedRef.current = false
     }
 
     React.useEffect(() => {

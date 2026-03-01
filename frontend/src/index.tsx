@@ -6,6 +6,7 @@ import * as React from "react"
 import "bootstrap/dist/css/bootstrap.css"
 import { createRoot } from "react-dom/client"
 
+import { initAnalytics } from "./analytics"
 import { getEnvName, isHosted } from "./global/funcEnvironments"
 import "./index.css"
 import { isValidUrl } from "./global/utils"
@@ -22,6 +23,10 @@ if (isHosted() && isValidUrl("%SENTRY_DSN")) {
         release: "%GIT_COMMIT",
     })
 }
+
+initAnalytics("%GA4_ID%", (handler) => {
+    router.subscribe("onResolved", handler)
+})
 
 /** Základní kostra aplikace. */
 const App: React.FC = () => <RouterProvider router={router} />

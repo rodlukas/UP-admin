@@ -13,6 +13,7 @@ GIT_BRANCH_STRING='GIT_BRANCH'
 GIT_DATETIME_STRING='GIT_DATETIME'
 GIT_YEAR_STRING='GIT_YEAR'
 SENTRY_DSN_STRING='SENTRY_DSN'
+GA4_ID_STRING='GA4_ID'
 
 # nastaveni novych hodnot pro nahrazovane retezce
 COMMIT=$(git rev-parse --short HEAD)
@@ -39,6 +40,7 @@ substitute_folder() {
   substitute "$GIT_DATETIME_STRING" "$DATETIME"
   substitute "$GIT_YEAR_STRING" "$YEAR"
   substitute "$SENTRY_DSN_STRING" "$SENTRY_DSN"
+  substitute "$GA4_ID_STRING" "$GA4_ID"
 
   cd "$GITHUB_WORKSPACE" || exit
 

@@ -3,6 +3,7 @@ import classNames from "classnames"
 import * as React from "react"
 import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 
+import { AnalyticsSource } from "../analytics"
 import { useLecturesFromDay } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
@@ -33,10 +34,13 @@ type Props = {
     withoutWaiting?: boolean
     /** Datum pro zobrazované lekce. */
     date: string
+    /** Identifikace místa, odkud je komponenta použita (pro analytiku). */
+    source: AnalyticsSource
 }
 
 /** Komponenta zobrazující lekce pro jeden zadaný den. */
 const DashboardDay: React.FC<Props> = (props) => {
+    const { source } = props
     const attendanceStatesContext = useAttendanceStatesContext()
     const getDate = (): Date => new Date(props.date)
 
@@ -76,6 +80,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                     dropdownSize="sm"
                     dropdownDirection="up"
                     isFetching={isFetching && !isLoading}
+                    source={source}
                 />
             </ListGroupItem>
             {showLoading ? (
@@ -127,6 +132,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                                 <ModalLectures
                                     object={lecture.group ?? lecture.attendances[0].client}
                                     currentLecture={lecture}
+                                    source={source}
                                 />
                             </div>
                             <div className={lectureStyles.lectureContent}>
@@ -135,7 +141,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                                         <GroupName group={lecture.group} title link />
                                     </h5>
                                 )}
-                                <Attendances lecture={lecture} showClient />
+                                <Attendances lecture={lecture} showClient source={source} />
                             </div>
                         </ListGroupItem>
                     )

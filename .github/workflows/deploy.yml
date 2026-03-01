@@ -7,6 +7,7 @@ on:
 env:
     ENVIRONMENT: CI-deploy
     SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+    GA4_ID: ${{ secrets.GA4_ID }}
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
     DJANGO_SETTINGS_MODULE: up.settings.production
     MANUAL_PRODUCTION: True

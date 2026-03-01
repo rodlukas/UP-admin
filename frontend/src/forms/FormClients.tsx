@@ -13,6 +13,7 @@ import {
     ModalHeader,
 } from "reactstrap"
 
+import { AnalyticsSource, trackEvent } from "../analytics"
 import { useCreateClient, useDeleteClient, useUpdateClient } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -36,6 +37,8 @@ type Props = {
     setFormDirty: fEmptyVoid
     /** Funkce, která se zavolá po úspěšném přidání klienta (spolu s daty o klientovi). */
     funcProcessAdditionOfClient?: (newClient: ClientType) => void
+    /** Identifikace místa, odkud byl formulář otevřen (pro analytiku). */
+    source: AnalyticsSource
 }
 
 /** Formulář pro klienty. */
@@ -97,6 +100,7 @@ const FormClients: React.FC<Props> = (props) => {
                 const dataPut = { ...dataPost, id: props.client.id }
                 updateClient.mutate(dataPut, {
                     onSuccess: (response) => {
+                        trackEvent("client_updated", { source: props.source })
                         if (props.funcProcessAdditionOfClient) {
                             props.funcProcessAdditionOfClient(response)
                         }
@@ -106,6 +110,7 @@ const FormClients: React.FC<Props> = (props) => {
             } else {
                 createClient.mutate(dataPost, {
                     onSuccess: (response) => {
+                        trackEvent("client_created", { source: props.source })
                         if (props.funcProcessAdditionOfClient) {
                             props.funcProcessAdditionOfClient(response)
                         }
@@ -125,6 +130,7 @@ const FormClients: React.FC<Props> = (props) => {
         (id: ClientType["id"]): void => {
             deleteClient.mutate(id, {
                 onSuccess: () => {
+                    trackEvent("client_deleted", { source: props.source })
                     props.funcForceClose(true, { active, isDeleted: true })
                 },
             })

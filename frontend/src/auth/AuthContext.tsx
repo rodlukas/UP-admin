@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router"
 import * as React from "react"
 import { toast } from "react-toastify"
 
+import { trackEvent } from "../analytics"
 import { useLogin } from "../api/hooks"
 import LoginService from "../api/services/LoginService"
 import APP_URLS from "../APP_URLS"
@@ -84,6 +85,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     const login = React.useCallback(
         async (credentials: AuthorizationType): Promise<void> => {
             await loginMutation.mutateAsync(credentials)
+            trackEvent("login")
         },
         [loginMutation],
     )
@@ -91,6 +93,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     const logout = React.useCallback((): void => {
         Token.remove()
         void isAuthenticated(false)
+        trackEvent("logout")
         // z jakekoliv stranky presmeruj uzivatele na prihlaseni (napr. na strance nenalezeno ho to jinak ponecha i po
         // odhlaseni
         void navigate({ to: APP_URLS.prihlasit.url })

@@ -224,6 +224,9 @@ CSPURL_GOOGLE_FONTS_STYLE = "fonts.googleapis.com"
 CSPURL_GOOGLE_FONTS_FONT = "fonts.gstatic.com"
 # CSP pro Sentry
 CSPURL_SENTRY = "https://*.sentry.io"
+# CSP pro Google Analytics 4
+CSPURL_GA4_SCRIPT = "https://www.googletagmanager.com"
+CSPURL_GA4_COLLECT = "https://*.google-analytics.com"
 
 # CSP konfigurace
 SECURE_CSP = {
@@ -233,10 +236,10 @@ SECURE_CSP = {
         CSP.UNSAFE_INLINE,
         CSPURL_GOOGLE_FONTS_STYLE,
     ],  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
-    "connect-src": [CSP.SELF, CSPURL_SENTRY],
-    "script-src": [CSP.SELF, CSPURL_SENTRY],
+    "connect-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_COLLECT],
+    "script-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_SCRIPT],
     "font-src": [CSP.SELF, CSPURL_GOOGLE_FONTS_FONT],
-    "img-src": [CSP.SELF, "data:"],
+    "img-src": [CSP.SELF, "data:", CSPURL_GA4_COLLECT],
     "frame-ancestors": [CSP.NONE],
     "form-action": [CSP.NONE],
     "base-uri": [CSP.NONE],

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Modal } from "reactstrap"
 
+import { AnalyticsSource } from "../analytics"
 import { DefaultValuesForLecture } from "../global/utils"
 import useModal from "../hooks/useModal"
 import { ClientType, GroupType, LectureType } from "../types/models"
@@ -23,6 +24,8 @@ type Props = {
     shouldModalOpen?: boolean
     /** Datum lekce. */
     date?: string
+    /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
+    source: AnalyticsSource
 }
 
 /**
@@ -36,6 +39,7 @@ const ModalLecturesCore: React.FC<Props> = ({
     funcCloseCallback,
     shouldModalOpen = false,
     date = "",
+    source,
 }) => {
     const [isModal, toggleModal, toggleModalForce, setFormDirty, setModal, processOnModalClose] =
         useModal()
@@ -70,6 +74,7 @@ const ModalLecturesCore: React.FC<Props> = ({
                         funcWrapper(toggleModalForce)
                     }}
                     setFormDirty={setFormDirty}
+                    source={source}
                 />
             )}
         </Modal>

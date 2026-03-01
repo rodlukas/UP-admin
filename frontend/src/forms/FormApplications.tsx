@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Col, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 
+import { trackEvent } from "../analytics"
 import { useClients, useCreateApplication, useUpdateApplication } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
@@ -90,12 +91,14 @@ const FormApplications: React.FC<Props> = (props) => {
                 const dataPut: ApplicationPutApi = { ...dataPost, id: props.application.id }
                 updateApplication.mutate(dataPut, {
                     onSuccess: () => {
+                        trackEvent("application_updated", { source: "applications_form" })
                         props.funcForceClose()
                     },
                 })
             } else {
                 createApplication.mutate(dataPost, {
                     onSuccess: () => {
+                        trackEvent("application_created", { source: "applications_form" })
                         props.funcForceClose()
                     },
                 })
@@ -142,6 +145,7 @@ const FormApplications: React.FC<Props> = (props) => {
                                         <ModalClients
                                             processAdditionOfClient={processAdditionOfClient}
                                             withOr
+                                            source="applications_form"
                                         />
                                     }
                                 />

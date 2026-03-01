@@ -11,6 +11,7 @@ import {
     ModalHeader,
 } from "reactstrap"
 
+import { AnalyticsSource, trackEvent } from "../analytics"
 import { useClients, useCreateGroup, useDeleteGroup, useUpdateGroup } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -49,6 +50,8 @@ type Props = {
     setFormDirty: fEmptyVoid
     /** Funkce, která se zavolá po úspěšném přidání skupiny (spolu s daty o skupině). */
     funcProcessAdditionOfGroup?: (newGroup: GroupType) => void
+    /** Identifikace místa, odkud byl formulář otevřen (pro analytiku). */
+    source: AnalyticsSource
 }
 
 /** Formulář pro skupiny. */
@@ -132,6 +135,7 @@ const FormGroups: React.FC<Props> = (props) => {
                 const dataPut: GroupPutApi = { ...dataPost, id: props.group.id }
                 updateGroup.mutate(dataPut, {
                     onSuccess: (response) => {
+                        trackEvent("group_updated", { source: props.source })
                         if (props.funcProcessAdditionOfGroup) {
                             props.funcProcessAdditionOfGroup(response)
                         }
@@ -141,6 +145,7 @@ const FormGroups: React.FC<Props> = (props) => {
             } else {
                 createGroup.mutate(dataPost, {
                     onSuccess: (response) => {
+                        trackEvent("group_created", { source: props.source })
                         if (props.funcProcessAdditionOfGroup) {
                             props.funcProcessAdditionOfGroup(response)
                         }
@@ -160,6 +165,7 @@ const FormGroups: React.FC<Props> = (props) => {
         (id: GroupType["id"]): void => {
             deleteGroup.mutate(id, {
                 onSuccess: () => {
+                    trackEvent("group_deleted", { source: props.source })
                     props.funcForceClose(true, { active, isDeleted: true })
                 },
             })
@@ -243,6 +249,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                         <ModalClients
                                             processAdditionOfClient={processAdditionOfClient}
                                             withOr
+                                            source="groups_form"
                                         />
                                     }
                                 />

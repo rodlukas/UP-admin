@@ -142,6 +142,8 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         globalThis.history.back()
     }
 
+    const cardSource = isClientPageValue ? ("client_card" as const) : ("group_card" as const)
+
     const renderLecture = (lecture: LectureType): React.ReactElement => {
         // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
         const date = new Date(lecture.start ?? 0)
@@ -168,10 +170,10 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                         </UncontrolledTooltipWrapper>
                     </h4>
                     <LectureNumber lecture={lecture} className={lectureStyles.lectureNumber} />
-                    <ModalLectures object={object} currentLecture={lecture} />
+                    <ModalLectures object={object} currentLecture={lecture} source={cardSource} />
                 </div>
                 <div className={lectureStyles.lectureContent}>
-                    <Attendances lecture={lecture} showClient={isGroup(object)} />
+                    <Attendances lecture={lecture} showClient={isGroup(object)} source={cardSource} />
                 </div>
             </ListGroupItem>
         )
@@ -201,6 +203,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     refresh={(data) =>
                                         refreshObjectFromModal(data as ModalClientsGroupsData)
                                     }
+                                    source="client_card"
                                 />
                             ) : (
                                 object && (
@@ -209,12 +212,14 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                         refresh={(data) =>
                                             refreshObjectFromModal(data as ModalClientsGroupsData)
                                         }
+                                        source="group_card"
                                     />
                                 )
                             )}
                             <ModalLectures
                                 defaultValuesForLecture={defaultValuesForLecture}
                                 object={object}
+                                source={cardSource}
                             />
                         </>
                     }

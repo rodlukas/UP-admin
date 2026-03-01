@@ -13,6 +13,7 @@ import {
 } from "reactstrap"
 import { Direction } from "reactstrap/types/lib/Dropdown"
 
+import { AnalyticsSource } from "../analytics"
 import Loading from "../components/Loading"
 import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
@@ -46,6 +47,8 @@ type Props = {
     dropdownDirection?: Direction
     /** Probíhá načítání dat (true) - zobrazí spinner na tlačítku. */
     isFetching?: boolean
+    /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
+    source: AnalyticsSource
 }
 
 /**
@@ -53,6 +56,7 @@ type Props = {
  * Umožní volbu/vytvoření konkrétního klienta/skupiny. Poté umožní přidání samotné lekce.
  */
 const ModalLecturesWizard: React.FC<Props> = (props) => {
+    const { source } = props
     const clientsActiveContext = useClientsActiveContext()
     const groupsActiveContext = useGroupsActiveContext()
     /** Uživatel chce přidávat lekci pro klienta (true, jinak přidává pro skupinu). */
@@ -143,6 +147,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                             <ModalClients
                                 processAdditionOfClient={processAdditionOfGroupOrClient}
                                 withOr
+                                source="lecture_wizard"
                             />
                         }
                     />
@@ -167,6 +172,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                         <ModalGroups
                             processAdditionOfGroup={processAdditionOfGroupOrClient}
                             withOr
+                            source="lecture_wizard"
                         />
                     }
                 />
@@ -243,6 +249,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                 shouldModalOpen={modalSelectDone}
                 funcCloseCallback={toggleModal}
                 date={props.date ?? ""}
+                source={source}
             />
         </>
     )
