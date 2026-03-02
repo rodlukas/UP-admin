@@ -255,7 +255,7 @@ class CourseViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     ViewSet pro kurzy.
     """
 
-    queryset = Course.objects.prefetch_related("lectures", "applications", "group_set")
+    queryset = Course.objects.prefetch_related("lecture_set", "applications", "group_set")
     serializer_class = CourseSerializer
     filterset_fields = ("visible",)
 
