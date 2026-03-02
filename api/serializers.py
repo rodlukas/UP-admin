@@ -11,7 +11,7 @@ Poznámka:
         https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
 """
 
-from typing import Union, cast
+from typing import Iterable, Union, cast
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
@@ -584,12 +584,13 @@ class LectureSerializer(serializers.ModelSerializer[Lecture]):
 
         # pro nove predplacene lekce proved jen jednoduchou kontrolu (nelze menit parametry platby)
         if "start" in data and data["start"] is None:
-            # TODO: vylepsit kod, aby se dal napsat rozumne typovane
-            attendances = []
+            attendances: Iterable[Union[dict, Attendance]]
             if "attendances" in data:
                 attendances = data["attendances"]
             elif self.instance:
-                attendances = self.instance.attendances  # type: ignore[assignment]
+                attendances = self.instance.attendances.all()
+            else:
+                attendances = []
             for attendance in attendances:
                 LectureHelpers.validate_prepaid_non_changable_paid_state(attendance)
             return data

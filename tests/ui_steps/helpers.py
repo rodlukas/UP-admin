@@ -1,3 +1,4 @@
+from django.conf import settings
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -6,8 +7,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
-WAIT_TIME = 5
-WAIT_TIME_SHORT = 3
+WAIT_TIME = settings.TESTS_WAIT_TIME
+WAIT_TIME_SHORT = max(1, WAIT_TIME - 2)
 WAIT_TIME_VERY_SHORT = 0.5
 
 

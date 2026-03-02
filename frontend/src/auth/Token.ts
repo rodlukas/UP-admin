@@ -9,7 +9,7 @@ const AUTH_STORAGE_KEY = "jwt"
 /** Třída umožňující práci s tokenem v aplikaci. */
 export default class Token {
     static remove(): void {
-        localStorage.clear()
+        localStorage.removeItem(AUTH_STORAGE_KEY)
     }
 
     static save(token: TokenCodedType): void {

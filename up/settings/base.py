@@ -29,6 +29,7 @@ env = environ.Env(
     TESTS_BROWSER=(str, "firefox"),  # prohlizec pro UI testy: "firefox" nebo "chrome"
     TESTS_HEADLESS=(bool, True),  # indikace headless mode pro testy UI
     TESTS_RUNNING=(bool, False),  # indikace bezicich testu
+    TESTS_WAIT_TIME=(int, 5),  # maximalni doba cekani (s) pri UI testech (WebDriverWait)
 )
 # cteni z .env souboru
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
@@ -44,6 +45,7 @@ ENVIRONMENT = env("ENVIRONMENT")
 FIO_API_KEY = env("FIO_API_KEY")
 TESTS_BROWSER = env("TESTS_BROWSER")
 TESTS_HEADLESS = env("TESTS_HEADLESS")
+TESTS_WAIT_TIME = env("TESTS_WAIT_TIME")
 DEPLOYED = env("DEPLOYED")
 MANUAL_PRODUCTION = env("MANUAL_PRODUCTION")
 SENTRY_DSN = env("SENTRY_DSN")

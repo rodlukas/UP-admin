@@ -20,15 +20,7 @@ const Clients = React.lazy(() => lazySafe(() => import("./pages/Clients")))
 const Card = React.lazy(() => lazySafe(() => import("./pages/Card")))
 const Diary = React.lazy(() => lazySafe(() => import("./pages/Diary")))
 
-let router: ReturnType<typeof createRouter>
-const queryClient = createQueryClient(() => {
-    if (!router) {
-        return undefined
-    }
-    return (path: string) => {
-        void router.navigate({ to: path })
-    }
-})
+const queryClient = createQueryClient()
 
 const rootRoute = createRootRoute({
     component: () => <AppLayout queryClient={queryClient} />,
@@ -124,10 +116,9 @@ const routeTree = rootRoute.addChildren([
     notFoundRoute,
 ])
 
-router = createRouter({
+const router = createRouter({
     routeTree,
     defaultPendingComponent: () => <Loading />,
     defaultPendingMs: 0,
 })
-
 export { router }
