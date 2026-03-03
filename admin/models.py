@@ -29,12 +29,12 @@ class AttendanceState(models.Model):
 
     def make_true_value_unique_for_attr(self, value: bool, attr: str) -> None:
         """
-        Zaridi unikatnost hodnoty True (v promenne value) pro dany atribut attr.
-        Ma na starost OMEZENI O12.
-        Vola se uvnitr transaction.atomic() v save(), select_for_update() zabranuji race condition.
+        Zařídí unikátnost hodnoty True (v proměnné value) pro daný atribut attr.
+        Má na starost OMEZENÍ O12.
         """
         if value:
-            # vyber ostatni polozky s attr=True a zamkni je (zabraneni race condition)
+            # vyber ostatni polozky s attr=True a zamkni je (zabraneni race condition) - 
+            # vola se uvnitr transaction.atomic() v save()
             qs = AttendanceState.objects.select_for_update().filter(**{attr: True})
             # krome self (pokud self existuje)
             if self.pk:

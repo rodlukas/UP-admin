@@ -8,9 +8,8 @@ from rest_framework import status
 from rest_framework.response import Response
 
 # Cache klíč a timeout pro výpis bankovních transakcí.
-# Cache se ukládá pouze pro úspěšné odpovědi – chybové odpovědi se necachují.
-_FIO_CACHE_KEY = "fio_transactions"
-_FIO_CACHE_TIMEOUT = 60
+FIO_CACHE_KEY = "fio_transactions"
+FIO_CACHE_TIMEOUT_SECONDS = 60
 
 
 class Bank:
@@ -37,7 +36,7 @@ class Bank:
         """
         Vrátí seznam bankovních transakcí v posledních 30 dnech (nebo případně info o příslušné chybě).
         V případě úspěšného požadavku na Fio API přidá do odpovědi také výši nájmu a timestamp dotazu.
-        Úspěšné odpovědi jsou cachovány po dobu _FIO_CACHE_TIMEOUT sekund; chybové nikoli.
+        Úspěšné odpovědi jsou cachovány po dobu FIO_CACHE_TIMEOUT sekund; chybové nikoli.
         """
         if settings.BANK_ACTIVE:
             cached = cache.get(_FIO_CACHE_KEY)
@@ -53,7 +52,7 @@ class Bank:
             )
             output_data, output_status = self.perform_api_request(url_secret)
             if output_status == status.HTTP_200_OK:
-                cache.set(_FIO_CACHE_KEY, output_data, _FIO_CACHE_TIMEOUT)
+                cache.set(FIO_CACHE_KEY, output_data, FIO_CACHE_TIMEOUT_SECONDS)
         else:
             output_data, output_status = self.generate_output_error(
                 "propojení s bankou je pro tuto doménu administrátorem zakázáno"

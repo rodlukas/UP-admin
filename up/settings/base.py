@@ -235,11 +235,11 @@ SECURE_CSP = {
     "default-src": [CSP.NONE],
     "style-src": [
         CSP.SELF,
-        CSP.UNSAFE_INLINE,
+        CSP.NONCE,
         CSPURL_GOOGLE_FONTS_STYLE,
-    ],  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
+    ],
     "connect-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_COLLECT],
-    "script-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_SCRIPT, CSP.UNSAFE_EVAL],  # 'unsafe-eval' kvuli gtag.js (GA4)
+    "script-src": [CSP.SELF, CSP.NONCE, CSPURL_SENTRY, CSPURL_GA4_SCRIPT],
     "font-src": [CSP.SELF, CSPURL_GOOGLE_FONTS_FONT],
     "img-src": [CSP.SELF, "data:", CSPURL_GA4_COLLECT],
     "frame-ancestors": [CSP.NONE],

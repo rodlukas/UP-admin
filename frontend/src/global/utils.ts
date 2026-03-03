@@ -178,6 +178,11 @@ export function getDisplayName<P>(Component: React.ComponentType<P>): string {
     return Component.displayName ?? Component.name ?? "UnknownComponent"
 }
 
+/** Vrátí CSP nonce vložený serverem do meta tagu, nebo undefined. */
+export function getCspNonce(): string | undefined {
+    return document.querySelector('meta[name="csp-nonce"]')?.getAttribute("content") ?? undefined
+}
+
 /** Vrátí boolean, jestli je zaslaný string URL. */
 export function isValidUrl(urlString: string) {
     try {

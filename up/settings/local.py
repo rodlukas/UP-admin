@@ -11,9 +11,15 @@ ALLOWED_HOSTS = ["*"]
 # CSP
 CSPURL_LOCALHOST = "http://*:3000"
 
-SECURE_CSP["style-src"] = SECURE_CSP["style-src"] + [CSPURL_LOCALHOST]
-SECURE_CSP["connect-src"] = SECURE_CSP["connect-src"] + [CSPURL_LOCALHOST, "ws://*:3000"]
-SECURE_CSP["script-src"] = SECURE_CSP["script-src"] + [
-    CSPURL_LOCALHOST,
+# Webpack HMR injektuje inline skripty/styly bez nonce - nonce sentinel nahrazujeme unsafe-inline.
+# (Prohlizece ignoruji unsafe-inline pokud je v direktivě nonce, takze jednoduche pridani nestaci.)
+SECURE_CSP["style-src"] = [v for v in SECURE_CSP["style-src"] if v != CSP.NONCE] + [
     CSP.UNSAFE_INLINE,
+    CSPURL_LOCALHOST,
+]
+SECURE_CSP["connect-src"] = SECURE_CSP["connect-src"] + [CSPURL_LOCALHOST, "ws://*:3000"]
+SECURE_CSP["script-src"] = [v for v in SECURE_CSP["script-src"] if v != CSP.NONCE] + [
+    CSP.UNSAFE_INLINE,
+    CSP.UNSAFE_EVAL,  # webpack dev source mapy (eval-source-map)
+    CSPURL_LOCALHOST,
 ]
