@@ -39,7 +39,7 @@ class Bank:
         Úspěšné odpovědi jsou cachovány po dobu FIO_CACHE_TIMEOUT sekund; chybové nikoli.
         """
         if settings.BANK_ACTIVE:
-            cached = cache.get(_FIO_CACHE_KEY)
+            cached = cache.get(FIO_CACHE_KEY)
             if cached is not None:
                 return Response(cached, status=status.HTTP_200_OK)
 
