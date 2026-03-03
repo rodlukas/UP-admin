@@ -361,7 +361,7 @@ class LectureViewSet(viewsets.ModelViewSet):
         Lecture.objects.order_by("-start")
         .select_related("group__course", "course")
         .prefetch_related(
-            Prefetch("attendances", queryset=Attendance.objects.select_related("client")),
+            Prefetch("attendances", queryset=Attendance.objects.select_related("client", "attendancestate")),
             Prefetch("group__memberships", queryset=Membership.objects.select_related("client")),
         )
     )

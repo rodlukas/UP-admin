@@ -54,8 +54,7 @@ class ErrorBoundary extends React.Component<Props, State> {
 
     componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
         Sentry.withScope((scope) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            scope.setExtras(errorInfo as any)
+            scope.setExtras({ componentStack: errorInfo.componentStack })
             const eventId = Sentry.captureException(error)
             this.setState({ eventId, error, errorInfo })
         })
