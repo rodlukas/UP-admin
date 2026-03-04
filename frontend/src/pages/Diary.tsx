@@ -65,7 +65,7 @@ const normalizeParams = (params: unknown): Partial<ParamsProps> => {
 const parseDateFromParams = (params: Partial<ParamsProps>): Date => {
     if (params.month != null && params.year != null && params.day != null) {
         const date = new Date(Number(params.year), Number(params.month) - 1, Number(params.day))
-        if (!isNaN(date.getTime())) {
+        if (!Number.isNaN(date.getTime())) {
             return date
         }
     }
