@@ -8,7 +8,6 @@ import { Alert, Container } from "reactstrap"
 import Token from "../auth/Token"
 import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"
-import { getCspNonce } from "../global/utils"
 import { TokenDecodedType } from "../types/models"
 
 type Props = {
@@ -91,7 +90,6 @@ class ErrorBoundary extends React.Component<Props, State> {
                     <CustomButton
                         onClick={(): void => {
                             Sentry.showReportDialog({
-                                styleNonce: getCspNonce(),
                                 title: "Došlo k chybě v aplikaci",
                                 user: {
                                     email: decodedToken.email,
