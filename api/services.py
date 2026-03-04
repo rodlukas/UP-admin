@@ -3,8 +3,13 @@ from typing import Tuple, Dict
 
 import requests
 from django.conf import settings
+from django.core.cache import cache
 from rest_framework import status
 from rest_framework.response import Response
+
+# Cache klíč a timeout pro výpis bankovních transakcí.
+FIO_CACHE_KEY = "fio_transactions"
+FIO_CACHE_TIMEOUT_SECONDS = 60
 
 
 class Bank:
@@ -31,8 +36,13 @@ class Bank:
         """
         Vrátí seznam bankovních transakcí v posledních 30 dnech (nebo případně info o příslušné chybě).
         V případě úspěšného požadavku na Fio API přidá do odpovědi také výši nájmu a timestamp dotazu.
+        Úspěšné odpovědi jsou cachovány po dobu FIO_CACHE_TIMEOUT sekund; chybové nikoli.
         """
         if settings.BANK_ACTIVE:
+            cached = cache.get(FIO_CACHE_KEY)
+            if cached is not None:
+                return Response(cached, status=status.HTTP_200_OK)
+
             date_format = "%Y-%m-%d"
             current_date_str = datetime.now().strftime(date_format)
             history_date_str = (datetime.now() - timedelta(days=30)).strftime(date_format)
@@ -41,6 +51,8 @@ class Bank:
                 f"{history_date_str}/{current_date_str}/transactions.json"
             )
             output_data, output_status = self.perform_api_request(url_secret)
+            if output_status == status.HTTP_200_OK:
+                cache.set(FIO_CACHE_KEY, output_data, FIO_CACHE_TIMEOUT_SECONDS)
         else:
             output_data, output_status = self.generate_output_error(
                 "propojení s bankou je pro tuto doménu administrátorem zakázáno"
@@ -55,7 +67,7 @@ class Bank:
             input_data = requests.get(url_secret, timeout=25)
             input_data.raise_for_status()
         except requests.exceptions.Timeout:
-            return self.process_error(503)
+            return self.process_error(status.HTTP_503_SERVICE_UNAVAILABLE)
         except requests.exceptions.RequestException as e:
             status_code = getattr(e.response, "status_code", status.HTTP_500_INTERNAL_SERVER_ERROR)
             return self.process_error(status_code)
@@ -97,9 +109,8 @@ class Bank:
         """
         Zpracuje chybu při neúspěšném požadavku na Fio API.
         """
-        if status_code in self.FIO_API_ERRORS:
-            return self.generate_output_error(self.FIO_API_ERRORS[status_code])
-        return self.generate_output_error("neznámá chyba Fio API")
+        err_msg = self.FIO_API_ERRORS.get(status_code, "neznámá chyba Fio API")
+        return self.generate_output_error(err_msg)
 
     def generate_output_error(self, err_msg: str) -> Tuple[Dict[str, str], int]:
         """

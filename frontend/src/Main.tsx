@@ -40,16 +40,21 @@ const Main: React.FC = () => {
     })
     const escPress = useKeyPress("Escape")
 
+    const fuse = React.useMemo(
+        () => new Fuse(clientsActiveContext.clients, searchOptions),
+        [clientsActiveContext.clients],
+    )
+
     const search = React.useCallback(() => {
         if (searchVal !== "" && !clientsActiveContext.isLoading) {
-            const results = new Fuse(clientsActiveContext.clients, searchOptions).search(searchVal)
+            const results = fuse.search(searchVal)
             setFoundResults(results)
             if (!searchSessionTrackedRef.current) {
                 trackEvent("search_used", { has_results: results.length > 0 })
                 searchSessionTrackedRef.current = true
             }
         }
-    }, [searchVal, clientsActiveContext.clients, clientsActiveContext.isLoading])
+    }, [searchVal, fuse, clientsActiveContext.isLoading])
 
     function resetSearch(): void {
         setFoundResults([])

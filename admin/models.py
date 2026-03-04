@@ -4,7 +4,7 @@ Modely - reprezentují entity z databáze.
 
 from typing import Any
 
-from django.db import models
+from django.db import models, transaction
 
 
 class AttendanceState(models.Model):
@@ -33,8 +33,9 @@ class AttendanceState(models.Model):
         Má na starost OMEZENÍ O12.
         """
         if value:
-            # vyber ostatni polozky s attr=True
-            qs = AttendanceState.objects.filter(**{attr: True})
+            # vyber ostatni polozky s attr=True a zamkni je (zabraneni race condition) - 
+            # vola se uvnitr transaction.atomic() v save()
+            qs = AttendanceState.objects.select_for_update().filter(**{attr: True})
             # krome self (pokud self existuje)
             if self.pk:
                 qs = qs.exclude(pk=self.pk)
@@ -56,9 +57,12 @@ class AttendanceState(models.Model):
             self.default = self.excused = False
 
     def save(self, *args: Any, **kwargs: Any) -> None:
-        self.reset_attrs_when_set_non_visible()
-        self.make_all_true_values_unique()
-        super().save(*args, **kwargs)
+        # transaction.atomic() zajisti, ze update ostatnich zaznamu a save tohoto zaznamu
+        # probehou atomicky - zabranuje race condition pri soubenych requestech.
+        with transaction.atomic():
+            self.reset_attrs_when_set_non_visible()
+            self.make_all_true_values_unique()
+            super().save(*args, **kwargs)
 
 
 class Client(models.Model):

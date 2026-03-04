@@ -230,12 +230,16 @@ class LectureHelpers:
             lecture.save()
 
     @staticmethod
-    def validate_prepaid_non_changable_paid_state(attendance: dict) -> None:
+    def validate_prepaid_non_changable_paid_state(attendance: Union[dict, Attendance]) -> None:
         """
         OMEZENÍ O5: Ověří, že se v účasti nemění platba na nezaplaceno.
          Používá se pro předplacené lekce.
         """
-        if "paid" in attendance and not attendance["paid"]:
+        if isinstance(attendance, dict):
+            paid_is_false = "paid" in attendance and not attendance["paid"]
+        else:
+            paid_is_false = not attendance.paid
+        if paid_is_false:
             raise serializers.ValidationError(
                 {
                     api_settings.NON_FIELD_ERRORS_KEY: "Předplacenou lekci nelze nastavit jako nezaplacenou."

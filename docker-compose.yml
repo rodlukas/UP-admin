@@ -8,7 +8,7 @@ services:
     env_file: 
     - .env
     environment:
-      DATABASE_URL: 'postgresql://postgres:postgres@db:5432/postgres'
+      DATABASE_URL: 'postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/postgres'
       DEBUG: 'False'
       DEPLOYED: 'True'
       DJANGO_SETTINGS_MODULE: 'up.settings.local'
@@ -26,8 +26,8 @@ services:
     image: up_admin_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment: 
-      - POSTGRES_PASSWORD=postgres
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGPORT=5432
     restart: "on-failure"
 

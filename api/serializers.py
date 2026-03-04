@@ -11,7 +11,7 @@ Poznámka:
         https://groups.google.com/d/msg/django-rest-framework/5twgbh427uQ/4oEra8ogBQAJ
 """
 
-from typing import Union, cast
+from typing import Iterable, Union, cast
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator
@@ -30,6 +30,20 @@ from admin.models import (
     Membership,
 )
 from api.serializers_helpers import BaseUtils, LectureHelpers, BaseValidators
+
+
+class ValidateCourseIdMixin:
+    """
+    Mixin pro validaci kurzu - ověří, že je kurz viditelný.
+    Sdílí se mezi serializery, které přijímají course_id.
+    """
+
+    @staticmethod
+    def validate_course_id(course: Course) -> Course:
+        """
+        Ověří, že je kurz viditelný.
+        """
+        return BaseValidators.validate_course_is_visible(course)
 
 
 class ClientSerializer(serializers.ModelSerializer[Client]):
@@ -128,7 +142,7 @@ class MembershipPlainSerializer(serializers.ModelSerializer[Client]):
         exclude = ("group", "client")
 
 
-class GroupSerializer(serializers.ModelSerializer[Group]):
+class GroupSerializer(ValidateCourseIdMixin, serializers.ModelSerializer[Group]):
     """
     Serializer skupiny klientů nějakého kurzu.
     """
@@ -188,14 +202,6 @@ class GroupSerializer(serializers.ModelSerializer[Group]):
                     Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
-    @staticmethod
-    def validate_course_id(course: Course) -> Course:
-        """
-        Ověří, že je kurz viditelný.
-        """
-        return BaseValidators.validate_course_is_visible(course)
-
-
 class AttendanceStateSerializer(serializers.ModelSerializer[AttendanceState]):
     """
     Serializer stavu účasti klienta na lekci.
@@ -212,7 +218,7 @@ class AttendanceStateSerializer(serializers.ModelSerializer[AttendanceState]):
         fields = "__all__"
 
 
-class ApplicationSerializer(serializers.ModelSerializer[Application]):
+class ApplicationSerializer(ValidateCourseIdMixin, serializers.ModelSerializer[Application]):
     """
     Serializer žádosti reprezentující zájem klienta o kurz.
     """
@@ -250,14 +256,6 @@ class ApplicationSerializer(serializers.ModelSerializer[Application]):
                 message="Zájem klienta o zadaný kurz je již evidován.",
             )  # OMEZENÍ O17
         ]
-
-    @staticmethod
-    def validate_course_id(course: Course) -> Course:
-        """
-        Ověří, že je kurz viditelný.
-        """
-        return BaseValidators.validate_course_is_visible(course)
-
 
 class AttendanceSerializer(serializers.ModelSerializer[Attendance]):
     """
@@ -584,12 +582,13 @@ class LectureSerializer(serializers.ModelSerializer[Lecture]):
 
         # pro nove predplacene lekce proved jen jednoduchou kontrolu (nelze menit parametry platby)
         if "start" in data and data["start"] is None:
-            # TODO: vylepsit kod, aby se dal napsat rozumne typovane
-            attendances = []
+            attendances: Iterable[Union[dict, Attendance]]
             if "attendances" in data:
                 attendances = data["attendances"]
             elif self.instance:
-                attendances = self.instance.attendances  # type: ignore[assignment]
+                attendances = self.instance.attendances.all()
+            else:
+                attendances = []
             for attendance in attendances:
                 LectureHelpers.validate_prepaid_non_changable_paid_state(attendance)
             return data

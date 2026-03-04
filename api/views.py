@@ -6,8 +6,6 @@ from typing import Any
 
 from django.db.models import Prefetch
 from django.db.models.deletion import ProtectedError
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
@@ -56,7 +54,7 @@ class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     ViewSet pro klienty.
     """
 
-    queryset = Client.objects.all()
+    queryset = Client.objects.prefetch_related("attendances", "memberships", "applications")
     serializer_class = ClientSerializer
     filterset_fields = ("active",)
 
@@ -257,7 +255,7 @@ class CourseViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     ViewSet pro kurzy.
     """
 
-    queryset = Course.objects.all()
+    queryset = Course.objects.prefetch_related("lecture_set", "applications", "group_set")
     serializer_class = CourseSerializer
     filterset_fields = ("visible",)
 
@@ -363,7 +361,7 @@ class LectureViewSet(viewsets.ModelViewSet):
         Lecture.objects.order_by("-start")
         .select_related("group__course", "course")
         .prefetch_related(
-            Prefetch("attendances", queryset=Attendance.objects.select_related("client")),
+            Prefetch("attendances", queryset=Attendance.objects.select_related("client", "attendancestate")),
             Prefetch("group__memberships", queryset=Membership.objects.select_related("client")),
         )
     )
@@ -425,6 +423,5 @@ class BankView(APIView):
             ),
         },
     )
-    @method_decorator(cache_page(60))
     def get(self, request: Request) -> Response:
         return Bank().get_transactions()
