@@ -1,7 +1,5 @@
 import ReactGA from "react-ga4"
 
-import { getCspNonce } from "./global/utils"
-
 type EventName =
     | "login"
     | "logout"
@@ -70,7 +68,7 @@ export function initAnalytics(
         return
     }
 
-    ReactGA.initialize(measurementId, { nonce: getCspNonce(), gaOptions: { send_page_view: false } })
+    ReactGA.initialize(measurementId, { gaOptions: { send_page_view: false } })
     initialized = true
     onRouteResolved(() =>
         ReactGA.send({
