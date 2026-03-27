@@ -111,7 +111,7 @@ jobs:
                   pipenv run coverage report
                   pipenv run coverage xml
             - name: ☁️ Upload code coverage
-              uses: codecov/codecov-action@v5
+              uses: codecov/codecov-action@v6
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   files: coverage.xml
