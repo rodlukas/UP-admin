@@ -30,6 +30,10 @@ swagger_csp["style-src"] = [
     *swagger_csp.get("style-src", []),
     CSPURL_JSDELIVR_NET,
 ]
+swagger_csp["font-src"] = [
+    *swagger_csp.get("font-src", []),
+    "data:",
+]
 
 
 urlpatterns = [
