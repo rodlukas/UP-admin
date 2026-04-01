@@ -240,7 +240,7 @@ SECURE_CSP = {
     ],  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
     "connect-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_COLLECT],
     "script-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_SCRIPT, CSP.UNSAFE_EVAL],  # 'unsafe-eval' kvuli gtag.js (GA4)
-    "font-src": [CSP.SELF, CSPURL_GOOGLE_FONTS_FONT],
+    "font-src": [CSP.SELF, CSPURL_GOOGLE_FONTS_FONT, "data:"],
     "img-src": [CSP.SELF, "data:", CSPURL_GA4_COLLECT],
     "frame-ancestors": [CSP.NONE],
     "form-action": [CSP.NONE],
