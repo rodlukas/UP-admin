@@ -54,7 +54,7 @@ class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     ViewSet pro klienty.
     """
 
-    queryset = Client.objects.prefetch_related("attendances", "memberships", "applications")
+    queryset = Client.objects.all()
     serializer_class = ClientSerializer
     filterset_fields = ("active",)
 
@@ -255,7 +255,7 @@ class CourseViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     ViewSet pro kurzy.
     """
 
-    queryset = Course.objects.prefetch_related("lecture_set", "applications", "group_set")
+    queryset = Course.objects.all()
     serializer_class = CourseSerializer
     filterset_fields = ("visible",)
 
