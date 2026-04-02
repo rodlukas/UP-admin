@@ -111,5 +111,10 @@
         "react-select": "^5.10.2",
         "react-toastify": "^11.0.5",
         "reactstrap": "^9.2.3"
+    },
+    "overrides": {
+        "@tanstack/eslint-plugin-query": {
+            "typescript": "^6.0.2"
+        }
     }
 }
