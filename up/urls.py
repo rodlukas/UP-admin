@@ -16,7 +16,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 # CSP pro cdn.jsdelivr.net (openapi docs)
 CSPURL_JSDELIVR_NET = "https://cdn.jsdelivr.net"
 
-swagger_csp = deepcopy(settings.SECURE_CSP)
+swagger_csp: dict[str, list[str]] = deepcopy(settings.SECURE_CSP)
 swagger_csp["script-src"] = [
     *swagger_csp.get("script-src", []),
     CSPURL_JSDELIVR_NET,
