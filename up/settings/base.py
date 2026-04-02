@@ -231,7 +231,7 @@ CSPURL_GA4_SCRIPT = "https://www.googletagmanager.com"
 CSPURL_GA4_COLLECT = "https://*.google-analytics.com"
 
 # CSP konfigurace
-SECURE_CSP = {
+SECURE_CSP: dict[str, list[str]] = {
     "default-src": [CSP.NONE],
     "style-src": [
         CSP.SELF,
