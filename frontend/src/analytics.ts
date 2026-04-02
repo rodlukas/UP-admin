@@ -68,7 +68,9 @@ export function initAnalytics(
         return
     }
 
-    ReactGA.initialize(measurementId, { gaOptions: { send_page_view: false } })
+    ReactGA.initialize(measurementId, {
+        gaOptions: { send_page_view: false, cookie_domain: globalThis.location.hostname },
+    })
     initialized = true
     onRouteResolved(() =>
         ReactGA.send({
