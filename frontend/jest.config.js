@@ -6,8 +6,8 @@ module.exports = {
     },
     transform: {
         "\\.css\\.ts$": "@vanilla-extract/jest-transform",
-        "^(?!.*\\.css\\.ts$).+\\.(ts|tsx|js|jsx)$": "babel-jest",
+        "^(?!.*\\.css\\.ts$).+\\.(ts|tsx|js|jsx|mjs)$": "babel-jest",
     },
     testEnvironment: "jest-fixed-jsdom",
-    transformIgnorePatterns: ["node_modules/(?!(msw|until-async)/)"],
+    transformIgnorePatterns: ["node_modules/(?!(msw|until-async|react-ga4)/)"],
 }
