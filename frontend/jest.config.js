@@ -9,5 +9,5 @@ module.exports = {
         "^(?!.*\\.css\\.ts$).+\\.(ts|tsx|js|jsx)$": "babel-jest",
     },
     testEnvironment: "jest-fixed-jsdom",
-    transformIgnorePatterns: ["node_modules/(?!(msw|until-async)/)"],
+    transformIgnorePatterns: ["node_modules/(?!(msw|until-async|react-ga4)/)"],
 }
