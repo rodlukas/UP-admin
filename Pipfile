@@ -5,7 +5,7 @@ verify_ssl = true
 
 [packages]
 django = "~=6.0.3"
-django-debug-toolbar = "~=6.2.0"
+django-debug-toolbar = "~=6.3.0"
 django-environ = "~=0.13.0"
 django-filter = "~=25.2.0"
 djangorestframework = "~=3.17.1"
@@ -24,11 +24,11 @@ vulture = "~=2.16.0"
 behave-django = "~=1.9.0"
 black = "~=26.3.1"
 coverage = "~=7.13.5"
-django-stubs = "~=6.0.1"
+django-stubs = "~=6.0.2"
 djangorestframework-stubs = "~=3.16.9"
 mypy = "~=1.20.0"
 selenium = "~=4.41.0"
-types-requests = "~=2.33.0.20260327"
+types-requests = "~=2.33.0.20260402"
 
 [requires]
 python_version = "3.12"
