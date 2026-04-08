@@ -38,7 +38,7 @@
     <a href="https://sentry.io/organizations/rodlukas/issues/?project=1247206">Sentry</a> · 
     <a href="https://fly.io/dashboard">Fly.io</a> · 
     <a href="https://app.snyk.io/org/rodlukas/projects?groupBy=targets&searchQuery=UP-admin">Snyk</a> · 
-    <a href="https://analytics.google.com/analytics/web/#/report-home/a53235943w186065128p183124243">Google Analytics</a>
+    <a href="https://analytics.google.com/analytics/web/#/a53235943p525695113/">Google Analytics</a>
 </p>
 
 ## Table of Contents
