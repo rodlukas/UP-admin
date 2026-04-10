@@ -135,6 +135,94 @@ export type BankErrorType = {
 /** Typ pro odpověď z banky - buď úspěšná s daty, nebo chybová pouze se error_info. */
 export type BankType = BankSuccessType | BankErrorType
 
+/** Filtry pro statistiky lekcí (`year` vynechán = všechny roky). */
+export type StatisticsFilters = {
+    year?: number | null
+}
+
+/** Statistiky aplikace (GET). */
+export type StatisticsType = {
+    clients: {
+        total: number
+        active: number
+        inactive: number
+        /** Klienti bez jediné účasti (globální stav, bez filtrů). */
+        without_lectures: number
+    }
+    groups: {
+        total: number
+        active: number
+        inactive: number
+    }
+    lectures: {
+        /** Celkový počet lekcí, které fakticky neproběhly (zrušené + skupinové kde všichni omluveni; individuální omluvené jsou ⊆ zrušených). */
+        not_happened_count: number
+        /** Počet lekcí označených canceled=True. */
+        canceled_count: number
+        /** Míra zrušení v % (canceled_count / celkový počet lekcí v rozsahu). */
+        canceled_rate: number
+        /** Omluvené neproběhlé: individuální omluvené (⊆ canceled_count) + skupinové kde všichni omluveni (⊆ not_happened_count). */
+        excused_not_happened_count: number
+        total: number
+        individual: number
+        group: number
+        /** Odučené minuty – počítá jen lekce, které fakticky proběhly (vynechává neproběhlé). */
+        total_minutes: number
+        available_years: number[]
+        /** Rozklad po kurzech – vždy přítomen, reaguje na filtr roku. */
+        by_course: {
+            course_id: number
+            course_name: string
+            course_color: string
+            total: number
+            individual: number
+            group: number
+            total_minutes: number
+            canceled_count: number
+            canceled_rate: number
+            excused_not_happened_count: number
+        }[]
+        /** Vývoj rozložení kurzů po letech – null pokud je vybraný konkrétní rok. */
+        by_year_course:
+            | {
+                  year: number
+                  course_id: number
+                  course_name: string
+                  course_color: string
+                  total: number
+              }[]
+            | null
+        /** Rozklad po letech – null pokud je vybraný konkrétní rok. */
+        by_year:
+            | {
+                  year: number
+                  total: number
+                  individual: number
+                  group: number
+                  total_minutes: number
+                  canceled_count: number
+                  canceled_rate: number
+                  excused_not_happened_count: number
+              }[]
+            | null
+        /** Nejaktivnější klienti – počty neomluvených účastí na proběhlých lekcích (stejný rozsah jako filtr roku). */
+        top_clients: {
+            id: number
+            firstname: string
+            surname: string
+            lecture_count: number
+        }[]
+        /** Skupiny s nejvíce proběhlými lekcemi (počet lekcí ve skupině v rozsahu filtru). */
+        top_groups: {
+            id: number
+            name: string
+            lecture_count: number
+        }[]
+        /** Proběhlé lekce podle měsíce začátku (1–12). U filtru „Celkem“ součty napříč všemi roky. */
+        by_month: { month: number; total: number; total_minutes: number }[]
+    }
+}
+
 /* *************************************************************************************************
 Dummy modely pro formuláře.
 

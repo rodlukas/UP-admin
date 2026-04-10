@@ -38,7 +38,7 @@ from .serializers import (
     LectureSerializer,
     MembershipPlainSerializer,
 )
-from .services import Bank
+from .services import Bank, Statistics
 
 
 @extend_schema_view(
@@ -361,7 +361,10 @@ class LectureViewSet(viewsets.ModelViewSet):
         Lecture.objects.order_by("-start")
         .select_related("group__course", "course")
         .prefetch_related(
-            Prefetch("attendances", queryset=Attendance.objects.select_related("client", "attendancestate")),
+            Prefetch(
+                "attendances",
+                queryset=Attendance.objects.select_related("client", "attendancestate"),
+            ),
             Prefetch("group__memberships", queryset=Membership.objects.select_related("client")),
         )
     )
@@ -425,3 +428,40 @@ class BankView(APIView):
     )
     def get(self, request: Request) -> Response:
         return Bank().get_transactions()
+
+
+
+class StatisticsView(APIView):
+    """
+    View pro získání statistik aplikace.
+
+    Query parametry:
+      year  – konkrétní rok (např. "2024"), výchozí = všechny roky;
+              při zadání roku se vynechávají rozklady ``by_year`` a ``by_year_course``.
+
+    Agregace proběhlých lekcí (počty „proběhlé“, ind./skup., odučené minuty) vycházejí z
+    nezrušených lekcí (``canceled=False``) a vylučují skupinové lekce, kde mají všichni
+    účastníci omluveno (fakticky neproběhly). Počty zrušení a míra zrušení počítají ze
+    všech proběhlých lekcí v rozsahu filtru (včetně ``canceled=True``).
+    """
+
+    @extend_schema(
+        summary="Statistiky aplikace",
+        description=(
+            "Vrátí souhrnné statistiky: počty klientů a skupin (celkem/aktivní/neaktivní) "
+            "a počty proběhlých nezrušených lekcí (celkem/individuální/skupinové/odučené minuty) "
+            "včetně rozkladu po letech, po měsících (sezónnost), žebříčků klientů a skupin "
+            "s nejvíce proběhlými lekcemi a seznamu dostupných roků. Filtr: `year` (konkrétní rok)."
+        ),
+        tags=["Statistiky"],
+        responses={200: OpenApiResponse(description="Statistiky aplikace.")},
+    )
+    def get(self, request: Request) -> Response:
+        year_param = request.query_params.get("year")
+        selected_year: int | None = None
+        if year_param:
+            try:
+                selected_year = int(year_param)
+            except (ValueError, TypeError):
+                pass
+        return Response(Statistics().get_statistics(selected_year))

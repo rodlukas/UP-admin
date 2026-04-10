@@ -31,5 +31,8 @@ export * from "./useMembershipMutations"
 // Bank hooks
 export * from "./useBankQuery"
 
+// Statistics hooks
+export * from "./useStatisticsQuery"
+
 // Login hooks
 export * from "./useLoginMutations"

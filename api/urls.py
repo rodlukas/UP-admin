@@ -26,6 +26,7 @@ urlpatterns = [
     path("", include(router.urls)),
     # dalsi URL mimo DRF
     path("bank/", views.BankView.as_view()),
+    path("stats/", views.StatisticsView.as_view()),
     path("jwt-auth/", MyTokenObtainSlidingView.as_view(), name="token_obtain"),
     path("jwt-refresh/", MyTokenRefreshSlidingView.as_view(), name="token_refresh"),
 ]

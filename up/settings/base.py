@@ -70,8 +70,9 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "api.apps.ApiConfig",
     "django_filters",
-    "debug_toolbar",
 ]
+if not TESTS_RUNNING:
+    INSTALLED_APPS.append("debug_toolbar")
 if not DEPLOYED:
     INSTALLED_APPS.append("behave_django")
 
@@ -150,7 +151,6 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.csp.ContentSecurityPolicyMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -158,6 +158,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+if not TESTS_RUNNING:
+    MIDDLEWARE.insert(3, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
 ROOT_URLCONF = "up.urls"
 

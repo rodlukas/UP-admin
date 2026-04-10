@@ -69,7 +69,10 @@ const Menu: React.FC<Props> = (props) => {
                     />
                     <Nav className="ms-auto" navbar>
                         <NavItem>
-                            <MyNavLink exact to={APP_URLS.prehled.url} onCloseNavbar={props.closeNavbar}>
+                            <MyNavLink
+                                exact
+                                to={APP_URLS.prehled.url}
+                                onCloseNavbar={props.closeNavbar}>
                                 Přehled
                             </MyNavLink>
                         </NavItem>
@@ -100,6 +103,14 @@ const Menu: React.FC<Props> = (props) => {
                                 data-qa="menu_applications"
                                 onCloseNavbar={props.closeNavbar}>
                                 Zájemci
+                            </MyNavLink>
+                        </NavItem>
+                        <NavItem>
+                            <MyNavLink
+                                to={APP_URLS.statistiky.url}
+                                data-qa="menu_statistics"
+                                onCloseNavbar={props.closeNavbar}>
+                                Statistiky
                             </MyNavLink>
                         </NavItem>
                         <NavItem>

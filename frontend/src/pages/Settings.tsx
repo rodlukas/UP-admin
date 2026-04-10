@@ -41,7 +41,7 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
     />
 )
 
-/** Stránka s nastavením - správa kurzů, stavů účasti, info o aplikaci. */
+/** Stránka s nastavením – správa kurzů, stavů účasti, info o aplikaci. */
 const Settings: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const {
@@ -49,9 +49,10 @@ const Settings: React.FC = () => {
         isLoading: coursesLoading,
         isFetching: coursesFetching,
     } = useCourses()
+
     const patchAttendanceState = usePatchAttendanceState()
 
-    /**ID stavu účasti s významem "klient se zúčastní" (výchozí stav). */
+    /** ID stavu účasti s významem "klient se zúčastní" (výchozí stav). */
     const [attendanceStateDefaultId, setAttendanceStateDefaultId] = React.useState<
         AttendanceStateType["id"] | undefined
     >(undefined)
@@ -64,11 +65,9 @@ const Settings: React.FC = () => {
         if (!attendanceStatesContext.isLoading) {
             const attendanceStates = attendanceStatesContext.attendancestates
             const defaultElem = attendanceStates.find((elem) => elem.default)
-            const defaultId = defaultElem?.id
             const excusedElem = attendanceStates.find((elem) => elem.excused)
-            const excusedId = excusedElem?.id
-            setAttendanceStateDefaultId(defaultId)
-            setAttendanceStateExcusedId(excusedId)
+            setAttendanceStateDefaultId(defaultElem?.id)
+            setAttendanceStateExcusedId(excusedElem?.id)
         }
     }, [attendanceStatesContext.isLoading, attendanceStatesContext.attendancestates])
 
@@ -82,14 +81,13 @@ const Settings: React.FC = () => {
         }
         const attrApi = target.dataset.attribute
         if (attrApi) {
-            // odesli na API patch pozadavek
-            const data = { id: value, [attrApi]: true }
-            patchAttendanceState.mutate(data)
+            patchAttendanceState.mutate({ id: value, [attrApi]: true })
         }
     }
 
     const isLoading = coursesLoading || attendanceStatesContext.isLoading
     const isFetching = coursesFetching || attendanceStatesContext.isFetching
+
     return (
         <>
             <Container>

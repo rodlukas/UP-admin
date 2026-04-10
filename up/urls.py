@@ -53,8 +53,8 @@ urlpatterns = [
     re_path(r"^", TemplateView.as_view(template_name="react-autogenerate.html")),
 ]
 
-# povoleni django-debug-toolbar stranek
-if settings.DEBUG or settings.MANUAL_PRODUCTION:
+# povoleni django-debug-toolbar stranek jen pokud je aktivni
+if "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
     urlpatterns.insert(0, re_path(r"^__debug__/", include(debug_toolbar.urls)))

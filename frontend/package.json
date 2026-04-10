@@ -110,7 +110,8 @@
         "react-ga4": "^3.0.1",
         "react-select": "^5.10.2",
         "react-toastify": "^11.0.5",
-        "reactstrap": "^9.2.3"
+        "reactstrap": "^9.2.3",
+        "recharts": "^3.8.1"
     },
     "overrides": {
         "@tanstack/eslint-plugin-query": {
