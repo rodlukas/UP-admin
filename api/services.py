@@ -130,6 +130,8 @@ class Statistics:
     Sestavuje statistiky aplikace z databáze.
     """
 
+    LEADERBOARD_N = 10
+
     def get_statistics(self, year: int | None) -> dict:
         """
         Sestaví a vrátí slovník se statistikami aplikace pro daný rok (nebo všechny roky).
@@ -158,42 +160,42 @@ class Statistics:
         )
 
         # Základní querysets
-        all_qs = Lecture.objects.filter(start__isnull=False, start__lte=now)
-        base_all_qs = all_qs.filter(canceled=False)
-        year_all_qs = all_qs.filter(start__year=year) if year else all_qs
-        base_qs = base_all_qs.filter(start__year=year) if year else base_all_qs
+        all_lectures = Lecture.objects.filter(start__isnull=False, start__lte=now)
+        noncanceled_all_lectures = all_lectures.filter(canceled=False)
+        all_scoped_lectures = all_lectures.filter(start__year=year) if year else all_lectures
+        noncanceled_lectures = noncanceled_all_lectures.filter(start__year=year) if year else noncanceled_all_lectures
 
         # Zrušené lekce
-        total_in_scope = year_all_qs.count()
-        canceled_count = year_all_qs.filter(canceled=True).count()
+        total_in_scope = all_scoped_lectures.count()
+        canceled_count = all_scoped_lectures.filter(canceled=True).count()
         canceled_rate = self._rate(canceled_count, total_in_scope)
 
         # Individuální omluvené lekce (vždy canceled=True, podmnožina canceled_count)
-        ind_att_global = Attendance.objects.filter(
+        excused_individual_attendance_all = Attendance.objects.filter(
             lecture__start__isnull=False,
             lecture__start__lte=now,
             lecture__group__isnull=True,
             attendancestate__excused=True,
         )
-        year_ind_att = (
-            ind_att_global.filter(lecture__start__year=year) if year else ind_att_global
+        excused_individual_attendance = (
+            excused_individual_attendance_all.filter(lecture__start__year=year) if year else excused_individual_attendance_all
         )
-        excused_individual_count = year_ind_att.count()
+        excused_individual_count = excused_individual_attendance.count()
 
         # Skupinové lekce kde všichni účastníci omluveni
-        all_excused_grp_qs = self._all_excused_grp(base_qs)
-        all_excused_grp_count = all_excused_grp_qs.count()
+        excused_group_lectures = self._excused_group_lectures(noncanceled_lectures)
+        excused_group_count = excused_group_lectures.count()
 
-        excused_not_happened_count = excused_individual_count + all_excused_grp_count
-        not_happened_count = canceled_count + all_excused_grp_count
+        excused_not_happened_count = excused_individual_count + excused_group_count
+        not_happened_count = canceled_count + excused_group_count
 
         # Efektivní queryset: proběhlé lekce (bez zrušených a skupinových kde všichni omluveni)
-        effective_qs = base_qs.exclude(pk__in=all_excused_grp_qs.values("pk"))
-        all_excused_grp_all_years_qs = self._all_excused_grp(base_all_qs)
-        effective_all_qs = base_all_qs.exclude(pk__in=all_excused_grp_all_years_qs.values("pk"))
+        effective_lectures = noncanceled_lectures.exclude(pk__in=excused_group_lectures.values("pk"))
+        excused_group_all_lectures = self._excused_group_lectures(noncanceled_all_lectures)
+        effective_all_lectures = noncanceled_all_lectures.exclude(pk__in=excused_group_all_lectures.values("pk"))
 
         # Agregace proběhlých lekcí
-        agg = effective_qs.aggregate(
+        totals = effective_lectures.aggregate(
             total=Count("id"),
             individual=Count("id", filter=Q(group__isnull=True)),
             group=Count("id", filter=Q(group__isnull=False)),
@@ -202,23 +204,23 @@ class Statistics:
 
         # Per-course doplňkové statistiky
         canceled_by_course = {
-            r["course__id"]: r
-            for r in year_all_qs.values("course__id").annotate(
+            row["course__id"]: row
+            for row in all_scoped_lectures.values("course__id").annotate(
                 total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
             )
         }
         excused_individual_by_course = {
-            r["lecture__course_id"]: r["cnt"]
-            for r in year_ind_att.values("lecture__course_id").annotate(cnt=Count("id"))
+            row["lecture__course_id"]: row["count"]
+            for row in excused_individual_attendance.values("lecture__course_id").annotate(count=Count("id"))
         }
-        all_excused_grp_by_course = {
-            r["course_id"]: r["cnt"]
-            for r in all_excused_grp_qs.values("course_id").annotate(cnt=Count("id"))
+        excused_group_by_course = {
+            row["course_id"]: row["count"]
+            for row in excused_group_lectures.values("course_id").annotate(count=Count("id"))
         }
 
         # Rozklad po kurzech
-        by_course_qs = (
-            effective_qs.values("course__id", "course__name", "course__color")
+        by_course_lectures = (
+            effective_lectures.values("course__id", "course__name", "course__color")
             .annotate(
                 total=Count("id"),
                 individual=Count("id", filter=Q(group__isnull=True)),
@@ -244,19 +246,18 @@ class Statistics:
                     canceled_by_course.get(row["course__id"], {}).get("total_all", 0),
                 ),
                 "excused_not_happened_count": excused_individual_by_course.get(row["course__id"], 0)
-                + all_excused_grp_by_course.get(row["course__id"], 0),
+                + excused_group_by_course.get(row["course__id"], 0),
             }
-            for row in by_course_qs
+            for row in by_course_lectures
             if row["total"] > 0
         ]
 
         # Žebříčky
-        _leaderboard_n = 10
         top_clients_raw = (
-            Attendance.objects.filter(lecture__in=effective_qs, attendancestate__excused=False)
+            Attendance.objects.filter(lecture__in=effective_lectures, attendancestate__excused=False)
             .values("client_id", "client__firstname", "client__surname")
             .annotate(lecture_count=Count("lecture", distinct=True))
-            .order_by("-lecture_count", "client__surname", "client__firstname")[:_leaderboard_n]
+            .order_by("-lecture_count", "client__surname", "client__firstname")[: self.LEADERBOARD_N]
         )
         top_clients = [
             {
@@ -268,10 +269,10 @@ class Statistics:
             for row in top_clients_raw
         ]
         top_groups_raw = (
-            effective_qs.filter(group__isnull=False)
+            effective_lectures.filter(group__isnull=False)
             .values("group_id", "group__name")
             .annotate(lecture_count=Count("id"))
-            .order_by("-lecture_count", "group__name")[:_leaderboard_n]
+            .order_by("-lecture_count", "group__name")[: self.LEADERBOARD_N]
         )
         top_groups = [
             {
@@ -283,16 +284,16 @@ class Statistics:
         ]
 
         # Rozklad po měsících (1–12)
-        by_month_base_qs = effective_qs if year else effective_all_qs
-        by_month_agg = (
-            by_month_base_qs.annotate(_month=ExtractMonth("start"))
+        by_month_lectures = effective_lectures if year else effective_all_lectures
+        by_month_aggregated = (
+            by_month_lectures.annotate(_month=ExtractMonth("start"))
             .values("_month")
             .annotate(total=Count("id"), total_minutes=Sum("duration"))
             .order_by("_month")
         )
         by_month_stats = {
             row["_month"]: {"total": row["total"], "total_minutes": row["total_minutes"] or 0}
-            for row in by_month_agg
+            for row in by_month_aggregated
         }
         by_month = [
             {
@@ -308,23 +309,23 @@ class Statistics:
         by_year_course = None
         if year is None:
             canceled_by_year = {
-                r["start__year"]: r
-                for r in all_qs.values("start__year").annotate(
+                row["start__year"]: row
+                for row in all_lectures.values("start__year").annotate(
                     total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
                 )
             }
             excused_individual_by_year = {
-                r["lecture__start__year"]: r["cnt"]
-                for r in ind_att_global.values("lecture__start__year").annotate(cnt=Count("id"))
+                row["lecture__start__year"]: row["count"]
+                for row in excused_individual_attendance_all.values("lecture__start__year").annotate(count=Count("id"))
             }
-            all_excused_grp_by_year = {
-                r["start__year"]: r["cnt"]
-                for r in all_excused_grp_all_years_qs.values("start__year").annotate(
-                    cnt=Count("id")
+            excused_group_by_year = {
+                row["start__year"]: row["count"]
+                for row in excused_group_all_lectures.values("start__year").annotate(
+                    count=Count("id")
                 )
             }
-            by_year_qs = (
-                effective_all_qs.values("start__year")
+            by_year_lectures = (
+                effective_all_lectures.values("start__year")
                 .annotate(
                     total=Count("id"),
                     individual=Count("id", filter=Q(group__isnull=True)),
@@ -350,12 +351,12 @@ class Statistics:
                     "excused_not_happened_count": excused_individual_by_year.get(
                         row["start__year"], 0
                     )
-                    + all_excused_grp_by_year.get(row["start__year"], 0),
+                    + excused_group_by_year.get(row["start__year"], 0),
                 }
-                for row in by_year_qs
+                for row in by_year_lectures
             ]
-            by_year_course_qs = (
-                effective_all_qs.values(
+            by_year_course_lectures = (
+                effective_all_lectures.values(
                     "start__year", "course__id", "course__name", "course__color"
                 )
                 .annotate(total=Count("id"))
@@ -369,7 +370,7 @@ class Statistics:
                     "course_color": row["course__color"],
                     "total": row["total"],
                 }
-                for row in by_year_course_qs
+                for row in by_year_course_lectures
             ]
 
         return {
@@ -389,10 +390,10 @@ class Statistics:
                 "canceled_count": canceled_count,
                 "canceled_rate": canceled_rate,
                 "excused_not_happened_count": excused_not_happened_count,
-                "total": agg["total"],
-                "individual": agg["individual"],
-                "group": agg["group"],
-                "total_minutes": agg["total_minutes"] or 0,
+                "total": totals["total"],
+                "individual": totals["individual"],
+                "group": totals["group"],
+                "total_minutes": totals["total_minutes"] or 0,
                 "available_years": available_years,
                 "by_year": by_year,
                 "by_year_course": by_year_course,
@@ -403,23 +404,23 @@ class Statistics:
             },
         }
 
-    def _all_excused_grp(self, base: QuerySet) -> QuerySet:
+    def _excused_group_lectures(self, lectures: QuerySet) -> QuerySet:
         """
         Skupinové lekce kde všichni účastníci mají omluveno (fakticky neproběhly).
         """
         return (
-            base.filter(group__isnull=False)
+            lectures.filter(group__isnull=False)
             .annotate(
-                total_att=Count("attendances"),
-                excused_att=Count(
+                total_attendances=Count("attendances"),
+                excused_attendances=Count(
                     "attendances", filter=Q(attendances__attendancestate__excused=True)
                 ),
             )
-            .filter(total_att__gt=0, total_att=F("excused_att"))
+            .filter(total_attendances__gt=0, total_attendances=F("excused_attendances"))
         )
 
-    def _rate(self, num: int, den: int) -> float:
+    def _rate(self, numerator: int, denominator: int) -> float:
         """
         Míra v procentech (1 desetinné místo); 0.0 pokud je jmenovatel nulový.
         """
-        return round(num / den * 100, 1) if den else 0.0
+        return round(numerator / denominator * 100, 1) if denominator else 0.0
