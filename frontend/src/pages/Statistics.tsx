@@ -557,10 +557,7 @@ const LecturesMonthSection: React.FC<LecturesMonthSectionProps> = ({
             : `${CHART_METRIC_LABEL[chartMetric]} v roce ${year} podle měsíce začátku lekce.`
     const data = byMonth.map((row) => ({
         label: MONTH_LABELS_SHORT[row.month - 1],
-        value:
-            chartMetric === "lectures"
-                ? row.total
-                : Number((row.total_minutes / 60).toFixed(1)),
+        value: chartMetric === "lectures" ? row.total : Number((row.total_minutes / 60).toFixed(1)),
     }))
     const yAxisLabel = chartMetric === "hours" ? "Hodiny" : "Počet lekcí"
     return (
@@ -647,11 +644,7 @@ const LecturesCourseSection: React.FC<LecturesCourseSectionProps> = ({ byCourse,
                 width="100%"
                 height={byCourse.length * (compact ? 38 : 45) + (compact ? 56 : 70)}>
                 <BarChart layout="vertical" data={byCourse} margin={CHART_MARGIN_BAR_VERTICAL}>
-                    <CartesianGrid
-                        stroke={GRID_STROKE}
-                        strokeDasharray="3 3"
-                        horizontal={false}
-                    />
+                    <CartesianGrid stroke={GRID_STROKE} strokeDasharray="3 3" horizontal={false} />
                     <XAxis
                         type="number"
                         allowDecimals={false}
@@ -717,9 +710,7 @@ const LecturesYearSection: React.FC<LecturesYearSectionProps> = ({
             <>
                 {chartMetric === "lectures" && (
                     <ResponsiveContainer width="100%" height={compact ? 250 : 280}>
-                        <BarChart
-                            data={[...byYear].reverse()}
-                            margin={CHART_MARGIN_BOTTOM_LEGEND}>
+                        <BarChart data={[...byYear].reverse()} margin={CHART_MARGIN_BOTTOM_LEGEND}>
                             <CartesianGrid
                                 stroke={GRID_STROKE}
                                 strokeDasharray="3 3"
@@ -757,7 +748,12 @@ const LecturesYearSection: React.FC<LecturesYearSectionProps> = ({
                             />
                             <Tooltip content={<YearTooltip />} />
                             <Legend formatter={formatStackedBarLegend} wrapperStyle={LEGEND_FONT} />
-                            <Bar dataKey="individual" stackId="a" fill="#0d6efd" name="individual" />
+                            <Bar
+                                dataKey="individual"
+                                stackId="a"
+                                fill="#0d6efd"
+                                name="individual"
+                            />
                             <Bar dataKey="group" stackId="a" fill="#0dcaf0" name="group" />
                             <Bar
                                 dataKey="canceled_count"
@@ -770,9 +766,7 @@ const LecturesYearSection: React.FC<LecturesYearSectionProps> = ({
                         </BarChart>
                     </ResponsiveContainer>
                 )}
-                {chartMetric === "hours" && (
-                    <HoursByYearChart byYear={byYear} compact={compact} />
-                )}
+                {chartMetric === "hours" && <HoursByYearChart byYear={byYear} compact={compact} />}
             </>
         ) : (
             <p className={styles.chartEmpty}>Žádné lekce v datech.</p>

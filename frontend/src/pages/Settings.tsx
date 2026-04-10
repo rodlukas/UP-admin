@@ -185,6 +185,7 @@ const Settings: React.FC = () => {
                                                     </option>
                                                     {attendanceStatesContext.attendancestates.map(
                                                         (attendancestate) =>
+                                                            // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
                                                             attendancestate.visible && (
                                                                 <option
                                                                     key={attendancestate.id}
@@ -214,6 +215,7 @@ const Settings: React.FC = () => {
                                                     </option>
                                                     {attendanceStatesContext.attendancestates.map(
                                                         (attendancestate) =>
+                                                            // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
                                                             attendancestate.visible && (
                                                                 <option
                                                                     key={attendancestate.id}
@@ -279,7 +281,6 @@ const Settings: React.FC = () => {
                                 )}
                             </Col>
                         </Row>
-
                         <hr />
                         <p className={classNames("text-center", styles.footer)}>
                             <span className="fw-bold">Verze aplikace:</span>{" "}
