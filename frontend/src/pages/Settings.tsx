@@ -105,7 +105,6 @@ const Settings: React.FC = () => {
                     <Loading />
                 ) : (
                     <>
-                        {/* ── Stavy účasti & Kurzy ─────────────────────────────────── */}
                         <Row>
                             <Col md={6}>
                                 <h2>Stavy účasti</h2>
@@ -281,7 +280,6 @@ const Settings: React.FC = () => {
                             </Col>
                         </Row>
 
-                        {/* ── Patička ──────────────────────────────────────────────── */}
                         <hr />
                         <p className={classNames("text-center", styles.footer)}>
                             <span className="fw-bold">Verze aplikace:</span>{" "}
