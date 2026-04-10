@@ -104,6 +104,14 @@ const Menu: React.FC<Props> = (props) => {
                         </NavItem>
                         <NavItem>
                             <MyNavLink
+                                to={APP_URLS.statistiky.url}
+                                data-qa="menu_statistics"
+                                onCloseNavbar={props.closeNavbar}>
+                                Statistiky
+                            </MyNavLink>
+                        </NavItem>
+                        <NavItem>
+                            <MyNavLink
                                 to={APP_URLS.nastaveni.url}
                                 data-qa="menu_settings"
                                 onCloseNavbar={props.closeNavbar}>

@@ -19,6 +19,7 @@ const Login = React.lazy(() => lazySafe(() => import("./pages/Login")))
 const Clients = React.lazy(() => lazySafe(() => import("./pages/Clients")))
 const Card = React.lazy(() => lazySafe(() => import("./pages/Card")))
 const Diary = React.lazy(() => lazySafe(() => import("./pages/Diary")))
+const Statistics = React.lazy(() => lazySafe(() => import("./pages/Statistics")))
 
 const queryClient = createQueryClient()
 
@@ -101,6 +102,7 @@ const applicationsRoute = createPrivateRoute(
     APP_URLS.zajemci.title,
 )
 const settingsRoute = createPrivateRoute(APP_URLS.nastaveni.url, <Settings />, APP_URLS.nastaveni.title)
+const statisticsRoute = createPrivateRoute(APP_URLS.statistiky.url, <Statistics />, APP_URLS.statistiky.title)
 const notFoundRoute = createPageRoute(APP_URLS.nenalezeno.url, <NotFound />, APP_URLS.nenalezeno.title)
 
 const routeTree = rootRoute.addChildren([
@@ -113,6 +115,7 @@ const routeTree = rootRoute.addChildren([
     groupCardRoute,
     applicationsRoute,
     settingsRoute,
+    statisticsRoute,
     notFoundRoute,
 ])
 

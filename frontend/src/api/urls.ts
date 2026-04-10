@@ -59,6 +59,9 @@ export const API_URLS = Object.freeze({
     bank: {
         url: `bank${API_DELIM}`,
     },
+    stats: {
+        url: `stats${API_DELIM}`,
+    },
 })
 
 /** Metody, které poskytuje API. */

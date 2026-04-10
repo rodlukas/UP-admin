@@ -3,7 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
-import { Alert, Col, Container, Label, ListGroup, ListGroupItem, Row, Table } from "reactstrap"
+import {
+    Alert,
+    Col,
+    Container,
+    Label,
+    ListGroup,
+    ListGroupItem,
+    Row,
+    Table,
+} from "reactstrap"
 
 import { useCourses, usePatchAttendanceState } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
@@ -41,7 +50,7 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
     />
 )
 
-/** Stránka s nastavením - správa kurzů, stavů účasti, info o aplikaci. */
+/** Stránka s nastavením – správa kurzů, stavů účasti, info o aplikaci. */
 const Settings: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const {
@@ -49,9 +58,10 @@ const Settings: React.FC = () => {
         isLoading: coursesLoading,
         isFetching: coursesFetching,
     } = useCourses()
+
     const patchAttendanceState = usePatchAttendanceState()
 
-    /**ID stavu účasti s významem "klient se zúčastní" (výchozí stav). */
+    /** ID stavu účasti s významem "klient se zúčastní" (výchozí stav). */
     const [attendanceStateDefaultId, setAttendanceStateDefaultId] = React.useState<
         AttendanceStateType["id"] | undefined
     >(undefined)
@@ -64,11 +74,9 @@ const Settings: React.FC = () => {
         if (!attendanceStatesContext.isLoading) {
             const attendanceStates = attendanceStatesContext.attendancestates
             const defaultElem = attendanceStates.find((elem) => elem.default)
-            const defaultId = defaultElem?.id
             const excusedElem = attendanceStates.find((elem) => elem.excused)
-            const excusedId = excusedElem?.id
-            setAttendanceStateDefaultId(defaultId)
-            setAttendanceStateExcusedId(excusedId)
+            setAttendanceStateDefaultId(defaultElem?.id)
+            setAttendanceStateExcusedId(excusedElem?.id)
         }
     }, [attendanceStatesContext.isLoading, attendanceStatesContext.attendancestates])
 
@@ -82,14 +90,13 @@ const Settings: React.FC = () => {
         }
         const attrApi = target.dataset.attribute
         if (attrApi) {
-            // odesli na API patch pozadavek
-            const data = { id: value, [attrApi]: true }
-            patchAttendanceState.mutate(data)
+            patchAttendanceState.mutate({ id: value, [attrApi]: true })
         }
     }
 
     const isLoading = coursesLoading || attendanceStatesContext.isLoading
     const isFetching = coursesFetching || attendanceStatesContext.isFetching
+
     return (
         <>
             <Container>
@@ -107,6 +114,7 @@ const Settings: React.FC = () => {
                     <Loading />
                 ) : (
                     <>
+                        {/* ── Stavy účasti & Kurzy ─────────────────────────────────── */}
                         <Row>
                             <Col md={6}>
                                 <h2>Stavy účasti</h2>
@@ -158,8 +166,7 @@ const Settings: React.FC = () => {
                                 )}
                                 {attendanceStateExcusedId === undefined && (
                                     <Alert color="danger">
-                                        Není vybraný stav „omluven“, aplikace nemůže správně
-                                        fungovat!
+                                        Není vybraný stav „omluven“, aplikace nemůže správně fungovat!
                                     </Alert>
                                 )}
                                 <p className="mb-2">
@@ -170,9 +177,7 @@ const Settings: React.FC = () => {
                                     <ListGroupItem>
                                         <Row>
                                             <Label for="state_default_id" sm={7}>
-                                                <span className="fw-bold">
-                                                    „klient se zúčastní“
-                                                </span>{" "}
+                                                <span className="fw-bold">„klient se zúčastní“</span>{" "}
                                                 (výchozí stav)
                                             </Label>
                                             <Col sm={5}>
@@ -187,7 +192,6 @@ const Settings: React.FC = () => {
                                                     </option>
                                                     {attendanceStatesContext.attendancestates.map(
                                                         (attendancestate) =>
-                                                            // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
                                                             attendancestate.visible && (
                                                                 <option
                                                                     key={attendancestate.id}
@@ -217,7 +221,6 @@ const Settings: React.FC = () => {
                                                     </option>
                                                     {attendanceStatesContext.attendancestates.map(
                                                         (attendancestate) =>
-                                                            // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
                                                             attendancestate.visible && (
                                                                 <option
                                                                     key={attendancestate.id}
@@ -283,6 +286,8 @@ const Settings: React.FC = () => {
                                 )}
                             </Col>
                         </Row>
+
+                        {/* ── Patička ──────────────────────────────────────────────── */}
                         <hr />
                         <p className={classNames("text-center", styles.footer)}>
                             <span className="fw-bold">Verze aplikace:</span>{" "}
