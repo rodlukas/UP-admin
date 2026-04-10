@@ -4,10 +4,8 @@ Views - na základě requestu vrátí příslušnou response.
 
 from typing import Any
 
-from django.db.models import Count, F, Prefetch, Q, QuerySet, Sum
-from django.db.models.functions import ExtractMonth
+from django.db.models import Prefetch
 from django.db.models.deletion import ProtectedError
-from django.utils import timezone
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
@@ -40,7 +38,7 @@ from .serializers import (
     LectureSerializer,
     MembershipPlainSerializer,
 )
-from .services import Bank
+from .services import Bank, Statistics
 
 
 @extend_schema_view(
@@ -432,26 +430,6 @@ class BankView(APIView):
         return Bank().get_transactions()
 
 
-def _all_excused_grp(base: "QuerySet") -> "QuerySet":
-    """
-    Skupinové lekce kde všichni účastníci mají omluveno (fakticky neproběhly).
-    """
-    return (
-        base.filter(group__isnull=False)
-        .annotate(
-            total_att=Count("attendances"),
-            excused_att=Count("attendances", filter=Q(attendances__attendancestate__excused=True)),
-        )
-        .filter(total_att__gt=0, total_att=F("excused_att"))
-    )
-
-
-def _rate(num: int, den: int) -> float:
-    """
-    Míra v procentech (1 desetinné místo); 0.0 pokud je jmenovatel nulový.
-    """
-    return round(num / den * 100, 1) if den else 0.0
-
 
 class StatisticsView(APIView):
     """
@@ -479,27 +457,6 @@ class StatisticsView(APIView):
         responses={200: OpenApiResponse(description="Statistiky aplikace.")},
     )
     def get(self, request: Request) -> Response:
-        now = timezone.now()
-
-        # --- Klienti ---
-        total_clients = Client.objects.count()
-        active_clients = Client.objects.filter(active=True).count()
-        # Klienti bez jediné účasti na jakékoli lekci (globální stav, bez filtrů)
-        clients_without_lectures = Client.objects.filter(attendances__isnull=True).count()
-
-        # --- Skupiny ---
-        total_groups = Group.objects.count()
-        active_groups = Group.objects.filter(active=True).count()
-
-        # --- Dostupné roky (ze všech proběhlých lekcí, nezávisle na filtru year) ---
-        available_years = list(
-            Lecture.objects.filter(start__isnull=False, start__lte=now)
-            .values_list("start__year", flat=True)
-            .distinct()
-            .order_by("-start__year")
-        )
-
-        # --- Year filtr ---
         year_param = request.query_params.get("year")
         selected_year: int | None = None
         if year_param:
@@ -507,267 +464,4 @@ class StatisticsView(APIView):
                 selected_year = int(year_param)
             except (ValueError, TypeError):
                 pass
-
-        # --- Základní querysets ---
-        # Všechny proběhlé lekce (i zrušené)
-        all_qs = Lecture.objects.filter(start__isnull=False, start__lte=now)
-        # Nezrušené proběhlé lekce – všechny roky (pro by_year rozklad)
-        base_all_qs = all_qs.filter(canceled=False)
-        # S filtrem roku
-        year_all_qs = all_qs.filter(start__year=selected_year) if selected_year else all_qs
-        base_qs = base_all_qs.filter(start__year=selected_year) if selected_year else base_all_qs
-
-        # --- Zrušené lekce ---
-        total_in_scope = year_all_qs.count()
-        canceled_count = year_all_qs.filter(canceled=True).count()
-        canceled_rate = _rate(canceled_count, total_in_scope)
-
-        # --- Individuální omluvené lekce ---
-        # V systému jsou vždy canceled=True (omluva individuální lekce = lekce se zruší).
-        # excused_individual_count je tedy podmnožina canceled_count – nepřičítá se k not_happened znovu.
-        ind_att_global = Attendance.objects.filter(
-            lecture__start__isnull=False,
-            lecture__start__lte=now,
-            lecture__group__isnull=True,
-            attendancestate__excused=True,
-        )
-        year_ind_att = (
-            ind_att_global.filter(lecture__start__year=selected_year)
-            if selected_year
-            else ind_att_global
-        )
-        excused_individual_count = year_ind_att.count()
-
-        # --- Skupinové lekce kde všichni účastníci omluveni ---
-        # Tyto lekce fakticky neproběhly (nikdo nepřišel), přestože canceled=False.
-        all_excused_grp_qs = _all_excused_grp(base_qs)
-        all_excused_grp_count = all_excused_grp_qs.count()
-
-        # Omluvené neproběhlé: individuální omluvené (⊆ canceled_count) + skupinové kde všichni omluveni.
-        excused_not_happened_count = excused_individual_count + all_excused_grp_count
-        # Neproběhlé celkem: zrušené + skupinové kde všichni omluveni.
-        # Individuální omluvené jsou již zahrnuty v canceled_count (canceled=True), nepřičítají se znovu.
-        not_happened_count = canceled_count + all_excused_grp_count
-
-        # --- Efektivní queryset: proběhlé lekce ---
-        # Vylučuje: zrušené (canceled=True, zahrnuje individuální omluvené) + skupinové kde všichni omluveni.
-        effective_qs = base_qs.exclude(pk__in=all_excused_grp_qs.values("pk"))
-        # Verze bez year filtru pro by_year rozklad
-        all_excused_grp_all_years_qs = _all_excused_grp(base_all_qs)
-        effective_all_qs = base_all_qs.exclude(pk__in=all_excused_grp_all_years_qs.values("pk"))
-
-        # --- Agregace proběhlých lekcí ---
-        agg = effective_qs.aggregate(
-            total=Count("id"),
-            individual=Count("id", filter=Q(group__isnull=True)),
-            group=Count("id", filter=Q(group__isnull=False)),
-            total_minutes=Sum("duration"),
-        )
-
-        # --- Doplňkové per-course statistiky ---
-        canceled_by_course = {
-            r["course__id"]: r
-            for r in year_all_qs.values("course__id").annotate(
-                total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
-            )
-        }
-        excused_individual_by_course = {
-            r["lecture__course_id"]: r["cnt"]
-            for r in year_ind_att.values("lecture__course_id").annotate(cnt=Count("id"))
-        }
-        all_excused_grp_by_course = {
-            r["course_id"]: r["cnt"]
-            for r in all_excused_grp_qs.values("course_id").annotate(cnt=Count("id"))
-        }
-        # --- Rozklad po kurzech (vždy, reaguje na filtr roku) ---
-        by_course_qs = (
-            effective_qs.values("course__id", "course__name", "course__color")
-            .annotate(
-                total=Count("id"),
-                individual=Count("id", filter=Q(group__isnull=True)),
-                group=Count("id", filter=Q(group__isnull=False)),
-                total_minutes=Sum("duration"),
-            )
-            .order_by("-total")
-        )
-        by_course = [
-            {
-                "course_id": row["course__id"],
-                "course_name": row["course__name"],
-                "course_color": row["course__color"],
-                "total": row["total"],
-                "individual": row["individual"],
-                "group": row["group"],
-                "total_minutes": row["total_minutes"] or 0,
-                "canceled_count": canceled_by_course.get(row["course__id"], {}).get(
-                    "total_canceled", 0
-                ),
-                "canceled_rate": _rate(
-                    canceled_by_course.get(row["course__id"], {}).get("total_canceled", 0),
-                    canceled_by_course.get(row["course__id"], {}).get("total_all", 0),
-                ),
-                "excused_not_happened_count": excused_individual_by_course.get(row["course__id"], 0)
-                + all_excused_grp_by_course.get(row["course__id"], 0),
-            }
-            for row in by_course_qs
-            if row["total"] > 0
-        ]
-
-        # --- Žebříčky: nejvíce proběhlých lekcí (stejný rozsah jako effective_qs) ---
-        _leaderboard_n = 10
-        top_clients_raw = (
-            Attendance.objects.filter(
-                lecture__in=effective_qs,
-                attendancestate__excused=False,
-            )
-            .values("client_id", "client__firstname", "client__surname")
-            .annotate(lecture_count=Count("lecture", distinct=True))
-            .order_by("-lecture_count", "client__surname", "client__firstname")[:_leaderboard_n]
-        )
-        top_clients = [
-            {
-                "id": row["client_id"],
-                "firstname": row["client__firstname"],
-                "surname": row["client__surname"],
-                "lecture_count": row["lecture_count"],
-            }
-            for row in top_clients_raw
-        ]
-        top_groups_raw = (
-            effective_qs.filter(group__isnull=False)
-            .values("group_id", "group__name")
-            .annotate(lecture_count=Count("id"))
-            .order_by("-lecture_count", "group__name")[:_leaderboard_n]
-        )
-        top_groups = [
-            {
-                "id": row["group_id"],
-                "name": row["group__name"],
-                "lecture_count": row["lecture_count"],
-            }
-            for row in top_groups_raw
-        ]
-
-        # --- Rozklad po měsících (1–12): v roce = jen daný rok; Celkem = součty napříč všemi lety (sezónnost) ---
-        _by_month_qs_base = effective_qs if selected_year else effective_all_qs
-        _by_month_agg = (
-            _by_month_qs_base.annotate(_month=ExtractMonth("start"))
-            .values("_month")
-            .annotate(total=Count("id"), total_minutes=Sum("duration"))
-            .order_by("_month")
-        )
-        _by_month_stats = {
-            row["_month"]: {"total": row["total"], "total_minutes": row["total_minutes"] or 0}
-            for row in _by_month_agg
-        }
-        by_month = [
-            {
-                "month": m,
-                "total": _by_month_stats.get(m, {}).get("total", 0),
-                "total_minutes": _by_month_stats.get(m, {}).get("total_minutes", 0),
-            }
-            for m in range(1, 13)
-        ]
-
-        # --- Rozklad po letech (jen při pohledu na všechny roky) ---
-        by_year = None
-        if selected_year is None:
-            canceled_by_year = {
-                r["start__year"]: r
-                for r in all_qs.values("start__year").annotate(
-                    total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
-                )
-            }
-            excused_individual_by_year = {
-                r["lecture__start__year"]: r["cnt"]
-                for r in ind_att_global.values("lecture__start__year").annotate(cnt=Count("id"))
-            }
-            all_excused_grp_by_year = {
-                r["start__year"]: r["cnt"]
-                for r in all_excused_grp_all_years_qs.values("start__year").annotate(
-                    cnt=Count("id")
-                )
-            }
-            by_year_qs = (
-                effective_all_qs.values("start__year")
-                .annotate(
-                    total=Count("id"),
-                    individual=Count("id", filter=Q(group__isnull=True)),
-                    group=Count("id", filter=Q(group__isnull=False)),
-                    total_minutes=Sum("duration"),
-                )
-                .order_by("-start__year")
-            )
-            by_year = [
-                {
-                    "year": row["start__year"],
-                    "total": row["total"],
-                    "individual": row["individual"],
-                    "group": row["group"],
-                    "total_minutes": row["total_minutes"] or 0,
-                    "canceled_count": canceled_by_year.get(row["start__year"], {}).get(
-                        "total_canceled", 0
-                    ),
-                    "canceled_rate": _rate(
-                        canceled_by_year.get(row["start__year"], {}).get("total_canceled", 0),
-                        canceled_by_year.get(row["start__year"], {}).get("total_all", 0),
-                    ),
-                    "excused_not_happened_count": excused_individual_by_year.get(
-                        row["start__year"], 0
-                    )
-                    + all_excused_grp_by_year.get(row["start__year"], 0),
-                }
-                for row in by_year_qs
-            ]
-
-            # --- Vývoj rozložení kurzů po letech ---
-            by_year_course_qs = (
-                effective_all_qs.values(
-                    "start__year", "course__id", "course__name", "course__color"
-                )
-                .annotate(total=Count("id"))
-                .order_by("start__year", "course__name")
-            )
-            by_year_course = [
-                {
-                    "year": row["start__year"],
-                    "course_id": row["course__id"],
-                    "course_name": row["course__name"],
-                    "course_color": row["course__color"],
-                    "total": row["total"],
-                }
-                for row in by_year_course_qs
-            ]
-
-        return Response(
-            {
-                "clients": {
-                    "total": total_clients,
-                    "active": active_clients,
-                    "inactive": total_clients - active_clients,
-                    "without_lectures": clients_without_lectures,
-                },
-                "groups": {
-                    "total": total_groups,
-                    "active": active_groups,
-                    "inactive": total_groups - active_groups,
-                },
-                "lectures": {
-                    "not_happened_count": not_happened_count,
-                    "canceled_count": canceled_count,
-                    "canceled_rate": canceled_rate,
-                    "excused_not_happened_count": excused_not_happened_count,
-                    "total": agg["total"],
-                    "individual": agg["individual"],
-                    "group": agg["group"],
-                    "total_minutes": agg["total_minutes"] or 0,
-                    "available_years": available_years,
-                    "by_year": by_year,
-                    "by_year_course": by_year_course if selected_year is None else None,
-                    "by_course": by_course,
-                    "top_clients": top_clients,
-                    "top_groups": top_groups,
-                    "by_month": by_month,
-                },
-            }
-        )
+        return Response(Statistics().get_statistics(selected_year))
