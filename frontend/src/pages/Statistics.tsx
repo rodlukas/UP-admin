@@ -179,12 +179,17 @@ type YearTooltipProps = {
     label?: number
 }
 
-/** Tooltip pro graf po letech se všemi dostupnými metrikami. */
-const YearTooltip: React.FC<YearTooltipProps> = ({ active, payload, label }) => {
-    if (!active || !payload?.length) {
-        return null
-    }
-    const d = payload[0].payload
+type LectureTooltipMetrics = {
+    individual: number
+    group: number
+    total: number
+    canceled_count: number
+    canceled_rate: number
+    excused_not_happened_count: number
+    total_minutes: number
+}
+
+function renderLectureTooltip(label: React.ReactNode, d: LectureTooltipMetrics) {
     return (
         <div className={styles.chartTooltip}>
             <div className="fw-semibold mb-1">{label}</div>
@@ -220,6 +225,14 @@ const YearTooltip: React.FC<YearTooltipProps> = ({ active, payload, label }) => 
             </div>
         </div>
     )
+}
+
+/** Tooltip pro graf po letech se všemi dostupnými metrikami. */
+const YearTooltip: React.FC<YearTooltipProps> = ({ active, payload, label }) => {
+    if (!active || !payload?.length) {
+        return null
+    }
+    return renderLectureTooltip(label, payload[0].payload)
 }
 
 type CourseTooltipProps = {
@@ -237,42 +250,7 @@ const CourseTooltip: React.FC<CourseTooltipProps> = ({ active, payload, label })
     if (!active || !payload?.length) {
         return null
     }
-    const d = payload[0].payload
-    return (
-        <div className={styles.chartTooltip}>
-            <div className="fw-semibold mb-1">{label}</div>
-            <div>
-                Individuální: <strong>{d.individual}</strong>
-            </div>
-            <div>
-                Skupinové: <strong>{d.group}</strong>
-            </div>
-            <div>
-                Proběhlé celkem: <strong>{d.total}</strong>
-            </div>
-            <div>
-                Zrušené: <strong>{d.canceled_count}</strong> (
-                {d.canceled_rate.toLocaleString("cs-CZ", {
-                    minimumFractionDigits: 1,
-                    maximumFractionDigits: 1,
-                })}{" "}
-                %)
-            </div>
-            <div>
-                Z toho omluvené: <strong>{d.excused_not_happened_count}</strong>
-            </div>
-            <div>
-                Odučeno:{" "}
-                <strong>
-                    {(d.total_minutes / 60).toLocaleString("cs-CZ", {
-                        minimumFractionDigits: 1,
-                        maximumFractionDigits: 1,
-                    })}
-                    {"\u202f"}h
-                </strong>
-            </div>
-        </div>
-    )
+    return renderLectureTooltip(label, payload[0].payload)
 }
 
 type CourseYAxisTickProps = {
@@ -622,9 +600,7 @@ const Statistics: React.FC = () => {
             </div>
 
             {/* Lekce statistiky – spinner při prvním načtení, dimování při refetchi */}
-            {!statistics ? (
-                <Loading />
-            ) : (
+            {statistics ? (
                 <div
                     className={classNames({
                         [styles.fetchingOverlay]: statisticsFetching,
@@ -901,14 +877,11 @@ const Statistics: React.FC = () => {
                                                     20,
                                             ),
                                         )}
-                                        tick={({ x, y, payload }) => (
+                                        tick={
                                             <CourseYAxisTick
-                                                x={Number(x)}
-                                                y={Number(y)}
-                                                payload={payload}
                                                 courses={statistics.lectures.by_course}
                                             />
-                                        )}
+                                        }
                                     />
                                     <Tooltip content={<CourseTooltip />} />
                                     <Legend
@@ -1040,6 +1013,8 @@ const Statistics: React.FC = () => {
                             </ChartSection>
                         )}
                 </div>
+            ) : (
+                <Loading />
             )}
         </Container>
     )
