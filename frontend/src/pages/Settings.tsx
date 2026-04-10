@@ -3,16 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
-import {
-    Alert,
-    Col,
-    Container,
-    Label,
-    ListGroup,
-    ListGroupItem,
-    Row,
-    Table,
-} from "reactstrap"
+import { Alert, Col, Container, Label, ListGroup, ListGroupItem, Row, Table } from "reactstrap"
 
 import { useCourses, usePatchAttendanceState } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
@@ -166,7 +157,8 @@ const Settings: React.FC = () => {
                                 )}
                                 {attendanceStateExcusedId === undefined && (
                                     <Alert color="danger">
-                                        Není vybraný stav „omluven“, aplikace nemůže správně fungovat!
+                                        Není vybraný stav „omluven“, aplikace nemůže správně
+                                        fungovat!
                                     </Alert>
                                 )}
                                 <p className="mb-2">
@@ -177,7 +169,9 @@ const Settings: React.FC = () => {
                                     <ListGroupItem>
                                         <Row>
                                             <Label for="state_default_id" sm={7}>
-                                                <span className="fw-bold">„klient se zúčastní“</span>{" "}
+                                                <span className="fw-bold">
+                                                    „klient se zúčastní“
+                                                </span>{" "}
                                                 (výchozí stav)
                                             </Label>
                                             <Col sm={5}>

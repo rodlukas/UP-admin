@@ -69,7 +69,10 @@ const Menu: React.FC<Props> = (props) => {
                     />
                     <Nav className="ms-auto" navbar>
                         <NavItem>
-                            <MyNavLink exact to={APP_URLS.prehled.url} onCloseNavbar={props.closeNavbar}>
+                            <MyNavLink
+                                exact
+                                to={APP_URLS.prehled.url}
+                                onCloseNavbar={props.closeNavbar}>
                                 Přehled
                             </MyNavLink>
                         </NavItem>

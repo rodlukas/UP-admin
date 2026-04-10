@@ -295,7 +295,6 @@ const CourseYAxisTick: React.FC<CourseYAxisTickProps> = ({ x = 0, y = 0, payload
     )
 }
 
-
 type YearCourseLineTooltipProps = {
     active?: boolean
     payload?: { name?: string; value?: number; color?: string; dataKey?: string | number }[]
@@ -651,7 +650,9 @@ const Statistics: React.FC = () => {
                                     {
                                         badge: "odučeno",
                                         badgeColor: "dark",
-                                        value: formatMinutesAsHours(statistics.lectures.total_minutes),
+                                        value: formatMinutesAsHours(
+                                            statistics.lectures.total_minutes,
+                                        ),
                                     },
                                 ]}
                             />
@@ -856,7 +857,8 @@ const Statistics: React.FC = () => {
                             <ResponsiveContainer
                                 width="100%"
                                 height={
-                                    statistics.lectures.by_course.length * (compactCharts ? 38 : 45) +
+                                    statistics.lectures.by_course.length *
+                                        (compactCharts ? 38 : 45) +
                                     (compactCharts ? 56 : 70)
                                 }>
                                 <BarChart

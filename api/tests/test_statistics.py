@@ -128,30 +128,54 @@ class StatisticsCountsTest(TestCase):
 
         # A – individuální, nekancelovaná, duration=30
         lec_a = Lecture.objects.create(start=past, canceled=False, duration=30, course=course)
-        Attendance.objects.create(client=client_a, lecture=lec_a, paid=True, attendancestate=state_ok)
+        Attendance.objects.create(
+            client=client_a, lecture=lec_a, paid=True, attendancestate=state_ok
+        )
 
         # B – individuální, cancelovaná, bez omluvy
         lec_b = Lecture.objects.create(start=past, canceled=True, duration=30, course=course)
-        Attendance.objects.create(client=client_a, lecture=lec_b, paid=False, attendancestate=state_ok)
+        Attendance.objects.create(
+            client=client_a, lecture=lec_b, paid=False, attendancestate=state_ok
+        )
 
         # C – individuální, cancelovaná, excused
         lec_c = Lecture.objects.create(start=past, canceled=True, duration=30, course=course)
-        Attendance.objects.create(client=client_a, lecture=lec_c, paid=False, attendancestate=state_excused)
+        Attendance.objects.create(
+            client=client_a, lecture=lec_c, paid=False, attendancestate=state_excused
+        )
 
         # D – skupinová, nekancelovaná, oba OK, duration=45
-        lec_d = Lecture.objects.create(start=past, canceled=False, duration=45, course=course, group=group)
-        Attendance.objects.create(client=client_a, lecture=lec_d, paid=True, attendancestate=state_ok)
-        Attendance.objects.create(client=client_b, lecture=lec_d, paid=True, attendancestate=state_ok)
+        lec_d = Lecture.objects.create(
+            start=past, canceled=False, duration=45, course=course, group=group
+        )
+        Attendance.objects.create(
+            client=client_a, lecture=lec_d, paid=True, attendancestate=state_ok
+        )
+        Attendance.objects.create(
+            client=client_b, lecture=lec_d, paid=True, attendancestate=state_ok
+        )
 
         # E – skupinová, nekancelovaná, oba excused (all_excused_grp)
-        lec_e = Lecture.objects.create(start=past, canceled=False, duration=45, course=course, group=group)
-        Attendance.objects.create(client=client_a, lecture=lec_e, paid=False, attendancestate=state_excused)
-        Attendance.objects.create(client=client_b, lecture=lec_e, paid=False, attendancestate=state_excused)
+        lec_e = Lecture.objects.create(
+            start=past, canceled=False, duration=45, course=course, group=group
+        )
+        Attendance.objects.create(
+            client=client_a, lecture=lec_e, paid=False, attendancestate=state_excused
+        )
+        Attendance.objects.create(
+            client=client_b, lecture=lec_e, paid=False, attendancestate=state_excused
+        )
 
         # F – skupinová, nekancelovaná, jeden excused + jeden OK, duration=60
-        lec_f = Lecture.objects.create(start=past, canceled=False, duration=60, course=course, group=group)
-        Attendance.objects.create(client=client_a, lecture=lec_f, paid=False, attendancestate=state_excused)
-        Attendance.objects.create(client=client_b, lecture=lec_f, paid=True, attendancestate=state_ok)
+        lec_f = Lecture.objects.create(
+            start=past, canceled=False, duration=60, course=course, group=group
+        )
+        Attendance.objects.create(
+            client=client_a, lecture=lec_f, paid=False, attendancestate=state_excused
+        )
+        Attendance.objects.create(
+            client=client_b, lecture=lec_f, paid=True, attendancestate=state_ok
+        )
 
     def _lectures(self, year: int | None = None) -> dict:
         url = f"/api/v1/stats/?year={year}" if year else "/api/v1/stats/"
@@ -220,5 +244,11 @@ class StatisticsCountsTest(TestCase):
         """
         all_stats = self._lectures()
         year_stats = self._lectures(year=2020)
-        for key in ("total", "canceled_count", "not_happened_count", "excused_not_happened_count", "total_minutes"):
+        for key in (
+            "total",
+            "canceled_count",
+            "not_happened_count",
+            "excused_not_happened_count",
+            "total_minutes",
+        ):
             self.assertEqual(year_stats[key], all_stats[key], msg=f"lectures.{key} nesouhlasí")

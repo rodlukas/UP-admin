@@ -363,7 +363,10 @@ class LectureViewSet(viewsets.ModelViewSet):
         Lecture.objects.order_by("-start")
         .select_related("group__course", "course")
         .prefetch_related(
-            Prefetch("attendances", queryset=Attendance.objects.select_related("client", "attendancestate")),
+            Prefetch(
+                "attendances",
+                queryset=Attendance.objects.select_related("client", "attendancestate"),
+            ),
             Prefetch("group__memberships", queryset=Membership.objects.select_related("client")),
         )
     )
@@ -529,7 +532,9 @@ class StatisticsView(APIView):
             attendancestate__excused=True,
         )
         year_ind_att = (
-            ind_att_global.filter(lecture__start__year=selected_year) if selected_year else ind_att_global
+            ind_att_global.filter(lecture__start__year=selected_year)
+            if selected_year
+            else ind_att_global
         )
         excused_individual_count = year_ind_att.count()
 
@@ -562,8 +567,9 @@ class StatisticsView(APIView):
         # --- Doplňkové per-course statistiky ---
         canceled_by_course = {
             r["course__id"]: r
-            for r in year_all_qs.values("course__id")
-            .annotate(total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True)))
+            for r in year_all_qs.values("course__id").annotate(
+                total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
+            )
         }
         excused_individual_by_course = {
             r["lecture__course_id"]: r["cnt"]
@@ -593,12 +599,15 @@ class StatisticsView(APIView):
                 "individual": row["individual"],
                 "group": row["group"],
                 "total_minutes": row["total_minutes"] or 0,
-                "canceled_count": canceled_by_course.get(row["course__id"], {}).get("total_canceled", 0),
+                "canceled_count": canceled_by_course.get(row["course__id"], {}).get(
+                    "total_canceled", 0
+                ),
                 "canceled_rate": _rate(
                     canceled_by_course.get(row["course__id"], {}).get("total_canceled", 0),
                     canceled_by_course.get(row["course__id"], {}).get("total_all", 0),
                 ),
-                "excused_not_happened_count": excused_individual_by_course.get(row["course__id"], 0) + all_excused_grp_by_course.get(row["course__id"], 0),
+                "excused_not_happened_count": excused_individual_by_course.get(row["course__id"], 0)
+                + all_excused_grp_by_course.get(row["course__id"], 0),
             }
             for row in by_course_qs
             if row["total"] > 0
@@ -675,7 +684,9 @@ class StatisticsView(APIView):
             }
             all_excused_grp_by_year = {
                 r["start__year"]: r["cnt"]
-                for r in all_excused_grp_all_years_qs.values("start__year").annotate(cnt=Count("id"))
+                for r in all_excused_grp_all_years_qs.values("start__year").annotate(
+                    cnt=Count("id")
+                )
             }
             by_year_qs = (
                 effective_all_qs.values("start__year")
@@ -694,19 +705,26 @@ class StatisticsView(APIView):
                     "individual": row["individual"],
                     "group": row["group"],
                     "total_minutes": row["total_minutes"] or 0,
-                    "canceled_count": canceled_by_year.get(row["start__year"], {}).get("total_canceled", 0),
+                    "canceled_count": canceled_by_year.get(row["start__year"], {}).get(
+                        "total_canceled", 0
+                    ),
                     "canceled_rate": _rate(
                         canceled_by_year.get(row["start__year"], {}).get("total_canceled", 0),
                         canceled_by_year.get(row["start__year"], {}).get("total_all", 0),
                     ),
-                    "excused_not_happened_count": excused_individual_by_year.get(row["start__year"], 0) + all_excused_grp_by_year.get(row["start__year"], 0),
+                    "excused_not_happened_count": excused_individual_by_year.get(
+                        row["start__year"], 0
+                    )
+                    + all_excused_grp_by_year.get(row["start__year"], 0),
                 }
                 for row in by_year_qs
             ]
 
             # --- Vývoj rozložení kurzů po letech ---
             by_year_course_qs = (
-                effective_all_qs.values("start__year", "course__id", "course__name", "course__color")
+                effective_all_qs.values(
+                    "start__year", "course__id", "course__name", "course__color"
+                )
                 .annotate(total=Count("id"))
                 .order_by("start__year", "course__name")
             )

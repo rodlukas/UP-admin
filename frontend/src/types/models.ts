@@ -183,24 +183,28 @@ export type StatisticsType = {
             excused_not_happened_count: number
         }[]
         /** Vývoj rozložení kurzů po letech – null pokud je vybraný konkrétní rok. */
-        by_year_course: {
-            year: number
-            course_id: number
-            course_name: string
-            course_color: string
-            total: number
-        }[] | null
+        by_year_course:
+            | {
+                  year: number
+                  course_id: number
+                  course_name: string
+                  course_color: string
+                  total: number
+              }[]
+            | null
         /** Rozklad po letech – null pokud je vybraný konkrétní rok. */
-        by_year: {
-            year: number
-            total: number
-            individual: number
-            group: number
-            total_minutes: number
-            canceled_count: number
-            canceled_rate: number
-            excused_not_happened_count: number
-        }[] | null
+        by_year:
+            | {
+                  year: number
+                  total: number
+                  individual: number
+                  group: number
+                  total_minutes: number
+                  canceled_count: number
+                  canceled_rate: number
+                  excused_not_happened_count: number
+              }[]
+            | null
         /** Nejaktivnější klienti – počty neomluvených účastí na proběhlých lekcích (stejný rozsah jako filtr roku). */
         top_clients: {
             id: number

@@ -6,5 +6,3 @@ globalStyle(`${footer} a`, {
     textDecoration: "underline",
     color: "inherit",
 })
-
-
