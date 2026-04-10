@@ -142,16 +142,16 @@ class Statistics:
         """
         now = timezone.now()
 
-        # Klienti
+        # klienti
         total_clients = Client.objects.count()
         active_clients = Client.objects.filter(active=True).count()
         clients_without_lectures = Client.objects.filter(attendances__isnull=True).count()
 
-        # Skupiny
+        # skupiny
         total_groups = Group.objects.count()
         active_groups = Group.objects.filter(active=True).count()
 
-        # Dostupné roky (nezávisle na filtru year)
+        # dostupne roky (nezavisle na filtru year)
         available_years = list(
             Lecture.objects.filter(start__isnull=False, start__lte=now)
             .values_list("start__year", flat=True)
@@ -159,18 +159,18 @@ class Statistics:
             .order_by("-start__year")
         )
 
-        # Základní querysets
+        # zakladni querysets
         all_lectures = Lecture.objects.filter(start__isnull=False, start__lte=now)
         noncanceled_all_lectures = all_lectures.filter(canceled=False)
         all_scoped_lectures = all_lectures.filter(start__year=year) if year else all_lectures
         noncanceled_lectures = noncanceled_all_lectures.filter(start__year=year) if year else noncanceled_all_lectures
 
-        # Zrušené lekce
+        # zrusene lekce
         total_in_scope = all_scoped_lectures.count()
         canceled_count = all_scoped_lectures.filter(canceled=True).count()
         canceled_rate = self._rate(canceled_count, total_in_scope)
 
-        # Individuální omluvené lekce (vždy canceled=True, podmnožina canceled_count)
+        # individualni omluvene lekce (vzdy canceled=True, podmnozina canceled_count)
         excused_individual_attendance_all = Attendance.objects.filter(
             lecture__start__isnull=False,
             lecture__start__lte=now,
@@ -182,19 +182,19 @@ class Statistics:
         )
         excused_individual_count = excused_individual_attendance.count()
 
-        # Skupinové lekce kde všichni účastníci omluveni
+        # skupinove lekce kde vsichni ucastnici omluveni
         excused_group_lectures = self._excused_group_lectures(noncanceled_lectures)
         excused_group_count = excused_group_lectures.count()
 
         excused_not_happened_count = excused_individual_count + excused_group_count
         not_happened_count = canceled_count + excused_group_count
 
-        # Efektivní queryset: proběhlé lekce (bez zrušených a skupinových kde všichni omluveni)
+        # efektivni queryset: probehle lekce (bez zrusenych a skupinovych kde vsichni omluveni)
         effective_lectures = noncanceled_lectures.exclude(pk__in=excused_group_lectures.values("pk"))
         excused_group_all_lectures = self._excused_group_lectures(noncanceled_all_lectures)
         effective_all_lectures = noncanceled_all_lectures.exclude(pk__in=excused_group_all_lectures.values("pk"))
 
-        # Agregace proběhlých lekcí
+        # agregace probehlych lekci
         totals = effective_lectures.aggregate(
             total=Count("id"),
             individual=Count("id", filter=Q(group__isnull=True)),
@@ -202,7 +202,7 @@ class Statistics:
             total_minutes=Sum("duration"),
         )
 
-        # Per-course doplňkové statistiky
+        # per-course doplnkove statistiky
         canceled_by_course = {
             row["course__id"]: row
             for row in all_scoped_lectures.values("course__id").annotate(
@@ -218,7 +218,7 @@ class Statistics:
             for row in excused_group_lectures.values("course_id").annotate(count=Count("id"))
         }
 
-        # Rozklad po kurzech
+        # rozklad po kurzech
         by_course_lectures = (
             effective_lectures.values("course__id", "course__name", "course__color")
             .annotate(
@@ -252,7 +252,7 @@ class Statistics:
             if row["total"] > 0
         ]
 
-        # Žebříčky
+        # zebricky
         top_clients_raw = (
             Attendance.objects.filter(lecture__in=effective_lectures, attendancestate__excused=False)
             .values("client_id", "client__firstname", "client__surname")
@@ -283,7 +283,7 @@ class Statistics:
             for row in top_groups_raw
         ]
 
-        # Rozklad po měsících (1–12)
+        # rozklad po mesicich (1-12)
         by_month_lectures = effective_lectures if year else effective_all_lectures
         by_month_aggregated = (
             by_month_lectures.annotate(_month=ExtractMonth("start"))
@@ -304,7 +304,7 @@ class Statistics:
             for m in range(1, 13)
         ]
 
-        # Rozklad po letech a vývoj po kurzech (jen při pohledu na všechny roky)
+        # rozklad po letech a vyvoj po kurzech (jen pri pohledu na vsechny roky)
         by_year = None
         by_year_course = None
         if year is None:
