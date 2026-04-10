@@ -491,6 +491,315 @@ const HoursByYearChart: React.FC<HoursByYearChartProps> = ({ byYear, compact }) 
     )
 }
 
+type TopRankingSectionProps<T extends { id: number; lecture_count: number }> = {
+    title: string
+    nameHeader: string
+    items: T[]
+    emptyMessage: string
+    renderName: (item: T) => React.ReactNode
+}
+
+/** Tabulka žebříčku aktivity – sdílená pro klienty i skupiny. */
+function TopRankingSection<T extends { id: number; lecture_count: number }>({
+    title,
+    nameHeader,
+    items,
+    emptyMessage,
+    renderName,
+}: TopRankingSectionProps<T>) {
+    return (
+        <ChartSection title={title}>
+            {items.length > 0 ? (
+                <Table responsive size="sm" hover borderless className="mb-0">
+                    <thead>
+                        <tr className="border-bottom">
+                            <th className="text-muted fw-normal">#</th>
+                            <th className="text-muted fw-normal">{nameHeader}</th>
+                            <th className="text-end text-muted fw-normal">Lekce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items.map((row, index) => (
+                            <tr key={row.id}>
+                                <td className="text-muted">{index + 1}</td>
+                                <td>{renderName(row)}</td>
+                                <td className="text-end fw-semibold">{row.lecture_count}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            ) : (
+                <p className={styles.chartEmpty}>{emptyMessage}</p>
+            )}
+        </ChartSection>
+    )
+}
+
+type LecturesMonthSectionProps = {
+    byMonth: StatisticsType["lectures"]["by_month"]
+    chartMetric: ChartMetric
+    onMetricChange: (value: ChartMetric) => void
+    compact: boolean
+    year: number | null
+}
+
+/** Sloupcový graf lekcí nebo hodin podle měsíce s přepínačem metriky. */
+const LecturesMonthSection: React.FC<LecturesMonthSectionProps> = ({
+    byMonth,
+    chartMetric,
+    onMetricChange,
+    compact,
+    year,
+}) => {
+    const caption =
+        year === null
+            ? `${CHART_METRIC_LABEL[chartMetric]} podle kalendářního měsíce začátku napříč celou historií (každý sloupec = součet všech let v daném měsíci). Vhodné pro sezónnost (např. náběh po prázdninách).`
+            : `${CHART_METRIC_LABEL[chartMetric]} v roce ${year} podle měsíce začátku lekce.`
+    const data = byMonth.map((row) => ({
+        label: MONTH_LABELS_SHORT[row.month - 1],
+        value:
+            chartMetric === "lectures"
+                ? row.total
+                : Number((row.total_minutes / 60).toFixed(1)),
+    }))
+    const yAxisLabel = chartMetric === "hours" ? "Hodiny" : "Počet lekcí"
+    return (
+        <ChartSection
+            title="Lekce podle měsíce"
+            headerAction={<MetricToggle value={chartMetric} onChange={onMetricChange} />}
+            caption={caption}>
+            <ResponsiveContainer width="100%" height={compact ? 250 : 280}>
+                <BarChart data={data} margin={CHART_MARGIN}>
+                    <CartesianGrid stroke={GRID_STROKE} strokeDasharray="3 3" vertical={false} />
+                    <XAxis
+                        dataKey="label"
+                        tick={AXIS_TICK}
+                        label={
+                            compact
+                                ? undefined
+                                : {
+                                      value: "Měsíc",
+                                      position: "insideBottomRight",
+                                      offset: 0,
+                                      ...AXIS_LABEL,
+                                  }
+                        }
+                    />
+                    <YAxis
+                        allowDecimals={chartMetric === "hours"}
+                        width={44}
+                        tick={AXIS_TICK}
+                        tickFormatter={(value) =>
+                            chartMetric === "hours"
+                                ? Number(value).toLocaleString("cs-CZ", {
+                                      minimumFractionDigits: 0,
+                                      maximumFractionDigits: 1,
+                                  })
+                                : String(value)
+                        }
+                        label={
+                            compact
+                                ? undefined
+                                : {
+                                      value: yAxisLabel,
+                                      angle: -90,
+                                      position: "insideLeft",
+                                      offset: 4,
+                                      ...AXIS_LABEL,
+                                  }
+                        }
+                    />
+                    <Tooltip
+                        contentStyle={{ fontSize: "0.8rem" }}
+                        formatter={(value) => {
+                            const n = toNumberOrNull(value)
+                            if (n === null) {
+                                return ["", ""]
+                            }
+                            if (chartMetric === "hours") {
+                                return [formatHours(n), CHART_METRIC_LABEL.hours]
+                            }
+                            return [n, CHART_METRIC_LABEL.lectures]
+                        }}
+                        labelFormatter={String}
+                    />
+                    <Bar dataKey="value" fill="#0d6efd" name={chartMetric} radius={[4, 4, 0, 0]} />
+                </BarChart>
+            </ResponsiveContainer>
+        </ChartSection>
+    )
+}
+
+type LecturesCourseSectionProps = {
+    byCourse: StatisticsType["lectures"]["by_course"]
+    compact: boolean
+}
+
+/** Horizontální sloupcový graf proběhlých a zrušených lekcí podle kurzu. */
+const LecturesCourseSection: React.FC<LecturesCourseSectionProps> = ({ byCourse, compact }) => {
+    const yAxisWidth = Math.min(
+        compact ? 132 : 260,
+        Math.max(80, Math.max(...byCourse.map((c) => c.course_name.length)) * 7 + 20),
+    )
+    return (
+        <ChartSection title="Proběhlé a zrušené lekce podle kurzu">
+            <ResponsiveContainer
+                width="100%"
+                height={byCourse.length * (compact ? 38 : 45) + (compact ? 56 : 70)}>
+                <BarChart layout="vertical" data={byCourse} margin={CHART_MARGIN_BAR_VERTICAL}>
+                    <CartesianGrid
+                        stroke={GRID_STROKE}
+                        strokeDasharray="3 3"
+                        horizontal={false}
+                    />
+                    <XAxis
+                        type="number"
+                        allowDecimals={false}
+                        tick={AXIS_TICK}
+                        label={
+                            compact
+                                ? undefined
+                                : {
+                                      value: "Počet lekcí",
+                                      position: "insideBottomRight",
+                                      offset: 0,
+                                      ...AXIS_LABEL,
+                                  }
+                        }
+                    />
+                    <YAxis
+                        type="category"
+                        dataKey="course_name"
+                        width={yAxisWidth}
+                        tick={<CourseYAxisTick courses={byCourse} />}
+                    />
+                    <Tooltip content={<CourseTooltip />} />
+                    <Legend
+                        formatter={formatStackedBarLegend}
+                        verticalAlign="bottom"
+                        align="center"
+                        wrapperStyle={LEGEND_FONT}
+                    />
+                    <Bar dataKey="individual" stackId="a" fill="#0d6efd" name="individual" />
+                    <Bar dataKey="group" stackId="a" fill="#0dcaf0" name="group" />
+                    <Bar
+                        dataKey="canceled_count"
+                        stackId="a"
+                        fill="#dc3545"
+                        name="canceled_count"
+                        radius={[0, 3, 3, 0]}
+                        opacity={0.8}
+                    />
+                </BarChart>
+            </ResponsiveContainer>
+        </ChartSection>
+    )
+}
+
+type LecturesYearSectionProps = {
+    byYear: NonNullable<StatisticsType["lectures"]["by_year"]>
+    chartMetric: ChartMetric
+    onMetricChange: (value: ChartMetric) => void
+    compact: boolean
+}
+
+/** Sekce s vývojem lekcí v čase podle roku – přepíná mezi počtem a odučenými hodinami. */
+const LecturesYearSection: React.FC<LecturesYearSectionProps> = ({
+    byYear,
+    chartMetric,
+    onMetricChange,
+    compact,
+}) => (
+    <ChartSection
+        title="Lekce v čase (podle roku)"
+        headerAction={<MetricToggle value={chartMetric} onChange={onMetricChange} />}>
+        {byYear.length > 0 ? (
+            <>
+                {chartMetric === "lectures" && (
+                    <ResponsiveContainer width="100%" height={compact ? 250 : 280}>
+                        <BarChart
+                            data={[...byYear].reverse()}
+                            margin={CHART_MARGIN_BOTTOM_LEGEND}>
+                            <CartesianGrid
+                                stroke={GRID_STROKE}
+                                strokeDasharray="3 3"
+                                vertical={false}
+                            />
+                            <XAxis
+                                dataKey="year"
+                                tick={AXIS_TICK}
+                                label={
+                                    compact
+                                        ? undefined
+                                        : {
+                                              value: "Rok",
+                                              position: "insideBottomRight",
+                                              offset: 0,
+                                              ...AXIS_LABEL,
+                                          }
+                                }
+                            />
+                            <YAxis
+                                allowDecimals={false}
+                                width={44}
+                                tick={AXIS_TICK}
+                                label={
+                                    compact
+                                        ? undefined
+                                        : {
+                                              value: "Počet lekcí",
+                                              angle: -90,
+                                              position: "insideLeft",
+                                              offset: 4,
+                                              ...AXIS_LABEL,
+                                          }
+                                }
+                            />
+                            <Tooltip content={<YearTooltip />} />
+                            <Legend formatter={formatStackedBarLegend} wrapperStyle={LEGEND_FONT} />
+                            <Bar dataKey="individual" stackId="a" fill="#0d6efd" name="individual" />
+                            <Bar dataKey="group" stackId="a" fill="#0dcaf0" name="group" />
+                            <Bar
+                                dataKey="canceled_count"
+                                stackId="a"
+                                fill="#dc3545"
+                                name="canceled_count"
+                                radius={[3, 3, 0, 0]}
+                                opacity={0.8}
+                            />
+                        </BarChart>
+                    </ResponsiveContainer>
+                )}
+                {chartMetric === "hours" && (
+                    <HoursByYearChart byYear={byYear} compact={compact} />
+                )}
+            </>
+        ) : (
+            <p className={styles.chartEmpty}>Žádné lekce v datech.</p>
+        )}
+    </ChartSection>
+)
+
+type LecturesYearCourseSectionProps = {
+    byYearCourse: StatisticsType["lectures"]["by_year_course"]
+    compact: boolean
+}
+
+/** Sekce vývoje počtu lekcí podle kurzu – skryje se pokud nejsou data. */
+const LecturesYearCourseSection: React.FC<LecturesYearCourseSectionProps> = ({
+    byYearCourse,
+    compact,
+}) => {
+    if (byYearCourse === null || byYearCourse.length === 0) {
+        return null
+    }
+    return (
+        <ChartSection title="Vývoj počtu lekcí podle kurzu">
+            <YearCourseLinesChart byYearCourse={byYearCourse} compact={compact} />
+        </ChartSection>
+    )
+}
+
 /** Stránka se statistikami aplikace. */
 const Statistics: React.FC = () => {
     const [lecturesYear, setLecturesYear] = React.useState<number | null>(null)
@@ -656,362 +965,72 @@ const Statistics: React.FC = () => {
 
                     <Row className="g-3 mb-4">
                         <Col lg={6}>
-                            <ChartSection title="Nejaktivnější klienti">
-                                {statistics.lectures.top_clients.length > 0 ? (
-                                    <Table responsive size="sm" hover borderless className="mb-0">
-                                        <thead>
-                                            <tr className="border-bottom">
-                                                <th className="text-muted fw-normal">#</th>
-                                                <th className="text-muted fw-normal">Klient</th>
-                                                <th className="text-end text-muted fw-normal">
-                                                    Lekce
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {statistics.lectures.top_clients.map((row, index) => (
-                                                <tr key={row.id}>
-                                                    <td className="text-muted">{index + 1}</td>
-                                                    <td>
-                                                        <ClientName
-                                                            client={{
-                                                                id: row.id,
-                                                                firstname: row.firstname,
-                                                                surname: row.surname,
-                                                            }}
-                                                            link
-                                                            bold
-                                                        />
-                                                    </td>
-                                                    <td className="text-end fw-semibold">
-                                                        {row.lecture_count}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </Table>
-                                ) : (
-                                    <p className={styles.chartEmpty}>
-                                        Žádná proběhlá lekce v tomto rozsahu.
-                                    </p>
+                            <TopRankingSection
+                                title="Nejaktivnější klienti"
+                                nameHeader="Klient"
+                                items={statistics.lectures.top_clients}
+                                emptyMessage="Žádná proběhlá lekce v tomto rozsahu."
+                                renderName={(row) => (
+                                    <ClientName
+                                        client={{
+                                            id: row.id,
+                                            firstname: row.firstname,
+                                            surname: row.surname,
+                                        }}
+                                        link
+                                        bold
+                                    />
                                 )}
-                            </ChartSection>
+                            />
                         </Col>
                         <Col lg={6}>
-                            <ChartSection title="Nejaktivnější skupiny">
-                                {statistics.lectures.top_groups.length > 0 ? (
-                                    <Table responsive size="sm" hover borderless className="mb-0">
-                                        <thead>
-                                            <tr className="border-bottom">
-                                                <th className="text-muted fw-normal">#</th>
-                                                <th className="text-muted fw-normal">Skupina</th>
-                                                <th className="text-end text-muted fw-normal">
-                                                    Lekce
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {statistics.lectures.top_groups.map((row, index) => (
-                                                <tr key={row.id}>
-                                                    <td className="text-muted">{index + 1}</td>
-                                                    <td>
-                                                        <Link
-                                                            className="fw-semibold"
-                                                            to={`${APP_URLS.skupiny.url}/${row.id}`}>
-                                                            {row.name}
-                                                        </Link>
-                                                    </td>
-                                                    <td className="text-end fw-semibold">
-                                                        {row.lecture_count}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </Table>
-                                ) : (
-                                    <p className={styles.chartEmpty}>
-                                        Žádná proběhlá skupinová lekce v tomto rozsahu.
-                                    </p>
+                            <TopRankingSection
+                                title="Nejaktivnější skupiny"
+                                nameHeader="Skupina"
+                                items={statistics.lectures.top_groups}
+                                emptyMessage="Žádná proběhlá skupinová lekce v tomto rozsahu."
+                                renderName={(row) => (
+                                    <Link
+                                        className="fw-semibold"
+                                        to={`${APP_URLS.skupiny.url}/${row.id}`}>
+                                        {row.name}
+                                    </Link>
                                 )}
-                            </ChartSection>
+                            />
                         </Col>
                     </Row>
 
-                    <ChartSection
-                        title="Lekce podle měsíce"
-                        headerAction={
-                            <MetricToggle value={chartMetric} onChange={setChartMetric} />
-                        }
-                        caption={
-                            lecturesYear === null
-                                ? `${CHART_METRIC_LABEL[chartMetric]} podle kalendářního měsíce začátku napříč celou historií (každý sloupec = součet všech let v daném měsíci). Vhodné pro sezónnost (např. náběh po prázdninách).`
-                                : `${CHART_METRIC_LABEL[chartMetric]} v roce ${lecturesYear} podle měsíce začátku lekce.`
-                        }>
-                        <ResponsiveContainer width="100%" height={compactCharts ? 250 : 280}>
-                            <BarChart
-                                data={statistics.lectures.by_month.map((row) => ({
-                                    label: MONTH_LABELS_SHORT[row.month - 1],
-                                    value:
-                                        chartMetric === "lectures"
-                                            ? row.total
-                                            : Number((row.total_minutes / 60).toFixed(1)),
-                                }))}
-                                margin={CHART_MARGIN}>
-                                <CartesianGrid
-                                    stroke={GRID_STROKE}
-                                    strokeDasharray="3 3"
-                                    vertical={false}
-                                />
-                                <XAxis
-                                    dataKey="label"
-                                    tick={AXIS_TICK}
-                                    label={
-                                        compactCharts
-                                            ? undefined
-                                            : {
-                                                  value: "Měsíc",
-                                                  position: "insideBottomRight",
-                                                  offset: 0,
-                                                  ...AXIS_LABEL,
-                                              }
-                                    }
-                                />
-                                <YAxis
-                                    allowDecimals={chartMetric === "hours"}
-                                    width={44}
-                                    tick={AXIS_TICK}
-                                    tickFormatter={(value) =>
-                                        chartMetric === "hours"
-                                            ? Number(value).toLocaleString("cs-CZ", {
-                                                  minimumFractionDigits: 0,
-                                                  maximumFractionDigits: 1,
-                                              })
-                                            : String(value)
-                                    }
-                                    label={
-                                        compactCharts
-                                            ? undefined
-                                            : {
-                                                  value:
-                                                      chartMetric === "hours"
-                                                          ? "Hodiny"
-                                                          : "Počet lekcí",
-                                                  angle: -90,
-                                                  position: "insideLeft",
-                                                  offset: 4,
-                                                  ...AXIS_LABEL,
-                                              }
-                                    }
-                                />
-                                <Tooltip
-                                    contentStyle={{ fontSize: "0.8rem" }}
-                                    formatter={(value) => {
-                                        const n = toNumberOrNull(value)
-                                        if (n === null) {
-                                            return ["", ""]
-                                        }
-                                        if (chartMetric === "hours") {
-                                            return [formatHours(n), CHART_METRIC_LABEL.hours]
-                                        }
-                                        return [n, CHART_METRIC_LABEL.lectures]
-                                    }}
-                                    labelFormatter={String}
-                                />
-                                <Bar
-                                    dataKey="value"
-                                    fill="#0d6efd"
-                                    name={chartMetric}
-                                    radius={[4, 4, 0, 0]}
-                                />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </ChartSection>
+                    <LecturesMonthSection
+                        byMonth={statistics.lectures.by_month}
+                        chartMetric={chartMetric}
+                        onMetricChange={setChartMetric}
+                        compact={compactCharts}
+                        year={lecturesYear}
+                    />
 
                     {/* Rozklad po kurzech – vždy */}
                     {statistics.lectures.by_course.length > 0 && (
-                        <ChartSection title="Proběhlé a zrušené lekce podle kurzu">
-                            <ResponsiveContainer
-                                width="100%"
-                                height={
-                                    statistics.lectures.by_course.length *
-                                        (compactCharts ? 38 : 45) +
-                                    (compactCharts ? 56 : 70)
-                                }>
-                                <BarChart
-                                    layout="vertical"
-                                    data={statistics.lectures.by_course}
-                                    margin={CHART_MARGIN_BAR_VERTICAL}>
-                                    <CartesianGrid
-                                        stroke={GRID_STROKE}
-                                        strokeDasharray="3 3"
-                                        horizontal={false}
-                                    />
-                                    <XAxis
-                                        type="number"
-                                        allowDecimals={false}
-                                        tick={AXIS_TICK}
-                                        label={
-                                            compactCharts
-                                                ? undefined
-                                                : {
-                                                      value: "Počet lekcí",
-                                                      position: "insideBottomRight",
-                                                      offset: 0,
-                                                      ...AXIS_LABEL,
-                                                  }
-                                        }
-                                    />
-                                    <YAxis
-                                        type="category"
-                                        dataKey="course_name"
-                                        width={Math.min(
-                                            compactCharts ? 132 : 260,
-                                            Math.max(
-                                                80,
-                                                Math.max(
-                                                    ...statistics.lectures.by_course.map(
-                                                        (c) => c.course_name.length,
-                                                    ),
-                                                ) *
-                                                    7 +
-                                                    20,
-                                            ),
-                                        )}
-                                        tick={
-                                            <CourseYAxisTick
-                                                courses={statistics.lectures.by_course}
-                                            />
-                                        }
-                                    />
-                                    <Tooltip content={<CourseTooltip />} />
-                                    <Legend
-                                        formatter={formatStackedBarLegend}
-                                        verticalAlign="bottom"
-                                        align="center"
-                                        wrapperStyle={LEGEND_FONT}
-                                    />
-                                    <Bar
-                                        dataKey="individual"
-                                        stackId="a"
-                                        fill="#0d6efd"
-                                        name="individual"
-                                    />
-                                    <Bar dataKey="group" stackId="a" fill="#0dcaf0" name="group" />
-                                    <Bar
-                                        dataKey="canceled_count"
-                                        stackId="a"
-                                        fill="#dc3545"
-                                        name="canceled_count"
-                                        radius={[0, 3, 3, 0]}
-                                        opacity={0.8}
-                                    />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </ChartSection>
+                        <LecturesCourseSection
+                            byCourse={statistics.lectures.by_course}
+                            compact={compactCharts}
+                        />
                     )}
 
                     {/* Rozklad po letech – jen při pohledu na všechny roky */}
                     {statistics.lectures.by_year !== null && (
-                        <ChartSection
-                            title="Lekce v čase (podle roku)"
-                            headerAction={
-                                <MetricToggle value={chartMetric} onChange={setChartMetric} />
-                            }>
-                            {statistics.lectures.by_year.length > 0 ? (
-                                <>
-                                    {chartMetric === "lectures" && (
-                                        <ResponsiveContainer
-                                            width="100%"
-                                            height={compactCharts ? 250 : 280}>
-                                            <BarChart
-                                                data={[...statistics.lectures.by_year].reverse()}
-                                                margin={CHART_MARGIN_BOTTOM_LEGEND}>
-                                                <CartesianGrid
-                                                    stroke={GRID_STROKE}
-                                                    strokeDasharray="3 3"
-                                                    vertical={false}
-                                                />
-                                                <XAxis
-                                                    dataKey="year"
-                                                    tick={AXIS_TICK}
-                                                    label={
-                                                        compactCharts
-                                                            ? undefined
-                                                            : {
-                                                                  value: "Rok",
-                                                                  position: "insideBottomRight",
-                                                                  offset: 0,
-                                                                  ...AXIS_LABEL,
-                                                              }
-                                                    }
-                                                />
-                                                <YAxis
-                                                    allowDecimals={false}
-                                                    width={44}
-                                                    tick={AXIS_TICK}
-                                                    label={
-                                                        compactCharts
-                                                            ? undefined
-                                                            : {
-                                                                  value: "Počet lekcí",
-                                                                  angle: -90,
-                                                                  position: "insideLeft",
-                                                                  offset: 4,
-                                                                  ...AXIS_LABEL,
-                                                              }
-                                                    }
-                                                />
-                                                <Tooltip content={<YearTooltip />} />
-                                                <Legend
-                                                    formatter={formatStackedBarLegend}
-                                                    wrapperStyle={LEGEND_FONT}
-                                                />
-                                                <Bar
-                                                    dataKey="individual"
-                                                    stackId="a"
-                                                    fill="#0d6efd"
-                                                    name="individual"
-                                                />
-                                                <Bar
-                                                    dataKey="group"
-                                                    stackId="a"
-                                                    fill="#0dcaf0"
-                                                    name="group"
-                                                />
-                                                <Bar
-                                                    dataKey="canceled_count"
-                                                    stackId="a"
-                                                    fill="#dc3545"
-                                                    name="canceled_count"
-                                                    radius={[3, 3, 0, 0]}
-                                                    opacity={0.8}
-                                                />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    )}
-                                    {chartMetric === "hours" && (
-                                        <HoursByYearChart
-                                            byYear={statistics.lectures.by_year}
-                                            compact={compactCharts}
-                                        />
-                                    )}
-                                </>
-                            ) : (
-                                <p className={styles.chartEmpty}>Žádné lekce v datech.</p>
-                            )}
-                        </ChartSection>
+                        <LecturesYearSection
+                            byYear={statistics.lectures.by_year}
+                            chartMetric={chartMetric}
+                            onMetricChange={setChartMetric}
+                            compact={compactCharts}
+                        />
                     )}
 
                     {/* Vývoj rozložení kurzů po letech – čáry podle roku (osa X = čas) */}
-                    {statistics.lectures.by_year_course !== null &&
-                        statistics.lectures.by_year_course.length > 0 && (
-                            <ChartSection title="Vývoj počtu lekcí podle kurzu">
-                                <YearCourseLinesChart
-                                    byYearCourse={statistics.lectures.by_year_course}
-                                    compact={compactCharts}
-                                />
-                            </ChartSection>
-                        )}
+                    <LecturesYearCourseSection
+                        byYearCourse={statistics.lectures.by_year_course}
+                        compact={compactCharts}
+                    />
                 </div>
             ) : (
                 <Loading />
