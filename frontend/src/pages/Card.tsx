@@ -5,6 +5,7 @@ import * as React from "react"
 import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
 import {
+    useAllGroupsEverFromClient,
     useClient,
     useGroup,
     useGroupsFromClient,
@@ -18,8 +19,8 @@ import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
+import ComponentsList from "../components/ComponentsList"
 import GroupName from "../components/GroupName"
-import GroupsList from "../components/GroupsList"
 import Heading from "../components/Heading"
 import * as lectureStyles from "../components/Lecture.css"
 import LectureNumber from "../components/LectureNumber"
@@ -69,6 +70,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const clientQuery = useClient(isClientPageValue ? id : undefined)
     const groupQuery = useGroup(isClientPageValue ? undefined : id)
     const groupsOfClientQuery = useGroupsFromClient(isClientPageValue ? id : undefined)
+    const allGroupsEverQuery = useAllGroupsEverFromClient(isClientPageValue ? id : undefined)
     const lecturesFromClientQuery = useLecturesFromClient(isClientPageValue ? id : undefined, false)
     const lecturesFromGroupQuery = useLecturesFromGroup(isClientPageValue ? undefined : id, false)
 
@@ -82,6 +84,9 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
 
     /** Skupiny, jejichž členem je zobrazený klient. */
     const groupsOfClient: GroupType[] = groupsOfClientQuery.data ?? []
+
+    /** Skupiny, které klient opustil (měl v nich lekci, ale už není členem). */
+    const pastGroups: GroupType[] = allGroupsEverQuery.data ?? []
 
     /** Lekce zobrazeného klienta nebo skupiny, seskupené podle kurzů. */
     const lectures: GroupedObjectsByCourses<LectureType> = React.useMemo(() => {
@@ -116,6 +121,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const isLoading =
         (isClientPageValue ? clientQuery.isLoading : groupQuery.isLoading) ||
         (isClientPageValue ? groupsOfClientQuery.isLoading : false) ||
+        (isClientPageValue ? allGroupsEverQuery.isLoading : false) ||
         (isClientPageValue
             ? lecturesFromClientQuery.isLoading
             : lecturesFromGroupQuery.isLoading) ||
@@ -124,6 +130,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const isFetching =
         (isClientPageValue ? clientQuery.isFetching : groupQuery.isFetching) ||
         (isClientPageValue ? groupsOfClientQuery.isFetching : false) ||
+        (isClientPageValue ? allGroupsEverQuery.isFetching : false) ||
         (isClientPageValue
             ? lecturesFromClientQuery.isFetching
             : lecturesFromGroupQuery.isFetching) ||
@@ -132,7 +139,9 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
             if (data?.isDeleted) {
-                void navigate({ to: isClientPageValue ? APP_URLS.klienti.url : APP_URLS.skupiny.url })
+                void navigate({
+                    to: isClientPageValue ? APP_URLS.klienti.url : APP_URLS.skupiny.url,
+                })
             }
         },
         [isClientPageValue, navigate],
@@ -173,7 +182,11 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                     <ModalLectures object={object} currentLecture={lecture} source={cardSource} />
                 </div>
                 <div className={lectureStyles.lectureContent}>
-                    <Attendances lecture={lecture} showClient={isGroup(object)} source={cardSource} />
+                    <Attendances
+                        lecture={lecture}
+                        showClient={isGroup(object)}
+                        source={cardSource}
+                    />
                 </div>
             </ListGroupItem>
         )
@@ -246,7 +259,34 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     <b>E-mail:</b> <ClientEmail email={object.email} />
                                 </ListGroupItem>
                                 <ListGroupItem>
-                                    <b>Skupiny:</b> <GroupsList groups={groupsOfClient} />
+                                    <b>Skupiny:</b>{" "}
+                                    {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
+                                        <span className="text-muted">žádné skupiny</span>
+                                    ) : (
+                                        <ComponentsList
+                                            components={[
+                                                ...groupsOfClient.map((g) => (
+                                                    <GroupName
+                                                        key={g.id}
+                                                        group={g}
+                                                        link
+                                                        showCircle
+                                                        noWrap
+                                                    />
+                                                )),
+                                                ...pastGroups.map((g) => (
+                                                    <span key={g.id} className={styles.pastGroup}>
+                                                        <GroupName
+                                                            group={g}
+                                                            link
+                                                            showCircle
+                                                            noWrap
+                                                        />
+                                                    </span>
+                                                )),
+                                            ]}
+                                        />
+                                    )}
                                 </ListGroupItem>
                                 <ListGroupItem>
                                     <b>Poznámka:</b> <ClientNote note={object.note} />

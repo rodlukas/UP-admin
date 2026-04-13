@@ -40,6 +40,7 @@ export const API_URLS = Object.freeze({
         url: `groups${API_DELIM}`,
         filters: {
             client: "client",
+            onlyPast: "onlyPast",
             active: "active",
         },
     },
