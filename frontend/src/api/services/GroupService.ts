@@ -39,9 +39,18 @@ function getInactive(): Promise<List> {
     })
 }
 
-/** Získá skupiny zadaného klienta. */
+/** Získá skupiny zadaného klienta (jen aktuální členství). */
 function getAllFromClient(clientId: ClientType["id"]): Promise<List> {
     const url = `${baseUrl}?${API_URLS.groups.filters.client}=${clientId}`
+    return axiosRequestData<List>({
+        url: url,
+        method: API_METHODS.get,
+    })
+}
+
+/** Získá skupiny, které klient opustil (má tam účast na lekci, ale již není členem). */
+function getAllEverFromClient(clientId: ClientType["id"]): Promise<List> {
+    const url = `${baseUrl}?${API_URLS.groups.filters.client}=${clientId}&${API_URLS.groups.filters.onlyPast}=true`
     return axiosRequestData<List>({
         url: url,
         method: API_METHODS.get,
@@ -82,6 +91,7 @@ const GroupService = {
     update,
     remove,
     getAllFromClient,
+    getAllEverFromClient,
 }
 
 export default GroupService

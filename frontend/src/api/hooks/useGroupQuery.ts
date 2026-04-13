@@ -43,7 +43,7 @@ export function useGroup(id: GroupType["id"] | undefined) {
     })
 }
 
-/** Hook pro získání skupin daného klienta. */
+/** Hook pro získání skupin daného klienta (jen aktuální členství). */
 export function useGroupsFromClient(clientId: ClientType["id"] | undefined) {
     return useQuery<GroupType[]>({
         queryKey: ["groups", { client: clientId }],
@@ -52,6 +52,20 @@ export function useGroupsFromClient(clientId: ClientType["id"] | undefined) {
                 throw new Error("Client ID is required")
             }
             return GroupService.getAllFromClient(clientId)
+        },
+        enabled: !!clientId,
+    })
+}
+
+/** Hook pro získání skupin, které klient opustil (má tam účast na lekci, ale již není členem). */
+export function useAllGroupsEverFromClient(clientId: ClientType["id"] | undefined) {
+    return useQuery<GroupType[]>({
+        queryKey: ["groups", { client: clientId, onlyPast: true }],
+        queryFn: () => {
+            if (!clientId) {
+                throw new Error("Client ID is required")
+            }
+            return GroupService.getAllEverFromClient(clientId)
         },
         enabled: !!clientId,
     })

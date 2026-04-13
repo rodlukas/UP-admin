@@ -37,10 +37,33 @@ class GroupFilter(filters.FilterSet):
     Filtr skupin podle klienta (client) a aktivity skupiny (active).
     Filtr aktivity je základní.
     Filtr klienta umožňuje filtrovat jednodušším URL parametrem, než konkrétní cestou k related_field (xx_yy).
+    Parametr onlyPast=true vrátí jen skupiny, které klient opustil (má tam účast na lekci, ale již není členem).
     """
 
-    client = filters.NumberFilter(field_name="memberships__client__pk")
+    client = filters.NumberFilter()
+    onlyPast = filters.BooleanFilter()
+
+    def filter_queryset(self, queryset):
+        client_id = self.form.cleaned_data.get("client")
+        only_past = self.form.cleaned_data.get("onlyPast")
+        active = self.form.cleaned_data.get("active")
+
+        if client_id is not None:
+            if only_past:
+                queryset = (
+                    queryset
+                    .filter(lectures__attendances__client=client_id)
+                    .exclude(memberships__client__pk=client_id)
+                    .distinct()
+                )
+            else:
+                queryset = queryset.filter(memberships__client__pk=client_id)
+
+        if active is not None:
+            queryset = queryset.filter(active=active)
+
+        return queryset
 
     class Meta:
         model = Group
-        fields = "client", "active"
+        fields = "client", "onlyPast", "active"
