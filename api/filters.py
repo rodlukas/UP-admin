@@ -43,7 +43,7 @@ class GroupFilter(filters.FilterSet):
     client = filters.NumberFilter()
     onlyPast = filters.BooleanFilter()
 
-    def filter_queryset(self, queryset):
+    def filter_queryset(self, queryset: QuerySet) -> QuerySet:
         client_id = self.form.cleaned_data.get("client")
         only_past = self.form.cleaned_data.get("onlyPast")
         active = self.form.cleaned_data.get("active")
