@@ -67,7 +67,7 @@ jobs:
             - name: ✨ Pre-deploy tasks Github Releases
               run: ./scripts/shell/ci/create_frontend_zip.sh
             - name: 🚀 Upload build artifacts to GitHub Releases
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v3
               with:
                   files: frontend.zip
             - name: 🧹 Post-deploy tasks Github Releases
