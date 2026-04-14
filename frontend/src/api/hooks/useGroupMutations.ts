@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 
 import { GroupPostApi, GroupPutApi, GroupType } from "../../types/models"
 import GroupService from "../services/GroupService"
@@ -35,13 +35,9 @@ export function useDeleteGroup() {
 
 /** Hook pro hromadné přesunutí stale aktivních skupin do neaktivních. */
 export function useDeactivateGroups() {
-    const queryClient = useQueryClient()
     return useMutation<void, unknown, GroupType["id"][]>({
         mutationFn: (ids) =>
             Promise.all(ids.map((id) => GroupService.deactivate(id))).then(() => undefined),
-        onSuccess: () => {
-            void queryClient.invalidateQueries({ queryKey: ["groups"] })
-        },
         meta: {
             successMessage: "Skupiny přesunuty do neaktivních",
         },
