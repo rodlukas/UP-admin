@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { faCalendarExclamation, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Alert, Badge, Button, Container, Table } from "reactstrap"
 
@@ -83,7 +83,9 @@ const Clients: React.FC = () => {
             {active && !clientsActiveContext.isLoading && staleClients.length > 0 && (
                 <Alert
                     color="warning"
-                    className="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+                    style={{ width: "fit-content" }}
+                    className="d-flex align-items-center gap-3 flex-wrap mx-auto">
+                    <FontAwesomeIcon icon={faCalendarExclamation} />
                     <span>
                         {staleClients.length}{" "}
                         {staleClients.length === 1
@@ -139,6 +141,7 @@ const Clients: React.FC = () => {
                                                         postfix={`Client_StaleActive_${client.id}`}
                                                         placement="right"
                                                         size="1x"
+                                                        icon={faCalendarExclamation}
                                                         text={TEXTS.WARNING_STALE_CLIENT}
                                                     />
                                                 )}
