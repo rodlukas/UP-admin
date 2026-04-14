@@ -185,5 +185,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# Snyk Security Extension - AI Rules (auto-generated)
-.cursor/rules/snyk_rules.mdc
+# cursor settings
+.cursor/
