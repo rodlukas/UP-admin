@@ -54,6 +54,7 @@ pipenv run python manage.py migrate           # aplikuje migrace na DB
 # Testy a kvalita kódu (z rootu repozitáře — doporučeno pro CI paritu)
 npm run frontend:test           # typy + lint + jest (kompletní frontend CI suite)
 npm run frontend:lint:js        # pouze ESLint
+npm run frontend:audit          # security audit závislostí (audit-ci)
 
 # Detailní příkazy (ze složky frontend/)
 cd frontend
@@ -75,7 +76,7 @@ Systém pro správu lekcí a kurzů — Django REST API backend + React SPA fron
 
 ### Backend
 
-Django 5 + Django REST Framework — REST API pro všechny operace. Kód je rozdělen do Django aplikací:
+Django 6 + Django REST Framework — REST API pro všechny operace. Kód je rozdělen do Django aplikací:
 
 - [api/](api/) — DRF viewsets, serializéry, filtry, business logika; **zde žije veškerá API logika**
 - [admin/](admin/) — modely, Django admin interface, šablony (shell pro SPA)
