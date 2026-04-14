@@ -13,6 +13,7 @@ import {
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { ClientType, CourseType, LectureType, LectureTypeWithDate } from "../types/models"
 
+import { AXIS_LABEL, AXIS_TICK, GRID_STROKE, LEGEND_FONT, MONTH_LABELS } from "./charts"
 import * as styles from "./ClientAnalysis.css"
 
 type Props = {
@@ -26,27 +27,7 @@ type CourseInfo = {
     color: CourseType["color"]
 }
 
-const MONTH_LABELS = [
-    "Led",
-    "Úno",
-    "Bře",
-    "Dub",
-    "Kvě",
-    "Čvn",
-    "Čvc",
-    "Srp",
-    "Zář",
-    "Říj",
-    "Lis",
-    "Pro",
-] as const
-
 const CHART_MARGIN = { top: 8, right: 8, left: 4, bottom: 8 } as const
-const AXIS_TICK = { fontSize: 12, fill: "#6c757d" } as const
-const AXIS_LABEL = { fontSize: 11, fill: "#6c757d" } as const
-
-const GRID_STROKE = "#e9ecef"
-const LEGEND_STYLE = { fontSize: 12 }
 
 type TooltipEntry = {
     color: string
@@ -87,9 +68,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
     const { attendancestates } = useAttendanceStatesContext()
 
     const analysis = React.useMemo(() => {
-        const scheduled = lectures.filter(
-            (l): l is LectureTypeWithDate => l.start !== null,
-        )
+        const scheduled = lectures.filter((l): l is LectureTypeWithDate => l.start !== null)
         const happened = scheduled.filter((l) => !l.canceled)
         const notHappened = scheduled.filter((l) => l.canceled)
 
@@ -173,7 +152,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                     <div className="text-muted small">Zaplaceno</div>
                 </div>
             </div>
-            {analysis.monthlyData.length >= 2 && (
+            {analysis.monthlyData.length >= 1 && (
                 <div className="border-top mt-2 pt-3">
                     <ResponsiveContainer width="100%" height={multiCourse ? 190 : 160}>
                         <BarChart data={analysis.monthlyData} margin={CHART_MARGIN}>
@@ -205,7 +184,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                                 }}
                             />
                             <Tooltip content={<ChartTooltip />} />
-                            {multiCourse && <Legend wrapperStyle={LEGEND_STYLE} />}
+                            {multiCourse && <Legend wrapperStyle={LEGEND_FONT} />}
                             {analysis.courses.map((course, index) => (
                                 <Bar
                                     key={course.id}
@@ -214,7 +193,14 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                                     name={course.name}
                                     stackId="a"
                                     {...(index === 0 && !multiCourse
-                                        ? { radius: [3, 3, 0, 0] as [number, number, number, number] }
+                                        ? {
+                                              radius: [3, 3, 0, 0] as [
+                                                  number,
+                                                  number,
+                                                  number,
+                                                  number,
+                                              ],
+                                          }
                                         : {})}
                                 />
                             ))}

@@ -259,8 +259,10 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     : TEXTS.WARNING_STALE_GROUP}
                             </Alert>
                         )}
-                        {isClient(object) && (
-                            <ListGroup>
+                    </div>
+                    {isClient(object) && (
+                        <div className="d-flex gap-3 align-items-start mb-3 flex-wrap">
+                            <ListGroup style={{ flex: "0 0 auto", minWidth: 220 }}>
                                 <ListGroupItem>
                                     <b>Telefon:</b> <ClientPhone phone={object.phone} />
                                 </ListGroupItem>
@@ -301,13 +303,13 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     <b>Poznámka:</b> <ClientNote note={object.note} />
                                 </ListGroupItem>
                             </ListGroup>
-                        )}
-                    </div>
-                    {isClient(object) && (
-                        <ClientAnalysis
-                            clientId={id}
-                            lectures={lecturesFromClientQuery.data ?? []}
-                        />
+                            <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                                <ClientAnalysis
+                                    clientId={id}
+                                    lectures={lecturesFromClientQuery.data ?? []}
+                                />
+                            </div>
+                        </div>
                     )}
                     {isGroup(object) && (
                         <PrepaidCounters
