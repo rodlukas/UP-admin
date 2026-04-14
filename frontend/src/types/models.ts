@@ -15,6 +15,7 @@ export type ClientType = Model & {
     phone: string
     firstname: string
     surname: string
+    last_lecture_date: string | null
 }
 
 /** Aktivní klient (GET). */
@@ -77,6 +78,7 @@ export type GroupType = Model & {
     memberships: MembershipType[]
     active: boolean
     course: CourseType
+    last_lecture_date: string | null
 }
 
 /** Stav účasti (GET). */
@@ -276,13 +278,13 @@ export type AttendancePutApi = Omit<AttendanceType, "remind_pay" | "number" | "c
 export type AttendanceStatePutApi = AttendanceStateType
 
 /** Klient (PUT). */
-export type ClientPutApi = ClientType
+export type ClientPutApi = Omit<ClientType, "last_lecture_date">
 
 /** Kurz (PUT). */
 export type CoursePutApi = CourseType
 
 /** Skupina (PUT). */
-export type GroupPutApi = Omit<GroupType, "course" | "memberships"> & {
+export type GroupPutApi = Omit<GroupType, "course" | "memberships" | "last_lecture_date"> & {
     course_id: CourseType["id"]
     memberships: MembershipPostApi[]
 }

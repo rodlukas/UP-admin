@@ -24,7 +24,12 @@ export enum TEXTS {
     WARNING_INACTIVE_CLIENT = "Klient není aktivní – přidáním nové lekce se klient stane opět aktivním.",
     WARNING_INACTIVE_GROUP = "Skupina není aktivní – nelze jí tedy přidávat nové lekce.",
     WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS = "Ve skupině jsou neaktivní klienti – přidáním nové lekce se změní na aktivní.",
+    WARNING_STALE_CLIENT = "Klient je aktivní, ale naposledy měl lekci před více než 60 dny. Zvažte přesunutí do neaktivních.",
+    WARNING_STALE_GROUP = "Skupina je aktivní, ale naposledy měla lekci před více než 60 dny. Zvažte přesunutí do neaktivních.",
 }
+
+/** Počet dní bez lekce, po kterých se aktivní klient/skupina považuje za „stale" a zobrazí se varování. */
+export const DAYS_WITHOUT_LECTURE_WARNING = 60
 
 /** Výchozí délka trvání lekce jednotlivce. */
 export const DEFAULT_LECTURE_DURATION_SINGLE = 30

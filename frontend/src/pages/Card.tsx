@@ -15,6 +15,7 @@ import {
 import APP_URLS from "../APP_URLS"
 import Attendances from "../components/Attendances"
 import BackButton from "../components/buttons/BackButton"
+import ClientAnalysis from "../components/ClientAnalysis"
 import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
@@ -40,6 +41,7 @@ import {
     getDefaultValuesForLecture,
     groupObjectsByCourses,
     GroupedObjectsByCourses,
+    isStaleActive,
     pageTitle,
 } from "../global/utils"
 import { ModalClientsGroupsData } from "../types/components"
@@ -250,50 +252,69 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     : TEXTS.WARNING_INACTIVE_GROUP}
                             </Alert>
                         )}
-                        {isClient(object) && (
-                            <ListGroup>
-                                <ListGroupItem>
-                                    <b>Telefon:</b> <ClientPhone phone={object.phone} />
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>E-mail:</b> <ClientEmail email={object.email} />
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>Skupiny:</b>{" "}
-                                    {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
-                                        <span className="text-muted">žádné skupiny</span>
-                                    ) : (
-                                        <ComponentsList
-                                            components={[
-                                                ...groupsOfClient.map((g) => (
-                                                    <GroupName
-                                                        key={g.id}
-                                                        group={g}
-                                                        link
-                                                        showCircle
-                                                        noWrap
-                                                    />
-                                                )),
-                                                ...pastGroups.map((g) => (
-                                                    <span key={g.id} className={styles.pastGroup}>
+                        {object && object.active && isStaleActive(object.last_lecture_date) && (
+                            <Alert color="warning" className="mt-0">
+                                {isClient(object)
+                                    ? TEXTS.WARNING_STALE_CLIENT
+                                    : TEXTS.WARNING_STALE_GROUP}
+                            </Alert>
+                        )}
+                    </div>
+                    {isClient(object) && (
+                        <Row className="mb-4 gy-3">
+                            <Col md="5">
+                                <ListGroup>
+                                    <ListGroupItem>
+                                        <b>Telefon:</b> <ClientPhone phone={object.phone} />
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>E-mail:</b> <ClientEmail email={object.email} />
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>Skupiny:</b>{" "}
+                                        {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
+                                            <span className="text-muted">žádné skupiny</span>
+                                        ) : (
+                                            <ComponentsList
+                                                components={[
+                                                    ...groupsOfClient.map((g) => (
                                                         <GroupName
+                                                            key={g.id}
                                                             group={g}
                                                             link
                                                             showCircle
                                                             noWrap
                                                         />
-                                                    </span>
-                                                )),
-                                            ]}
-                                        />
-                                    )}
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>Poznámka:</b> <ClientNote note={object.note} />
-                                </ListGroupItem>
-                            </ListGroup>
-                        )}
-                    </div>
+                                                    )),
+                                                    ...pastGroups.map((g) => (
+                                                        <span
+                                                            key={g.id}
+                                                            className={styles.pastGroup}>
+                                                            <GroupName
+                                                                group={g}
+                                                                link
+                                                                showCircle
+                                                                noWrap
+                                                            />
+                                                        </span>
+                                                    )),
+                                                ]}
+                                            />
+                                        )}
+                                    </ListGroupItem>
+                                    <ListGroupItem>
+                                        <b>Poznámka:</b> <ClientNote note={object.note} />
+                                    </ListGroupItem>
+                                </ListGroup>
+                            </Col>
+                            <Col md="7">
+                                <ClientAnalysis
+                                    clientId={id}
+                                    lectures={lecturesFromClientQuery.data ?? []}
+                                />
+                            </Col>
+                        </Row>
+                    )}
                     {isGroup(object) && (
                         <PrepaidCounters
                             isGroupActive={object.active}

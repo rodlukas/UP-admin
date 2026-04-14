@@ -82,6 +82,15 @@ function create(context: GroupPostApi): Promise<Item> {
     })
 }
 
+/** Deaktivuje skupinu. */
+function deactivate(id: Item["id"]): Promise<Item> {
+    return axiosRequestData<Item>({
+        url: `${baseUrl}${id}${API_DELIM}`,
+        method: API_METHODS.patch,
+        data: { active: false },
+    })
+}
+
 const GroupService = {
     getAll,
     get,
@@ -90,6 +99,7 @@ const GroupService = {
     create,
     update,
     remove,
+    deactivate,
     getAllFromClient,
     getAllEverFromClient,
 }

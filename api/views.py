@@ -4,7 +4,7 @@ Views - na základě requestu vrátí příslušnou response.
 
 from typing import Any
 
-from django.db.models import Prefetch
+from django.db.models import Max, Prefetch, Q, QuerySet
 from django.db.models.deletion import ProtectedError
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -57,6 +57,14 @@ class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
     filterset_fields = ("active",)
+
+    def get_queryset(self) -> QuerySet[Client]:
+        return Client.objects.annotate(
+            last_lecture_date=Max(
+                "attendances__lecture__start",
+                filter=Q(attendances__lecture__canceled=False),
+            )
+        )
 
     @extend_schema(
         summary="Seznam klientů",
@@ -208,6 +216,20 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = custom_filters.GroupFilter
+
+    def get_queryset(self) -> QuerySet[Group]:
+        return (
+            Group.objects.select_related("course")
+            .prefetch_related(
+                Prefetch("memberships", queryset=Membership.objects.select_related("client"))
+            )
+            .annotate(
+                last_lecture_date=Max(
+                    "lectures__start",
+                    filter=Q(lectures__canceled=False),
+                )
+            )
+        )
 
     @extend_schema(
         summary="Seznam skupin",

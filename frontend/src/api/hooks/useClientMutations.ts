@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { ClientPostApi, ClientPutApi, ClientType } from "../../types/models"
 import ClientService from "../services/ClientService"
@@ -29,6 +29,21 @@ export function useDeleteClient() {
         mutationFn: (id) => ClientService.remove(id),
         meta: {
             successMessage: "Klient smazán",
+        },
+    })
+}
+
+/** Hook pro hromadné přesunutí stale aktivních klientů do neaktivních. */
+export function useDeactivateClients() {
+    const queryClient = useQueryClient()
+    return useMutation<void, unknown, ClientType["id"][]>({
+        mutationFn: (ids) =>
+            Promise.all(ids.map((id) => ClientService.deactivate(id))).then(() => undefined),
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: ["clients"] })
+        },
+        meta: {
+            successMessage: "Klienti přesunuti do neaktivních",
         },
     })
 }
