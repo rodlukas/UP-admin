@@ -259,61 +259,55 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     : TEXTS.WARNING_STALE_GROUP}
                             </Alert>
                         )}
-                    </div>
-                    {isClient(object) && (
-                        <Row className="mb-4 gy-3">
-                            <Col md="5">
-                                <ListGroup>
-                                    <ListGroupItem>
-                                        <b>Telefon:</b> <ClientPhone phone={object.phone} />
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>E-mail:</b> <ClientEmail email={object.email} />
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>Skupiny:</b>{" "}
-                                        {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
-                                            <span className="text-muted">žádné skupiny</span>
-                                        ) : (
-                                            <ComponentsList
-                                                components={[
-                                                    ...groupsOfClient.map((g) => (
+                        {isClient(object) && (
+                            <ListGroup>
+                                <ListGroupItem>
+                                    <b>Telefon:</b> <ClientPhone phone={object.phone} />
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <b>E-mail:</b> <ClientEmail email={object.email} />
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <b>Skupiny:</b>{" "}
+                                    {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
+                                        <span className="text-muted">žádné skupiny</span>
+                                    ) : (
+                                        <ComponentsList
+                                            components={[
+                                                ...groupsOfClient.map((g) => (
+                                                    <GroupName
+                                                        key={g.id}
+                                                        group={g}
+                                                        link
+                                                        showCircle
+                                                        noWrap
+                                                    />
+                                                )),
+                                                ...pastGroups.map((g) => (
+                                                    <span key={g.id} className={styles.pastGroup}>
                                                         <GroupName
-                                                            key={g.id}
                                                             group={g}
                                                             link
                                                             showCircle
                                                             noWrap
                                                         />
-                                                    )),
-                                                    ...pastGroups.map((g) => (
-                                                        <span
-                                                            key={g.id}
-                                                            className={styles.pastGroup}>
-                                                            <GroupName
-                                                                group={g}
-                                                                link
-                                                                showCircle
-                                                                noWrap
-                                                            />
-                                                        </span>
-                                                    )),
-                                                ]}
-                                            />
-                                        )}
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <b>Poznámka:</b> <ClientNote note={object.note} />
-                                    </ListGroupItem>
-                                </ListGroup>
-                            </Col>
-                            <Col md="7">
-                                <ClientAnalysis
-                                    clientId={id}
-                                    lectures={lecturesFromClientQuery.data ?? []}
-                                />
-                            </Col>
-                        </Row>
+                                                    </span>
+                                                )),
+                                            ]}
+                                        />
+                                    )}
+                                </ListGroupItem>
+                                <ListGroupItem>
+                                    <b>Poznámka:</b> <ClientNote note={object.note} />
+                                </ListGroupItem>
+                            </ListGroup>
+                        )}
+                    </div>
+                    {isClient(object) && (
+                        <ClientAnalysis
+                            clientId={id}
+                            lectures={lecturesFromClientQuery.data ?? []}
+                        />
                     )}
                     {isGroup(object) && (
                         <PrepaidCounters
