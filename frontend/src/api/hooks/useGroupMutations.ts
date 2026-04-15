@@ -33,7 +33,7 @@ export function useDeleteGroup() {
     })
 }
 
-/** Hook pro hromadné přesunutí stale aktivních skupin do neaktivních. */
+/** Hook pro hromadné přesunutí aktivních skupin bez lekce v poslední době do neaktivních. */
 export function useDeactivateGroups() {
     return useMutation<void, unknown, GroupType["id"][]>({
         mutationFn: (ids) =>
