@@ -48,6 +48,8 @@ pipenv run python manage.py makemigrations    # vytvoří nové migrace po změn
 pipenv run python manage.py migrate           # aplikuje migrace na DB
 ```
 
+> **PostgreSQL je povinné i pro testy:** před `pipenv run python manage.py test` nebo `behave` nejdřív spusť DB přes `make db` nebo `docker compose up`. Bez běžící PostgreSQL na `localhost:5432` backend testy selžou už při inicializaci testovací databáze.
+
 ### Frontend (TypeScript / React)
 
 ```bash
@@ -124,6 +126,12 @@ React 19 SPA v [frontend/src/](frontend/src/). Webpack dev server na portu 3000 
 - Testy: Jest + React Testing Library, soubory colocated se zdrojovým kódem (`*.test.ts` / `*.test.tsx`), API mockované přes MSW
 
 **Pre-commit hooky (Husky + lint-staged):** automaticky spouštějí ESLint a Prettier na staged JS/TS souborech.
+
+## Ověření změn
+
+- Čistě frontend změny ověř primárně přes `npm run frontend:test`.
+- Backend změny ověř přes `pipenv run mypy .` a relevantní `manage.py test` / `behave`, ale až po spuštění PostgreSQL.
+- Změny přesahující backend i frontend ideálně ověř na obou stranách; lokální "green" frontend testy neříkají nic o dostupnosti DB nebo API.
 
 ### Build a nasazení
 
