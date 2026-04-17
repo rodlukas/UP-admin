@@ -40,28 +40,22 @@ class GroupFilter(filters.FilterSet):
     Parametr onlyPast=true vrátí jen skupiny, které klient opustil (má tam účast na lekci, ale již není členem).
     """
 
-    client = filters.NumberFilter()
-    onlyPast = filters.BooleanFilter()
+    client = filters.NumberFilter(method="filter_client")
+    onlyPast = filters.BooleanFilter(method="filter_only_past")
 
-    def filter_queryset(self, queryset: QuerySet) -> QuerySet:
-        client_id = self.form.cleaned_data.get("client")
+    def filter_client(self, queryset: QuerySet, name: str, value: int) -> QuerySet:
+        # parametr onlyPast se zpracovává společně s filtrem client
         only_past = self.form.cleaned_data.get("onlyPast")
-        active = self.form.cleaned_data.get("active")
+        if only_past:
+            return (
+                queryset.filter(lectures__attendances__client=value)
+                .exclude(memberships__client__pk=value)
+                .distinct()
+            )
+        return queryset.filter(memberships__client__pk=value)
 
-        if client_id is not None:
-            if only_past:
-                queryset = (
-                    queryset
-                    .filter(lectures__attendances__client=client_id)
-                    .exclude(memberships__client__pk=client_id)
-                    .distinct()
-                )
-            else:
-                queryset = queryset.filter(memberships__client__pk=client_id)
-
-        if active is not None:
-            queryset = queryset.filter(active=active)
-
+    def filter_only_past(self, queryset: QuerySet, name: str, value: bool) -> QuerySet:
+        # samotný onlyPast (bez client) nemá efekt; filtrování probíhá ve filter_client
         return queryset
 
     class Meta:

@@ -13,7 +13,14 @@ import {
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { ClientType, CourseType, LectureType, LectureTypeWithDate } from "../types/models"
 
-import { AXIS_LABEL, AXIS_TICK, GRID_STROKE, LEGEND_FONT, MONTH_LABELS } from "./charts"
+import {
+    AXIS_LABEL,
+    AXIS_TICK,
+    ChartMargin,
+    GRID_STROKE,
+    LEGEND_FONT,
+    MONTH_LABELS,
+} from "./charts"
 import * as styles from "./ClientAnalysis.css"
 
 type Props = {
@@ -27,7 +34,7 @@ type CourseInfo = {
     color: CourseType["color"]
 }
 
-const CHART_MARGIN = { top: 8, right: 8, left: 4, bottom: 8 } as const
+const CHART_MARGIN: ChartMargin = { top: 8, right: 8, left: 4, bottom: 8 }
 
 type TooltipEntry = {
     color: string

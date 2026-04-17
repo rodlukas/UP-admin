@@ -18,3 +18,10 @@ export const AXIS_TICK = { fontSize: 12, fill: "#6c757d" } as const
 export const AXIS_LABEL = { fontSize: 11, fill: "#6c757d" } as const
 export const GRID_STROKE = "#e9ecef"
 export const LEGEND_FONT = { fontSize: 12 } as const
+
+export type ChartMargin = {
+    top: number
+    right: number
+    left: number
+    bottom: number
+}
