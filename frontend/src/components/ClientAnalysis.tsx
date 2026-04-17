@@ -163,7 +163,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
             </div>
             {analysis.monthlyData.length > 0 && (
                 <div className="border-top mt-2 pt-3">
-                    <ResponsiveContainer width="100%" height={true ? 190 : 160}>
+                    <ResponsiveContainer width="100%" height={190}>
                         <BarChart data={analysis.monthlyData} margin={CHART_MARGIN}>
                             <CartesianGrid
                                 strokeDasharray="3 3"
@@ -193,24 +193,14 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                                 }}
                             />
                             <Tooltip content={<ChartTooltip />} />
-                            {true && <Legend wrapperStyle={LEGEND_FONT} />}
-                            {analysis.courses.map((course, index) => (
+                            <Legend wrapperStyle={LEGEND_FONT} />
+                            {analysis.courses.map((course) => (
                                 <Bar
                                     key={course.key}
                                     dataKey={course.key}
                                     fill={course.color}
                                     name={course.name}
                                     stackId="a"
-                                    {...(index === 0 && !true
-                                        ? {
-                                              radius: [3, 3, 0, 0] as [
-                                                  number,
-                                                  number,
-                                                  number,
-                                                  number,
-                                              ],
-                                          }
-                                        : {})}
                                 />
                             ))}
                         </BarChart>

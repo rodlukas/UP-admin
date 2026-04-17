@@ -184,7 +184,9 @@ export function getDisplayName<P>(Component: React.ComponentType<P>): string {
  * Nová entita bez jediné lekce (lastLectureDate === null) varování nedostane.
  */
 export function isStaleActive(lastLectureDate: string | null): boolean {
-    if (!lastLectureDate) { return false }
+    if (!lastLectureDate) {
+        return false
+    }
     const daysSince = (Date.now() - new Date(lastLectureDate).getTime()) / (1000 * 60 * 60 * 24)
     return daysSince > DAYS_WITHOUT_LECTURE_WARNING
 }
