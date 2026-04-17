@@ -159,7 +159,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                     <div className="text-muted small">Zaplaceno</div>
                 </div>
             </div>
-            {analysis.monthlyData.length >= 1 && (
+            {analysis.monthlyData.length > 0 && (
                 <div className="border-top mt-2 pt-3">
                     <ResponsiveContainer width="100%" height={multiCourse ? 190 : 160}>
                         <BarChart data={analysis.monthlyData} margin={CHART_MARGIN}>
