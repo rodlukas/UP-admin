@@ -55,7 +55,7 @@ class GroupFilter(filters.FilterSet):
         return queryset.filter(memberships__client__pk=value)
 
     def filter_only_past(self, queryset: QuerySet, name: str, value: bool) -> QuerySet:
-        # samotný onlyPast (bez client) nemá efekt; filtrování probíhá ve filter_client
+        # samostatny onlyPast (bez client) nema efekt; filtrovani probiha ve filter_client
         return queryset
 
     class Meta:
