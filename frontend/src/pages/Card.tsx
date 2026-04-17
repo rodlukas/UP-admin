@@ -10,6 +10,7 @@ import {
     useGroup,
     useGroupsFromClient,
     useLecturesFromClient,
+    useLecturesFromClientAll,
     useLecturesFromGroup,
 } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
@@ -74,6 +75,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const groupsOfClientQuery = useGroupsFromClient(isClientPageValue ? id : undefined)
     const allGroupsEverQuery = useAllGroupsEverFromClient(isClientPageValue ? id : undefined)
     const lecturesFromClientQuery = useLecturesFromClient(isClientPageValue ? id : undefined, false)
+    const lecturesFromClientAllQuery = useLecturesFromClientAll(isClientPageValue ? id : undefined, false)
     const lecturesFromGroupQuery = useLecturesFromGroup(isClientPageValue ? undefined : id, false)
 
     /** Klient nebo skupina zobrazená na kartě. */
@@ -120,23 +122,31 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         }
     }, [object])
 
+    const clientQueriesLoading =
+        clientQuery.isLoading ||
+        groupsOfClientQuery.isLoading ||
+        allGroupsEverQuery.isLoading ||
+        !!lecturesFromClientAllQuery.isLoading ||
+        lecturesFromClientQuery.isLoading
+
+    const groupQueriesLoading = groupQuery.isLoading || lecturesFromGroupQuery.isLoading
+
     const isLoading =
-        (isClientPageValue ? clientQuery.isLoading : groupQuery.isLoading) ||
-        (isClientPageValue ? groupsOfClientQuery.isLoading : false) ||
-        (isClientPageValue ? allGroupsEverQuery.isLoading : false) ||
-        (isClientPageValue
-            ? lecturesFromClientQuery.isLoading
-            : lecturesFromGroupQuery.isLoading) ||
-        attendanceStatesContext.isLoading
+        (isClientPageValue ? clientQueriesLoading : groupQueriesLoading) ||
+        !!attendanceStatesContext.isLoading
+
+    const clientQueriesFetching =
+        clientQuery.isFetching ||
+        groupsOfClientQuery.isFetching ||
+        allGroupsEverQuery.isFetching ||
+        !!lecturesFromClientAllQuery.isFetching ||
+        lecturesFromClientQuery.isFetching
+
+    const groupQueriesFetching = groupQuery.isFetching || lecturesFromGroupQuery.isFetching
 
     const isFetching =
-        (isClientPageValue ? clientQuery.isFetching : groupQuery.isFetching) ||
-        (isClientPageValue ? groupsOfClientQuery.isFetching : false) ||
-        (isClientPageValue ? allGroupsEverQuery.isFetching : false) ||
-        (isClientPageValue
-            ? lecturesFromClientQuery.isFetching
-            : lecturesFromGroupQuery.isFetching) ||
-        attendanceStatesContext.isLoading
+        (isClientPageValue ? clientQueriesFetching : groupQueriesFetching) ||
+        !!attendanceStatesContext.isLoading
 
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
@@ -306,7 +316,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                             <div className="flex-grow-1" style={{ minWidth: 0 }}>
                                 <ClientAnalysis
                                     clientId={id}
-                                    lectures={lecturesFromClientQuery.data ?? []}
+                                    lectures={lecturesFromClientAllQuery.data ?? []}
                                 />
                             </div>
                         </div>

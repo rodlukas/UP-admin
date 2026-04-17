@@ -29,8 +29,8 @@ type Props = {
 }
 
 type CourseInfo = {
-    id: CourseType["id"]
-    name: CourseType["name"]
+    key: string
+    name: string
     color: CourseType["color"]
 }
 
@@ -91,13 +91,15 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
             return att?.paid === true
         })
 
-        // Sesbírej unikátní kurzy v pořadí výskytu
-        const courseMap = new Map<number, CourseInfo>()
+        // Sesbírej unikátní kurzy (individuální a skupinové zvlášť) v pořadí výskytu
+        const courseMap = new Map<string, CourseInfo>()
         for (const lecture of happened) {
-            if (!courseMap.has(lecture.course.id)) {
-                courseMap.set(lecture.course.id, {
-                    id: lecture.course.id,
-                    name: lecture.course.name,
+            const isGroup = lecture.group !== null
+            const courseKey = `${lecture.course.id}_${isGroup ? "g" : "i"}`
+            if (!courseMap.has(courseKey)) {
+                courseMap.set(courseKey, {
+                    key: courseKey,
+                    name: isGroup ? `${lecture.course.name} (skup.)` : lecture.course.name,
                     color: lecture.course.color,
                 })
             }
@@ -107,10 +109,11 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
         // Počty lekcí per kurz per měsíc
         const monthMap = new Map<string, Record<string, number>>()
         for (const lecture of happened) {
+            const isGroup = lecture.group !== null
             const date = new Date(lecture.start)
             const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`
             const monthData = monthMap.get(key) ?? {}
-            const courseKey = String(lecture.course.id)
+            const courseKey = `${lecture.course.id}_${isGroup ? "g" : "i"}`
             monthData[courseKey] = (monthData[courseKey] ?? 0) + 1
             monthMap.set(key, monthData)
         }
@@ -133,7 +136,6 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
         return null
     }
 
-    const multiCourse = analysis.courses.length > 1
 
     return (
         <div className={styles.chartPanel}>
@@ -161,7 +163,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
             </div>
             {analysis.monthlyData.length > 0 && (
                 <div className="border-top mt-2 pt-3">
-                    <ResponsiveContainer width="100%" height={multiCourse ? 190 : 160}>
+                    <ResponsiveContainer width="100%" height={true ? 190 : 160}>
                         <BarChart data={analysis.monthlyData} margin={CHART_MARGIN}>
                             <CartesianGrid
                                 strokeDasharray="3 3"
@@ -191,15 +193,15 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                                 }}
                             />
                             <Tooltip content={<ChartTooltip />} />
-                            {multiCourse && <Legend wrapperStyle={LEGEND_FONT} />}
+                            {true && <Legend wrapperStyle={LEGEND_FONT} />}
                             {analysis.courses.map((course, index) => (
                                 <Bar
-                                    key={course.id}
-                                    dataKey={String(course.id)}
+                                    key={course.key}
+                                    dataKey={course.key}
                                     fill={course.color}
                                     name={course.name}
                                     stackId="a"
-                                    {...(index === 0 && !multiCourse
+                                    {...(index === 0 && !true
                                         ? {
                                               radius: [3, 3, 0, 0] as [
                                                   number,

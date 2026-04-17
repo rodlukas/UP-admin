@@ -36,8 +36,7 @@ export function useDeleteGroup() {
 /** Hook pro hromadné přesunutí aktivních skupin bez lekce v poslední době do neaktivních. */
 export function useDeactivateGroups() {
     return useMutation<void, unknown, GroupType["id"][]>({
-        mutationFn: (ids) =>
-            Promise.all(ids.map((id) => GroupService.deactivate(id))).then(() => undefined),
+        mutationFn: (ids) => GroupService.deactivateAll(ids),
         meta: {
             successMessage: "Skupiny přesunuty do neaktivních",
         },

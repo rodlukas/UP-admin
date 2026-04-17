@@ -82,12 +82,12 @@ function create(context: GroupPostApi): Promise<Item> {
     })
 }
 
-/** Deaktivuje skupinu. */
-function deactivate(id: Item["id"]): Promise<Item> {
-    return axiosRequestData<Item>({
-        url: `${baseUrl}${id}${API_DELIM}`,
+/** Hromadně deaktivuje skupiny. */
+function deactivateAll(ids: Item["id"][]): Promise<void> {
+    return axiosRequestData<void>({
+        url: `${baseUrl}deactivate-bulk${API_DELIM}`,
         method: API_METHODS.patch,
-        data: { active: false },
+        data: { ids },
     })
 }
 
@@ -99,7 +99,7 @@ const GroupService = {
     create,
     update,
     remove,
-    deactivate,
+    deactivateAll,
     getAllFromClient,
     getAllEverFromClient,
 }

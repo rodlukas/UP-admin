@@ -36,8 +36,7 @@ export function useDeleteClient() {
 /** Hook pro hromadné přesunutí aktivních klientů bez lekce v poslední době do neaktivních. */
 export function useDeactivateClients() {
     return useMutation<void, unknown, ClientType["id"][]>({
-        mutationFn: (ids) =>
-            Promise.all(ids.map((id) => ClientService.deactivate(id))).then(() => undefined),
+        mutationFn: (ids) => ClientService.deactivateAll(ids),
         meta: {
             successMessage: "Klienti přesunuti do neaktivních",
         },
