@@ -26,6 +26,8 @@ type EventName =
     | "diary_navigated"
     | "search_used"
     | "active_filter_toggled"
+    | "client_deactivated"
+    | "group_deactivated"
 
 export type AnalyticsSource =
     | "applications_form"

@@ -12,7 +12,8 @@
                         "firstname": "Lukáš",
                         "note": "vcvxc vxc v cv  xcvxc vcxvxcv cv cx v xcv cx vxc vcxvcxv xcv cx xv xv",
                         "phone": "000000000",
-                        "surname": "Rod"
+                        "surname": "Rod",
+                        "last_lecture_date": null
                     },
                     "remind_pay": false,
                     "note": "uuu",
@@ -45,7 +46,8 @@
                         "firstname": "Jan",
                         "note": "",
                         "phone": "",
-                        "surname": "Novák"
+                        "surname": "Novák",
+                        "last_lecture_date": null
                     },
                     "remind_pay": true,
                     "note": "",
@@ -106,7 +108,8 @@
             "note": "vcvxc vxc v cv  xcvxc vcxvxcv cv cx v xcv cx vxc vcxvcxv xcv cx xv xv",
             "phone": "000000000",
             "surname": "Rod",
-            "normalized": ["Lukas", "Rod"]
+            "normalized": ["Lukas", "Rod"],
+            "last_lecture_date": null
         },
         {
             "id": 14,
@@ -116,7 +119,8 @@
             "note": "",
             "phone": "",
             "surname": "Novák",
-            "normalized": ["Jan", "Novak"]
+            "normalized": ["Jan", "Novak"],
+            "last_lecture_date": null
         }
     ],
     "groups": [
@@ -133,7 +137,8 @@
                         "firstname": "Jan",
                         "note": "",
                         "phone": "",
-                        "surname": "Novák"
+                        "surname": "Novák",
+                        "last_lecture_date": null
                     },
                     "prepaid_cnt": 0
                 },
@@ -146,7 +151,8 @@
                         "firstname": "Lukáš",
                         "note": "vcvxc vxc v cv  xcvxc vcxvxcv cv cx v xcv cx vxc vcxvcxv xcv cx xv xv",
                         "phone": "000000000",
-                        "surname": "Rod"
+                        "surname": "Rod",
+                        "last_lecture_date": null
                     },
                     "prepaid_cnt": 0
                 }
@@ -158,7 +164,8 @@
                 "duration": 30,
                 "visible": true
             },
-            "active": true
+            "active": true,
+            "last_lecture_date": null
         }
     ]
 }

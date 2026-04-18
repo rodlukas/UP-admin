@@ -1,20 +1,28 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
+import { Alert, Button, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
+import { trackEvent } from "../analytics"
 import {
     useAllGroupsEverFromClient,
     useClient,
+    useDeactivateClients,
+    useDeactivateGroups,
     useGroup,
     useGroupsFromClient,
     useLecturesFromClient,
+    useLecturesFromClientAll,
     useLecturesFromGroup,
 } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
 import Attendances from "../components/Attendances"
 import BackButton from "../components/buttons/BackButton"
+import ClientAnalysis from "../components/ClientAnalysis"
 import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
@@ -40,6 +48,7 @@ import {
     getDefaultValuesForLecture,
     groupObjectsByCourses,
     GroupedObjectsByCourses,
+    isStaleActive,
     pageTitle,
 } from "../global/utils"
 import { ModalClientsGroupsData } from "../types/components"
@@ -59,6 +68,7 @@ type CardProps = {
 const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
     const isClientPageValue = isClientPage
 
     const isClient = (object: ClientOrGroup): object is ClientType =>
@@ -67,11 +77,18 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const isGroup = (object: ClientOrGroup): object is GroupType =>
         Boolean(object && "name" in object)
 
+    const deactivateClient = useDeactivateClients()
+    const deactivateGroup = useDeactivateGroups()
+
     const clientQuery = useClient(isClientPageValue ? id : undefined)
     const groupQuery = useGroup(isClientPageValue ? undefined : id)
     const groupsOfClientQuery = useGroupsFromClient(isClientPageValue ? id : undefined)
     const allGroupsEverQuery = useAllGroupsEverFromClient(isClientPageValue ? id : undefined)
     const lecturesFromClientQuery = useLecturesFromClient(isClientPageValue ? id : undefined, false)
+    const lecturesFromClientAllQuery = useLecturesFromClientAll(
+        isClientPageValue ? id : undefined,
+        false,
+    )
     const lecturesFromGroupQuery = useLecturesFromGroup(isClientPageValue ? undefined : id, false)
 
     /** Klient nebo skupina zobrazená na kartě. */
@@ -118,23 +135,31 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         }
     }, [object])
 
+    const clientQueriesLoading =
+        clientQuery.isLoading ||
+        groupsOfClientQuery.isLoading ||
+        allGroupsEverQuery.isLoading ||
+        !!lecturesFromClientAllQuery.isLoading ||
+        lecturesFromClientQuery.isLoading
+
+    const groupQueriesLoading = groupQuery.isLoading || lecturesFromGroupQuery.isLoading
+
     const isLoading =
-        (isClientPageValue ? clientQuery.isLoading : groupQuery.isLoading) ||
-        (isClientPageValue ? groupsOfClientQuery.isLoading : false) ||
-        (isClientPageValue ? allGroupsEverQuery.isLoading : false) ||
-        (isClientPageValue
-            ? lecturesFromClientQuery.isLoading
-            : lecturesFromGroupQuery.isLoading) ||
-        attendanceStatesContext.isLoading
+        (isClientPageValue ? clientQueriesLoading : groupQueriesLoading) ||
+        !!attendanceStatesContext.isLoading
+
+    const clientQueriesFetching =
+        clientQuery.isFetching ||
+        groupsOfClientQuery.isFetching ||
+        allGroupsEverQuery.isFetching ||
+        !!lecturesFromClientAllQuery.isFetching ||
+        lecturesFromClientQuery.isFetching
+
+    const groupQueriesFetching = groupQuery.isFetching || lecturesFromGroupQuery.isFetching
 
     const isFetching =
-        (isClientPageValue ? clientQuery.isFetching : groupQuery.isFetching) ||
-        (isClientPageValue ? groupsOfClientQuery.isFetching : false) ||
-        (isClientPageValue ? allGroupsEverQuery.isFetching : false) ||
-        (isClientPageValue
-            ? lecturesFromClientQuery.isFetching
-            : lecturesFromGroupQuery.isFetching) ||
-        attendanceStatesContext.isLoading
+        (isClientPageValue ? clientQueriesFetching : groupQueriesFetching) ||
+        !!attendanceStatesContext.isLoading
 
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
@@ -149,6 +174,31 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
 
     const goBack = (): void => {
         globalThis.history.back()
+    }
+
+    const handleDeactivate = (): void => {
+        if (!object) {
+            return
+        }
+        const label = isClient(object) ? "klienta" : "skupinu"
+        if (!globalThis.confirm(`Opravdu chcete přesunout ${label} do neaktivních?`)) {
+            return
+        }
+        if (isClient(object)) {
+            deactivateClient.mutate([id], {
+                onSuccess: () => {
+                    trackEvent("client_deactivated", { source: "client_card" })
+                    void queryClient.invalidateQueries({ queryKey: ["clients", id] })
+                },
+            })
+        } else {
+            deactivateGroup.mutate([id], {
+                onSuccess: () => {
+                    trackEvent("group_deactivated", { source: "group_card" })
+                    void queryClient.invalidateQueries({ queryKey: ["groups", id] })
+                },
+            })
+        }
     }
 
     const cardSource = isClientPageValue ? ("client_card" as const) : ("group_card" as const)
@@ -250,8 +300,41 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     : TEXTS.WARNING_INACTIVE_GROUP}
                             </Alert>
                         )}
-                        {isClient(object) && (
-                            <ListGroup>
+                        {object && object.active && isStaleActive(object.last_lecture_date) && (
+                            <Alert
+                                color="warning"
+                                className="mt-0 d-flex align-items-center justify-content-between gap-3 flex-wrap">
+                                <span>
+                                    {isClient(object)
+                                        ? TEXTS.WARNING_STALE_CLIENT
+                                        : TEXTS.WARNING_STALE_GROUP}
+                                </span>
+                                <Button
+                                    color="warning"
+                                    size="sm"
+                                    disabled={
+                                        isClient(object)
+                                            ? deactivateClient.isPending
+                                            : deactivateGroup.isPending
+                                    }
+                                    onClick={handleDeactivate}>
+                                    Přesunout do neaktivních
+                                    {(isClient(object)
+                                        ? deactivateClient.isPending
+                                        : deactivateGroup.isPending) && (
+                                        <FontAwesomeIcon
+                                            icon={faSpinnerThird}
+                                            spin
+                                            className="ms-2"
+                                        />
+                                    )}
+                                </Button>
+                            </Alert>
+                        )}
+                    </div>
+                    {isClient(object) && (
+                        <div className="d-flex gap-3 align-items-start mb-3 flex-wrap">
+                            <ListGroup style={{ flex: "0 0 auto", minWidth: 220 }}>
                                 <ListGroupItem>
                                     <b>Telefon:</b> <ClientPhone phone={object.phone} />
                                 </ListGroupItem>
@@ -292,8 +375,14 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     <b>Poznámka:</b> <ClientNote note={object.note} />
                                 </ListGroupItem>
                             </ListGroup>
-                        )}
-                    </div>
+                            <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                                <ClientAnalysis
+                                    clientId={id}
+                                    lectures={lecturesFromClientAllQuery.data ?? []}
+                                />
+                            </div>
+                        </div>
+                    )}
                     {isGroup(object) && (
                         <PrepaidCounters
                             isGroupActive={object.active}

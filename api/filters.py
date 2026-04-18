@@ -13,19 +13,25 @@ class LectureFilter(filters.FilterSet):
     Filtr lekcí podle startu (date), skupiny (group) a klienta (client).
     Filtr skupiny je základní.
     Filtr startu a klienta umožňuje filtrovat jednodušším URL parametrem, než konkrétní cestou k related_field (xx_yy).
-    Filtr klienta navíc odstraní z výsledku skupinové lekce.
+    Filtr klienta ve výchozím stavu vrátí jen individuální lekce (group__isnull=True).
+    Parametr includeGroup=true přidá i skupinové lekce klienta (group__isnull=False).
     """
 
     date = filters.DateFilter(field_name="start__date")
     client = filters.NumberFilter(field_name="attendances__client", method="filter_client")
+    includeGroup = filters.BooleanFilter(method="filter_include_group")
 
     def filter_client(self, queryset: QuerySet, name: str, value: int) -> QuerySet:
-        """
-        Filtr podle klienta, kde name je aktuální filtrované pole (klient),
-        value je jeho hodnota (ID klienta).
-        """
-        # aby bylo mozne rozsirit filtr na group__isnull, sami si praci s filtrem nad querysetem obstarame
-        return queryset.filter(**{name: value}, group__isnull=True)
+        # parametr includeGroup se zpracovava spolecne s filtrem client
+        include_group = self.form.cleaned_data.get("includeGroup")
+        q = queryset.filter(**{name: value})
+        if not include_group:
+            q = q.filter(group__isnull=True)
+        return q
+
+    def filter_include_group(self, queryset: QuerySet, name: str, value: bool) -> QuerySet:
+        # samostatny includeGroup (bez client) nema efekt; zpracovani probiha ve filter_client
+        return queryset
 
     class Meta:
         model = Lecture
@@ -40,28 +46,22 @@ class GroupFilter(filters.FilterSet):
     Parametr onlyPast=true vrátí jen skupiny, které klient opustil (má tam účast na lekci, ale již není členem).
     """
 
-    client = filters.NumberFilter()
-    onlyPast = filters.BooleanFilter()
+    client = filters.NumberFilter(method="filter_client")
+    onlyPast = filters.BooleanFilter(method="filter_only_past")
 
-    def filter_queryset(self, queryset: QuerySet) -> QuerySet:
-        client_id = self.form.cleaned_data.get("client")
+    def filter_client(self, queryset: QuerySet, name: str, value: int) -> QuerySet:
+        # parametr onlyPast se zpracovava spolecne s filtrem client
         only_past = self.form.cleaned_data.get("onlyPast")
-        active = self.form.cleaned_data.get("active")
+        if only_past:
+            return (
+                queryset.filter(lectures__attendances__client=value)
+                .exclude(memberships__client__pk=value)
+                .distinct()
+            )
+        return queryset.filter(memberships__client__pk=value)
 
-        if client_id is not None:
-            if only_past:
-                queryset = (
-                    queryset
-                    .filter(lectures__attendances__client=client_id)
-                    .exclude(memberships__client__pk=client_id)
-                    .distinct()
-                )
-            else:
-                queryset = queryset.filter(memberships__client__pk=client_id)
-
-        if active is not None:
-            queryset = queryset.filter(active=active)
-
+    def filter_only_past(self, queryset: QuerySet, name: str, value: bool) -> QuerySet:
+        # samostatny onlyPast (bez client) nema efekt; filtrovani probiha ve filter_client
         return queryset
 
     class Meta:

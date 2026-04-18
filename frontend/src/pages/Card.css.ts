@@ -1,5 +1,7 @@
 import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
 
+import { plainName as groupPlainName } from "../components/GroupName.css"
+
 export const cardVars = createThemeContract({
     courseBackground: "",
 })
@@ -35,12 +37,12 @@ globalStyle(`${cardInfo} > *`, {
 
 export const pastGroup = style({})
 
-globalStyle(`${pastGroup} [data-qa="group_name"]`, {
+globalStyle(`${pastGroup} ${groupPlainName}`, {
     position: "relative",
     display: "inline-block",
 })
 
-globalStyle(`${pastGroup} [data-qa="group_name"]::after`, {
+globalStyle(`${pastGroup} ${groupPlainName}::after`, {
     position: "absolute",
     top: "50%",
     left: 0,

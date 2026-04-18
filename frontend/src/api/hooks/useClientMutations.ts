@@ -32,3 +32,13 @@ export function useDeleteClient() {
         },
     })
 }
+
+/** Hook pro hromadné přesunutí aktivních klientů bez lekce v poslední době do neaktivních. */
+export function useDeactivateClients() {
+    return useMutation<void, unknown, ClientType["id"][]>({
+        mutationFn: (ids) => ClientService.deactivateAll(ids),
+        meta: {
+            successMessage: "Klienti přesunuti do neaktivních",
+        },
+    })
+}

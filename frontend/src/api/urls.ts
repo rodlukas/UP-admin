@@ -25,6 +25,7 @@ export const API_URLS = Object.freeze({
             date: "date",
             client: "client",
             group: "group",
+            includeGroup: "includeGroup",
         },
         ordering: {
             start: "start",

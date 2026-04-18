@@ -51,6 +51,8 @@ class ClientSerializer(serializers.ModelSerializer[Client]):
     Serializer pro klienta lektorky.
     """
 
+    last_lecture_date = serializers.DateTimeField(read_only=True, allow_null=True, default=None)
+
     class Meta:
         model = Client
         fields = "__all__"
@@ -147,6 +149,7 @@ class GroupSerializer(ValidateCourseIdMixin, serializers.ModelSerializer[Group])
     Serializer skupiny klientů nějakého kurzu.
     """
 
+    last_lecture_date = serializers.DateTimeField(read_only=True, allow_null=True, default=None)
     # nazev skupiny (znovuuvedeni kvuli validaci unikatnosti)
     name = serializers.CharField(
         validators=[UniqueValidator(queryset=Group.objects.all())],

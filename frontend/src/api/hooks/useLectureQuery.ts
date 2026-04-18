@@ -53,6 +53,20 @@ export function useLecturesFromClient(clientId: ClientType["id"] | undefined, as
     })
 }
 
+/** Hook pro získání všech lekcí daného klienta včetně skupinových. */
+export function useLecturesFromClientAll(clientId: ClientType["id"] | undefined, asc = true) {
+    return useQuery<LectureType[]>({
+        queryKey: ["lectures", { client: clientId, includeGroup: true, asc }],
+        queryFn: () => {
+            if (!clientId) {
+                throw new Error("Client ID is required")
+            }
+            return LectureService.getAllFromClientIncludingGroups(clientId, asc)
+        },
+        enabled: !!clientId,
+    })
+}
+
 /** Hook pro získání lekcí v daném dni. */
 export function useLecturesFromDay(date: string | undefined, asc = true) {
     return useQuery<LectureTypeWithDate[]>({
