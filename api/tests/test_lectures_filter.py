@@ -37,7 +37,7 @@ class LectureClientFilterTest(TestCase):
         self.client_target = Client.objects.create(firstname="Alice", surname="T")
         self.client_other = Client.objects.create(firstname="Bob", surname="T")
 
-        # Lekce A — individuální lekce cílového klienta (group=null)
+        # Lekce A — individualni lekce ciloveho klienta (group=null)
         self.lecture_individual = Lecture.objects.create(
             start=start, canceled=False, duration=60, course=course, group=None
         )
@@ -48,7 +48,7 @@ class LectureClientFilterTest(TestCase):
             attendancestate=state_ok,
         )
 
-        # Lekce B — skupinová lekce cílového klienta (group!=null)
+        # Lekce B — skupinova lekce ciloveho klienta (group!=null)
         group = Group.objects.create(name="Skupina", course=course)
         Membership.objects.create(client=self.client_target, group=group)
         self.lecture_group = Lecture.objects.create(
@@ -61,7 +61,7 @@ class LectureClientFilterTest(TestCase):
             attendancestate=state_ok,
         )
 
-        # Lekce C — individuální lekce jiného klienta (kontrolní)
+        # Lekce C — individualni lekce jineho klienta (kontrolni)
         self.lecture_other = Lecture.objects.create(
             start=start, canceled=False, duration=60, course=course, group=None
         )

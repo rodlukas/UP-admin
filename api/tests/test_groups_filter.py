@@ -37,7 +37,7 @@ class GroupClientFilterTest(TestCase):
         self.client_target = Client.objects.create(firstname="Alice", surname="T")
         self.client_other = Client.objects.create(firstname="Bob", surname="T")
 
-        # Skupina A — klient je aktuální člen, má v ní účast na lekci
+        # Skupina A — klient je aktualni clen, ma v ni ucast na lekci
         self.group_current = Group.objects.create(name="Current", course=course)
         Membership.objects.create(client=self.client_target, group=self.group_current)
         lecture_current = Lecture.objects.create(
@@ -47,7 +47,7 @@ class GroupClientFilterTest(TestCase):
             client=self.client_target, lecture=lecture_current, paid=True, attendancestate=state_ok
         )
 
-        # Skupina B — klient v ní měl lekci, ale už není členem (opustil)
+        # Skupina B — klient v ni mel lekci, ale uz neni clenem (opustil)
         self.group_past = Group.objects.create(name="Past", course=course)
         lecture_past = Lecture.objects.create(
             start=start, canceled=False, duration=60, course=course, group=self.group_past
@@ -55,10 +55,10 @@ class GroupClientFilterTest(TestCase):
         Attendance.objects.create(
             client=self.client_target, lecture=lecture_past, paid=True, attendancestate=state_ok
         )
-        # aktuálně tam má členství jen jiný klient
+        # aktualne tam ma clenstvi jen jiny klient
         Membership.objects.create(client=self.client_other, group=self.group_past)
 
-        # Skupina C — klient nikdy neúčastnil, nemá tam členství (kontrolní)
+        # Skupina C — klient nikdy neucastnil, nema tam clenstvi (kontrolni)
         self.group_unrelated = Group.objects.create(name="Unrelated", course=course)
         Membership.objects.create(client=self.client_other, group=self.group_unrelated)
 
