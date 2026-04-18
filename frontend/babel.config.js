@@ -4,18 +4,6 @@ module.exports = {
             plugins: ["react-refresh/babel"],
         },
         production: {
-            // vycleneni useESModules pouze na produkci kvuli nefunkcnimu Jestu
-            plugins: [
-                [
-                    "@babel/plugin-transform-runtime",
-                    {
-                        useESModules: true,
-                    },
-                ],
-            ],
-        },
-        test: {
-            // Jest deps
             plugins: [["@babel/plugin-transform-runtime"]],
         },
     },

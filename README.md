@@ -219,11 +219,11 @@ title and color (except for the production).
     - E2E testing is built on a **BDD framework [behave](https://github.com/behave/behave)** –
       testing scenarios are written using a natural language (Gherkin), each of the tests is run
       according to them.
-    - Unit tests are built on a **[Jest](https://jestjs.io/) framework** and tools like
+    - Unit tests are built on a **[Vitest](https://vitest.dev/) framework** and tools like
       **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
       (simple React testing utilities),
-      [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers
-      for Jest) and [MSW](https://mswjs.io/) (API mocking).
+      [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers)
+      and [MSW](https://mswjs.io/) (API mocking).
     - **UI (E2E) testing** is taken care of by [Selenium](https://github.com/SeleniumHQ/selenium).
     - **Details about the tests are available in [`tests/README.md` (CZ)](tests)**.
 

@@ -25,8 +25,8 @@ export default [
             "__mocks__/**",
             "babel.config.js",
             "eslint.config.mjs",
-            "jest.config.js",
-            "jest.setup.ts",
+            "vitest.config.ts",
+            "vitest.setup.ts",
             "webpack.config.js",
         ],
     },
@@ -51,7 +51,7 @@ export default [
                     jsx: true,
                 },
                 projectService: {
-                    allowDefaultProject: ["*.config.js", "*.config.ts", "jest.setup.ts"],
+                    allowDefaultProject: ["*.config.js", "*.config.ts", "vitest.setup.ts"],
                 },
                 tsconfigRootDir: import.meta.dirname,
             },
@@ -59,7 +59,7 @@ export default [
                 ...globals.browser,
                 ...globals.node,
                 ...globals.es2021,
-                ...globals.jest,
+                ...globals.vitest,
                 Atomics: "readonly",
                 SharedArrayBuffer: "readonly",
             },
@@ -98,6 +98,7 @@ export default [
             ...testingLibrary.configs.react.rules,
 
             "react/prop-types": 0,
+            "react/react-in-jsx-scope": "off",
 
             curly: "error",
             "no-console": ["error", { allow: ["warn", "error"] }],

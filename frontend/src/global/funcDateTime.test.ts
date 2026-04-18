@@ -45,8 +45,10 @@ describe("today's date", () => {
 })
 
 describe("add some days to date", () => {
-    expect(addDays(new Date(2020, 1, 1), 2)).toStrictEqual(new Date(2020, 1, 3))
-    expect(addDays(new Date(2020, 1, 21), -2)).toStrictEqual(new Date(2020, 1, 19))
+    test("adds days correctly", () => {
+        expect(addDays(new Date(2020, 1, 1), 2)).toStrictEqual(new Date(2020, 1, 3))
+        expect(addDays(new Date(2020, 1, 21), -2)).toStrictEqual(new Date(2020, 1, 19))
+    })
 })
 
 describe("pretty time", () => {
