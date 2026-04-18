@@ -178,11 +178,7 @@ export function getDisplayName<P>(Component: React.ComponentType<P>): string {
     return Component.displayName ?? Component.name ?? "UnknownComponent"
 }
 
-/**
- * Vrátí true pokud je aktivní klient/skupina „stale" – tj. má datum poslední lekce a ta
- * proběhla před více než DAYS_WITHOUT_LECTURE_WARNING dny.
- * Nová entita bez jediné lekce (lastLectureDate === null) varování nedostane.
- */
+/** Vrátí true pokud je aktivní klient/skupina „stale" – naposledy měl lekci před více než DAYS_WITHOUT_LECTURE_WARNING dny. Nová entita bez lekce (null) varování nedostane. */
 export function isStaleActive(lastLectureDate: string | null): boolean {
     if (!lastLectureDate) {
         return false

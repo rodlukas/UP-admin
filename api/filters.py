@@ -50,7 +50,7 @@ class GroupFilter(filters.FilterSet):
     onlyPast = filters.BooleanFilter(method="filter_only_past")
 
     def filter_client(self, queryset: QuerySet, name: str, value: int) -> QuerySet:
-        # parametr onlyPast se zpracovává společně s filtrem client
+        # parametr onlyPast se zpracovava spolecne s filtrem client
         only_past = self.form.cleaned_data.get("onlyPast")
         if only_past:
             return (

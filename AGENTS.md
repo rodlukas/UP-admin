@@ -14,7 +14,10 @@ cp .env.template .env
 pipenv install --dev          # Python závislosti
 npm ci                        # Node závislosti (postinstall hook automaticky nainstaluje i frontend a buildne ho)
 
-# 3. Spusť databázi a servery
+# 3. (Pouze při prvním spuštění native režimu) vytvoř DB kontejner postgresql_cz
+source scripts/shell/postgresql_docker.sh
+
+# 4. Spusť databázi a servery
 make db                       # PostgreSQL v Docker kontejneru
 make be                       # Django dev server na 0.0.0.0:8000
 make fe                       # Webpack dev server na http://localhost:3000
@@ -48,7 +51,7 @@ pipenv run python manage.py makemigrations    # vytvoří nové migrace po změn
 pipenv run python manage.py migrate           # aplikuje migrace na DB
 ```
 
-> **PostgreSQL je povinné i pro testy:** před `pipenv run python manage.py test` nebo `behave` nejdřív spusť DB přes `make db` nebo `docker compose up`. Bez běžící PostgreSQL na `localhost:5432` backend testy selžou už při inicializaci testovací databáze.
+> **PostgreSQL je povinné i pro testy:** před `pipenv run python manage.py test` nebo `behave` nejdřív spusť DB (`make db` v native režimu, nebo `docker compose up` v compose režimu). Bez běžící PostgreSQL backend testy selžou už při inicializaci testovací databáze.
 
 ### Frontend (TypeScript / React)
 

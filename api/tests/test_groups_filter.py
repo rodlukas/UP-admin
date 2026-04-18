@@ -11,9 +11,7 @@ from rest_framework.test import APIClient
 
 from admin.models import Attendance, AttendanceState, Client, Course, Group, Lecture, Membership
 
-
-def _ids(response_data: list[dict]) -> set[int]:
-    return {item["id"] for item in response_data}
+from .helpers import ids as _ids
 
 
 class GroupClientFilterTest(TestCase):

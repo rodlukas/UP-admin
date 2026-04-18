@@ -91,7 +91,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
             return att?.paid === true
         })
 
-        // Sesbírej unikátní kurzy (individuální a skupinové zvlášť) v pořadí výskytu
+        // unikatni kurzy (individualni a skupinove zvlast) v poradi vyskytu
         const courseMap = new Map<string, CourseInfo>()
         for (const lecture of happened) {
             const isGroup = lecture.group !== null
@@ -106,7 +106,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
         }
         const courses = Array.from(courseMap.values())
 
-        // Počty lekcí per kurz per měsíc
+        // pocty lekci per kurz per mesic
         const monthMap = new Map<string, Record<string, number>>()
         for (const lecture of happened) {
             const isGroup = lecture.group !== null
@@ -135,7 +135,6 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
     if (analysis.scheduled.length === 0) {
         return null
     }
-
 
     return (
         <div className={styles.chartPanel}>
