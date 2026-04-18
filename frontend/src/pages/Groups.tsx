@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendarExclamation, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { faHourglassEnd, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Alert, Badge, Button, Container, Table } from "reactstrap"
 
@@ -91,7 +91,7 @@ const Groups: React.FC = () => {
                     color="warning"
                     style={{ width: "fit-content" }}
                     className="d-flex align-items-center gap-3 flex-wrap mx-auto">
-                    <FontAwesomeIcon icon={faCalendarExclamation} />
+                    <FontAwesomeIcon icon={faHourglassEnd} />
                     <span>
                         {staleGroups.length}{" "}
                         {staleGroups.length === 1
@@ -136,27 +136,35 @@ const Groups: React.FC = () => {
                                 {getGroupsData().map((group) => (
                                     <tr key={group.id} data-qa="group">
                                         <td>
-                                            <GroupName group={group} link noWrap />{" "}
+                                            <GroupName group={group} link noWrap />
                                             {group.active &&
-                                                !areAllMembersActive(group.memberships) && (
-                                                    <Tooltip
-                                                        postfix={`Group_ActiveGroupWithInactiveClientAlert_${group.id}`}
-                                                        placement="right"
-                                                        size="1x"
-                                                        text={
-                                                            TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
-                                                        }
-                                                    />
-                                                )}
-                                            {group.active &&
-                                                isStaleActive(group.last_lecture_date) && (
-                                                    <Tooltip
-                                                        postfix={`Group_StaleActive_${group.id}`}
-                                                        placement="right"
-                                                        size="1x"
-                                                        icon={faCalendarExclamation}
-                                                        text={TEXTS.WARNING_STALE_GROUP}
-                                                    />
+                                                (!areAllMembersActive(group.memberships) ||
+                                                    isStaleActive(group.last_lecture_date)) && (
+                                                    <span className="ms-1 d-inline-flex gap-1 align-items-center">
+                                                        {!areAllMembersActive(
+                                                            group.memberships,
+                                                        ) && (
+                                                            <Tooltip
+                                                                postfix={`Group_ActiveGroupWithInactiveClientAlert_${group.id}`}
+                                                                placement="right"
+                                                                size="1x"
+                                                                text={
+                                                                    TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
+                                                                }
+                                                            />
+                                                        )}
+                                                        {isStaleActive(
+                                                            group.last_lecture_date,
+                                                        ) && (
+                                                            <Tooltip
+                                                                postfix={`Group_StaleActive_${group.id}`}
+                                                                placement="right"
+                                                                size="1x"
+                                                                icon={faHourglassEnd}
+                                                                text={TEXTS.WARNING_STALE_GROUP}
+                                                            />
+                                                        )}
+                                                    </span>
                                                 )}
                                         </td>
                                         <td className="d-none d-sm-table-cell">

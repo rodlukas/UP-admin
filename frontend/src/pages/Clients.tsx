@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCalendarExclamation, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { faHourglassEnd, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 import { Alert, Badge, Button, Container, Table } from "reactstrap"
 
@@ -92,7 +92,7 @@ const Clients: React.FC = () => {
                     color="warning"
                     style={{ width: "fit-content" }}
                     className="d-flex align-items-center gap-3 flex-wrap mx-auto">
-                    <FontAwesomeIcon icon={faCalendarExclamation} />
+                    <FontAwesomeIcon icon={faHourglassEnd} />
                     <span>
                         {staleClients.length}{" "}
                         {staleClients.length === 1
@@ -148,7 +148,7 @@ const Clients: React.FC = () => {
                                                         postfix={`Client_StaleActive_${client.id}`}
                                                         placement="right"
                                                         size="1x"
-                                                        icon={faCalendarExclamation}
+                                                        icon={faHourglassEnd}
                                                         text={TEXTS.WARNING_STALE_CLIENT}
                                                     />
                                                 )}
