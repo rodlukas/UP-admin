@@ -57,7 +57,7 @@ pipenv run python manage.py migrate           # aplikuje migrace na DB
 
 ```bash
 # Testy a kvalita kódu (z rootu repozitáře — doporučeno pro CI paritu)
-npm run frontend:test           # typy + lint + jest (kompletní frontend CI suite)
+npm run frontend:test           # typy + lint + vitest (kompletní frontend CI suite)
 npm run frontend:lint:js        # pouze ESLint
 npm run frontend:audit          # security audit závislostí (audit-ci)
 
@@ -67,8 +67,8 @@ npm run types                   # TypeScript typová kontrola (tsc)
 npm run types:watch             # tsc ve watch módu
 npm run lint                    # ESLint + Prettier check
 npm run lint!                   # ESLint + Prettier autofix
-npm run jest                    # pouze Jest testy
-npm run jest:watch              # Jest ve watch módu
+npm run vitest                  # pouze Vitest testy
+npm run vitest:watch            # Vitest ve watch módu
 npm run build                   # produkční build (Webpack)
 npm run build:analyze           # bundle analyzer
 ```
@@ -124,9 +124,9 @@ React 19 SPA v [frontend/src/](frontend/src/). Webpack dev server na portu 3000 
 
 **Frontend konvence:**
 - Formátování: Prettier (`tabWidth: 4`, `printWidth: 100`)
-- Linting: ESLint 9 s pluginy (react, typescript, jest, testing-library, vanilla-extract, tanstack-query)
+- Linting: ESLint 9 s pluginy (react, typescript, jest-dom, testing-library, vanilla-extract, tanstack-query)
 - CSS: soubory pojmenovány `*.css.ts`, **vždy** vanilla-extract — nikdy inline styly ani plain CSS
-- Testy: Jest + React Testing Library, soubory colocated se zdrojovým kódem (`*.test.ts` / `*.test.tsx`), API mockované přes MSW
+- Testy: Vitest + React Testing Library, soubory colocated se zdrojovým kódem (`*.test.ts` / `*.test.tsx`), API mockované přes MSW
 
 **Pre-commit hooky (Husky + lint-staged):** automaticky spouštějí ESLint a Prettier na staged JS/TS souborech.
 
@@ -146,7 +146,7 @@ React 19 SPA v [frontend/src/](frontend/src/). Webpack dev server na portu 3000 
 **CI** ([`.github/workflows/test.yml`](.github/workflows/test.yml)) se spouští na každý push/PR do `master`:
 1. Nainstaluje Node 20 + Python 3.12 + závislosti
 2. Vytvoří `.npmrc` pro FontAwesome PRO z private GitHub Package Registry (token `GPR_TOKEN`)
-3. Spustí frontend testy (typy + lint + jest)
+3. Spustí frontend testy (typy + lint + vitest)
 4. Spustí mypy
 5. Nastartuje PostgreSQL 14 s českou locale v Dockeru
 6. Buildne Django (migrace + staticfiles) přes `scripts/shell/release_tasks.sh`

@@ -4,7 +4,7 @@ module.exports = {
             plugins: ["react-refresh/babel"],
         },
         production: {
-            // vycleneni useESModules pouze na produkci kvuli nefunkcnimu Jestu
+            // useESModules pouze pro produkci — v test envu to neni treba
             plugins: [
                 [
                     "@babel/plugin-transform-runtime",
@@ -15,7 +15,7 @@ module.exports = {
             ],
         },
         test: {
-            // Jest deps
+            // Webpack test env (Vitest pouziva Vite/esbuild, ne Babel)
             plugins: [["@babel/plugin-transform-runtime"]],
         },
     },

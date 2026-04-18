@@ -4,8 +4,8 @@
         "skipLibCheck": true,
         // pro funkcni import() (a zaroven es6 import/export)
         "module": "ESNext",
-        // JSX neprevadej, to ma na starost Babel
-        "jsx": "preserve",
+        // JSX neprevadej, to ma na starost Babel (webpack) resp. esbuild (vitest)
+        "jsx": "react-jsx",
         // kompilujeme pres Babel, takze neni treba mit nizsi target
         "target": "ESNext",
         // prevod TS na JS resi Babel, TS se vyuziva jako type-checker a nastroj pro IDE
@@ -25,8 +25,8 @@
         // aktivace isolatedModules pro zamezeni nekompatibilite s Babel, viz https://devblogs.microsoft.com/typescript/typescript-and-babel-7/
         "isolatedModules": true,
 
-        "types": ["jest", "@testing-library/jest-dom", "node"]
+        "types": ["vitest/globals", "node"]
     },
-    "include": ["./src/", "/*.ts", "./__mocks__/"],
+    "include": ["./src/", "/*.ts", "./vitest.setup.ts", "./__mocks__/"],
     "exclude": ["node_modules", "build", "/*.js"]
 }

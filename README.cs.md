@@ -213,11 +213,11 @@ barevným štítkem v horním menu (kromě produkce).
     - E2E testování je postaveno na **BDD frameworku [behave](https://github.com/behave/behave)** –
       testové scénáře jsou psány přirozeným jazykem (Gherkin), podle nich se spouští konkrétní
       testy.
-    - Unit testy jsou postaveny na **frameworku [Jest](https://jestjs.io/)** a nástrojích
+    - Unit testy jsou postaveny na **frameworku [Vitest](https://vitest.dev/)** a nástrojích
       **[React Testing Library](https://testing-library.com/docs/react-testing-library/intro)**
       (jednoduché utility pro testování Reactu),
-      [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers
-      pro Jest) a [MSW](https://mswjs.io/) (mockování API).
+      [jest-dom](https://testing-library.com/docs/ecosystem-jest-dom) (custom DOM element matchers)
+      a [MSW](https://mswjs.io/) (mockování API).
     - Pro **testování UI (E2E)** se používá [Selenium](https://github.com/SeleniumHQ/selenium).
     - **Podrobné informace o testech jsou v [`tests/README.md`](tests)**.
 

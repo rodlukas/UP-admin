@@ -1,5 +1,5 @@
+import "@testing-library/jest-dom/vitest"
 import { configure } from "@testing-library/dom"
-import "@testing-library/jest-dom"
 import { http, HttpResponse } from "msw"
 import { setupServer } from "msw/node"
 import * as data from "./__mocks__/data.json"
