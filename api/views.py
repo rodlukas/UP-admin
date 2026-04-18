@@ -4,12 +4,13 @@ Views - na základě requestu vrátí příslušnou response.
 
 from typing import Any
 
-from django.db.models import Prefetch
+from django.db.models import Max, Prefetch, Q, QuerySet
 from django.db.models.deletion import ProtectedError
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
-from rest_framework import viewsets, mixins
+from rest_framework import status, viewsets, mixins
+from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -48,6 +49,7 @@ from .services import Bank, Statistics
     update=extend_schema(tags=["Klienti"]),
     partial_update=extend_schema(tags=["Klienti"]),
     destroy=extend_schema(tags=["Klienti"]),
+    deactivate_bulk=extend_schema(tags=["Klienti"]),
 )
 class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     """
@@ -57,6 +59,14 @@ class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
     filterset_fields = ("active",)
+
+    def get_queryset(self) -> QuerySet[Client]:
+        return Client.objects.annotate(
+            last_lecture_date=Max(
+                "attendances__lecture__start",
+                filter=Q(attendances__lecture__canceled=False),
+            )
+        )
 
     @extend_schema(
         summary="Seznam klientů",
@@ -91,6 +101,18 @@ class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
         except ProtectedError:
             result = super().get_result("Klienta lze smazat jen pokud nemá žádné lekce.")
         return result
+
+    @extend_schema(
+        summary="Hromadná deaktivace klientů",
+        description="Přesune seznam klientů (dle ids) do neaktivních.",
+    )
+    @action(detail=False, methods=["patch"], url_path="deactivate-bulk")
+    def deactivate_bulk(self, request: Request) -> Response:
+        ids = request.data.get("ids")
+        if not isinstance(ids, list):
+            return Response({"ids": "Musí být seznam."}, status=status.HTTP_400_BAD_REQUEST)
+        Client.objects.filter(pk__in=ids).update(active=False)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @extend_schema_view(
@@ -196,6 +218,7 @@ class AttendanceStateViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     update=extend_schema(tags=["Skupiny"]),
     partial_update=extend_schema(tags=["Skupiny"]),
     destroy=extend_schema(tags=["Skupiny"]),
+    deactivate_bulk=extend_schema(tags=["Skupiny"]),
 )
 class GroupViewSet(viewsets.ModelViewSet):
     """
@@ -208,6 +231,20 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = custom_filters.GroupFilter
+
+    def get_queryset(self) -> QuerySet[Group]:
+        return (
+            Group.objects.select_related("course")
+            .prefetch_related(
+                Prefetch("memberships", queryset=Membership.objects.select_related("client"))
+            )
+            .annotate(
+                last_lecture_date=Max(
+                    "lectures__start",
+                    filter=Q(lectures__canceled=False),
+                )
+            )
+        )
 
     @extend_schema(
         summary="Seznam skupin",
@@ -240,6 +277,18 @@ class GroupViewSet(viewsets.ModelViewSet):
     @extend_schema(summary="Smazání skupiny", description="Smaže konkrétní skupinu.")
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return super().destroy(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Hromadná deaktivace skupin",
+        description="Přesune seznam skupin (dle ids) do neaktivních.",
+    )
+    @action(detail=False, methods=["patch"], url_path="deactivate-bulk")
+    def deactivate_bulk(self, request: Request) -> Response:
+        ids = request.data.get("ids")
+        if not isinstance(ids, list):
+            return Response({"ids": "Musí být seznam."}, status=status.HTTP_400_BAD_REQUEST)
+        Group.objects.filter(pk__in=ids).update(active=False)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @extend_schema_view(

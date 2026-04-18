@@ -9,7 +9,7 @@ import {
     MembershipType,
 } from "../types/models"
 
-import { LOCALE_CZ } from "./constants"
+import { DAYS_WITHOUT_LECTURE_WARNING, LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
 import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
 
@@ -176,6 +176,15 @@ export function pageTitle(title: string): string {
 /** Vrátí jméno komponenty pro React Developer Tools. */
 export function getDisplayName<P>(Component: React.ComponentType<P>): string {
     return Component.displayName ?? Component.name ?? "UnknownComponent"
+}
+
+/** Vrátí true pokud je aktivní klient/skupina „stale" – naposledy měl lekci před více než DAYS_WITHOUT_LECTURE_WARNING dny. Nová entita bez lekce (null) varování nedostane. */
+export function isStaleActive(lastLectureDate: string | null): boolean {
+    if (!lastLectureDate) {
+        return false
+    }
+    const daysSince = (Date.now() - new Date(lastLectureDate).getTime()) / (1000 * 60 * 60 * 24)
+    return daysSince > DAYS_WITHOUT_LECTURE_WARNING
 }
 
 /** Vrátí boolean, jestli je zaslaný string URL. */

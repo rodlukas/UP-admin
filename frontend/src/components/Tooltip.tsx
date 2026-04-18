@@ -14,17 +14,25 @@ type Props = {
     size?: FontAwesomeIconProps["size"]
     /** Pozice Tooltipu. */
     placement?: UncontrolledTooltipProps["placement"]
+    /** Ikona zobrazená jako trigger Tooltipu (výchozí: faInfoCircle). */
+    icon?: FontAwesomeIconProps["icon"]
 }
 
 /** Komponenta pro zobrazení titulku po najetí myší nad daný element. */
-const Tooltip: React.FC<Props> = ({ postfix, text, size = "lg", placement = "bottom" }) => (
+const Tooltip: React.FC<Props> = ({
+    postfix,
+    text,
+    size = "lg",
+    placement = "bottom",
+    icon = faInfoCircle,
+}) => (
     <>
         <UncontrolledTooltipWrapper placement={placement} target={`Tooltip_${postfix}`}>
             {text}
         </UncontrolledTooltipWrapper>
         <FontAwesomeIcon
             id={`Tooltip_${postfix}`}
-            icon={faInfoCircle}
+            icon={icon}
             className="text-warning"
             size={size}
         />

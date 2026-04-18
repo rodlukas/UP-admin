@@ -60,6 +60,15 @@ function create(context: ClientPostApi): Promise<Item> {
     })
 }
 
+/** Hromadně deaktivuje klienty. */
+function deactivateAll(ids: Item["id"][]): Promise<void> {
+    return axiosRequestData<void>({
+        url: `${baseUrl}deactivate-bulk${API_DELIM}`,
+        method: API_METHODS.patch,
+        data: { ids },
+    })
+}
+
 const ClientService = {
     getAll,
     get,
@@ -68,6 +77,7 @@ const ClientService = {
     create,
     update,
     remove,
+    deactivateAll,
 }
 
 export default ClientService

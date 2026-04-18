@@ -19,6 +19,14 @@ import {
 
 import { useStatistics } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
+import {
+    AXIS_LABEL,
+    AXIS_TICK,
+    ChartMargin,
+    GRID_STROKE,
+    LEGEND_FONT,
+    MONTH_LABELS,
+} from "../components/charts"
 import ClientName from "../components/ClientName"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
@@ -27,14 +35,10 @@ import { StatisticsType } from "../types/models"
 import * as styles from "./Statistics.css"
 
 /** Sjednocené okraje a mřížka napříč Recharts. */
-const CHART_MARGIN = { top: 12, right: 16, left: 4, bottom: 12 } as const
+const CHART_MARGIN: ChartMargin = { top: 12, right: 16, left: 4, bottom: 12 }
 /** Okraje pro grafy s legendou dole – extra bottom pro legendu + XAxis popisek. */
-const CHART_MARGIN_BOTTOM_LEGEND = { top: 12, right: 16, left: 4, bottom: 48 } as const
-const CHART_MARGIN_BAR_VERTICAL = { top: 12, right: 16, left: 8, bottom: 48 } as const
-const AXIS_TICK = { fontSize: 12, fill: "#6c757d" }
-const AXIS_LABEL = { fontSize: 11, fill: "#6c757d" } as const
-const GRID_STROKE = "#e9ecef"
-const LEGEND_FONT = { fontSize: 12 }
+const CHART_MARGIN_BOTTOM_LEGEND: ChartMargin = { top: 12, right: 16, left: 4, bottom: 48 }
+const CHART_MARGIN_BAR_VERTICAL: ChartMargin = { top: 12, right: 16, left: 8, bottom: 48 }
 
 function formatStackedBarLegend(value: string): string {
     if (value === "individual") {
@@ -48,22 +52,6 @@ function formatStackedBarLegend(value: string): string {
     }
     return value
 }
-
-/** Krátké názvy měsíců pro osu X grafu podle měsíců. */
-const MONTH_LABELS_SHORT = [
-    "Led",
-    "Úno",
-    "Bře",
-    "Dub",
-    "Kvě",
-    "Čvn",
-    "Čvc",
-    "Srp",
-    "Zář",
-    "Říj",
-    "Lis",
-    "Pro",
-] as const
 
 type ChartMetric = "lectures" | "hours"
 
@@ -556,7 +544,7 @@ const LecturesMonthSection: React.FC<LecturesMonthSectionProps> = ({
             ? `${CHART_METRIC_LABEL[chartMetric]} podle kalendářního měsíce začátku napříč celou historií (každý sloupec = součet všech let v daném měsíci). Vhodné pro sezónnost (např. náběh po prázdninách).`
             : `${CHART_METRIC_LABEL[chartMetric]} v roce ${year} podle měsíce začátku lekce.`
     const data = byMonth.map((row) => ({
-        label: MONTH_LABELS_SHORT[row.month - 1],
+        label: MONTH_LABELS[row.month - 1],
         value: chartMetric === "lectures" ? row.total : Number((row.total_minutes / 60).toFixed(1)),
     }))
     const yAxisLabel = chartMetric === "hours" ? "Hodiny" : "Počet lekcí"

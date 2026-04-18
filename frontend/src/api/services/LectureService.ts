@@ -51,6 +51,15 @@ function getAllFromClientOrdered(client: ClientType["id"], asc: boolean): Promis
     })
 }
 
+/** Získá všechny lekce daného klienta včetně skupinových (umožňuje definovat řazení). */
+function getAllFromClientIncludingGroups(client: ClientType["id"], asc: boolean): Promise<List> {
+    const url = `${baseUrl}?${API_URLS.lectures.filters.client}=${client}&${API_URLS.lectures.filters.includeGroup}=true${ordering(asc)}`
+    return axiosRequestData<List>({
+        url: url,
+        method: API_METHODS.get,
+    })
+}
+
 /** Získá všechny lekce v daném dni (umožňuje definovat řazení). */
 function getAllFromDayOrdered(date: string, asc: boolean): Promise<ListWithDate> {
     const url = `${baseUrl}?${API_URLS.lectures.filters.date}=${date}${ordering(asc)}`
@@ -94,6 +103,7 @@ const LectureService = {
     getAllFromDayOrdered,
     getAllFromGroupOrdered,
     getAllFromClientOrdered,
+    getAllFromClientIncludingGroups,
 }
 
 export default LectureService
