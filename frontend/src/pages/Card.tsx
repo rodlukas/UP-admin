@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
@@ -67,6 +68,7 @@ type CardProps = {
 const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
     const isClientPageValue = isClientPage
 
     const isClient = (object: ClientOrGroup): object is ClientType =>
@@ -186,14 +188,14 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
             deactivateClient.mutate([id], {
                 onSuccess: () => {
                     trackEvent("client_deactivated", { source: "client_card" })
-                    void navigate({ to: APP_URLS.klienti.url })
+                    void queryClient.invalidateQueries({ queryKey: ["clients", id] })
                 },
             })
         } else {
             deactivateGroup.mutate([id], {
                 onSuccess: () => {
                     trackEvent("group_deactivated", { source: "group_card" })
-                    void navigate({ to: APP_URLS.skupiny.url })
+                    void queryClient.invalidateQueries({ queryKey: ["groups", id] })
                 },
             })
         }
