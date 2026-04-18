@@ -3,6 +3,7 @@ import { faCalendarExclamation, faSpinnerThird } from "@rodlukas/fontawesome-pro
 import * as React from "react"
 import { Alert, Badge, Button, Container, Table } from "reactstrap"
 
+import { trackEvent } from "../analytics"
 import { useDeactivateClients, useInactiveClients } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
@@ -51,7 +52,13 @@ const Clients: React.FC = () => {
         const count = staleClients.length
         const label = count === 1 ? "klienta" : count < 5 ? "klienty" : "klientů"
         if (globalThis.confirm(`Opravdu chcete přesunout ${count} ${label} do neaktivních?`)) {
-            deactivateClients.mutate(staleClients.map((c) => c.id))
+            deactivateClients.mutate(
+                staleClients.map((c) => c.id),
+                {
+                    onSuccess: () =>
+                        trackEvent("client_deactivated", { source: "clients_page", count }),
+                },
+            )
         }
     }
 

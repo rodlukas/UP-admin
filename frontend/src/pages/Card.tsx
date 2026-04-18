@@ -1,12 +1,17 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { Alert, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
+import { Alert, Button, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
+import { trackEvent } from "../analytics"
 import {
     useAllGroupsEverFromClient,
     useClient,
+    useDeactivateClients,
+    useDeactivateGroups,
     useGroup,
     useGroupsFromClient,
     useLecturesFromClient,
@@ -70,12 +75,18 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const isGroup = (object: ClientOrGroup): object is GroupType =>
         Boolean(object && "name" in object)
 
+    const deactivateClient = useDeactivateClients()
+    const deactivateGroup = useDeactivateGroups()
+
     const clientQuery = useClient(isClientPageValue ? id : undefined)
     const groupQuery = useGroup(isClientPageValue ? undefined : id)
     const groupsOfClientQuery = useGroupsFromClient(isClientPageValue ? id : undefined)
     const allGroupsEverQuery = useAllGroupsEverFromClient(isClientPageValue ? id : undefined)
     const lecturesFromClientQuery = useLecturesFromClient(isClientPageValue ? id : undefined, false)
-    const lecturesFromClientAllQuery = useLecturesFromClientAll(isClientPageValue ? id : undefined, false)
+    const lecturesFromClientAllQuery = useLecturesFromClientAll(
+        isClientPageValue ? id : undefined,
+        false,
+    )
     const lecturesFromGroupQuery = useLecturesFromGroup(isClientPageValue ? undefined : id, false)
 
     /** Klient nebo skupina zobrazená na kartě. */
@@ -161,6 +172,31 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
 
     const goBack = (): void => {
         globalThis.history.back()
+    }
+
+    const handleDeactivate = (): void => {
+        if (!object) {
+            return
+        }
+        const label = isClient(object) ? "klienta" : "skupinu"
+        if (!globalThis.confirm(`Opravdu chcete přesunout ${label} do neaktivních?`)) {
+            return
+        }
+        if (isClient(object)) {
+            deactivateClient.mutate([id], {
+                onSuccess: () => {
+                    trackEvent("client_deactivated", { source: "client_card" })
+                    void navigate({ to: APP_URLS.klienti.url })
+                },
+            })
+        } else {
+            deactivateGroup.mutate([id], {
+                onSuccess: () => {
+                    trackEvent("group_deactivated", { source: "group_card" })
+                    void navigate({ to: APP_URLS.skupiny.url })
+                },
+            })
+        }
     }
 
     const cardSource = isClientPageValue ? ("client_card" as const) : ("group_card" as const)
@@ -263,10 +299,34 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                             </Alert>
                         )}
                         {object && object.active && isStaleActive(object.last_lecture_date) && (
-                            <Alert color="warning" className="mt-0">
-                                {isClient(object)
-                                    ? TEXTS.WARNING_STALE_CLIENT
-                                    : TEXTS.WARNING_STALE_GROUP}
+                            <Alert
+                                color="warning"
+                                className="mt-0 d-flex align-items-center justify-content-between gap-3 flex-wrap">
+                                <span>
+                                    {isClient(object)
+                                        ? TEXTS.WARNING_STALE_CLIENT
+                                        : TEXTS.WARNING_STALE_GROUP}
+                                </span>
+                                <Button
+                                    color="warning"
+                                    size="sm"
+                                    disabled={
+                                        isClient(object)
+                                            ? deactivateClient.isPending
+                                            : deactivateGroup.isPending
+                                    }
+                                    onClick={handleDeactivate}>
+                                    Přesunout do neaktivních
+                                    {(isClient(object)
+                                        ? deactivateClient.isPending
+                                        : deactivateGroup.isPending) && (
+                                        <FontAwesomeIcon
+                                            icon={faSpinnerThird}
+                                            spin
+                                            className="ms-2"
+                                        />
+                                    )}
+                                </Button>
                             </Alert>
                         )}
                     </div>

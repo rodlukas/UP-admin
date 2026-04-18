@@ -3,6 +3,7 @@ import { faCalendarExclamation, faSpinnerThird } from "@rodlukas/fontawesome-pro
 import * as React from "react"
 import { Alert, Badge, Button, Container, Table } from "reactstrap"
 
+import { trackEvent } from "../analytics"
 import { useDeactivateGroups, useInactiveGroups } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
@@ -49,7 +50,13 @@ const Groups: React.FC = () => {
         const count = staleGroups.length
         const label = count === 1 ? "skupinu" : count < 5 ? "skupiny" : "skupin"
         if (globalThis.confirm(`Opravdu chcete přesunout ${count} ${label} do neaktivních?`)) {
-            deactivateGroups.mutate(staleGroups.map((g) => g.id))
+            deactivateGroups.mutate(
+                staleGroups.map((g) => g.id),
+                {
+                    onSuccess: () =>
+                        trackEvent("group_deactivated", { source: "groups_page", count }),
+                },
+            )
         }
     }
 

@@ -132,6 +132,11 @@ React 19 SPA v [frontend/src/](frontend/src/). Webpack dev server na portu 3000 
 
 ## Ověření změn
 
+- **Po každé úpravě frontend souborů** (přidání importů, nové komponenty, přeformátování) spusť autofix před kontrolou:
+  ```bash
+  cd frontend && npm run lint!
+  ```
+  ESLint + Prettier opraví pořadí importů, zbytečné mezery a další formátovací chyby, které jinak hlásí CI jako errory.
 - Čistě frontend změny ověř primárně přes `npm run frontend:test`.
 - Backend změny ověř přes `pipenv run mypy .` a relevantní `manage.py test` / `behave`, ale až po spuštění PostgreSQL.
 - Změny přesahující backend i frontend ideálně ověř na obou stranách; lokální "green" frontend testy neříkají nic o dostupnosti DB nebo API.
