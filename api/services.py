@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Tuple, Dict
+from typing import Any, Dict, Iterable, Mapping, Tuple, cast
 
 import requests
 from django.conf import settings
@@ -163,7 +163,9 @@ class Statistics:
         all_lectures = Lecture.objects.filter(start__isnull=False, start__lte=now)
         noncanceled_all_lectures = all_lectures.filter(canceled=False)
         all_scoped_lectures = all_lectures.filter(start__year=year) if year else all_lectures
-        noncanceled_lectures = noncanceled_all_lectures.filter(start__year=year) if year else noncanceled_all_lectures
+        noncanceled_lectures = (
+            noncanceled_all_lectures.filter(start__year=year) if year else noncanceled_all_lectures
+        )
 
         # zrusene lekce
         total_in_scope = all_scoped_lectures.count()
@@ -178,7 +180,9 @@ class Statistics:
             attendancestate__excused=True,
         )
         excused_individual_attendance = (
-            excused_individual_attendance_all.filter(lecture__start__year=year) if year else excused_individual_attendance_all
+            excused_individual_attendance_all.filter(lecture__start__year=year)
+            if year
+            else excused_individual_attendance_all
         )
         excused_individual_count = excused_individual_attendance.count()
 
@@ -190,9 +194,13 @@ class Statistics:
         not_happened_count = canceled_count + excused_group_count
 
         # efektivni queryset: probehle lekce (bez zrusenych a skupinovych kde vsichni omluveni)
-        effective_lectures = noncanceled_lectures.exclude(pk__in=excused_group_lectures.values("pk"))
+        effective_lectures = noncanceled_lectures.exclude(
+            pk__in=excused_group_lectures.values("pk")
+        )
         excused_group_all_lectures = self._excused_group_lectures(noncanceled_all_lectures)
-        effective_all_lectures = noncanceled_all_lectures.exclude(pk__in=excused_group_all_lectures.values("pk"))
+        effective_all_lectures = noncanceled_all_lectures.exclude(
+            pk__in=excused_group_all_lectures.values("pk")
+        )
 
         # agregace probehlych lekci
         totals = effective_lectures.aggregate(
@@ -211,7 +219,9 @@ class Statistics:
         }
         excused_individual_by_course = {
             row["lecture__course_id"]: row["count"]
-            for row in excused_individual_attendance.values("lecture__course_id").annotate(count=Count("id"))
+            for row in excused_individual_attendance.values("lecture__course_id").annotate(
+                count=Count("id")
+            )
         }
         excused_group_by_course = {
             row["course_id"]: row["count"]
@@ -254,10 +264,14 @@ class Statistics:
 
         # zebricky
         top_clients_raw = (
-            Attendance.objects.filter(lecture__in=effective_lectures, attendancestate__excused=False)
+            Attendance.objects.filter(
+                lecture__in=effective_lectures, attendancestate__excused=False
+            )
             .values("client_id", "client__firstname", "client__surname")
             .annotate(lecture_count=Count("lecture", distinct=True))
-            .order_by("-lecture_count", "client__surname", "client__firstname")[: self.LEADERBOARD_N]
+            .order_by("-lecture_count", "client__surname", "client__firstname")[
+                : self.LEADERBOARD_N
+            ]
         )
         top_clients = [
             {
@@ -266,7 +280,7 @@ class Statistics:
                 "surname": row["client__surname"],
                 "lecture_count": row["lecture_count"],
             }
-            for row in top_clients_raw
+            for row in cast(Iterable[Mapping[str, Any]], top_clients_raw)
         ]
         top_groups_raw = (
             effective_lectures.filter(group__isnull=False)
@@ -280,7 +294,7 @@ class Statistics:
                 "name": row["group__name"],
                 "lecture_count": row["lecture_count"],
             }
-            for row in top_groups_raw
+            for row in cast(Iterable[Mapping[str, Any]], top_groups_raw)
         ]
 
         # rozklad po mesicich (1-12)
@@ -316,7 +330,9 @@ class Statistics:
             }
             excused_individual_by_year = {
                 row["lecture__start__year"]: row["count"]
-                for row in excused_individual_attendance_all.values("lecture__start__year").annotate(count=Count("id"))
+                for row in excused_individual_attendance_all.values(
+                    "lecture__start__year"
+                ).annotate(count=Count("id"))
             }
             excused_group_by_year = {
                 row["start__year"]: row["count"]
