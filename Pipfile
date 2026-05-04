@@ -28,7 +28,7 @@ django-stubs = "~=6.0.3"
 djangorestframework-stubs = "~=3.16.9"
 mypy = "~=1.20.2"
 selenium = "~=4.43.0"
-types-requests = "~=2.33.0.20260408"
+types-requests = "~=2.33.0.20260503"
 
 [requires]
 python_version = "3.12"
