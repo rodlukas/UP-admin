@@ -1,8 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import classNames from "classnames"
+import { Group, Loader, Title } from "@mantine/core"
 import * as React from "react"
-import { Col, Row } from "reactstrap"
 
 import * as styles from "./Heading.css"
 
@@ -19,27 +16,27 @@ type Props = {
 
 /** Komponenta pro jednotné zobrazení nadpisu stránky napříč aplikací. */
 const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = false }) => (
-    <Row className={classNames("justify-content-sm-end", "my-3", "align-items-center")}>
-        <Col md={6} className={classNames({ "text-md-end": fluid })}>
-            <h1 className="mb-0">
-                {title}
-                {isFetching && (
-                    <FontAwesomeIcon
-                        icon={faSpinnerThird}
-                        spin
-                        size="sm"
-                        className="ms-2 text-muted"
-                        data-qa="loading"
-                    />
-                )}
-            </h1>
-        </Col>
-        <Col
-            md={6}
-            className={classNames({ "text-md-start": fluid }, styles.headingButtons, "text-end")}>
-            {buttons}
-        </Col>
-    </Row>
+    <Group
+        justify={fluid ? "center" : "space-between"}
+        align="center"
+        mt="md"
+        mb="lg"
+        gap="sm"
+        className={buttons ? undefined : styles.headingWithoutButtons}>
+        <Title order={1} className={styles.headingTitle}>
+            {title}
+            {isFetching && (
+                <Loader
+                    size="xs"
+                    type="dots"
+                    color="gray"
+                    style={{ marginLeft: "0.5rem", verticalAlign: "middle" }}
+                    data-qa="loading"
+                />
+            )}
+        </Title>
+        {buttons ? <div className={styles.headingButtons}>{buttons}</div> : null}
+    </Group>
 )
 
 export default Heading

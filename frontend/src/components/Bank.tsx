@@ -1,13 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Box, Table, Text, Title, Tooltip } from "@mantine/core"
 import {
     faExclamationCircle,
     faExternalLink,
     faInfoCircle,
     faSyncAlt,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import classNames from "classnames"
 import * as React from "react"
-import { ListGroup, ListGroupItem, Table } from "reactstrap"
 
 import { useBank } from "../api/hooks"
 import { BANKING_URL } from "../global/constants"
@@ -18,7 +17,6 @@ import { BankType, BankSuccessType, BankErrorType } from "../types/models"
 import * as styles from "./Bank.css"
 import CustomButton from "./buttons/CustomButton"
 import NoInfo from "./NoInfo"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 /** Type guard pro úspěšná bankovní data. */
 function isBankSuccess(data: BankType | undefined): data is BankSuccessType {
@@ -36,15 +34,15 @@ const REFRESH_TIMEOUT = 60 // sekundy
 type TableInfoProps = {
     /**  Text k zobrazení. */
     text?: string
-    /**  Barva textu (bootstrap). */
-    color?: string
 }
 
 /** Pomocná komponenta pro výpis hlášky místo transakcí v tabulce. */
-const TableInfo: React.FC<TableInfoProps> = ({ text, color = "text-muted" }) => (
-    <tr className={classNames(color, "text-center")}>
-        <td colSpan={4}>{text}</td>
-    </tr>
+const TableInfo: React.FC<TableInfoProps> = ({ text }) => (
+    <Table.Tr>
+        <Table.Td colSpan={4} ta="center" c="dimmed">
+            {text}
+        </Table.Td>
+    </Table.Tr>
 )
 
 /** Komponenta zobrazující přehled transakcí z banky. */
@@ -82,7 +80,7 @@ const Bank: React.FC = () => {
             return isLoadingState ? "načítání" : "neznámý"
         }
         return (
-            <span className="fw-bold text-nowrap">
+            <span style={{ whiteSpace: "nowrap", fontWeight: 700 }}>
                 {prettyAmount(bankData.accountStatement.info.closingBalance)}
             </span>
         )
@@ -102,31 +100,34 @@ const Bank: React.FC = () => {
             const duplicates = messageObj && messageObj.value === commentObj?.value
             const targetAccountOwnerObj = transaction.column10
             return (
-                <tr key={id} className={classNames({ "table-warning": isToday(date) })}>
-                    <td colSpan={duplicates ? 2 : undefined} data-gdpr data-qa="bank_account_owner">
+                <Table.Tr key={id} className={isToday(date) ? styles.bankRowToday : undefined}>
+                    <Table.Td
+                        colSpan={duplicates ? 2 : undefined}
+                        data-gdpr
+                        data-qa="bank_account_owner">
                         {commentObj?.value ??
                             (targetAccountOwnerObj?.value ? (
                                 `Vlastník protiúčtu: ${targetAccountOwnerObj.value}`
                             ) : (
                                 <NoInfo />
                             ))}
-                    </td>
+                    </Table.Td>
                     {!duplicates && (
-                        <td data-gdpr data-qa="bank_transaction_message">
+                        <Table.Td data-gdpr data-qa="bank_transaction_message">
                             {messageObj ? messageObj.value : <NoInfo />}
-                        </td>
+                        </Table.Td>
                     )}
-                    <td className="text-end text-nowrap" style={{ minWidth: "6em" }}>
+                    <Table.Td ta="right" className={styles.bankDateColumn} style={{ whiteSpace: "nowrap" }}>
                         {prettyDateWithDayYearIfDiff(date, true)}
-                    </td>
-                    <td
-                        className={classNames("fw-bold", "text-end", "text-nowrap", {
-                            "text-danger": amount < 0,
-                        })}
-                        style={{ minWidth: "7em" }}>
+                    </Table.Td>
+                    <Table.Td
+                        ta="right"
+                        className={styles.bankAmountColumn}
+                        style={{ whiteSpace: "nowrap", fontWeight: 700 }}
+                        c={amount < 0 ? "red.7" : undefined}>
                         {prettyAmount(amount)}
-                    </td>
-                </tr>
+                    </Table.Td>
+                </Table.Tr>
             )
         })
     }
@@ -134,82 +135,89 @@ const Bank: React.FC = () => {
     const renderMainContent = (): React.ReactNode => {
         if (isBankSuccess(bankData)) {
             return (
-                <Table responsive striped borderless>
-                    <thead>
-                        <tr>
-                            <th>Poznámka</th>
-                            <th>Zpráva pro příjemce</th>
-                            <th className="text-end">Datum</th>
-                            <th className="text-end">Suma</th>
-                        </tr>
-                    </thead>
-                    <tbody>{renderTableBody(bankData)}</tbody>
-                </Table>
+                <Table.ScrollContainer minWidth={400}>
+                    <Table striped withRowBorders={false}>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>Poznámka</Table.Th>
+                                <Table.Th>Zpráva pro příjemce</Table.Th>
+                                <Table.Th ta="right">Datum</Table.Th>
+                                <Table.Th ta="right">Suma</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>{renderTableBody(bankData)}</Table.Tbody>
+                    </Table>
+                </Table.ScrollContainer>
             )
         }
         if (isBankError(bankData)) {
-            return <p className="text-danger text-center">{bankData.error_info}</p>
+            return (
+                <Text c="red.7" ta="center">
+                    {bankData.error_info}
+                </Text>
+            )
         }
         return null
     }
 
     return (
-        <ListGroup>
-            <ListGroupItem
-                color={isLackOfMoney ? "danger" : "success"}
-                className={classNames("text-center", styles.bankTitle)}>
-                <h4
-                    className={classNames(
-                        "mb-0",
-                        "text-nowrap",
-                        "d-inline-block",
-                        styles.bankTitleText,
-                    )}>
-                    Aktuální stav: {getBalanceText()}{" "}
-                    {isLackOfMoney && (
-                        <>
-                            <UncontrolledTooltipWrapper target="Bank_RentWarning">
-                                Na účtu není dostatek peněz (alespoň{" "}
-                                <span className="fw-bold text-nowrap">
-                                    {prettyAmount(bankData.rent_price)}
+        <div className={styles.bankWrapper}>
+            <Box ta="center" className={`${styles.bankTitle} ${isLackOfMoney ? styles.bankTitleWarning : styles.bankTitleOk}`}>
+                <div className={styles.bankTitleInner}>
+                    <Title order={4} className={styles.bankTitleText} style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+                        Aktuální stav: {getBalanceText()}{" "}
+                        {isLackOfMoney && (
+                            <Tooltip
+                                label={`Na účtu není dostatek peněz (alespoň ${prettyAmount(bankData.rent_price)}) pro zaplacení nájmu!`}>
+                                <span>
+                                    <FontAwesomeIcon
+                                        icon={faExclamationCircle}
+                                        color="var(--mantine-color-red-7)"
+                                        size="lg"
+                                    />
                                 </span>
-                                ) pro zaplacení nájmu!
-                            </UncontrolledTooltipWrapper>
-                            <FontAwesomeIcon
-                                id="Bank_RentWarning"
-                                icon={faExclamationCircle}
-                                className="text-danger"
-                                size="lg"
-                            />
-                        </>
-                    )}
-                </h4>
-                <div className="text-muted d-inline float-end" id="Bank">
-                    <CustomButton
-                        onClick={onClick}
-                        disabled={isRefreshDisabled}
-                        size="sm"
-                        content={
-                            <FontAwesomeIcon icon={faSyncAlt} size="lg" spin={isLoadingState} />
-                        }
-                    />
-                    <UncontrolledTooltipWrapper target="Bank">
-                        {isRefreshDisabled ? `Výpis lze obnovit jednou za minutu` : "Obnovit výpis"}
-                    </UncontrolledTooltipWrapper>{" "}
+                            </Tooltip>
+                        )}
+                    </Title>
+                    <div className={styles.bankActions}>
+                        <Tooltip
+                            label={
+                                isRefreshDisabled
+                                    ? `Výpis lze obnovit jednou za minutu`
+                                    : "Obnovit výpis"
+                            }>
+                            <span>
+                                <CustomButton
+                                    onClick={onClick}
+                                    disabled={isRefreshDisabled}
+                                    size="sm"
+                                    content={
+                                        <FontAwesomeIcon
+                                            icon={faSyncAlt}
+                                            size="lg"
+                                            spin={isLoadingState}
+                                        />
+                                    }
+                                />
+                            </span>
+                        </Tooltip>
+                    </div>
                 </div>
-            </ListGroupItem>
-            <ListGroupItem>
+            </Box>
+            <div className={styles.bankContent}>
                 {renderMainContent()}
-                <div className="text-center text-muted mt-3">
-                    <FontAwesomeIcon icon={faInfoCircle} /> Transakce starší než{" "}
-                    <strong id="Bank_days">30 dnů</strong> lze zobrazit pouze{" "}
+                <Text c="dimmed" ta="center" mt="sm">
+                    <FontAwesomeIcon icon={faInfoCircle} />{" "}
+                    <span>
+                        Transakce starší než <strong>30 dnů</strong> lze zobrazit pouze{" "}
+                    </span>
                     <a href={BANKING_URL} target="_blank" rel="noopener noreferrer">
                         v bankovnictví <FontAwesomeIcon icon={faExternalLink} size="xs" />
                     </a>
-                    .
-                </div>
-            </ListGroupItem>
-        </ListGroup>
+                    <span>.</span>
+                </Text>
+            </div>
+        </div>
     )
 }
 

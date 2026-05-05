@@ -1,7 +1,7 @@
+import { Box, Text, Title, Tooltip } from "@mantine/core"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 
 import { AnalyticsSource } from "../analytics"
 import { useLecturesFromDay } from "../api/hooks"
@@ -27,7 +27,6 @@ import GroupName from "./GroupName"
 import * as lectureStyles from "./Lecture.css"
 import LectureNumber from "./LectureNumber"
 import Loading from "./Loading"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** Při požadavcích na API nedělej prodlevu (true) - prodleva se hodí při rychlém překlikávání mezi dny v diáři. */
@@ -57,103 +56,102 @@ const DashboardDay: React.FC<Props> = (props) => {
     const isUserCelebratingResult = isUserCelebrating(getDate())
 
     const showLoading = isLoading || attendanceStatesContext.isLoading
+    const hasLectures = lectures.length > 0
+    let content: React.ReactNode
+    if (showLoading) {
+        content = (
+            <div className={classNames(lectureStyles.lecture, styles.dashboardDayItem)}>
+                <Loading />
+            </div>
+        )
+    } else if (hasLectures) {
+        content = lectures.map((lecture) => {
+            const className = classNames(lectureStyles.lecture, styles.dashboardDayItem, {
+                [styles.lectureGroup]: lecture.group && !lecture.canceled,
+                [lectureStyles.lectureCanceled]: lecture.canceled,
+                [styles.lectureCanceledDashboardday]: lecture.canceled,
+            })
+            return (
+                <div
+                    key={lecture.id}
+                    data-qa="lecture"
+                    className={className}
+                    {...(lecture.canceled && { "data-qa-canceled": "true" })}>
+                    <div
+                        className={classNames(lectureStyles.lectureHeading, styles.lectureHeading)}
+                        style={assignInlineVars(styles.dashboardDayVars, {
+                            courseBackground: lecture.course.color,
+                        })}>
+                        <Title order={4}>
+                            <Tooltip label={courseDuration(lecture.duration)}>
+                                <strong>{prettyTime(new Date(lecture.start))}</strong>
+                            </Tooltip>
+                        </Title>
+                        <CourseName course={lecture.course} className={styles.courseName} />
+                        <LectureNumber
+                            lecture={lecture}
+                            colorize
+                            className={classNames(lectureStyles.lectureNumber, styles.lectureNumber)}
+                            color="light"
+                        />
+                        <ModalLectures
+                            object={lecture.group ?? lecture.attendances[0].client}
+                            currentLecture={lecture}
+                            source={source}
+                        />
+                    </div>
+                    <div className={lectureStyles.lectureContent}>
+                        {lecture.group && (
+                            <Title order={5}>
+                                <GroupName group={lecture.group} title link />
+                            </Title>
+                        )}
+                        <Attendances lecture={lecture} showClient source={source} />
+                    </div>
+                </div>
+            )
+        })
+    } else {
+        content = (
+            <div
+                className={classNames(
+                    lectureStyles.lecture,
+                    styles.lectureFree,
+                    styles.dashboardDayItem,
+                )}>
+                <Text c="dimmed" ta="center" fw={500}>
+                    Volno
+                </Text>
+            </div>
+        )
+    }
 
     return (
-        <ListGroup className={styles.dashboardDayWrapper}>
-            <ListGroupItem
-                color={isToday(getDate()) ? "primary" : ""}
-                className={classNames("text-center", styles.dashboardDayDate)}>
-                <h4
-                    className={classNames(
-                        "mb-0",
-                        "text-nowrap",
-                        "d-inline-block",
+        <div className={styles.dashboardDayWrapper}>
+            <Box
+                ta="center"
+                className={`${styles.dashboardDayDate}${isToday(getDate()) ? ` ${styles.dashboardDayDateToday}` : ""}`}>
+                <Title
+                    order={4}
+                    className={
                         isUserCelebratingResult === USER_CELEBRATION.NOTHING
                             ? styles.celebrationNone
-                            : "celebration",
-                    )}>
+                            : "celebration"
+                    }
+                    style={{ marginBottom: 0, display: "inline-block", whiteSpace: "nowrap" }}>
                     <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
-                </h4>
+                </Title>
                 <ModalLecturesWizard
                     date={props.date}
-                    dropdownClassName="float-end"
+                    dropdownClassName={styles.floatEnd}
                     dropdownSize="sm"
                     dropdownDirection="up"
                     isFetching={isFetching && !isLoading}
                     source={source}
                 />
-            </ListGroupItem>
-            {showLoading ? (
-                <ListGroupItem className={lectureStyles.lecture}>
-                    <Loading />
-                </ListGroupItem>
-            ) : lectures.length > 0 ? (
-                lectures.map((lecture) => {
-                    const className = classNames(lectureStyles.lecture, {
-                        [styles.lectureGroup]: lecture.group && !lecture.canceled,
-                        [lectureStyles.lectureCanceled]: lecture.canceled,
-                        [styles.lectureCanceledDashboardday]: lecture.canceled,
-                    })
-                    return (
-                        <ListGroupItem
-                            key={lecture.id}
-                            data-qa="lecture"
-                            className={className}
-                            {...(lecture.canceled && { "data-qa-canceled": "true" })}>
-                            <div
-                                className={classNames(
-                                    lectureStyles.lectureHeading,
-                                    styles.lectureHeading,
-                                )}
-                                style={assignInlineVars(styles.dashboardDayVars, {
-                                    courseBackground: lecture.course.color,
-                                })}>
-                                <h4>
-                                    <span
-                                        id={`Card_CourseDuration_${lecture.id}`}
-                                        className="fw-bold">
-                                        {prettyTime(new Date(lecture.start))}
-                                    </span>
-                                    <UncontrolledTooltipWrapper
-                                        target={`Card_CourseDuration_${lecture.id}`}>
-                                        {courseDuration(lecture.duration)}
-                                    </UncontrolledTooltipWrapper>
-                                </h4>
-                                <CourseName course={lecture.course} className={styles.courseName} />
-                                <LectureNumber
-                                    lecture={lecture}
-                                    colorize
-                                    className={classNames(
-                                        lectureStyles.lectureNumber,
-                                        styles.lectureNumber,
-                                    )}
-                                    color="light"
-                                />
-                                <ModalLectures
-                                    object={lecture.group ?? lecture.attendances[0].client}
-                                    currentLecture={lecture}
-                                    source={source}
-                                />
-                            </div>
-                            <div className={lectureStyles.lectureContent}>
-                                {lecture.group && (
-                                    <h5>
-                                        <GroupName group={lecture.group} title link />
-                                    </h5>
-                                )}
-                                <Attendances lecture={lecture} showClient source={source} />
-                            </div>
-                        </ListGroupItem>
-                    )
-                })
-            ) : (
-                <ListGroupItem className={classNames(lectureStyles.lecture, styles.lectureFree)}>
-                    <ListGroupItemHeading className="text-muted text-center">
-                        Volno
-                    </ListGroupItemHeading>
-                </ListGroupItem>
-            )}
-        </ListGroup>
+            </Box>
+            {content}
+        </div>
     )
 }
 

@@ -1,7 +1,7 @@
+import { Badge, Container, Title, Tooltip } from "@mantine/core"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { Badge, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import { useApplications, useDeleteApplication } from "../api/hooks"
@@ -11,7 +11,6 @@ import ClientName from "../components/ClientName"
 import ClientPhone from "../components/ClientPhone"
 import Heading from "../components/Heading"
 import Loading from "../components/Loading"
-import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
 import { GroupedObjectsByCourses, groupObjectsByCourses } from "../global/utils"
@@ -55,90 +54,78 @@ const Applications: React.FC = () => {
     }
 
     return (
-        <>
-            <Container>
-                <Heading
-                    title={APP_URLS.zajemci.title}
-                    buttons={<ModalApplications />}
-                    isFetching={isFetching && applications.length > 0}
-                />
-                {isLoading ? (
-                    <Loading />
-                ) : (
-                    <>
-                        {applications.length > 0 && (
-                            <UncontrolledTooltipWrapper target="Applications_DateAdded">
-                                Datum přidání
-                            </UncontrolledTooltipWrapper>
-                        )}
-                        {applications.map((courseApplications) => {
-                            const cnt = courseApplications.objects.length
-                            return (
-                                <ListGroup
-                                    key={courseApplications.course.id}
-                                    data-qa="applications_for_course"
-                                    className={styles.course}>
-                                    <ListGroupItem
-                                        className={styles.courseHeadingItem}
-                                        style={assignInlineVars(styles.applicationsVars, {
-                                            courseBackground: courseApplications.course.color,
-                                            badgeColor: courseApplications.course.color,
-                                        })}>
-                                        <h4 className={classNames("mb-0", styles.courseHeading)}>
-                                            <span data-qa="application_course">
-                                                {courseApplications.course.name}
-                                            </span>{" "}
-                                            <Badge
-                                                pill
-                                                className={classNames(
-                                                    "fw-bold",
-                                                    styles.courseHeadingBadge,
-                                                )}>
-                                                <span data-qa="applications_for_course_cnt">
-                                                    {cnt}
-                                                </span>{" "}
-                                                zájemc{getZajemciSuffix(cnt)}
-                                            </Badge>
-                                        </h4>
-                                    </ListGroupItem>
-                                    {courseApplications.objects.map((application) => (
-                                        <ListGroupItem key={application.id} data-qa="application">
-                                            <Row className="align-items-center">
-                                                <Col md="3">
-                                                    <h5 className="mb-0">
-                                                        <ClientName
-                                                            client={application.client}
-                                                            link
-                                                        />
-                                                    </h5>
-                                                </Col>
-                                                <Col md="5" className="mt-md-0 mt-1">
+        <Container>
+            <Heading
+                title={APP_URLS.zajemci.title}
+                buttons={<ModalApplications />}
+                isFetching={isFetching && applications.length > 0}
+            />
+            {isLoading ? (
+                <Loading />
+            ) : (
+                <>
+                    {applications.map((courseApplications) => {
+                        const cnt = courseApplications.objects.length
+                        return (
+                            <div
+                                key={courseApplications.course.id}
+                                className={classNames(styles.course, styles.listSection)}
+                                data-qa="applications_for_course">
+                                <div
+                                    className={styles.courseHeadingItem}
+                                    style={assignInlineVars(styles.applicationsVars, {
+                                        courseBackground: courseApplications.course.color,
+                                        badgeColor: courseApplications.course.color,
+                                    })}>
+                                    <Title order={4} className={styles.courseHeading}>
+                                        <span data-qa="application_course">
+                                            {courseApplications.course.name}
+                                        </span>
+                                    </Title>
+                                    <Badge
+                                        radius="xl"
+                                        className={styles.courseHeadingBadge}>
+                                        <span data-qa="applications_for_course_cnt">{cnt}</span>{" "}
+                                        zájemc{getZajemciSuffix(cnt)}
+                                    </Badge>
+                                </div>
+                                {courseApplications.objects.map((application) => (
+                                    <div
+                                        key={application.id}
+                                        className={styles.applicationItem}
+                                        data-qa="application">
+                                        <div className={styles.applicationRow}>
+                                            <div className={styles.applicationNameCol}>
+                                                <Title order={5} style={{ marginBottom: 0 }}>
+                                                    <ClientName client={application.client} link />
+                                                </Title>
+                                            </div>
+                                            <div className={styles.applicationMeta}>
+                                                <Tooltip label="Datum přidání">
                                                     <Badge
-                                                        className="text-dark"
-                                                        color="light"
-                                                        id="Applications_DateAdded"
+                                                        variant="light"
+                                                        color="gray"
+                                                        className={styles.createdBadge}
                                                         data-qa="application_created_at">
                                                         {prettyDateWithYear(
                                                             new Date(application.created_at),
                                                         )}
-                                                    </Badge>{" "}
-                                                    <span data-qa="application_note">
-                                                        {application.note}
-                                                    </span>
-                                                </Col>
-                                                <Col md="2">
-                                                    {application.client.phone && (
-                                                        <ClientPhone
-                                                            phone={application.client.phone}
-                                                            icon
-                                                        />
-                                                    )}
-                                                </Col>
-                                                <Col className="text-end mt-1 mt-md-0" md="2">
-                                                    <ModalApplications
-                                                        currentApplication={application}
-                                                    />{" "}
+                                                    </Badge>
+                                                </Tooltip>
+                                                <span data-qa="application_note">
+                                                    {application.note}
+                                                </span>
+                                            </div>
+                                            <div className={styles.applicationPhoneCol}>
+                                                {application.client.phone && (
+                                                    <ClientPhone phone={application.client.phone} icon />
+                                                )}
+                                            </div>
+                                            <div className={styles.applicationActionsCol}>
+                                                <div className={styles.applicationActions}>
+                                                    <ModalApplications currentApplication={application} />
                                                     <DeleteButton
+                                                        size="sm"
                                                         onClick={(): void => {
                                                             if (
                                                                 globalThis.confirm(
@@ -151,20 +138,20 @@ const Applications: React.FC = () => {
                                                         }}
                                                         data-qa="button_delete_application"
                                                     />
-                                                </Col>
-                                            </Row>
-                                        </ListGroupItem>
-                                    ))}
-                                </ListGroup>
-                            )
-                        })}
-                        {applications.length === 0 && (
-                            <p className="text-muted text-center">Žádní zájemci</p>
-                        )}
-                    </>
-                )}
-            </Container>
-        </>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )
+                    })}
+                    {applications.length === 0 && (
+                        <p style={{ color: "var(--mantine-color-gray-6)", textAlign: "center" }}>Žádní zájemci</p>
+                    )}
+                </>
+            )}
+        </Container>
     )
 }
 
