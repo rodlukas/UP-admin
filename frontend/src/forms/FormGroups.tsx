@@ -1,15 +1,5 @@
+import { Checkbox, Group, Modal, MultiSelect, SimpleGrid, TextInput, Title } from "@mantine/core"
 import * as React from "react"
-import {
-    Alert,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-} from "reactstrap"
 
 import { AnalyticsSource, trackEvent } from "../analytics"
 import { useClients, useCreateGroup, useDeleteGroup, useUpdateGroup } from "../api/hooks"
@@ -33,9 +23,8 @@ import {
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
-import { reactSelectIds } from "./helpers/func"
+import * as styles from "./FormBase.css"
 import Or from "./helpers/Or"
-import ReactSelectWrapper from "./helpers/ReactSelectWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
@@ -64,12 +53,10 @@ const FormGroups: React.FC<Props> = (props) => {
     const updateGroup = useUpdateGroup()
     const deleteGroup = useDeleteGroup()
 
-    // pripravi pole se cleny ve spravnem formatu, aby fungoval react-select
     const getMembersOfGroup = React.useCallback((members: MembershipType[]): ClientType[] => {
         return members.map((member) => member.client)
     }, [])
 
-    // pripravi pole se cleny ve spravnem formatu, aby slo poslat do API
     const prepareMembersForSubmit = React.useCallback(
         (members: ClientType[]): GroupPutApi["memberships"] => {
             return members.map((memberOfGroup) => ({ client_id: memberOfGroup.id }))
@@ -77,13 +64,9 @@ const FormGroups: React.FC<Props> = (props) => {
         [],
     )
 
-    /** Název skupiny. */
     const [name, setName] = React.useState(props.group.name)
-    /** Skupina je aktivní (true). */
     const [active, setActive] = React.useState(props.group.active)
-    /** Kurz skupiny. */
     const [course, setCourse] = React.useState<GroupPostApiDummy["course"]>(props.group.course)
-    /** Členové skupiny. */
     const [members, setMembers] = React.useState<ClientType[]>(
         getMembersOfGroup(isGroup(props.group) ? props.group.memberships : []),
     )
@@ -93,7 +76,6 @@ const FormGroups: React.FC<Props> = (props) => {
         obj?: CourseType | readonly ClientType[] | ClientType | null,
     ): void => {
         props.setFormDirty()
-        // react-select muze vratit null (napr. pri smazani vsech) nebo undefined, udrzujme tedy stav konzistentni
         if (fieldName === "members") {
             if (Array.isArray(obj)) {
                 setMembers([...obj])
@@ -109,19 +91,18 @@ const FormGroups: React.FC<Props> = (props) => {
         }
     }
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const onNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         props.setFormDirty()
-        const target = e.currentTarget
-        const value = target.type === "checkbox" ? target.checked : target.value
-        if (target.id === "name") {
-            setName(value as string)
-        } else if (target.id === "active") {
-            setActive(value as boolean)
-        }
+        setName(e.currentTarget.value)
+    }
+
+    const onActiveChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        props.setFormDirty()
+        setActive(e.currentTarget.checked)
     }
 
     const onSubmit = React.useCallback(
-        (e: React.FormEvent<HTMLFormElement>): void => {
+        (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
             const courseId = course!.id
             const dataPost: GroupPostApi = {
@@ -185,141 +166,136 @@ const FormGroups: React.FC<Props> = (props) => {
     const isSubmit = createGroup.isPending || updateGroup.isPending
 
     return (
-        <Form onSubmit={onSubmit} data-qa="form_group">
-            <ModalHeader toggle={close}>
-                {isGroup(props.group) ? "Úprava" : "Přidání"} skupiny:{" "}
-                <GroupName group={{ name }} bold />
-            </ModalHeader>
-            <ModalBody>
+        <form onSubmit={onSubmit} data-qa="form_group">
+            <Modal.Header>
+                <Modal.Title>
+                    {isGroup(props.group) ? "Úprava" : "Přidání"} skupiny:{" "}
+                    <GroupName group={{ name }} bold />
+                </Modal.Title>
+                <Modal.CloseButton />
+            </Modal.Header>
+            <Modal.Body>
                 {isLoading ? (
                     <Loading />
                 ) : (
-                    <>
-                        <FormGroup row className="form-group-required">
-                            <Label for="name" sm={2}>
-                                Název
-                            </Label>
-                            <Col sm={10}>
-                                <Input
-                                    type="text"
-                                    id="name"
-                                    value={name}
-                                    onChange={onChange}
-                                    autoFocus
-                                    data-qa="group_field_name"
-                                    required
-                                    spellCheck
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row className="form-group-required">
-                            <Label for="course" sm={2}>
-                                Kurz
-                            </Label>
-                            <Col sm={10}>
-                                <SelectCourse
-                                    required
-                                    value={course}
-                                    onChangeCallback={onSelectChange}
-                                    options={coursesVisibleContext.courses}
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="members" sm={2}>
-                                Členové
-                            </Label>
-                            <Col sm={10}>
-                                <ReactSelectWrapper<ClientType, true>
-                                    {...reactSelectIds<ClientType>("members")}
-                                    value={members}
-                                    getOptionLabel={(option): string => clientName(option)}
-                                    getOptionValue={(option): string => option.id.toString()}
-                                    isMulti
-                                    closeMenuOnSelect={false}
-                                    onChange={(newValue): void =>
-                                        onSelectChange("members", newValue)
-                                    }
-                                    options={clientsData}
-                                    placeholder={"Vyberte členy z existujících klientů..."}
-                                    isClearable={false}
-                                />
-                                <Or
-                                    content={
-                                        <ModalClients
-                                            processAdditionOfClient={processAdditionOfClient}
-                                            withOr
-                                            source="groups_form"
-                                        />
-                                    }
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row className="align-items-center">
-                            <Label for="active" sm={2} data-qa="group_label_active">
-                                Aktivní
-                            </Label>
-                            <Col sm={10}>
-                                <Input
-                                    type="checkbox"
-                                    id="active"
-                                    checked={active}
-                                    onChange={onChange}
-                                    data-qa="group_checkbox_active"
-                                />
-                                <Label for="active" check>
-                                    Je aktivní
-                                </Label>{" "}
-                                {!active && (
-                                    <Tooltip
-                                        postfix="active"
-                                        text="Neaktivním skupinám nelze vytvořit lekci."
+                    <div className={styles.formContent}>
+                        <div className={styles.formSection}>
+                            <Title order={6} className={styles.formSectionTitle}>Základní údaje</Title>
+                            <div className={styles.fieldStack}>
+                                <div className={styles.fieldBlock}>
+                                    <TextInput
+                                        id="name"
+                                        value={name}
+                                        onChange={onNameChange}
+                                        label="Název skupiny"
+                                        data-autofocus
+                                        data-qa="group_field_name"
+                                        required
+                                        
+                                        spellCheck
                                     />
-                                )}
-                            </Col>
-                        </FormGroup>
-                        {isGroup(props.group) && (
-                            <>
-                                <hr />
-                                <FormGroup row>
-                                    <Label sm={2} className="text-muted">
-                                        Smazání
-                                    </Label>
-                                    <Col sm={10}>
-                                        <Alert color="warning">
-                                            <p>Nenávratně smaže skupinu i s jejími lekcemi</p>
-                                            <DeleteButton
-                                                content="skupinu"
-                                                onClick={(): void => {
-                                                    if (
-                                                        isGroup(props.group) &&
-                                                        globalThis.confirm(
-                                                            `Opravdu chcete smazat skupinu ${name}?`,
-                                                        )
-                                                    ) {
-                                                        handleDelete(props.group.id)
-                                                    }
-                                                }}
-                                                data-qa="button_delete_group"
+                                </div>
+                                <div className={styles.fieldBlock}>
+                                    <label htmlFor="course" className={styles.fieldLabel}>
+                                        Kurz
+                                    </label>
+                                    <SelectCourse
+                                        required
+                                        value={course}
+                                        onChangeCallback={onSelectChange}
+                                        options={coursesVisibleContext.courses}
+                                    />
+                                </div>
+                                <div className={styles.fieldBlock}>
+                                    <label htmlFor="members" className={styles.fieldLabel}>
+                                        Členové
+                                    </label>
+                                    <MultiSelect
+                                        id="members"
+                                        data={clientsData.map((c) => ({ value: c.id.toString(), label: clientName(c) }))}
+                                        value={members.map((m) => m.id.toString())}
+                                        onChange={(vals) => {
+                                            const found = vals
+                                                .map((v) => clientsData.find((c) => c.id.toString() === v))
+                                                .filter((c): c is ClientType => c !== undefined)
+                                            onSelectChange("members", found)
+                                        }}
+                                        placeholder="Vyberte členy z existujících klientů..."
+                                        searchable
+                                        comboboxProps={{ withinPortal: true }}
+                                    />
+                                    <Or
+                                        content={
+                                            <ModalClients
+                                                processAdditionOfClient={processAdditionOfClient}
+                                                withOr
+                                                source="groups_form"
                                             />
-                                        </Alert>
-                                    </Col>
-                                </FormGroup>
-                            </>
+                                        }
+                                    />
+                                </div>
+                                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                                    <div className={styles.fieldBlock}>
+                                        <label
+                                            htmlFor="active"
+                                            data-qa="group_label_active"
+                                            className={styles.fieldLabel}>
+                                            Stav skupiny
+                                        </label>
+                                        <div className={styles.inlineCheckboxRow}>
+                                            <Checkbox
+                                                id="active"
+                                                checked={active}
+                                                onChange={onActiveChange}
+                                                data-qa="group_checkbox_active"
+                                                label="Je aktivní"
+                                            />
+                                            {!active && (
+                                                <Tooltip
+                                                    text="Neaktivním skupinám nelze vytvořit lekci."
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                </SimpleGrid>
+                            </div>
+                        </div>
+                        {isGroup(props.group) && (
+                            <div className={`${styles.formSection} ${styles.formSectionDanger}`}>
+                                <Title order={6} className={styles.formSectionTitle}>Smazání</Title>
+                                <div className={styles.deleteAlertText}>
+                                    <p>Nenávratně smaže skupinu i s jejími lekcemi.</p>
+                                    <DeleteButton
+                                        size="sm"
+                                        content="skupinu"
+                                        onClick={(): void => {
+                                            if (
+                                                isGroup(props.group) &&
+                                                globalThis.confirm(
+                                                    `Opravdu chcete smazat skupinu ${name}?`,
+                                                )
+                                            ) {
+                                                handleDelete(props.group.id)
+                                            }
+                                        }}
+                                        data-qa="button_delete_group"
+                                    />
+                                </div>
+                            </div>
                         )}
-                    </>
+                    </div>
                 )}
-            </ModalBody>
-            <ModalFooter>
-                <CancelButton onClick={close} />{" "}
+            </Modal.Body>
+            <Group justify="flex-end" px="md" pb="md" className={styles.modalActions}>
+                <CancelButton onClick={close} />
                 <SubmitButton
                     disabled={isLoading}
                     loading={isSubmit}
                     data-qa="button_submit_group"
                     content={isGroup(props.group) ? "Uložit" : "Přidat"}
                 />
-            </ModalFooter>
-        </Form>
+            </Group>
+        </form>
     )
 }
 

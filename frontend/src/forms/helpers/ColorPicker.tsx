@@ -1,9 +1,9 @@
+import { Grid } from "@mantine/core"
 import chroma from "chroma-js"
 import * as React from "react"
 import { ColorPicker as ReactColorPicker, type IColor } from "react-color-palette"
 import "react-color-palette/css"
 import { toast } from "react-toastify"
-import { Col, FormGroup, Label } from "reactstrap"
 
 import Notification from "../../components/Notification"
 
@@ -21,7 +21,6 @@ type Props = {
 /** Komponenta pro pole s výběrem barvy kurzu. */
 const ColorPicker: React.FC<Props> = (props) => {
     const validateColor = React.useCallback((color: string): void => {
-        // pokud barvy nejsou dostatecne kontrastni a jeste neni zobrazene upozorneni, zobraz ho
         if (chroma.contrast(chroma(color), "white") < 2) {
             toast.warning(
                 <Notification text="Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět, zvolte více kontrastnější." />,
@@ -38,7 +37,6 @@ const ColorPicker: React.FC<Props> = (props) => {
     const handleChange = React.useCallback(
         (newColor: IColor): void => {
             validateColor(newColor.hex)
-            // prevedeme hex na uppercase, at jsme konzistentni se zbytkem UI
             props.onChange({
                 ...newColor,
                 hex: newColor.hex.toUpperCase(),
@@ -48,11 +46,16 @@ const ColorPicker: React.FC<Props> = (props) => {
     )
 
     return (
-        <FormGroup row className="align-items-start form-group-required">
-            <Label for="hex" sm={3} data-qa="settings_label_color">
-                Barva
-            </Label>
-            <Col sm={9}>
+        <Grid align="flex-start" mb="sm">
+            <Grid.Col span={{ base: 12, sm: 3 }}>
+                <label htmlFor="hex" data-qa="settings_label_color">
+                    Barva{" "}
+                    <span aria-hidden className={styles.requiredMark}>
+                        *
+                    </span>
+                </label>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 9 }}>
                 <div className={styles.colorPickerContainer} data-qa="settings_color_picker">
                     <ReactColorPicker
                         height={130}
@@ -62,8 +65,8 @@ const ColorPicker: React.FC<Props> = (props) => {
                         onChange={handleChange}
                     />
                 </div>
-            </Col>
-        </FormGroup>
+            </Grid.Col>
+        </Grid>
     )
 }
 

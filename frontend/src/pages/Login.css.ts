@@ -1,5 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 export const loginContainer = style({
     display: "flex",
     alignItems: "center",
@@ -9,11 +11,11 @@ export const loginContainer = style({
 })
 
 export const loginCard = style({
-    border: "1px solid #e9ecef",
-    borderRadius: "0.375rem",
-    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
-    backgroundColor: "white",
-    padding: "2.5rem",
+    border: vars.borderShort.default,
+    borderRadius: "0.75rem",
+    boxShadow: "0 22px 44px rgb(15 23 42 / 0.12), 0 8px 16px rgb(15 23 42 / 0.06)",
+    backgroundColor: vars.bg.surface,
+    padding: "2.25rem",
     width: "100%",
     maxWidth: "420px",
 })
@@ -34,17 +36,23 @@ export const logo = style({
 export const title = style({
     marginBottom: "0.5rem",
     textAlign: "center",
-    fontSize: "2rem",
+    color: vars.text.primary,
+    fontSize: "2.05rem",
     fontWeight: 700,
 })
 
 export const subtitle = style({
     marginBottom: "2rem",
     textAlign: "center",
+    color: "var(--mantine-color-gray-6)",
     fontSize: "0.95rem",
     fontWeight: 400,
 })
 
 export const submitButton = style({
     width: "100%",
+})
+
+export const fieldWrapper = style({
+    marginBottom: "1rem",
 })

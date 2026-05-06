@@ -1,7 +1,7 @@
+import { Badge, Button, Container, SimpleGrid, Skeleton, Table, Title } from "@mantine/core"
 import { Link } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
-import { Button, Col, Container, Row, Table } from "reactstrap"
 import {
     Area,
     AreaChart,
@@ -29,7 +29,6 @@ import {
 } from "../components/charts"
 import ClientName from "../components/ClientName"
 import Heading from "../components/Heading"
-import Loading from "../components/Loading"
 import { StatisticsType } from "../types/models"
 
 import * as styles from "./Statistics.css"
@@ -103,9 +102,9 @@ type MetricToggleProps = {
 
 /** Nadpis a volitelný popis u grafu. */
 const ChartSection: React.FC<ChartSectionProps> = ({ title, caption, headerAction, children }) => (
-    <section className={classNames("mb-4", styles.chartSection)}>
+    <section className={styles.chartSection}>
         <div className={styles.chartTitleRow}>
-            <h2 className={styles.chartTitle}>{title}</h2>
+            <Title order={2} className={styles.chartTitle}>{title}</Title>
             {headerAction}
         </div>
         {caption ? <p className={styles.chartCaption}>{caption}</p> : null}
@@ -115,22 +114,22 @@ const ChartSection: React.FC<ChartSectionProps> = ({ title, caption, headerActio
 
 /** Přepínač metriky pro grafy (počet lekcí / odučené hodiny). */
 const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
-    <div className={classNames("btn-group btn-group-sm", styles.metricToggle)}>
+    <Button.Group className={styles.metricToggle}>
         <Button
-            color="secondary"
-            outline={value !== "lectures"}
-            active={value === "lectures"}
+            size="sm"
+            color="gray"
+            variant={value === "lectures" ? "filled" : "outline"}
             onClick={() => onChange("lectures")}>
             {CHART_METRIC_LABEL.lectures}
         </Button>
         <Button
-            color="secondary"
-            outline={value !== "hours"}
-            active={value === "hours"}
+            size="sm"
+            color="gray"
+            variant={value === "hours" ? "filled" : "outline"}
             onClick={() => onChange("hours")}>
             {CHART_METRIC_LABEL.hours}
         </Button>
-    </div>
+    </Button.Group>
 )
 
 /** Karta se statistikami entity nebo skupiny metrik. */
@@ -141,17 +140,19 @@ const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, total, rows, not
         {total !== undefined && (
             <>
                 <div className={styles.metricValue}>{total}</div>
-                <div className="text-muted small mb-3">celkem</div>
+                <div className={styles.totalLabel}>celkem</div>
             </>
         )}
         {rows.map((row, i) => (
             <div
                 key={typeof row.badge === "string" ? `${title}-${row.badge}` : String(i)}
-                className={classNames("d-flex justify-content-between align-items-center", {
-                    "mb-1": i < rows.length - 1,
-                })}>
-                <span className={`badge bg-${row.badgeColor} rounded-pill`}>{row.badge}</span>
-                <span className="fw-semibold">{row.value}</span>
+                className={
+                    i < rows.length - 1 ? styles.breakdownRowSpaced : styles.breakdownRow
+                }>
+                <Badge color={row.badgeColor} radius="xl">
+                    {row.badge}
+                </Badge>
+                <span className={styles.breakdownValue}>{row.value}</span>
             </div>
         ))}
     </div>
@@ -180,7 +181,7 @@ type LectureTooltipMetrics = {
 function renderLectureTooltip(label: React.ReactNode, d: LectureTooltipMetrics) {
     return (
         <div className={styles.chartTooltip}>
-            <div className="fw-semibold mb-1">{label}</div>
+            <div className={styles.tooltipLabel}>{label}</div>
             <div>
                 Individuální: <strong>{d.individual}</strong>
             </div>
@@ -238,7 +239,8 @@ const CourseTooltip: React.FC<CourseTooltipProps> = ({ active, payload, label })
     if (!active || !payload?.length) {
         return null
     }
-    return renderLectureTooltip(label, payload[0].payload)
+    const [firstPayload] = payload
+    return firstPayload ? renderLectureTooltip(label, firstPayload.payload) : null
 }
 
 type CourseYAxisTickProps = {
@@ -250,11 +252,11 @@ type CourseYAxisTickProps = {
 
 /** Tick osy Y pro graf po kurzech – zobrazuje barevný kroužek kurzu před názvem. */
 const CourseYAxisTick: React.FC<CourseYAxisTickProps> = ({ x = 0, y = 0, payload, courses }) => {
-    const color = courses.find((c) => c.course_name === payload?.value)?.course_color ?? "#999"
+    const color = courses.find((c) => c.course_name === payload?.value)?.course_color ?? "var(--mantine-color-gray-5)"
     return (
         <g transform={`translate(${x},${y})`}>
             <circle cx={-8} cy={0} r={5} fill={color} />
-            <text x={-16} y={0} dy={4} textAnchor="end" fill="#6c757d" fontSize={12}>
+            <text x={-16} y={0} dy={4} textAnchor="end" fill="var(--mantine-color-gray-6)" fontSize={12}>
                 {payload?.value}
             </text>
         </g>
@@ -284,9 +286,9 @@ const YearCourseLineTooltip: React.FC<YearCourseLineTooltipProps> = ({
     }
     return (
         <div className={styles.chartTooltip}>
-            <div className="fw-semibold mb-1">Rok {label}</div>
+            <div className={styles.tooltipLabel}>Rok {label}</div>
             {rows.map((p) => (
-                <div key={String(p.dataKey)} className="d-flex justify-content-between gap-3">
+                <div key={String(p.dataKey)} className={styles.tooltipRow}>
                     <span style={{ color: p.color }}>{p.name}</span>
                     <strong>{p.value}</strong>
                 </div>
@@ -415,8 +417,8 @@ const HoursByYearChart: React.FC<HoursByYearChartProps> = ({ byYear, compact }) 
             <AreaChart data={data} margin={CHART_MARGIN}>
                 <defs>
                     <linearGradient id="statsHoursAreaFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#0d6efd" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#0d6efd" stopOpacity={0.05} />
+                        <stop offset="5%" stopColor="var(--mantine-color-indigo-6)" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="var(--mantine-color-indigo-6)" stopOpacity={0.05} />
                     </linearGradient>
                 </defs>
                 <CartesianGrid stroke={GRID_STROKE} strokeDasharray="3 3" vertical={false} />
@@ -470,7 +472,7 @@ const HoursByYearChart: React.FC<HoursByYearChartProps> = ({ byYear, compact }) 
                     type="monotone"
                     dataKey="hours"
                     name="Odučeno"
-                    stroke="#0d6efd"
+                    stroke="var(--mantine-color-indigo-6)"
                     strokeWidth={2}
                     fill="url(#statsHoursAreaFill)"
                 />
@@ -494,28 +496,30 @@ function TopRankingSection<T extends { id: number; lecture_count: number }>({
     items,
     emptyMessage,
     renderName,
-}: TopRankingSectionProps<T>) {
+}: Readonly<TopRankingSectionProps<T>>) {
     return (
         <ChartSection title={title}>
             {items.length > 0 ? (
-                <Table responsive size="sm" hover borderless className="mb-0">
-                    <thead>
-                        <tr className="border-bottom">
-                            <th className="text-muted fw-normal">#</th>
-                            <th className="text-muted fw-normal">{nameHeader}</th>
-                            <th className="text-end text-muted fw-normal">Lekce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((row, index) => (
-                            <tr key={row.id}>
-                                <td className="text-muted">{index + 1}</td>
-                                <td>{renderName(row)}</td>
-                                <td className="text-end fw-semibold">{row.lecture_count}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                <Table.ScrollContainer minWidth={220} className={styles.rankingTable}>
+                    <Table verticalSpacing="xs" withRowBorders={false} mb={0}>
+                        <Table.Thead>
+                            <Table.Tr className={styles.rankingDivider}>
+                                <Table.Th c="dimmed" fw={400}>#</Table.Th>
+                                <Table.Th c="dimmed" fw={400}>{nameHeader}</Table.Th>
+                                <Table.Th ta="right" c="dimmed" fw={400}>Lekce</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {items.map((row, index) => (
+                                <Table.Tr key={row.id}>
+                                    <Table.Td c="dimmed">{index + 1}</Table.Td>
+                                    <Table.Td>{renderName(row)}</Table.Td>
+                                    <Table.Td ta="right" fw={600}>{row.lecture_count}</Table.Td>
+                                </Table.Tr>
+                            ))}
+                        </Table.Tbody>
+                    </Table>
+                </Table.ScrollContainer>
             ) : (
                 <p className={styles.chartEmpty}>{emptyMessage}</p>
             )}
@@ -608,7 +612,7 @@ const LecturesMonthSection: React.FC<LecturesMonthSectionProps> = ({
                         }}
                         labelFormatter={String}
                     />
-                    <Bar dataKey="value" fill="#0d6efd" name={chartMetric} radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="value" fill="var(--mantine-color-indigo-6)" name={chartMetric} radius={[4, 4, 0, 0]} />
                 </BarChart>
             </ResponsiveContainer>
         </ChartSection>
@@ -661,12 +665,12 @@ const LecturesCourseSection: React.FC<LecturesCourseSectionProps> = ({ byCourse,
                         align="center"
                         wrapperStyle={LEGEND_FONT}
                     />
-                    <Bar dataKey="individual" stackId="a" fill="#0d6efd" name="individual" />
-                    <Bar dataKey="group" stackId="a" fill="#0dcaf0" name="group" />
+                    <Bar dataKey="individual" stackId="a" fill="var(--mantine-color-indigo-6)" name="individual" />
+                    <Bar dataKey="group" stackId="a" fill="var(--mantine-color-teal-6)" name="group" />
                     <Bar
                         dataKey="canceled_count"
                         stackId="a"
-                        fill="#dc3545"
+                        fill="var(--mantine-color-red-6)"
                         name="canceled_count"
                         radius={[0, 3, 3, 0]}
                         opacity={0.8}
@@ -739,14 +743,14 @@ const LecturesYearSection: React.FC<LecturesYearSectionProps> = ({
                             <Bar
                                 dataKey="individual"
                                 stackId="a"
-                                fill="#0d6efd"
+                                fill="var(--mantine-color-indigo-6)"
                                 name="individual"
                             />
-                            <Bar dataKey="group" stackId="a" fill="#0dcaf0" name="group" />
+                            <Bar dataKey="group" stackId="a" fill="var(--mantine-color-teal-6)" name="group" />
                             <Bar
                                 dataKey="canceled_count"
                                 stackId="a"
-                                fill="#dc3545"
+                                fill="var(--mantine-color-red-6)"
                                 name="canceled_count"
                                 radius={[3, 3, 0, 0]}
                                 opacity={0.8}
@@ -815,49 +819,49 @@ const Statistics: React.FC = () => {
 
             {/* Klienti & Skupiny – globální statistiky (neovlivněny filtrem roku) */}
             {statistics && (
-                <Row className="g-3 mb-4">
-                    <Col xs={6} md={4} lg={3}>
+                <SimpleGrid cols={{ base: 2, md: 4 }} className={styles.sectionTightTopMb}>
+                    <div>
                         <EntityStatCard
                             title="Klienti"
                             total={statistics.clients.total}
                             rows={[
                                 {
                                     badge: "aktivní",
-                                    badgeColor: "success",
+                                    badgeColor: "green",
                                     value: statistics.clients.active,
                                 },
                                 {
                                     badge: "neaktivní",
-                                    badgeColor: "secondary",
+                                    badgeColor: "gray",
                                     value: statistics.clients.inactive,
                                 },
                                 {
                                     badge: "bez lekce",
-                                    badgeColor: "warning",
+                                    badgeColor: "yellow",
                                     value: statistics.clients.without_lectures,
                                 },
                             ]}
                         />
-                    </Col>
-                    <Col xs={6} md={4} lg={3}>
+                    </div>
+                    <div>
                         <EntityStatCard
                             title="Skupiny"
                             total={statistics.groups.total}
                             rows={[
                                 {
                                     badge: "aktivní",
-                                    badgeColor: "success",
+                                    badgeColor: "green",
                                     value: statistics.groups.active,
                                 },
                                 {
                                     badge: "neaktivní",
-                                    badgeColor: "secondary",
+                                    badgeColor: "gray",
                                     value: statistics.groups.inactive,
                                 },
                             ]}
                         />
-                    </Col>
-                </Row>
+                    </div>
+                </SimpleGrid>
             )}
 
             {/* Rok – filtr */}
@@ -867,12 +871,11 @@ const Statistics: React.FC = () => {
                     Filtruje karty lekcí, žebříčky klientů a skupin a grafy podle měsíce a kurzu.
                     Grafy vývoje podle roku se zobrazí pouze při výběru <strong>Celkem</strong>.
                 </p>
-                <div className="d-flex flex-wrap gap-1">
+                <div className={styles.yearFilterButtons}>
                     <Button
                         size="sm"
-                        color="secondary"
-                        outline={lecturesYear !== null}
-                        active={lecturesYear === null}
+                        color="gray"
+                        variant={lecturesYear === null ? "filled" : "outline"}
                         onClick={() => setLecturesYear(null)}>
                         Celkem
                     </Button>
@@ -880,9 +883,8 @@ const Statistics: React.FC = () => {
                         <Button
                             key={y}
                             size="sm"
-                            color="secondary"
-                            outline={lecturesYear !== y}
-                            active={lecturesYear === y}
+                            color="gray"
+                            variant={lecturesYear === y ? "filled" : "outline"}
                             onClick={() => setLecturesYear(y)}>
                             {y}
                         </Button>
@@ -897,8 +899,8 @@ const Statistics: React.FC = () => {
                         [styles.fetchingOverlay]: statisticsFetching,
                     })}>
                     {/* Lekce – metriky */}
-                    <Row className="g-3 mb-4">
-                        <Col xs={12} sm={6} md={6}>
+                    <SimpleGrid cols={{ base: 1, md: 2 }} className={styles.sectionTightTopMb}>
+                        <div>
                             <EntityStatCard
                                 title="Proběhlé lekce"
                                 total={statistics.lectures.total}
@@ -906,12 +908,12 @@ const Statistics: React.FC = () => {
                                 rows={[
                                     {
                                         badge: "individuální",
-                                        badgeColor: "primary",
+                                        badgeColor: "indigo",
                                         value: statistics.lectures.individual,
                                     },
                                     {
                                         badge: "skupinové",
-                                        badgeColor: "info",
+                                        badgeColor: "cyan",
                                         value: statistics.lectures.group,
                                     },
                                     {
@@ -923,8 +925,8 @@ const Statistics: React.FC = () => {
                                     },
                                 ]}
                             />
-                        </Col>
-                        <Col xs={12} sm={6} md={6}>
+                        </div>
+                        <div>
                             <EntityStatCard
                                 title="Neproběhlé lekce"
                                 total={statistics.lectures.not_happened_count}
@@ -932,21 +934,21 @@ const Statistics: React.FC = () => {
                                 rows={[
                                     {
                                         badge: "míra zrušení",
-                                        badgeColor: "danger",
+                                        badgeColor: "red",
                                         value: `${statistics.lectures.canceled_rate.toLocaleString("cs-CZ", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}\u202f%`,
                                     },
                                     {
                                         badge: "z toho omluvené (individuální + skupinové)",
-                                        badgeColor: "warning",
+                                        badgeColor: "yellow",
                                         value: statistics.lectures.excused_not_happened_count,
                                     },
                                 ]}
                             />
-                        </Col>
-                    </Row>
+                        </div>
+                    </SimpleGrid>
 
-                    <Row className="g-3 mb-4">
-                        <Col lg={6}>
+                    <SimpleGrid cols={{ base: 1, md: 2 }} className={styles.gridMb}>
+                        <div>
                             <TopRankingSection
                                 title="Nejaktivnější klienti"
                                 nameHeader="Klient"
@@ -964,8 +966,8 @@ const Statistics: React.FC = () => {
                                     />
                                 )}
                             />
-                        </Col>
-                        <Col lg={6}>
+                        </div>
+                        <div>
                             <TopRankingSection
                                 title="Nejaktivnější skupiny"
                                 nameHeader="Skupina"
@@ -973,14 +975,14 @@ const Statistics: React.FC = () => {
                                 emptyMessage="Žádná proběhlá skupinová lekce v tomto rozsahu."
                                 renderName={(row) => (
                                     <Link
-                                        className="fw-semibold"
+                                        className={styles.breakdownValue}
                                         to={`${APP_URLS.skupiny.url}/${row.id}`}>
                                         {row.name}
                                     </Link>
                                 )}
                             />
-                        </Col>
-                    </Row>
+                        </div>
+                    </SimpleGrid>
 
                     <LecturesMonthSection
                         byMonth={statistics.lectures.by_month}
@@ -1015,7 +1017,11 @@ const Statistics: React.FC = () => {
                     />
                 </div>
             ) : (
-                <Loading />
+                <>
+                    {[...Array(4)].map((_, i) => (
+                        <Skeleton key={i} h={280} mb="xl" radius="md" />
+                    ))}
+                </>
             )}
         </Container>
     )

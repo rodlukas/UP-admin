@@ -1,5 +1,7 @@
 import { createThemeContract, style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 export const applicationsVars = createThemeContract({
     courseBackground: "",
     badgeColor: "",
@@ -8,10 +10,10 @@ export const applicationsVars = createThemeContract({
 export const course = style({
     display: "flex",
     flexDirection: "column",
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.6rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     overflow: "hidden",
     selectors: {
         "& + &": {
@@ -22,8 +24,8 @@ export const course = style({
 
 export const applicationItem = style({
     transition: "background-color 0.12s ease-in-out",
-    borderTop: "1px solid light-dark(#dbe3ed, var(--mantine-color-dark-4))",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    borderTop: vars.borderShort.default,
+    backgroundColor: vars.bg.surface,
     padding: "0.5rem 1rem",
     selectors: {
         "&:hover": {
@@ -42,7 +44,7 @@ export const courseHeadingItem = style({
     display: "flex",
     alignItems: "center",
     gap: "0.65rem",
-    borderBottom: "1px solid light-dark(#dbe3ed, var(--mantine-color-dark-4))",
+    borderBottom: vars.borderShort.default,
     borderLeft: `4px solid ${applicationsVars.courseBackground}`,
     backgroundColor: "light-dark(#f1f5f9, var(--mantine-color-dark-6))",
     padding: "0.6rem 1rem",
@@ -58,7 +60,7 @@ export const courseHeadingBadge = style({
 
 export const courseHeading = style({
     marginBottom: 0,
-    color: "light-dark(#1f2937, var(--mantine-color-gray-1))",
+    color: vars.text.primary,
     fontSize: "1rem",
     fontWeight: 600,
 })

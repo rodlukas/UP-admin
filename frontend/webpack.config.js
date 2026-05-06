@@ -22,6 +22,7 @@ const urlProduction = "/static/assets/"
 const pathBuild = path.resolve(__dirname, "build", "assets")
 const htmlFile = "react-autogenerate.html"
 const htmlSource = path.resolve(__dirname, "src", "index.html")
+const htmlSourceDev = path.resolve(__dirname, "src", "index.dev.html")
 const htmlTarget = path.resolve(__dirname, "..", "admin", "templates")
 
 // pouziva se cross-env pro crossplatform nastaveni env promenne
@@ -71,9 +72,10 @@ module.exports = {
                 ],
             },
             {
-                // Globální CSS - pro běžné .css soubory (Bootstrap, react-toastify, atd.)
+                // Globální CSS - Mantine, react-toastify, atd. sideEffects: true zachová importy.
                 test: /\.css$/i,
                 exclude: /\.vanilla\.css$/i,
+                sideEffects: true,
                 use: [
                     isProduction ? MiniCssExtractPlugin.loader : "style-loader",
                     {
@@ -113,7 +115,7 @@ module.exports = {
             alwaysWriteToDisk: true,
             scriptLoading: "defer",
             inject: "head",
-            template: htmlSource,
+            template: isProduction ? htmlSource : htmlSourceDev,
             filename: htmlFile,
             minify: isProduction
                 ? {

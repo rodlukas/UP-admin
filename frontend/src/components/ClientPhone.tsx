@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPhone } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
+import { iconBeforeText } from "../global/utility.css"
 import { prettyPhone } from "../global/utils"
 import { ClientType } from "../types/models"
 
@@ -28,7 +29,7 @@ const ClientPhone: React.FC<Props> = ({ phone, icon = false }) => {
                     <FontAwesomeIcon
                         flip="horizontal"
                         icon={faPhone}
-                        className="align-middle me-1"
+                        className={iconBeforeText}
                     />
                 )}
                 {prettyPhone(phone)}

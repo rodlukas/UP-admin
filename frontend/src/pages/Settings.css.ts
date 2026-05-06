@@ -1,5 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 export const footer = style({})
 
 globalStyle(`${footer} a`, {
@@ -12,10 +14,10 @@ globalStyle(`${footer} a:hover`, {
 })
 
 export const settingsColumn = style({
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.6rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     padding: "1rem 1rem 1.1rem",
     height: "100%",
 })
@@ -34,7 +36,7 @@ globalStyle(`${settingsColumn} hr`, {
     opacity: 1,
     marginTop: "0.9rem",
     marginBottom: "0.9rem",
-    borderColor: "light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    borderColor: vars.border.default,
 })
 
 export const settingsColumnsRow = style({
@@ -80,10 +82,10 @@ export const emptyMessage = style({
 export const appearanceSection = style({
     marginTop: "1.1rem",
     marginBottom: "1.1rem",
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.6rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     padding: "1rem 1rem 1.1rem",
 })
 
@@ -93,9 +95,9 @@ globalStyle(`${appearanceSection} h2`, {
 
 export const footerBlock = style({
     marginTop: "1.1rem",
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.6rem",
     boxShadow: "0 12px 26px rgb(15 23 42 / 0.07), 0 3px 10px rgb(15 23 42 / 0.05)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    backgroundColor: vars.bg.surface,
     padding: "0.9rem 1rem",
 })

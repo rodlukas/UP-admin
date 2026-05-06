@@ -1,15 +1,15 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Button, ButtonProps } from "@mantine/core"
 import * as React from "react"
-import { Button, ButtonProps } from "reactstrap"
 
-type Props = ButtonProps & {
+type Props = Omit<ButtonProps, "content" | "children"> & {
     /** Text v tlačítku. */
     content?: string
     /** Zobraz načítací animaci v tlačítku (true). */
     loading?: boolean
     /** Tlačítko není aktivní (true). */
     disabled?: boolean
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+    id?: string
 }
 
 /** Tlačítko pro odeslání formuláře v aplikaci. */
@@ -20,13 +20,14 @@ const SubmitButton: React.FC<Props> = ({
     ...props
 }) => (
     <Button
-        color="primary"
-        className="float-end"
+        color="blue"
+        ml="auto"
         type="submit"
+        loading={loading}
+        aria-busy={loading}
         {...props}
         disabled={loading || disabled}>
         {content}
-        {loading && <FontAwesomeIcon icon={faSpinnerThird} size="lg" spin className="ms-2" />}
     </Button>
 )
 

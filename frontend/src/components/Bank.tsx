@@ -11,6 +11,7 @@ import * as React from "react"
 import { useBank } from "../api/hooks"
 import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff } from "../global/funcDateTime"
+import { bold, inlineBlockNowrap, nowrap } from "../global/utility.css"
 import { prettyAmount } from "../global/utils"
 import { BankType, BankSuccessType, BankErrorType } from "../types/models"
 
@@ -80,7 +81,7 @@ const Bank: React.FC = () => {
             return isLoadingState ? "načítání" : "neznámý"
         }
         return (
-            <span style={{ whiteSpace: "nowrap", fontWeight: 700 }}>
+            <span className={`${nowrap} ${bold}`}>
                 {prettyAmount(bankData.accountStatement.info.closingBalance)}
             </span>
         )
@@ -117,13 +118,12 @@ const Bank: React.FC = () => {
                             {messageObj ? messageObj.value : <NoInfo />}
                         </Table.Td>
                     )}
-                    <Table.Td ta="right" className={styles.bankDateColumn} style={{ whiteSpace: "nowrap" }}>
+                    <Table.Td ta="right" className={`${styles.bankDateColumn} ${nowrap}`}>
                         {prettyDateWithDayYearIfDiff(date, true)}
                     </Table.Td>
                     <Table.Td
                         ta="right"
-                        className={styles.bankAmountColumn}
-                        style={{ whiteSpace: "nowrap", fontWeight: 700 }}
+                        className={`${styles.bankAmountColumn} ${nowrap} ${bold}`}
                         c={amount < 0 ? "red.7" : undefined}>
                         {prettyAmount(amount)}
                     </Table.Td>
@@ -164,7 +164,9 @@ const Bank: React.FC = () => {
         <div className={styles.bankWrapper}>
             <Box ta="center" className={`${styles.bankTitle} ${isLackOfMoney ? styles.bankTitleWarning : styles.bankTitleOk}`}>
                 <div className={styles.bankTitleInner}>
-                    <Title order={4} className={styles.bankTitleText} style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+                    <Title
+                        order={4}
+                        className={`${styles.bankTitleText} ${inlineBlockNowrap}`}>
                         Aktuální stav: {getBalanceText()}{" "}
                         {isLackOfMoney && (
                             <Tooltip
@@ -191,11 +193,13 @@ const Bank: React.FC = () => {
                                     onClick={onClick}
                                     disabled={isRefreshDisabled}
                                     size="sm"
+                                    aria-label="Obnovit výpis"
                                     content={
                                         <FontAwesomeIcon
                                             icon={faSyncAlt}
                                             size="lg"
                                             spin={isLoadingState}
+                                            aria-hidden
                                         />
                                     }
                                 />

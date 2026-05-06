@@ -15,6 +15,7 @@ import Heading from "../components/Heading"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
+import { bold, iconInlineX, mb0 } from "../global/utility.css"
 import { AttendanceStateType } from "../types/models"
 import { QA } from "../types/types"
 
@@ -161,7 +162,7 @@ const Settings: React.FC = () => {
                                         fungovat!
                                     </Alert>
                                 )}
-                                <p style={{ marginBottom: 0 }}>
+                                <p className={mb0}>
                                     Pro správné fungování aplikace je třeba některým (viditelným)
                                     stavům účasti přiřadit zvláštní vlastnosti podle jejich významu:
                                 </p>
@@ -323,7 +324,7 @@ const Settings: React.FC = () => {
                     </div>
                     <div className={styles.footerBlock}>
                         <p className={`${styles.footer} ${styles.emptyMessage}`}>
-                            <span style={{ fontWeight: 700 }}>Verze aplikace:</span>{" "}
+                            <span className={bold}>Verze aplikace:</span>{" "}
                             <AppCommit />
                             {" ("}
                             <AppRelease />
@@ -333,7 +334,7 @@ const Settings: React.FC = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     href="https://github.com/rodlukas/UP-admin"
-                                    style={{ marginRight: "0.25rem", marginLeft: "0.25rem" }}>
+                                    className={iconInlineX}>
                                     <FontAwesomeIcon
                                         icon={faGithub}
                                         size="lg"
@@ -344,7 +345,7 @@ const Settings: React.FC = () => {
                             {" • "}
                             <a
                                 target="_blank"
-                                style={{ marginRight: "0.25rem", marginLeft: "0.25rem" }}
+                                className={iconInlineX}
                                 rel="noopener noreferrer"
                                 href="/api/docs/">
                                 API dokumentace

@@ -1,18 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Container, Grid, Text, TextInput, Title, Tooltip } from "@mantine/core"
 import { faSackDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
-import {
-    Col,
-    Container,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Label,
-    ListGroup,
-    ListGroupItem,
-    Row,
-} from "reactstrap"
 
 import { usePatchMembership } from "../api/hooks"
 import { TEXTS } from "../global/constants"
@@ -20,8 +10,7 @@ import { MembershipType } from "../types/models"
 
 import ClientName from "./ClientName"
 import * as styles from "./PrepaidCounters.css"
-import Tooltip from "./Tooltip"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
+import Tooltip2 from "./Tooltip"
 
 type Props = {
     /** Pole se členstvími všech klientů. */
@@ -58,7 +47,6 @@ const PrepaidCounters: React.FC<Props> = (props) => {
             const value = Number(target.value)
             const id = Number(target.dataset.id!)
             setPrepaidCnts((prevPrepaidCnts) => {
-                // vytvorime kopii prepaidCnts (ma jen jednu uroven -> staci melka kopie)
                 const newPrepaidCnts = { ...prevPrepaidCnts }
                 newPrepaidCnts[id] = value
                 return newPrepaidCnts
@@ -75,55 +63,51 @@ const PrepaidCounters: React.FC<Props> = (props) => {
 
     return (
         <Container fluid>
-            <Row className="justify-content-center">
+            <Grid justify="center">
                 {props.memberships.map((membership) => (
-                    <Col sm="9" md="3" lg="3" xl="2" key={membership.id}>
-                        <ListGroup>
-                            <ListGroupItem>
-                                <h5>
-                                    <ClientName client={membership.client} link />{" "}
-                                    {props.isGroupActive && !membership.client.active && (
-                                        <Tooltip
-                                            postfix={`PrepaidCounters_InactiveClientAlert_${membership.client.id}`}
-                                            text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
-                                            size="1x"
-                                        />
-                                    )}
-                                </h5>
-                                <InputGroup>
-                                    <InputGroupText
-                                        id={`PrepaidCounters${membership.id}`}
-                                        className={classNames({
+                    <Grid.Col
+                        span={{ base: 12, sm: 9, md: 3, lg: 3, xl: 2 }}
+                        key={membership.id}>
+                        <div className={styles.memberCard}>
+                            <Title order={5} className={styles.memberHeading}>
+                                <ClientName client={membership.client} link />{" "}
+                                {props.isGroupActive && !membership.client.active && (
+                                    <Tooltip2
+                                        text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
+                                        size="1x"
+                                    />
+                                )}
+                            </Title>
+                            <Tooltip label="Počet předplacených lekcí">
+                                <TextInput
+                                    type="number"
+                                    id={`prepaid_cnt${membership.id}`}
+                                    value={prepaidCnts[membership.id]}
+                                    min={0}
+                                    onChange={onChange}
+                                    data-id={membership.id}
+                                    onFocus={onFocus}
+                                    className={styles.prepaidCountersInput}
+                                    leftSectionProps={{
+                                        className: classNames({
                                             [styles.prepaidCountersInputGroupLabel]:
                                                 prepaidCnts[membership.id] > 0,
-                                        })}>
-                                        <Label for={`prepaid_cnt${membership.id}`}>
+                                        }),
+                                    }}
+                                    leftSection={
+                                        <label htmlFor={`prepaid_cnt${membership.id}`}>
                                             <FontAwesomeIcon icon={faSackDollar} fixedWidth />
-                                        </Label>
-                                    </InputGroupText>
-                                    <Input
-                                        type="number"
-                                        value={prepaidCnts[membership.id]}
-                                        min="0"
-                                        onChange={onChange}
-                                        data-id={membership.id}
-                                        onFocus={onFocus}
-                                        id={`prepaid_cnt${membership.id}`}
-                                        className={styles.prepaidCountersInput}
-                                    />
-                                </InputGroup>
-                                <UncontrolledTooltipWrapper
-                                    target={`PrepaidCounters${membership.id}`}>
-                                    Počet předplacených lekcí
-                                </UncontrolledTooltipWrapper>
-                            </ListGroupItem>
-                        </ListGroup>
-                    </Col>
+                                        </label>
+                                    }
+                                />
+                            </Tooltip>
+                        </div>
+                    </Grid.Col>
                 ))}
                 {props.memberships.length === 0 && (
-                    <p className="text-muted text-center">Žádní účastníci</p>
+                    <Text c="dimmed" ta="center">Žádní účastníci</Text>
                 )}
-            </Row>
+            </Grid>
         </Container>
     )
 }

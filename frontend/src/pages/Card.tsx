@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Alert, Button, Container, Group, SimpleGrid, Skeleton, Title, Tooltip } from "@mantine/core"
 import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { Alert, Button, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import {
@@ -32,15 +32,14 @@ import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import * as lectureStyles from "../components/Lecture.css"
 import LectureNumber from "../components/LectureNumber"
-import Loading from "../components/Loading"
 import PrepaidCounters from "../components/PrepaidCounters"
-import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
 import ModalLectures from "../forms/ModalLectures"
 import { TEXTS } from "../global/constants"
 import { prettyDateWithDayYear, prettyTime } from "../global/funcDateTime"
+import { dimmedText, dimmedTextCenter, iconAfterText, textCenterMb0 } from "../global/utility.css"
 import {
     clientName,
     courseDuration,
@@ -64,18 +63,141 @@ type CardProps = {
     isClientPage: boolean
 }
 
+const isClientObject = (object: ClientOrGroup): object is ClientType =>
+    Boolean(object && "phone" in object)
+
+const isGroupObject = (object: ClientOrGroup): object is GroupType =>
+    Boolean(object && "name" in object)
+
+type HeaderActionsProps = {
+    object: ClientOrGroup
+    cardSource: "client_card" | "group_card"
+    defaultValuesForLecture: DefaultValuesForLecture | undefined
+    onBack: () => void
+    onRefreshFromModal: (data: ModalClientsGroupsData) => void
+}
+
+const HeaderActions: React.FC<HeaderActionsProps> = ({
+    object,
+    cardSource,
+    defaultValuesForLecture,
+    onBack,
+    onRefreshFromModal,
+}) => (
+    <>
+        <BackButton onClick={onBack} />
+        {isClientObject(object) ? (
+            <ModalClients
+                currentClient={object}
+                refresh={(data) => onRefreshFromModal(data as ModalClientsGroupsData)}
+                source="client_card"
+            />
+        ) : (
+            object && (
+                <ModalGroups
+                    currentGroup={object}
+                    refresh={(data) => onRefreshFromModal(data as ModalClientsGroupsData)}
+                    source="group_card"
+                />
+            )
+        )}
+        <ModalLectures
+            defaultValuesForLecture={defaultValuesForLecture}
+            object={object}
+            source={cardSource}
+        />
+    </>
+)
+
+type AlertsProps = {
+    object: ClientOrGroup
+    isDeactivatePending: boolean
+    onDeactivate: () => void
+}
+
+const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactivate }) => {
+    if (!object) {
+        return null
+    }
+    if (!object.active) {
+        return (
+            <Alert color="yellow" mt={0}>
+                {isClientObject(object) ? TEXTS.WARNING_INACTIVE_CLIENT : TEXTS.WARNING_INACTIVE_GROUP}
+            </Alert>
+        )
+    }
+    if (!isStaleActive(object.last_lecture_date)) {
+        return null
+    }
+    return (
+        <Alert color="yellow" mt={0}>
+            <Group justify="space-between" wrap="wrap">
+                <span>
+                    {isClientObject(object) ? TEXTS.WARNING_STALE_CLIENT : TEXTS.WARNING_STALE_GROUP}
+                </span>
+                <Button color="yellow" size="sm" disabled={isDeactivatePending} onClick={onDeactivate}>
+                    Přesunout do neaktivních
+                    {isDeactivatePending && (
+                        <FontAwesomeIcon icon={faSpinnerThird} spin className={iconAfterText} />
+                    )}
+                </Button>
+            </Group>
+        </Alert>
+    )
+}
+
+type ClientInfoProps = {
+    client: ClientType
+    id: Model["id"]
+    groupsOfClient: GroupType[]
+    pastGroups: GroupType[]
+    lectures: LectureType[]
+}
+
+const ClientInfo: React.FC<ClientInfoProps> = ({ client, id, groupsOfClient, pastGroups, lectures }) => (
+    <div className={styles.clientTopRow}>
+        <div className={classNames(styles.infoList, styles.clientSummaryPanel)}>
+            <div className={styles.infoListItem}>
+                <b>Telefon:</b> <ClientPhone phone={client.phone} />
+            </div>
+            <div className={styles.infoListItem}>
+                <b>E-mail:</b> <ClientEmail email={client.email} />
+            </div>
+            <div className={styles.infoListItem}>
+                <b>Skupiny:</b>{" "}
+                {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
+                    <span className={dimmedText}>žádné skupiny</span>
+                ) : (
+                    <ComponentsList
+                        components={[
+                            ...groupsOfClient.map((g) => (
+                                <GroupName key={g.id} group={g} link showCircle noWrap />
+                            )),
+                            ...pastGroups.map((g) => (
+                                <span key={g.id} className={styles.pastGroup}>
+                                    <GroupName group={g} link showCircle noWrap />
+                                </span>
+                            )),
+                        ]}
+                    />
+                )}
+            </div>
+            <div className={styles.infoListItem}>
+                <b>Poznámka:</b> <ClientNote note={client.note} />
+            </div>
+        </div>
+        <div className={styles.analysisPanel}>
+            <ClientAnalysis clientId={id} lectures={lectures} />
+        </div>
+    </div>
+)
+
 /** Stránka s kartou klienta nebo skupiny. */
 const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const isClientPageValue = isClientPage
-
-    const isClient = (object: ClientOrGroup): object is ClientType =>
-        Boolean(object && "phone" in object)
-
-    const isGroup = (object: ClientOrGroup): object is GroupType =>
-        Boolean(object && "name" in object)
 
     const deactivateClient = useDeactivateClients()
     const deactivateGroup = useDeactivateGroups()
@@ -127,8 +249,8 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     // aktualizace title
     React.useEffect(() => {
         if (object) {
-            const titleName = isClient(object) ? clientName(object) : object.name
-            const pageName = isClient(object)
+            const titleName = isClientObject(object) ? clientName(object) : object.name
+            const pageName = isClientObject(object)
                 ? APP_URLS.klienti_karta.title
                 : APP_URLS.skupiny_karta.title
             document.title = pageTitle(`${titleName} – ${pageName}`)
@@ -180,11 +302,11 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         if (!object) {
             return
         }
-        const label = isClient(object) ? "klienta" : "skupinu"
+        const label = isClientObject(object) ? "klienta" : "skupinu"
         if (!globalThis.confirm(`Opravdu chcete přesunout ${label} do neaktivních?`)) {
             return
         }
-        if (isClient(object)) {
+        if (isClientObject(object)) {
             deactivateClient.mutate([id], {
                 onSuccess: () => {
                     trackEvent("client_deactivated", { source: "client_card" })
@@ -202,43 +324,46 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     }
 
     const cardSource = isClientPageValue ? ("client_card" as const) : ("group_card" as const)
+    const isDeactivatePending = isClientObject(object)
+        ? deactivateClient.isPending
+        : deactivateGroup.isPending
 
     const renderLecture = (lecture: LectureType): React.ReactElement => {
         // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
         const date = new Date(lecture.start ?? 0)
+        const isPrepaidLecture = lecture.start === null
         const className = classNames(lectureStyles.lecture, styles.lectureCard, {
             [lectureStyles.lectureCanceled]: lecture.canceled,
             [styles.lectureFuture]: date > new Date(Date.now()),
-            [styles.lecturePrepaid]: lecture.start === null,
+            [styles.lecturePrepaid]: isPrepaidLecture,
         })
         return (
-            <ListGroupItem
+            <div
                 key={lecture.id}
-                className={className}
+                className={classNames(styles.infoListItem, className)}
                 data-qa="lecture"
                 {...(lecture.canceled && { "data-qa-canceled": "true" })}>
                 <div className={lectureStyles.lectureHeading}>
-                    <h4>
-                        <span data-qa="lecture_start" id={`Card_CourseDuration_${lecture.id}`}>
-                            {lecture.start !== null
-                                ? `${prettyDateWithDayYear(date)} – ${prettyTime(date)}`
-                                : "Předplacená lekce"}
-                        </span>
-                        <UncontrolledTooltipWrapper target={`Card_CourseDuration_${lecture.id}`}>
-                            {courseDuration(lecture.duration)}
-                        </UncontrolledTooltipWrapper>
-                    </h4>
+                    <Title order={4}>
+                        <Tooltip label={courseDuration(lecture.duration)}>
+                            <span data-qa="lecture_start">
+                                {isPrepaidLecture
+                                    ? "Předplacená lekce"
+                                    : `${prettyDateWithDayYear(date)} – ${prettyTime(date)}`}
+                            </span>
+                        </Tooltip>
+                    </Title>
                     <LectureNumber lecture={lecture} className={lectureStyles.lectureNumber} />
                     <ModalLectures object={object} currentLecture={lecture} source={cardSource} />
                 </div>
                 <div className={lectureStyles.lectureContent}>
                     <Attendances
                         lecture={lecture}
-                        showClient={isGroup(object)}
+                        showClient={isGroupObject(object)}
                         source={cardSource}
                     />
                 </div>
-            </ListGroupItem>
+            </div>
         )
     }
 
@@ -249,7 +374,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                     title={
                         <>
                             {`Karta ${isClientPageValue ? "klienta" : "skupiny"}`}:{" "}
-                            {isClient(object) ? (
+                            {isClientObject(object) ? (
                                 <ClientName client={object} bold />
                             ) : (
                                 object && <GroupName group={object} bold />
@@ -258,171 +383,85 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                     }
                     isFetching={isFetching}
                     buttons={
-                        <>
-                            <BackButton onClick={goBack} />
-                            {isClient(object) ? (
-                                <ModalClients
-                                    currentClient={object}
-                                    refresh={(data) =>
-                                        refreshObjectFromModal(data as ModalClientsGroupsData)
-                                    }
-                                    source="client_card"
-                                />
-                            ) : (
-                                object && (
-                                    <ModalGroups
-                                        currentGroup={object}
-                                        refresh={(data) =>
-                                            refreshObjectFromModal(data as ModalClientsGroupsData)
-                                        }
-                                        source="group_card"
-                                    />
-                                )
-                            )}
-                            <ModalLectures
-                                defaultValuesForLecture={defaultValuesForLecture}
-                                object={object}
-                                source={cardSource}
-                            />
-                        </>
+                        <HeaderActions
+                            object={object}
+                            cardSource={cardSource}
+                            defaultValuesForLecture={defaultValuesForLecture}
+                            onBack={goBack}
+                            onRefreshFromModal={refreshObjectFromModal}
+                        />
                     }
                 />
             </Container>
             {isLoading ? (
-                <Loading />
+                <Container>
+                    <Skeleton h={28} mb="sm" radius="sm" w="60%" />
+                    <Skeleton h={20} mb="xs" radius="sm" />
+                    <Skeleton h={20} mb="xs" radius="sm" w="80%" />
+                    <Skeleton h={20} mb="xl" radius="sm" w="40%" />
+                    <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
+                        {[...Array(3)].map((_, i) => (
+                            <Skeleton key={i} h={200} radius="md" />
+                        ))}
+                    </SimpleGrid>
+                </Container>
             ) : (
                 <Container>
                     <div className={styles.cardInfo}>
-                        {object && !object.active && (
-                            <Alert color="warning" className="mt-0">
-                                {isClient(object)
-                                    ? TEXTS.WARNING_INACTIVE_CLIENT
-                                    : TEXTS.WARNING_INACTIVE_GROUP}
-                            </Alert>
-                        )}
-                        {object && object.active && isStaleActive(object.last_lecture_date) && (
-                            <Alert
-                                color="warning"
-                                className="mt-0 d-flex align-items-center justify-content-between gap-3 flex-wrap">
-                                <span>
-                                    {isClient(object)
-                                        ? TEXTS.WARNING_STALE_CLIENT
-                                        : TEXTS.WARNING_STALE_GROUP}
-                                </span>
-                                <Button
-                                    color="warning"
-                                    size="sm"
-                                    disabled={
-                                        isClient(object)
-                                            ? deactivateClient.isPending
-                                            : deactivateGroup.isPending
-                                    }
-                                    onClick={handleDeactivate}>
-                                    Přesunout do neaktivních
-                                    {(isClient(object)
-                                        ? deactivateClient.isPending
-                                        : deactivateGroup.isPending) && (
-                                        <FontAwesomeIcon
-                                            icon={faSpinnerThird}
-                                            spin
-                                            className="ms-2"
-                                        />
-                                    )}
-                                </Button>
-                            </Alert>
-                        )}
+                        <Alerts
+                            object={object}
+                            isDeactivatePending={isDeactivatePending}
+                            onDeactivate={handleDeactivate}
+                        />
                     </div>
-                    {isClient(object) && (
-                        <div className="d-flex gap-3 align-items-start mb-3 flex-wrap">
-                            <ListGroup style={{ flex: "0 0 auto", minWidth: 220 }}>
-                                <ListGroupItem>
-                                    <b>Telefon:</b> <ClientPhone phone={object.phone} />
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>E-mail:</b> <ClientEmail email={object.email} />
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>Skupiny:</b>{" "}
-                                    {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
-                                        <span className="text-muted">žádné skupiny</span>
-                                    ) : (
-                                        <ComponentsList
-                                            components={[
-                                                ...groupsOfClient.map((g) => (
-                                                    <GroupName
-                                                        key={g.id}
-                                                        group={g}
-                                                        link
-                                                        showCircle
-                                                        noWrap
-                                                    />
-                                                )),
-                                                ...pastGroups.map((g) => (
-                                                    <span key={g.id} className={styles.pastGroup}>
-                                                        <GroupName
-                                                            group={g}
-                                                            link
-                                                            showCircle
-                                                            noWrap
-                                                        />
-                                                    </span>
-                                                )),
-                                            ]}
-                                        />
-                                    )}
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>Poznámka:</b> <ClientNote note={object.note} />
-                                </ListGroupItem>
-                            </ListGroup>
-                            <div className="flex-grow-1" style={{ minWidth: 0 }}>
-                                <ClientAnalysis
-                                    clientId={id}
-                                    lectures={lecturesFromClientAllQuery.data ?? []}
-                                />
-                            </div>
-                        </div>
+                    {isClientObject(object) && (
+                        <ClientInfo
+                            client={object}
+                            id={id}
+                            groupsOfClient={groupsOfClient}
+                            pastGroups={pastGroups}
+                            lectures={lecturesFromClientAllQuery.data ?? []}
+                        />
                     )}
-                    {isGroup(object) && (
+                    {isGroupObject(object) && (
                         <PrepaidCounters
                             isGroupActive={object.active}
                             memberships={object.memberships}
                         />
                     )}
-                    <h2>Lekce</h2>
-                    <Row className="justify-content-center">
+                    <Title order={2}>Lekce</Title>
+                    <div className={styles.lectureColumns}>
                         {lectures.map((courseLectures) => (
-                            <Col
+                            <div
                                 key={courseLectures.course.id}
-                                sm="10"
-                                md="8"
-                                lg="6"
-                                xl={isGroup(object) ? 5 : 4}
+                                className={classNames(
+                                    styles.lectureColumn,
+                                    !isGroupObject(object) && styles.lectureColumnNarrow,
+                                )}
                                 data-qa="card_course">
-                                <ListGroup>
-                                    <ListGroupItem
-                                        className={styles.courseHeadingItem}
+                                <div className={styles.infoList}>
+                                    <div
+                                        className={classNames(
+                                            styles.infoListItem,
+                                            styles.courseHeadingItem,
+                                        )}
                                         style={assignInlineVars(styles.cardVars, {
                                             courseBackground: courseLectures.course.color,
                                         })}>
                                         <h4
-                                            className={classNames(
-                                                "text-center",
-                                                "mb-0",
-                                                styles.courseHeading,
-                                            )}
+                                            className={`${styles.courseHeading} ${textCenterMb0}`}
                                             data-qa="card_course_name">
                                             {courseLectures.course.name}
                                         </h4>
-                                    </ListGroupItem>
+                                    </div>
                                     {courseLectures.objects.map(renderLecture)}
-                                </ListGroup>
-                            </Col>
+                                </div>
+                            </div>
                         ))}
                         {lectures.length === 0 && (
-                            <p className="text-muted text-center">Žádné lekce</p>
+                            <p className={dimmedTextCenter}>Žádné lekce</p>
                         )}
-                    </Row>
+                    </div>
                 </Container>
             )}
         </>

@@ -1,15 +1,17 @@
 import { style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 export const bankWrapper = style({
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.55rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     overflow: "hidden",
 })
 
 export const bankTitle = style({
-    borderBottom: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    borderBottom: vars.borderShort.default,
     padding: "0.8rem",
 })
 

@@ -1,6 +1,8 @@
 import { Group, Loader, Title } from "@mantine/core"
 import * as React from "react"
 
+import { iconAfterText } from "../global/utility.css"
+
 import * as styles from "./Heading.css"
 
 type Props = {
@@ -30,7 +32,7 @@ const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = 
                     size="xs"
                     type="dots"
                     color="gray"
-                    style={{ marginLeft: "0.5rem", verticalAlign: "middle" }}
+                    className={iconAfterText}
                     data-qa="loading"
                 />
             )}

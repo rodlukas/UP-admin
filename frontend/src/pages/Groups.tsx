@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Alert, Badge, Button, Container, Group, Skeleton, Table, Text } from "@mantine/core"
 import { faHourglassEnd, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
-import { Alert, Badge, Button, Container, Table } from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import { useDeactivateGroups, useInactiveGroups } from "../api/hooks"
@@ -11,14 +11,17 @@ import ClientsList from "../components/ClientsList"
 import CourseName from "../components/CourseName"
 import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
-import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
 import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
+import { iconAfterText, middle } from "../global/utility.css"
 import { areAllMembersActive, isStaleActive } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
+
+import * as styles from "./Groups.css"
+
 /** Stránka se skupinami. */
 const Groups: React.FC = () => {
     const groupsActiveContext = useGroupsActiveContext()
@@ -48,7 +51,12 @@ const Groups: React.FC = () => {
 
     const handleDeactivateAll = (): void => {
         const count = staleGroups.length
-        const label = count === 1 ? "skupinu" : count < 5 ? "skupiny" : "skupin"
+        let label = "skupin"
+        if (count === 1) {
+            label = "skupinu"
+        } else if (count < 5) {
+            label = "skupiny"
+        }
         if (globalThis.confirm(`Opravdu chcete přesunout ${count} ${label} do neaktivních?`)) {
             deactivateGroups.mutate(
                 staleGroups.map((g) => g.id),
@@ -60,6 +68,16 @@ const Groups: React.FC = () => {
         }
     }
 
+    const staleText = React.useMemo(() => {
+        if (staleGroups.length === 1) {
+            return "aktivní skupina nemá"
+        }
+        if (staleGroups.length < 5) {
+            return "aktivní skupiny nemají"
+        }
+        return "aktivních skupin nemá"
+    }, [staleGroups.length])
+
     return (
         <Container>
             <Heading
@@ -67,7 +85,7 @@ const Groups: React.FC = () => {
                     <>
                         {APP_URLS.skupiny.title}{" "}
                         {!isLoading() && (
-                            <Badge color="secondary" pill>
+                            <Badge color="gray" radius="xl">
                                 {getGroupsData().length}
                             </Badge>
                         )}
@@ -87,110 +105,103 @@ const Groups: React.FC = () => {
             />
 
             {active && !groupsActiveContext.isLoading && staleGroups.length > 0 && (
-                <Alert
-                    color="warning"
-                    style={{ width: "fit-content" }}
-                    className="d-flex align-items-center gap-3 flex-wrap mx-auto">
-                    <FontAwesomeIcon icon={faHourglassEnd} />
-                    <span>
-                        {staleGroups.length}{" "}
-                        {staleGroups.length === 1
-                            ? "aktivní skupina nemá"
-                            : staleGroups.length < 5
-                              ? "aktivní skupiny nemají"
-                              : "aktivních skupin nemá"}{" "}
-                        lekci déle než {DAYS_WITHOUT_LECTURE_WARNING} dní.
-                    </span>
-                    <Button
-                        color="warning"
-                        size="sm"
-                        disabled={deactivateGroups.isPending}
-                        onClick={handleDeactivateAll}>
-                        Přesunout do neaktivních
-                        {deactivateGroups.isPending && (
-                            <FontAwesomeIcon icon={faSpinnerThird} spin className="ms-2" />
-                        )}
-                    </Button>
+                <Alert color="yellow" className={styles.staleAlert}>
+                    <Group gap="sm" wrap="wrap">
+                        <FontAwesomeIcon icon={faHourglassEnd} />
+                        <span>
+                            {staleGroups.length} {staleText} lekci déle než{" "}
+                            {DAYS_WITHOUT_LECTURE_WARNING} dní.
+                        </span>
+                        <Button
+                            color="yellow"
+                            size="sm"
+                            disabled={deactivateGroups.isPending}
+                            onClick={handleDeactivateAll}>
+                            Přesunout do neaktivních
+                            {deactivateGroups.isPending && (
+                                <FontAwesomeIcon
+                                    icon={faSpinnerThird}
+                                    spin
+                                    className={iconAfterText}
+                                />
+                            )}
+                        </Button>
+                    </Group>
                 </Alert>
             )}
 
-            {getGroupsData().length > 0 && (
-                <Table striped size="sm" responsive className="table-custom">
-                    <thead className="table-light">
-                        <tr>
-                            <th>Název</th>
-                            <th className="d-none d-sm-table-cell">Kurz</th>
-                            <th>Členové</th>
-                            <th className="text-end text-md-end">Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading() ? (
-                            <tr>
-                                <td colSpan={4}>
-                                    <Loading />
-                                </td>
-                            </tr>
-                        ) : (
-                            <>
-                                {getGroupsData().map((group) => (
-                                    <tr key={group.id} data-qa="group">
-                                        <td>
-                                            <GroupName group={group} link noWrap />
-                                            {group.active &&
-                                                (!areAllMembersActive(group.memberships) ||
-                                                    isStaleActive(group.last_lecture_date)) && (
-                                                    <span className="ms-1 d-inline-flex gap-1 align-items-center">
-                                                        {!areAllMembersActive(
-                                                            group.memberships,
-                                                        ) && (
-                                                            <Tooltip
-                                                                postfix={`Group_ActiveGroupWithInactiveClientAlert_${group.id}`}
-                                                                placement="right"
-                                                                size="1x"
-                                                                text={
-                                                                    TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
-                                                                }
-                                                            />
-                                                        )}
-                                                        {isStaleActive(
-                                                            group.last_lecture_date,
-                                                        ) && (
-                                                            <Tooltip
-                                                                postfix={`Group_StaleActive_${group.id}`}
-                                                                placement="right"
-                                                                size="1x"
-                                                                icon={faHourglassEnd}
-                                                                text={TEXTS.WARNING_STALE_GROUP}
-                                                            />
-                                                        )}
-                                                    </span>
-                                                )}
-                                        </td>
-                                        <td className="d-none d-sm-table-cell">
-                                            <CourseName course={group.course} />
-                                        </td>
-                                        <td>
-                                            <ClientsList memberships={group.memberships} />
-                                        </td>
-                                        <td className="text-end text-md-end">
-                                            <ModalGroups
-                                                currentGroup={group}
-                                                refresh={refreshFromModal}
-                                                source="groups_page"
-                                            />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </>
-                        )}
-                    </tbody>
-                </Table>
-            )}
-            {getGroupsData().length === 0 && !isLoading() && (
-                <p className="text-muted text-center">
+            {isLoading() ? (
+                <div className={styles.tableSection}>
+                    {[...Array(5)].map((_, i) => (
+                        <Skeleton key={i} h={36} mb="xs" radius="sm" />
+                    ))}
+                </div>
+            ) : getGroupsData().length > 0 ? (
+                <Table.ScrollContainer minWidth={400} className={styles.tableSection}>
+                    <Table striped highlightOnHover withTableBorder verticalSpacing="xs">
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>Název</Table.Th>
+                                <Table.Th className={styles.hiddenBelowSm}>Kurz</Table.Th>
+                                <Table.Th>Členové</Table.Th>
+                                <Table.Th ta="right">Akce</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {getGroupsData().map((group) => (
+                                <Table.Tr key={group.id} data-qa="group">
+                                    <Table.Td>
+                                        <GroupName group={group} link noWrap />
+                                        {group.active &&
+                                            (!areAllMembersActive(group.memberships) ||
+                                                isStaleActive(group.last_lecture_date)) && (
+                                                <Group
+                                                    gap={4}
+                                                    display="inline-flex"
+                                                    ml="0.25rem"
+                                                    className={middle}>
+                                                    {!areAllMembersActive(group.memberships) && (
+                                                        <Tooltip
+                                                            placement="right"
+                                                            size="1x"
+                                                            text={
+                                                                TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
+                                                            }
+                                                        />
+                                                    )}
+                                                    {isStaleActive(group.last_lecture_date) && (
+                                                        <Tooltip
+                                                            placement="right"
+                                                            size="1x"
+                                                            icon={faHourglassEnd}
+                                                            text={TEXTS.WARNING_STALE_GROUP}
+                                                        />
+                                                    )}
+                                                </Group>
+                                            )}
+                                    </Table.Td>
+                                    <Table.Td className={styles.hiddenBelowSm}>
+                                        <CourseName course={group.course} />
+                                    </Table.Td>
+                                    <Table.Td>
+                                        <ClientsList memberships={group.memberships} />
+                                    </Table.Td>
+                                    <Table.Td ta="right">
+                                        <ModalGroups
+                                            currentGroup={group}
+                                            refresh={refreshFromModal}
+                                            source="groups_page"
+                                        />
+                                    </Table.Td>
+                                </Table.Tr>
+                            ))}
+                        </Table.Tbody>
+                    </Table>
+                </Table.ScrollContainer>
+            ) : (
+                <Text c="dimmed" ta="center">
                     Žádné {active ? "aktivní" : "neaktivní"} skupiny
-                </p>
+                </Text>
             )}
         </Container>
     )

@@ -1,9 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Alert } from "@mantine/core"
 import { faSpinnerThird, faSyncAlt } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
-import { Alert } from "reactstrap"
 
 import CustomButton from "./buttons/CustomButton"
+import * as styles from "./Loading.css"
 
 const LONG_LOADING_THRESHOLD = 5 // sekundy
 const OVERLONG_LOADING_THRESHOLD = 25 // sekundy
@@ -46,13 +47,27 @@ const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
     }, [])
 
     return (
-        <div className="text-center mt-2" data-qa="loading">
-            <FontAwesomeIcon icon={faSpinnerThird} spin size="3x" />
-            <br />
-            {text}...
-            {loadingState === LOADING_STATE.LONG_LOADING && " Stále pracuji 😎"}
+        <div
+            className={styles.wrapper}
+            data-qa="loading"
+            role="status"
+            aria-live="polite"
+            aria-busy="true">
+            <FontAwesomeIcon
+                icon={faSpinnerThird}
+                spin
+                size="3x"
+                className={styles.spinner}
+                aria-hidden
+            />
+            <p className={styles.text}>
+                {text}...
+                {loadingState === LOADING_STATE.LONG_LOADING && (
+                    <span className={styles.longHint}>Stále pracuji</span>
+                )}
+            </p>
             {loadingState === LOADING_STATE.OVERLONG_LOADING && (
-                <Alert color="warning" className="mt-1">
+                <Alert color="yellow" className={styles.overlongAlert}>
                     <p>
                         ⚠ Načítání trvá příliš dlouho, mohlo dojít k chybě. Zkuste stránku načíst
                         znovu.

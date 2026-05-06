@@ -7,6 +7,7 @@ import APP_URLS from "../APP_URLS"
 import Token from "../auth/Token"
 import Notification from "../components/Notification"
 import { NOTIFY_TEXT } from "../global/constants"
+import { bold, italic } from "../global/utility.css"
 
 import { parseDjangoError } from "./parseDjangoError"
 
@@ -37,8 +38,8 @@ function getErrorMessage(
             <ul>
                 {Object.keys(djangoError).map((field) => (
                     <li key={field}>
-                        <span className="fw-bold">{field}: </span>
-                        <span className="font-italic">{String(djangoError[field])}</span>
+                        <span className={bold}>{field}: </span>
+                        <span className={italic}>{String(djangoError[field])}</span>
                     </li>
                 ))}
             </ul>

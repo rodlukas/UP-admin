@@ -1,16 +1,18 @@
 import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 export const dashboardDayVars = createThemeContract({
     courseBackground: "",
 })
 
 export const lectureGroup = style({
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    backgroundColor: vars.bg.surface,
 })
 
 export const dashboardDayDate = style({
-    borderBottom: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    borderBottom: vars.borderShort.default,
+    backgroundColor: vars.bg.surface,
     padding: "0.8rem 0.85rem",
     color: "light-dark(#0f172a, var(--mantine-color-gray-1))",
 })
@@ -56,10 +58,10 @@ export const lectureFree = style({
 
 export const dashboardDayWrapper = style({
     position: "relative",
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.55rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     overflow: "hidden",
 })
 
@@ -69,7 +71,7 @@ export const floatEnd = style({
 
 export const dashboardDayItem = style({
     transition: "background-color 0.15s ease-in-out",
-    borderTop: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    borderTop: vars.borderShort.default,
     selectors: {
         "&:hover": {
             backgroundColor: "light-dark(rgb(241 245 249 / 0.85), var(--mantine-color-dark-6))",

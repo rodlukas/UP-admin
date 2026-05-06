@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Alert, Badge, Button, Container, Group, Skeleton, Table, Text } from "@mantine/core"
 import { faHourglassEnd, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
-import { Alert, Badge, Button, Container, Table } from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import { useDeactivateClients, useInactiveClients } from "../api/hooks"
@@ -12,14 +12,17 @@ import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
 import Heading from "../components/Heading"
-import Loading from "../components/Loading"
 import Tooltip from "../components/Tooltip"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
+import { iconAfterText } from "../global/utility.css"
 import { isStaleActive } from "../global/utils"
 import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
+
+import * as styles from "./Clients.css"
+
 /** Stránka s klienty. */
 const Clients: React.FC = () => {
     const clientsActiveContext = useClientsActiveContext()
@@ -50,7 +53,12 @@ const Clients: React.FC = () => {
 
     const handleDeactivateAll = (): void => {
         const count = staleClients.length
-        const label = count === 1 ? "klienta" : count < 5 ? "klienty" : "klientů"
+        let label = "klientů"
+        if (count === 1) {
+            label = "klienta"
+        } else if (count < 5) {
+            label = "klienty"
+        }
         if (globalThis.confirm(`Opravdu chcete přesunout ${count} ${label} do neaktivních?`)) {
             deactivateClients.mutate(
                 staleClients.map((c) => c.id),
@@ -62,6 +70,16 @@ const Clients: React.FC = () => {
         }
     }
 
+    const staleText = React.useMemo(() => {
+        if (staleClients.length === 1) {
+            return "aktivní klient nemá"
+        }
+        if (staleClients.length < 5) {
+            return "aktivní klienti nemají"
+        }
+        return "aktivních klientů nemá"
+    }, [staleClients.length])
+
     return (
         <Container>
             <Heading
@@ -69,7 +87,7 @@ const Clients: React.FC = () => {
                     <>
                         {APP_URLS.klienti.title}{" "}
                         {!isLoading() && (
-                            <Badge color="secondary" pill>
+                            <Badge color="gray" radius="xl">
                                 {getClientsData().length}
                             </Badge>
                         )}
@@ -88,100 +106,90 @@ const Clients: React.FC = () => {
                 }
             />
             {active && !clientsActiveContext.isLoading && staleClients.length > 0 && (
-                <Alert
-                    color="warning"
-                    style={{ width: "fit-content" }}
-                    className="d-flex align-items-center gap-3 flex-wrap mx-auto">
-                    <FontAwesomeIcon icon={faHourglassEnd} />
-                    <span>
-                        {staleClients.length}{" "}
-                        {staleClients.length === 1
-                            ? "aktivní klient nemá"
-                            : staleClients.length < 5
-                              ? "aktivní klienti nemají"
-                              : "aktivních klientů nemá"}{" "}
-                        lekci déle než {DAYS_WITHOUT_LECTURE_WARNING} dní.
-                    </span>
-                    <Button
-                        color="warning"
-                        size="sm"
-                        disabled={deactivateClients.isPending}
-                        onClick={handleDeactivateAll}>
-                        Přesunout do neaktivních
-                        {deactivateClients.isPending && (
-                            <FontAwesomeIcon icon={faSpinnerThird} spin className="ms-2" />
-                        )}
-                    </Button>
+                <Alert color="yellow" className={styles.staleAlert}>
+                    <Group gap="sm" wrap="wrap">
+                        <FontAwesomeIcon icon={faHourglassEnd} />
+                        <span>
+                            {staleClients.length} {staleText} lekci déle než{" "}
+                            {DAYS_WITHOUT_LECTURE_WARNING} dní.
+                        </span>
+                        <Button
+                            color="yellow"
+                            size="sm"
+                            disabled={deactivateClients.isPending}
+                            onClick={handleDeactivateAll}>
+                            Přesunout do neaktivních
+                            {deactivateClients.isPending && (
+                                <FontAwesomeIcon
+                                    icon={faSpinnerThird}
+                                    spin
+                                    className={iconAfterText}
+                                />
+                            )}
+                        </Button>
+                    </Group>
                 </Alert>
             )}
-            {getClientsData().length > 0 && (
-                <Table striped size="sm" responsive className="table-custom">
-                    <thead className="table-light">
-                        <tr>
-                            <th>Příjmení a jméno</th>
-                            <th className="d-none d-md-table-cell">Telefon</th>
-                            <th
-                                style={{ wordBreak: "keep-all" }}
-                                className="d-none d-md-table-cell">
-                                E-mail
-                            </th>
-                            <th className="d-none d-sm-table-cell">Poznámka</th>
-                            <th className="text-end text-md-end">Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading() ? (
-                            <tr>
-                                <td colSpan={5}>
-                                    <Loading />
-                                </td>
-                            </tr>
-                        ) : (
-                            <>
-                                {getClientsData().map((client) => (
-                                    <tr key={client.id} data-qa="client">
-                                        <td style={{ minWidth: "13em", width: "13em" }}>
-                                            <ClientName client={client} link />{" "}
-                                            {client.active &&
-                                                isStaleActive(client.last_lecture_date) && (
-                                                    <Tooltip
-                                                        postfix={`Client_StaleActive_${client.id}`}
-                                                        placement="right"
-                                                        size="1x"
-                                                        icon={faHourglassEnd}
-                                                        text={TEXTS.WARNING_STALE_CLIENT}
-                                                    />
-                                                )}
-                                        </td>
-                                        <td
-                                            style={{ minWidth: "7em" }}
-                                            className="d-none d-md-table-cell">
-                                            <ClientPhone phone={client.phone} />
-                                        </td>
-                                        <td className="d-none d-md-table-cell">
-                                            <ClientEmail email={client.email} />
-                                        </td>
-                                        <td className="d-none d-sm-table-cell">
-                                            <ClientNote note={client.note} />
-                                        </td>
-                                        <td className="text-end text-md-end">
-                                            <ModalClients
-                                                currentClient={client}
-                                                refresh={refreshFromModal}
-                                                source="clients_page"
-                                            />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </>
-                        )}
-                    </tbody>
-                </Table>
-            )}
-            {getClientsData().length === 0 && !isLoading() && (
-                <p className="text-muted text-center">
+            {isLoading() ? (
+                <div className={styles.tableSection}>
+                    {[...Array(6)].map((_, i) => (
+                        <Skeleton key={i} h={36} mb="xs" radius="sm" />
+                    ))}
+                </div>
+            ) : getClientsData().length > 0 ? (
+                <Table.ScrollContainer minWidth={560} className={styles.tableSection}>
+                    <Table striped highlightOnHover withTableBorder verticalSpacing="xs">
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>Příjmení a jméno</Table.Th>
+                                <Table.Th className={styles.hiddenBelowMd}>Telefon</Table.Th>
+                                <Table.Th className={`${styles.emailHeader} ${styles.hiddenBelowMd}`}>
+                                    E-mail
+                                </Table.Th>
+                                <Table.Th className={styles.hiddenBelowSm}>Poznámka</Table.Th>
+                                <Table.Th ta="right">Akce</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {getClientsData().map((client) => (
+                                <Table.Tr key={client.id} data-qa="client">
+                                    <Table.Td className={styles.nameCell}>
+                                        <ClientName client={client} link />{" "}
+                                        {client.active &&
+                                            isStaleActive(client.last_lecture_date) && (
+                                                <Tooltip
+                                                    placement="right"
+                                                    size="1x"
+                                                    icon={faHourglassEnd}
+                                                    text={TEXTS.WARNING_STALE_CLIENT}
+                                                />
+                                            )}
+                                    </Table.Td>
+                                    <Table.Td className={`${styles.phoneCell} ${styles.hiddenBelowMd}`}>
+                                        <ClientPhone phone={client.phone} />
+                                    </Table.Td>
+                                    <Table.Td className={styles.hiddenBelowMd}>
+                                        <ClientEmail email={client.email} />
+                                    </Table.Td>
+                                    <Table.Td className={styles.hiddenBelowSm}>
+                                        <ClientNote note={client.note} />
+                                    </Table.Td>
+                                    <Table.Td ta="right">
+                                        <ModalClients
+                                            currentClient={client}
+                                            refresh={refreshFromModal}
+                                            source="clients_page"
+                                        />
+                                    </Table.Td>
+                                </Table.Tr>
+                            ))}
+                        </Table.Tbody>
+                    </Table>
+                </Table.ScrollContainer>
+            ) : (
+                <Text c="dimmed" ta="center">
                     Žádní {active ? "aktivní" : "neaktivní"} klienti
-                </p>
+                </Text>
             )}
         </Container>
     )

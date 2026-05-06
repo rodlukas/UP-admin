@@ -1,17 +1,5 @@
+import { Checkbox, Group, Modal, SimpleGrid, Textarea, TextInput, Title } from "@mantine/core"
 import * as React from "react"
-import {
-    Alert,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Label,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-} from "reactstrap"
 
 import { AnalyticsSource, trackEvent } from "../analytics"
 import { useCreateClient, useDeleteClient, useUpdateClient } from "../api/hooks"
@@ -25,6 +13,8 @@ import { capitalizeString, prettyPhone } from "../global/utils"
 import { ModalClientsData } from "../types/components"
 import { ClientPostApiDummy, ClientType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
+import * as styles from "./FormBase.css"
 
 type Props = {
     /** Klient. */
@@ -49,48 +39,40 @@ const FormClients: React.FC<Props> = (props) => {
     const updateClient = useUpdateClient()
     const deleteClient = useDeleteClient()
 
-    /** Křestní jméno klienta. */
     const [firstname, setFirstname] = React.useState(props.client.firstname)
-    /** Příjmení klienta. */
     const [surname, setSurname] = React.useState(props.client.surname)
-    /** E-mail klienta. */
     const [email, setEmail] = React.useState(props.client.email)
-    /** Telefonní číslo klienta. */
     const [phone, setPhone] = React.useState(prettyPhone(props.client.phone))
-    /** Poznámka ke klientovi. */
     const [note, setNote] = React.useState(props.client.note)
-    /** Klient je aktivní (true). */
     const [active, setActive] = React.useState(props.client.active)
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         props.setFormDirty()
         const target = e.currentTarget
-        let value = target.type === "checkbox" ? target.checked : target.value
-        // pri psani rozdeluj cislo na trojice
+        const value = target.value
         if (target.id === "phone") {
-            value = (value as string)
-                .replace(/([0-9]{3})([^\s])/, "$1 $2")
-                .replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
-            setPhone(value)
-        }
-        // nastav velke pocatecni pismeno ve jmenu i prijmeni klienta
-        else if (target.id === "firstname") {
-            value = capitalizeString(value as string)
-            setFirstname(value)
+            const formatted = value
+                .replace(/(\d{3})([^\s])/, "$1 $2")
+                .replace(/(\d{3}) (\d{3})([^\s])/, "$1 $2 $3")
+            setPhone(formatted)
+        } else if (target.id === "firstname") {
+            setFirstname(capitalizeString(value))
         } else if (target.id === "surname") {
-            value = capitalizeString(value as string)
-            setSurname(value)
+            setSurname(capitalizeString(value))
         } else if (target.id === "email") {
-            setEmail(value as string)
+            setEmail(value)
         } else if (target.id === "note") {
-            setNote(value as string)
-        } else if (target.id === "active") {
-            setActive(value as boolean)
+            setNote(value)
         }
     }
 
+    const onActiveChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        props.setFormDirty()
+        setActive(e.currentTarget.checked)
+    }
+
     const onSubmit = React.useCallback(
-        (e: React.FormEvent<HTMLFormElement>): void => {
+        (e: React.SyntheticEvent<HTMLFormElement>): void => {
             // stopPropagation, aby nedoslo k propagaci submit na nadrazene formulare pri vnoreni modalnich oken
             e.stopPropagation()
             e.preventDefault()
@@ -140,157 +122,140 @@ const FormClients: React.FC<Props> = (props) => {
 
     const isSubmit = createClient.isPending || updateClient.isPending
     return (
-        <Form onSubmit={onSubmit} data-qa="form_client">
-            <ModalHeader toggle={close}>
-                {isClient(props.client) ? "Úprava" : "Přidání"} klienta:{" "}
-                <ClientName client={{ firstname, surname }} bold />
-            </ModalHeader>
-            <ModalBody>
-                <FormGroup row className="form-group-required">
-                    <Label for="firstname" sm={2}>
-                        Jméno
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="text"
-                            id="firstname"
-                            value={firstname}
-                            onChange={onChange}
-                            required
-                            autoFocus
-                            data-qa="client_field_firstname"
-                            spellCheck
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row className="form-group-required">
-                    <Label for="surname" sm={2}>
-                        Příjmení
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="text"
-                            id="surname"
-                            value={surname}
-                            onChange={onChange}
-                            required
-                            data-qa="client_field_surname"
-                            spellCheck
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="email" sm={2}>
-                        Email
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={onChange}
-                            data-qa="client_field_email"
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="phone" sm={2}>
-                        Telefon
-                    </Label>
-                    <Col sm={10}>
-                        <InputGroup>
-                            <InputGroupText>
-                                <Label for="phone">+420</Label>
-                            </InputGroupText>
-                            <Input
-                                type="tel"
-                                id="phone"
-                                value={phone}
-                                maxLength={11}
-                                onChange={onChange}
-                                pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
-                                data-qa="client_field_phone"
-                            />
-                        </InputGroup>
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="note" sm={2}>
-                        Poznámka
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="textarea"
-                            id="note"
-                            value={note}
-                            onChange={onChange}
-                            data-qa="client_field_note"
-                            spellCheck
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row className="align-items-center">
-                    <Label for="active" sm={2} data-qa="client_label_active">
-                        Aktivní
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="checkbox"
-                            id="active"
-                            checked={active}
-                            onChange={onChange}
-                            data-qa="client_checkbox_active"
-                        />
-                        <Label for="active" check>
-                            Je aktivní
-                        </Label>{" "}
-                        {!active && (
-                            <Tooltip postfix="active" text={TEXTS.WARNING_INACTIVE_CLIENT_INFO} />
-                        )}
-                    </Col>
-                </FormGroup>
-                {isClient(props.client) && (
-                    <>
-                        <hr />
-                        <FormGroup row>
-                            <Label sm={2} className="text-muted">
-                                Smazání
-                            </Label>
-                            <Col sm={10}>
-                                <Alert color="warning">
-                                    <p>
-                                        Klienta lze smazat pouze pokud nemá žádné lekce, smažou se
-                                        také všechny jeho zájmy o kurzy a členství ve skupinách
-                                    </p>
-                                    <DeleteButton
-                                        content="klienta"
-                                        onClick={(): void => {
-                                            if (
-                                                isClient(props.client) &&
-                                                globalThis.confirm(
-                                                    `Opravdu chcete smazat klienta ${firstname} ${surname}?`,
-                                                )
-                                            ) {
-                                                handleDelete(props.client.id)
-                                            }
-                                        }}
-                                        data-qa="button_delete_client"
+        <form onSubmit={onSubmit} data-qa="form_client">
+            <Modal.Header>
+                <Modal.Title>
+                    {isClient(props.client) ? "Úprava" : "Přidání"} klienta:{" "}
+                    <ClientName client={{ firstname, surname }} bold />
+                </Modal.Title>
+                <Modal.CloseButton />
+            </Modal.Header>
+            <Modal.Body>
+                <div className={styles.formContent}>
+                    <div className={styles.formSection}>
+                        <Title order={6} className={styles.formSectionTitle}>Základní údaje</Title>
+                        <div className={styles.fieldStack}>
+                            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                                <div className={styles.fieldBlock}>
+                                    <TextInput
+                                        id="firstname"
+                                        value={firstname}
+                                        onChange={onChange}
+                                        label="Jméno"
+                                        required
+                                        
+                                        data-autofocus
+                                        data-qa="client_field_firstname"
+                                        spellCheck
                                     />
-                                </Alert>
-                            </Col>
-                        </FormGroup>
-                    </>
+                                </div>
+                                <div className={styles.fieldBlock}>
+                                    <TextInput
+                                        id="surname"
+                                        value={surname}
+                                        onChange={onChange}
+                                        label="Příjmení"
+                                        required
+                                        
+                                        data-qa="client_field_surname"
+                                        spellCheck
+                                    />
+                                </div>
+                            </SimpleGrid>
+                            <div className={styles.fieldBlock}>
+                                <TextInput
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    onChange={onChange}
+                                    label="Email"
+                                    data-qa="client_field_email"
+                                />
+                            </div>
+                            <div className={styles.fieldBlock}>
+                                <TextInput
+                                    type="tel"
+                                    id="phone"
+                                    value={phone}
+                                    maxLength={11}
+                                    onChange={onChange}
+                                    label="Telefon"
+                                    description="Formát: 123 456 789"
+                                    pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
+                                    data-qa="client_field_phone"
+                                    leftSection={<span>+420</span>}
+                                />
+                            </div>
+                            <div className={styles.fieldBlock}>
+                                <Textarea
+                                    id="note"
+                                    value={note}
+                                    onChange={onChange}
+                                    label="Poznámka"
+                                    data-qa="client_field_note"
+                                    spellCheck
+                                    minRows={3}
+                                />
+                            </div>
+                            <div className={styles.fieldBlock}>
+                                <label
+                                    htmlFor="active"
+                                    data-qa="client_label_active"
+                                    className={styles.fieldLabel}>
+                                    Stav klienta
+                                </label>
+                                <div className={styles.inlineCheckboxRow}>
+                                    <Checkbox
+                                        id="active"
+                                        checked={active}
+                                        onChange={onActiveChange}
+                                        data-qa="client_checkbox_active"
+                                        label="Je aktivní"
+                                    />
+                                    {!active && (
+                                        <Tooltip text={TEXTS.WARNING_INACTIVE_CLIENT_INFO} />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {isClient(props.client) && (
+                    <div className={`${styles.formSection} ${styles.formSectionDanger}`}>
+                        <Title order={6} className={styles.formSectionTitle}>Smazání</Title>
+                        <div className={styles.deleteAlertText}>
+                            <p>
+                                Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také
+                                všechny jeho zájmy o kurzy a členství ve skupinách.
+                            </p>
+                            <DeleteButton
+                                size="sm"
+                                content="klienta"
+                                onClick={(): void => {
+                                    if (
+                                        isClient(props.client) &&
+                                        globalThis.confirm(
+                                            `Opravdu chcete smazat klienta ${firstname} ${surname}?`,
+                                        )
+                                    ) {
+                                        handleDelete(props.client.id)
+                                    }
+                                }}
+                                data-qa="button_delete_client"
+                            />
+                        </div>
+                    </div>
                 )}
-            </ModalBody>
-            <ModalFooter>
-                <CancelButton onClick={close} />{" "}
+                </div>
+            </Modal.Body>
+            <Group justify="flex-end" px="md" pb="md" className={styles.modalActions}>
+                <CancelButton onClick={close} />
                 <SubmitButton
                     loading={isSubmit}
                     data-qa="button_submit_client"
                     content={isClient(props.client) ? "Uložit" : "Přidat"}
                 />
-            </ModalFooter>
-        </Form>
+            </Group>
+        </form>
     )
 }
 

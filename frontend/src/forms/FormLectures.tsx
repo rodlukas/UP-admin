@@ -1,26 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Alert, Checkbox, Grid, Group, Modal, Select, TextInput, Title, Tooltip } from "@mantine/core"
 import {
     faCalendarAlt,
     faClipboardList,
     faClock,
     faHourglass,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import classNames from "classnames"
 import * as React from "react"
-import {
-    Alert,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Label,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    UncontrolledAlert,
-} from "reactstrap"
 
 import { AnalyticsSource, trackEvent } from "../analytics"
 import { useCreateLecture, useDeleteLecture, useUpdateLecture } from "../api/hooks"
@@ -30,8 +16,7 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import GroupName from "../components/GroupName"
 import Loading from "../components/Loading"
-import Tooltip from "../components/Tooltip"
-import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
+import Tooltip2 from "../components/Tooltip"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import {
@@ -40,6 +25,7 @@ import {
     TEXTS,
 } from "../global/constants"
 import { prettyDateWithLongDayYear, toISODate, toISOTime } from "../global/funcDateTime"
+import { dimmedTextCenter } from "../global/utility.css"
 import { DefaultValuesForLecture } from "../global/utils"
 import {
     AttendancePostApi,
@@ -57,8 +43,8 @@ import {
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
+import * as baseStyles from "./FormBase.css"
 import * as styles from "./FormLectures.css"
-import CustomInputWrapper from "./helpers/CustomInputWrapper"
 import SelectCourse from "./helpers/SelectCourse"
 
 /** ID klienta: ID stavu účasti. */
@@ -104,7 +90,7 @@ const FormLectures: React.FC<Props> = (props) => {
 
     const isLecture = (lecture: Props["lecture"]): lecture is LectureType => "id" in lecture
 
-    const isPrepaid = (start: Props["lecture"]["start"]): start is string => start === null
+    const isPrepaid = (start: Props["lecture"]["start"]): start is null => start === null
 
     const isLectureWithDate = (lecture: Props["lecture"]): lecture is LectureTypeWithDate =>
         isLecture(lecture) && !isPrepaid(lecture.start)
@@ -119,11 +105,9 @@ const FormLectures: React.FC<Props> = (props) => {
     }
 
     const getMembers = React.useCallback((memberships: { client: ClientType }[]): ClientType[] => {
-        // map se provadi nad hodnotami MembershipType | AttendanceType
         return memberships.map((member) => member.client)
     }, [])
 
-    /** Klienti účastnící se lekce. */
     const members = React.useMemo(() => {
         if (isClient(props.object)) {
             return [props.object]
@@ -135,13 +119,11 @@ const FormLectures: React.FC<Props> = (props) => {
     }, [props.object, props.lecture, getMembers])
 
     const computeDuration = React.useCallback((): LectureType["duration"] => {
-        // pokud je to klient a mame vypocitany nejpravdepodobnejsi kurz, pouzij ho, jinak default
         if (isClient(props.object)) {
             return props.defaultValuesForLecture?.course
                 ? props.defaultValuesForLecture.course.duration
                 : DEFAULT_LECTURE_DURATION_SINGLE
         }
-        // je to skupina
         return DEFAULT_LECTURE_DURATION_GROUP
     }, [props.object, props.defaultValuesForLecture])
 
@@ -149,12 +131,10 @@ const FormLectures: React.FC<Props> = (props) => {
         const attendanceStates = attendanceStatesContext.attendancestates
         if (attendanceStates.length) {
             const res = attendanceStates.find((elem) => elem.default === true)
-            if (res !== undefined) {
-                return res.id
-            } else {
-                // pokud pole neni prazdne, ale zadny stav neni vychozi, vrat prvni prvek
+            if (res === undefined) {
                 return attendanceStates[0].id
             }
+            return res.id
         }
         return undefined
     }, [attendanceStatesContext.attendancestates])
@@ -222,21 +202,14 @@ const FormLectures: React.FC<Props> = (props) => {
     )
     const initialAtNote = React.useMemo(() => createNoteObjects(), [createNoteObjects])
 
-    /** Objekt držící stavy účasti k jednotlivým klientům. */
     const [atState, setAtState] = React.useState<AtStateWithEmpty | AtState>(initialAtState)
-    /** Objekt držící zaplacenost (true) k jednotlivým klientům. */
     const [atPaid, setAtPaid] = React.useState<AtPaid>(initialAtPaid)
-    /** Objekt držící poznámky k jednotlivým klientům. */
     const [atNote, setAtNote] = React.useState<AtNote>(initialAtNote)
-    /** Lekce je předplacená (true). */
     const [prepaid, setPrepaid] = React.useState(isPrepaid(props.lecture.start))
-    /** Lekce je zrušená (true). */
     const [canceled, setCanceled] = React.useState(props.lecture.canceled || false)
-    /** Předchozí hodnota zrušení lekce (než bylo automaticky nastaveno). */
     const [canceledPrevious, setCanceledPrevious] = React.useState<
         LecturePostApiDummy["canceled"] | undefined
     >(undefined)
-    /** Datum lekce. */
     const [date, setDate] = React.useState(() => {
         if (isLectureWithDate(props.lecture)) {
             return toISODate(new Date(props.lecture.start))
@@ -249,7 +222,6 @@ const FormLectures: React.FC<Props> = (props) => {
         }
         return ""
     })
-    /** Čas lekce. */
     const [time, setTime] = React.useState(() => {
         if (isLectureWithDate(props.lecture)) {
             return toISOTime(new Date(props.lecture.start))
@@ -259,7 +231,6 @@ const FormLectures: React.FC<Props> = (props) => {
         }
         return ""
     })
-    /** Kurz lekce. */
     const [course, setCourse] = React.useState<LecturePostApiDummy["course"]>(() => {
         if (isLecture(props.lecture)) {
             return props.lecture.course
@@ -273,7 +244,6 @@ const FormLectures: React.FC<Props> = (props) => {
             return props.object.course
         }
     })
-    /** Trvání lekce. */
     const [duration, setDuration] = React.useState<LecturePostApiDummy["duration"] | undefined>(
         () => {
             if (isLecture(props.lecture)) {
@@ -282,19 +252,14 @@ const FormLectures: React.FC<Props> = (props) => {
             return computeDuration()
         },
     )
-    /** Zrušení lekce není možné upravit (true). */
     const [canceledDisabled, setCanceledDisabled] = React.useState(false)
-    /** Formulář byl odeslán (true). */
     const [isSubmit, setIsSubmit] = React.useState(false)
-    /** Počet přidávaných předplacených lekcí. */
     const [prepaidCnt, setPrepaidCnt] = React.useState(1)
 
-    // Update atState when attendance states change
     React.useEffect(() => {
         setAtState(createAttendanceStateObjects())
     }, [createAttendanceStateObjects])
 
-    // zaridi, ze se nastavi disabled checkbox Zruseno pokud jsou vsichni omluveni a pripadne zpet vrati puvodni hodnotu
     const checkDisabledCanceled = React.useCallback((): void => {
         const clientCnt = Object.keys(atState).length
         if (clientCnt === 0) {
@@ -304,22 +269,18 @@ const FormLectures: React.FC<Props> = (props) => {
         const excusedId = getExcusedStateIndex()
         for (const [, val] of Object.entries(atState)) {
             if (val === excusedId) {
-                // ve state je String
                 excusedCnt++
             }
         }
         if (clientCnt === excusedCnt) {
-            // vsichni jsou omluveni, lekce nejde zrusit
             setCanceledPrevious(canceled)
             setCanceled(true)
             setCanceledDisabled(true)
         } else {
             if (canceledDisabled) {
-                // vsichni uz nejsou omluveni (ale byli), hodnotu checkboxu vrat na puvodni
                 setCanceled(Boolean(canceledPrevious))
                 setCanceledPrevious(undefined)
             }
-            // uz neni potreba aby byl checkbox Zruseno disabled
             setCanceledDisabled(false)
         }
     }, [atState, getExcusedStateIndex, canceled, canceledDisabled, canceledPrevious])
@@ -348,19 +309,11 @@ const FormLectures: React.FC<Props> = (props) => {
             props.setFormDirty()
             const target = e.currentTarget
             const id = Number(target.dataset.id)
-            let value: boolean | string | number =
+            const value: boolean | string =
                 target.type === "checkbox" ? target.checked : target.value
-            if (target.name === "atState") {
-                value = Number(value)
-            }
-            const nameStateAttr = target.name as "atState" | "atPaid" | "atNote"
+            const nameStateAttr = target.name as "atPaid" | "atNote"
 
-            if (nameStateAttr === "atState") {
-                setAtState((prev) => ({
-                    ...prev,
-                    [id]: value as AttendanceType["attendancestate"],
-                }))
-            } else if (nameStateAttr === "atPaid") {
+            if (nameStateAttr === "atPaid") {
                 setAtPaid((prev) => ({ ...prev, [id]: value as boolean }))
             } else if (nameStateAttr === "atNote") {
                 setAtNote((prev) => ({ ...prev, [id]: value as string }))
@@ -431,7 +384,7 @@ const FormLectures: React.FC<Props> = (props) => {
                         (elem) => elem.client.id === member.id,
                     )
                     if (attendanceId === undefined) {
-                        throw Error("Nepodařilo se dohledat ID účasti")
+                        throw new Error("Nepodařilo se dohledat ID účasti")
                     }
                     const attendancesDataPut = {
                         ...attendancesDataPost,
@@ -443,14 +396,14 @@ const FormLectures: React.FC<Props> = (props) => {
                 }
             })
         } else {
-            throw Error("Některý z účastníků nemá definovaný stav účasti")
+            throw new Error("Některý z účastníků nemá definovaný stav účasti")
         }
         return attendances
     }, [atState, atPaid, atNote, members, props.lecture])
 
     const onSubmit = React.useCallback(
         (
-            e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
+            e: React.SyntheticEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
             refreshClients = false,
         ): void => {
             e.preventDefault()
@@ -482,8 +435,6 @@ const FormLectures: React.FC<Props> = (props) => {
                 const attendances = getAttendancesSubmit<AttendancePostApi>()
                 const dataPost: LecturePostApi = { ...data, attendances }
 
-                // pridava se lekce
-                // pokud je predplacena, vytvor pole s prislusnym poctem lekci a posli ho
                 if (prepaid) {
                     const dataArray: LecturePostApi[] = []
                     let tmp = prepaidCnt
@@ -502,7 +453,6 @@ const FormLectures: React.FC<Props> = (props) => {
                         },
                     })
                 } else {
-                    // jinak posli pouze lekci
                     setIsSubmit(true)
                     createLecture.mutate(dataPost, {
                         onSuccess: () => {
@@ -550,263 +500,253 @@ const FormLectures: React.FC<Props> = (props) => {
     const isLoading = coursesVisibleContext.isLoading || attendanceStatesContext.isLoading
 
     return (
-        <Form onSubmit={onSubmit} data-qa="form_lecture">
-            <ModalHeader toggle={close}>
-                {isLecture(props.lecture) ? "Úprava" : "Přidání"} lekce{" "}
-                {isClient(props.object) ? "klienta" : "skupiny"}:{" "}
-                {isClient(props.object) ? (
-                    <ClientName client={props.object} bold />
-                ) : (
-                    <GroupName group={props.object} bold />
-                )}
-            </ModalHeader>
-            <ModalBody>
+        <form onSubmit={onSubmit} data-qa="form_lecture">
+            <Modal.Header>
+                <Modal.Title>
+                    {isLecture(props.lecture) ? "Úprava" : "Přidání"} lekce{" "}
+                    {isClient(props.object) ? "klienta" : "skupiny"}:{" "}
+                    {isClient(props.object) ? (
+                        <ClientName client={props.object} bold />
+                    ) : (
+                        <GroupName group={props.object} bold />
+                    )}
+                </Modal.Title>
+                <Modal.CloseButton />
+            </Modal.Header>
+            <Modal.Body>
                 {isLoading ? (
                     <Loading />
                 ) : (
                     <>
-                        <FormGroup
-                            row
-                            className={classNames("align-items-center", styles.formGroup)}>
-                            <Col sm={4}>
-                                {isClient(props.object) && (
-                                    <>
-                                        <Input
-                                            type="checkbox"
-                                            id="prepaid"
-                                            checked={prepaid}
-                                            onChange={(
-                                                e: React.ChangeEvent<HTMLInputElement>,
-                                            ): void => {
-                                                onChangePrepaid()
-                                                onChange(e)
-                                            }}
-                                            className={styles.prepaidCheckbox}
+                        <div className={styles.sectionCard}>
+                            <Title order={5} className={styles.sectionTitle}>Parametry lekce</Title>
+                            <Grid align="center" mb="sm" className={styles.formGroup}>
+                                <Grid.Col span={{ base: 12, sm: 4 }}>
+                                    {isClient(props.object) && (
+                                        <Group gap="xs" align="center">
+                                            <Checkbox
+                                                id="prepaid"
+                                                checked={prepaid}
+                                                onChange={(e): void => {
+                                                    onChangePrepaid()
+                                                    onChange(e)
+                                                }}
+                                                label="Předplaceno"
+                                            />
+                                            {!isLecture(props.lecture) && (
+                                                <TextInput
+                                                    type="number"
+                                                    className={styles.prepaidLectureCnt}
+                                                    disabled={!prepaid}
+                                                    id="prepaidCnt"
+                                                    value={prepaidCnt}
+                                                    required={prepaid}
+                                                    onChange={onChange}
+                                                    min="1"
+                                                />
+                                            )}
+                                        </Group>
+                                    )}
+                                </Grid.Col>
+                                <Grid.Col span={{ base: 12, sm: 4 }}>
+                                    <Tooltip label="Datum" withinPortal zIndex={1300}>
+                                        <TextInput
+                                            label="Datum"
+                                            type="date"
+                                            id="date"
+                                            value={date}
+                                            disabled={prepaid}
+                                            onChange={onChange}
+                                            required={!prepaid}
+                                            pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+                                            max="2099-12-31"
+                                            min="2013-01-01"
+                                            placeholder="yyyy-mm-dd"
+                                            data-qa="lecture_field_date"
+                                            leftSection={
+                                                <label htmlFor="date">
+                                                    <FontAwesomeIcon
+                                                        icon={faCalendarAlt}
+                                                        fixedWidth
+                                                    />
+                                                </label>
+                                            }
                                         />
-                                        <Label for="prepaid" check>
-                                            Předplaceno
-                                        </Label>
-                                        {!isLecture(props.lecture) && (
-                                            <Input
-                                                type="number"
-                                                className={styles.prepaidLectureCnt}
-                                                disabled={!prepaid}
-                                                id="prepaidCnt"
-                                                value={prepaidCnt}
-                                                required={prepaid}
-                                                onChange={onChange}
-                                                min="1"
+                                    </Tooltip>
+                                </Grid.Col>
+                                <Grid.Col span={{ base: 12, sm: 4 }}>
+                                    <Tooltip label="Čas začátku" withinPortal zIndex={1300}>
+                                        <TextInput
+                                            label="Čas začátku"
+                                            type="time"
+                                            id="time"
+                                            value={time}
+                                            disabled={prepaid}
+                                            onChange={onChange}
+                                            required={!prepaid}
+                                            placeholder="hh:mm"
+                                            data-qa="lecture_field_time"
+                                            leftSection={
+                                                <label htmlFor="time">
+                                                    <FontAwesomeIcon icon={faClock} fixedWidth />
+                                                </label>
+                                            }
+                                        />
+                                    </Tooltip>
+                                </Grid.Col>
+                            </Grid>
+                            <Grid align="center" mb="sm" className={styles.formGroup}>
+                                <Grid.Col span={{ base: 12, sm: 4 }}>
+                                    <Group gap="xs" align="center">
+                                        <Checkbox
+                                            id="canceled"
+                                            checked={canceled}
+                                            onChange={onChange}
+                                            disabled={canceledDisabled}
+                                            data-qa="lecture_checkbox_canceled"
+                                            label={
+                                                <span data-qa="lecture_label_canceled">Zrušeno</span>
+                                            }
+                                        />
+                                        {canceledDisabled && (
+                                            <Tooltip2
+                                                text={
+                                                    <>
+                                                        Na tuto lekci nemá nikdo přijít, proto je
+                                                        automaticky zrušená.
+                                                        <br />
+                                                        Toto lze změnit jen když má přijít alespoň
+                                                        jeden klient.
+                                                    </>
+                                                }
                                             />
                                         )}
-                                    </>
-                                )}
-                            </Col>
-                            <Col sm={4}>
-                                <InputGroup id="FormLectures_Date">
-                                    <InputGroupText>
-                                        <Label for="date">
-                                            <FontAwesomeIcon icon={faCalendarAlt} fixedWidth />
-                                        </Label>
-                                    </InputGroupText>
-                                    <Input
-                                        type="date"
-                                        id="date"
-                                        value={date}
-                                        disabled={prepaid}
-                                        onChange={onChange}
-                                        required={!prepaid}
-                                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-                                        max="2099-12-31"
-                                        min="2013-01-01"
-                                        placeholder="yyyy-mm-dd"
-                                        data-qa="lecture_field_date"
-                                    />
-                                </InputGroup>
-                                <UncontrolledTooltipWrapper target="FormLectures_Date">
-                                    Datum
-                                </UncontrolledTooltipWrapper>
-                            </Col>
-                            <Col sm={4}>
-                                <InputGroup id="FormLectures_Time">
-                                    <InputGroupText>
-                                        <Label for="time">
-                                            <FontAwesomeIcon icon={faClock} fixedWidth />
-                                        </Label>
-                                    </InputGroupText>
-                                    <Input
-                                        type="time"
-                                        id="time"
-                                        value={time}
-                                        disabled={prepaid}
-                                        onChange={onChange}
-                                        required={!prepaid}
-                                        placeholder="hh:mm"
-                                        data-qa="lecture_field_time"
-                                    />
-                                </InputGroup>
-                                <UncontrolledTooltipWrapper target="FormLectures_Time">
-                                    Čas začátku
-                                </UncontrolledTooltipWrapper>
-                            </Col>
-                        </FormGroup>
-                        <FormGroup
-                            row
-                            className={classNames("align-items-center", styles.formGroup)}>
-                            <Col sm={4}>
-                                <Input
-                                    type="checkbox"
-                                    id="canceled"
-                                    checked={canceled}
-                                    onChange={onChange}
-                                    disabled={canceledDisabled}
-                                    data-qa="lecture_checkbox_canceled"
-                                />
-                                <Label for="canceled" data-qa="lecture_label_canceled" check>
-                                    Zrušeno
-                                </Label>{" "}
-                                {canceledDisabled && (
-                                    <Tooltip
-                                        postfix="canceled"
-                                        text={
-                                            <>
-                                                Na tuto lekci nemá nikdo přijít, proto je
-                                                automaticky zrušená.
-                                                <br />
-                                                Toto lze změnit jen když má přijít alespoň jeden
-                                                klient.
-                                            </>
-                                        }
-                                    />
-                                )}
-                            </Col>
-                            <Col sm={4}>
-                                <SelectCourse
-                                    required
-                                    value={course}
-                                    onChangeCallback={onSelectChange}
-                                    options={coursesVisibleContext.courses}
-                                    isDisabled={!isClient(props.object)}
-                                />
-                            </Col>
-                            <Col sm={4}>
-                                <InputGroup id="FormLectures_Duration">
-                                    <InputGroupText>
-                                        <Label for="duration">
-                                            <FontAwesomeIcon icon={faHourglass} fixedWidth />
-                                        </Label>
-                                    </InputGroupText>
-                                    <Input
-                                        type="number"
-                                        id="duration"
-                                        value={duration ?? ""}
-                                        onChange={onChange}
+                                    </Group>
+                                </Grid.Col>
+                                <Grid.Col span={{ base: 12, sm: 4 }}>
+                                    <SelectCourse
                                         required
-                                        min="1"
-                                        data-qa="lecture_field_duration"
+                                        value={course}
+                                        onChangeCallback={onSelectChange}
+                                        options={coursesVisibleContext.courses}
+                                        isDisabled={!isClient(props.object)}
                                     />
-                                </InputGroup>
-                                <UncontrolledTooltipWrapper target="FormLectures_Duration">
-                                    Trvání (min.)
-                                </UncontrolledTooltipWrapper>
-                            </Col>
-                        </FormGroup>
-                        <hr />
+                                </Grid.Col>
+                                <Grid.Col span={{ base: 12, sm: 4 }}>
+                                    <Tooltip label="Trvání (min.)" withinPortal zIndex={1300}>
+                                        <TextInput
+                                            label="Trvání (min.)"
+                                            type="number"
+                                            id="duration"
+                                            value={duration ?? ""}
+                                            onChange={onChange}
+                                            required
+                                            min="1"
+                                            data-qa="lecture_field_duration"
+                                            leftSection={
+                                                <label htmlFor="duration">
+                                                    <FontAwesomeIcon icon={faHourglass} fixedWidth />
+                                                </label>
+                                            }
+                                        />
+                                    </Tooltip>
+                                </Grid.Col>
+                            </Grid>
+                        </div>
                         {!isClient(props.object) && !isLecture(props.lecture) && (
-                            <UncontrolledAlert color="info">
+                            <Alert color="blue" mb="sm" className={styles.infoNotice}>
                                 Klienti s předplacenými lekcemi mají tuto lekci automaticky
                                 zaplacenou.
-                            </UncontrolledAlert>
+                            </Alert>
                         )}
-                        {members.map((member) => (
-                            <div key={member.id} data-qa="form_lecture_attendance">
+                        <div className={styles.sectionCard}>
+                            <Title order={5} className={styles.sectionTitle}>Účastníci</Title>
+                            {members.map((member) => (
+                                <div
+                                    key={member.id}
+                                    data-qa="form_lecture_attendance"
+                                    className={styles.attendeeBlock}>
                                 {!isClient(props.object) && (
-                                    <h5>
+                                    <Title order={5}>
                                         <ClientName client={member} link />{" "}
                                         {!member.active && (
-                                            <Tooltip
-                                                postfix={`FormLectures_InactiveClientAlert_${member.id.toString()}`}
+                                            <Tooltip2
                                                 text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
                                                 size="1x"
                                             />
                                         )}
-                                    </h5>
+                                    </Title>
                                 )}
                                 {isClient(props.object) && !props.object.active && (
-                                    <Alert color="warning">{TEXTS.WARNING_INACTIVE_CLIENT}</Alert>
+                                    <Alert color="yellow" mb="sm" className={styles.warningNotice}>
+                                        {TEXTS.WARNING_INACTIVE_CLIENT}
+                                    </Alert>
                                 )}
-                                <FormGroup
-                                    row
-                                    className={classNames("align-items-center", styles.formGroup)}>
-                                    <Col sm={4}>
-                                        <InputGroup>
-                                            <InputGroupText>
-                                                <Label for={`atState${member.id}`}>účast</Label>
-                                            </InputGroupText>
-                                            <CustomInputWrapper
-                                                type="select"
-                                                name="atState"
-                                                id={`atState${member.id}`}
-                                                value={atState[member.id]}
+                                <Grid align="center" mb="sm" className={styles.formGroup}>
+                                    <Grid.Col span={{ base: 12, sm: 4 }}>
+                                        <Select
+                                            id={`atState${member.id}`}
+                                            data={attendanceStatesContext.attendancestates
+                                                .filter(
+                                                    (s) =>
+                                                        s.visible ||
+                                                        s.id === atState[member.id],
+                                                )
+                                                .map((s) => ({
+                                                    value: s.id.toString(),
+                                                    label: s.name,
+                                                }))}
+                                            value={atState[member.id]?.toString() ?? null}
+                                            onChange={(val) => {
+                                                if (!val) {return}
+                                                props.setFormDirty()
+                                                setAtState((prev) => ({
+                                                    ...prev,
+                                                    [member.id]: Number(
+                                                        val,
+                                                    ),
+                                                }))
+                                            }}
+                                            required
+                                            allowDeselect={false}
+                                            comboboxProps={{ withinPortal: true }}
+                                            data-qa="lecture_select_attendance_attendancestate"
+                                        />
+                                    </Grid.Col>
+                                    <Grid.Col
+                                        span={{ base: 12, sm: 2 }}
+                                        className={styles.attendancePaidCol}>
+                                        <Group gap="xs" justify="center">
+                                            <Checkbox
+                                                id={`atPaid${member.id}`}
+                                                name="atPaid"
+                                                checked={atPaid[member.id]}
+                                                disabled={prepaid}
                                                 onChange={onChangeMultiple}
                                                 data-id={member.id}
-                                                required
-                                                data-qa="lecture_select_attendance_attendancestate">
-                                                {attendanceStatesContext.attendancestates.map(
-                                                    (attendancestate) =>
-                                                        // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
-                                                        (attendancestate.visible ||
-                                                            attendancestate.id ===
-                                                                atState[member.id]) && (
-                                                            <option
-                                                                key={attendancestate.id}
-                                                                value={attendancestate.id}>
-                                                                {attendancestate.name}
-                                                            </option>
-                                                        ),
-                                                )}
-                                            </CustomInputWrapper>
-                                        </InputGroup>
-                                    </Col>
-                                    <Col sm={2} className="text-sm-center">
-                                        <Input
-                                            type="checkbox"
-                                            id={`atPaid${member.id}`}
-                                            name="atPaid"
-                                            checked={atPaid[member.id]}
-                                            disabled={prepaid}
-                                            onChange={onChangeMultiple}
-                                            data-id={member.id}
-                                            data-qa="lecture_checkbox_attendance_paid"
-                                        />
-                                        <Label
-                                            for={`atPaid${member.id}`}
-                                            data-qa="lecture_label_attendance_paid"
-                                            className={classNames(
-                                                "mb-0",
-                                                "fw-bold",
-                                                atPaid[member.id] ? "text-success" : "text-danger",
-                                            )}
-                                            check>
-                                            Platba
-                                        </Label>{" "}
-                                        {prepaid && (
-                                            <Tooltip
-                                                postfix="prepaid"
-                                                text="Předplacená lekce je automaticky zaplacená."
+                                                data-qa="lecture_checkbox_attendance_paid"
+                                                label={
+                                                    <span
+                                                        data-qa="lecture_label_attendance_paid"
+                                                        className={
+                                                            atPaid[member.id]
+                                                                ? styles.paidLabelPaid
+                                                                : styles.paidLabelUnpaid
+                                                        }>
+                                                        Platba
+                                                    </span>
+                                                }
                                             />
-                                        )}
-                                    </Col>
-                                    <Col sm={6}>
-                                        <InputGroup id={`FormLectures_Note_${member.id}`}>
-                                            <InputGroupText>
-                                                <Label for={`atNote${member.id}`}>
-                                                    <FontAwesomeIcon
-                                                        icon={faClipboardList}
-                                                        fixedWidth
-                                                    />
-                                                </Label>
-                                            </InputGroupText>
-                                            <Input
+                                            {prepaid && (
+                                                <Tooltip2
+                                                    text="Předplacená lekce je automaticky zaplacená."
+                                                />
+                                            )}
+                                        </Group>
+                                    </Grid.Col>
+                                    <Grid.Col span={{ base: 12, sm: 6 }}>
+                                        <Tooltip label="Poznámka" withinPortal zIndex={1300}>
+                                            <TextInput
                                                 type="text"
                                                 name="atNote"
                                                 id={`atNote${member.id}`}
@@ -815,63 +755,61 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 data-id={member.id}
                                                 data-qa="lecture_field_attendance_note"
                                                 spellCheck
+                                                leftSection={
+                                                    <label htmlFor={`atNote${member.id}`}>
+                                                        <FontAwesomeIcon
+                                                            icon={faClipboardList}
+                                                            fixedWidth
+                                                        />
+                                                    </label>
+                                                }
                                             />
-                                        </InputGroup>
-                                        <UncontrolledTooltipWrapper
-                                            target={`FormLectures_Note_${member.id}`}>
-                                            Poznámka
-                                        </UncontrolledTooltipWrapper>
-                                    </Col>
-                                </FormGroup>
-                            </div>
-                        ))}
+                                        </Tooltip>
+                                    </Grid.Col>
+                                </Grid>
+                                </div>
+                            ))}
+                        </div>
                         {members.length === 0 && (
-                            <p className="text-muted text-center">Žádní účastníci</p>
+                            <p className={dimmedTextCenter}>Žádní účastníci</p>
                         )}
                         {isLecture(props.lecture) && (
-                            <>
-                                <hr />
-                                <FormGroup
-                                    row
-                                    className={classNames("align-items-center", styles.formGroup)}>
-                                    <Label sm={3} className="text-muted">
-                                        Smazání
-                                    </Label>
-                                    <Col sm={9}>
-                                        <DeleteButton
-                                            content="lekci"
-                                            onClick={(): void => {
-                                                const msgDateTime = !prepaid
-                                                    ? ` v ${prettyDateWithLongDayYear(
-                                                          new Date(date),
-                                                      )} ${time}`
-                                                    : ""
-                                                const msgObjectName = isClient(props.object)
-                                                    ? `${props.object.surname} ${props.object.firstname}`
-                                                    : props.object.name
-                                                const msgObject = isClient(props.object)
-                                                    ? "klienta"
-                                                    : "skupiny"
-                                                const msgPrepaid = prepaid ? "předplacenou " : ""
-                                                const msg = `Opravdu chcete smazat ${msgPrepaid}lekci ${msgObject} ${msgObjectName}${msgDateTime}?`
-                                                if (
-                                                    isLecture(props.lecture) &&
-                                                    globalThis.confirm(msg)
-                                                ) {
-                                                    handleDelete(props.lecture.id)
-                                                }
-                                            }}
-                                            data-qa="button_delete_lecture"
-                                        />
-                                    </Col>
-                                </FormGroup>
-                            </>
+                            <div className={`${baseStyles.formSection} ${baseStyles.formSectionDanger}`}>
+                                <Title order={6} className={baseStyles.formSectionTitle}>Smazání</Title>
+                                <div className={baseStyles.deleteAlertText}>
+                                    <p>Nenávratně smaže vybranou lekci včetně všech účastí.</p>
+                                    <DeleteButton
+                                        size="sm"
+                                        content="lekci"
+                                        onClick={(): void => {
+                                            const msgDateTime = prepaid
+                                                ? ""
+                                                : ` v ${prettyDateWithLongDayYear(new Date(date))} ${time}`
+                                            const msgObjectName = isClient(props.object)
+                                                ? `${props.object.surname} ${props.object.firstname}`
+                                                : props.object.name
+                                            const msgObject = isClient(props.object)
+                                                ? "klienta"
+                                                : "skupiny"
+                                            const msgPrepaid = prepaid ? "předplacenou " : ""
+                                            const msg = `Opravdu chcete smazat ${msgPrepaid}lekci ${msgObject} ${msgObjectName}${msgDateTime}?`
+                                            if (
+                                                isLecture(props.lecture) &&
+                                                globalThis.confirm(msg)
+                                            ) {
+                                                handleDelete(props.lecture.id)
+                                            }
+                                        }}
+                                        data-qa="button_delete_lecture"
+                                    />
+                                </div>
+                            </div>
                         )}
                     </>
                 )}
-            </ModalBody>
-            <ModalFooter>
-                <CancelButton onClick={close} />{" "}
+            </Modal.Body>
+            <Group justify="flex-end" px="md" pb="md" className={baseStyles.modalActions}>
+                <CancelButton onClick={close} />
                 <SubmitButton
                     loading={isSubmit}
                     content={isLecture(props.lecture) ? "Uložit" : "Přidat"}
@@ -881,22 +819,25 @@ const FormLectures: React.FC<Props> = (props) => {
                 {isLecture(props.lecture) &&
                     !isClient(props.object) &&
                     !areAttendantsEqualToMembers() && (
-                        <>
-                            <SubmitButton
-                                loading={isSubmit}
-                                onClick={(e): void => onSubmit(e, true)}
-                                id="FormLectures_SubmitWithClientChanges"
-                                disabled={coursesVisibleContext.isLoading}
-                                content="Uložit + projevit změny v klientech"
-                            />
-                            <UncontrolledTooltipWrapper target="FormLectures_SubmitWithClientChanges">
-                                Uloží informace a zároveň upraví účastníky této lekce tak, aby byli
-                                v souladu se členy skupiny
-                            </UncontrolledTooltipWrapper>
-                        </>
+                        <Tooltip
+                            label="Uloží informace a zároveň upraví účastníky této lekce tak, aby byli v souladu se členy skupiny"
+                            withinPortal
+                            zIndex={1300}>
+                            <span>
+                                <SubmitButton
+                                    loading={isSubmit}
+                                    onClick={(e): void => onSubmit(e, true)}
+                                    id="FormLectures_SubmitWithClientChanges"
+                                    variant="light"
+                                    color="gray"
+                                    disabled={coursesVisibleContext.isLoading}
+                                    content="Uložit + projevit změny v klientech"
+                                />
+                            </span>
+                        </Tooltip>
                     )}
-            </ModalFooter>
-        </Form>
+            </Group>
+        </form>
     )
 }
 

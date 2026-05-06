@@ -1,5 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 export const diaryDay = style({
     "@media": {
         "(min-width: 768px) and (max-width: 991.98px)": {
@@ -45,7 +47,7 @@ export const arrowBtn = style({
     backgroundColor: "light-dark(#e2e8f0, var(--mantine-color-dark-5))",
     cursor: "pointer",
     padding: "0.2rem",
-    color: "light-dark(#1f2937, var(--mantine-color-gray-1))",
+    color: vars.text.primary,
     fontSize: "2rem",
     selectors: {
         "&:hover": {
@@ -63,7 +65,7 @@ export const titleDate = style({
     padding: "0.05rem 0.2rem",
     width: "6ch",
     textAlign: "center",
-    color: "light-dark(#1f2937, var(--mantine-color-gray-1))",
+    color: vars.text.primary,
     fontWeight: 700,
 })
 

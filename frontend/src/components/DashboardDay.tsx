@@ -16,6 +16,7 @@ import {
     prettyTime,
     toISODate,
 } from "../global/funcDateTime"
+import { inlineBlockNowrap, mb0 } from "../global/utility.css"
 import { courseDuration } from "../global/utils"
 import { DEFAULT_DELAY, useDelayedValue } from "../hooks/useDelayedValue"
 
@@ -133,12 +134,13 @@ const DashboardDay: React.FC<Props> = (props) => {
                 className={`${styles.dashboardDayDate}${isToday(getDate()) ? ` ${styles.dashboardDayDateToday}` : ""}`}>
                 <Title
                     order={4}
-                    className={
+                    className={classNames(
                         isUserCelebratingResult === USER_CELEBRATION.NOTHING
                             ? styles.celebrationNone
-                            : "celebration"
-                    }
-                    style={{ marginBottom: 0, display: "inline-block", whiteSpace: "nowrap" }}>
+                            : "celebration",
+                        mb0,
+                        inlineBlockNowrap,
+                    )}>
                     <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
                 </Title>
                 <ModalLecturesWizard

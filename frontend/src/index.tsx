@@ -1,9 +1,11 @@
 import { config } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
+import { localStorageColorSchemeManager, MantineProvider } from "@mantine/core"
 import * as Sentry from "@sentry/browser"
+import "@mantine/core/styles.css"
+import "@mantine/spotlight/styles.css"
 import { RouterProvider } from "@tanstack/react-router"
 import * as React from "react"
-import "bootstrap/dist/css/bootstrap.css"
 import { createRoot } from "react-dom/client"
 
 import { initAnalytics } from "./analytics"
@@ -11,6 +13,7 @@ import { getEnvName, isHosted } from "./global/funcEnvironments"
 import "./index.css"
 import { isValidUrl } from "./global/utils"
 import { router } from "./router"
+import { theme } from "./theme/theme"
 
 // opatreni kvuli CSP pro FontAwesome, viz https://fontawesome.com/how-to-use/on-the-web/other-topics/security
 config.autoAddCss = false
@@ -28,8 +31,17 @@ initAnalytics("%GA4_ID", (handler) => {
     router.subscribe("onResolved", handler)
 })
 
+const colorSchemeManager = localStorageColorSchemeManager({ key: "mantine-color-scheme" })
+
 /** Základní kostra aplikace. */
-const App: React.FC = () => <RouterProvider router={router} />
+const App: React.FC = () => (
+    <MantineProvider
+        theme={theme}
+        defaultColorScheme="auto"
+        colorSchemeManager={colorSchemeManager}>
+        <RouterProvider router={router} />
+    </MantineProvider>
+)
 
 const container = document.getElementById("root")
 if (container) {

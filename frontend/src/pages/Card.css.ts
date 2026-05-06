@@ -1,6 +1,7 @@
 import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
 
 import { plainName as groupPlainName } from "../components/GroupName.css"
+import { vars } from "../theme/tokens"
 
 export const cardVars = createThemeContract({
     courseBackground: "",
@@ -63,20 +64,20 @@ export const clientTopRow = style({
 
 export const clientSummaryPanel = style({
     flex: "0 0 auto",
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.55rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     minWidth: "220px",
     overflow: "hidden",
 })
 
 export const analysisPanel = style({
     flexGrow: 1,
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.55rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     padding: "0.55rem 0.65rem",
     minWidth: 0,
 })

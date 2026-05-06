@@ -1,5 +1,3 @@
-import * as React from "react"
-
 import LectureService from "../api/services/LectureService"
 import {
     ApplicationType,
@@ -153,9 +151,9 @@ export function makeIdFromString(string: string): string {
     return string.replace(/\s+/g, "-")
 }
 
-/** Zjistí, jestli je otevřené bootstrap modální okno. */
+/** Zjistí, jestli je otevřené modální okno. */
 export function isModalShown(): boolean {
-    return document.querySelectorAll(".modal-open").length !== 0
+    return document.querySelectorAll('[aria-modal="true"]').length !== 0
 }
 
 /** Vrátí string s velkým počátečním písmenem. */
@@ -171,11 +169,6 @@ export const noop = (): void => {}
 export function pageTitle(title: string): string {
     const envTitle = !isEnvProduction() ? `${getEnvNameShort()} | ` : ""
     return `${envTitle + title} – ÚPadmin`
-}
-
-/** Vrátí jméno komponenty pro React Developer Tools. */
-export function getDisplayName<P>(Component: React.ComponentType<P>): string {
-    return Component.displayName ?? Component.name ?? "UnknownComponent"
 }
 
 /** Vrátí true pokud je aktivní klient/skupina „stale" – naposledy měl lekci před více než DAYS_WITHOUT_LECTURE_WARNING dny. Nová entita bez lekce (null) varování nedostane. */

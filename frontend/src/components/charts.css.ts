@@ -1,16 +1,18 @@
 import { style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 export const chartBaseStyles = {
-    border: "1px solid #dee2e6",
-    borderRadius: "0.375rem",
-    backgroundColor: "#fff",
+    border: vars.borderShort.default,
+    borderRadius: "0.55rem",
+    backgroundColor: vars.bg.surface,
 }
 
 export const chartTooltip = style({
     ...chartBaseStyles,
-    boxShadow: "0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)",
+    boxShadow: "0 8px 20px rgb(15 23 42 / 0.1)",
     padding: "0.5rem 0.75rem",
     lineHeight: 1.5,
-    color: "#212529",
+    color: vars.text.primary,
     fontSize: "0.8rem",
 })

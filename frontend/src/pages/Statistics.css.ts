@@ -1,12 +1,14 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 export { chartTooltip } from "../components/charts.css"
 
 export const statCard = style({
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.6rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     padding: "1rem",
     minHeight: "9rem",
 })
@@ -73,7 +75,7 @@ globalStyle(`${yearFilterButtons} > *`, {
 
 export const filterHeading = style({
     marginBottom: "0.25rem",
-    color: "light-dark(#1f2937, var(--mantine-color-gray-1))",
+    color: vars.text.primary,
     fontSize: "0.875rem",
     fontWeight: 600,
 })
@@ -108,6 +110,56 @@ globalStyle(`${metricToggle} button`, {
 
 export const chartSection = style({
     marginTop: "0.25rem",
+    marginBottom: "1rem",
+})
+
+export const totalLabel = style({
+    marginBottom: "1rem",
+    color: vars.text.muted,
+    fontSize: "0.875em",
+})
+
+export const breakdownRow = style({
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+})
+
+export const breakdownRowSpaced = style([
+    breakdownRow,
+    {
+        marginBottom: "0.25rem",
+    },
+])
+
+export const breakdownValue = style({
+    fontWeight: 600,
+})
+
+export const tooltipLabel = style({
+    marginBottom: "0.25rem",
+    fontWeight: 600,
+})
+
+export const tooltipRow = style({
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "0.75rem",
+})
+
+export const rankingDivider = style({
+    borderBottom: vars.borderShort.default,
+})
+
+export const sectionTightTopMb = style([
+    sectionTightTop,
+    {
+        marginBottom: "1rem",
+    },
+])
+
+export const gridMb = style({
+    marginBottom: "1rem",
 })
 
 export const chartTitleRow = style({
@@ -127,7 +179,7 @@ export const chartTitleRow = style({
 
 export const chartTitle = style({
     marginBottom: 0,
-    color: "light-dark(#1f2937, var(--mantine-color-gray-1))",
+    color: vars.text.primary,
     fontSize: "1.05rem",
     fontWeight: 600,
 })
@@ -141,10 +193,10 @@ export const chartCaption = style({
 })
 
 export const chartPanel = style({
-    border: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
+    border: vars.borderShort.default,
     borderRadius: "0.6rem",
-    boxShadow: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-    backgroundColor: "light-dark(#ffffff, var(--mantine-color-dark-7))",
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
     padding: "1rem",
     "@media": {
         "screen and (max-width: 767px)": {

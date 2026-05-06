@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
-import classNames from "classnames"
 import * as React from "react"
 
 import APP_URLS from "../APP_URLS"
+import { bold as boldStyle, nowrap } from "../global/utility.css"
 import { GroupType } from "../types/models"
 
 import ConditionalWrapper from "./ConditionalWrapper"
@@ -25,7 +25,7 @@ const PlainName: React.FC<PlainGroupNameProps> = ({ group, title, bold }) => (
         <ConditionalWrapper
             condition={bold}
             wrapper={(children): React.ReactNode => (
-                <span className="fw-bold">{children}</span>
+                <span className={boldStyle}>{children}</span>
             )}>
             {title && "Skupina "}
             {group.name}
@@ -64,7 +64,7 @@ const GroupName: React.FC<GroupNameProps> = ({
         <span>
             {"id" in group && link ? (
                 <Link to={`${APP_URLS.skupiny.url}/${group.id}`}>
-                    <span className={classNames({ "text-nowrap": noWrap })}>
+                    <span className={noWrap ? nowrap : undefined}>
                         {showCircle && (
                             <CourseCircle
                                 color={group.course.color}

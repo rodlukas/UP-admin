@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Button, Container, Tooltip } from "@mantine/core"
 import {
     faChevronCircleLeft,
     faChevronCircleRight,
@@ -6,13 +7,11 @@ import {
 import { Link, useNavigate, useParams } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
-import { Button, Col, Container, Row } from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import APP_URLS from "../APP_URLS"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
-import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
 import {
     addDays,
@@ -24,6 +23,7 @@ import {
     prettyDateWithLongDayYear,
     prettyDateWithYearIfDiff,
 } from "../global/funcDateTime"
+import { top } from "../global/utility.css"
 import { isModalShown, pageTitle } from "../global/utils"
 
 import * as styles from "./Diary.css"
@@ -36,7 +36,7 @@ type TitleDateProps = {
 /** Pomocná komponenta zobrazující datum v záhlaví diáře. */
 const TitleDate: React.FC<TitleDateProps> = ({ date }) => (
     <span
-        className={classNames(styles.titleDate, "fw-bold", "text-center", {
+        className={classNames(styles.titleDate, {
             [styles.titleDateLong]: isNotCurrentYear(date),
         })}>
         {prettyDateWithYearIfDiff(date)}
@@ -180,89 +180,94 @@ const Diary: React.FC = () => {
                     }
                     buttons={
                         <>
-                            <Link
-                                to="/diar/$year/$month/$day"
-                                params={prevMondayParams}
-                                id="Diary_PrevWeek"
-                                onClick={(): void => {
-                                    trackEvent("diary_navigated", {
-                                        direction: "prev",
-                                        method: "click",
-                                    })
-                                }}>
-                                <FontAwesomeIcon
-                                    icon={faChevronCircleLeft}
-                                    className={classNames(styles.arrowBtn, "text-muted")}
-                                />
-                            </Link>
-                            <UncontrolledTooltipWrapper target="Diary_PrevWeek">
-                                Předchozí týden
-                            </UncontrolledTooltipWrapper>{" "}
-                            <Link
-                                to="/diar/$year/$month/$day"
-                                params={nextMondayParams}
-                                id="Diary_NextWeek"
-                                onClick={(): void => {
-                                    trackEvent("diary_navigated", {
-                                        direction: "next",
-                                        method: "click",
-                                    })
-                                }}>
-                                <FontAwesomeIcon
-                                    icon={faChevronCircleRight}
-                                    className={classNames(styles.arrowBtn, "text-muted")}
-                                />
-                            </Link>
-                            <UncontrolledTooltipWrapper target="Diary_NextWeek">
-                                Další týden
-                            </UncontrolledTooltipWrapper>{" "}
-                            <Link
-                                to={APP_URLS.diar.url}
-                                id="Diary_Today"
-                                className={classNames({
-                                    [styles.disabledLink]: isEqualDate(
-                                        getCurrentMonday(),
-                                        getRequiredMonday(),
-                                    ),
-                                })}>
-                                <Button
-                                    color="secondary"
-                                    disabled={isEqualDate(getCurrentMonday(), getRequiredMonday())}
-                                    onClick={(e): void => {
-                                        removeFocusAfterClick(e)
-                                        // disabled na <Button> uvnitr <Link> nezabrani onClick – nutna explicitni podminka
-                                        if (!isEqualDate(getCurrentMonday(), getRequiredMonday())) {
-                                            trackEvent("diary_navigated", {
-                                                direction: "today",
-                                                method: "click",
-                                            })
-                                        }
-                                    }}
-                                    className="align-top">
-                                    Dnes
-                                </Button>
-                            </Link>
-                            <UncontrolledTooltipWrapper target="Diary_Today">
-                                {prettyDateWithLongDayYear(new Date())}
-                            </UncontrolledTooltipWrapper>{" "}
+                            <Tooltip label="Předchozí týden">
+                                <Link
+                                    to="/diar/$year/$month/$day"
+                                    params={prevMondayParams}
+                                    className={styles.arrowLink}
+                                    onClick={(): void => {
+                                        trackEvent("diary_navigated", {
+                                            direction: "prev",
+                                            method: "click",
+                                        })
+                                    }}>
+                                    <FontAwesomeIcon
+                                        icon={faChevronCircleLeft}
+                                        className={styles.arrowBtn}
+                                    />
+                                </Link>
+                            </Tooltip>{" "}
+                            <Tooltip label="Další týden">
+                                <Link
+                                    to="/diar/$year/$month/$day"
+                                    params={nextMondayParams}
+                                    className={styles.arrowLink}
+                                    onClick={(): void => {
+                                        trackEvent("diary_navigated", {
+                                            direction: "next",
+                                            method: "click",
+                                        })
+                                    }}>
+                                    <FontAwesomeIcon
+                                        icon={faChevronCircleRight}
+                                        className={styles.arrowBtn}
+                                    />
+                                </Link>
+                            </Tooltip>{" "}
+                            <Tooltip label={prettyDateWithLongDayYear(new Date())}>
+                                <Link
+                                    to={APP_URLS.diar.url}
+                                    className={classNames({
+                                        [styles.disabledLink]: isEqualDate(
+                                            getCurrentMonday(),
+                                            getRequiredMonday(),
+                                        ),
+                                    })}>
+                                    <Button
+                                        color="gray"
+                                        disabled={isEqualDate(
+                                            getCurrentMonday(),
+                                            getRequiredMonday(),
+                                        )}
+                                        onClick={(e): void => {
+                                            removeFocusAfterClick(e)
+                                            // disabled na <Button> uvnitr <Link> nezabrani onClick – nutna explicitni podminka
+                                            if (
+                                                !isEqualDate(
+                                                    getCurrentMonday(),
+                                                    getRequiredMonday(),
+                                                )
+                                            ) {
+                                                trackEvent("diary_navigated", {
+                                                    direction: "today",
+                                                    method: "click",
+                                                })
+                                            }
+                                        }}
+                                        className={top}>
+                                        Dnes
+                                    </Button>
+                                </Link>
+                            </Tooltip>{" "}
                             <ModalLecturesWizard source="diary" />
                         </>
                     }
                 />
             </Container>
-            <Container fluid>
-                <Row>
-                    {/* je dulezite, aby pro .col byl definovany lg="", jinak bude pro >=lg platit hodnota z md */}
+            <div className={styles.weekGrid}>
+                <div className={styles.weekRow}>
                     {week.map((day) => {
                         const weekdayKey = new Date(day).getDay()
                         return (
-                            <Col key={weekdayKey} md="6" lg="" className={styles.diaryDay}>
+                            <div
+                                key={weekdayKey}
+                                className={classNames(styles.weekDayCol, styles.diaryDay)}>
                                 <DashboardDay date={day} source="diary" />
-                            </Col>
+                            </div>
                         )
                     })}
-                </Row>
-            </Container>
+                </div>
+            </div>
         </>
     )
 }

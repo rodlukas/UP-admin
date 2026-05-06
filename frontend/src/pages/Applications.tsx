@@ -13,6 +13,7 @@ import Heading from "../components/Heading"
 import Loading from "../components/Loading"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
+import { dimmedTextCenter, mb0 } from "../global/utility.css"
 import { GroupedObjectsByCourses, groupObjectsByCourses } from "../global/utils"
 import { ApplicationType } from "../types/models"
 
@@ -96,7 +97,7 @@ const Applications: React.FC = () => {
                                         data-qa="application">
                                         <div className={styles.applicationRow}>
                                             <div className={styles.applicationNameCol}>
-                                                <Title order={5} style={{ marginBottom: 0 }}>
+                                                <Title order={5} className={mb0}>
                                                     <ClientName client={application.client} link />
                                                 </Title>
                                             </div>
@@ -147,7 +148,7 @@ const Applications: React.FC = () => {
                         )
                     })}
                     {applications.length === 0 && (
-                        <p style={{ color: "var(--mantine-color-gray-6)", textAlign: "center" }}>Žádní zájemci</p>
+                        <p className={dimmedTextCenter}>Žádní zájemci</p>
                     )}
                 </>
             )}
