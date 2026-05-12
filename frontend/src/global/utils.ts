@@ -151,9 +151,13 @@ export function makeIdFromString(string: string): string {
     return string.replace(/\s+/g, "-")
 }
 
-/** Zjistí, jestli je otevřené modální okno. */
+/** Zjistí, jestli je otevřené modální okno. Kontroluje aria-modal i data-modal-content, protože
+ * Mantine Spotlight (ani jiné komponenty) nemusí vždy nastavit aria-modal. */
 export function isModalShown(): boolean {
-    return document.querySelectorAll('[aria-modal="true"]').length !== 0
+    return (
+        document.querySelectorAll('[aria-modal="true"]').length !== 0 ||
+        document.querySelectorAll("[data-modal-content]").length !== 0
+    )
 }
 
 /** Vrátí string s velkým počátečním písmenem. */

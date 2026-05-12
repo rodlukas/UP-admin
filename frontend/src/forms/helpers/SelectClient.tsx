@@ -4,6 +4,8 @@ import * as React from "react"
 import { clientName } from "../../global/utils"
 import { ClientType } from "../../types/models"
 
+import * as styles from "./SelectClient.css"
+
 type SelectClientProps = {
     /** Vybraný klient. */
     value?: ClientType | null
@@ -18,7 +20,13 @@ type SelectClientProps = {
 }
 
 /** Komponenta s Mantine Select pro výběr klienta. */
-const SelectClient: React.FC<SelectClientProps> = ({ value, onChangeCallback, options = [], autoFocus }) => {
+const SelectClient: React.FC<SelectClientProps> = ({
+    value,
+    onChangeCallback,
+    options = [],
+    autoFocus,
+    required,
+}) => {
     const data = options.map((c) => ({ value: c.id.toString(), label: clientName(c) }))
 
     return (
@@ -34,6 +42,10 @@ const SelectClient: React.FC<SelectClientProps> = ({ value, onChangeCallback, op
             searchable
             clearable
             autoFocus={autoFocus}
+            withAsterisk={required}
+            required={required}
+            renderOption={({ option }) => <span data-gdpr>{option.label}</span>}
+            classNames={{ input: styles.gdprInput }}
             comboboxProps={{ withinPortal: true }}
         />
     )

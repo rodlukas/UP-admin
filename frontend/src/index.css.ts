@@ -64,21 +64,6 @@ globalStyle("label", {
     userSelect: "none",
 })
 
-/**************************** REACT-TOASTIFY ****************************/
-
-globalStyle(".Toastify__toast--warning", {
-    background: "light-dark(#e7b90f, #a8870a) !important",
-})
-
-globalStyle(".Toastify__toast", {
-    fontFamily: "unset !important",
-})
-
-// aby notifikace neprekryvala menu
-globalStyle(".Toastify__toast-container--top-right", {
-    top: "unset !important",
-})
-
 /**************************** DJANGO-DEBUG-TOOLBAR ****************************/
 
 globalStyle("#djDebugToolbarHandle", {

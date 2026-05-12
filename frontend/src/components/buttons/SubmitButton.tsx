@@ -20,7 +20,6 @@ const SubmitButton: React.FC<Props> = ({
     ...props
 }) => (
     <Button
-        color="blue"
         ml="auto"
         type="submit"
         loading={loading}

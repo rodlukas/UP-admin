@@ -32,7 +32,6 @@ const ActiveSwitcher: React.FC<Props> = (props) => {
         <Button.Group className={styles.activeSwitcher}>
             <Button
                 variant={props.active ? "filled" : "default"}
-                color="blue"
                 data-value={true}
                 onClick={onSwitcherChange}
                 data-qa="button_switcher_active">
@@ -40,7 +39,6 @@ const ActiveSwitcher: React.FC<Props> = (props) => {
             </Button>
             <Button
                 variant={inactive ? "filled" : "default"}
-                color="blue"
                 data-value={false}
                 onClick={onSwitcherChange}
                 data-qa="button_switcher_inactive">

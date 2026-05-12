@@ -21,7 +21,6 @@ const EditButton: React.FC<Props> = ({ content = "Upravit", onClick, contentId, 
         // vypada to jako nesystemove reseni, ale jde o domenove reseni diky provazanosti modalu a edit buttonu
         events={{ hover: true, focus: false, touch: false }}>
         <Button
-            color="blue"
             size="sm"
             id={`EditButton_${makeIdFromString(content)}_${contentId}`}
             onClick={onClick}

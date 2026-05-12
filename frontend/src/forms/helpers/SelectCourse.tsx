@@ -1,4 +1,5 @@
 import { Group, Select } from "@mantine/core"
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import * as React from "react"
 
 import { CourseType } from "../../types/models"
@@ -22,7 +23,10 @@ type SelectCourseProps = {
 
 /** Pomocná komponenta – barevné kolečko kurzu v option. */
 const CourseDot: React.FC<{ color: string }> = ({ color }) => (
-    <div className={styles.courseDot} style={{ backgroundColor: color }} />
+    <div
+        className={styles.courseDot}
+        style={assignInlineVars({ [styles.courseDotColor]: color })}
+    />
 )
 
 /** Komponenta s Mantine Select pro výběr kurzu (zobrazuje barevné kolečko u každé položky). */
@@ -57,7 +61,7 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
                 return (
                     <Group gap="xs" wrap="nowrap">
                         {course && <CourseDot color={course.color} />}
-                        {option.label}
+                        <span data-gdpr>{option.label}</span>
                     </Group>
                 )
             }}

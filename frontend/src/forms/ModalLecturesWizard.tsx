@@ -175,8 +175,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         <>
             <div className={styles.modalLecturesWizard}>
                 <Menu position={menuPosition}>
-                    <Tooltip label={title} position={tooltipPosition} withinPortal zIndex={1300}>
-                        <Menu.Target>
+                    <Menu.Target>
+                        <Tooltip label={title} position={tooltipPosition} withinPortal zIndex={1300}>
                             <Button
                                 className={classNames(
                                     props.dropdownClassName,
@@ -196,8 +196,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                     data-qa={props.isFetching ? "loading" : undefined}
                                 />
                             </Button>
-                        </Menu.Target>
-                    </Tooltip>
+                        </Tooltip>
+                    </Menu.Target>
                     <Menu.Dropdown>
                         <Menu.Item onClick={(): void => setClient(true)}>
                             přidat lekci <strong>klienta</strong>...

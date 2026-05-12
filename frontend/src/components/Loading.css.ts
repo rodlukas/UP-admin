@@ -8,7 +8,7 @@ export const wrapper = style({
 })
 
 export const spinner = style({
-    color: "var(--mantine-color-blue-6)",
+    color: "var(--mantine-color-indigo-6)",
 })
 
 export const text = style({

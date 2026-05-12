@@ -25,7 +25,6 @@ const AddButton: React.FC<Props> = ({ content, onClick, small = false, className
     )
     return (
         <Button
-            color="blue"
             className={mergedClassName}
             onClick={onClick}
             leftSection={<FontAwesomeIcon icon={faPlus} className={styles.btnIcon} />}

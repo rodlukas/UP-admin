@@ -1,0 +1,1 @@
+!function(){try{var e=window.localStorage.getItem("mantine-color-scheme")||"auto";document.documentElement.setAttribute("data-mantine-color-scheme","auto"===e?window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light":e)}catch(e){}}();
