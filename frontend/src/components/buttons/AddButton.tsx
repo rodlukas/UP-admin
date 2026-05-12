@@ -1,16 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Button, ButtonProps } from "@mantine/core"
 import { faPlus } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
-import { Button, ButtonProps } from "reactstrap"
 
 import * as styles from "./buttons.css"
 
-type Props = ButtonProps & {
+type Props = Omit<ButtonProps, "content"> & {
     /** Text v tlačítku. */
     content: string
     /** Tlačítko je malé (true). */
     small?: boolean
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+    className?: string
 }
 
 /** Tlačítko pro přidání objektu v aplikaci. */
@@ -22,8 +24,12 @@ const AddButton: React.FC<Props> = ({ content, onClick, small = false, className
         className,
     )
     return (
-        <Button color="primary" className={mergedClassName} onClick={onClick} {...props}>
-            <FontAwesomeIcon icon={faPlus} className={styles.btnIcon} />
+        <Button
+            color="blue"
+            className={mergedClassName}
+            onClick={onClick}
+            leftSection={<FontAwesomeIcon icon={faPlus} className={styles.btnIcon} />}
+            {...props}>
             {content}
         </Button>
     )

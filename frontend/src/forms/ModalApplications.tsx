@@ -1,6 +1,6 @@
 import * as React from "react"
-import { Modal } from "reactstrap"
 
+import BaseModal from "../components/BaseModal"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
@@ -34,18 +34,19 @@ const ModalApplications: React.FC<Props> = ({ currentApplication }) => {
                     data-qa="button_add_application"
                 />
             )}
-            <Modal
-                isOpen={isModal}
-                toggle={toggleModal}
-                autoFocus={false}
-                onClosed={processOnModalClose}>
+            <BaseModal
+                opened={isModal}
+                onClose={toggleModal}
+                withCloseButton={false}
+                size="lg"
+                transitionProps={{ onExited: processOnModalClose }}>
                 <FormApplications
                     application={currentApplication ?? DummyApplication}
                     funcClose={toggleModal}
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}
                 />
-            </Modal>
+            </BaseModal>
         </>
     )
 }

@@ -15,7 +15,7 @@ globalStyle(`${footer} a:hover`, {
 
 export const settingsColumn = style({
     border: vars.borderShort.default,
-    borderRadius: "0.6rem",
+    borderRadius: vars.radius.md,
     boxShadow: vars.shadow.card,
     backgroundColor: vars.bg.surface,
     padding: "1rem 1rem 1.1rem",
@@ -79,24 +79,10 @@ export const emptyMessage = style({
     textAlign: "center",
 })
 
-export const appearanceSection = style({
-    marginTop: "1.1rem",
-    marginBottom: "1.1rem",
-    border: vars.borderShort.default,
-    borderRadius: "0.6rem",
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    padding: "1rem 1rem 1.1rem",
-})
-
-globalStyle(`${appearanceSection} h2`, {
-    marginBottom: "0.75rem",
-})
-
 export const footerBlock = style({
     marginTop: "1.1rem",
     border: vars.borderShort.default,
-    borderRadius: "0.6rem",
+    borderRadius: vars.radius.md,
     boxShadow: "0 12px 26px rgb(15 23 42 / 0.07), 0 3px 10px rgb(15 23 42 / 0.05)",
     backgroundColor: vars.bg.surface,
     padding: "0.9rem 1rem",

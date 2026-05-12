@@ -1,31 +1,31 @@
+import { Container, SimpleGrid } from "@mantine/core"
 import * as React from "react"
-import { Col, Container, Row } from "reactstrap"
 
 import Bank from "../components/Bank"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
 import { toISODate } from "../global/funcDateTime"
+
+import * as styles from "./Dashboard.css"
+
 /** Stránka s hlavním přehledem - dnešní lekce a banka. */
 const Dashboard: React.FC = () => {
     return (
-        <Container>
-            <Row className="justify-content-center">
-                <Col sm="11" md="8" lg="8" xl="6">
+        <Container size="xl">
+            <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg" verticalSpacing="lg">
+                <div className={styles.dashboardSection}>
                     <Heading
-                        title={
-                            <>
-                                Dnešní lekce <ModalLecturesWizard source="dashboard" />
-                            </>
-                        }
+                        title="Dnešní lekce"
+                        buttons={<ModalLecturesWizard source="dashboard" />}
                     />
                     <DashboardDay date={toISODate(new Date())} withoutWaiting source="dashboard" />
-                </Col>
-                <Col sm="11" md="8" lg="8" xl="6">
+                </div>
+                <div className={styles.dashboardSection}>
                     <Heading title="Bankovní účet" />
                     <Bank />
-                </Col>
-            </Row>
+                </div>
+            </SimpleGrid>
         </Container>
     )
 }

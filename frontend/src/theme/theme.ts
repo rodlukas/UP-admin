@@ -54,5 +54,39 @@ export const theme = createTheme({
                 root: { letterSpacing: "0.01em" },
             },
         },
+        // Comboboxy v Mantine 9 (Select, MultiSelect, Autocomplete, …) sdílí Popover
+        // přes comboboxProps. V modalu (zIndex 1050) by jinak dropdown mizel pod overlayem.
+        Popover: {
+            defaultProps: {
+                withinPortal: true,
+                zIndex: 1100,
+            },
+        },
+        Select: {
+            defaultProps: {
+                comboboxProps: { withinPortal: true, zIndex: 1100 },
+            },
+        },
+        MultiSelect: {
+            defaultProps: {
+                comboboxProps: { withinPortal: true, zIndex: 1100 },
+            },
+        },
+        Autocomplete: {
+            defaultProps: {
+                comboboxProps: { withinPortal: true, zIndex: 1100 },
+            },
+        },
+        TagsInput: {
+            defaultProps: {
+                comboboxProps: { withinPortal: true, zIndex: 1100 },
+            },
+        },
+        Combobox: {
+            defaultProps: {
+                withinPortal: true,
+                zIndex: 1100,
+            },
+        },
     },
 })

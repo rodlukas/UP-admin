@@ -1,13 +1,14 @@
 import * as React from "react"
-import { Modal } from "reactstrap"
 
 import { AnalyticsSource } from "../analytics"
+import BaseModal from "../components/BaseModal"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
 import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
 
+import { modalContentClientGroup } from "./FormBase.css"
 import FormClients from "./FormClients"
 import { DummyClient } from "./helpers/dummies"
 
@@ -52,16 +53,20 @@ const ModalClients: React.FC<Props> = ({
                     data-qa="button_add_client"
                 />
             )}
-            <Modal
-                isOpen={isModal}
-                toggle={toggleModal}
-                autoFocus={false}
-                onClosed={(): void => {
-                    processOnModalClose(() => {
-                        if (refresh && tempData !== null) {
-                            refresh(tempData)
-                        }
-                    })
+            <BaseModal
+                opened={isModal}
+                onClose={toggleModal}
+                withCloseButton={false}
+                classNames={{ content: modalContentClientGroup }}
+                size="40rem"
+                transitionProps={{
+                    onExited: (): void => {
+                        processOnModalClose(() => {
+                            if (refresh && tempData !== null) {
+                                refresh(tempData)
+                            }
+                        })
+                    },
                 }}>
                 <FormClients
                     client={currentClient ?? DummyClient}
@@ -71,7 +76,7 @@ const ModalClients: React.FC<Props> = ({
                     funcProcessAdditionOfClient={processAdditionOfClient}
                     source={source}
                 />
-            </Modal>
+            </BaseModal>
         </>
     )
 }

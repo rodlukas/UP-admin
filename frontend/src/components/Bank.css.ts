@@ -4,7 +4,7 @@ import { vars } from "../theme/tokens"
 
 export const bankWrapper = style({
     border: vars.borderShort.default,
-    borderRadius: "0.55rem",
+    borderRadius: vars.radius.md,
     boxShadow: vars.shadow.card,
     backgroundColor: vars.bg.surface,
     overflow: "hidden",

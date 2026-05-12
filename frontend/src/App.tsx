@@ -13,6 +13,9 @@ type AppLayoutProps = {
     queryClient: QueryClient
 }
 
+const isDevelopment = process.env.NODE_ENV === "development"
+const isDevtoolsEnabled = isDevelopment && new URLSearchParams(globalThis.location.search).has("devtools")
+
 const AppLayout: React.FC<AppLayoutProps> = ({ queryClient }) => (
     <QueryClientProvider client={queryClient}>
         <ErrorBoundary>
@@ -24,8 +27,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ queryClient }) => (
                 </ClientsActiveProvider>
             </AuthProvider>
         </ErrorBoundary>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <TanStackRouterDevtools initialIsOpen={false} />
+        {isDevtoolsEnabled && (
+            <>
+                <ReactQueryDevtools initialIsOpen={false} />
+                <TanStackRouterDevtools initialIsOpen={false} />
+            </>
+        )}
     </QueryClientProvider>
 )
 

@@ -108,6 +108,7 @@ const FormLectures: React.FC<Props> = (props) => {
         return memberships.map((member) => member.client)
     }, [])
 
+    /** Klienti účastnící se lekce. */
     const members = React.useMemo(() => {
         if (isClient(props.object)) {
             return [props.object]
@@ -202,14 +203,21 @@ const FormLectures: React.FC<Props> = (props) => {
     )
     const initialAtNote = React.useMemo(() => createNoteObjects(), [createNoteObjects])
 
+    /** Objekt držící stavy účasti k jednotlivým klientům. */
     const [atState, setAtState] = React.useState<AtStateWithEmpty | AtState>(initialAtState)
+    /** Objekt držící zaplacenost (true) k jednotlivým klientům. */
     const [atPaid, setAtPaid] = React.useState<AtPaid>(initialAtPaid)
+    /** Objekt držící poznámky k jednotlivým klientům. */
     const [atNote, setAtNote] = React.useState<AtNote>(initialAtNote)
+    /** Lekce je předplacená (true). */
     const [prepaid, setPrepaid] = React.useState(isPrepaid(props.lecture.start))
+    /** Lekce je zrušená (true). */
     const [canceled, setCanceled] = React.useState(props.lecture.canceled || false)
+    /** Předchozí hodnota zrušení lekce (než bylo automaticky nastaveno). */
     const [canceledPrevious, setCanceledPrevious] = React.useState<
         LecturePostApiDummy["canceled"] | undefined
     >(undefined)
+    /** Datum lekce. */
     const [date, setDate] = React.useState(() => {
         if (isLectureWithDate(props.lecture)) {
             return toISODate(new Date(props.lecture.start))
@@ -222,6 +230,7 @@ const FormLectures: React.FC<Props> = (props) => {
         }
         return ""
     })
+    /** Čas lekce. */
     const [time, setTime] = React.useState(() => {
         if (isLectureWithDate(props.lecture)) {
             return toISOTime(new Date(props.lecture.start))
@@ -231,6 +240,7 @@ const FormLectures: React.FC<Props> = (props) => {
         }
         return ""
     })
+    /** Kurz lekce. */
     const [course, setCourse] = React.useState<LecturePostApiDummy["course"]>(() => {
         if (isLecture(props.lecture)) {
             return props.lecture.course
@@ -244,6 +254,7 @@ const FormLectures: React.FC<Props> = (props) => {
             return props.object.course
         }
     })
+    /** Trvání lekce. */
     const [duration, setDuration] = React.useState<LecturePostApiDummy["duration"] | undefined>(
         () => {
             if (isLecture(props.lecture)) {
@@ -252,8 +263,11 @@ const FormLectures: React.FC<Props> = (props) => {
             return computeDuration()
         },
     )
+    /** Zrušení lekce není možné upravit (true). */
     const [canceledDisabled, setCanceledDisabled] = React.useState(false)
+    /** Formulář byl odeslán (true). */
     const [isSubmit, setIsSubmit] = React.useState(false)
+    /** Počet přidávaných předplacených lekcí. */
     const [prepaidCnt, setPrepaidCnt] = React.useState(1)
 
     React.useEffect(() => {
@@ -432,9 +446,11 @@ const FormLectures: React.FC<Props> = (props) => {
                     },
                 })
             } else {
+                // pridava se lekce
                 const attendances = getAttendancesSubmit<AttendancePostApi>()
                 const dataPost: LecturePostApi = { ...data, attendances }
 
+                // pokud je predplacena, vytvor pole s prislusnym poctem lekci a posli ho
                 if (prepaid) {
                     const dataArray: LecturePostApi[] = []
                     let tmp = prepaidCnt
@@ -453,6 +469,7 @@ const FormLectures: React.FC<Props> = (props) => {
                         },
                     })
                 } else {
+                    // jinak posli pouze lekci
                     setIsSubmit(true)
                     createLecture.mutate(dataPost, {
                         onSuccess: () => {
@@ -551,7 +568,6 @@ const FormLectures: React.FC<Props> = (props) => {
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
                                     <Tooltip label="Datum" withinPortal zIndex={1300}>
                                         <TextInput
-                                            label="Datum"
                                             type="date"
                                             id="date"
                                             value={date}
@@ -577,7 +593,6 @@ const FormLectures: React.FC<Props> = (props) => {
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
                                     <Tooltip label="Čas začátku" withinPortal zIndex={1300}>
                                         <TextInput
-                                            label="Čas začátku"
                                             type="time"
                                             id="time"
                                             value={time}
@@ -635,7 +650,6 @@ const FormLectures: React.FC<Props> = (props) => {
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
                                     <Tooltip label="Trvání (min.)" withinPortal zIndex={1300}>
                                         <TextInput
-                                            label="Trvání (min.)"
                                             type="number"
                                             id="duration"
                                             value={duration ?? ""}

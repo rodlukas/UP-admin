@@ -1,24 +1,24 @@
 import { style } from "@vanilla-extract/css"
 
 export const attendancePaidButton = style({
-    position: "relative",
-    top: "0.06rem",
     transition: "color 0.15s ease-in-out",
     cursor: "pointer",
 })
 
 export const attendancePaidButtonSuccess = style({
+    color: "var(--mantine-color-green-7)",
     selectors: {
         "&:hover": {
-            color: "#13663f !important",
+            color: "var(--mantine-color-green-9) !important",
         },
     },
 })
 
 export const attendancePaidButtonDanger = style({
+    color: "var(--mantine-color-red-7)",
     selectors: {
         "&:hover": {
-            color: "#c72332 !important",
+            color: "var(--mantine-color-red-9) !important",
         },
     },
 })

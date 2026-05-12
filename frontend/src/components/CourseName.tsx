@@ -1,7 +1,7 @@
+import { Badge } from "@mantine/core"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { Badge } from "reactstrap"
 
 import { CourseType } from "../types/models"
 
@@ -17,8 +17,10 @@ type Props = {
 /** Komponenta pro jednotné zobrazení názvu kurzu napříč aplikací. */
 const CourseName: React.FC<Props> = ({ course, className }) => (
     <Badge
-        color="secondary"
-        pill
+        variant="filled"
+        radius="xl"
+        tt="none"
+        fz="md"
         data-qa="course_name"
         style={assignInlineVars(styles.courseNameVars, {
             color: course.color,

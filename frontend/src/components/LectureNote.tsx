@@ -1,5 +1,5 @@
+import { Badge } from "@mantine/core"
 import * as React from "react"
-import { Badge } from "reactstrap"
 
 import { AttendanceType } from "../types/models"
 
@@ -11,10 +11,15 @@ type Props = {
 }
 
 /** Komponenta zobrazující poznámku k lekci. */
-const LectureNote: React.FC<Props> = ({ attendance }) => (
-    <Badge color="secondary" data-qa="lecture_attendance_note" className={styles.lectureNote}>
-        {attendance.note}
-    </Badge>
-)
+const LectureNote: React.FC<Props> = ({ attendance }) => {
+    if (!attendance.note) {
+        return null
+    }
+    return (
+        <Badge variant="default" data-qa="lecture_attendance_note" className={styles.lectureNote}>
+            {attendance.note}
+        </Badge>
+    )
+}
 
 export default LectureNote

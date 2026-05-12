@@ -22,7 +22,6 @@ const urlProduction = "/static/assets/"
 const pathBuild = path.resolve(__dirname, "build", "assets")
 const htmlFile = "react-autogenerate.html"
 const htmlSource = path.resolve(__dirname, "src", "index.html")
-const htmlSourceDev = path.resolve(__dirname, "src", "index.dev.html")
 const htmlTarget = path.resolve(__dirname, "..", "admin", "templates")
 
 // pouziva se cross-env pro crossplatform nastaveni env promenne
@@ -115,7 +114,7 @@ module.exports = {
             alwaysWriteToDisk: true,
             scriptLoading: "defer",
             inject: "head",
-            template: isProduction ? htmlSource : htmlSourceDev,
+            template: htmlSource,
             filename: htmlFile,
             minify: isProduction
                 ? {

@@ -2,8 +2,6 @@ import { Badge, Burger } from "@mantine/core"
 import { Link, Outlet, useRouterState } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
-import { Slide, ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
 
 import { useAuthContext } from "./auth/AuthContext"
 import AppCommit from "./components/AppCommit"
@@ -78,8 +76,7 @@ const Main: React.FC = () => {
                 className={classNames("main", {
                     [styles.isAuthenticated]: authContext.isAuth,
                 })}>
-                <ToastContainer position="top-right" theme="colored" transition={Slide} />
-                <AppSpotlight />
+<AppSpotlight />
                 <React.Suspense fallback={<Loading />}>
                     <Outlet />
                 </React.Suspense>

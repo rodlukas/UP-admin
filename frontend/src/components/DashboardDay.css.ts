@@ -7,13 +7,17 @@ export const dashboardDayVars = createThemeContract({
 })
 
 export const lectureGroup = style({
-    backgroundColor: vars.bg.surface,
+    backgroundColor: vars.bg.muted,
 })
 
 export const dashboardDayDate = style({
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
     borderBottom: vars.borderShort.default,
     backgroundColor: vars.bg.surface,
-    padding: "0.8rem 0.85rem",
+    padding: "0.6rem 0.85rem",
+    minHeight: "3.25rem",
     color: "light-dark(#0f172a, var(--mantine-color-gray-1))",
 })
 
@@ -23,11 +27,14 @@ export const dashboardDayDateToday = style({
 })
 
 export const celebrationNone = style({
-    "@media": {
-        "(min-width: 576px)": {
-            paddingLeft: "2.86875rem",
-        },
-    },
+    flex: 1,
+    paddingLeft: "2.4rem",
+    minWidth: 0,
+    textAlign: "center",
+})
+
+export const dashboardDayDateAction = style({
+    flexShrink: 0,
 })
 
 export const lectureCanceledDashboardday = style({})
@@ -59,14 +66,10 @@ export const lectureFree = style({
 export const dashboardDayWrapper = style({
     position: "relative",
     border: vars.borderShort.default,
-    borderRadius: "0.55rem",
+    borderRadius: vars.radius.md,
     boxShadow: vars.shadow.card,
     backgroundColor: vars.bg.surface,
     overflow: "hidden",
-})
-
-export const floatEnd = style({
-    float: "right",
 })
 
 export const dashboardDayItem = style({

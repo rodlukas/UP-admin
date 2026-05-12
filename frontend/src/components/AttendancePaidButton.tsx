@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Tooltip } from "@mantine/core"
 import { faUsdCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
@@ -7,7 +8,6 @@ import { AnalyticsSource, trackEvent } from "../analytics"
 import { usePatchAttendance } from "../api/hooks"
 
 import * as styles from "./AttendancePaidButton.css"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** Lekce je zaplacená (true). */
@@ -37,26 +37,27 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
     const className = classNames(styles.attendancePaidButton, {
         [styles.attendancePaidButtonSuccess]: props.paid,
         [styles.attendancePaidButtonDanger]: !props.paid,
-        "text-success": props.paid,
-        "text-danger": !props.paid,
     })
     const title = `Označit lekci jako ${props.paid ? "NE" : ""}ZAPLACENOU`
     return (
-        <>
-            <FontAwesomeIcon
-                id={`AttendancePaidButton_${props.attendanceId}`}
-                icon={faUsdCircle}
-                size="2x"
-                className={className}
+        <Tooltip label={title} position="right">
+            <span
+                role="button"
+                tabIndex={0}
                 onClick={onClick}
-                data-qa="lecture_attendance_paid"
-            />
-            <UncontrolledTooltipWrapper
-                placement="right"
-                target={`AttendancePaidButton_${props.attendanceId}`}>
-                {title}
-            </UncontrolledTooltipWrapper>
-        </>
+                onKeyDown={(e): void => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        onClick()
+                    }
+                }}>
+                <FontAwesomeIcon
+                    icon={faUsdCircle}
+                    size="2x"
+                    className={className}
+                    data-qa="lecture_attendance_paid"
+                />
+            </span>
+        </Tooltip>
     )
 }
 

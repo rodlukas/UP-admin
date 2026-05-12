@@ -5,16 +5,18 @@ export const attendances = style({
     verticalAlign: "top",
 })
 
-export const attendanceNumber = style({
-    selectors: {
-        [`${attendances} &`]: {
-            marginBottom: "0.3rem",
-        },
-    },
-})
+export const attendanceNumber = style({})
 
 globalStyle(`${attendances} li`, {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "0.2rem 0.3rem",
     listStyleType: "none",
+})
+
+export const attendanceStateWrapper = style({
+    flex: "1 0 100%",
 })
 
 globalStyle(`${attendances} p`, {

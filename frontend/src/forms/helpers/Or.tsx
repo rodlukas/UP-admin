@@ -1,4 +1,4 @@
-import classNames from "classnames"
+import { Text } from "@mantine/core"
 import * as React from "react"
 
 import * as styles from "./Or.css"
@@ -10,9 +10,9 @@ type Props = {
 
 /** Komponenta pro zobrazení alternativní možnosti přidání klienta místo volby stávajícího. */
 const Or: React.FC<Props> = ({ content }) => (
-    <p className={classNames("text-secondary", styles.or)}>
+    <Text component="p" c="gray.7" className={styles.or}>
         <span>nebo</span> {content}
-    </p>
+    </Text>
 )
 
 export default Or

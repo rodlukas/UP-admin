@@ -1,4 +1,5 @@
 import { Checkbox, Group, Modal, SimpleGrid, Textarea, TextInput, Title } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import * as React from "react"
 
 import { AnalyticsSource, trackEvent } from "../analytics"
@@ -39,43 +40,23 @@ const FormClients: React.FC<Props> = (props) => {
     const updateClient = useUpdateClient()
     const deleteClient = useDeleteClient()
 
-    const [firstname, setFirstname] = React.useState(props.client.firstname)
-    const [surname, setSurname] = React.useState(props.client.surname)
-    const [email, setEmail] = React.useState(props.client.email)
-    const [phone, setPhone] = React.useState(prettyPhone(props.client.phone))
-    const [note, setNote] = React.useState(props.client.note)
-    const [active, setActive] = React.useState(props.client.active)
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-        props.setFormDirty()
-        const target = e.currentTarget
-        const value = target.value
-        if (target.id === "phone") {
-            const formatted = value
-                .replace(/(\d{3})([^\s])/, "$1 $2")
-                .replace(/(\d{3}) (\d{3})([^\s])/, "$1 $2 $3")
-            setPhone(formatted)
-        } else if (target.id === "firstname") {
-            setFirstname(capitalizeString(value))
-        } else if (target.id === "surname") {
-            setSurname(capitalizeString(value))
-        } else if (target.id === "email") {
-            setEmail(value)
-        } else if (target.id === "note") {
-            setNote(value)
-        }
-    }
-
-    const onActiveChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        props.setFormDirty()
-        setActive(e.currentTarget.checked)
-    }
+    const form = useForm({
+        initialValues: {
+            firstname: props.client.firstname,
+            surname: props.client.surname,
+            email: props.client.email,
+            phone: prettyPhone(props.client.phone),
+            note: props.client.note,
+            active: props.client.active,
+        },
+    })
 
     const onSubmit = React.useCallback(
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             // stopPropagation, aby nedoslo k propagaci submit na nadrazene formulare pri vnoreni modalnich oken
             e.stopPropagation()
             e.preventDefault()
+            const { firstname, surname, email, phone, note, active } = form.getValues()
             const dataPost = { firstname, surname, email, phone, note, active }
 
             if (isClient(props.client)) {
@@ -101,7 +82,7 @@ const FormClients: React.FC<Props> = (props) => {
                 })
             }
         },
-        [firstname, surname, email, phone, note, active, props, createClient, updateClient],
+        [form, props, createClient, updateClient],
     )
 
     const close = (): void => {
@@ -113,11 +94,14 @@ const FormClients: React.FC<Props> = (props) => {
             deleteClient.mutate(id, {
                 onSuccess: () => {
                     trackEvent("client_deleted", { source: props.source })
-                    props.funcForceClose(true, { active, isDeleted: true })
+                    props.funcForceClose(true, {
+                        active: form.getValues().active,
+                        isDeleted: true,
+                    })
                 },
             })
         },
-        [deleteClient, props, active],
+        [deleteClient, props, form],
     )
 
     const isSubmit = createClient.isPending || updateClient.isPending
@@ -126,7 +110,13 @@ const FormClients: React.FC<Props> = (props) => {
             <Modal.Header>
                 <Modal.Title>
                     {isClient(props.client) ? "Úprava" : "Přidání"} klienta:{" "}
-                    <ClientName client={{ firstname, surname }} bold />
+                    <ClientName
+                        client={{
+                            firstname: form.values.firstname,
+                            surname: form.values.surname,
+                        }}
+                        bold
+                    />
                 </Modal.Title>
                 <Modal.CloseButton />
             </Modal.Header>
@@ -139,11 +129,16 @@ const FormClients: React.FC<Props> = (props) => {
                                 <div className={styles.fieldBlock}>
                                     <TextInput
                                         id="firstname"
-                                        value={firstname}
-                                        onChange={onChange}
+                                        value={form.values.firstname}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                            props.setFormDirty()
+                                            form.setFieldValue(
+                                                "firstname",
+                                                capitalizeString(e.currentTarget.value),
+                                            )
+                                        }}
                                         label="Jméno"
                                         required
-                                        
                                         data-autofocus
                                         data-qa="client_field_firstname"
                                         spellCheck
@@ -152,11 +147,16 @@ const FormClients: React.FC<Props> = (props) => {
                                 <div className={styles.fieldBlock}>
                                     <TextInput
                                         id="surname"
-                                        value={surname}
-                                        onChange={onChange}
+                                        value={form.values.surname}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                            props.setFormDirty()
+                                            form.setFieldValue(
+                                                "surname",
+                                                capitalizeString(e.currentTarget.value),
+                                            )
+                                        }}
                                         label="Příjmení"
                                         required
-                                        
                                         data-qa="client_field_surname"
                                         spellCheck
                                     />
@@ -166,8 +166,11 @@ const FormClients: React.FC<Props> = (props) => {
                                 <TextInput
                                     type="email"
                                     id="email"
-                                    value={email}
-                                    onChange={onChange}
+                                    value={form.values.email}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                        props.setFormDirty()
+                                        form.setFieldValue("email", e.currentTarget.value)
+                                    }}
                                     label="Email"
                                     data-qa="client_field_email"
                                 />
@@ -176,9 +179,16 @@ const FormClients: React.FC<Props> = (props) => {
                                 <TextInput
                                     type="tel"
                                     id="phone"
-                                    value={phone}
+                                    value={form.values.phone}
                                     maxLength={11}
-                                    onChange={onChange}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                        props.setFormDirty()
+                                        // pri psani rozdeluj cislo na trojice
+                                        const formatted = e.currentTarget.value
+                                            .replace(/(\d{3})([^\s])/, "$1 $2")
+                                            .replace(/(\d{3}) (\d{3})([^\s])/, "$1 $2 $3")
+                                        form.setFieldValue("phone", formatted)
+                                    }}
                                     label="Telefon"
                                     description="Formát: 123 456 789"
                                     pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
@@ -189,8 +199,13 @@ const FormClients: React.FC<Props> = (props) => {
                             <div className={styles.fieldBlock}>
                                 <Textarea
                                     id="note"
-                                    value={note}
-                                    onChange={onChange}
+                                    value={form.values.note}
+                                    onChange={(
+                                        e: React.ChangeEvent<HTMLTextAreaElement>,
+                                    ): void => {
+                                        props.setFormDirty()
+                                        form.setFieldValue("note", e.currentTarget.value)
+                                    }}
                                     label="Poznámka"
                                     data-qa="client_field_note"
                                     spellCheck
@@ -207,12 +222,15 @@ const FormClients: React.FC<Props> = (props) => {
                                 <div className={styles.inlineCheckboxRow}>
                                     <Checkbox
                                         id="active"
-                                        checked={active}
-                                        onChange={onActiveChange}
+                                        checked={form.values.active}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                            props.setFormDirty()
+                                            form.setFieldValue("active", e.currentTarget.checked)
+                                        }}
                                         data-qa="client_checkbox_active"
                                         label="Je aktivní"
                                     />
-                                    {!active && (
+                                    {!form.values.active && (
                                         <Tooltip text={TEXTS.WARNING_INACTIVE_CLIENT_INFO} />
                                     )}
                                 </div>
@@ -234,7 +252,7 @@ const FormClients: React.FC<Props> = (props) => {
                                     if (
                                         isClient(props.client) &&
                                         globalThis.confirm(
-                                            `Opravdu chcete smazat klienta ${firstname} ${surname}?`,
+                                            `Opravdu chcete smazat klienta ${form.values.firstname} ${form.values.surname}?`,
                                         )
                                     ) {
                                         handleDelete(props.client.id)

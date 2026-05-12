@@ -1,12 +1,11 @@
+import { notifications } from "@mantine/notifications"
 import { useNavigate } from "@tanstack/react-router"
 import * as React from "react"
-import { toast } from "react-toastify"
 
 import { trackEvent } from "../analytics"
 import { useLogin } from "../api/hooks"
 import LoginService from "../api/services/LoginService"
 import APP_URLS from "../APP_URLS"
-import Notification from "../components/Notification"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
 import { AuthorizationType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
@@ -64,9 +63,12 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                             setIsAuth(true)
                         } catch {
                             setIsAuth(false)
-                            toast.warning(
-                                <Notification text="Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!" />,
-                            )
+                            notifications.show({
+                                message:
+                                    "Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!",
+                                color: "yellow",
+                                autoClose: false,
+                            })
                         }
                         return
                     }

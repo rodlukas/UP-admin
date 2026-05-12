@@ -4,7 +4,7 @@ import { vars } from "../theme/tokens"
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-header", {
     borderBottom: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
-    backgroundColor: vars.bg.surface,
+    backgroundColor: vars.bg.subtle,
     padding: "1rem 1.25rem 0.95rem",
 })
 
@@ -19,7 +19,7 @@ globalStyle(".mantine-Modal-content:has(form[data-qa^='form_'])", {
      * řeší `Modal.Body` s `minHeight: 0`.
      */
     border: 0,
-    borderRadius: "1rem",
+    borderRadius: vars.radius.lg,
     boxShadow:
         "0 18px 48px rgb(15 23 42 / 0.16), 0 6px 18px rgb(15 23 42 / 0.08), 0 0 0 1px light-dark(rgb(226 232 240 / 0.85), rgb(60 70 90 / 0.6))",
     backgroundColor: vars.bg.surface,
@@ -55,7 +55,7 @@ globalStyle("form[data-qa^='form_'] .mantine-Modal-title", {
 
 globalStyle(".mantine-Modal-content form[data-qa^='form_'] .mantine-Modal-body", {
     flex: "1 1 auto",
-    backgroundColor: vars.bg.surface,
+    backgroundColor: vars.bg.subtle,
     padding: "1rem 1.25rem 0.95rem",
     minWidth: 0,
     minHeight: 0,
@@ -63,8 +63,8 @@ globalStyle(".mantine-Modal-content form[data-qa^='form_'] .mantine-Modal-body",
 })
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-close", {
-    borderRadius: "0.8rem",
-    color: "light-dark(#64748b, var(--mantine-color-dark-2))",
+    borderRadius: vars.radius.md,
+    color: "light-dark(#64748b, var(--mantine-color-dark-1))",
 })
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-close:hover", {
@@ -83,10 +83,9 @@ globalStyle(
     {
         transition:
             "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out, transform 0.15s ease-in-out",
-        borderRadius: "0.9rem",
+        borderRadius: vars.radius.md,
         borderColor: "light-dark(#d7dee8, var(--mantine-color-dark-4))",
         backgroundColor: vars.bg.elevated,
-        minHeight: "2.85rem",
     },
 )
 
@@ -106,7 +105,7 @@ globalStyle(
     {
         marginTop: "0.35rem",
         lineHeight: 1.35,
-        color: "light-dark(#6b7280, var(--mantine-color-dark-2))",
+        color: "light-dark(#6b7280, var(--mantine-color-dark-1))",
         fontSize: "0.75rem",
     },
 )
@@ -131,6 +130,18 @@ globalStyle(
 globalStyle("form[data-qa^='form_'] .mantine-Checkbox-label", {
     color: vars.text.primary,
     fontWeight: 500,
+})
+
+export const modalWizardContent = style({})
+
+globalStyle(`${modalWizardContent} .mantine-Modal-header`, {
+    borderBottom: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
+    backgroundColor: vars.bg.surface,
+    padding: "1rem 1.25rem 0.95rem",
+})
+
+globalStyle(`${modalWizardContent} .mantine-Modal-body`, {
+    paddingTop: "0.85rem",
 })
 
 /** Sjednotí šířku s `Modal` size u klienta/skupiny: Přidat i Upravit stejně široké. */
@@ -164,7 +175,7 @@ export const formContent = style({
 
 export const formSection = style({
     border: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
-    borderRadius: "1rem",
+    borderRadius: vars.radius.md,
     boxShadow: "0 1px 2px rgb(15 23 42 / 0.04)",
     backgroundColor: vars.bg.elevated,
     padding: "1rem 1rem 0.95rem",
@@ -180,7 +191,7 @@ export const formPanel = style({
 export const formSectionDanger = style({
     border: "1px solid light-dark(#ffe0e5, var(--mantine-color-red-9))",
     borderLeft: "3px solid light-dark(#fa8ea0, var(--mantine-color-red-6))",
-    borderRadius: "1rem",
+    borderRadius: vars.radius.md,
     backgroundColor: "light-dark(#fff8f9, var(--mantine-color-dark-6))",
     padding: "0.95rem 1rem",
 })
@@ -213,7 +224,7 @@ export const fieldLabel = style({
 
 export const fieldHint = style({
     lineHeight: 1.35,
-    color: "light-dark(#6b7280, var(--mantine-color-dark-2))",
+    color: "light-dark(#6b7280, var(--mantine-color-dark-1))",
     fontSize: "0.75rem",
 })
 
@@ -257,7 +268,7 @@ globalStyle(`${modalActions} button`, {
 })
 
 globalStyle(`${modalActions} .mantine-Button-root`, {
-    borderRadius: "0.9rem",
+    borderRadius: vars.radius.lg,
     minHeight: "2.8rem",
     fontWeight: 600,
 })

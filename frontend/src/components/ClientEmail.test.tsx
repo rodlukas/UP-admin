@@ -1,9 +1,12 @@
+import { MantineProvider } from "@mantine/core"
 import { render, screen } from "@testing-library/react"
 
 import ClientEmail from "./ClientEmail"
 
+const renderWithMantine = (ui: React.ReactElement) => render(<MantineProvider>{ui}</MantineProvider>)
+
 test("shows email", () => {
-    render(<ClientEmail email="blabla@domena.cz" />)
+    renderWithMantine(<ClientEmail email="blabla@domena.cz" />)
     const link = screen.getByRole("link", { name: "blabla@domena.cz" })
     expect(link).toBeInTheDocument()
     expect(link).toHaveTextContent("blabla@domena.cz")
@@ -11,7 +14,7 @@ test("shows email", () => {
 })
 
 test("doesn't show empty email", () => {
-    render(<ClientEmail email="" />)
+    renderWithMantine(<ClientEmail email="" />)
     const link = screen.queryByRole("link")
     expect(link).not.toBeInTheDocument()
 })

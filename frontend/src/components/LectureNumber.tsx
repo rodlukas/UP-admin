@@ -1,7 +1,7 @@
+import { Badge } from "@mantine/core"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { Badge } from "reactstrap"
 
 import { LectureType } from "../types/models"
 
@@ -30,13 +30,10 @@ const LectureNumber: React.FC<Props> = ({
     }
     return (
         <Badge
-            color={color}
-            pill
-            className={classNames(
-                "fw-bold",
-                colorize ? styles.lectureNumber : undefined,
-                className,
-            )}
+            variant={color === "light" ? "white" : "default"}
+            radius="xl"
+            fw="bold"
+            className={classNames(colorize ? styles.lectureNumber : undefined, className)}
             style={
                 colorize
                     ? assignInlineVars(styles.lectureNumberVars, {

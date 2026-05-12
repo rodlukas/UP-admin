@@ -1,4 +1,5 @@
 import { Checkbox, Group, Modal, MultiSelect, SimpleGrid, TextInput, Title } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import * as React from "react"
 
 import { AnalyticsSource, trackEvent } from "../analytics"
@@ -14,7 +15,6 @@ import { clientName } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import {
     ClientType,
-    CourseType,
     GroupPostApi,
     GroupPostApiDummy,
     GroupPutApi,
@@ -53,10 +53,12 @@ const FormGroups: React.FC<Props> = (props) => {
     const updateGroup = useUpdateGroup()
     const deleteGroup = useDeleteGroup()
 
+    // přepraví pole se členy ve správném formátu
     const getMembersOfGroup = React.useCallback((members: MembershipType[]): ClientType[] => {
         return members.map((member) => member.client)
     }, [])
 
+    // pripravi pole se cleny ve spravnem formatu, aby slo poslat do API
     const prepareMembersForSubmit = React.useCallback(
         (members: ClientType[]): GroupPutApi["memberships"] => {
             return members.map((memberOfGroup) => ({ client_id: memberOfGroup.id }))
@@ -64,46 +66,20 @@ const FormGroups: React.FC<Props> = (props) => {
         [],
     )
 
-    const [name, setName] = React.useState(props.group.name)
-    const [active, setActive] = React.useState(props.group.active)
-    const [course, setCourse] = React.useState<GroupPostApiDummy["course"]>(props.group.course)
-    const [members, setMembers] = React.useState<ClientType[]>(
-        getMembersOfGroup(isGroup(props.group) ? props.group.memberships : []),
-    )
-
-    const onSelectChange = (
-        fieldName: "members" | "course",
-        obj?: CourseType | readonly ClientType[] | ClientType | null,
-    ): void => {
-        props.setFormDirty()
-        if (fieldName === "members") {
-            if (Array.isArray(obj)) {
-                setMembers([...obj])
-            } else {
-                setMembers([])
-            }
-        } else if (fieldName === "course") {
-            if (obj) {
-                setCourse(obj as CourseType)
-            } else {
-                setCourse(null)
-            }
-        }
-    }
-
-    const onNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        props.setFormDirty()
-        setName(e.currentTarget.value)
-    }
-
-    const onActiveChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        props.setFormDirty()
-        setActive(e.currentTarget.checked)
-    }
+    const form = useForm({
+        initialValues: {
+            name: props.group.name,
+            active: props.group.active,
+            course: props.group.course,
+            members: getMembersOfGroup(isGroup(props.group) ? props.group.memberships : []),
+        },
+        onValuesChange: () => props.setFormDirty(),
+    })
 
     const onSubmit = React.useCallback(
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
+            const { name, active, course, members } = form.getValues()
             const courseId = course!.id
             const dataPost: GroupPostApi = {
                 name,
@@ -135,7 +111,7 @@ const FormGroups: React.FC<Props> = (props) => {
                 })
             }
         },
-        [name, members, course, active, props, createGroup, updateGroup, prepareMembersForSubmit],
+        [form, props, createGroup, updateGroup, prepareMembersForSubmit],
     )
 
     const close = React.useCallback((): void => {
@@ -147,19 +123,21 @@ const FormGroups: React.FC<Props> = (props) => {
             deleteGroup.mutate(id, {
                 onSuccess: () => {
                     trackEvent("group_deleted", { source: props.source })
-                    props.funcForceClose(true, { active, isDeleted: true })
+                    props.funcForceClose(true, {
+                        active: form.getValues().active,
+                        isDeleted: true,
+                    })
                 },
             })
         },
-        [deleteGroup, props, active],
+        [deleteGroup, props, form],
     )
 
     const processAdditionOfClient = React.useCallback(
         (newClient: ClientType): void => {
-            props.setFormDirty()
-            setMembers((prev) => [...prev, newClient])
+            form.setFieldValue("members", [...form.values.members, newClient])
         },
-        [props],
+        [form],
     )
 
     const isLoading = clientsLoading || coursesVisibleContext.isLoading
@@ -170,7 +148,7 @@ const FormGroups: React.FC<Props> = (props) => {
             <Modal.Header>
                 <Modal.Title>
                     {isGroup(props.group) ? "Úprava" : "Přidání"} skupiny:{" "}
-                    <GroupName group={{ name }} bold />
+                    <GroupName group={{ name: form.values.name }} bold />
                 </Modal.Title>
                 <Modal.CloseButton />
             </Modal.Header>
@@ -185,13 +163,14 @@ const FormGroups: React.FC<Props> = (props) => {
                                 <div className={styles.fieldBlock}>
                                     <TextInput
                                         id="name"
-                                        value={name}
-                                        onChange={onNameChange}
+                                        value={form.values.name}
+                                        onChange={(e) =>
+                                            form.setFieldValue("name", e.currentTarget.value)
+                                        }
                                         label="Název skupiny"
                                         data-autofocus
                                         data-qa="group_field_name"
                                         required
-                                        
                                         spellCheck
                                     />
                                 </div>
@@ -201,8 +180,10 @@ const FormGroups: React.FC<Props> = (props) => {
                                     </label>
                                     <SelectCourse
                                         required
-                                        value={course}
-                                        onChangeCallback={onSelectChange}
+                                        value={form.values.course}
+                                        onChangeCallback={(_name, val) =>
+                                            form.setFieldValue("course", val ?? null)
+                                        }
                                         options={coursesVisibleContext.courses}
                                     />
                                 </div>
@@ -212,13 +193,18 @@ const FormGroups: React.FC<Props> = (props) => {
                                     </label>
                                     <MultiSelect
                                         id="members"
-                                        data={clientsData.map((c) => ({ value: c.id.toString(), label: clientName(c) }))}
-                                        value={members.map((m) => m.id.toString())}
+                                        data={clientsData.map((c) => ({
+                                            value: c.id.toString(),
+                                            label: clientName(c),
+                                        }))}
+                                        value={form.values.members.map((m) => m.id.toString())}
                                         onChange={(vals) => {
                                             const found = vals
-                                                .map((v) => clientsData.find((c) => c.id.toString() === v))
+                                                .map((v) =>
+                                                    clientsData.find((c) => c.id.toString() === v),
+                                                )
                                                 .filter((c): c is ClientType => c !== undefined)
-                                            onSelectChange("members", found)
+                                            form.setFieldValue("members", found)
                                         }}
                                         placeholder="Vyberte členy z existujících klientů..."
                                         searchable
@@ -245,12 +231,17 @@ const FormGroups: React.FC<Props> = (props) => {
                                         <div className={styles.inlineCheckboxRow}>
                                             <Checkbox
                                                 id="active"
-                                                checked={active}
-                                                onChange={onActiveChange}
+                                                checked={form.values.active}
+                                                onChange={(e) =>
+                                                    form.setFieldValue(
+                                                        "active",
+                                                        e.currentTarget.checked,
+                                                    )
+                                                }
                                                 data-qa="group_checkbox_active"
                                                 label="Je aktivní"
                                             />
-                                            {!active && (
+                                            {!form.values.active && (
                                                 <Tooltip
                                                     text="Neaktivním skupinám nelze vytvořit lekci."
                                                 />
@@ -272,7 +263,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                             if (
                                                 isGroup(props.group) &&
                                                 globalThis.confirm(
-                                                    `Opravdu chcete smazat skupinu ${name}?`,
+                                                    `Opravdu chcete smazat skupinu ${form.values.name}?`,
                                                 )
                                             ) {
                                                 handleDelete(props.group.id)

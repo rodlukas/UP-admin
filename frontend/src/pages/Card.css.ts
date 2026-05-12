@@ -25,6 +25,7 @@ globalStyle(`${lectureCard} h4`, {
 
 export const lectureFuture = style({
     backgroundColor: "light-dark(#fff8dd, var(--mantine-color-yellow-8))",
+    color: "light-dark(inherit, var(--mantine-color-dark-9))",
 })
 
 export const lecturePrepaid = style({
@@ -65,7 +66,7 @@ export const clientTopRow = style({
 export const clientSummaryPanel = style({
     flex: "0 0 auto",
     border: vars.borderShort.default,
-    borderRadius: "0.55rem",
+    borderRadius: vars.radius.md,
     boxShadow: vars.shadow.card,
     backgroundColor: vars.bg.surface,
     minWidth: "220px",
@@ -75,7 +76,7 @@ export const clientSummaryPanel = style({
 export const analysisPanel = style({
     flexGrow: 1,
     border: vars.borderShort.default,
-    borderRadius: "0.55rem",
+    borderRadius: vars.radius.md,
     boxShadow: vars.shadow.card,
     backgroundColor: vars.bg.surface,
     padding: "0.55rem 0.65rem",

@@ -17,11 +17,11 @@ type PlainClientNameProps = {
 
 const PlainClientName: React.FC<PlainClientNameProps> = ({ client, bold }) => (
     <span data-qa="client_name" data-gdpr>
-        <span className="fw-bold">{client.surname}</span>{" "}
+        <strong>{client.surname}</strong>{" "}
         <ConditionalWrapper
             condition={bold}
             wrapper={(children): React.ReactNode => (
-                <span className="fw-bold">{children}</span>
+                <strong>{children}</strong>
             )}>
             {client.firstname}
         </ConditionalWrapper>

@@ -1,8 +1,7 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Alert, Container, Group, SegmentedControl, Select, SimpleGrid, Skeleton, Table, Text, Title, Tooltip, useMantineColorScheme } from "@mantine/core"
-import type { MantineColorScheme } from "@mantine/core"
-import { faCheck, faDesktop, faMoon, faSun, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Alert, Container, Select, SimpleGrid, Skeleton, Table, Text, Title, Tooltip } from "@mantine/core"
+import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
 import { useCourses, usePatchAttendanceState } from "../api/hooks"
@@ -38,7 +37,6 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
 
 /** Stránka s nastavením – správa kurzů, stavů účasti, info o aplikaci. */
 const Settings: React.FC = () => {
-    const { colorScheme, setColorScheme } = useMantineColorScheme()
     const attendanceStatesContext = useAttendanceStatesContext()
     const {
         data: courses = [],
@@ -278,50 +276,6 @@ const Settings: React.FC = () => {
                             </div>
                         </div>
                     </SimpleGrid>
-                    <div className={styles.appearanceSection}>
-                        <Title order={2}>Vzhled aplikace</Title>
-                        <div className={styles.configRow}>
-                            <label htmlFor="color_scheme" className={styles.configRowLabel}>
-                                <Text component="span" fw={700}>Barevné schéma</Text>
-                            </label>
-                            <div className={styles.configRowControl}>
-                                <SegmentedControl
-                                    id="color_scheme"
-                                    value={colorScheme}
-                                    onChange={(val) => setColorScheme(val as MantineColorScheme)}
-                                    data={[
-                                        {
-                                            value: "auto",
-                                            label: (
-                                                <Group gap={6} wrap="nowrap" justify="center">
-                                                    <FontAwesomeIcon icon={faDesktop} fixedWidth />
-                                                    <span>Systém</span>
-                                                </Group>
-                                            ),
-                                        },
-                                        {
-                                            value: "light",
-                                            label: (
-                                                <Group gap={6} wrap="nowrap" justify="center">
-                                                    <FontAwesomeIcon icon={faSun} fixedWidth />
-                                                    <span>Světlý</span>
-                                                </Group>
-                                            ),
-                                        },
-                                        {
-                                            value: "dark",
-                                            label: (
-                                                <Group gap={6} wrap="nowrap" justify="center">
-                                                    <FontAwesomeIcon icon={faMoon} fixedWidth />
-                                                    <span>Tmavý</span>
-                                                </Group>
-                                            ),
-                                        },
-                                    ]}
-                                />
-                            </div>
-                        </div>
-                    </div>
                     <div className={styles.footerBlock}>
                         <p className={`${styles.footer} ${styles.emptyMessage}`}>
                             <span className={bold}>Verze aplikace:</span>{" "}

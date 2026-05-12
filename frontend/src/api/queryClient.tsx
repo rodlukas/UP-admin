@@ -1,11 +1,10 @@
+import { notifications } from "@mantine/notifications"
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import * as React from "react"
-import { toast } from "react-toastify"
 
 import APP_URLS from "../APP_URLS"
 import Token from "../auth/Token"
-import Notification from "../components/Notification"
 import { NOTIFY_TEXT } from "../global/constants"
 import { bold, italic } from "../global/utility.css"
 
@@ -94,7 +93,9 @@ function handleError(axiosError: AxiosError, getNavigate?: () => NavigateFn | un
     logErrorToConsole(axiosError, djangoError)
 
     const errorMessage = getErrorMessage(errorResponse, djangoError)
-    toast.error(<Notification text={errorMessage} />, {
+    notifications.show({
+        message: typeof errorMessage === "string" ? errorMessage : <>{errorMessage}</>,
+        color: "red",
         autoClose: 15000,
     })
 
@@ -152,7 +153,9 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                 // Získáme success zprávu z mutation meta, pokud je k dispozici
                 const successMessage = mutation.options.meta?.successMessage as string | undefined
 
-                toast.success(<Notification text={successMessage} />, {
+                notifications.show({
+                    message: successMessage ?? "Uloženo",
+                    color: "green",
                     autoClose: 4000,
                 })
             },

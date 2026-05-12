@@ -1,9 +1,11 @@
 import { config } from "@fortawesome/fontawesome-svg-core"
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { localStorageColorSchemeManager, MantineProvider } from "@mantine/core"
-import * as Sentry from "@sentry/browser"
 import "@mantine/core/styles.css"
+import { Notifications } from "@mantine/notifications"
+import "@mantine/notifications/styles.css"
 import "@mantine/spotlight/styles.css"
+import * as Sentry from "@sentry/browser"
 import { RouterProvider } from "@tanstack/react-router"
 import * as React from "react"
 import { createRoot } from "react-dom/client"
@@ -39,6 +41,7 @@ const App: React.FC = () => (
         theme={theme}
         defaultColorScheme="auto"
         colorSchemeManager={colorSchemeManager}>
+        <Notifications position="top-right" />
         <RouterProvider router={router} />
     </MantineProvider>
 )

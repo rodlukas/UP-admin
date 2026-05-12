@@ -1,5 +1,5 @@
+import { Button } from "@mantine/core"
 import * as React from "react"
-import { Button, ButtonGroup } from "reactstrap"
 
 import { AnalyticsSource, trackEvent } from "../../analytics"
 
@@ -16,6 +16,8 @@ type Props = {
 
 /** Přepínač ne/aktivních skupin/klientů. */
 const ActiveSwitcher: React.FC<Props> = (props) => {
+    const inactive = props.active === false
+
     function onSwitcherChange(e: React.MouseEvent<HTMLButtonElement>): void {
         const target = e.currentTarget
         const value = target.dataset.value === "true"
@@ -27,24 +29,24 @@ const ActiveSwitcher: React.FC<Props> = (props) => {
     }
 
     return (
-        <ButtonGroup className={styles.activeSwitcher}>
+        <Button.Group className={styles.activeSwitcher}>
             <Button
-                color="secondary"
+                variant={props.active ? "filled" : "default"}
+                color="blue"
                 data-value={true}
                 onClick={onSwitcherChange}
-                active={props.active}
                 data-qa="button_switcher_active">
                 Aktivní
             </Button>
             <Button
-                color="secondary"
+                variant={inactive ? "filled" : "default"}
+                color="blue"
                 data-value={false}
                 onClick={onSwitcherChange}
-                active={!props.active}
                 data-qa="button_switcher_inactive">
                 Neaktivní
             </Button>
-        </ButtonGroup>
+        </Button.Group>
     )
 }
 

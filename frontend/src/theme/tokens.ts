@@ -33,9 +33,11 @@ export const vars = {
         xl: "var(--mantine-radius-xl)",
         pill: "999px",
     },
+    // box-shadow neumožňuje light-dark() (jde jen o barvy), proto používáme pure-black
+    // s vyšší opacitou — černé stíny jsou viditelné v obou barevných schématech.
     shadow: {
-        card: "0 14px 30px rgb(15 23 42 / 0.08), 0 4px 12px rgb(15 23 42 / 0.06)",
-        elevated: "0 18px 34px rgb(15 23 42 / 0.12), 0 6px 14px rgb(15 23 42 / 0.06)",
+        card: "0 14px 30px rgb(0 0 0 / 0.12), 0 4px 12px rgb(0 0 0 / 0.08)",
+        elevated: "0 18px 34px rgb(0 0 0 / 0.18), 0 6px 14px rgb(0 0 0 / 0.1)",
         focusRing: "0 0 0 0.18rem rgb(34 139 230 / 0.16)",
     },
     // Adaptivní hodnoty (light-dark)

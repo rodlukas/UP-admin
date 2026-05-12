@@ -145,7 +145,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                 </Title>
                 <ModalLecturesWizard
                     date={props.date}
-                    dropdownClassName={styles.floatEnd}
+                    dropdownClassName={styles.dashboardDayDateAction}
                     dropdownSize="sm"
                     dropdownDirection="up"
                     isFetching={isFetching && !isLoading}

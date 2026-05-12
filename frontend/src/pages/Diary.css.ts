@@ -31,7 +31,7 @@ export const disabledLink = style({
 export const arrowLink = style({
     display: "inline-flex",
     outline: "none",
-    borderRadius: "999px",
+    borderRadius: vars.radius.pill,
     selectors: {
         "&:focus-visible": {
             boxShadow: "0 0 0 0.23rem rgb(13 110 253 / 0.35)",
@@ -42,7 +42,7 @@ export const arrowLink = style({
 export const arrowBtn = style({
     transition: "all 0.15s ease-in-out",
     marginTop: "0.15rem",
-    borderRadius: "999px",
+    borderRadius: vars.radius.pill,
     boxShadow: "0 4px 10px rgb(15 23 42 / 0.1)",
     backgroundColor: "light-dark(#e2e8f0, var(--mantine-color-dark-5))",
     cursor: "pointer",

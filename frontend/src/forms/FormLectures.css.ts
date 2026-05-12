@@ -29,7 +29,7 @@ export const attendancePaidCol = style({
 
 export const sectionCard = style({
     border: "1px solid light-dark(#e9eef5, var(--mantine-color-dark-4))",
-    borderRadius: "0.9rem",
+    borderRadius: vars.radius.lg,
     backgroundColor: vars.bg.elevated,
     padding: "0.95rem 1rem",
     selectors: {
@@ -49,7 +49,7 @@ export const sectionTitle = style({
 })
 
 export const attendeeBlock = style({
-    borderRadius: "0.75rem",
+    borderRadius: vars.radius.md,
     backgroundColor: "light-dark(#f8fafc, var(--mantine-color-dark-5))",
     padding: "0.85rem 0.9rem",
     selectors: {
@@ -62,7 +62,7 @@ export const attendeeBlock = style({
 export const infoNotice = style({
     border: "1px solid light-dark(#dbeafe, var(--mantine-color-blue-9))",
     borderLeft: "3px solid light-dark(#60a5fa, var(--mantine-color-blue-6))",
-    borderRadius: "0.8rem",
+    borderRadius: vars.radius.md,
     backgroundColor: "light-dark(#f8fbff, var(--mantine-color-dark-5))",
     padding: "0.75rem 0.9rem",
     color: "light-dark(#334155, var(--mantine-color-gray-2))",
@@ -70,8 +70,8 @@ export const infoNotice = style({
 
 export const warningNotice = style({
     border: "1px solid light-dark(#fde7c7, var(--mantine-color-orange-9))",
-    borderLeft: "3px solid #f59e0b",
-    borderRadius: "0.8rem",
+    borderLeft: "3px solid light-dark(#f59e0b, var(--mantine-color-yellow-7))",
+    borderRadius: vars.radius.md,
     backgroundColor: "light-dark(#fffaf0, var(--mantine-color-dark-5))",
     padding: "0.75rem 0.9rem",
     color: "light-dark(#334155, var(--mantine-color-gray-2))",

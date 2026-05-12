@@ -1,7 +1,7 @@
 import * as React from "react"
-import { Modal } from "reactstrap"
 
 import { AnalyticsSource } from "../analytics"
+import BaseModal from "../components/BaseModal"
 import { DefaultValuesForLecture } from "../global/utils"
 import useModal from "../hooks/useModal"
 import { ClientType, GroupType, LectureType } from "../types/models"
@@ -55,12 +55,13 @@ const ModalLecturesCore: React.FC<Props> = ({
 
     // komponente muze prijit object=null (pri zavirani v ModalLecturesWizard), proto osetreni "object &&"
     return (
-        <Modal
-            isOpen={isModal}
-            toggle={(): void => funcWrapper(toggleModal)}
-            size="lg"
-            className={styles.modalFormLecture}
-            onClosed={processOnModalClose}>
+        <BaseModal
+            opened={isModal}
+            onClose={(): void => funcWrapper(toggleModal)}
+            withCloseButton={false}
+            size="74rem"
+            classNames={{ content: styles.modalFormLecture }}
+            transitionProps={{ onExited: processOnModalClose }}>
             {object && (
                 <FormLectures
                     lecture={currentLecture ?? DummyLecture}
@@ -77,7 +78,7 @@ const ModalLecturesCore: React.FC<Props> = ({
                     source={source}
                 />
             )}
-        </Modal>
+        </BaseModal>
     )
 }
 

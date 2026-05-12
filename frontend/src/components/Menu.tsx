@@ -1,25 +1,22 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faExternalLink } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Button, Kbd, UnstyledButton } from "@mantine/core"
+import { spotlight } from "@mantine/spotlight"
+import { faExternalLink, faSearch } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { Link, LinkProps } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
-import { Button, Nav, NavItem, NavLink } from "reactstrap"
 
 import APP_URLS from "../APP_URLS"
 import AuthChecking from "../auth/AuthChecking"
 import { useAuthContext } from "../auth/AuthContext"
 import { fEmptyVoid, QA } from "../types/types"
 
+import ColorSchemeToggle from "./ColorSchemeToggle"
 import * as styles from "./Menu.css"
-import SearchInput from "./SearchInput"
 
 type Props = {
     /** Funkce pro zavření otevřeného hamburger menu. */
     closeNavbar: fEmptyVoid
-    /** Funkce, která se zavolá při úpravě vyhledávaného výrazu. */
-    onSearchChange: (newSearchVal: string) => void
-    /** Hledaný výraz. */
-    searchVal: string
 }
 
 type MyNavLinkProps = {
@@ -42,10 +39,10 @@ const MyNavLink: React.FC<MyNavLinkProps> = ({
         onClick={onCloseNavbar}
         activeOptions={{ exact }}
         activeProps={{
-            className: classNames("nav-link", className, activeClassName),
+            className: classNames(styles.navLink, className, activeClassName),
         }}
         inactiveProps={{
-            className: classNames("nav-link", className),
+            className: classNames(styles.navLink, className),
         }}
     />
 )
@@ -54,7 +51,6 @@ const MyNavLink: React.FC<MyNavLinkProps> = ({
 const Menu: React.FC<Props> = (props) => {
     const authContext = useAuthContext()
     const onClickLogout = () => {
-        // pri odhlaseni chceme zavrit menu
         props.closeNavbar()
         authContext.logout()
     }
@@ -63,76 +59,89 @@ const Menu: React.FC<Props> = (props) => {
         <>
             {authContext.isAuth && (
                 <>
-                    <SearchInput
-                        onSearchChange={props.onSearchChange}
-                        searchVal={props.searchVal}
-                    />
-                    <Nav className="ms-auto" navbar>
-                        <NavItem>
+                    <UnstyledButton
+                        onClick={spotlight.open}
+                        className={styles.spotlightButton}
+                        aria-label="Otevřít vyhledávání (Ctrl+K)">
+                        <FontAwesomeIcon icon={faSearch} fixedWidth />
+                        <span className={styles.spotlightButtonLabel}>
+                            Hledat klienta, skupinu...
+                        </span>
+                        <Kbd size="xs">⌘K</Kbd>
+                    </UnstyledButton>
+                    <ul className={styles.navList}>
+                        <li>
                             <MyNavLink
                                 exact
                                 to={APP_URLS.prehled.url}
                                 onCloseNavbar={props.closeNavbar}>
                                 Přehled
                             </MyNavLink>
-                        </NavItem>
-                        <NavItem>
+                        </li>
+                        <li>
                             <MyNavLink to={APP_URLS.diar.url} onCloseNavbar={props.closeNavbar}>
                                 Diář
                             </MyNavLink>
-                        </NavItem>
-                        <NavItem>
+                        </li>
+                        <li>
                             <MyNavLink
                                 to={APP_URLS.klienti.url}
                                 data-qa="menu_clients"
                                 onCloseNavbar={props.closeNavbar}>
                                 Klienti
                             </MyNavLink>
-                        </NavItem>
-                        <NavItem>
+                        </li>
+                        <li>
                             <MyNavLink
                                 to={APP_URLS.skupiny.url}
                                 data-qa="menu_groups"
                                 onCloseNavbar={props.closeNavbar}>
                                 Skupiny
                             </MyNavLink>
-                        </NavItem>
-                        <NavItem>
+                        </li>
+                        <li>
                             <MyNavLink
                                 to={APP_URLS.zajemci.url}
                                 data-qa="menu_applications"
                                 onCloseNavbar={props.closeNavbar}>
                                 Zájemci
                             </MyNavLink>
-                        </NavItem>
-                        <NavItem>
+                        </li>
+                        <li>
                             <MyNavLink
                                 to={APP_URLS.statistiky.url}
                                 data-qa="menu_statistics"
                                 onCloseNavbar={props.closeNavbar}>
                                 Statistiky
                             </MyNavLink>
-                        </NavItem>
-                        <NavItem>
+                        </li>
+                        <li>
                             <MyNavLink
                                 to={APP_URLS.nastaveni.url}
                                 data-qa="menu_settings"
                                 onCloseNavbar={props.closeNavbar}>
                                 Nastavení
                             </MyNavLink>
-                        </NavItem>
-                        <NavItem>
-                            <NavLink
+                        </li>
+                        <li>
+                            <a
                                 href="https://uspesnyprvnacek.cz/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={styles.navExternalLink}>
+                                className={classNames(styles.navLink, styles.navExternalLink)}>
                                 Web&nbsp;
                                 <FontAwesomeIcon icon={faExternalLink} />
-                            </NavLink>
-                        </NavItem>
-                    </Nav>
-                    <Button color="secondary" onClick={onClickLogout} data-qa="button_logout">
+                            </a>
+                        </li>
+                    </ul>
+                    <ColorSchemeToggle />
+                    <Button
+                        variant="filled"
+                        color="gray"
+                        size="sm"
+                        onClick={onClickLogout}
+                        data-qa="button_logout"
+                        className={styles.logoutButton}>
                         Odhlásit
                     </Button>
                     <AuthChecking />

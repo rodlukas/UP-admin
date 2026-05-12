@@ -4,7 +4,7 @@ import { vars } from "../theme/tokens"
 
 export const memberCard = style({
     border: vars.borderShort.default,
-    borderRadius: "0.55rem",
+    borderRadius: vars.radius.md,
     boxShadow: "0 12px 24px rgb(15 23 42 / 0.08)",
     backgroundColor: vars.bg.surface,
     padding: "0.8rem",

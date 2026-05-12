@@ -12,7 +12,7 @@ export const loginContainer = style({
 
 export const loginCard = style({
     border: vars.borderShort.default,
-    borderRadius: "0.75rem",
+    borderRadius: vars.radius.md,
     boxShadow: "0 22px 44px rgb(15 23 42 / 0.12), 0 8px 16px rgb(15 23 42 / 0.06)",
     backgroundColor: vars.bg.surface,
     padding: "2.25rem",

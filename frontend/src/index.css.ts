@@ -6,6 +6,18 @@ globalStyle("html, body, .main, .root", {
     backgroundColor: "light-dark(#e9eef5, var(--mantine-color-dark-9))",
 })
 
+/**
+ * Mantine v9 default `dark-2` (#828282) má kontrast ~4.3:1 na `dark-7` pozadí (#242424) —
+ * těsně pod WCAG AA hranicí pro normální text. Přemapováváme `dimmed` a `placeholder` na světlejší
+ * odstíny, aby byl kontrast lepší v dark mode.
+ */
+globalStyle(":root[data-mantine-color-scheme='dark']", {
+    vars: {
+        "--mantine-color-dimmed": "var(--mantine-color-dark-1)",
+        "--mantine-color-placeholder": "var(--mantine-color-dark-2)",
+    },
+})
+
 globalStyle("body", {
     backgroundImage:
         "light-dark(radial-gradient(circle at 0% 0%, #f6f9ff 0%, #e9eef5 45%, #e6edf5 100%), none)",
@@ -55,7 +67,7 @@ globalStyle("label", {
 /**************************** REACT-TOASTIFY ****************************/
 
 globalStyle(".Toastify__toast--warning", {
-    background: "#e7b90f !important",
+    background: "light-dark(#e7b90f, #a8870a) !important",
 })
 
 globalStyle(".Toastify__toast", {

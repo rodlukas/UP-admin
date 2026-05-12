@@ -107,12 +107,14 @@ const Clients: React.FC = () => {
             />
             {active && !clientsActiveContext.isLoading && staleClients.length > 0 && (
                 <Alert color="yellow" className={styles.staleAlert}>
-                    <Group gap="sm" wrap="wrap">
-                        <FontAwesomeIcon icon={faHourglassEnd} />
-                        <span>
-                            {staleClients.length} {staleText} lekci déle než{" "}
-                            {DAYS_WITHOUT_LECTURE_WARNING} dní.
-                        </span>
+                    <Group justify="space-between" wrap="wrap" gap="sm">
+                        <Group gap="sm" wrap="nowrap">
+                            <FontAwesomeIcon icon={faHourglassEnd} />
+                            <span>
+                                {staleClients.length} {staleText} lekci déle než{" "}
+                                {DAYS_WITHOUT_LECTURE_WARNING} dní.
+                            </span>
+                        </Group>
                         <Button
                             color="yellow"
                             size="sm"

@@ -11,7 +11,7 @@ export const course = style({
     display: "flex",
     flexDirection: "column",
     border: vars.borderShort.default,
-    borderRadius: "0.6rem",
+    borderRadius: vars.radius.md,
     boxShadow: vars.shadow.card,
     backgroundColor: vars.bg.surface,
     overflow: "hidden",
@@ -68,7 +68,7 @@ export const courseHeading = style({
 export const applicationMeta = style({
     marginTop: "0.25rem",
     width: "100%",
-    color: "light-dark(#475569, var(--mantine-color-dark-2))",
+    color: "light-dark(#475569, var(--mantine-color-dark-1))",
     "@media": {
         "(min-width: 768px)": {
             flex: "0 0 41.666667%",

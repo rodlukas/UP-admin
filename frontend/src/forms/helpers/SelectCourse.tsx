@@ -16,6 +16,8 @@ type SelectCourseProps = {
     isDisabled?: boolean
     /** Povinné pole (vizuální, validace probíhá v nadřazeném formuláři). */
     required?: boolean
+    /** Popisek pole (předán Mantine Select jako label). */
+    label?: string
 }
 
 /** Pomocná komponenta – barevné kolečko kurzu v option. */
@@ -24,7 +26,14 @@ const CourseDot: React.FC<{ color: string }> = ({ color }) => (
 )
 
 /** Komponenta s Mantine Select pro výběr kurzu (zobrazuje barevné kolečko u každé položky). */
-const SelectCourse: React.FC<SelectCourseProps> = ({ value, onChangeCallback, options = [], isDisabled = false }) => {
+const SelectCourse: React.FC<SelectCourseProps> = ({
+    value,
+    onChangeCallback,
+    options = [],
+    isDisabled = false,
+    required = false,
+    label,
+}) => {
     const data = options.map((c) => ({ value: c.id.toString(), label: c.name }))
 
     return (
@@ -36,9 +45,11 @@ const SelectCourse: React.FC<SelectCourseProps> = ({ value, onChangeCallback, op
                 const found = options.find((c) => c.id.toString() === val) ?? null
                 onChangeCallback("course", found)
             }}
+            label={label}
             placeholder="Vyberte kurz..."
             searchable
-            clearable
+            clearable={!required}
+            withAsterisk={required}
             disabled={isDisabled}
             comboboxProps={{ withinPortal: true }}
             renderOption={({ option }) => {

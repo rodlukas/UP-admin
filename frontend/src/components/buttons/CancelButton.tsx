@@ -1,9 +1,13 @@
+import { Button, ButtonProps } from "@mantine/core"
 import * as React from "react"
-import { Button, ButtonProps } from "reactstrap"
+
+type Props = Omit<ButtonProps, "children"> & {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+}
 
 /** Tlačítko pro storno v rámci aplikace. */
-const CancelButton: React.FC<ButtonProps> = ({ onClick }) => (
-    <Button color="secondary" onClick={onClick}>
+const CancelButton: React.FC<Props> = ({ onClick, ...props }) => (
+    <Button variant="default" onClick={onClick} {...props}>
         Storno
     </Button>
 )

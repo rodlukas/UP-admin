@@ -1,6 +1,6 @@
+import { Badge } from "@mantine/core"
 import classNames from "classnames"
 import * as React from "react"
-import { Badge } from "reactstrap"
 
 import { AnalyticsSource } from "../analytics"
 import { AttendanceType, LectureType } from "../types/models"
@@ -29,19 +29,23 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
         {attendance.number && (
             <>
                 <Badge
-                    color="secondary"
-                    pill
-                    className={classNames(styles.attendanceNumber, "fw-bold")}>
+                    variant="default"
+                    radius="xl"
+                    fw="bold"
+                    className={classNames(styles.attendanceNumber)}>
                     {attendance.number}
                 </Badge>{" "}
             </>
         )}
-        <AttendanceRemindPay attendance={attendance} /> <LectureNote attendance={attendance} />
-        <AttendanceSelectAttendanceState
-            value={attendance.attendancestate}
-            attendanceId={attendance.id}
-            source={source}
-        />
+        <AttendanceRemindPay attendance={attendance} />
+        <LectureNote attendance={attendance} />
+        <div className={styles.attendanceStateWrapper}>
+            <AttendanceSelectAttendanceState
+                value={attendance.attendancestate}
+                attendanceId={attendance.id}
+                source={source}
+            />
+        </div>
     </li>
 )
 

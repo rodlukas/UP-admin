@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { TextInput, Title } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import { faLock, faUser } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { Navigate } from "@tanstack/react-router"
 import * as React from "react"
@@ -7,7 +8,6 @@ import * as React from "react"
 import APP_URLS from "../APP_URLS"
 import { useAuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
-import useForm from "../hooks/useForm"
 import { AuthorizationType } from "../types/models"
 
 import * as styles from "./Login.css"
@@ -25,21 +25,20 @@ const Login: React.FC = () => {
     const usernameField = React.useRef<HTMLInputElement | null>(null)
     const passwordField = React.useRef<HTMLInputElement | null>(null)
 
-    const [values, handleChange, handleSubmit] = useForm<AuthorizationType>(
-        {
+    const form = useForm<AuthorizationType>({
+        initialValues: {
             username: "",
             password: "",
         },
-        login,
-    )
+    })
 
     function login(): void {
         // workaround kvuli https://github.com/facebook/react/issues/1159
         // - nefunkcni autocomplete v nekterych prohlizecich (predevsim mobily)
-        // - v idealnim svete zde bude jen: authContextLogin(values)
+        // - v idealnim svete zde bude jen: authContextLogin(form.values)
         const valuesCurrent: AuthorizationType = {
-            username: usernameField.current ? usernameField.current.value : values.username,
-            password: passwordField.current ? passwordField.current.value : values.password,
+            username: usernameField.current ? usernameField.current.value : form.values.username,
+            password: passwordField.current ? passwordField.current.value : form.values.password,
         }
         void authContextLogin(valuesCurrent)
     }
@@ -74,16 +73,15 @@ const Login: React.FC = () => {
                     ÚP<sub>admin</sub>
                 </Title>
                 <p className={styles.subtitle}>Přihlaste se do administračního systému</p>
-                <form onSubmit={handleSubmit} data-qa="form_login">
+                <form onSubmit={form.onSubmit(login)} data-qa="form_login">
                     <div className={styles.fieldWrapper}>
                         <TextInput
                             leftSection={<FontAwesomeIcon icon={faUser} fixedWidth />}
                             type="text"
                             id="username"
                             name="username"
-                            value={values.username}
+                            {...form.getInputProps("username")}
                             ref={usernameField}
-                            onChange={handleChange}
                             required
                             autoCapitalize="none"
                             autoComplete="username"
@@ -99,9 +97,8 @@ const Login: React.FC = () => {
                             type="password"
                             id="password"
                             name="password"
-                            value={values.password}
+                            {...form.getInputProps("password")}
                             ref={passwordField}
-                            onChange={handleChange}
                             required
                             autoComplete="current-password"
                             aria-label="Heslo"

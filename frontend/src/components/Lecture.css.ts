@@ -7,7 +7,7 @@ export const lecture = style({
 })
 
 export const lectureCanceled = style({
-    backgroundColor: "#f8d7da",
+    backgroundColor: "light-dark(#f8d7da, var(--mantine-color-red-9))",
 })
 
 globalStyle(`${lectureCanceled} h4 span`, {

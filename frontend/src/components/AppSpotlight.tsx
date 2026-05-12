@@ -1,5 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Spotlight, SpotlightActionData, SpotlightFilterFunction } from "@mantine/spotlight"
+import {
+    Spotlight,
+    SpotlightActionData,
+    SpotlightActionGroupData,
+    SpotlightFilterFunction,
+} from "@mantine/spotlight"
 import { faUser, faUsers } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { useNavigate } from "@tanstack/react-router"
 import Fuse, { IFuseOptions } from "fuse.js"
@@ -8,7 +13,7 @@ import * as React from "react"
 import { trackEvent } from "../analytics"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
-import { clientName } from "../global/utils"
+import { clientName, prettyPhone } from "../global/utils"
 import { ClientActiveType, GroupType } from "../types/models"
 
 const clientFuseOptions: IFuseOptions<ClientActiveType> = {
@@ -23,6 +28,24 @@ const groupFuseOptions: IFuseOptions<GroupType> = {
     ignoreDiacritics: true,
     threshold: 0.4,
     keys: ["name"],
+}
+
+const buildClientDescription = (client: ClientActiveType): string | undefined => {
+    const parts = [
+        client.phone ? prettyPhone(client.phone) : null,
+        client.email || null,
+    ].filter(Boolean)
+    return parts.length > 0 ? parts.join(" · ") : undefined
+}
+
+const buildGroupDescription = (group: GroupType): string | undefined => {
+    const memberCount = group.memberships.length
+    const courseName = group.course?.name
+    const parts = [
+        courseName ? `kurz: ${courseName}` : null,
+        memberCount > 0 ? `${memberCount} ${memberCount === 1 ? "člen" : memberCount < 5 ? "členové" : "členů"}` : null,
+    ].filter(Boolean)
+    return parts.length > 0 ? parts.join(" · ") : undefined
 }
 
 /** Spotlight pro globální vyhledávání klientů a skupin. */
@@ -47,9 +70,8 @@ const AppSpotlight: React.FC = () => {
             clientsActiveContext.clients.map((client) => ({
                 id: `client-${client.id}`,
                 label: clientName(client),
-                description: [client.phone, client.email].filter(Boolean).join(" · ") || undefined,
+                description: buildClientDescription(client),
                 leftSection: <FontAwesomeIcon icon={faUser} fixedWidth />,
-                group: "Klienti",
                 onClick: () => {
                     void navigate({ to: "/klienti/$id", params: { id: String(client.id) } })
                 },
@@ -62,8 +84,8 @@ const AppSpotlight: React.FC = () => {
             groupsActiveContext.groups.map((group) => ({
                 id: `group-${group.id}`,
                 label: group.name,
+                description: buildGroupDescription(group),
                 leftSection: <FontAwesomeIcon icon={faUsers} fixedWidth />,
-                group: "Skupiny",
                 onClick: () => {
                     void navigate({ to: "/skupiny/$id", params: { id: String(group.id) } })
                 },
@@ -71,20 +93,27 @@ const AppSpotlight: React.FC = () => {
         [groupsActiveContext.groups, navigate],
     )
 
-    const actions = React.useMemo(
-        () => [...clientActions, ...groupActions],
-        [clientActions, groupActions],
-    )
+    const actions = React.useMemo<(SpotlightActionData | SpotlightActionGroupData)[]>(() => {
+        const groups: SpotlightActionGroupData[] = []
+        if (clientActions.length > 0) {
+            groups.push({
+                group: `Klienti (${clientActions.length})`,
+                actions: clientActions,
+            })
+        }
+        if (groupActions.length > 0) {
+            groups.push({
+                group: `Skupiny (${groupActions.length})`,
+                actions: groupActions,
+            })
+        }
+        return groups
+    }, [clientActions, groupActions])
 
     const filter = React.useCallback<SpotlightFilterFunction>(
         (query, actionsToFilter) => {
             if (!query.trim()) {
                 return actionsToFilter
-            }
-
-            if (!searchTrackedRef.current) {
-                trackEvent("search_used", { has_results: actionsToFilter.length > 0 })
-                searchTrackedRef.current = true
             }
 
             const clientResults = clientFuse.search(query)
@@ -93,12 +122,38 @@ const AppSpotlight: React.FC = () => {
             const groupResults = groupFuse.search(query)
             const groupIds = new Set(groupResults.map((r) => `group-${r.item.id}`))
 
-            return actionsToFilter.filter((action): action is SpotlightActionData => {
-                if (!("id" in action)) {
-                    return false
-                }
-                return clientIds.has(action.id) || groupIds.has(action.id)
-            })
+            if (!searchTrackedRef.current) {
+                trackEvent("search_used", { has_results: clientResults.length + groupResults.length > 0 })
+                searchTrackedRef.current = true
+            }
+
+            const matches = (action: SpotlightActionData): boolean =>
+                clientIds.has(action.id) || groupIds.has(action.id)
+
+            const isGroupEntry = (
+                entry: SpotlightActionData | SpotlightActionGroupData,
+            ): entry is SpotlightActionGroupData => "actions" in entry
+
+            return actionsToFilter
+                .map((entry) => {
+                    if (isGroupEntry(entry)) {
+                        return { ...entry, actions: entry.actions.filter(matches) }
+                    }
+                    return matches(entry) ? entry : null
+                })
+                .filter(
+                    (
+                        entry,
+                    ): entry is SpotlightActionData | SpotlightActionGroupData => {
+                        if (!entry) {
+                            return false
+                        }
+                        if (isGroupEntry(entry)) {
+                            return entry.actions.length > 0
+                        }
+                        return true
+                    },
+                )
         },
         [clientFuse, groupFuse],
     )
@@ -110,13 +165,15 @@ const AppSpotlight: React.FC = () => {
     return (
         <Spotlight
             actions={actions}
-            nothingFound="Žádné výsledky"
+            nothingFound="Žádné výsledky odpovídající dotazu."
             shortcut={["mod + K", "/"]}
-            limit={10}
+            limit={20}
+            highlightQuery
+            scrollAreaProps={{ mah: 420 }}
             filter={filter}
             onSpotlightClose={onSpotlightClose}
             searchProps={{
-                placeholder: "Vyhledat klienta...",
+                placeholder: "Vyhledat klienta nebo skupinu…",
                 "aria-label": "Globální vyhledávání",
             }}
         />

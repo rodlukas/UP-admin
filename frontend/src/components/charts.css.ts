@@ -4,7 +4,7 @@ import { vars } from "../theme/tokens"
 
 export const chartBaseStyles = {
     border: vars.borderShort.default,
-    borderRadius: "0.55rem",
+    borderRadius: vars.radius.md,
     backgroundColor: vars.bg.surface,
 }
 

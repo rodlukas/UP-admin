@@ -1,9 +1,9 @@
+import { Tooltip } from "@mantine/core"
 import * as React from "react"
 
 import { USER_CELEBRATION } from "../global/constants"
 
 import * as styles from "./Celebration.css"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** ID označující, co slaví lektorka (svátek/narozeniny/nic). */
@@ -16,16 +16,13 @@ const Celebration: React.FC<Props> = ({ isUserCelebratingResult }) => {
         return null
     }
     return (
-        <>
-            <UncontrolledTooltipWrapper placement="top" target="Celebration">
-                Všechno nejlepší k{" "}
-                {isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozeninám" : "svátku"}!
-                😍
-            </UncontrolledTooltipWrapper>
-            <span id="Celebration" role="img" aria-label="Konfety" className={styles.celebration}>
+        <Tooltip
+            label={`Všechno nejlepší k ${isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozeninám" : "svátku"}! 😍`}
+            position="top">
+            <span role="img" aria-label="Konfety" className={styles.celebration}>
                 🎉
             </span>
-        </>
+        </Tooltip>
     )
 }
 

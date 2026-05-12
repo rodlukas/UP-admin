@@ -1,10 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Tooltip } from "@mantine/core"
 import { faCommentAltDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
 import { AttendanceType } from "../types/models"
-
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** Účast klienta na lekci. */
@@ -17,18 +16,16 @@ const AttendanceRemindPay: React.FC<Props> = ({ attendance }) => {
         return null
     }
     return (
-        <>
-            <FontAwesomeIcon
-                id={`RemindPay_${attendance.id}`}
-                icon={faCommentAltDollar}
-                size="lg"
-                className="text-warning"
-                transform="up-4"
-            />
-            <UncontrolledTooltipWrapper target={`RemindPay_${attendance.id}`}>
-                Příště platit
-            </UncontrolledTooltipWrapper>
-        </>
+        <Tooltip label="Příště platit">
+            <span>
+                <FontAwesomeIcon
+                    icon={faCommentAltDollar}
+                    size="lg"
+                    color="var(--mantine-color-yellow-6)"
+                    transform="up-4"
+                />
+            </span>
+        </Tooltip>
     )
 }
 
