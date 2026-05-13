@@ -76,3 +76,13 @@ globalStyle(".gdpr [data-gdpr]", {
     backgroundColor: "currentcolor !important",
     userSelect: "none",
 })
+
+// Mantine Spotlight nepodporuje ReactNode pro label/description, takže data-gdpr nelze použít.
+// V GDPR módu skryjeme jména/telefony/emaily klientů přes stabilní statické třídy Mantine.
+globalStyle(
+    ".gdpr .mantine-Spotlight-actionLabel, .gdpr .mantine-Spotlight-actionDescription",
+    {
+        backgroundColor: "currentcolor !important",
+        userSelect: "none",
+    },
+)

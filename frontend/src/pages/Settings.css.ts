@@ -56,7 +56,7 @@ export const configListItem = style({
     padding: "0.55rem 0",
     selectors: {
         "& + &": {
-            borderTop: "1px solid var(--mantine-color-gray-2)",
+            borderTop: vars.borderShort.default,
         },
     },
 })

@@ -22,8 +22,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ title, children }) => {
     const locationPathname = useRouterState({
         select: (state) => state.location.pathname,
     })
-    const rawPathname = globalThis.location?.pathname ?? locationPathname
-    const redirectPath = rawPathname === APP_URLS.prihlasit.url ? undefined : rawPathname
+    const redirectPath = locationPathname === APP_URLS.prihlasit.url ? undefined : locationPathname
 
     if (!authContext.isAuth) {
         return (

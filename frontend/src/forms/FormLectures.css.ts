@@ -78,11 +78,11 @@ export const warningNotice = style({
 })
 
 export const paidLabelPaid = style({
-    color: "var(--mantine-color-green-7)",
+    color: vars.colors.success,
     fontWeight: 700,
 })
 
 export const paidLabelUnpaid = style({
-    color: "var(--mantine-color-red-7)",
+    color: vars.colors.danger,
     fontWeight: 700,
 })

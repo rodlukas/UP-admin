@@ -8,11 +8,13 @@ export const vars = {
         // Primární (značková indigo)
         primary: "var(--mantine-color-indigo-6)",
         primaryHover: "var(--mantine-color-indigo-7)",
-        // Sémantické (statusové)
-        success: "var(--mantine-color-green-7)",
-        warning: "var(--mantine-color-yellow-6)",
-        danger: "var(--mantine-color-red-7)",
-        muted: "var(--mantine-color-gray-6)",
+        // Sémantické (statusové) — light-dark() pro WCAG AA v dark mode
+        success: "light-dark(var(--mantine-color-green-7), var(--mantine-color-green-4))",
+        successHover: "light-dark(var(--mantine-color-green-9), var(--mantine-color-green-3))",
+        warning: "light-dark(var(--mantine-color-yellow-6), var(--mantine-color-yellow-4))",
+        danger: "light-dark(var(--mantine-color-red-7), var(--mantine-color-red-4))",
+        dangerHover: "light-dark(var(--mantine-color-red-9), var(--mantine-color-red-3))",
+        muted: "light-dark(var(--mantine-color-gray-6), var(--mantine-color-gray-5))",
     },
     spacing: {
         xs: "var(--mantine-spacing-xs)",

@@ -1,4 +1,4 @@
-import { Checkbox, Group, Modal, MultiSelect, SimpleGrid, TextInput, Title } from "@mantine/core"
+import { Checkbox, Group, Modal, MultiSelect, Pill, SimpleGrid, TextInput, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import * as React from "react"
 
@@ -210,6 +210,14 @@ const FormGroups: React.FC<Props> = (props) => {
                                         placeholder="Vyberte členy z existujících klientů..."
                                         searchable
                                         comboboxProps={{ withinPortal: true }}
+                                        renderOption={({ option }) => (
+                                            <span data-gdpr>{option.label}</span>
+                                        )}
+                                        renderPill={({ option, onRemove }) => (
+                                            <Pill withRemoveButton onRemove={onRemove}>
+                                                <span data-gdpr>{option.label}</span>
+                                            </Pill>
+                                        )}
                                     />
                                     <Or
                                         content={

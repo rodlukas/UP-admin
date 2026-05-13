@@ -69,6 +69,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         setIsClientState(undefined)
         setModalSelectDone(false)
         setObject(null)
+        setIsLoading(false)
     }, [])
 
     const onSelectChange = React.useCallback(
