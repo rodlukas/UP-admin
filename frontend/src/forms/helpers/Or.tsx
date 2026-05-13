@@ -10,7 +10,7 @@ type Props = {
 
 /** Komponenta pro zobrazení alternativní možnosti přidání klienta místo volby stávajícího. */
 const Or: React.FC<Props> = ({ content }) => (
-    <Text component="p" c="gray.7" className={styles.or}>
+    <Text component="p" className={styles.or}>
         <span>nebo</span> {content}
     </Text>
 )

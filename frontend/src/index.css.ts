@@ -39,8 +39,8 @@ globalStyle(".mantine-Button-root[type='submit'][data-variant='filled']:hover", 
 })
 
 globalStyle(".mantine-Input-input:focus, .mantine-Textarea-input:focus", {
-    borderColor: "var(--mantine-color-indigo-5)",
-    boxShadow: "0 0 0 .2rem rgba(99, 102, 241, 0.2)",
+    borderColor: vars.colors.primary,
+    boxShadow: vars.shadow.focusRing,
 })
 
 globalStyle(".mantine-Input-input, .mantine-Textarea-input", {

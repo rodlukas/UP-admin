@@ -58,7 +58,7 @@ export const mutedText = style({
 })
 
 export const dimmedText = style({
-    color: "var(--mantine-color-gray-6)",
+    color: vars.text.muted,
 })
 
 export const iconAfterText = style([middle, ml05])

@@ -558,6 +558,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                     id="prepaidCnt"
                                                     value={prepaidCnt}
                                                     required={prepaid}
+                                                    withAsterisk={prepaid}
                                                     onChange={onChange}
                                                     min="1"
                                                 />
@@ -574,6 +575,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             disabled={prepaid}
                                             onChange={onChange}
                                             required={!prepaid}
+                                            withAsterisk={!prepaid}
                                             pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                                             max="2099-12-31"
                                             min="2013-01-01"
@@ -599,6 +601,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             disabled={prepaid}
                                             onChange={onChange}
                                             required={!prepaid}
+                                            withAsterisk={!prepaid}
                                             placeholder="hh:mm"
                                             data-qa="lecture_field_time"
                                             leftSection={
@@ -655,6 +658,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             value={duration ?? ""}
                                             onChange={onChange}
                                             required
+                                            withAsterisk
                                             min="1"
                                             data-qa="lecture_field_duration"
                                             leftSection={
@@ -700,6 +704,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     <Grid.Col span={{ base: 12, sm: 4 }}>
                                         <Select
                                             id={`atState${member.id}`}
+                                            aria-label="Stav účasti"
                                             data={attendanceStatesContext.attendancestates
                                                 .filter(
                                                     (s) =>
@@ -722,6 +727,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 }))
                                             }}
                                             required
+                                            withAsterisk
                                             allowDeselect={false}
                                             comboboxProps={{ withinPortal: true }}
                                             data-qa="lecture_select_attendance_attendancestate"

@@ -139,6 +139,7 @@ const FormClients: React.FC<Props> = (props) => {
                                         }}
                                         label="Jméno"
                                         required
+                                        withAsterisk
                                         data-autofocus
                                         data-qa="client_field_firstname"
                                         spellCheck
@@ -157,6 +158,7 @@ const FormClients: React.FC<Props> = (props) => {
                                         }}
                                         label="Příjmení"
                                         required
+                                        withAsterisk
                                         data-qa="client_field_surname"
                                         spellCheck
                                     />

@@ -55,12 +55,17 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
     const [defaultValuesForLecture, setDefaultValuesForLecture] =
         React.useState<DefaultValuesForLecture>(prepareDefaultValuesForLecture())
     const [isLoading, setIsLoading] = React.useState(false)
+    // Pokud uživatel zavře výběrový modal během rozpracovaného requestu, tato hodnota
+    // se zvýší a stale .then() z requestu pak již neaplikuje výsledek (jinak by se
+    // hlavní lecture form modal otevřel i po zrušení).
+    const requestSeqRef = React.useRef(0)
 
     const setClient = React.useCallback((newIsClient: boolean): void => {
         setIsClientState(newIsClient)
     }, [])
 
     const toggleModal = React.useCallback((): void => {
+        requestSeqRef.current += 1
         setIsClientState(undefined)
         setModalSelectDone(false)
         setObject(null)
@@ -73,14 +78,17 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
             }
             setIsLoading(true)
 
+            const requestSeq = requestSeqRef.current
             const request = getLecturesgroupedByCourses(obj.id, isClient)
             void request
                 .then((lecturesGroupedByCourses) => {
+                    if (requestSeqRef.current !== requestSeq) {return}
                     setDefaultValuesForLecture(getDefaultValuesForLecture(lecturesGroupedByCourses))
                     setObject(obj)
                     setModalSelectDone(true)
                 })
                 .finally(() => {
+                    if (requestSeqRef.current !== requestSeq) {return}
                     setIsLoading(false)
                 })
         },
@@ -88,7 +96,11 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
     )
 
     const toggleModalSelect = React.useCallback((): void => {
+        requestSeqRef.current += 1
         setIsClientState(undefined)
+        setModalSelectDone(false)
+        setObject(null)
+        setIsLoading(false)
     }, [])
 
     const processAdditionOfGroupOrClient = React.useCallback(

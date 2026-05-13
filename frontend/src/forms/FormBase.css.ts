@@ -121,8 +121,8 @@ globalStyle(
 globalStyle(
     "form[data-qa^='form_'] .mantine-Input-input:focus, form[data-qa^='form_'] .mantine-Select-input:focus, form[data-qa^='form_'] .mantine-Textarea-input:focus",
     {
-        borderColor: "#228be6",
-        boxShadow: "0 0 0 0.18rem rgb(34 139 230 / 0.16)",
+        borderColor: vars.colors.primary,
+        boxShadow: vars.shadow.focusRing,
         backgroundColor: vars.bg.elevated,
     },
 )

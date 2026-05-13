@@ -175,6 +175,7 @@ const FormSettings: React.FC<Props> = (props) => {
                                     {...form.getInputProps("name")}
                                     label="Název"
                                     required
+                                    withAsterisk
                                     data-autofocus
                                     data-qa="settings_field_name"
                                     spellCheck
@@ -217,6 +218,7 @@ const FormSettings: React.FC<Props> = (props) => {
                                                 label="Trvání (min.)"
                                                 description="pro jednotlivce"
                                                 required
+                                                withAsterisk
                                                 min="1"
                                                 data-qa="settings_field_duration"
                                                 leftSection={

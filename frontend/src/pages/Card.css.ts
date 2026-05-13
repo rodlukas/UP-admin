@@ -25,7 +25,7 @@ globalStyle(`${lectureCard} h4`, {
 
 export const lectureFuture = style({
     backgroundColor: "light-dark(#fff8dd, var(--mantine-color-yellow-8))",
-    color: "light-dark(inherit, var(--mantine-color-dark-9))",
+    color: "light-dark(inherit, var(--mantine-color-gray-0))",
 })
 
 export const lecturePrepaid = style({

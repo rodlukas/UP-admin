@@ -171,6 +171,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                         data-autofocus
                                         data-qa="group_field_name"
                                         required
+                                        withAsterisk
                                         spellCheck
                                     />
                                 </div>

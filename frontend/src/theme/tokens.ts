@@ -8,15 +8,10 @@ export const vars = {
         // Primární (značková indigo)
         primary: "var(--mantine-color-indigo-6)",
         primaryHover: "var(--mantine-color-indigo-7)",
-        primaryLight: "var(--mantine-color-indigo-0)",
-
         // Sémantické (statusové)
         success: "var(--mantine-color-green-7)",
-        successLight: "var(--mantine-color-green-0)",
         warning: "var(--mantine-color-yellow-6)",
-        warningLight: "var(--mantine-color-yellow-0)",
         danger: "var(--mantine-color-red-7)",
-        dangerLight: "var(--mantine-color-red-0)",
         muted: "var(--mantine-color-gray-6)",
     },
     spacing: {
@@ -38,7 +33,7 @@ export const vars = {
     shadow: {
         card: "0 14px 30px rgb(0 0 0 / 0.12), 0 4px 12px rgb(0 0 0 / 0.08)",
         elevated: "0 18px 34px rgb(0 0 0 / 0.18), 0 6px 14px rgb(0 0 0 / 0.1)",
-        focusRing: "0 0 0 0.18rem rgb(34 139 230 / 0.16)",
+        focusRing: "0 0 0 0.18rem rgb(76 110 245 / 0.16)",
     },
     // Adaptivní hodnoty (light-dark)
     bg: {
