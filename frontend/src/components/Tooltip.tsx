@@ -25,7 +25,7 @@ const Tooltip: React.FC<Props> = ({
         <span>
             <FontAwesomeIcon
                 icon={icon}
-                color="var(--mantine-color-yellow-6)"
+                color="light-dark(var(--mantine-color-yellow-7), var(--mantine-color-yellow-4))"
                 size={size}
             />
         </span>

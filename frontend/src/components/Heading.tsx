@@ -14,10 +14,18 @@ type Props = {
     fluid?: boolean
     /** Probíhá načítání dat na pozadí (true) - zobrazí spinner v nadpisu. */
     isFetching?: boolean
+    /** HTML úroveň nadpisu (h1–h6). Defaultně 1; používej 2 u sekundárních sekcí. */
+    order?: 1 | 2 | 3 | 4 | 5 | 6
 }
 
 /** Komponenta pro jednotné zobrazení nadpisu stránky napříč aplikací. */
-const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = false }) => (
+const Heading: React.FC<Props> = ({
+    title,
+    buttons,
+    fluid = false,
+    isFetching = false,
+    order = 1,
+}) => (
     <Group
         justify={fluid ? "center" : "space-between"}
         align="center"
@@ -25,7 +33,7 @@ const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = 
         mb="lg"
         gap="sm"
         className={buttons ? undefined : styles.headingWithoutButtons}>
-        <Title order={1} className={styles.headingTitle}>
+        <Title order={order} className={styles.headingTitle}>
             {title}
             {isFetching && (
                 <Loader

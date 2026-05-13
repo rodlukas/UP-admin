@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
                     <DashboardDay date={toISODate(new Date())} withoutWaiting source="dashboard" />
                 </div>
                 <div className={styles.dashboardSection}>
-                    <Heading title="Bankovní účet" />
+                    <Heading title="Bankovní účet" order={2} />
                     <Bank />
                 </div>
             </SimpleGrid>

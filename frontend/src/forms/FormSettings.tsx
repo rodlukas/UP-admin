@@ -72,11 +72,13 @@ const FormSettings: React.FC<Props> = (props) => {
             const { name, visible, duration, color } = form.getValues()
 
             if (isCourse(props.object)) {
-                const durationCourse = duration!
+                if (duration === undefined) {
+                    return
+                }
                 const dataPost: CoursePostApi = {
                     name,
                     visible,
-                    duration: durationCourse,
+                    duration,
                     color,
                 }
                 if (isObject(props.object)) {
