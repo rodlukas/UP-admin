@@ -53,7 +53,7 @@ export const courseHeadingItem = style({
 export const courseHeadingBadge = style({
     marginLeft: "0.1rem",
     backgroundColor: `${applicationsVars.courseBackground} !important`,
-    color: "white !important",
+    color: `${applicationsVars.badgeColor} !important`,
     fontSize: "0.7rem",
     fontWeight: 700,
 })

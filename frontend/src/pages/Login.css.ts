@@ -13,7 +13,7 @@ export const loginContainer = style({
 export const loginCard = style({
     border: vars.borderShort.default,
     borderRadius: vars.radius.md,
-    boxShadow: "0 22px 44px rgb(15 23 42 / 0.12), 0 8px 16px rgb(15 23 42 / 0.06)",
+    boxShadow: vars.shadow.elevated,
     backgroundColor: vars.bg.surface,
     padding: "2.25rem",
     width: "100%",
@@ -44,7 +44,7 @@ export const title = style({
 export const subtitle = style({
     marginBottom: "2rem",
     textAlign: "center",
-    color: "var(--mantine-color-gray-6)",
+    color: vars.text.muted,
     fontSize: "0.95rem",
     fontWeight: 400,
 })

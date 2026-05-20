@@ -3,7 +3,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 
 from tests import common_helpers
@@ -51,9 +51,10 @@ def duration_title(duration):
     return "Trvání: " + duration + " min."
 
 
-def get_select_attendancestates(driver):
-    return Select(
-        driver.find_element(By.CSS_SELECTOR, "[data-qa=lecture_select_attendance_attendancestate]")
+def get_attendancestate_input(driver):
+    # Mantine Select propaguje data-qa primo na vnitrni <input> (combobox)
+    return driver.find_element(
+        By.CSS_SELECTOR, "[data-qa=lecture_select_attendance_attendancestate]"
     )
 
 
@@ -183,10 +184,8 @@ def insert_to_form(context, verify_current_data=False):
     course_field = context.browser.find_element(By.ID, "course")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne (krome attendancestates - viz nize)
     if verify_current_data:
-        # ziskej aktualni hodnoty z react-selectu
-        course_field_value = context.browser.find_element(
-            By.CSS_SELECTOR, ".course__single-value"
-        ).text
+        # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
+        course_field_value = course_field.get_attribute("value")
         assert (
             context.old_course == course_field_value
             and context.old_date == date_field.get_attribute("value")
@@ -280,18 +279,13 @@ def attendance_dict(client, attendancestate, paid, note):
 
 
 def get_paid_state(found_attendance):
-    return helpers.check_class_included(
-        get_paid_button(found_attendance).get_attribute("class"), "text-success"
-    )
+    # Stabilni data-paid atribut na ikone (true/false string)
+    return get_paid_button(found_attendance).get_attribute("data-paid") == "true"
 
 
 def get_attendancestate_state(found_attendance):
-    # uloz si nalezene atributy ucasti
-    found_attendancestate_selected_list = get_select_attendancestates(
-        found_attendance
-    ).all_selected_options
-    assert len(found_attendancestate_selected_list) == 1
-    return found_attendancestate_selected_list[0].text
+    # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
+    return get_attendancestate_input(found_attendance).get_attribute("value")
 
 
 def verify_paid(found_attendance, new_paid):
@@ -303,12 +297,19 @@ def verify_attendancestate(found_attendance, new_attendancestate):
 
 
 def choose_attendancestate(found_attendance, new_attendancestate):
-    attendancestate_select = Select(
-        found_attendance.find_element(
-            By.CSS_SELECTOR, "[data-qa=lecture_select_attendance_attendancestate"
-        )
+    # Mantine Select je combobox – klikni na input pro otevreni dropdownu,
+    # pak klikni na volbu s odpovidajicim textem
+    input_el = get_attendancestate_input(found_attendance)
+    input_el.click()
+    WebDriverWait(found_attendance.parent, helpers.WAIT_TIME).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='option']"))
     )
-    attendancestate_select.select_by_visible_text(new_attendancestate)
+    options = found_attendance.parent.find_elements(By.CSS_SELECTOR, "[role='option']")
+    for option in options:
+        if option.text == new_attendancestate:
+            option.click()
+            return
+    raise AssertionError(f"Volba '{new_attendancestate}' nebyla nalezena v dropdownu")
 
 
 @then("the lecture is added")
@@ -499,9 +500,7 @@ def step_impl(context, client, date, time, new_attendancestate):
     lecture_to_update = find_lecture(context, date, time)
     assert lecture_to_update
     # uloz ocekavany novy stav do kontextu
-    context.cur_attendancestate = (
-        get_select_attendancestates(lecture_to_update).all_selected_options[0].text
-    )
+    context.cur_attendancestate = get_attendancestate_state(lecture_to_update)
     context.new_attendancestate = new_attendancestate
     # uloz puvodni pocet lekci
     save_old_lectures_cnt_to_context(context)

@@ -121,7 +121,14 @@ const Diary: React.FC = () => {
     const onKeyDown = React.useCallback(
         (e: KeyboardEvent): void => {
             // akce provadej jen kdyz neni otevrene modalni okno a nejde o auto-repeat (drzeni klavesy)
-            if (isModalShown()) {
+            if (isModalShown() || e.repeat) {
+                return
+            }
+            // nepretezuj editovatelne prvky (input/textarea/contenteditable) – sipkam tam patri pohyb kurzoru
+            if (
+                e.target instanceof HTMLElement &&
+                e.target.closest("input, textarea, [contenteditable]")
+            ) {
                 return
             }
             const key = e.key
@@ -215,39 +222,28 @@ const Diary: React.FC = () => {
                                 </Link>
                             </Tooltip>{" "}
                             <Tooltip label={prettyDateWithLongDayYear(new Date())}>
-                                <Link
-                                    to={APP_URLS.diar.url}
-                                    className={classNames({
-                                        [styles.disabledLink]: isEqualDate(
-                                            getCurrentMonday(),
-                                            getRequiredMonday(),
-                                        ),
-                                    })}>
-                                    <Button
-                                        color="gray"
-                                        disabled={isEqualDate(
-                                            getCurrentMonday(),
-                                            getRequiredMonday(),
-                                        )}
-                                        onClick={(e): void => {
-                                            removeFocusAfterClick(e)
-                                            // disabled na <Button> uvnitr <Link> nezabrani onClick – nutna explicitni podminka
-                                            if (
-                                                !isEqualDate(
-                                                    getCurrentMonday(),
-                                                    getRequiredMonday(),
-                                                )
-                                            ) {
+                                {isEqualDate(getCurrentMonday(), getRequiredMonday()) ? (
+                                    <span className={styles.disabledLink}>
+                                        <Button color="gray" disabled className={top}>
+                                            Dnes
+                                        </Button>
+                                    </span>
+                                ) : (
+                                    <Link to={APP_URLS.diar.url}>
+                                        <Button
+                                            color="gray"
+                                            onClick={(e): void => {
+                                                removeFocusAfterClick(e)
                                                 trackEvent("diary_navigated", {
                                                     direction: "today",
                                                     method: "click",
                                                 })
-                                            }
-                                        }}
-                                        className={top}>
-                                        Dnes
-                                    </Button>
-                                </Link>
+                                            }}
+                                            className={top}>
+                                            Dnes
+                                        </Button>
+                                    </Link>
+                                )}
                             </Tooltip>{" "}
                             <ModalLecturesWizard source="diary" />
                         </>

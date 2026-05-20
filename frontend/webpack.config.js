@@ -148,7 +148,21 @@ module.exports = {
         allowedHosts: ["0.0.0.0"],
         compress: true,
         client: {
-            overlay: true,
+            overlay: {
+                errors: true,
+                warnings: false,
+                // Filtrovat benignni "ResizeObserver loop ..." warning, ktery Chrome/Firefox emituji
+                // pri rychlych layout zmenach (typicke pro Mantine popovery/modals/dropdowny pouzivajici
+                // ResizeObserver vnitrne). Neni to skutecna chyba, aplikace funguje korektne.
+                runtimeErrors: (error) => {
+                    const message = error?.message || ""
+                    return (
+                        !message.includes(
+                            "ResizeObserver loop completed with undelivered notifications",
+                        ) && !message.includes("ResizeObserver loop limit exceeded")
+                    )
+                },
+            },
         },
         devMiddleware: {
             index: htmlFile,

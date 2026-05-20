@@ -60,7 +60,7 @@ export const arrowBtn = style({
 
 export const titleDate = style({
     display: "inline-block",
-    borderRadius: "0.35rem", // aby mely dny v tydennim prehledu vzdy stejnou sirku
+    borderRadius: vars.radius.sm, // aby mely dny v tydennim prehledu vzdy stejnou sirku
     backgroundColor: "rgb(148 163 184 / 0.12)",
     padding: "0.05rem 0.2rem",
     width: "6ch",

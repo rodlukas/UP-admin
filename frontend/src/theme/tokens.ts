@@ -48,16 +48,28 @@ export const vars = {
         primary: "light-dark(#1f2937, var(--mantine-color-gray-1))",
         muted: "light-dark(var(--mantine-color-gray-6), var(--mantine-color-gray-5))",
         heading: "light-dark(#0f172a, var(--mantine-color-gray-0))",
+        /** Tlumený nadpis (lehce světlejší než `heading` v dark módu). */
+        headingSoft: "light-dark(#0f172a, var(--mantine-color-gray-1))",
+        /** Sekundární text – chladnější slate, používá se mj. v rámečcích formulářů. */
+        slate: "light-dark(#334155, var(--mantine-color-gray-2))",
+        /** Tlumený popisek (hint, caption, statistický mezitext). */
+        subtleMuted: "light-dark(#64748b, var(--mantine-color-dark-1))",
     },
     border: {
         default: "light-dark(#d6dee9, var(--mantine-color-dark-4))",
         subtle: "light-dark(#e2e8f0, var(--mantine-color-dark-5))",
         strong: "light-dark(#cbd5e1, var(--mantine-color-dark-3))",
+        /** Tlumený oddělovač sekcí formuláře. */
+        formDivider: "light-dark(#edf2f7, var(--mantine-color-dark-4))",
     },
     /** Hotové `border` shorthandy (1px solid + adaptivní barva). */
     borderShort: {
         default: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
         subtle: "1px solid light-dark(#e2e8f0, var(--mantine-color-dark-5))",
         strong: "1px solid light-dark(#cbd5e1, var(--mantine-color-dark-3))",
+        /** Tlumený oddělovač sekcí formuláře. */
+        formDivider: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
+        /** Měkká žlutá hraniční čára pro varovné/zastaralé alerty. */
+        warningSoft: "1px solid light-dark(#f3d38a, var(--mantine-color-yellow-7))",
     },
 } as const

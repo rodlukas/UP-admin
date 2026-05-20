@@ -140,7 +140,7 @@ const Groups: React.FC = () => {
                 </div>
             ) : getGroupsData().length > 0 ? (
                 <Table.ScrollContainer minWidth={400} className={styles.tableSection}>
-                    <Table striped highlightOnHover withTableBorder verticalSpacing="xs">
+                    <Table striped highlightOnHover verticalSpacing="xs">
                         <Table.Thead>
                             <Table.Tr>
                                 <Table.Th>Název</Table.Th>

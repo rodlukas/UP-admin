@@ -1,9 +1,12 @@
 {% load static %}
 
-<script src="{% static "admin/color-scheme-init.js" %}"></script>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 <meta name="robots" content="noindex, nofollow"/>
+<meta name="theme-color" content="#ffffff"/>
+<!-- Init script musi byt PO theme-color meta tagu, aby ho mohl synchronne aktualizovat
+     na dark variantu jeste pred prvnim paintem. -->
+<script src="{% static "admin/color-scheme-init.js" %}"></script>
 
 <!-- FAVICONY -->
 <link rel="apple-touch-icon" sizes="180x180" href="{% static "admin/apple-touch-icon.png" %}">
@@ -12,4 +15,3 @@
 <link rel="manifest" href="{% static "admin/site.webmanifest" %}">
 <link rel="mask-icon" href="{% static "admin/safari-pinned-tab.svg" %}" color="#6c757d">
 <meta name="msapplication-TileColor" content="#6c757d"/>
-<meta name="theme-color" content="#ffffff"/>

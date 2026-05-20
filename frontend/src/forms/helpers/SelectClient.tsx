@@ -13,7 +13,7 @@ type SelectClientProps = {
     options?: readonly ClientType[]
     /** Funkce volaná při výběru klienta. */
     onChangeCallback: (name: "client", newValue?: ClientType | null) => void
-    /** Automaticky zaměřit vstup. */
+    /** Automaticky zaměřit vstup (defaultně true). */
     autoFocus?: boolean
     /** Povinné pole (vizuální, validace probíhá v nadřazeném formuláři). */
     required?: boolean
@@ -24,7 +24,7 @@ const SelectClient: React.FC<SelectClientProps> = ({
     value,
     onChangeCallback,
     options = [],
-    autoFocus,
+    autoFocus = true,
     required,
 }) => {
     const data = options.map((c) => ({ value: c.id.toString(), label: clientName(c) }))
@@ -40,7 +40,7 @@ const SelectClient: React.FC<SelectClientProps> = ({
             }}
             placeholder="Vyberte existujícího klienta..."
             searchable
-            clearable
+            clearable={!required}
             autoFocus={autoFocus}
             withAsterisk={required}
             required={required}

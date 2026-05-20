@@ -41,14 +41,15 @@ def insert_to_form(context, verify_current_data=False):
     active_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=group_label_active]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
-        # ziskej aktualni hodnoty z react-selectu
+        # Mantine MultiSelect renderuje vybrane cleny jako Pill elementy
+        members_input = context.browser.find_element(By.ID, "members")
+        members_wrapper = members_input.find_element(By.XPATH, "./ancestor::div[contains(@class,'mantine-MultiSelect-root') or contains(@class,'mantine-InputWrapper-root')][1]")
         members_field_values = [
             element.text
-            for element in context.browser.find_elements(By.CSS_SELECTOR, ".members__multi-value")
+            for element in members_wrapper.find_elements(By.CSS_SELECTOR, ".mantine-Pill-label")
         ]
-        course_field_value = context.browser.find_element(
-            By.CSS_SELECTOR, ".course__single-value"
-        ).text
+        # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
+        course_field_value = course_field.get_attribute("value")
         assert (
             context.old_group_name == name_field.get_attribute("value")
             and context.old_group_course == course_field_value

@@ -102,13 +102,9 @@ def insert_to_form(context, verify_current_data=False):
     note_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=application_field_note]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
-        # ziskej aktualni hodnoty z react-selectu
-        client_field_value = context.browser.find_element(
-            By.CSS_SELECTOR, ".client__single-value"
-        ).text
-        course_field_value = context.browser.find_element(
-            By.CSS_SELECTOR, ".course__single-value"
-        ).text
+        # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
+        client_field_value = client_field.get_attribute("value")
+        course_field_value = course_field.get_attribute("value")
         assert (
             context.old_client == client_field_value
             and context.old_course == course_field_value

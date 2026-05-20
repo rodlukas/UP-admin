@@ -37,7 +37,7 @@ export const bankTitleText = style({
 })
 
 export const bankActions = style({
-    color: "var(--mantine-color-gray-6)",
+    color: vars.text.muted,
 })
 
 export const bankDateColumn = style({
@@ -56,6 +56,16 @@ export const bankTitleWarning = style({
     backgroundColor: "light-dark(var(--mantine-color-red-1), var(--mantine-color-red-9))",
 })
 
+// Mantine `<Table striped>` aplikuje zebra `tr:nth-of-type(odd/even)` pravidla s vyšší
+// specificitou než jedna třída — proto `!important`, aby zvýraznění today-row přebilo zebru.
+// Hover styl se pak resi explicitne nize, jinak by `!important` background zrusil i highlightOnHover.
 export const bankRowToday = style({
-    backgroundColor: "light-dark(var(--mantine-color-yellow-1), var(--mantine-color-yellow-9))",
+    backgroundColor:
+        "light-dark(var(--mantine-color-yellow-1), var(--mantine-color-yellow-9)) !important",
+    selectors: {
+        "&:hover": {
+            backgroundColor:
+                "light-dark(var(--mantine-color-yellow-3), var(--mantine-color-yellow-7)) !important",
+        },
+    },
 })

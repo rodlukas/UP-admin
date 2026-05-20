@@ -3,6 +3,8 @@ import { Tooltip as MantineTooltip, TooltipProps } from "@mantine/core"
 import { faInfoCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
+import * as styles from "./Tooltip.css"
+
 type Props = {
     /** Text zobrazený v Tooltipu. */
     text: React.ReactNode
@@ -22,12 +24,8 @@ const Tooltip: React.FC<Props> = ({
     icon = faInfoCircle,
 }) => (
     <MantineTooltip label={text} position={placement} withinPortal zIndex={1300}>
-        <span>
-            <FontAwesomeIcon
-                icon={icon}
-                color="light-dark(var(--mantine-color-yellow-7), var(--mantine-color-yellow-4))"
-                size={size}
-            />
+        <span className={styles.warningIcon}>
+            <FontAwesomeIcon icon={icon} size={size} />
         </span>
     </MantineTooltip>
 )

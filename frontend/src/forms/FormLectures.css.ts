@@ -28,7 +28,7 @@ export const attendancePaidCol = style({
 })
 
 export const sectionCard = style({
-    border: "1px solid light-dark(#e9eef5, var(--mantine-color-dark-4))",
+    border: vars.borderShort.formDivider,
     borderRadius: vars.radius.lg,
     backgroundColor: vars.bg.elevated,
     padding: "0.95rem 1rem",
@@ -43,7 +43,7 @@ export const sectionTitle = style({
     marginBottom: "0.8rem",
     textTransform: "none",
     letterSpacing: "0.01em",
-    color: "light-dark(#0f172a, var(--mantine-color-gray-1))",
+    color: vars.text.headingSoft,
     fontSize: "0.92rem",
     fontWeight: 600,
 })
@@ -65,7 +65,7 @@ export const infoNotice = style({
     borderRadius: vars.radius.md,
     backgroundColor: "light-dark(#f8fbff, var(--mantine-color-dark-5))",
     padding: "0.75rem 0.9rem",
-    color: "light-dark(#334155, var(--mantine-color-gray-2))",
+    color: vars.text.slate,
 })
 
 export const warningNotice = style({
@@ -74,7 +74,7 @@ export const warningNotice = style({
     borderRadius: vars.radius.md,
     backgroundColor: "light-dark(#fffaf0, var(--mantine-color-dark-5))",
     padding: "0.75rem 0.9rem",
-    color: "light-dark(#334155, var(--mantine-color-gray-2))",
+    color: vars.text.slate,
 })
 
 export const paidLabelPaid = style({

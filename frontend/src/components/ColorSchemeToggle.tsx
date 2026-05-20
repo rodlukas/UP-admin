@@ -21,7 +21,26 @@ const SCHEME_LABEL: Record<MantineColorScheme, string> = {
 /** Přepínač barevného schématu (Systém / Světlý / Tmavý) v hlavičce. */
 const ColorSchemeToggle: React.FC = () => {
     const { colorScheme, setColorScheme } = useMantineColorScheme()
-    const computedColorScheme = useComputedColorScheme("light", { getInitialValueInEffect: true })
+    // `getInitialValueInEffect: false` – aplikace bezi pouze CSR (zadny SSR/hydration),
+    // potrebujeme spravne schema uz pri prvnim renderu, jinak by useEffect nize
+    // krátce nastavil `style.colorScheme = "light"` a zpusobil 1-frame flash pro dark uzivatele.
+    const computedColorScheme = useComputedColorScheme("light", { getInitialValueInEffect: false })
+
+    // Init script v admin/static/admin/color-scheme-init.js nastavi inline
+    // `style.colorScheme` na <html> (kvuli nativnim scrollbarum/form controls bez FOUC).
+    // Inline style ma vyssi specificity nez Mantine CSS pravidlo `:root { color-scheme: var(--mantine-color-scheme) }`,
+    // takze ho musime presynchronizovat pri runtime prepnuti.
+    React.useEffect(() => {
+        document.documentElement.style.colorScheme = computedColorScheme
+        // Aktualizuj i theme-color meta tag pro mobile chrome / PWA status bar,
+        // jinak by pri runtime prepnuti zustal odpovidat OS prefers-color-scheme, ne app stavu.
+        const themeColor = computedColorScheme === "dark" ? "#1a1b1e" : "#ffffff"
+        document
+            .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
+            .forEach((meta) => {
+                meta.setAttribute("content", themeColor)
+            })
+    }, [computedColorScheme])
 
     // V „auto" režimu ukazuj v navbaru ikonu aktuálně aplikovaného schématu
     // (sun/moon), aby bylo na první pohled vidět, co je právě zobrazeno.

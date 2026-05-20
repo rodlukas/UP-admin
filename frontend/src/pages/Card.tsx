@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Alert, Button, Container, Group, SimpleGrid, Skeleton, Title, Tooltip } from "@mantine/core"
 import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
@@ -196,7 +195,6 @@ const ClientInfo: React.FC<ClientInfoProps> = ({ client, id, groupsOfClient, pas
 const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
-    const queryClient = useQueryClient()
     const isClientPageValue = isClientPage
 
     const deactivateClient = useDeactivateClients()
@@ -306,18 +304,18 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         if (!globalThis.confirm(`Opravdu chcete přesunout ${label} do neaktivních?`)) {
             return
         }
+        // queryClient.invalidateQueries() je volano globalne v mutationCache.onSuccess
+        // (api/queryClient.tsx), takze tady stací mit jen analytics callback.
         if (isClientObject(object)) {
             deactivateClient.mutate([id], {
                 onSuccess: () => {
                     trackEvent("client_deactivated", { source: "client_card" })
-                    void queryClient.invalidateQueries({ queryKey: ["clients", id] })
                 },
             })
         } else {
             deactivateGroup.mutate([id], {
                 onSuccess: () => {
                     trackEvent("group_deactivated", { source: "group_card" })
-                    void queryClient.invalidateQueries({ queryKey: ["groups", id] })
                 },
             })
         }

@@ -76,7 +76,7 @@ const Main: React.FC = () => {
                 className={classNames("main", {
                     [styles.isAuthenticated]: authContext.isAuth,
                 })}>
-<AppSpotlight />
+                {authContext.isAuth && <AppSpotlight />}
                 <React.Suspense fallback={<Loading />}>
                     <Outlet />
                 </React.Suspense>

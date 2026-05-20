@@ -2,6 +2,7 @@ from django.conf import settings
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -53,10 +54,11 @@ def get_tooltip_text(driver, element):
     # az se zobrazi tooltip, uloz jeho text, abys ho mohl vratit
     # poznamka: .text se vola az po novem find_element, ne na referenci z .until(),
     # ktera muze byt stale kvuli prekresleni DOM (StaleElementReferenceException)
+    # Mantine Tooltip renderuje element s role="tooltip" (stabilnejsi nez .mantine-Tooltip-tooltip hashed class)
     WebDriverWait(driver, WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, ".tooltip-inner"))
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='tooltip']"))
     )
-    tooltip_text = driver.find_element(By.CSS_SELECTOR, ".tooltip-inner").text
+    tooltip_text = driver.find_element(By.CSS_SELECTOR, "[role='tooltip']").text
     # odstran mys z elementu, aby se tooltip skryl
     ActionChains(driver).move_to_element(driver.find_element(By.TAG_NAME, "body")).perform()
     # vrat text tooltipu
@@ -90,17 +92,22 @@ def wait_for_alert_and_accept(driver):
 
 
 def react_select_insert(driver, element, value):
-    # vlozi prvek do react-selectu pokud je nalezen v nabidce react-selectu
+    """Vlozi hodnotu do Mantine Selectu (combobox).
+
+    Vrati True, pokud byla volba nalezena a vybrana; jinak False (a dropdown zavre Escapem).
+    """
     element.send_keys(value)
     try:
-        # najdi moznosti react-selectu, moznosti maji id zacinajici danym stringem
-        found_option = driver.find_element(By.CSS_SELECTOR, "[role='option']")
-    except NoSuchElementException:
-        pass
-    else:
-        found_option.click()
-    # zavri react-select kliknutim na dropdown ikonu (jinak muze prekryvat jine elementy)
-    driver.find_element(By.CSS_SELECTOR, f".{element.get_attribute('id')}__indicators").click()
+        # Mantine combobox renderuje volby s role="option"; pockej kratce, dropdown je portalovan
+        found_option = WebDriverWait(driver, WAIT_TIME_SHORT).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='option']"))
+        )
+    except TimeoutException:
+        # zadna volba se neobjevila – zavri dropdown Escapem a signalizuj neuspech
+        element.send_keys(Keys.ESCAPE)
+        return False
+    found_option.click()
+    return True
 
 
 def open_settings(driver):
@@ -135,8 +142,8 @@ def get_groups(driver, active):
 
 
 def close_modal(driver):
-    # zavri modalni okno
-    driver.find_element(By.CSS_SELECTOR, "[aria-label=Close]").click()
+    # zavri modalni okno; Mantine Modal pouziva .mantine-Modal-close class na tlacitku
+    driver.find_element(By.CSS_SELECTOR, ".mantine-Modal-close").click()
     # pokud se zobrazi alert s upozornenim na neulozene zmeny, zavri ho
     try:
         wait_for_alert_and_accept(driver)
@@ -145,16 +152,14 @@ def close_modal(driver):
         pass
 
 
-def is_modal_class_attr_present(driver):
-    # zjisti, zda je u body tag znacici otevrene modal okno
-    # pridano jak overeni kompletne zavreneho modalu, viz https://github.com/rodlukas/UP-admin/issues/95
-    body_class_attrs = driver.find_element(By.TAG_NAME, "body").get_attribute("class").split()
-    return "modal-open" in body_class_attrs
+def is_modal_open(driver):
+    # zjisti, zda je otevrene nejake modal okno (Mantine Modal nastavuje aria-modal="true")
+    return len(driver.find_elements(By.CSS_SELECTOR, "[aria-modal='true']")) != 0
 
 
 def wait_modal_closed(driver):
     # pockej na zavreni modalu
-    WebDriverWait(driver, WAIT_TIME).until_not(lambda d: is_modal_class_attr_present(d))
+    WebDriverWait(driver, WAIT_TIME).until_not(lambda d: is_modal_open(d))
 
 
 def _find_group_with_activity(activity, context, name, open_card=False, validate_context=False):

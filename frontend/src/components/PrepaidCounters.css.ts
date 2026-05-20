@@ -5,7 +5,7 @@ import { vars } from "../theme/tokens"
 export const memberCard = style({
     border: vars.borderShort.default,
     borderRadius: vars.radius.md,
-    boxShadow: "0 12px 24px rgb(15 23 42 / 0.08)",
+    boxShadow: vars.shadow.card,
     backgroundColor: vars.bg.surface,
     padding: "0.8rem",
     height: "100%",
@@ -23,6 +23,6 @@ export const prepaidCountersInput = style({
 })
 
 export const prepaidCountersInputGroupLabel = style({
-    backgroundColor: "var(--mantine-color-green-7)",
+    backgroundColor: "var(--mantine-color-green-9)",
     color: "white",
 })

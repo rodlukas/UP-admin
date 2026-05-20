@@ -23,3 +23,12 @@ body {
     background-color: #ecf0f5;
     font-family: "Segoe UI", Arial, sans-serif;
 }
+
+html[data-mantine-color-scheme="dark"] body {
+    background-color: #1a1b1e;
+}
+
+html[data-mantine-color-scheme="dark"] .loader:empty {
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-color: #f8fafc;
+}

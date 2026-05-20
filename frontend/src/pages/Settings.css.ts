@@ -45,6 +45,11 @@ export const settingsColumnsRow = style({
 
 export const tableSection = style({
     marginTop: "0.25rem",
+    border: vars.borderShort.default,
+    borderRadius: vars.radius.md,
+    boxShadow: vars.shadow.card,
+    backgroundColor: vars.bg.surface,
+    overflow: "hidden",
 })
 
 export const configList = style({
@@ -83,7 +88,7 @@ export const footerBlock = style({
     marginTop: "1.1rem",
     border: vars.borderShort.default,
     borderRadius: vars.radius.md,
-    boxShadow: "0 12px 26px rgb(15 23 42 / 0.07), 0 3px 10px rgb(15 23 42 / 0.05)",
+    boxShadow: vars.shadow.card,
     backgroundColor: vars.bg.surface,
     padding: "0.9rem 1rem",
 })

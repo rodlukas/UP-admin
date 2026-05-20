@@ -25,6 +25,7 @@ import { fEmptyVoid } from "../types/types"
 
 import * as styles from "./FormBase.css"
 import Or from "./helpers/Or"
+import { gdprInput } from "./helpers/SelectClient.css"
 import SelectCourse from "./helpers/SelectCourse"
 import ModalClients from "./ModalClients"
 
@@ -209,6 +210,11 @@ const FormGroups: React.FC<Props> = (props) => {
                                         }}
                                         placeholder="Vyberte členy z existujících klientů..."
                                         searchable
+                                        // Mantine MultiSelect ma `input` (PillsInput wrapper s pills)
+                                        // a `inputField` (vnitrni <input> kam uzivatel pise) jako 2 sloty.
+                                        // V GDPR rezimu musime maskovat oba – pily uz mask maji pres renderPill,
+                                        // ale vlastni search field by jinak prosvitl naepsane casti jmen klientu.
+                                        classNames={{ input: gdprInput, inputField: gdprInput }}
                                         comboboxProps={{ withinPortal: true }}
                                         renderOption={({ option }) => (
                                             <span data-gdpr>{option.label}</span>

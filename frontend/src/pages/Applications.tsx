@@ -14,7 +14,11 @@ import Loading from "../components/Loading"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
 import { dimmedTextCenter, mb0 } from "../global/utility.css"
-import { GroupedObjectsByCourses, groupObjectsByCourses } from "../global/utils"
+import {
+    getReadableTextColor,
+    GroupedObjectsByCourses,
+    groupObjectsByCourses,
+} from "../global/utils"
 import { ApplicationType } from "../types/models"
 
 import * as styles from "./Applications.css"
@@ -76,7 +80,9 @@ const Applications: React.FC = () => {
                                     className={styles.courseHeadingItem}
                                     style={assignInlineVars(styles.applicationsVars, {
                                         courseBackground: courseApplications.course.color,
-                                        badgeColor: courseApplications.course.color,
+                                        badgeColor: getReadableTextColor(
+                                            courseApplications.course.color,
+                                        ),
                                     })}>
                                     <Title order={4} className={styles.courseHeading}>
                                         <span data-qa="application_course">

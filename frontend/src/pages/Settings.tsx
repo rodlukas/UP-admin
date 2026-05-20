@@ -108,7 +108,7 @@ const Settings: React.FC = () => {
                                 <Title order={2}>Stavy účasti</Title>
                                 {attendanceStatesContext.attendancestates.length > 0 && (
                                     <Table.ScrollContainer minWidth={300} className={styles.tableSection}>
-                                        <Table striped highlightOnHover withTableBorder verticalSpacing="xs">
+                                        <Table striped highlightOnHover verticalSpacing="xs">
                                             <Table.Thead>
                                                 <Table.Tr>
                                                     <Table.Th>Název</Table.Th>
@@ -226,7 +226,7 @@ const Settings: React.FC = () => {
                                 <Title order={2}>Kurzy</Title>
                                 {courses.length > 0 && (
                                     <Table.ScrollContainer minWidth={300} className={styles.tableSection}>
-                                        <Table striped highlightOnHover withTableBorder verticalSpacing="xs">
+                                        <Table striped highlightOnHover verticalSpacing="xs">
                                             <Table.Thead>
                                                 <Table.Tr>
                                                     <Table.Th>Název</Table.Th>
@@ -292,7 +292,7 @@ const Settings: React.FC = () => {
                                     <FontAwesomeIcon
                                         icon={faGithub}
                                         size="lg"
-                                        data-qa="lecture_attendance_paid"
+                                        data-qa="link_github_repo"
                                     />
                                 </a>
                             </Tooltip>

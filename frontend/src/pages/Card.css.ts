@@ -24,7 +24,7 @@ globalStyle(`${lectureCard} h4`, {
 })
 
 export const lectureFuture = style({
-    backgroundColor: "light-dark(#fff8dd, var(--mantine-color-yellow-8))",
+    backgroundColor: "light-dark(#fff8dd, var(--mantine-color-yellow-9))",
     color: "light-dark(inherit, var(--mantine-color-gray-0))",
 })
 
@@ -92,7 +92,7 @@ export const infoListItem = style({
     padding: "0.5rem 1rem",
     selectors: {
         "& + &": {
-            borderTop: "1px solid light-dark(#e9ecef, var(--mantine-color-dark-4))",
+            borderTop: vars.borderShort.default,
         },
     },
 })

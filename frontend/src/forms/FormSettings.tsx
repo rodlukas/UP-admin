@@ -162,7 +162,9 @@ const FormSettings: React.FC<Props> = (props) => {
         <form onSubmit={onSubmit} data-qa="form_settings">
             <Modal.Header>
                 <Modal.Title>
-                    {isObject(props.object) ? "Úprava" : "Přidání"} {type}u: {form.values.name}
+                    {isObject(props.object)
+                        ? `Úprava ${type}u: ${form.values.name}`
+                        : `Přidání ${type}u`}
                 </Modal.Title>
                 <Modal.CloseButton />
             </Modal.Header>

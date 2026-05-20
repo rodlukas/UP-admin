@@ -54,6 +54,7 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
             searchable
             clearable={!required}
             withAsterisk={required}
+            required={required}
             disabled={isDisabled}
             comboboxProps={{ withinPortal: true }}
             renderOption={({ option }) => {

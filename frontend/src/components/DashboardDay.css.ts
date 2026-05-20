@@ -18,7 +18,7 @@ export const dashboardDayDate = style({
     backgroundColor: vars.bg.surface,
     padding: "0.6rem 0.85rem",
     minHeight: "3.25rem",
-    color: "light-dark(#0f172a, var(--mantine-color-gray-1))",
+    color: vars.text.headingSoft,
 })
 
 export const dashboardDayDateToday = style({

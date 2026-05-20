@@ -24,7 +24,12 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
         successMessage: "Stav platby za lekci uložen",
     })
 
+    const isPending = patchAttendance.isPending
+
     const onClick = React.useCallback((): void => {
+        if (isPending) {
+            return
+        }
         const newPaid = !props.paid
         const id = props.attendanceId
         const data = { id, paid: newPaid }
@@ -32,7 +37,7 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
             onSuccess: () =>
                 trackEvent("attendance_paid_toggled", { source: props.source, paid: newPaid }),
         })
-    }, [props.paid, props.attendanceId, props.source, patchAttendance])
+    }, [isPending, props.paid, props.attendanceId, props.source, patchAttendance])
 
     const className = classNames(styles.attendancePaidButton, {
         [styles.attendancePaidButtonSuccess]: props.paid,
@@ -44,9 +49,14 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
             <span
                 role="button"
                 tabIndex={0}
+                aria-label={title}
+                aria-busy={isPending}
+                aria-disabled={isPending}
+                className={styles.buttonWrap}
                 onClick={onClick}
                 onKeyDown={(e): void => {
-                    if (e.key === "Enter" || e.key === " ") {
+                    if ((e.key === "Enter" || e.key === " ") && !isPending) {
+                        e.preventDefault()
                         onClick()
                     }
                 }}>
@@ -55,6 +65,7 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
                     size="2x"
                     className={className}
                     data-qa="lecture_attendance_paid"
+                    data-paid={props.paid}
                 />
             </span>
         </Tooltip>

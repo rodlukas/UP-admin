@@ -1,9 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useHotkeys } from "@mantine/hooks"
 import {
     Spotlight,
     SpotlightActionData,
     SpotlightActionGroupData,
     SpotlightFilterFunction,
+    spotlight,
 } from "@mantine/spotlight"
 import { faUser, faUsers } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { useNavigate } from "@tanstack/react-router"
@@ -13,7 +15,7 @@ import * as React from "react"
 import { trackEvent } from "../analytics"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
-import { clientName, prettyPhone } from "../global/utils"
+import { clientName, isModalShown, prettyPhone } from "../global/utils"
 import { ClientActiveType, GroupType } from "../types/models"
 
 const clientFuseOptions: IFuseOptions<ClientActiveType> = {
@@ -53,7 +55,10 @@ const AppSpotlight: React.FC = () => {
     const navigate = useNavigate()
     const clientsActiveContext = useClientsActiveContext()
     const groupsActiveContext = useGroupsActiveContext()
-    const searchTrackedRef = React.useRef(false)
+    const searchSessionRef = React.useRef<{ queried: boolean; hasResults: boolean }>({
+        queried: false,
+        hasResults: false,
+    })
 
     const clientFuse = React.useMemo(
         () => new Fuse(clientsActiveContext.clients, clientFuseOptions),
@@ -122,9 +127,13 @@ const AppSpotlight: React.FC = () => {
             const groupResults = groupFuse.search(query)
             const groupIds = new Set(groupResults.map((r) => `group-${r.item.id}`))
 
-            if (!searchTrackedRef.current) {
-                trackEvent("search_used", { has_results: clientResults.length + groupResults.length > 0 })
-                searchTrackedRef.current = true
+            // Zaznamenat nejnovější stav dotazu (eventy se odešlou až při zavření spotlightu,
+            // aby šel report o úspěšnosti hledání nad finálním dotazem, ne nad jedním znakem).
+            if (query.trim().length >= 2) {
+                searchSessionRef.current = {
+                    queried: true,
+                    hasResults: clientResults.length + groupResults.length > 0,
+                }
             }
 
             const matches = (action: SpotlightActionData): boolean =>
@@ -159,14 +168,31 @@ const AppSpotlight: React.FC = () => {
     )
 
     const onSpotlightClose = React.useCallback(() => {
-        searchTrackedRef.current = false
+        if (searchSessionRef.current.queried) {
+            trackEvent("search_used", { has_results: searchSessionRef.current.hasResults })
+        }
+        searchSessionRef.current = { queried: false, hasResults: false }
     }, [])
+
+    // Vlastni hotkey s `isModalShown()` guardem – pokud je otevreny Mantine Modal,
+    // nechci, aby Spotlight prebral focus a vytvoril druhy focus trap.
+    // (Internal Mantine shortcut je vypnuty pres `shortcut={null}` nize.)
+    useHotkeys([
+        [
+            "mod+K",
+            () => {
+                if (!isModalShown()) {
+                    spotlight.open()
+                }
+            },
+        ],
+    ])
 
     return (
         <Spotlight
             actions={actions}
             nothingFound="Žádné výsledky odpovídající dotazu."
-            shortcut={["mod + K", "/"]}
+            shortcut={null}
             limit={20}
             highlightQuery
             scrollAreaProps={{ mah: 420 }}

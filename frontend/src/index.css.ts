@@ -86,3 +86,15 @@ globalStyle(
         userSelect: "none",
     },
 )
+
+// `highlightQuery` v Spotlightu obaluje shodne podretezce do <mark>, ktery ma vlastni zluty
+// background a tim by prosvitl skrz GDPR masku. Mark zneviditelnime - dedi pozadi parentu
+// (currentcolor maska) a vlastni text barvu nuluje, aby pri sdileni obrazovky neunikla
+// cast PII obsazena v hledanem dotazu.
+globalStyle(
+    ".gdpr .mantine-Spotlight-actionLabel mark, .gdpr .mantine-Spotlight-actionDescription mark",
+    {
+        backgroundColor: "inherit !important",
+        color: "transparent !important",
+    },
+)

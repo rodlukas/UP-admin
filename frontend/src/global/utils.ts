@@ -1,3 +1,5 @@
+import chroma from "chroma-js"
+
 import LectureService from "../api/services/LectureService"
 import {
     ApplicationType,
@@ -151,13 +153,23 @@ export function makeIdFromString(string: string): string {
     return string.replace(/\s+/g, "-")
 }
 
-/** Zjistí, jestli je otevřené modální okno. Kontroluje aria-modal i data-modal-content, protože
- * Mantine Spotlight (ani jiné komponenty) nemusí vždy nastavit aria-modal. */
+/** Zjistí, jestli je otevřené modální okno. Mantine Modal i Spotlight nastavují aria-modal. */
 export function isModalShown(): boolean {
-    return (
-        document.querySelectorAll('[aria-modal="true"]').length !== 0 ||
-        document.querySelectorAll("[data-modal-content]").length !== 0
-    )
+    return document.querySelectorAll('[aria-modal="true"]').length !== 0
+}
+
+/**
+ * Vrátí čitelnou barvu textu (bílá nebo tmavá) pro daný background hex.
+ * Používá WCAG kontrast vůči oběma alternativám a vybere tu lepší.
+ */
+export function getReadableTextColor(bgHex: string): string {
+    try {
+        const bg = chroma(bgHex)
+        const darkText = "#0f172a"
+        return chroma.contrast(bg, "white") >= chroma.contrast(bg, darkText) ? "white" : darkText
+    } catch {
+        return "white"
+    }
 }
 
 /** Vrátí string s velkým počátečním písmenem. */

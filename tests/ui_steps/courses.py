@@ -67,8 +67,8 @@ def find_course_with_context(context):
 
 
 def course_color_prepare(color_picker):
-    color_field = color_picker.find_element(By.CLASS_NAME, "rcp-field-input")
-    return color_field
+    # Mantine ColorInput propaguje data-qa primo na input element – uz to JE input
+    return color_picker
 
 
 def insert_to_form(context, verify_current_data=False):

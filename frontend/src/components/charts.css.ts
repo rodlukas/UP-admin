@@ -10,7 +10,7 @@ export const chartBaseStyles = {
 
 export const chartTooltip = style({
     ...chartBaseStyles,
-    boxShadow: "0 8px 20px rgb(15 23 42 / 0.1)",
+    boxShadow: vars.shadow.elevated,
     padding: "0.5rem 0.75rem",
     lineHeight: 1.5,
     color: vars.text.primary,

@@ -3,7 +3,7 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { vars } from "../theme/tokens"
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-header", {
-    borderBottom: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
+    borderBottom: vars.borderShort.formDivider,
     backgroundColor: vars.bg.subtle,
     padding: "1rem 1.25rem 0.95rem",
 })
@@ -64,7 +64,7 @@ globalStyle(".mantine-Modal-content form[data-qa^='form_'] .mantine-Modal-body",
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-close", {
     borderRadius: vars.radius.md,
-    color: "light-dark(#64748b, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
 })
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-close:hover", {
@@ -75,7 +75,7 @@ globalStyle("form[data-qa^='form_'] .mantine-Modal-close:hover", {
 globalStyle("form[data-qa^='form_'] .mantine-Modal-body hr", {
     opacity: 1,
     margin: "1.1rem 0",
-    borderColor: "light-dark(#edf2f7, var(--mantine-color-dark-4))",
+    borderColor: vars.border.formDivider,
 })
 
 globalStyle(
@@ -84,7 +84,7 @@ globalStyle(
         transition:
             "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out, transform 0.15s ease-in-out",
         borderRadius: vars.radius.md,
-        borderColor: "light-dark(#d7dee8, var(--mantine-color-dark-4))",
+        borderColor: vars.border.default,
         backgroundColor: vars.bg.elevated,
     },
 )
@@ -105,7 +105,7 @@ globalStyle(
     {
         marginTop: "0.35rem",
         lineHeight: 1.35,
-        color: "light-dark(#6b7280, var(--mantine-color-dark-1))",
+        color: vars.text.subtleMuted,
         fontSize: "0.75rem",
     },
 )
@@ -113,7 +113,7 @@ globalStyle(
 globalStyle(
     "form[data-qa^='form_'] .mantine-Input-input:hover, form[data-qa^='form_'] .mantine-Select-input:hover, form[data-qa^='form_'] .mantine-Textarea-input:hover",
     {
-        borderColor: "light-dark(#c8d2df, var(--mantine-color-dark-3))",
+        borderColor: vars.border.strong,
         backgroundColor: vars.bg.elevated,
     },
 )
@@ -135,7 +135,7 @@ globalStyle("form[data-qa^='form_'] .mantine-Checkbox-label", {
 export const modalWizardContent = style({})
 
 globalStyle(`${modalWizardContent} .mantine-Modal-header`, {
-    borderBottom: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
+    borderBottom: vars.borderShort.formDivider,
     backgroundColor: vars.bg.surface,
     padding: "1rem 1.25rem 0.95rem",
 })
@@ -158,7 +158,7 @@ export const modalActions = style({
     flexWrap: "wrap",
     gap: "0.55rem",
     marginTop: "1.05rem",
-    borderTop: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
+    borderTop: vars.borderShort.formDivider,
     borderRadius: 0,
     backgroundColor: "transparent",
     paddingTop: "0.95rem",
@@ -174,7 +174,7 @@ export const formContent = style({
 })
 
 export const formSection = style({
-    border: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
+    border: vars.borderShort.formDivider,
     borderRadius: vars.radius.md,
     boxShadow: "0 1px 2px rgb(15 23 42 / 0.04)",
     backgroundColor: vars.bg.elevated,
@@ -224,7 +224,7 @@ export const fieldLabel = style({
 
 export const fieldHint = style({
     lineHeight: 1.35,
-    color: "light-dark(#6b7280, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
     fontSize: "0.75rem",
 })
 
@@ -242,7 +242,7 @@ export const inlineCheckboxRow = style({
 })
 
 export const labelCol = style({
-    color: "light-dark(#4b5563, var(--mantine-color-gray-4))",
+    color: vars.text.slate,
     fontWeight: 600,
 })
 
@@ -276,7 +276,7 @@ globalStyle(`${modalActions} .mantine-Button-root`, {
 globalStyle(`${modalActions} .mantine-Button-root[data-variant='default']`, {
     borderColor: vars.border.default,
     backgroundColor: vars.bg.elevated,
-    color: "light-dark(#334155, var(--mantine-color-gray-2))",
+    color: vars.text.slate,
 })
 
 globalStyle(`${modalActions} .mantine-Button-root[data-variant='default']:hover`, {

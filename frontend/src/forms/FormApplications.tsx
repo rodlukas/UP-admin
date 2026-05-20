@@ -182,6 +182,7 @@ const FormApplications: React.FC<Props> = (props) => {
                 <CancelButton onClick={close} />
                 <SubmitButton
                     loading={isSubmit}
+                    disabled={isLoading}
                     data-qa="button_submit_application"
                     content={isApplicationValue ? "Uložit" : "Přidat"}
                 />

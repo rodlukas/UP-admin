@@ -17,7 +17,7 @@ export const statCardTitle = style({
     marginBottom: "0.5rem",
     textTransform: "uppercase",
     letterSpacing: "0.04em",
-    color: "light-dark(#64748b, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
     fontSize: "0.75rem",
     fontWeight: 600,
 })
@@ -31,7 +31,7 @@ export const metricValue = style({
 export const statNote = style({
     marginBottom: "0.5rem",
     lineHeight: 1.45,
-    color: "light-dark(#64748b, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
     fontSize: "0.75rem",
 })
 
@@ -45,7 +45,7 @@ export const pageLead = style({
     marginBottom: "1rem",
     maxWidth: "42rem",
     lineHeight: 1.5,
-    color: "light-dark(#64748b, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
     fontSize: "0.875rem",
 })
 
@@ -84,7 +84,7 @@ export const filterHint = style({
     marginBottom: "0.5rem",
     maxWidth: "42rem",
     lineHeight: 1.45,
-    color: "light-dark(#64748b, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
     fontSize: "0.8rem",
 })
 
@@ -188,7 +188,7 @@ export const chartCaption = style({
     marginBottom: "0.75rem",
     maxWidth: "48rem",
     lineHeight: 1.45,
-    color: "light-dark(#64748b, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
     fontSize: "0.8rem",
 })
 
@@ -207,7 +207,7 @@ export const chartPanel = style({
 
 export const chartEmpty = style({
     marginBottom: 0,
-    color: "light-dark(#64748b, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
     fontSize: "0.875rem",
 })
 

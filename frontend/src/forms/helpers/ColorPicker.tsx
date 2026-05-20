@@ -26,19 +26,27 @@ type Props = {
     onChange: (hex: string) => void
 }
 
+const hasLowContrast = (hex: string): boolean => {
+    try {
+        return chroma.contrast(chroma(hex), "white") < 2
+    } catch {
+        return false
+    }
+}
+
 /** Komponenta pro pole s výběrem barvy kurzu. */
 const ColorPicker: React.FC<Props> = ({ value, onChange }) => {
-    const [showContrastWarning, setShowContrastWarning] = React.useState(false)
+    const [showContrastWarning, setShowContrastWarning] = React.useState(() =>
+        hasLowContrast(value),
+    )
+
+    React.useEffect(() => {
+        setShowContrastWarning(hasLowContrast(value))
+    }, [value])
 
     const handleChange = React.useCallback(
         (newHex: string): void => {
-            const upperHex = newHex.toUpperCase()
-            try {
-                setShowContrastWarning(chroma.contrast(chroma(upperHex), "white") < 2)
-            } catch {
-                setShowContrastWarning(false)
-            }
-            onChange(upperHex)
+            onChange(newHex.toUpperCase())
         },
         [onChange],
     )
@@ -48,6 +56,7 @@ const ColorPicker: React.FC<Props> = ({ value, onChange }) => {
             <ColorInput
                 id="color"
                 label="Barva"
+                labelProps={{ "data-qa": "settings_label_color" }}
                 withAsterisk
                 format="hex"
                 value={value}

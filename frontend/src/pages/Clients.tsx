@@ -140,7 +140,7 @@ const Clients: React.FC = () => {
                 </div>
             ) : getClientsData().length > 0 ? (
                 <Table.ScrollContainer minWidth={560} className={styles.tableSection}>
-                    <Table striped highlightOnHover withTableBorder verticalSpacing="xs">
+                    <Table striped highlightOnHover verticalSpacing="xs">
                         <Table.Thead>
                             <Table.Tr>
                                 <Table.Th>Příjmení a jméno</Table.Th>
