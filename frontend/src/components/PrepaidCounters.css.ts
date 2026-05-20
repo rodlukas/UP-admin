@@ -23,6 +23,6 @@ export const prepaidCountersInput = style({
 })
 
 export const prepaidCountersInputGroupLabel = style({
-    backgroundColor: "var(--mantine-color-green-9)",
+    backgroundColor: vars.colors.successHover,
     color: "white",
 })

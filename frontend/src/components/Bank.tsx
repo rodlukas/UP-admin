@@ -13,6 +13,7 @@ import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff } from "../global/funcDateTime"
 import { bold, inlineBlockNowrap, nowrap } from "../global/utility.css"
 import { prettyAmount } from "../global/utils"
+import { vars } from "../theme/tokens"
 import { BankType, BankSuccessType, BankErrorType } from "../types/models"
 
 import * as styles from "./Bank.css"
@@ -174,7 +175,7 @@ const Bank: React.FC = () => {
                                 <span>
                                     <FontAwesomeIcon
                                         icon={faExclamationCircle}
-                                        color="var(--mantine-color-red-7)"
+                                        color={vars.colors.danger}
                                         size="lg"
                                     />
                                 </span>

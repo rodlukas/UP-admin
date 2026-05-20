@@ -15,6 +15,7 @@ import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
 import { bold, iconInlineX, mb0 } from "../global/utility.css"
+import { vars } from "../theme/tokens"
 import { AttendanceStateType } from "../types/models"
 import { QA } from "../types/types"
 
@@ -31,7 +32,7 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
         icon={visible ? faCheck : faTimes}
         size="lg"
         {...props}
-        color={visible ? "var(--mantine-color-green-7)" : "var(--mantine-color-gray-7)"}
+        color={visible ? vars.colors.success : vars.colors.muted}
     />
 )
 
