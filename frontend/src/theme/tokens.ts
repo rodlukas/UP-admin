@@ -11,6 +11,9 @@ export const vars = {
         // Sémantické (statusové) — light-dark() pro WCAG AA v dark mode
         success: "light-dark(var(--mantine-color-green-7), var(--mantine-color-green-4))",
         successHover: "light-dark(var(--mantine-color-green-9), var(--mantine-color-green-3))",
+        /** Solid tmavá zelená pro pozadí pod bílým textem – nesmí měnit barvu mezi motivy
+         *  (jinak by `color: white` nesplnil WCAG kontrast v dark módu). */
+        successSolid: "var(--mantine-color-green-9)",
         warning: "light-dark(var(--mantine-color-yellow-6), var(--mantine-color-yellow-4))",
         danger: "light-dark(var(--mantine-color-red-7), var(--mantine-color-red-4))",
         dangerHover: "light-dark(var(--mantine-color-red-9), var(--mantine-color-red-3))",

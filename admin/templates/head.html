@@ -3,9 +3,10 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 <meta name="robots" content="noindex, nofollow"/>
-<meta name="theme-color" content="#ffffff"/>
-<!-- Init script musi byt PO theme-color meta tagu, aby ho mohl synchronne aktualizovat
-     na dark variantu jeste pred prvnim paintem. -->
+<!-- Barva odpovida hornimu okraji tmaveho navbar gradientu v Main.css.ts (#1f2b3c -> #223247).
+     Navbar je fixne tmavy v obou motivech, takze i theme-color drzime jednotne, aby na mobilnim
+     Chrome / PWA nevznikal viditelny sev mezi status barem a navbarem. -->
+<meta name="theme-color" content="#1f2b3c"/>
 <script src="{% static "admin/color-scheme-init.js" %}"></script>
 
 <!-- FAVICONY -->

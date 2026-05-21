@@ -32,15 +32,11 @@ const ColorSchemeToggle: React.FC = () => {
     // takze ho musime presynchronizovat pri runtime prepnuti.
     React.useEffect(() => {
         document.documentElement.style.colorScheme = computedColorScheme
-        // Aktualizuj i theme-color meta tag pro mobile chrome / PWA status bar,
-        // jinak by pri runtime prepnuti zustal odpovidat OS prefers-color-scheme, ne app stavu.
-        const themeColor = computedColorScheme === "dark" ? "#1a1b1e" : "#ffffff"
-        document
-            .querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
-            .forEach((meta) => {
-                meta.setAttribute("content", themeColor)
-            })
     }, [computedColorScheme])
+
+    // theme-color meta nemenime per scheme: navbar je fixne tmavy gradient v obou motivech
+    // (viz Main.css.ts), takze i mobile Chrome / PWA status bar drzime na barve horniho
+    // okraje navbaru, aby nevznikal viditelny sev mezi status barem a navbarem.
 
     // V „auto" režimu ukazuj v navbaru ikonu aktuálně aplikovaného schématu
     // (sun/moon), aby bylo na první pohled vidět, co je právě zobrazeno.

@@ -67,8 +67,10 @@ def find_course_with_context(context):
 
 
 def course_color_prepare(color_picker):
-    # Mantine ColorInput propaguje data-qa primo na input element – uz to JE input
-    return color_picker
+    # Mantine ColorInput rendruje wrapper (na nem visi data-qa) a uvnitr <input id="color">.
+    # Pro Selenium operace (.get_attribute("value") / .clear() / .send_keys()) potrebujeme
+    # primo input, takze sahneme dovnitr wrapperu.
+    return color_picker.find_element(By.CSS_SELECTOR, "input")
 
 
 def insert_to_form(context, verify_current_data=False):

@@ -12,7 +12,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
+    "theme_color": "#1f2b3c",
     "background_color": "#ffffff",
     "display": "standalone",
     "start_url": "/?utm_source=a2hs"
