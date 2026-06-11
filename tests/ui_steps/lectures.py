@@ -70,15 +70,19 @@ def find_lecture(context, date, time, validate_context=False):
         # najdi lekci s danym zacatkem
         for lecture in all_course_lectures:
             found_start = lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]").text
-            found_duration = helpers.get_tooltip_text(
-                context.browser, lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]")
-            )
             found_canceled = lecture.get_attribute("data-qa-canceled") == "true"
             # srovnej identifikatory
             start = common_helpers.prepare_start(date, time)
             start = f"{start.day}. {start.month}. {start.year} – {start.hour}:{start.minute:02}"
             # je to substring (v UI je pred datumem i nazev dne)?
             if start in found_start:
+                # trvani (tooltip) cti az u lekce se shodnym zacatkem - cteni tooltipu je drahe
+                # (klik + cekani) a u rozjetych prekreslovani po mutaci nachylne na souboj,
+                # zbytecne ho nedelej pro kazdou prochazenou lekci
+                found_duration = helpers.get_tooltip_text(
+                    context.browser,
+                    lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]"),
+                )
                 # prohledej a zvaliduj attendances (jen kdyz jsou k dispozici)
                 found_attendances_cnt = 0
                 found_old_attendances = []
@@ -334,6 +338,9 @@ def choose_attendancestate(found_attendance, new_attendancestate):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
+    # pockej na dobehnuti refetchu (Heading ukazuje loading pri isFetching) - hledani lekci
+    # pak bezi nad ustalenym DOM
+    helpers.wait_loading_ends(context.browser)
     # pockej na pridani lekce; refetch po mutaci muze kartu prekreslit uprostred prochazeni
     # lekci (stale reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
     WebDriverWait(
@@ -349,6 +356,9 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
+    # pockej na dobehnuti refetchu (Heading ukazuje loading pri isFetching) - hledani lekci
+    # pak bezi nad ustalenym DOM
+    helpers.wait_loading_ends(context.browser)
     # pockej na update lekci; refetch po mutaci muze kartu prekreslit uprostred prochazeni
     # lekci (stale reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
     WebDriverWait(

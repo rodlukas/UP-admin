@@ -58,8 +58,10 @@ def get_tooltip_text(driver, element):
     # otevreny tooltip se zavre driv, nez ho stihneme precist (s vypnutymi animacemi, napr.
     # prefers-reduced-motion na CI, okamzite); druhy klik presune kurzor na aktualni pozici
     # elementu, vyvola novy mouseenter a tooltip znovu otevre
+    # timeouty schvalne kratke (tooltip se ukazuje hned po najeti) - tato funkce bezi i uvnitr
+    # pollovanych find_* lambd a dlouhym cekanim by vyhladovela WAIT_TIME rozpocet celeho kroku
     tooltip_text = None
-    for attempt in range(2):
+    for attempt, timeout in enumerate((WAIT_TIME_VERY_SHORT, WAIT_TIME_SHORT)):
         # klikni mysi na element
         element.click()
         try:
@@ -68,7 +70,7 @@ def get_tooltip_text(driver, element):
             # ktera muze byt stale kvuli prekresleni DOM (StaleElementReferenceException)
             # Mantine Tooltip renderuje element s role="tooltip" (stabilnejsi nez
             # .mantine-Tooltip-tooltip hashed class)
-            WebDriverWait(driver, WAIT_TIME).until(
+            WebDriverWait(driver, timeout).until(
                 EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='tooltip']"))
             )
             tooltip_text = driver.find_element(By.CSS_SELECTOR, "[role='tooltip']").text
