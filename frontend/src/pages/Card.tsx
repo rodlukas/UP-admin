@@ -1,5 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Alert, Button, Container, Group, SimpleGrid, Skeleton, Title, Tooltip } from "@mantine/core"
+import {
+    Alert,
+    Button,
+    Container,
+    Group,
+    SimpleGrid,
+    Skeleton,
+    Title,
+    Tooltip,
+} from "@mantine/core"
 import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
@@ -44,6 +53,7 @@ import {
     courseDuration,
     DefaultValuesForLecture,
     getDefaultValuesForLecture,
+    getReadableTextColorWithOverlay,
     groupObjectsByCourses,
     GroupedObjectsByCourses,
     isStaleActive,
@@ -85,17 +95,19 @@ const HeaderActions: React.FC<HeaderActionsProps> = ({
 }) => (
     <>
         <BackButton onClick={onBack} />
+        {/* ModalClientsData i ModalGroupsData jsou zúžením ModalClientsGroupsData,
+            callback s širším parametrem je proto přiřaditelný přímo (bez `as`). */}
         {isClientObject(object) ? (
             <ModalClients
                 currentClient={object}
-                refresh={(data) => onRefreshFromModal(data as ModalClientsGroupsData)}
+                refresh={onRefreshFromModal}
                 source="client_card"
             />
         ) : (
             object && (
                 <ModalGroups
                     currentGroup={object}
-                    refresh={(data) => onRefreshFromModal(data as ModalClientsGroupsData)}
+                    refresh={onRefreshFromModal}
                     source="group_card"
                 />
             )
@@ -121,7 +133,9 @@ const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactiva
     if (!object.active) {
         return (
             <Alert color="yellow" mt={0}>
-                {isClientObject(object) ? TEXTS.WARNING_INACTIVE_CLIENT : TEXTS.WARNING_INACTIVE_GROUP}
+                {isClientObject(object)
+                    ? TEXTS.WARNING_INACTIVE_CLIENT
+                    : TEXTS.WARNING_INACTIVE_GROUP}
             </Alert>
         )
     }
@@ -132,9 +146,18 @@ const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactiva
         <Alert color="yellow" mt={0}>
             <Group justify="space-between" wrap="wrap">
                 <span>
-                    {isClientObject(object) ? TEXTS.WARNING_STALE_CLIENT : TEXTS.WARNING_STALE_GROUP}
+                    {isClientObject(object)
+                        ? TEXTS.WARNING_STALE_CLIENT
+                        : TEXTS.WARNING_STALE_GROUP}
                 </span>
-                <Button color="yellow" size="sm" disabled={isDeactivatePending} onClick={onDeactivate}>
+                {/* autoContrast: bílý text na yellow-filled měl jen 1.86:1 (light, yellow-6)
+                    / 2.48:1 (dark, yellow-8); černý text dává 11.28:1 / 8.46:1 (WCAG AA). */}
+                <Button
+                    color="yellow"
+                    autoContrast
+                    size="sm"
+                    disabled={isDeactivatePending}
+                    onClick={onDeactivate}>
                     Přesunout do neaktivních
                     {isDeactivatePending && (
                         <FontAwesomeIcon icon={faSpinnerThird} spin className={iconAfterText} />
@@ -153,7 +176,13 @@ type ClientInfoProps = {
     lectures: LectureType[]
 }
 
-const ClientInfo: React.FC<ClientInfoProps> = ({ client, id, groupsOfClient, pastGroups, lectures }) => (
+const ClientInfo: React.FC<ClientInfoProps> = ({
+    client,
+    id,
+    groupsOfClient,
+    pastGroups,
+    lectures,
+}) => (
     <div className={styles.clientTopRow}>
         <div className={classNames(styles.infoList, styles.clientSummaryPanel)}>
             <div className={styles.infoListItem}>
@@ -445,6 +474,11 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                         )}
                                         style={assignInlineVars(styles.cardVars, {
                                             courseBackground: courseLectures.course.color,
+                                            // pozadí hlavičky ztmavuje overlay (viz Card.css.ts)
+                                            courseText: getReadableTextColorWithOverlay(
+                                                courseLectures.course.color,
+                                                styles.COURSE_HEADING_OVERLAY_OPACITY,
+                                            ),
                                         })}>
                                         <h4
                                             className={`${styles.courseHeading} ${textCenterMb0}`}
@@ -456,9 +490,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                 </div>
                             </div>
                         ))}
-                        {lectures.length === 0 && (
-                            <p className={dimmedTextCenter}>Žádné lekce</p>
-                        )}
+                        {lectures.length === 0 && <p className={dimmedTextCenter}>Žádné lekce</p>}
                     </div>
                 </Container>
             )}

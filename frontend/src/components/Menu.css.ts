@@ -15,9 +15,12 @@ export const navLink = style({
         textDecoration: "none",
         color: "#ffffff",
     },
+    // plny outline misto poloprusvitneho stinu - ring s alpha 0.45 mel vuci tmavemu
+    // navbaru jen ~2.3:1 (pod WCAG 1.4.11); blue-3 na #1f2b3c dava >3:1 a outline
+    // prezije i forced-colors rezim
     ":focus-visible": {
-        outline: "none",
-        boxShadow: "0 0 0 0.15rem rgb(96 165 250 / 0.45)",
+        outline: "2px solid var(--mantine-color-blue-3)",
+        outlineOffset: "2px",
     },
     "@media": {
         "(min-width: 992px)": {
@@ -96,9 +99,12 @@ export const spotlightButton = style({
         backgroundColor: "rgb(255 255 255 / 0.12)",
         color: "#ffffff",
     },
+    // plny outline misto poloprusvitneho stinu - ring s alpha 0.45 mel vuci tmavemu
+    // navbaru jen ~2.3:1 (pod WCAG 1.4.11); blue-3 na #1f2b3c dava >3:1 a outline
+    // prezije i forced-colors rezim
     ":focus-visible": {
-        outline: "none",
-        boxShadow: "0 0 0 0.15rem rgb(96 165 250 / 0.45)",
+        outline: "2px solid var(--mantine-color-blue-3)",
+        outlineOffset: "2px",
     },
     "@media": {
         "(min-width: 992px)": {

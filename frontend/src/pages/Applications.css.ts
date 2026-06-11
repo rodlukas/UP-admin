@@ -1,5 +1,6 @@
 import { createThemeContract, style } from "@vanilla-extract/css"
 
+import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
 export const applicationsVars = createThemeContract({
@@ -7,20 +8,19 @@ export const applicationsVars = createThemeContract({
     badgeColor: "",
 })
 
-export const course = style({
-    display: "flex",
-    flexDirection: "column",
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    overflow: "hidden",
-    selectors: {
-        "& + &": {
-            marginTop: "1.1rem",
+export const course = style([
+    surfaceCard,
+    {
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        selectors: {
+            "& + &": {
+                marginTop: "1.1rem",
+            },
         },
     },
-})
+])
 
 export const applicationItem = style({
     transition: "background-color 0.12s ease-in-out",
@@ -29,7 +29,7 @@ export const applicationItem = style({
     padding: "0.5rem 1rem",
     selectors: {
         "&:hover": {
-            backgroundColor: "light-dark(#f4f7fb, var(--mantine-color-dark-6))",
+            backgroundColor: vars.bg.hover,
         },
     },
 })
@@ -46,7 +46,7 @@ export const courseHeadingItem = style({
     gap: "0.65rem",
     borderBottom: vars.borderShort.default,
     borderLeft: `4px solid ${applicationsVars.courseBackground}`,
-    backgroundColor: "light-dark(#f1f5f9, var(--mantine-color-dark-6))",
+    backgroundColor: vars.bg.muted,
     padding: "0.6rem 1rem",
 })
 
@@ -68,7 +68,7 @@ export const courseHeading = style({
 export const applicationMeta = style({
     marginTop: "0.25rem",
     width: "100%",
-    color: "light-dark(#475569, var(--mantine-color-dark-1))",
+    color: vars.text.subtleMuted,
     "@media": {
         "(min-width: 768px)": {
             flex: "0 0 41.666667%",

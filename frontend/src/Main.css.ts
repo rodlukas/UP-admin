@@ -1,5 +1,14 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+/**
+ * Výška fixního navbaru v px — jediný zdroj pravdy pro odvozené layout hodnoty:
+ * `navbarInner.minHeight`, `isAuthenticated.paddingTop` (navbar + odstup obsahu)
+ * a `loginContainer.minHeight` v Login.css.ts (100vh − navbar).
+ * Odvozené hodnoty se zapisují v rem (56px = 3.5rem při výchozích 16px = 1rem),
+ * aby škálovaly s uživatelskou velikostí písma.
+ */
+export const NAVBAR_HEIGHT = 56
+
 export const navbar = style({
     position: "fixed",
     zIndex: 1030,
@@ -20,7 +29,7 @@ export const navbarInner = style({
     margin: "0 auto",
     width: "100%",
     maxWidth: "1500px",
-    minHeight: "56px",
+    minHeight: NAVBAR_HEIGHT,
 })
 
 export const navbarBrand = style({
@@ -74,7 +83,8 @@ export const navbarCollapseOpen = style({
 })
 
 export const isAuthenticated = style({
-    paddingTop: "3.75rem",
+    // výška navbaru (3.5rem) + 0.25rem odstup obsahu pod fixním navbarem
+    paddingTop: `${NAVBAR_HEIGHT / 16 + 0.25}rem`,
 })
 
 globalStyle(".main", {
@@ -85,10 +95,12 @@ globalStyle(".nav-content", {
     maxWidth: "900px",
 })
 
-globalStyle(".main a, [data-mantine-modal] a", {
+// Mantine žádný `[data-mantine-modal]` atribut nevykresluje — obsah modalu je
+// v `.mantine-Modal-content` (stejný selektor používá i FormBase.css.ts).
+globalStyle(".main a, .mantine-Modal-content a", {
     textDecoration: "none",
 })
 
-globalStyle(".main a:hover, [data-mantine-modal] a:hover", {
+globalStyle(".main a:hover, .mantine-Modal-content a:hover", {
     textDecoration: "underline",
 })

@@ -66,7 +66,12 @@ const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false, 
     return (
         <ul className={className}>
             {lecture.attendances.map((attendance) => (
-                <Attendance attendance={attendance} key={attendance.id} showClient={showClient} source={source} />
+                <Attendance
+                    attendance={attendance}
+                    key={attendance.id}
+                    showClient={showClient}
+                    source={source}
+                />
             ))}
         </ul>
     )

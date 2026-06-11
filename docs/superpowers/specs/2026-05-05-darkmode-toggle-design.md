@@ -1,5 +1,11 @@
 # Design: Dark mode toggle v nastavení
 
+> **Odchylka implementace:** přepínač nakonec není `SegmentedControl` na stránce Nastavení,
+> ale dropdown menu v navbaru (`ColorSchemeToggle.tsx`, `data-qa="color_scheme_toggle"`).
+> Důvod: navbar je dostupný odkudkoliv v aplikaci, uživatel nemusí kvůli změně schématu
+> navštěvovat Nastavení — lepší UX. Zbytek specifikace (hodnoty, ikony, localStorage přes
+> Mantine) platí beze změny.
+
 ## Shrnutí
 
 Přidání přepínače barevného schématu (světlý / tmavý / systém) na stránku Nastavení. Volba se automaticky ukládá do localStorage přes Mantine.

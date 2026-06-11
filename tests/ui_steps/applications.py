@@ -115,8 +115,12 @@ def insert_to_form(context, verify_current_data=False):
     course_field.send_keys(Keys.BACK_SPACE)
     note_field.clear()
     # vloz nove udaje
-    helpers.react_select_insert(context.browser, client_field, context.client)
-    helpers.react_select_insert(context.browser, course_field, context.course)
+    # klient a kurz jsou povinne selecty - scenare "is not added" zamerne pouzivaji
+    # prazdne/neexistujici/skryte hodnoty, u kterych vyber (zamerne) selze; uspesnost se
+    # proto overuje az v krocich, ktere ocekavaji uspesne ulozeni
+    client_selected = helpers.combobox_insert(context.browser, client_field, context.client)
+    course_selected = helpers.combobox_insert(context.browser, course_field, context.course)
+    context.client_course_select_success = client_selected and course_selected
     note_field.send_keys(context.note)
 
 
@@ -136,6 +140,8 @@ def save_old_applications_cnt_to_context(context):
 
 @then("the application is added")
 def step_impl(context):
+    # povinne selecty (klient, kurz) musely byt uspesne vybrany
+    assert context.client_course_select_success, "vyber klienta/kurzu v selectu selhal"
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na pridani zadosti
@@ -149,6 +155,8 @@ def step_impl(context):
 
 @then("the application is updated")
 def step_impl(context):
+    # povinne selecty (klient, kurz) musely byt uspesne vybrany
+    assert context.client_course_select_success, "vyber klienta/kurzu v selectu selhal"
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na update zadosti

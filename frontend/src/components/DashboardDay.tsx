@@ -17,7 +17,7 @@ import {
     toISODate,
 } from "../global/funcDateTime"
 import { inlineBlockNowrap, mb0 } from "../global/utility.css"
-import { courseDuration } from "../global/utils"
+import { courseDuration, getReadableTextColorWithOverlay } from "../global/utils"
 import { DEFAULT_DELAY, useDelayedValue } from "../hooks/useDelayedValue"
 
 import Attendances from "./Attendances"
@@ -82,6 +82,11 @@ const DashboardDay: React.FC<Props> = (props) => {
                         className={classNames(lectureStyles.lectureHeading, styles.lectureHeading)}
                         style={assignInlineVars(styles.dashboardDayVars, {
                             courseBackground: lecture.course.color,
+                            // pozadí hlavičky ztmavuje overlay (viz DashboardDay.css.ts)
+                            courseText: getReadableTextColorWithOverlay(
+                                lecture.course.color,
+                                styles.LECTURE_HEADING_OVERLAY_OPACITY,
+                            ),
                         })}>
                         <Title order={4}>
                             <Tooltip label={courseDuration(lecture.duration)}>
@@ -92,7 +97,10 @@ const DashboardDay: React.FC<Props> = (props) => {
                         <LectureNumber
                             lecture={lecture}
                             colorize
-                            className={classNames(lectureStyles.lectureNumber, styles.lectureNumber)}
+                            className={classNames(
+                                lectureStyles.lectureNumber,
+                                styles.lectureNumber,
+                            )}
                             color="light"
                         />
                         <ModalLectures

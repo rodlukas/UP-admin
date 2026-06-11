@@ -1,3 +1,4 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import * as React from "react"
 import {
     Bar,
@@ -57,7 +58,10 @@ const ChartTooltip: React.FC<TooltipContentProps> = ({ active, label, payload })
         <div className={styles.tooltip}>
             <div className={styles.tooltipLabel}>{label}</div>
             {payload.map((entry) => (
-                <div key={entry.name} style={{ color: entry.color }}>
+                <div
+                    key={entry.name}
+                    className={styles.tooltipSeriesEntry}
+                    style={assignInlineVars({ [styles.tooltipSeriesColor]: entry.color })}>
                     {entry.name}: <strong>{entry.value}</strong>
                 </div>
             ))}

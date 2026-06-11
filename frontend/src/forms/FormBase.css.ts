@@ -1,5 +1,6 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { statusNoticeDanger } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-header", {
@@ -68,7 +69,7 @@ globalStyle("form[data-qa^='form_'] .mantine-Modal-close", {
 })
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-close:hover", {
-    backgroundColor: "light-dark(#f1f5f9, var(--mantine-color-dark-5))",
+    backgroundColor: vars.bg.hoverElevated,
     color: vars.text.primary,
 })
 
@@ -188,13 +189,12 @@ export const formPanel = style({
     padding: 0,
 })
 
-export const formSectionDanger = style({
-    border: "1px solid light-dark(#ffe0e5, var(--mantine-color-red-9))",
-    borderLeft: "3px solid light-dark(#fa8ea0, var(--mantine-color-red-6))",
-    borderRadius: vars.radius.md,
-    backgroundColor: "light-dark(#fff8f9, var(--mantine-color-dark-6))",
-    padding: "0.95rem 1rem",
-})
+export const formSectionDanger = style([
+    statusNoticeDanger,
+    {
+        padding: "0.95rem 1rem",
+    },
+])
 
 export const formSectionTitle = style({
     marginBottom: "0.8rem",
@@ -280,15 +280,20 @@ globalStyle(`${modalActions} .mantine-Button-root[data-variant='default']`, {
 })
 
 globalStyle(`${modalActions} .mantine-Button-root[data-variant='default']:hover`, {
-    backgroundColor: "light-dark(#f8fafc, var(--mantine-color-dark-5))",
+    backgroundColor: vars.bg.hoverElevated,
 })
 
 globalStyle(`${modalActions} [type='submit']`, {
     boxShadow: "0 10px 18px rgb(34 139 230 / 0.18)",
 })
 
+// hover lift jen pokud uzivatel nema omezeny pohyb (prefers-reduced-motion)
 globalStyle(`${modalActions} [type='submit']:hover`, {
-    transform: "translateY(-1px)",
+    "@media": {
+        "(prefers-reduced-motion: no-preference)": {
+            transform: "translateY(-1px)",
+        },
+    },
 })
 
 globalStyle(`${modalActions} > *`, {

@@ -1,5 +1,6 @@
 import { Badge, Button, Container, SimpleGrid, Skeleton, Table, Title } from "@mantine/core"
 import { Link } from "@tanstack/react-router"
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 import {
@@ -66,19 +67,6 @@ const formatHours = (hours: number): string =>
 /** Formátuje minuty jako hodiny – převede a zavolá formatHours. */
 const formatMinutesAsHours = (minutes: number): string => formatHours(minutes / 60)
 
-const toNumberOrNull = (
-    value: number | string | readonly (number | string)[] | undefined | null,
-): number | null => {
-    if (value === undefined || value === null) {
-        return null
-    }
-    if (Array.isArray(value)) {
-        return null
-    }
-    const n = typeof value === "number" ? value : Number(value)
-    return Number.isFinite(n) ? n : null
-}
-
 type EntityStatCardRow = { badge: React.ReactNode; badgeColor: string; value: React.ReactNode }
 
 type EntityStatCardProps = {
@@ -104,7 +92,9 @@ type MetricToggleProps = {
 const ChartSection: React.FC<ChartSectionProps> = ({ title, caption, headerAction, children }) => (
     <section className={styles.chartSection}>
         <div className={styles.chartTitleRow}>
-            <Title order={2} className={styles.chartTitle}>{title}</Title>
+            <Title order={2} className={styles.chartTitle}>
+                {title}
+            </Title>
             {headerAction}
         </div>
         {caption ? <p className={styles.chartCaption}>{caption}</p> : null}
@@ -115,10 +105,12 @@ const ChartSection: React.FC<ChartSectionProps> = ({ title, caption, headerActio
 /** Přepínač metriky pro grafy (počet lekcí / odučené hodiny). */
 const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
     <Button.Group className={styles.metricToggle}>
+        {/* aria-pressed: aktivní metrika je jinak rozlišená jen vizuálně (filled/outline) */}
         <Button
             size="sm"
             color="gray"
             variant={value === "lectures" ? "filled" : "outline"}
+            aria-pressed={value === "lectures"}
             onClick={() => onChange("lectures")}>
             {CHART_METRIC_LABEL.lectures}
         </Button>
@@ -126,6 +118,7 @@ const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
             size="sm"
             color="gray"
             variant={value === "hours" ? "filled" : "outline"}
+            aria-pressed={value === "hours"}
             onClick={() => onChange("hours")}>
             {CHART_METRIC_LABEL.hours}
         </Button>
@@ -146,10 +139,10 @@ const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, total, rows, not
         {rows.map((row, i) => (
             <div
                 key={typeof row.badge === "string" ? `${title}-${row.badge}` : String(i)}
-                className={
-                    i < rows.length - 1 ? styles.breakdownRowSpaced : styles.breakdownRow
-                }>
-                <Badge color={row.badgeColor} radius="xl">
+                className={i < rows.length - 1 ? styles.breakdownRowSpaced : styles.breakdownRow}>
+                {/* autoContrast: na světlých výplních (yellow, …) by byl bílý text
+                    badge nečitelný (~1.9:1) — Mantine zvolí černou/bílou podle výplně */}
+                <Badge color={row.badgeColor} radius="xl" autoContrast>
                     {row.badge}
                 </Badge>
                 <span className={styles.breakdownValue}>{row.value}</span>
@@ -252,11 +245,19 @@ type CourseYAxisTickProps = {
 
 /** Tick osy Y pro graf po kurzech – zobrazuje barevný kroužek kurzu před názvem. */
 const CourseYAxisTick: React.FC<CourseYAxisTickProps> = ({ x = 0, y = 0, payload, courses }) => {
-    const color = courses.find((c) => c.course_name === payload?.value)?.course_color ?? "var(--mantine-color-gray-5)"
+    const color =
+        courses.find((c) => c.course_name === payload?.value)?.course_color ??
+        "var(--mantine-color-gray-5)"
     return (
         <g transform={`translate(${x},${y})`}>
             <circle cx={-8} cy={0} r={5} fill={color} />
-            <text x={-16} y={0} dy={4} textAnchor="end" fill="var(--mantine-color-gray-6)" fontSize={12}>
+            <text
+                x={-16}
+                y={0}
+                dy={4}
+                textAnchor="end"
+                fill="var(--up-chart-tick-fill)"
+                fontSize={12}>
                 {payload?.value}
             </text>
         </g>
@@ -289,10 +290,61 @@ const YearCourseLineTooltip: React.FC<YearCourseLineTooltipProps> = ({
             <div className={styles.tooltipLabel}>Rok {label}</div>
             {rows.map((p) => (
                 <div key={String(p.dataKey)} className={styles.tooltipRow}>
-                    <span style={{ color: p.color }}>{p.name}</span>
+                    <span
+                        className={styles.tooltipSeriesEntry}
+                        style={assignInlineVars({
+                            [styles.tooltipSeriesColor]: p.color ?? "inherit",
+                        })}>
+                        {p.name}
+                    </span>
                     <strong>{p.value}</strong>
                 </div>
             ))}
+        </div>
+    )
+}
+
+type HoursYearTooltipProps = {
+    active?: boolean
+    payload?: { payload: { year: number; hours: number } }[]
+    label?: number
+}
+
+/** Tooltip pro plošný graf odučených hodin podle roku. */
+const HoursYearTooltip: React.FC<HoursYearTooltipProps> = ({ active, payload, label }) => {
+    if (!active || !payload?.length) {
+        return null
+    }
+    return (
+        <div className={styles.chartTooltip}>
+            <div className={styles.tooltipLabel}>Rok {label}</div>
+            <div>
+                Odučeno: <strong>{formatHours(payload[0].payload.hours)}</strong>
+            </div>
+        </div>
+    )
+}
+
+type MonthTooltipProps = {
+    active?: boolean
+    payload?: { payload: { label: string; value: number } }[]
+    label?: string
+    chartMetric: ChartMetric
+}
+
+/** Tooltip pro sloupcový graf lekcí/hodin podle měsíce – respektuje zvolenou metriku. */
+const MonthTooltip: React.FC<MonthTooltipProps> = ({ active, payload, label, chartMetric }) => {
+    if (!active || !payload?.length) {
+        return null
+    }
+    const { value } = payload[0].payload
+    return (
+        <div className={styles.chartTooltip}>
+            <div className={styles.tooltipLabel}>{label}</div>
+            <div>
+                {CHART_METRIC_LABEL[chartMetric]}:{" "}
+                <strong>{chartMetric === "hours" ? formatHours(value) : value}</strong>
+            </div>
         </div>
     )
 }
@@ -417,8 +469,16 @@ const HoursByYearChart: React.FC<HoursByYearChartProps> = ({ byYear, compact }) 
             <AreaChart data={data} margin={CHART_MARGIN}>
                 <defs>
                     <linearGradient id="statsHoursAreaFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="var(--mantine-color-indigo-6)" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="var(--mantine-color-indigo-6)" stopOpacity={0.05} />
+                        <stop
+                            offset="5%"
+                            stopColor="var(--mantine-color-indigo-6)"
+                            stopOpacity={0.3}
+                        />
+                        <stop
+                            offset="95%"
+                            stopColor="var(--mantine-color-indigo-6)"
+                            stopOpacity={0.05}
+                        />
                     </linearGradient>
                 </defs>
                 <CartesianGrid stroke={GRID_STROKE} strokeDasharray="3 3" vertical={false} />
@@ -461,13 +521,7 @@ const HoursByYearChart: React.FC<HoursByYearChartProps> = ({ byYear, compact }) 
                               }
                     }
                 />
-                <Tooltip
-                    formatter={(value) => {
-                        const n = toNumberOrNull(value)
-                        return n === null ? ["", ""] : [formatHours(n), "Odučeno"]
-                    }}
-                    labelFormatter={(y) => `Rok ${y}`}
-                />
+                <Tooltip content={<HoursYearTooltip />} />
                 <Area
                     type="monotone"
                     dataKey="hours"
@@ -504,9 +558,15 @@ function TopRankingSection<T extends { id: number; lecture_count: number }>({
                     <Table verticalSpacing="xs" withRowBorders={false} mb={0}>
                         <Table.Thead>
                             <Table.Tr className={styles.rankingDivider}>
-                                <Table.Th c="dimmed" fw={400}>#</Table.Th>
-                                <Table.Th c="dimmed" fw={400}>{nameHeader}</Table.Th>
-                                <Table.Th ta="right" c="dimmed" fw={400}>Lekce</Table.Th>
+                                <Table.Th c="dimmed" fw={400}>
+                                    #
+                                </Table.Th>
+                                <Table.Th c="dimmed" fw={400}>
+                                    {nameHeader}
+                                </Table.Th>
+                                <Table.Th ta="right" c="dimmed" fw={400}>
+                                    Lekce
+                                </Table.Th>
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>
@@ -514,7 +574,9 @@ function TopRankingSection<T extends { id: number; lecture_count: number }>({
                                 <Table.Tr key={row.id}>
                                     <Table.Td c="dimmed">{index + 1}</Table.Td>
                                     <Table.Td>{renderName(row)}</Table.Td>
-                                    <Table.Td ta="right" fw={600}>{row.lecture_count}</Table.Td>
+                                    <Table.Td ta="right" fw={600}>
+                                        {row.lecture_count}
+                                    </Table.Td>
                                 </Table.Tr>
                             ))}
                         </Table.Tbody>
@@ -598,21 +660,13 @@ const LecturesMonthSection: React.FC<LecturesMonthSectionProps> = ({
                                   }
                         }
                     />
-                    <Tooltip
-                        contentStyle={{ fontSize: "0.8rem" }}
-                        formatter={(value) => {
-                            const n = toNumberOrNull(value)
-                            if (n === null) {
-                                return ["", ""]
-                            }
-                            if (chartMetric === "hours") {
-                                return [formatHours(n), CHART_METRIC_LABEL.hours]
-                            }
-                            return [n, CHART_METRIC_LABEL.lectures]
-                        }}
-                        labelFormatter={String}
+                    <Tooltip content={<MonthTooltip chartMetric={chartMetric} />} />
+                    <Bar
+                        dataKey="value"
+                        fill="var(--mantine-color-indigo-6)"
+                        name={chartMetric}
+                        radius={[4, 4, 0, 0]}
                     />
-                    <Bar dataKey="value" fill="var(--mantine-color-indigo-6)" name={chartMetric} radius={[4, 4, 0, 0]} />
                 </BarChart>
             </ResponsiveContainer>
         </ChartSection>
@@ -665,8 +719,18 @@ const LecturesCourseSection: React.FC<LecturesCourseSectionProps> = ({ byCourse,
                         align="center"
                         wrapperStyle={LEGEND_FONT}
                     />
-                    <Bar dataKey="individual" stackId="a" fill="var(--mantine-color-indigo-6)" name="individual" />
-                    <Bar dataKey="group" stackId="a" fill="var(--mantine-color-teal-6)" name="group" />
+                    <Bar
+                        dataKey="individual"
+                        stackId="a"
+                        fill="var(--mantine-color-indigo-6)"
+                        name="individual"
+                    />
+                    <Bar
+                        dataKey="group"
+                        stackId="a"
+                        fill="var(--mantine-color-teal-6)"
+                        name="group"
+                    />
                     <Bar
                         dataKey="canceled_count"
                         stackId="a"
@@ -746,7 +810,12 @@ const LecturesYearSection: React.FC<LecturesYearSectionProps> = ({
                                 fill="var(--mantine-color-indigo-6)"
                                 name="individual"
                             />
-                            <Bar dataKey="group" stackId="a" fill="var(--mantine-color-teal-6)" name="group" />
+                            <Bar
+                                dataKey="group"
+                                stackId="a"
+                                fill="var(--mantine-color-teal-6)"
+                                name="group"
+                            />
                             <Bar
                                 dataKey="canceled_count"
                                 stackId="a"

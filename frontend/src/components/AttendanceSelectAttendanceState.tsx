@@ -24,10 +24,15 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
 
     const onChange = React.useCallback(
         (val: string | null): void => {
-            if (!val) {return}
+            if (!val) {
+                return
+            }
             patchAttendance.mutate(
                 { id: props.attendanceId, attendancestate: Number(val) },
-                { onSuccess: () => trackEvent("attendance_state_changed", { source: props.source }) },
+                {
+                    onSuccess: () =>
+                        trackEvent("attendance_state_changed", { source: props.source }),
+                },
             )
         },
         [props.attendanceId, props.source, patchAttendance],
@@ -46,6 +51,8 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
             size="sm"
             comboboxProps={{ withinPortal: true }}
             allowDeselect={false}
+            // select nemá viditelný label — přístupný název pro čtečky obrazovky
+            aria-label="Výběr stavu účasti klienta na lekci"
             data-qa="lecture_select_attendance_attendancestate"
         />
     )

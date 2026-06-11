@@ -1,15 +1,15 @@
 import { style } from "@vanilla-extract/css"
 
+import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
-export const memberCard = style({
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    padding: "0.8rem",
-    height: "100%",
-})
+export const memberCard = style([
+    surfaceCard,
+    {
+        padding: "0.8rem",
+        height: "100%",
+    },
+])
 
 export const memberHeading = style({
     marginBottom: "0.55rem",
@@ -18,7 +18,7 @@ export const memberHeading = style({
 })
 
 export const prepaidCountersInput = style({
-    minWidth: "3.75rem !important",
+    minWidth: "3.75rem",
     fontWeight: 600,
 })
 

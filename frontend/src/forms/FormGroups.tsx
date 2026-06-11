@@ -1,4 +1,13 @@
-import { Checkbox, Group, Modal, MultiSelect, Pill, SimpleGrid, TextInput, Title } from "@mantine/core"
+import {
+    Checkbox,
+    Group,
+    Modal,
+    MultiSelect,
+    Pill,
+    SimpleGrid,
+    TextInput,
+    Title,
+} from "@mantine/core"
 import { useForm } from "@mantine/form"
 import * as React from "react"
 
@@ -8,8 +17,8 @@ import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import GroupName from "../components/GroupName"
+import InfoTooltip from "../components/InfoTooltip"
 import Loading from "../components/Loading"
-import Tooltip from "../components/Tooltip"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { clientName } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
@@ -81,7 +90,12 @@ const FormGroups: React.FC<Props> = (props) => {
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
             const { name, active, course, members } = form.getValues()
-            const courseId = course!.id
+            // pojistka: bez vybraneho kurzu neodesilame, zobrazime nativni validacni bubliny
+            if (!course) {
+                e.currentTarget.reportValidity()
+                return
+            }
+            const courseId = course.id
             const dataPost: GroupPostApi = {
                 name,
                 memberships: prepareMembersForSubmit(members),
@@ -159,7 +173,9 @@ const FormGroups: React.FC<Props> = (props) => {
                 ) : (
                     <div className={styles.formContent}>
                         <div className={styles.formSection}>
-                            <Title order={6} className={styles.formSectionTitle}>Základní údaje</Title>
+                            <Title order={6} className={styles.formSectionTitle}>
+                                Základní údaje
+                            </Title>
                             <div className={styles.fieldStack}>
                                 <div className={styles.fieldBlock}>
                                     <TextInput
@@ -257,9 +273,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                                 label="Je aktivní"
                                             />
                                             {!form.values.active && (
-                                                <Tooltip
-                                                    text="Neaktivním skupinám nelze vytvořit lekci."
-                                                />
+                                                <InfoTooltip text="Neaktivním skupinám nelze vytvořit lekci." />
                                             )}
                                         </div>
                                     </div>
@@ -268,7 +282,9 @@ const FormGroups: React.FC<Props> = (props) => {
                         </div>
                         {isGroup(props.group) && (
                             <div className={`${styles.formSection} ${styles.formSectionDanger}`}>
-                                <Title order={6} className={styles.formSectionTitle}>Smazání</Title>
+                                <Title order={6} className={styles.formSectionTitle}>
+                                    Smazání
+                                </Title>
                                 <div className={styles.deleteAlertText}>
                                     <p>Nenávratně smaže skupinu i s jejími lekcemi.</p>
                                     <DeleteButton

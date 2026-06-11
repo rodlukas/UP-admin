@@ -89,9 +89,7 @@ const Applications: React.FC = () => {
                                             {courseApplications.course.name}
                                         </span>
                                     </Title>
-                                    <Badge
-                                        radius="xl"
-                                        className={styles.courseHeadingBadge}>
+                                    <Badge radius="xl" className={styles.courseHeadingBadge}>
                                         <span data-qa="applications_for_course_cnt">{cnt}</span>{" "}
                                         zájemc{getZajemciSuffix(cnt)}
                                     </Badge>
@@ -125,12 +123,17 @@ const Applications: React.FC = () => {
                                             </div>
                                             <div className={styles.applicationPhoneCol}>
                                                 {application.client.phone && (
-                                                    <ClientPhone phone={application.client.phone} icon />
+                                                    <ClientPhone
+                                                        phone={application.client.phone}
+                                                        icon
+                                                    />
                                                 )}
                                             </div>
                                             <div className={styles.applicationActionsCol}>
                                                 <div className={styles.applicationActions}>
-                                                    <ModalApplications currentApplication={application} />
+                                                    <ModalApplications
+                                                        currentApplication={application}
+                                                    />
                                                     <DeleteButton
                                                         size="sm"
                                                         onClick={(): void => {
@@ -153,9 +156,7 @@ const Applications: React.FC = () => {
                             </div>
                         )
                     })}
-                    {applications.length === 0 && (
-                        <p className={dimmedTextCenter}>Žádní zájemci</p>
-                    )}
+                    {applications.length === 0 && <p className={dimmedTextCenter}>Žádní zájemci</p>}
                 </>
             )}
         </Container>

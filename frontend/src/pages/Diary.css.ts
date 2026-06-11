@@ -30,11 +30,14 @@ export const disabledLink = style({
 
 export const arrowLink = style({
     display: "inline-flex",
-    outline: "none",
     borderRadius: vars.radius.pill,
     selectors: {
+        // plny outline misto poloprusvitneho focusRing stinu - ring s alpha 0.16 je
+        // jako jediny indikator nedostatecny (~1.2:1 vuci pozadi stranky, WCAG 2.4.7);
+        // outline navic prezije i forced-colors rezim
         "&:focus-visible": {
-            boxShadow: "0 0 0 0.23rem rgb(13 110 253 / 0.35)",
+            outline: `2px solid ${vars.colors.primary}`,
+            outlineOffset: "2px",
         },
     },
 })
@@ -44,16 +47,25 @@ export const arrowBtn = style({
     marginTop: "0.15rem",
     borderRadius: vars.radius.pill,
     boxShadow: "0 4px 10px rgb(15 23 42 / 0.1)",
-    backgroundColor: "light-dark(#e2e8f0, var(--mantine-color-dark-5))",
+    backgroundColor: vars.bg.control,
     cursor: "pointer",
     padding: "0.2rem",
     color: vars.text.primary,
     fontSize: "2rem",
     selectors: {
         "&:hover": {
-            transform: "translateY(-1px)",
-            backgroundColor: "light-dark(#cfd8e3, var(--mantine-color-dark-4))",
-            color: "light-dark(#0f172a, var(--mantine-color-gray-0))",
+            backgroundColor: vars.bg.controlHover,
+            color: vars.text.heading,
+        },
+    },
+    // posun při hoveru jen pokud uživatel nemá omezený pohyb (prefers-reduced-motion)
+    "@media": {
+        "(prefers-reduced-motion: no-preference)": {
+            selectors: {
+                "&:hover": {
+                    transform: "translateY(-1px)",
+                },
+            },
         },
     },
 })

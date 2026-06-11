@@ -1,17 +1,17 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
-export { chartTooltip } from "../components/charts.css"
+export { chartTooltip, tooltipSeriesColor, tooltipSeriesEntry } from "../components/charts.css"
 
-export const statCard = style({
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    padding: "1rem",
-    minHeight: "9rem",
-})
+export const statCard = style([
+    surfaceCard,
+    {
+        padding: "1rem",
+        minHeight: "9rem",
+    },
+])
 
 export const statCardTitle = style({
     marginBottom: "0.5rem",
@@ -192,18 +192,17 @@ export const chartCaption = style({
     fontSize: "0.8rem",
 })
 
-export const chartPanel = style({
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    padding: "1rem",
-    "@media": {
-        "screen and (max-width: 767px)": {
-            padding: "0.5rem",
+export const chartPanel = style([
+    surfaceCard,
+    {
+        padding: "1rem",
+        "@media": {
+            "screen and (max-width: 767px)": {
+                padding: "0.5rem",
+            },
         },
     },
-})
+])
 
 export const chartEmpty = style({
     marginBottom: 0,

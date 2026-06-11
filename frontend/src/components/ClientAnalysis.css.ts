@@ -4,7 +4,7 @@ import { vars } from "../theme/tokens"
 
 import { chartBaseStyles } from "./charts.css"
 
-export { chartTooltip as tooltip } from "./charts.css"
+export { chartTooltip as tooltip, tooltipSeriesColor, tooltipSeriesEntry } from "./charts.css"
 
 export const chartPanel = style({
     ...chartBaseStyles,

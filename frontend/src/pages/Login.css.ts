@@ -1,5 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
+import { surfaceCard } from "../global/surfaces.css"
+import { NAVBAR_HEIGHT } from "../Main.css"
 import { vars } from "../theme/tokens"
 
 export const loginContainer = style({
@@ -7,18 +9,20 @@ export const loginContainer = style({
     alignItems: "center",
     justifyContent: "center",
     padding: "2rem 1rem",
-    minHeight: "calc(100vh - 3.5rem)",
+    // vycentrování karty ve viewportu zmenšeném o fixní navbar (3.5rem)
+    minHeight: `calc(100vh - ${NAVBAR_HEIGHT / 16}rem)`,
 })
 
-export const loginCard = style({
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.elevated,
-    backgroundColor: vars.bg.surface,
-    padding: "2.25rem",
-    width: "100%",
-    maxWidth: "420px",
-})
+export const loginCard = style([
+    surfaceCard,
+    {
+        // záměrně vyšší elevace než `shadow.card` — přihlašovací karta je fokusní prvek stránky
+        boxShadow: vars.shadow.elevated,
+        padding: "2.25rem",
+        width: "100%",
+        maxWidth: "420px",
+    },
+])
 
 export const logoContainer = style({
     display: "flex",

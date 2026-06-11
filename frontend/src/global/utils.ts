@@ -108,8 +108,9 @@ export function getDefaultValuesForLecture(
                 latestLecture = item
                 break
             }
-            // nejedna se o predplacene lekce, srovname a vratime tu pozdejsi
-            latestLecture = latestLecture > item ? latestLecture : item
+            // nejedna se o predplacene lekce, srovname ISO stringy `start` a vratime tu pozdejsi
+            // (start u latestLecture neni nikdy null - predplacena lekce by cyklus ukoncila vyse)
+            latestLecture = (latestLecture.start ?? "") > item.start ? latestLecture : item
         }
         return prepareDefaultValuesForLecture(latestLecture.course, latestLecture.start)
     }
@@ -159,6 +160,18 @@ export function isModalShown(): boolean {
 }
 
 /**
+ * Zjistí, jestli aplikace běží na Apple platformě (macOS/iOS) — klávesové zkratky
+ * se tam zobrazují s ⌘ místo Ctrl (`mod` v hotkeys odpovídá ⌘, jinde Ctrl).
+ */
+export function isApplePlatform(): boolean {
+    // `navigator.userAgentData` zatím chybí ve standardních TS typech (experimentální API),
+    // `navigator.platform` slouží jen jako fallback heuristika pro starší prohlížeče
+    const uaDataPlatform = (navigator as Navigator & { userAgentData?: { platform?: string } })
+        .userAgentData?.platform
+    return /mac|iphone|ipad|ipod/i.test(uaDataPlatform ?? navigator.platform)
+}
+
+/**
  * Vrátí čitelnou barvu textu (bílá nebo tmavá) pro daný background hex.
  * Používá WCAG kontrast vůči oběma alternativám a vybere tu lepší.
  */
@@ -169,6 +182,41 @@ export function getReadableTextColor(bgHex: string): string {
         return chroma.contrast(bg, "white") >= chroma.contrast(bg, darkText) ? "white" : darkText
     } catch {
         return "white"
+    }
+}
+
+/**
+ * Varianta getReadableTextColor pro hlavičky obarvené kurzem, které mají přes pozadí
+ * ztmavující overlay `rgb(15 23 42 / N)` (viz Card.css.ts / DashboardDay.css.ts) —
+ * kontrast se musí počítat vůči výsledné složené barvě, ne vůči surové barvě kurzu.
+ */
+export function getReadableTextColorWithOverlay(bgHex: string, overlayOpacity: number): string {
+    try {
+        // alpha kompozice nad neprůhledným pozadím = lineární interpolace v sRGB po kanálech
+        return getReadableTextColor(chroma.mix(bgHex, "#0f172a", overlayOpacity, "rgb").hex())
+    } catch {
+        return "white"
+    }
+}
+
+/**
+ * Upraví barvu (ztmaví/zesvětlí směrem od pozadí) tak, aby na daném pozadí dosáhla
+ * alespoň WCAG AA kontrastu 4.5:1 — pro akcentní text obarvený uživatelskou barvou
+ * (např. barva kurzu), kde nelze barvu pozadí měnit. Identita barvy (odstín) zůstává.
+ */
+export function adjustColorForContrast(colorHex: string, bgHex: string): string {
+    try {
+        const bg = chroma(bgHex)
+        // na světlém pozadí ztmavujeme, na tmavém zesvětlujeme
+        const step = bg.luminance() > 0.5 ? -0.2 : 0.2
+        let color = chroma(colorHex)
+        // krok 0.2 ~ jemný posun; 20 iterací bezpečně dosáhne černé/bílé
+        for (let i = 0; i < 20 && chroma.contrast(color, bg) < 4.5; i++) {
+            color = step < 0 ? color.darken(-step) : color.brighten(step)
+        }
+        return color.hex()
+    } catch {
+        return colorHex
     }
 }
 

@@ -71,7 +71,7 @@ module.exports = {
                 ],
             },
             {
-                // Globální CSS - Mantine, react-toastify, atd. sideEffects: true zachová importy.
+                // Globální CSS - Mantine atd. sideEffects: true zachová importy.
                 test: /\.css$/i,
                 exclude: /\.vanilla\.css$/i,
                 sideEffects: true,
@@ -147,6 +147,13 @@ module.exports = {
         // pro povoleni pristupu odkudkoliv (a z Djanga)
         allowedHosts: ["0.0.0.0"],
         compress: true,
+        // servirovani Django statickych souboru (admin/static/admin/* -> /static/admin/*),
+        // jinak by napr. logo na login strance (/static/admin/android-chrome-512x512.png)
+        // na dev serveru vracelo 404 (v produkci je servuje Django/WhiteNoise)
+        static: {
+            directory: path.resolve(__dirname, "..", "admin", "static"),
+            publicPath: "/static",
+        },
         client: {
             overlay: {
                 errors: true,

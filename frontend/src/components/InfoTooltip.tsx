@@ -1,0 +1,43 @@
+import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome"
+import { Tooltip as MantineTooltip, TooltipProps } from "@mantine/core"
+import { faInfoCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import * as React from "react"
+
+import * as styles from "./InfoTooltip.css"
+
+type Props = {
+    /** Text zobrazený v Tooltipu. */
+    text: React.ReactNode
+    /** Velikost ikony, která zobrazí Tooltip. */
+    size?: FontAwesomeIconProps["size"]
+    /** Pozice Tooltipu. */
+    placement?: TooltipProps["position"]
+    /** Ikona zobrazená jako trigger Tooltipu (výchozí: faInfoCircle). */
+    icon?: FontAwesomeIconProps["icon"]
+    /** Přístupný popisek ikony pro čtečky obrazovky. */
+    label?: string
+}
+
+/** Komponenta pro zobrazení info ikony s titulkem po najetí myší nebo focusu z klávesnice. */
+const InfoTooltip: React.FC<Props> = ({
+    text,
+    size = "lg",
+    placement = "bottom",
+    icon = faInfoCircle,
+    label = "Doplňující informace",
+}) => (
+    <MantineTooltip
+        label={text}
+        position={placement}
+        withinPortal
+        // focus + tabIndex: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13)
+        events={{ hover: true, focus: true, touch: true }}>
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- trigger tooltipu
+            musí být fokusovatelný, jinak je obsah jen pro myš (WAI-ARIA tooltip pattern) */}
+        <span className={styles.warningIcon} tabIndex={0} role="img" aria-label={label}>
+            <FontAwesomeIcon icon={icon} size={size} aria-hidden />
+        </span>
+    </MantineTooltip>
+)
+
+export default InfoTooltip

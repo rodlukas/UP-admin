@@ -3,9 +3,16 @@ import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 
+import { adjustColorForContrast } from "../global/utils"
 import { LectureType } from "../types/models"
 
 import * as styles from "./LectureNumber.css"
+
+// Pozadí pilulky čísla lekce: bílá ve světlém režimu, Mantine dark-6 v tmavém
+// (override v DashboardDay.css.ts `lectureNumber`) — vůči těmto barvám se počítá
+// kontrast obarveného čísla.
+const BADGE_BG_LIGHT = "#ffffff"
+const BADGE_BG_DARK = "#2e2e2e" // var(--mantine-color-dark-6)
 
 type Props = {
     /** Lekce. */
@@ -37,7 +44,10 @@ const LectureNumber: React.FC<Props> = ({
             style={
                 colorize
                     ? assignInlineVars(styles.lectureNumberVars, {
-                          color: lecture.course.color,
+                          // světlá barva kurzu by na bílé pilulce nebyla čitelná
+                          // (a tmavá na tmavé) — barvu posouváme ke kontrastu 4.5:1
+                          colorLight: adjustColorForContrast(lecture.course.color, BADGE_BG_LIGHT),
+                          colorDark: adjustColorForContrast(lecture.course.color, BADGE_BG_DARK),
                       })
                     : undefined
             }>

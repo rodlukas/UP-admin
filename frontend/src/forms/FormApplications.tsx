@@ -77,8 +77,14 @@ const FormApplications: React.FC<Props> = (props) => {
     const onSubmit = React.useCallback(
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
-            const courseId = form.values.course!.id
-            const clientId = form.values.client!.id
+            const { course, client } = form.values
+            // pojistka: bez vybraneho kurzu/klienta neodesilame, zobrazime nativni validacni bubliny
+            if (!course || !client) {
+                e.currentTarget.reportValidity()
+                return
+            }
+            const courseId = course.id
+            const clientId = client.id
             const dataPost: ApplicationPostApi = {
                 course_id: courseId,
                 client_id: clientId,
@@ -130,7 +136,9 @@ const FormApplications: React.FC<Props> = (props) => {
                 ) : (
                     <div className={baseStyles.formContent}>
                         <div className={baseStyles.formSection}>
-                            <Title order={6} className={baseStyles.formSectionTitle}>Základní údaje</Title>
+                            <Title order={6} className={baseStyles.formSectionTitle}>
+                                Základní údaje
+                            </Title>
                             <div className={baseStyles.fieldStack}>
                                 <div className={baseStyles.fieldBlock}>
                                     <label htmlFor="client" className={baseStyles.fieldLabel}>

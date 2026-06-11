@@ -6,6 +6,7 @@ import {
     faInfoCircle,
     faSyncAlt,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import classNames from "classnames"
 import * as React from "react"
 
 import { useBank } from "../api/hooks"
@@ -124,8 +125,9 @@ const Bank: React.FC = () => {
                     </Table.Td>
                     <Table.Td
                         ta="right"
-                        className={`${styles.bankAmountColumn} ${nowrap} ${bold}`}
-                        c={amount < 0 ? "red.7" : undefined}>
+                        className={classNames(styles.bankAmountColumn, nowrap, bold, {
+                            [styles.bankDangerText]: amount < 0,
+                        })}>
                         {prettyAmount(amount)}
                     </Table.Td>
                 </Table.Tr>
@@ -153,7 +155,7 @@ const Bank: React.FC = () => {
         }
         if (isBankError(bankData)) {
             return (
-                <Text c="red.7" ta="center">
+                <Text className={styles.bankDangerText} ta="center">
                     {bankData.error_info}
                 </Text>
             )
@@ -163,20 +165,32 @@ const Bank: React.FC = () => {
 
     return (
         <div className={styles.bankWrapper}>
-            <Box ta="center" className={`${styles.bankTitle} ${isLackOfMoney ? styles.bankTitleWarning : styles.bankTitleOk}`}>
+            <Box
+                ta="center"
+                className={`${styles.bankTitle} ${isLackOfMoney ? styles.bankTitleWarning : styles.bankTitleOk}`}>
                 <div className={styles.bankTitleInner}>
-                    <Title
-                        order={4}
-                        className={`${styles.bankTitleText} ${inlineBlockNowrap}`}>
+                    <Title order={4} className={`${styles.bankTitleText} ${inlineBlockNowrap}`}>
                         Aktuální stav: {getBalanceText()}{" "}
                         {isLackOfMoney && (
                             <Tooltip
-                                label={`Na účtu není dostatek peněz (alespoň ${prettyAmount(bankData.rent_price)}) pro zaplacení nájmu!`}>
-                                <span>
+                                label={`Na účtu není dostatek peněz (alespoň ${prettyAmount(bankData.rent_price)}) pro zaplacení nájmu!`}
+                                // focus + tabIndex: obsah tooltipu musí být dosažitelný
+                                // i z klávesnice (WCAG 1.4.13)
+                                events={{ hover: true, focus: true, touch: true }}>
+                                {/* eslint-disable jsx-a11y/no-noninteractive-tabindex --
+                                    trigger tooltipu musí být fokusovatelný, jinak je obsah
+                                    jen pro myš (WAI-ARIA tooltip pattern); bloková forma,
+                                    protože -next-line nedosáhne na atribut o 2 řádky níž */}
+                                <span
+                                    tabIndex={0}
+                                    role="img"
+                                    aria-label="Varování: nedostatek peněz na zaplacení nájmu">
+                                    {/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
                                     <FontAwesomeIcon
                                         icon={faExclamationCircle}
                                         color={vars.colors.danger}
                                         size="lg"
+                                        aria-hidden
                                     />
                                 </span>
                             </Tooltip>

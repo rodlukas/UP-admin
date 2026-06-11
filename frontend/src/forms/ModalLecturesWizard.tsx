@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button, Menu, Modal, Select, Tooltip } from "@mantine/core"
+import { Button, Menu, Select, Tooltip } from "@mantine/core"
 import { faChevronDown, faPlus, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
@@ -64,7 +64,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         setIsClientState(newIsClient)
     }, [])
 
-    const toggleModal = React.useCallback((): void => {
+    /** Zavře modální okna průvodce a vrátí ho do výchozího stavu. */
+    const resetWizard = React.useCallback((): void => {
         requestSeqRef.current += 1
         setIsClientState(undefined)
         setModalSelectDone(false)
@@ -83,26 +84,22 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
             const request = getLecturesgroupedByCourses(obj.id, isClient)
             void request
                 .then((lecturesGroupedByCourses) => {
-                    if (requestSeqRef.current !== requestSeq) {return}
+                    if (requestSeqRef.current !== requestSeq) {
+                        return
+                    }
                     setDefaultValuesForLecture(getDefaultValuesForLecture(lecturesGroupedByCourses))
                     setObject(obj)
                     setModalSelectDone(true)
                 })
                 .finally(() => {
-                    if (requestSeqRef.current !== requestSeq) {return}
+                    if (requestSeqRef.current !== requestSeq) {
+                        return
+                    }
                     setIsLoading(false)
                 })
         },
         [isClient, isLoading],
     )
-
-    const toggleModalSelect = React.useCallback((): void => {
-        requestSeqRef.current += 1
-        setIsClientState(undefined)
-        setModalSelectDone(false)
-        setObject(null)
-        setIsLoading(false)
-    }, [])
 
     const processAdditionOfGroupOrClient = React.useCallback(
         (newObject: ClientType | GroupType): void => {
@@ -150,10 +147,14 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
             <>
                 <Select
                     id="group"
-                    data={groupsActiveContext.groups.map((g) => ({ value: g.id.toString(), label: g.name }))}
+                    data={groupsActiveContext.groups.map((g) => ({
+                        value: g.id.toString(),
+                        label: g.name,
+                    }))}
                     value={(object as GroupType | null)?.id.toString() ?? null}
                     onChange={(val) => {
-                        const found = groupsActiveContext.groups.find((g) => g.id.toString() === val) ?? null
+                        const found =
+                            groupsActiveContext.groups.find((g) => g.id.toString() === val) ?? null
                         onSelectChange("group", found)
                     }}
                     placeholder="Vyberte existující skupinu..."
@@ -189,7 +190,11 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
             <div className={styles.modalLecturesWizard}>
                 <Menu position={menuPosition}>
                     <Menu.Target>
-                        <Tooltip label={title} position={tooltipPosition} withinPortal zIndex={1300}>
+                        <Tooltip
+                            label={title}
+                            position={tooltipPosition}
+                            withinPortal
+                            events={{ hover: true, focus: true, touch: true }}>
                             <Button
                                 className={classNames(
                                     props.dropdownClassName,
@@ -197,6 +202,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                 )}
                                 size={props.dropdownSize}
                                 disabled={props.isFetching}
+                                // tlacitko obsahuje jen ikony - jmeno pro ctecky z tooltipu
+                                aria-label={title}
                                 rightSection={
                                     !props.isFetching && (
                                         <FontAwesomeIcon icon={faChevronDown} size="sm" />
@@ -221,38 +228,32 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     </Menu.Dropdown>
                 </Menu>
             </div>
+            {/* Mantine Modal balí children vždy do vlastního Modal.Body — hlavičku proto
+                renderuje sám přes prop `title` (viz kontrakt kompozice v BaseModal),
+                jinak by byla vnořená v paddingu těla a nešla přes celou šířku okna. */}
             <BaseModal
                 opened={isClient !== undefined && !modalSelectDone}
-                onClose={toggleModalSelect}
-                withCloseButton={false}
+                onClose={resetWizard}
+                title={`Přidání lekce – výběr ${selectedTargetLabel}`}
                 size="xl"
                 classNames={{ content: modalWizardContent }}>
-                <Modal.Header>
-                    <Modal.Title>
-                        Přidání lekce &ndash; výběr{" "}
-                        {selectedTargetLabel}
-                    </Modal.Title>
-                    <Modal.CloseButton />
-                </Modal.Header>
-                <Modal.Body>
-                    {isClient !== undefined && (
-                        <>
-                            {isLoading ||
-                            (isClient && clientsActiveContext.isLoading) ||
-                            (!isClient && groupsActiveContext.isLoading) ? (
-                                <Loading text={isLoading ? getLoadingText() : undefined} />
-                            ) : (
-                                renderClientOrGroupSelect()
-                            )}
-                        </>
-                    )}
-                </Modal.Body>
+                {isClient !== undefined && (
+                    <>
+                        {isLoading ||
+                        (isClient && clientsActiveContext.isLoading) ||
+                        (!isClient && groupsActiveContext.isLoading) ? (
+                            <Loading text={isLoading ? getLoadingText() : undefined} />
+                        ) : (
+                            renderClientOrGroupSelect()
+                        )}
+                    </>
+                )}
             </BaseModal>
             <ModalLecturesCore
                 object={object}
                 defaultValuesForLecture={defaultValuesForLecture}
                 shouldModalOpen={modalSelectDone}
-                funcCloseCallback={toggleModal}
+                funcCloseCallback={resetWizard}
                 date={props.date ?? ""}
                 source={source}
             />

@@ -24,7 +24,12 @@ type Props = {
  * Kostra modálního okna s formulářem pro lekce. Včetně tlačítek pro vyvolání přidání/úpravy.
  * Práci s modálním oknem má na starosti potomek ModalLecturesCore.
  */
-const ModalLectures: React.FC<Props> = ({ currentLecture, object, defaultValuesForLecture, source }) => {
+const ModalLectures: React.FC<Props> = ({
+    currentLecture,
+    object,
+    defaultValuesForLecture,
+    source,
+}) => {
     const [shouldModalOpen, setShouldModalOpen] = React.useState(false)
     return (
         <>

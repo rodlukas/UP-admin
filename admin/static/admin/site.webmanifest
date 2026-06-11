@@ -13,7 +13,7 @@
         }
     ],
     "theme_color": "#1f2b3c",
-    "background_color": "#ffffff",
+    "background_color": "#1f2b3c",
     "display": "standalone",
     "start_url": "/?utm_source=a2hs"
 }

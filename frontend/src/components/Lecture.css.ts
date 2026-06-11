@@ -1,5 +1,7 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
 // Společné styly pro lekce používané v Card a DashboardDay
 
 export const lecture = style({
@@ -7,7 +9,7 @@ export const lecture = style({
 })
 
 export const lectureCanceled = style({
-    backgroundColor: "light-dark(#f8d7da, var(--mantine-color-red-9))",
+    backgroundColor: vars.statusTint.danger,
 })
 
 globalStyle(`${lectureCanceled} h4 span`, {

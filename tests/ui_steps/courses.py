@@ -66,13 +66,6 @@ def find_course_with_context(context):
     )
 
 
-def course_color_prepare(color_picker):
-    # Mantine ColorInput rendruje wrapper (na nem visi data-qa) a uvnitr <input id="color">.
-    # Pro Selenium operace (.get_attribute("value") / .clear() / .send_keys()) potrebujeme
-    # primo input, takze sahneme dovnitr wrapperu.
-    return color_picker.find_element(By.CSS_SELECTOR, "input")
-
-
 def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     helpers.wait_form_settings_visible(context.browser)
@@ -87,10 +80,10 @@ def insert_to_form(context, verify_current_data=False):
     duration_field = context.browser.find_element(
         By.CSS_SELECTOR, "[data-qa=settings_field_duration]"
     )
-    color_picker_component = context.browser.find_element(
+    # Mantine ColorInput propaguje data-qa primo na vnitrni <input id="color">
+    color_field = context.browser.find_element(
         By.CSS_SELECTOR, "[data-qa=settings_color_picker]"
-    )  # cely widget s color pickerem
-    color_field = course_color_prepare(color_picker_component)  # pole se zvolenou barvou
+    )
     color_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=settings_label_color]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:

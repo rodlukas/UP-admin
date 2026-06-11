@@ -95,8 +95,8 @@ Django 6 + Django REST Framework — REST API pro všechny operace. Kód je rozd
 
 **Python konvence:**
 - Formátování: Black (`line-length = 100`)
-- Typování: mypy — veškerý nový kód musí mít typové anotace, mypy nesmí hlásit chyby
-- Dead code: vulture — nepoužívané symboly jsou chybou
+- Typování: mypy — veškerý nový kód musí mít typové anotace, mypy nesmí hlásit chyby; pozor: `mypy.ini` má `exclude = tests`, E2E kroky tedy CI typově nehlídá (konvence pro ně platí dál)
+- Dead code: vulture — nepoužívané symboly jsou chybou; vulture není zapojený v CI, spouští se ručně (bez whitelistu hlásí šum z migrací)
 - Závislosti: Pipenv (`Pipfile` + `Pipfile.lock`) — nikdy `pip install` přímo
 
 ### Frontend
@@ -109,7 +109,8 @@ React 19 SPA v [frontend/src/](frontend/src/). Webpack dev server na portu 3000 
 - Routing: TanStack Router (`frontend/src/router.tsx`, URL konstanty v `frontend/src/APP_URLS.ts`)
 - Server state: TanStack Query (React Query) — veškerá komunikace s API
 - CSS: vanilla-extract (type-safe CSS-in-JS, soubory `*.css.ts`)
-- UI: Reactstrap (Bootstrap 5 wrappery) + FontAwesome PRO ikony
+- UI: Mantine 9 (`@mantine/core`, `form`, `hooks`, `notifications`, `spotlight`) + FontAwesome PRO ikony
+- Dark mode: barevné schéma (světlý/tmavý/systém) přes Mantine, přepínač v navbaru; FOUC řeší init skript `admin/static/admin/color-scheme-init.js`
 - Fuzzy search: Fuse.js
 - Grafy: Recharts
 

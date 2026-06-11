@@ -1,4 +1,5 @@
 import { Tooltip } from "@mantine/core"
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 
@@ -17,16 +18,14 @@ type Props = {
 
 /** Komponenta zobrazující barevné kolečko s různou barvou a velikostí pro zobrazení barvy kurzu. */
 const CourseCircle: React.FC<Props> = ({ color, size, showTitle = false, className }) => {
-    const sizeWithUnit = `${size}rem`
     const circle = (
         <span
             data-qa="course_color"
             className={classNames(styles.courseCircle, className)}
-            style={{
-                background: color,
-                width: sizeWithUnit,
-                height: sizeWithUnit,
-            }}
+            style={assignInlineVars({
+                [styles.circleColor]: color,
+                [styles.circleSize]: `${size}rem`,
+            })}
         />
     )
 

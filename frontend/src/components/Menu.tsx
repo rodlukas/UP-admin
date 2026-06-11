@@ -9,6 +9,7 @@ import * as React from "react"
 import APP_URLS from "../APP_URLS"
 import AuthChecking from "../auth/AuthChecking"
 import { useAuthContext } from "../auth/AuthContext"
+import { isApplePlatform } from "../global/utils"
 import { fEmptyVoid, QA } from "../types/types"
 
 import ColorSchemeToggle from "./ColorSchemeToggle"
@@ -47,6 +48,10 @@ const MyNavLink: React.FC<MyNavLinkProps> = ({
     />
 )
 
+// zkratka zobrazená v UI i v aria-labelu musí odpovídat skutečné klávese
+// na dané platformě (mod = ⌘ na Apple platformách, jinde Ctrl)
+const spotlightShortcutLabel = isApplePlatform() ? "⌘K" : "Ctrl K"
+
 /** Komponenta zobrazující menu aplikace pro přihlášené uživatele. */
 const Menu: React.FC<Props> = (props) => {
     const authContext = useAuthContext()
@@ -62,12 +67,12 @@ const Menu: React.FC<Props> = (props) => {
                     <UnstyledButton
                         onClick={spotlight.open}
                         className={styles.spotlightButton}
-                        aria-label="Otevřít vyhledávání (Ctrl+K)">
+                        aria-label={`Otevřít vyhledávání (${spotlightShortcutLabel})`}>
                         <FontAwesomeIcon icon={faSearch} fixedWidth />
                         <span className={styles.spotlightButtonLabel}>
                             Hledat klienta, skupinu...
                         </span>
-                        <Kbd size="xs">⌘K</Kbd>
+                        <Kbd size="xs">{spotlightShortcutLabel}</Kbd>
                     </UnstyledButton>
                     <ul className={styles.navList}>
                         <li>

@@ -33,19 +33,23 @@ const groupFuseOptions: IFuseOptions<GroupType> = {
 }
 
 const buildClientDescription = (client: ClientActiveType): string | undefined => {
-    const parts = [
-        client.phone ? prettyPhone(client.phone) : null,
-        client.email || null,
-    ].filter(Boolean)
+    const parts = [client.phone ? prettyPhone(client.phone) : null, client.email || null].filter(
+        Boolean,
+    )
     return parts.length > 0 ? parts.join(" · ") : undefined
 }
+
+/** Popisek skupiny výsledků s počtem položek. */
+const groupLabel = (label: string, count: number): string => `${label} (${count})`
 
 const buildGroupDescription = (group: GroupType): string | undefined => {
     const memberCount = group.memberships.length
     const courseName = group.course?.name
     const parts = [
         courseName ? `kurz: ${courseName}` : null,
-        memberCount > 0 ? `${memberCount} ${memberCount === 1 ? "člen" : memberCount < 5 ? "členové" : "členů"}` : null,
+        memberCount > 0
+            ? `${memberCount} ${memberCount === 1 ? "člen" : memberCount < 5 ? "členové" : "členů"}`
+            : null,
     ].filter(Boolean)
     return parts.length > 0 ? parts.join(" · ") : undefined
 }
@@ -102,67 +106,86 @@ const AppSpotlight: React.FC = () => {
         const groups: SpotlightActionGroupData[] = []
         if (clientActions.length > 0) {
             groups.push({
-                group: `Klienti (${clientActions.length})`,
+                group: groupLabel("Klienti", clientActions.length),
                 actions: clientActions,
             })
         }
         if (groupActions.length > 0) {
             groups.push({
-                group: `Skupiny (${groupActions.length})`,
+                group: groupLabel("Skupiny", groupActions.length),
                 actions: groupActions,
             })
         }
         return groups
     }, [clientActions, groupActions])
 
+    // mapy id → akce pro převod výsledků Fuse zpět na Spotlight akce
+    const clientActionsById = React.useMemo(
+        () => new Map(clientActions.map((action) => [action.id, action])),
+        [clientActions],
+    )
+
+    const groupActionsById = React.useMemo(
+        () => new Map(groupActions.map((action) => [action.id, action])),
+        [groupActions],
+    )
+
     const filter = React.useCallback<SpotlightFilterFunction>(
         (query, actionsToFilter) => {
+            // prázdný dotaz = výchozí stav spotlightu se všemi akcemi a celkovými počty
             if (!query.trim()) {
                 return actionsToFilter
             }
 
-            const clientResults = clientFuse.search(query)
-            const clientIds = new Set(clientResults.map((r) => `client-${r.item.id}`))
+            // Fuse se `shouldSort: true` vrací výsledky seřazené podle relevance (skóre),
+            // akce se proto musí skládat znovu v pořadí výsledků Fuse — pouhé filtrování
+            // původního pole by řazení podle relevance zahodilo a nejlepší shoda by mohla
+            // skončit pod slabými fuzzy shodami (případně kvůli `limit` úplně zmizet).
+            const filteredClientActions = clientFuse
+                .search(query)
+                .map((result) => clientActionsById.get(`client-${result.item.id}`))
+                .filter((action): action is SpotlightActionData => action !== undefined)
 
-            const groupResults = groupFuse.search(query)
-            const groupIds = new Set(groupResults.map((r) => `group-${r.item.id}`))
+            const filteredGroupActions = groupFuse
+                .search(query)
+                .map((result) => groupActionsById.get(`group-${result.item.id}`))
+                .filter((action): action is SpotlightActionData => action !== undefined)
 
-            // Zaznamenat nejnovější stav dotazu (eventy se odešlou až při zavření spotlightu,
-            // aby šel report o úspěšnosti hledání nad finálním dotazem, ne nad jedním znakem).
+            // počty v popiscích skupin musí odpovídat počtu nalezených výsledků,
+            // ne celkovému počtu klientů/skupin
+            const filtered: (SpotlightActionData | SpotlightActionGroupData)[] = []
+            if (filteredClientActions.length > 0) {
+                filtered.push({
+                    group: groupLabel("Klienti", filteredClientActions.length),
+                    actions: filteredClientActions,
+                })
+            }
+            if (filteredGroupActions.length > 0) {
+                filtered.push({
+                    group: groupLabel("Skupiny", filteredGroupActions.length),
+                    actions: filteredGroupActions,
+                })
+            }
+            return filtered
+        },
+        [clientFuse, groupFuse, clientActionsById, groupActionsById],
+    )
+
+    // Zaznamenat nejnovější stav dotazu (eventy se odešlou až při zavření spotlightu,
+    // aby šel report o úspěšnosti hledání nad finálním dotazem, ne nad jedním znakem).
+    // Detekce musí být zde, nikoli ve `filter` — ten Mantine volá během renderu
+    // a mutace ref by tam byla vedlejším efektem v render fázi.
+    // Fuse se tím hledá 2× na stisk klávesy (zde + ve `filter`) — vědomý trade-off,
+    // při stovkách záznamů je to <1 ms a čistota `filter` má přednost.
+    const onQueryChange = React.useCallback(
+        (query: string) => {
             if (query.trim().length >= 2) {
                 searchSessionRef.current = {
                     queried: true,
-                    hasResults: clientResults.length + groupResults.length > 0,
+                    hasResults:
+                        clientFuse.search(query).length + groupFuse.search(query).length > 0,
                 }
             }
-
-            const matches = (action: SpotlightActionData): boolean =>
-                clientIds.has(action.id) || groupIds.has(action.id)
-
-            const isGroupEntry = (
-                entry: SpotlightActionData | SpotlightActionGroupData,
-            ): entry is SpotlightActionGroupData => "actions" in entry
-
-            return actionsToFilter
-                .map((entry) => {
-                    if (isGroupEntry(entry)) {
-                        return { ...entry, actions: entry.actions.filter(matches) }
-                    }
-                    return matches(entry) ? entry : null
-                })
-                .filter(
-                    (
-                        entry,
-                    ): entry is SpotlightActionData | SpotlightActionGroupData => {
-                        if (!entry) {
-                            return false
-                        }
-                        if (isGroupEntry(entry)) {
-                            return entry.actions.length > 0
-                        }
-                        return true
-                    },
-                )
         },
         [clientFuse, groupFuse],
     )
@@ -177,16 +200,21 @@ const AppSpotlight: React.FC = () => {
     // Vlastni hotkey s `isModalShown()` guardem – pokud je otevreny Mantine Modal,
     // nechci, aby Spotlight prebral focus a vytvoril druhy focus trap.
     // (Internal Mantine shortcut je vypnuty pres `shortcut={null}` nize.)
-    useHotkeys([
+    // Prazdne `tagsToIgnore` – paleta prikazu se musi otevrit globalne, tedy i pri
+    // fokusu v input/textarea/select (vychozi chovani useHotkeys by je ignorovalo).
+    useHotkeys(
         [
-            "mod+K",
-            () => {
-                if (!isModalShown()) {
-                    spotlight.open()
-                }
-            },
+            [
+                "mod+K",
+                () => {
+                    if (!isModalShown()) {
+                        spotlight.open()
+                    }
+                },
+            ],
         ],
-    ])
+        [],
+    )
 
     return (
         <Spotlight
@@ -197,6 +225,7 @@ const AppSpotlight: React.FC = () => {
             highlightQuery
             scrollAreaProps={{ mah: 420 }}
             filter={filter}
+            onQueryChange={onQueryChange}
             onSpotlightClose={onSpotlightClose}
             searchProps={{
                 placeholder: "Vyhledat klienta nebo skupinu…",

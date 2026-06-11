@@ -11,7 +11,7 @@ import ClientsList from "../components/ClientsList"
 import CourseName from "../components/CourseName"
 import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
-import Tooltip from "../components/Tooltip"
+import InfoTooltip from "../components/InfoTooltip"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
 import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
@@ -20,7 +20,7 @@ import { areAllMembersActive, isStaleActive } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
 
-import * as styles from "./Groups.css"
+import * as styles from "./ClientsGroups.css"
 
 /** Stránka se skupinami. */
 const Groups: React.FC = () => {
@@ -114,8 +114,12 @@ const Groups: React.FC = () => {
                                 {DAYS_WITHOUT_LECTURE_WARNING} dní.
                             </span>
                         </Group>
+                        {/* autoContrast: bílý text na yellow-filled měl jen 1.86:1 (light,
+                            yellow-6) / 2.48:1 (dark, yellow-8); černý text dává 11.28:1 /
+                            8.46:1 (WCAG AA ≥ 4.5:1) a ladí s tmavým textem žlutého banneru. */}
                         <Button
                             color="yellow"
+                            autoContrast
                             size="sm"
                             disabled={deactivateGroups.isPending}
                             onClick={handleDeactivateAll}>
@@ -163,7 +167,7 @@ const Groups: React.FC = () => {
                                                     ml="0.25rem"
                                                     className={middle}>
                                                     {!areAllMembersActive(group.memberships) && (
-                                                        <Tooltip
+                                                        <InfoTooltip
                                                             placement="right"
                                                             size="1x"
                                                             text={
@@ -172,7 +176,7 @@ const Groups: React.FC = () => {
                                                         />
                                                     )}
                                                     {isStaleActive(group.last_lecture_date) && (
-                                                        <Tooltip
+                                                        <InfoTooltip
                                                             placement="right"
                                                             size="1x"
                                                             icon={faHourglassEnd}

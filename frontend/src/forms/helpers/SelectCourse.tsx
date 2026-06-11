@@ -19,6 +19,11 @@ type SelectCourseProps = {
     required?: boolean
     /** Popisek pole (předán Mantine Select jako label). */
     label?: string
+    /**
+     * DOM id selectu — výchozí hodnotu "course" hledají E2E testy (`By.ID "course"`),
+     * vlastní id zasílej jen pokud by mohly být současně namountované dvě instance.
+     */
+    id?: string
 }
 
 /** Pomocná komponenta – barevné kolečko kurzu v option. */
@@ -37,12 +42,13 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
     isDisabled = false,
     required = false,
     label,
+    id = "course",
 }) => {
     const data = options.map((c) => ({ value: c.id.toString(), label: c.name }))
 
     return (
         <Select
-            id="course"
+            id={id}
             data={data}
             value={value?.id.toString() ?? null}
             onChange={(val) => {

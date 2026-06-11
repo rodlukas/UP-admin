@@ -26,11 +26,7 @@ const ClientPhone: React.FC<Props> = ({ phone, icon = false }) => {
                 className={styles.clientPhone}
                 data-gdpr>
                 {icon && (
-                    <FontAwesomeIcon
-                        flip="horizontal"
-                        icon={faPhone}
-                        className={iconBeforeText}
-                    />
+                    <FontAwesomeIcon flip="horizontal" icon={faPhone} className={iconBeforeText} />
                 )}
                 {prettyPhone(phone)}
             </a>

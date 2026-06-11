@@ -60,7 +60,9 @@ const FormSettings: React.FC<Props> = (props) => {
         initialValues: {
             name: props.object.name,
             visible: props.object.visible,
-            duration: isCourse(props.object) ? props.object.duration : (undefined as number | undefined),
+            duration: isCourse(props.object)
+                ? props.object.duration
+                : (undefined as number | undefined),
             color: isCourse(props.object) ? props.object.color : "#000000",
         },
         onValuesChange: () => props.setFormDirty(),
@@ -171,7 +173,9 @@ const FormSettings: React.FC<Props> = (props) => {
             <Modal.Body>
                 <div className={baseStyles.formContent}>
                     <div className={baseStyles.formSection}>
-                        <Title order={6} className={baseStyles.formSectionTitle}>Základní údaje</Title>
+                        <Title order={6} className={baseStyles.formSectionTitle}>
+                            Základní údaje
+                        </Title>
                         <div className={baseStyles.fieldStack}>
                             <div className={baseStyles.fieldBlock}>
                                 <TextInput
@@ -207,7 +211,7 @@ const FormSettings: React.FC<Props> = (props) => {
                             {isCourse(props.object) && (
                                 <>
                                     <div className={baseStyles.fieldBlock}>
-                                        <Tooltip label="Trvání (min.)" withinPortal zIndex={1300}>
+                                        <Tooltip label="Trvání (min.)" withinPortal>
                                             <TextInput
                                                 type="number"
                                                 id="duration"
@@ -226,7 +230,10 @@ const FormSettings: React.FC<Props> = (props) => {
                                                 min="1"
                                                 data-qa="settings_field_duration"
                                                 leftSection={
-                                                    <FontAwesomeIcon icon={faHourglass} fixedWidth />
+                                                    <FontAwesomeIcon
+                                                        icon={faHourglass}
+                                                        fixedWidth
+                                                    />
                                                 }
                                             />
                                         </Tooltip>
@@ -239,33 +246,37 @@ const FormSettings: React.FC<Props> = (props) => {
                             )}
                         </div>
                     </div>
-                {isObject(props.object) && (
-                    <div className={`${baseStyles.formSection} ${baseStyles.formSectionDanger}`}>
-                        <Title order={6} className={baseStyles.formSectionTitle}>Smazání</Title>
-                        <div className={baseStyles.deleteAlertText}>
-                            <p>
-                                Lze smazat pouze pokud není příslušný {type} použit u žádné lekce
-                                {isCourse(props.object) &&
-                                    ", smažou se také všichni zájemci o tento kurz"}
-                            </p>
-                            <DeleteButton
-                                size="sm"
-                                content={type}
-                                onClick={(): void => {
-                                    if (
-                                        isObject(props.object) &&
-                                        globalThis.confirm(
-                                            `Opravdu chcete smazat ${type} ${form.values.name}?`,
-                                        )
-                                    ) {
-                                        handleDelete(props.object.id)
-                                    }
-                                }}
-                                data-qa="settings_button_delete"
-                            />
+                    {isObject(props.object) && (
+                        <div
+                            className={`${baseStyles.formSection} ${baseStyles.formSectionDanger}`}>
+                            <Title order={6} className={baseStyles.formSectionTitle}>
+                                Smazání
+                            </Title>
+                            <div className={baseStyles.deleteAlertText}>
+                                <p>
+                                    Lze smazat pouze pokud není příslušný {type} použit u žádné
+                                    lekce
+                                    {isCourse(props.object) &&
+                                        ", smažou se také všichni zájemci o tento kurz"}
+                                </p>
+                                <DeleteButton
+                                    size="sm"
+                                    content={type}
+                                    onClick={(): void => {
+                                        if (
+                                            isObject(props.object) &&
+                                            globalThis.confirm(
+                                                `Opravdu chcete smazat ${type} ${form.values.name}?`,
+                                            )
+                                        ) {
+                                            handleDelete(props.object.id)
+                                        }
+                                    }}
+                                    data-qa="settings_button_delete"
+                                />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
                 </div>
             </Modal.Body>
             <Group justify="flex-end" px="md" pb="md" className={baseStyles.modalActions}>

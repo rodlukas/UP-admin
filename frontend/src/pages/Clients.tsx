@@ -12,7 +12,7 @@ import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
 import Heading from "../components/Heading"
-import Tooltip from "../components/Tooltip"
+import InfoTooltip from "../components/InfoTooltip"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
@@ -115,8 +115,12 @@ const Clients: React.FC = () => {
                                 {DAYS_WITHOUT_LECTURE_WARNING} dní.
                             </span>
                         </Group>
+                        {/* autoContrast: bílý text na yellow-filled měl jen 1.86:1 (light,
+                            yellow-6) / 2.48:1 (dark, yellow-8); černý text dává 11.28:1 /
+                            8.46:1 (WCAG AA ≥ 4.5:1) a ladí s tmavým textem žlutého banneru. */}
                         <Button
                             color="yellow"
+                            autoContrast
                             size="sm"
                             disabled={deactivateClients.isPending}
                             onClick={handleDeactivateAll}>
@@ -145,7 +149,8 @@ const Clients: React.FC = () => {
                             <Table.Tr>
                                 <Table.Th>Příjmení a jméno</Table.Th>
                                 <Table.Th className={styles.hiddenBelowMd}>Telefon</Table.Th>
-                                <Table.Th className={`${styles.emailHeader} ${styles.hiddenBelowMd}`}>
+                                <Table.Th
+                                    className={`${styles.emailHeader} ${styles.hiddenBelowMd}`}>
                                     E-mail
                                 </Table.Th>
                                 <Table.Th className={styles.hiddenBelowSm}>Poznámka</Table.Th>
@@ -159,7 +164,7 @@ const Clients: React.FC = () => {
                                         <ClientName client={client} link />{" "}
                                         {client.active &&
                                             isStaleActive(client.last_lecture_date) && (
-                                                <Tooltip
+                                                <InfoTooltip
                                                     placement="right"
                                                     size="1x"
                                                     icon={faHourglassEnd}
@@ -167,7 +172,8 @@ const Clients: React.FC = () => {
                                                 />
                                             )}
                                     </Table.Td>
-                                    <Table.Td className={`${styles.phoneCell} ${styles.hiddenBelowMd}`}>
+                                    <Table.Td
+                                        className={`${styles.phoneCell} ${styles.hiddenBelowMd}`}>
                                         <ClientPhone phone={client.phone} />
                                     </Table.Td>
                                     <Table.Td className={styles.hiddenBelowMd}>

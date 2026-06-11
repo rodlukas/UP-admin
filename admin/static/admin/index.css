@@ -19,13 +19,16 @@
     }
 }
 
+/* Stejné hexy jako pozadí SPA — token `vars.bg.page` v frontend/src/theme/tokens.ts
+   (light #e9eef5, dark dark-9 #141414), aby pozadí při mountu Reactu neskočilo.
+   Tento soubor nemůže TS tokeny importovat, hodnoty drž v synchronu ručně. */
 body {
-    background-color: #ecf0f5;
+    background-color: #e9eef5;
     font-family: "Segoe UI", Arial, sans-serif;
 }
 
 html[data-mantine-color-scheme="dark"] body {
-    background-color: #1a1b1e;
+    background-color: #141414;
 }
 
 html[data-mantine-color-scheme="dark"] .loader:empty {

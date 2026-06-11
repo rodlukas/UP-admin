@@ -3,7 +3,8 @@ import { render, screen } from "@testing-library/react"
 
 import ClientEmail from "./ClientEmail"
 
-const renderWithMantine = (ui: React.ReactElement) => render(<MantineProvider>{ui}</MantineProvider>)
+const renderWithMantine = (ui: React.ReactElement) =>
+    render(<MantineProvider>{ui}</MantineProvider>)
 
 test("shows email", () => {
     renderWithMantine(<ClientEmail email="blabla@domena.cz" />)

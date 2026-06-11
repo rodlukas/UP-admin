@@ -3,6 +3,7 @@ import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 
+import { getReadableTextColor } from "../global/utils"
 import { CourseType } from "../types/models"
 
 import * as styles from "./CourseName.css"
@@ -24,6 +25,7 @@ const CourseName: React.FC<Props> = ({ course, className }) => (
         data-qa="course_name"
         style={assignInlineVars(styles.courseNameVars, {
             color: course.color,
+            textColor: getReadableTextColor(course.color),
         })}
         className={classNames(styles.courseName, className)}>
         {course.name}

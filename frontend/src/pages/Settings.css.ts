@@ -1,5 +1,6 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
 export const footer = style({})
@@ -10,17 +11,17 @@ globalStyle(`${footer} a`, {
 })
 
 globalStyle(`${footer} a:hover`, {
-    color: "var(--mantine-color-indigo-6)",
+    // základní barva odkazu je `inherit`, hover přebarvuje na značkovou primary
+    color: vars.colors.primary,
 })
 
-export const settingsColumn = style({
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    padding: "1rem 1rem 1.1rem",
-    height: "100%",
-})
+export const settingsColumn = style([
+    surfaceCard,
+    {
+        padding: "1rem 1rem 1.1rem",
+        height: "100%",
+    },
+])
 
 globalStyle(`${settingsColumn} h2`, {
     marginBottom: "0.75rem",
@@ -43,14 +44,13 @@ export const settingsColumnsRow = style({
     marginBottom: "1rem",
 })
 
-export const tableSection = style({
-    marginTop: "0.25rem",
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    overflow: "hidden",
-})
+export const tableSection = style([
+    surfaceCard,
+    {
+        marginTop: "0.25rem",
+        overflow: "hidden",
+    },
+])
 
 export const configList = style({
     marginTop: "0.8rem",
@@ -84,11 +84,10 @@ export const emptyMessage = style({
     textAlign: "center",
 })
 
-export const footerBlock = style({
-    marginTop: "1.1rem",
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    padding: "0.9rem 1rem",
-})
+export const footerBlock = style([
+    surfaceCard,
+    {
+        marginTop: "1.1rem",
+        padding: "0.9rem 1rem",
+    },
+])

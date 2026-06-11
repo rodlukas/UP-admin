@@ -8,11 +8,13 @@ export const wrapper = style({
 })
 
 export const spinner = style({
-    color: "var(--mantine-color-indigo-6)",
+    color: vars.colors.primary,
 })
 
 export const text = style({
     marginTop: "0.45rem",
+    // jako `text.muted`, ale dark o stupeň světlejší (gray-4) — načítací text leží přímo
+    // na tmavším pozadí stránky (`bg.page` dark-9), ne na povrchu karty
     color: "light-dark(var(--mantine-color-gray-7), var(--mantine-color-gray-4))",
     fontWeight: 500,
 })

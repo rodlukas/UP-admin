@@ -20,9 +20,7 @@ const PlainClientName: React.FC<PlainClientNameProps> = ({ client, bold }) => (
         <strong>{client.surname}</strong>{" "}
         <ConditionalWrapper
             condition={bold}
-            wrapper={(children): React.ReactNode => (
-                <strong>{children}</strong>
-            )}>
+            wrapper={(children): React.ReactNode => <strong>{children}</strong>}>
             {client.firstname}
         </ConditionalWrapper>
     </span>

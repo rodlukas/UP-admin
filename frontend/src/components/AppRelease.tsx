@@ -17,7 +17,8 @@ const AppRelease: React.FC = () => {
     return (
         <>
             {!isTaggedCommit() && "větev "}
-            <Tooltip label={`${isTaggedCommit() ? "Poznámky k verzi" : "Přejít na větev"} (GitHub)`}>
+            <Tooltip
+                label={`${isTaggedCommit() ? "Poznámky k verzi" : "Přejít na větev"} (GitHub)`}>
                 <a
                     href={
                         GITHUB_REPO_URL +

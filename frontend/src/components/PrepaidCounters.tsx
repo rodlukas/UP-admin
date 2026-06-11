@@ -9,8 +9,8 @@ import { TEXTS } from "../global/constants"
 import { MembershipType } from "../types/models"
 
 import ClientName from "./ClientName"
+import InfoTooltip from "./InfoTooltip"
 import * as styles from "./PrepaidCounters.css"
-import Tooltip2 from "./Tooltip"
 
 type Props = {
     /** Pole se členstvími všech klientů. */
@@ -90,20 +90,19 @@ const PrepaidCounters: React.FC<Props> = (props) => {
         })
     }, [createPrepaidCntObjects])
 
-    const onChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>): void => {
-            const target = e.currentTarget
-            const value = Number(target.value)
-            const id = Number(target.dataset.id)
-            dirtyIdsRef.current.add(id)
-            setPrepaidCnts((prevPrepaidCnts) => {
-                const newPrepaidCnts = { ...prevPrepaidCnts }
-                newPrepaidCnts[id] = value
-                return newPrepaidCnts
-            })
-        },
-        [],
-    )
+    // Pozn.: Number("") vrací 0, vymazané pole se tedy při bluru uloží jako 0 — díky
+    // select-on-focus (viz onFocus) uživatel typicky přepisuje celou hodnotu, vědomě bez guardu.
+    const onChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
+        const target = e.currentTarget
+        const value = Number(target.value)
+        const id = Number(target.dataset.id)
+        dirtyIdsRef.current.add(id)
+        setPrepaidCnts((prevPrepaidCnts) => {
+            const newPrepaidCnts = { ...prevPrepaidCnts }
+            newPrepaidCnts[id] = value
+            return newPrepaidCnts
+        })
+    }, [])
 
     // Commit hodnotu na server az pri blur, ne pri kazdem keystroke.
     // serverPrepaidCntsRef se aktualizuje az v onSuccess (drzi server-potvrzenou hodnotu).
@@ -161,24 +160,29 @@ const PrepaidCounters: React.FC<Props> = (props) => {
         <Container fluid>
             <Grid justify="center">
                 {props.memberships.map((membership) => (
-                    <Grid.Col
-                        span={{ base: 12, sm: 9, md: 3, lg: 3, xl: 2 }}
-                        key={membership.id}>
+                    <Grid.Col span={{ base: 12, sm: 9, md: 3, lg: 3, xl: 2 }} key={membership.id}>
                         <div className={styles.memberCard}>
                             <Title order={5} className={styles.memberHeading}>
                                 <ClientName client={membership.client} link />{" "}
                                 {props.isGroupActive && !membership.client.active && (
-                                    <Tooltip2
+                                    <InfoTooltip
                                         text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
                                         size="1x"
                                     />
                                 )}
                             </Title>
-                            <Tooltip label="Počet předplacených lekcí">
+                            {/* focus: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13) */}
+                            <Tooltip
+                                label="Počet předplacených lekcí"
+                                events={{ hover: true, focus: true, touch: true }}>
                                 <TextInput
                                     type="number"
+                                    aria-label="Počet předplacených lekcí"
                                     id={`prepaid_cnt${membership.id}`}
-                                    value={prepaidCnts[membership.id]}
+                                    // fallback na membership: nove cleny z refetche stav jeste
+                                    // nezna (sync efekt bezi az po renderu) — bez fallbacku by
+                                    // input byl prvni render uncontrolled (value=undefined)
+                                    value={prepaidCnts[membership.id] ?? membership.prepaid_cnt}
                                     min={0}
                                     onChange={onChange}
                                     onBlur={onBlur}
@@ -188,7 +192,8 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                     leftSectionProps={{
                                         className: classNames({
                                             [styles.prepaidCountersInputGroupLabel]:
-                                                prepaidCnts[membership.id] > 0,
+                                                (prepaidCnts[membership.id] ??
+                                                    membership.prepaid_cnt) > 0,
                                         }),
                                     }}
                                     leftSection={
@@ -202,7 +207,9 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                     </Grid.Col>
                 ))}
                 {props.memberships.length === 0 && (
-                    <Text c="dimmed" ta="center">Žádní účastníci</Text>
+                    <Text c="dimmed" ta="center">
+                        Žádní účastníci
+                    </Text>
                 )}
             </Grid>
         </Container>

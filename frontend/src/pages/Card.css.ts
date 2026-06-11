@@ -1,20 +1,29 @@
 import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
 
 import { plainName as groupPlainName } from "../components/GroupName.css"
+import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
+
+// Opacita ztmavujícího overlaye hlavičky — sdílená konstanta pro CSS gradient níže
+// i pro výpočet barvy textu v Card.tsx (getReadableTextColorWithOverlay); musí být
+// jedna hodnota, jinak by se text počítal proti jinému pozadí, než se vykreslí.
+export const COURSE_HEADING_OVERLAY_OPACITY = 0.15
 
 export const cardVars = createThemeContract({
     courseBackground: "",
+    // Barva textu podle luminance složeného pozadí (kurz + overlay níže) —
+    // viz getReadableTextColorWithOverlay; natvrdo bílý text neměl na světlých
+    // barvách kurzů dostatečný kontrast.
+    courseText: "",
 })
 
 export const courseHeading = style({
-    textShadow: "0 1px 2px rgb(0 0 0 / 0.35)",
-    color: "white",
+    color: cardVars.courseText,
 })
 
 export const courseHeadingItem = style({
     backgroundColor: `${cardVars.courseBackground} !important`,
-    backgroundImage: "linear-gradient(rgb(15 23 42 / 0.15), rgb(15 23 42 / 0.15))",
+    backgroundImage: `linear-gradient(rgb(15 23 42 / ${COURSE_HEADING_OVERLAY_OPACITY}), rgb(15 23 42 / ${COURSE_HEADING_OVERLAY_OPACITY}))`,
 })
 
 export const lectureCard = style({})
@@ -24,12 +33,12 @@ globalStyle(`${lectureCard} h4`, {
 })
 
 export const lectureFuture = style({
-    backgroundColor: "light-dark(#fff8dd, var(--mantine-color-yellow-9))",
-    color: "light-dark(inherit, var(--mantine-color-gray-0))",
+    // ztlumeny statusTint v dark rezimu uz nepotrebuje zesvetlovat text
+    backgroundColor: vars.statusTint.warning,
 })
 
 export const lecturePrepaid = style({
-    backgroundColor: "light-dark(#ddf6e4, var(--mantine-color-green-8))",
+    backgroundColor: vars.statusTint.success,
 })
 
 export const cardInfo = style({})
@@ -63,25 +72,23 @@ export const clientTopRow = style({
     marginBottom: "1rem",
 })
 
-export const clientSummaryPanel = style({
-    flex: "0 0 auto",
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    minWidth: "220px",
-    overflow: "hidden",
-})
+export const clientSummaryPanel = style([
+    surfaceCard,
+    {
+        flex: "0 0 auto",
+        minWidth: "220px",
+        overflow: "hidden",
+    },
+])
 
-export const analysisPanel = style({
-    flexGrow: 1,
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    padding: "0.55rem 0.65rem",
-    minWidth: 0,
-})
+export const analysisPanel = style([
+    surfaceCard,
+    {
+        flexGrow: 1,
+        padding: "0.55rem 0.65rem",
+        minWidth: 0,
+    },
+])
 
 export const infoList = style({
     display: "flex",

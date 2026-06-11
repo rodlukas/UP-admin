@@ -36,13 +36,8 @@ const hasLowContrast = (hex: string): boolean => {
 
 /** Komponenta pro pole s výběrem barvy kurzu. */
 const ColorPicker: React.FC<Props> = ({ value, onChange }) => {
-    const [showContrastWarning, setShowContrastWarning] = React.useState(() =>
-        hasLowContrast(value),
-    )
-
-    React.useEffect(() => {
-        setShowContrastWarning(hasLowContrast(value))
-    }, [value])
+    // čistá derivace z props — počítá se přímo při renderu, žádný stav/efekt není potřeba
+    const showContrastWarning = hasLowContrast(value)
 
     const handleChange = React.useCallback(
         (newHex: string): void => {
@@ -66,8 +61,8 @@ const ColorPicker: React.FC<Props> = ({ value, onChange }) => {
             />
             {showContrastWarning && (
                 <Alert color="yellow" mt="xs">
-                    Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět,
-                    zvolte více kontrastnější.
+                    Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět, zvolte
+                    více kontrastnější.
                 </Alert>
             )}
         </div>

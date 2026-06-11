@@ -14,7 +14,8 @@ type AppLayoutProps = {
 }
 
 const isDevelopment = process.env.NODE_ENV === "development"
-const isDevtoolsEnabled = isDevelopment && new URLSearchParams(globalThis.location.search).has("devtools")
+const isDevtoolsEnabled =
+    isDevelopment && new URLSearchParams(globalThis.location.search).has("devtools")
 
 const AppLayout: React.FC<AppLayoutProps> = ({ queryClient }) => (
     <QueryClientProvider client={queryClient}>

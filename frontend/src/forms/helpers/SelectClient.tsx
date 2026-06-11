@@ -17,6 +17,11 @@ type SelectClientProps = {
     autoFocus?: boolean
     /** Povinné pole (vizuální, validace probíhá v nadřazeném formuláři). */
     required?: boolean
+    /**
+     * DOM id selectu — výchozí hodnotu "client" hledají E2E testy (`By.ID "client"`),
+     * vlastní id zasílej jen pokud by mohly být současně namountované dvě instance.
+     */
+    id?: string
 }
 
 /** Komponenta s Mantine Select pro výběr klienta. */
@@ -26,12 +31,13 @@ const SelectClient: React.FC<SelectClientProps> = ({
     options = [],
     autoFocus = true,
     required,
+    id = "client",
 }) => {
     const data = options.map((c) => ({ value: c.id.toString(), label: clientName(c) }))
 
     return (
         <Select
-            id="client"
+            id={id}
             data={data}
             value={value?.id.toString() ?? null}
             onChange={(val) => {

@@ -1,10 +1,13 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
 
 from tests import common_helpers
 
@@ -85,9 +88,13 @@ def find_lecture(context, date, time, validate_context=False):
                         found_attendance = find_attendance_in_card(
                             context, lecture, attendance["client"]
                         )
-                        found_note = found_attendance.find_element(
-                            By.CSS_SELECTOR, "[data-qa=lecture_attendance_note]"
-                        ).text
+                        try:
+                            found_note = found_attendance.find_element(
+                                By.CSS_SELECTOR, "[data-qa=lecture_attendance_note]"
+                            ).text
+                        except NoSuchElementException:
+                            # prazdnou poznamku LectureNote vubec nevyrenderuje (vraci null)
+                            found_note = ""
                         found_old_attendances.append(
                             attendance_dict(
                                 attendance["client"],
@@ -186,17 +193,21 @@ def insert_to_form(context, verify_current_data=False):
     if verify_current_data:
         # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
         course_field_value = course_field.get_attribute("value")
-        assert (
-            context.old_course == course_field_value
-            and context.old_date == date_field.get_attribute("value")
-            and context.old_time == time_field.get_attribute("value")
-            and context.old_duration == duration_title(duration_field.get_attribute("value"))
-            and context.old_canceled == canceled_checkbox.is_selected()
-        )
+        found_date = date_field.get_attribute("value")
+        found_time = time_field.get_attribute("value")
+        found_duration = duration_title(duration_field.get_attribute("value"))
+        found_canceled = canceled_checkbox.is_selected()
+        assert context.old_course == course_field_value, f"kurz: '{course_field_value}'"
+        assert context.old_date == found_date, f"datum: '{found_date}'"
+        assert context.old_time == found_time, f"cas: '{found_time}'"
+        assert context.old_duration == found_duration, f"trvani: '{found_duration}'"
+        assert context.old_canceled == found_canceled, f"zruseno: {found_canceled}"
     # pokud se nejedna o skupinu, vloz i kurz
     if not context.is_group:
         course_field.send_keys(Keys.BACK_SPACE)
-        helpers.react_select_insert(context.browser, course_field, context.course)
+        # kurz je povinny select a testovaci data lekci pouzivaji vzdy existujici kurz,
+        # vyber tedy musi uspet
+        assert helpers.combobox_insert(context.browser, course_field, context.course)
     # smaz vsechny udaje
     date_field.clear()
     time_field.clear()
@@ -301,14 +312,21 @@ def choose_attendancestate(found_attendance, new_attendancestate):
     # pak klikni na volbu s odpovidajicim textem
     input_el = get_attendancestate_input(found_attendance)
     input_el.click()
-    WebDriverWait(found_attendance.parent, helpers.WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='option']"))
-    )
-    options = found_attendance.parent.find_elements(By.CSS_SELECTOR, "[role='option']")
-    for option in options:
-        if option.text == new_attendancestate:
-            option.click()
-            return
+    # pozn.: WebElement.parent neni rodicovsky element, ale WebDriver instance (Selenium API) -
+    # dropdown je portalovany mimo found_attendance, volby vraci helper z [role=listbox]
+    # 2 pokusy: dropdown se muze behem cteni textu voleb prekreslit (stale element)
+    for _ in range(2):
+        options = helpers.wait_combobox_options(
+            found_attendance.parent, timeout=helpers.WAIT_TIME
+        )
+        try:
+            for option in options:
+                if option.text == new_attendancestate:
+                    option.click()
+                    return
+        except StaleElementReferenceException:
+            continue
+        break
     raise AssertionError(f"Volba '{new_attendancestate}' nebyla nalezena v dropdownu")
 
 

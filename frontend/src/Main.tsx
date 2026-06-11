@@ -6,6 +6,7 @@ import * as React from "react"
 import { useAuthContext } from "./auth/AuthContext"
 import AppCommit from "./components/AppCommit"
 import AppSpotlight from "./components/AppSpotlight"
+import ColorSchemeSync from "./components/ColorSchemeSync"
 import Loading from "./components/Loading"
 import Menu from "./components/Menu"
 import { getEnvName, isEnvDemo, isEnvLocal, isEnvTesting } from "./global/funcEnvironments"
@@ -33,6 +34,7 @@ const Main: React.FC = () => {
 
     return (
         <div className={getEnvName()}>
+            <ColorSchemeSync />
             {authContext.isAuth && (
                 <nav className={styles.navbar} aria-label="Hlavní navigace">
                     <div className={styles.navbarInner}>

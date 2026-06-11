@@ -53,8 +53,7 @@ type ParamsProps = {
 }
 
 const normalizeParams = (params: unknown): Partial<ParamsProps> => {
-    const record =
-        params && typeof params === "object" ? (params as Record<string, unknown>) : {}
+    const record = params && typeof params === "object" ? (params as Record<string, unknown>) : {}
     return {
         year: typeof record.year === "string" ? record.year : undefined,
         month: typeof record.month === "string" ? record.month : undefined,
@@ -187,8 +186,13 @@ const Diary: React.FC = () => {
                     }
                     buttons={
                         <>
-                            <Tooltip label="Předchozí týden">
+                            {/* focus: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13) */}
+                            <Tooltip
+                                label="Předchozí týden"
+                                events={{ hover: true, focus: true, touch: true }}>
+                                {/* odkaz obsahuje jen ikonu - jmeno pro ctecky */}
                                 <Link
+                                    aria-label="Předchozí týden"
                                     to="/diar/$year/$month/$day"
                                     params={prevMondayParams}
                                     className={styles.arrowLink}
@@ -204,8 +208,12 @@ const Diary: React.FC = () => {
                                     />
                                 </Link>
                             </Tooltip>{" "}
-                            <Tooltip label="Další týden">
+                            <Tooltip
+                                label="Další týden"
+                                events={{ hover: true, focus: true, touch: true }}>
+                                {/* odkaz obsahuje jen ikonu - jmeno pro ctecky */}
                                 <Link
+                                    aria-label="Další týden"
                                     to="/diar/$year/$month/$day"
                                     params={nextMondayParams}
                                     className={styles.arrowLink}

@@ -1,5 +1,9 @@
 from django.conf import settings
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -65,11 +69,6 @@ def get_tooltip_text(driver, element):
     return tooltip_text
 
 
-def check_class_included(classes, class_to_search):
-    classes_list = classes.split()
-    return class_to_search in classes_list
-
-
 def wait_form_settings_visible(driver):
     WebDriverWait(driver, WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=form_settings]"))
@@ -91,23 +90,116 @@ def wait_for_alert_and_accept(driver):
     driver.switch_to.alert.accept()
 
 
-def react_select_insert(driver, element, value):
-    """Vlozi hodnotu do Mantine Selectu (combobox).
+def wait_combobox_options(driver, timeout=None):
+    """Pocka na otevreny portalovany dropdown Mantine comboboxu a vrati jeho volby.
 
-    Vrati True, pokud byla volba nalezena a vybrana; jinak False (a dropdown zavre Escapem).
+    Volby se hledaji uvnitr [role="listbox"] - diky `keepMounted: false` v theme.ts
+    je v DOM nanejvys jeden (prave otevreny) dropdown; zavrene comboboxy v dokumentu
+    zadne [role="option"] elementy nenechavaji. (Mantine na inputu neaktualizuje
+    aria-expanded/aria-controls, podle nich se proto cekat neda.)
     """
-    element.send_keys(value)
-    try:
-        # Mantine combobox renderuje volby s role="option"; pockej kratce, dropdown je portalovan
-        found_option = WebDriverWait(driver, WAIT_TIME_SHORT).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='option']"))
-        )
-    except TimeoutException:
-        # zadna volba se neobjevila – zavri dropdown Escapem a signalizuj neuspech
-        element.send_keys(Keys.ESCAPE)
+
+    def _visible_options(_driver):
+        for listbox in _driver.find_elements(By.CSS_SELECTOR, "[role='listbox']"):
+            try:
+                options = listbox.find_elements(By.CSS_SELECTOR, "[role='option']")
+                if options and options[0].is_displayed():
+                    return options
+            except StaleElementReferenceException:
+                # dropdown se behem dotazovani odpojil (zavreni/preklopeni) - zkus dalsi poll
+                continue
         return False
-    found_option.click()
-    return True
+
+    return WebDriverWait(driver, timeout if timeout is not None else WAIT_TIME_SHORT).until(
+        _visible_options
+    )
+
+
+def _combobox_selection_applied(element, value):
+    """Overi, ze se vybrana volba skutecne propsala do Mantine comboboxu.
+
+    MultiSelect se MUSI overovat pres pilly (vybrane volby vedle inputu) - jeho
+    search input cisti Mantine jen pri USPESNEM vyberu, takze po neuspesnem kliku
+    by v inputu zustal napsany hledany text a kontrola hodnoty inputu by dala
+    falesny uspech. U jednoducheho Selectu input zobrazuje label vybrane volby
+    (kontrola je slabsi - napsany text je shodny s ocekavanym labelem).
+    """
+    try:
+        multiselect_root = element.find_element(
+            By.XPATH, "ancestor::div[contains(@class, 'mantine-MultiSelect-root')]"
+        )
+    except NoSuchElementException:
+        return (element.get_attribute("value") or "") == value
+    return any(
+        pill.text == value
+        for pill in multiselect_root.find_elements(By.CSS_SELECTOR, ".mantine-Pill-label")
+    )
+
+
+def combobox_insert(driver, element, value):
+    """Vlozi hodnotu do Mantine Selectu/MultiSelectu (combobox).
+
+    Vrati True, pokud byla volba nalezena, vybrana a vyber se skutecne propsal;
+    jinak False (a dropdown pred navratem zavre presunem fokusu Tabem).
+    """
+    if not value:
+        # prazdna hodnota = zamerne nevyplneny (povinny) select; smaz pripadny obsah
+        # a zavri dropdown presunem fokusu (mazani ho mohlo otevrit a prazdny retezec
+        # nefiltruje - klik na prvni volbu by omylem vybral platnou hodnotu)
+        for _ in range(len(element.get_attribute("value") or "")):
+            element.send_keys(Keys.BACK_SPACE)
+        element.send_keys(Keys.TAB)
+        return False
+    # 2 pokusy: klik na volbu se muze "neujmout", kdyz React behem psani resetuje
+    # controlled input (re-render po smazani vybrane hodnoty) - po kliku proto vyber
+    # overujeme a pripadne cely postup jednou zopakujeme
+    for _ in range(2):
+        # U searchable selectu input obsahuje label aktualne vybrane volby (edit
+        # formulare) - smaz ho cely po znacich, jinak by se hledany text pripojil
+        # za nej a filtr by nic nenasel. (react-select mazal celou volbu jednim
+        # BACK_SPACE, Mantine jen znak.)
+        for _ in range(len(element.get_attribute("value") or "")):
+            element.send_keys(Keys.BACK_SPACE)
+        element.send_keys(value)
+        try:
+            options = wait_combobox_options(driver)
+        except TimeoutException:
+            # zadna volba se neobjevila - zavri pripadny dropdown presunem fokusu (Tab)
+            # a signalizuj neuspech; Escape nelze pouzit, probublava do Modalu, ktery
+            # se pokusi zavrit a aplikace zobrazi confirm alert "zavrit bez ulozeni?"
+            element.send_keys(Keys.TAB)
+            return False
+        # klikni na volbu s presne odpovidajicim textem - NE slepe na prvni; pri
+        # resetu inputu filtr neplati a prvni volba by byla nahodna
+        try:
+            matched_option = next(
+                (option for option in options if option.text == value), None
+            )
+        except StaleElementReferenceException:
+            # dropdown se behem cteni textu voleb prekreslil - zopakuj cely pokus
+            continue
+        if matched_option is None:
+            element.send_keys(Keys.TAB)
+            return False
+        try:
+            matched_option.click()
+        except StaleElementReferenceException:
+            # dropdown se mezitim prekreslil - zopakuj cely pokus
+            continue
+        try:
+            WebDriverWait(
+                driver,
+                WAIT_TIME_SHORT,
+                ignored_exceptions=(StaleElementReferenceException,),
+            ).until(lambda _d: _combobox_selection_applied(element, value))
+            return True
+        except TimeoutException:
+            # pozn.: u MultiSelectu by opakovany klik na uz vybranou volbu vyber zrusil -
+            # pripadny flake se tedy projevi hlucne (False), nikdy tichym spatnym vyberem
+            continue
+    # vsechny pokusy vycerpane - dropdown muze byt porad otevreny, zavri ho Tabem
+    element.send_keys(Keys.TAB)
+    return False
 
 
 def open_settings(driver):

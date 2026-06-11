@@ -8,7 +8,7 @@ import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
-import Tooltip from "../components/Tooltip"
+import InfoTooltip from "../components/InfoTooltip"
 import { TEXTS } from "../global/constants"
 import { capitalizeString, prettyPhone } from "../global/utils"
 import { ModalClientsData } from "../types/components"
@@ -123,14 +123,18 @@ const FormClients: React.FC<Props> = (props) => {
             <Modal.Body>
                 <div className={styles.formContent}>
                     <div className={styles.formSection}>
-                        <Title order={6} className={styles.formSectionTitle}>Základní údaje</Title>
+                        <Title order={6} className={styles.formSectionTitle}>
+                            Základní údaje
+                        </Title>
                         <div className={styles.fieldStack}>
                             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
                                 <div className={styles.fieldBlock}>
                                     <TextInput
                                         id="firstname"
                                         value={form.values.firstname}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ): void => {
                                             props.setFormDirty()
                                             form.setFieldValue(
                                                 "firstname",
@@ -149,7 +153,9 @@ const FormClients: React.FC<Props> = (props) => {
                                     <TextInput
                                         id="surname"
                                         value={form.values.surname}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ): void => {
                                             props.setFormDirty()
                                             form.setFieldValue(
                                                 "surname",
@@ -202,9 +208,7 @@ const FormClients: React.FC<Props> = (props) => {
                                 <Textarea
                                     id="note"
                                     value={form.values.note}
-                                    onChange={(
-                                        e: React.ChangeEvent<HTMLTextAreaElement>,
-                                    ): void => {
+                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
                                         props.setFormDirty()
                                         form.setFieldValue("note", e.currentTarget.value)
                                     }}
@@ -225,7 +229,9 @@ const FormClients: React.FC<Props> = (props) => {
                                     <Checkbox
                                         id="active"
                                         checked={form.values.active}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ): void => {
                                             props.setFormDirty()
                                             form.setFieldValue("active", e.currentTarget.checked)
                                         }}
@@ -233,38 +239,40 @@ const FormClients: React.FC<Props> = (props) => {
                                         label="Je aktivní"
                                     />
                                     {!form.values.active && (
-                                        <Tooltip text={TEXTS.WARNING_INACTIVE_CLIENT_INFO} />
+                                        <InfoTooltip text={TEXTS.WARNING_INACTIVE_CLIENT_INFO} />
                                     )}
                                 </div>
                             </div>
                         </div>
                     </div>
-                {isClient(props.client) && (
-                    <div className={`${styles.formSection} ${styles.formSectionDanger}`}>
-                        <Title order={6} className={styles.formSectionTitle}>Smazání</Title>
-                        <div className={styles.deleteAlertText}>
-                            <p>
-                                Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také
-                                všechny jeho zájmy o kurzy a členství ve skupinách.
-                            </p>
-                            <DeleteButton
-                                size="sm"
-                                content="klienta"
-                                onClick={(): void => {
-                                    if (
-                                        isClient(props.client) &&
-                                        globalThis.confirm(
-                                            `Opravdu chcete smazat klienta ${form.values.firstname} ${form.values.surname}?`,
-                                        )
-                                    ) {
-                                        handleDelete(props.client.id)
-                                    }
-                                }}
-                                data-qa="button_delete_client"
-                            />
+                    {isClient(props.client) && (
+                        <div className={`${styles.formSection} ${styles.formSectionDanger}`}>
+                            <Title order={6} className={styles.formSectionTitle}>
+                                Smazání
+                            </Title>
+                            <div className={styles.deleteAlertText}>
+                                <p>
+                                    Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také
+                                    všechny jeho zájmy o kurzy a členství ve skupinách.
+                                </p>
+                                <DeleteButton
+                                    size="sm"
+                                    content="klienta"
+                                    onClick={(): void => {
+                                        if (
+                                            isClient(props.client) &&
+                                            globalThis.confirm(
+                                                `Opravdu chcete smazat klienta ${form.values.firstname} ${form.values.surname}?`,
+                                            )
+                                        ) {
+                                            handleDelete(props.client.id)
+                                        }
+                                    }}
+                                    data-qa="button_delete_client"
+                                />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
                 </div>
             </Modal.Body>
             <Group justify="flex-end" px="md" pb="md" className={styles.modalActions}>

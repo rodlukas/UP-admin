@@ -1,6 +1,10 @@
 import { style } from "@vanilla-extract/css"
 
+import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
+
+// Sdílené styly záměrně paralelních stránek Klienti a Skupiny —
+// obě stránky mají stejný layout (alert o neaktivních + tabulka v kartě).
 
 export const staleAlert = style({
     margin: "0 auto 1rem",
@@ -9,14 +13,13 @@ export const staleAlert = style({
     maxWidth: "880px",
 })
 
-export const tableSection = style({
-    marginTop: "0.2rem",
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    boxShadow: vars.shadow.card,
-    backgroundColor: vars.bg.surface,
-    overflow: "hidden",
-})
+export const tableSection = style([
+    surfaceCard,
+    {
+        marginTop: "0.2rem",
+        overflow: "hidden",
+    },
+])
 
 export const hiddenBelowSm = style({
     "@media": {

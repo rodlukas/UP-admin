@@ -25,7 +25,11 @@ const queryClient = createQueryClient()
 
 const rootRoute = createRootRoute({
     component: () => <AppLayout queryClient={queryClient} />,
-    notFoundComponent: () => <Page title={APP_URLS.nenalezeno.title}><NotFound /></Page>,
+    notFoundComponent: () => (
+        <Page title={APP_URLS.nenalezeno.title}>
+            <NotFound />
+        </Page>
+    ),
 })
 
 type ChildRouteConfig = {
@@ -55,7 +59,11 @@ const createPageRoute = (path: string, element: React.ReactElement, title: strin
         component: () => <Page title={title}>{element}</Page>,
     })
 
-const overviewRoute = createPrivateRoute(APP_URLS.prehled.url, <Dashboard />, APP_URLS.prehled.title)
+const overviewRoute = createPrivateRoute(
+    APP_URLS.prehled.url,
+    <Dashboard />,
+    APP_URLS.prehled.title,
+)
 
 const loginRoute = createChildRoute({
     path: APP_URLS.prihlasit.url,
@@ -71,10 +79,9 @@ const loginRoute = createChildRoute({
 
 const groupsRoute = createPrivateRoute(APP_URLS.skupiny.url, <Groups />, APP_URLS.skupiny.title)
 
-const diaryRoutes = [
-    APP_URLS.diar.url,
-    `${APP_URLS.diar.url}/$year/$month/$day`,
-].map((path) => createPrivateRoute(path, <Diary />))
+const diaryRoutes = [APP_URLS.diar.url, `${APP_URLS.diar.url}/$year/$month/$day`].map((path) =>
+    createPrivateRoute(path, <Diary />),
+)
 
 const clientsRoute = createPrivateRoute(APP_URLS.klienti.url, <Clients />, APP_URLS.klienti.title)
 
@@ -101,9 +108,21 @@ const applicationsRoute = createPrivateRoute(
     <Applications />,
     APP_URLS.zajemci.title,
 )
-const settingsRoute = createPrivateRoute(APP_URLS.nastaveni.url, <Settings />, APP_URLS.nastaveni.title)
-const statisticsRoute = createPrivateRoute(APP_URLS.statistiky.url, <Statistics />, APP_URLS.statistiky.title)
-const notFoundRoute = createPageRoute(APP_URLS.nenalezeno.url, <NotFound />, APP_URLS.nenalezeno.title)
+const settingsRoute = createPrivateRoute(
+    APP_URLS.nastaveni.url,
+    <Settings />,
+    APP_URLS.nastaveni.title,
+)
+const statisticsRoute = createPrivateRoute(
+    APP_URLS.statistiky.url,
+    <Statistics />,
+    APP_URLS.statistiky.title,
+)
+const notFoundRoute = createPageRoute(
+    APP_URLS.nenalezeno.url,
+    <NotFound />,
+    APP_URLS.nenalezeno.title,
+)
 
 const routeTree = rootRoute.addChildren([
     overviewRoute,

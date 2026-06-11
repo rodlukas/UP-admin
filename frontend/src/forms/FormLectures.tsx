@@ -1,5 +1,15 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Alert, Checkbox, Grid, Group, Modal, Select, TextInput, Title, Tooltip } from "@mantine/core"
+import {
+    Alert,
+    Checkbox,
+    Grid,
+    Group,
+    Modal,
+    Select,
+    TextInput,
+    Title,
+    Tooltip,
+} from "@mantine/core"
 import {
     faCalendarAlt,
     faClipboardList,
@@ -15,8 +25,8 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import GroupName from "../components/GroupName"
+import InfoTooltip from "../components/InfoTooltip"
 import Loading from "../components/Loading"
-import Tooltip2 from "../components/Tooltip"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import {
@@ -422,10 +432,19 @@ const FormLectures: React.FC<Props> = (props) => {
         ): void => {
             e.preventDefault()
 
+            // pojistka: sekundarni submit tlacitko (onClick + preventDefault) obchazi nativni
+            // HTML validaci — reportValidity zobrazi nativni bubliny i na teto ceste
+            const formElement =
+                e.currentTarget instanceof HTMLFormElement ? e.currentTarget : e.currentTarget.form
+            if (!course || duration === undefined) {
+                formElement?.reportValidity()
+                return
+            }
+
             const start = `${date} ${time}`
-            const courseId = course!.id
+            const courseId = course.id
             const data = {
-                duration: duration!,
+                duration,
                 canceled,
                 group_id: isClient(props.object) ? null : props.object.id,
                 start: prepaid ? null : start,
@@ -536,7 +555,9 @@ const FormLectures: React.FC<Props> = (props) => {
                 ) : (
                     <>
                         <div className={styles.sectionCard}>
-                            <Title order={5} className={styles.sectionTitle}>Parametry lekce</Title>
+                            <Title order={5} className={styles.sectionTitle}>
+                                Parametry lekce
+                            </Title>
                             <Grid align="center" mb="sm" className={styles.formGroup}>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
                                     {isClient(props.object) && (
@@ -567,7 +588,12 @@ const FormLectures: React.FC<Props> = (props) => {
                                     )}
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
-                                    <Tooltip label="Datum" withinPortal zIndex={1300}>
+                                    {/* focus: obsah tooltipu musí být dosažitelný i z klávesnice
+                                        (WCAG 1.4.13) — platí pro všechny tooltipy polí níže */}
+                                    <Tooltip
+                                        label="Datum"
+                                        withinPortal
+                                        events={{ hover: true, focus: true, touch: true }}>
                                         <TextInput
                                             type="date"
                                             id="date"
@@ -580,6 +606,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             max="2099-12-31"
                                             min="2013-01-01"
                                             placeholder="yyyy-mm-dd"
+                                            aria-label="Datum lekce"
                                             data-qa="lecture_field_date"
                                             leftSection={
                                                 <label htmlFor="date">
@@ -593,7 +620,10 @@ const FormLectures: React.FC<Props> = (props) => {
                                     </Tooltip>
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
-                                    <Tooltip label="Čas začátku" withinPortal zIndex={1300}>
+                                    <Tooltip
+                                        label="Čas začátku"
+                                        withinPortal
+                                        events={{ hover: true, focus: true, touch: true }}>
                                         <TextInput
                                             type="time"
                                             id="time"
@@ -603,6 +633,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             required={!prepaid}
                                             withAsterisk={!prepaid}
                                             placeholder="hh:mm"
+                                            aria-label="Čas lekce"
                                             data-qa="lecture_field_time"
                                             leftSection={
                                                 <label htmlFor="time">
@@ -623,11 +654,13 @@ const FormLectures: React.FC<Props> = (props) => {
                                             disabled={canceledDisabled}
                                             data-qa="lecture_checkbox_canceled"
                                             label={
-                                                <span data-qa="lecture_label_canceled">Zrušeno</span>
+                                                <span data-qa="lecture_label_canceled">
+                                                    Zrušeno
+                                                </span>
                                             }
                                         />
                                         {canceledDisabled && (
-                                            <Tooltip2
+                                            <InfoTooltip
                                                 text={
                                                     <>
                                                         Na tuto lekci nemá nikdo přijít, proto je
@@ -651,7 +684,10 @@ const FormLectures: React.FC<Props> = (props) => {
                                     />
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
-                                    <Tooltip label="Trvání (min.)" withinPortal zIndex={1300}>
+                                    <Tooltip
+                                        label="Trvání (min.)"
+                                        withinPortal
+                                        events={{ hover: true, focus: true, touch: true }}>
                                         <TextInput
                                             type="number"
                                             id="duration"
@@ -660,10 +696,14 @@ const FormLectures: React.FC<Props> = (props) => {
                                             required
                                             withAsterisk
                                             min="1"
+                                            aria-label="Trvání lekce v minutách"
                                             data-qa="lecture_field_duration"
                                             leftSection={
                                                 <label htmlFor="duration">
-                                                    <FontAwesomeIcon icon={faHourglass} fixedWidth />
+                                                    <FontAwesomeIcon
+                                                        icon={faHourglass}
+                                                        fixedWidth
+                                                    />
                                                 </label>
                                             }
                                         />
@@ -678,115 +718,126 @@ const FormLectures: React.FC<Props> = (props) => {
                             </Alert>
                         )}
                         <div className={styles.sectionCard}>
-                            <Title order={5} className={styles.sectionTitle}>Účastníci</Title>
+                            <Title order={5} className={styles.sectionTitle}>
+                                Účastníci
+                            </Title>
                             {members.map((member) => (
                                 <div
                                     key={member.id}
                                     data-qa="form_lecture_attendance"
                                     className={styles.attendeeBlock}>
-                                {!isClient(props.object) && (
-                                    <Title order={5}>
-                                        <ClientName client={member} link />{" "}
-                                        {!member.active && (
-                                            <Tooltip2
-                                                text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
-                                                size="1x"
-                                            />
-                                        )}
-                                    </Title>
-                                )}
-                                {isClient(props.object) && !props.object.active && (
-                                    <Alert color="yellow" mb="sm" className={styles.warningNotice}>
-                                        {TEXTS.WARNING_INACTIVE_CLIENT}
-                                    </Alert>
-                                )}
-                                <Grid align="center" mb="sm" className={styles.formGroup}>
-                                    <Grid.Col span={{ base: 12, sm: 4 }}>
-                                        <Select
-                                            id={`atState${member.id}`}
-                                            aria-label="Stav účasti"
-                                            data={attendanceStatesContext.attendancestates
-                                                .filter(
-                                                    (s) =>
-                                                        s.visible ||
-                                                        s.id === atState[member.id],
-                                                )
-                                                .map((s) => ({
-                                                    value: s.id.toString(),
-                                                    label: s.name,
-                                                }))}
-                                            value={atState[member.id]?.toString() ?? null}
-                                            onChange={(val) => {
-                                                if (!val) {return}
-                                                props.setFormDirty()
-                                                setAtState((prev) => ({
-                                                    ...prev,
-                                                    [member.id]: Number(
-                                                        val,
-                                                    ),
-                                                }))
-                                            }}
-                                            required
-                                            withAsterisk
-                                            allowDeselect={false}
-                                            comboboxProps={{ withinPortal: true }}
-                                            data-qa="lecture_select_attendance_attendancestate"
-                                        />
-                                    </Grid.Col>
-                                    <Grid.Col
-                                        span={{ base: 12, sm: 2 }}
-                                        className={styles.attendancePaidCol}>
-                                        <Group gap="xs" justify="center">
-                                            <Checkbox
-                                                id={`atPaid${member.id}`}
-                                                name="atPaid"
-                                                checked={atPaid[member.id]}
-                                                disabled={prepaid}
-                                                onChange={onChangeMultiple}
-                                                data-id={member.id}
-                                                data-qa="lecture_checkbox_attendance_paid"
-                                                label={
-                                                    <span
-                                                        data-qa="lecture_label_attendance_paid"
-                                                        className={
-                                                            atPaid[member.id]
-                                                                ? styles.paidLabelPaid
-                                                                : styles.paidLabelUnpaid
-                                                        }>
-                                                        Platba
-                                                    </span>
-                                                }
-                                            />
-                                            {prepaid && (
-                                                <Tooltip2
-                                                    text="Předplacená lekce je automaticky zaplacená."
+                                    {!isClient(props.object) && (
+                                        <Title order={5}>
+                                            <ClientName client={member} link />{" "}
+                                            {!member.active && (
+                                                <InfoTooltip
+                                                    text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
+                                                    size="1x"
                                                 />
                                             )}
-                                        </Group>
-                                    </Grid.Col>
-                                    <Grid.Col span={{ base: 12, sm: 6 }}>
-                                        <Tooltip label="Poznámka" withinPortal zIndex={1300}>
-                                            <TextInput
-                                                type="text"
-                                                name="atNote"
-                                                id={`atNote${member.id}`}
-                                                value={atNote[member.id]}
-                                                onChange={onChangeMultiple}
-                                                data-id={member.id}
-                                                data-qa="lecture_field_attendance_note"
-                                                spellCheck
-                                                leftSection={
-                                                    <label htmlFor={`atNote${member.id}`}>
-                                                        <FontAwesomeIcon
-                                                            icon={faClipboardList}
-                                                            fixedWidth
-                                                        />
-                                                    </label>
-                                                }
+                                        </Title>
+                                    )}
+                                    {isClient(props.object) && !props.object.active && (
+                                        <Alert
+                                            color="yellow"
+                                            mb="sm"
+                                            className={styles.warningNotice}>
+                                            {TEXTS.WARNING_INACTIVE_CLIENT}
+                                        </Alert>
+                                    )}
+                                    <Grid align="center" mb="sm" className={styles.formGroup}>
+                                        <Grid.Col span={{ base: 12, sm: 4 }}>
+                                            <Select
+                                                id={`atState${member.id}`}
+                                                aria-label="Stav účasti"
+                                                data={attendanceStatesContext.attendancestates
+                                                    .filter(
+                                                        (s) =>
+                                                            s.visible ||
+                                                            s.id === atState[member.id],
+                                                    )
+                                                    .map((s) => ({
+                                                        value: s.id.toString(),
+                                                        label: s.name,
+                                                    }))}
+                                                value={atState[member.id]?.toString() ?? null}
+                                                onChange={(val) => {
+                                                    if (!val) {
+                                                        return
+                                                    }
+                                                    props.setFormDirty()
+                                                    setAtState((prev) => ({
+                                                        ...prev,
+                                                        [member.id]: Number(val),
+                                                    }))
+                                                }}
+                                                required
+                                                withAsterisk
+                                                allowDeselect={false}
+                                                comboboxProps={{ withinPortal: true }}
+                                                data-qa="lecture_select_attendance_attendancestate"
                                             />
-                                        </Tooltip>
-                                    </Grid.Col>
-                                </Grid>
+                                        </Grid.Col>
+                                        <Grid.Col
+                                            span={{ base: 12, sm: 2 }}
+                                            className={styles.attendancePaidCol}>
+                                            <Group gap="xs" justify="center">
+                                                <Checkbox
+                                                    id={`atPaid${member.id}`}
+                                                    name="atPaid"
+                                                    checked={atPaid[member.id]}
+                                                    disabled={prepaid}
+                                                    onChange={onChangeMultiple}
+                                                    data-id={member.id}
+                                                    data-qa="lecture_checkbox_attendance_paid"
+                                                    label={
+                                                        <span
+                                                            data-qa="lecture_label_attendance_paid"
+                                                            className={
+                                                                atPaid[member.id]
+                                                                    ? styles.paidLabelPaid
+                                                                    : styles.paidLabelUnpaid
+                                                            }>
+                                                            Platba
+                                                        </span>
+                                                    }
+                                                />
+                                                {prepaid && (
+                                                    <InfoTooltip text="Předplacená lekce je automaticky zaplacená." />
+                                                )}
+                                            </Group>
+                                        </Grid.Col>
+                                        <Grid.Col span={{ base: 12, sm: 6 }}>
+                                            <Tooltip
+                                                label="Poznámka"
+                                                withinPortal
+                                                events={{
+                                                    hover: true,
+                                                    focus: true,
+                                                    touch: true,
+                                                }}>
+                                                <TextInput
+                                                    type="text"
+                                                    name="atNote"
+                                                    id={`atNote${member.id}`}
+                                                    value={atNote[member.id]}
+                                                    onChange={onChangeMultiple}
+                                                    data-id={member.id}
+                                                    aria-label="Poznámka k účasti"
+                                                    data-qa="lecture_field_attendance_note"
+                                                    spellCheck
+                                                    leftSection={
+                                                        <label htmlFor={`atNote${member.id}`}>
+                                                            <FontAwesomeIcon
+                                                                icon={faClipboardList}
+                                                                fixedWidth
+                                                            />
+                                                        </label>
+                                                    }
+                                                />
+                                            </Tooltip>
+                                        </Grid.Col>
+                                    </Grid>
                                 </div>
                             ))}
                         </div>
@@ -794,8 +845,11 @@ const FormLectures: React.FC<Props> = (props) => {
                             <p className={dimmedTextCenter}>Žádní účastníci</p>
                         )}
                         {isLecture(props.lecture) && (
-                            <div className={`${baseStyles.formSection} ${baseStyles.formSectionDanger}`}>
-                                <Title order={6} className={baseStyles.formSectionTitle}>Smazání</Title>
+                            <div
+                                className={`${baseStyles.formSection} ${baseStyles.formSectionDanger}`}>
+                                <Title order={6} className={baseStyles.formSectionTitle}>
+                                    Smazání
+                                </Title>
                                 <div className={baseStyles.deleteAlertText}>
                                     <p>Nenávratně smaže vybranou lekci včetně všech účastí.</p>
                                     <DeleteButton
@@ -842,7 +896,7 @@ const FormLectures: React.FC<Props> = (props) => {
                         <Tooltip
                             label="Uloží informace a zároveň upraví účastníky této lekce tak, aby byli v souladu se členy skupiny"
                             withinPortal
-                            zIndex={1300}>
+                            events={{ hover: true, focus: true, touch: true }}>
                             <span>
                                 <SubmitButton
                                     loading={isSubmit}

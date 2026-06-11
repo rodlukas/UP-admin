@@ -1,6 +1,16 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Alert, Container, Select, SimpleGrid, Skeleton, Table, Text, Title, Tooltip } from "@mantine/core"
+import {
+    Alert,
+    Container,
+    Select,
+    SimpleGrid,
+    Skeleton,
+    Table,
+    Text,
+    Title,
+    Tooltip,
+} from "@mantine/core"
 import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
@@ -32,7 +42,7 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
         icon={visible ? faCheck : faTimes}
         size="lg"
         {...props}
-        color={visible ? vars.colors.success : vars.colors.muted}
+        color={visible ? vars.colors.success : vars.text.muted}
     />
 )
 
@@ -67,14 +77,18 @@ const Settings: React.FC = () => {
     }, [attendanceStatesContext.isLoading, attendanceStatesContext.attendancestates])
 
     const onChangeDefaultState = (val: string | null): void => {
-        if (!val) {return}
+        if (!val) {
+            return
+        }
         const numVal = Number(val)
         setAttendanceStateDefaultId(numVal)
         patchAttendanceState.mutate({ id: numVal, default: true })
     }
 
     const onChangeExcusedState = (val: string | null): void => {
-        if (!val) {return}
+        if (!val) {
+            return
+        }
         const numVal = Number(val)
         setAttendanceStateExcusedId(numVal)
         patchAttendanceState.mutate({ id: numVal, excused: true })
@@ -108,7 +122,9 @@ const Settings: React.FC = () => {
                             <div className={styles.settingsColumn}>
                                 <Title order={2}>Stavy účasti</Title>
                                 {attendanceStatesContext.attendancestates.length > 0 && (
-                                    <Table.ScrollContainer minWidth={300} className={styles.tableSection}>
+                                    <Table.ScrollContainer
+                                        minWidth={300}
+                                        className={styles.tableSection}>
                                         <Table striped highlightOnHover verticalSpacing="xs">
                                             <Table.Thead>
                                                 <Table.Tr>
@@ -128,7 +144,9 @@ const Settings: React.FC = () => {
                                                             </Table.Td>
                                                             <Table.Td ta="center">
                                                                 <Visible
-                                                                    visible={attendancestate.visible}
+                                                                    visible={
+                                                                        attendancestate.visible
+                                                                    }
                                                                     data-qa="attendancestate_visible"
                                                                 />
                                                             </Table.Td>
@@ -146,7 +164,9 @@ const Settings: React.FC = () => {
                                     </Table.ScrollContainer>
                                 )}
                                 {attendanceStatesContext.attendancestates.length === 0 && (
-                                    <Text c="dimmed" className={styles.emptyMessage}>Žádné stavy účasti</Text>
+                                    <Text c="dimmed" className={styles.emptyMessage}>
+                                        Žádné stavy účasti
+                                    </Text>
                                 )}
                                 <hr />
                                 <Title order={3}>Konfigurace stavů účasti</Title>
@@ -157,8 +177,8 @@ const Settings: React.FC = () => {
                                 )}
                                 {attendanceStateExcusedId === undefined && (
                                     <Alert color="red">
-                                        Není vybraný stav &bdquo;omluven&ldquo;, aplikace nemůže správně
-                                        fungovat!
+                                        Není vybraný stav &bdquo;omluven&ldquo;, aplikace nemůže
+                                        správně fungovat!
                                     </Alert>
                                 )}
                                 <p className={mb0}>
@@ -185,7 +205,9 @@ const Settings: React.FC = () => {
                                                             value: s.id.toString(),
                                                             label: s.name,
                                                         }))}
-                                                    value={attendanceStateDefaultId?.toString() ?? null}
+                                                    value={
+                                                        attendanceStateDefaultId?.toString() ?? null
+                                                    }
                                                     onChange={onChangeDefaultState}
                                                     placeholder="Vyberte stav..."
                                                     allowDeselect={false}
@@ -199,7 +221,9 @@ const Settings: React.FC = () => {
                                             <label
                                                 htmlFor="state_excused_id"
                                                 className={styles.configRowLabel}>
-                                                <Text component="span" fw={700}>&bdquo;klient je omluven&ldquo;</Text>
+                                                <Text component="span" fw={700}>
+                                                    &bdquo;klient je omluven&ldquo;
+                                                </Text>
                                             </label>
                                             <div className={styles.configRowControl}>
                                                 <Select
@@ -210,7 +234,9 @@ const Settings: React.FC = () => {
                                                             value: s.id.toString(),
                                                             label: s.name,
                                                         }))}
-                                                    value={attendanceStateExcusedId?.toString() ?? null}
+                                                    value={
+                                                        attendanceStateExcusedId?.toString() ?? null
+                                                    }
                                                     onChange={onChangeExcusedState}
                                                     placeholder="Vyberte stav..."
                                                     allowDeselect={false}
@@ -226,7 +252,9 @@ const Settings: React.FC = () => {
                             <div className={styles.settingsColumn}>
                                 <Title order={2}>Kurzy</Title>
                                 {courses.length > 0 && (
-                                    <Table.ScrollContainer minWidth={300} className={styles.tableSection}>
+                                    <Table.ScrollContainer
+                                        minWidth={300}
+                                        className={styles.tableSection}>
                                         <Table striped highlightOnHover verticalSpacing="xs">
                                             <Table.Thead>
                                                 <Table.Tr>
@@ -240,7 +268,9 @@ const Settings: React.FC = () => {
                                             <Table.Tbody>
                                                 {courses.map((course) => (
                                                     <Table.Tr key={course.id} data-qa="course">
-                                                        <Table.Td data-qa="course_name">{course.name}</Table.Td>
+                                                        <Table.Td data-qa="course_name">
+                                                            {course.name}
+                                                        </Table.Td>
                                                         <Table.Td ta="center">
                                                             <Visible
                                                                 visible={course.visible}
@@ -272,15 +302,16 @@ const Settings: React.FC = () => {
                                     </Table.ScrollContainer>
                                 )}
                                 {courses.length === 0 && (
-                                    <Text c="dimmed" className={styles.emptyMessage}>Žádné kurzy</Text>
+                                    <Text c="dimmed" className={styles.emptyMessage}>
+                                        Žádné kurzy
+                                    </Text>
                                 )}
                             </div>
                         </div>
                     </SimpleGrid>
                     <div className={styles.footerBlock}>
                         <p className={`${styles.footer} ${styles.emptyMessage}`}>
-                            <span className={bold}>Verze aplikace:</span>{" "}
-                            <AppCommit />
+                            <span className={bold}>Verze aplikace:</span> <AppCommit />
                             {" ("}
                             <AppRelease />
                             {")"} – <AppDate />{" "}

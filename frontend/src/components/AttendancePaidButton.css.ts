@@ -28,7 +28,7 @@ export const attendancePaidButtonSuccess = style({
     color: vars.colors.success,
     selectors: {
         "&:hover": {
-            color: `${vars.colors.successHover} !important`,
+            color: vars.colors.successHover,
         },
     },
 })
@@ -37,7 +37,7 @@ export const attendancePaidButtonDanger = style({
     color: vars.colors.danger,
     selectors: {
         "&:hover": {
-            color: `${vars.colors.dangerHover} !important`,
+            color: vars.colors.dangerHover,
         },
     },
 })

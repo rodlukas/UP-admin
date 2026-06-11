@@ -53,10 +53,6 @@ export const top = style({
     verticalAlign: "top",
 })
 
-export const mutedText = style({
-    color: vars.text.muted,
-})
-
 export const dimmedText = style({
     color: vars.text.muted,
 })
