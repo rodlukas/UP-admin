@@ -1,5 +1,5 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -105,9 +105,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na pridani klienta
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_client_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_client_with_context(context))
     # over, ze sedi pocet klientu
     assert clients_cnt(context.browser) > context.old_clients_cnt
 
@@ -117,9 +121,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na update klientu
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_client_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_client_with_context(context))
     # over, ze sedi pocet klientu
     assert clients_cnt(context.browser) == context.old_clients_cnt
 

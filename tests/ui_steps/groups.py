@@ -1,5 +1,5 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -112,9 +112,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na pridani skupiny
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_group_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_group_with_context(context))
     # over, ze sedi pocet skupin
     assert groups_cnt(context.browser) > context.old_groups_cnt, "pocet skupin se nezvysil"
 
@@ -126,9 +130,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na update skupiny
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_group_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_group_with_context(context))
     # over, ze sedi pocet skupin
     assert groups_cnt(context.browser) == context.old_groups_cnt, "pocet skupin se zmenil"
 
