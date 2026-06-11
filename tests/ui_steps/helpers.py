@@ -53,16 +53,33 @@ def check_fa_bool(visible, classes):
 
 
 def get_tooltip_text(driver, element):
-    # klikni mysi na element
-    element.click()
-    # az se zobrazi tooltip, uloz jeho text, abys ho mohl vratit
-    # poznamka: .text se vola az po novem find_element, ne na referenci z .until(),
-    # ktera muze byt stale kvuli prekresleni DOM (StaleElementReferenceException)
-    # Mantine Tooltip renderuje element s role="tooltip" (stabilnejsi nez .mantine-Tooltip-tooltip hashed class)
-    WebDriverWait(driver, WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='tooltip']"))
-    )
-    tooltip_text = driver.find_element(By.CSS_SELECTOR, "[role='tooltip']").text
+    # 2 pokusy: refetch po mutaci (napr. zmena platby) prekresluje stranku a layout se muze
+    # posunout pod stojicim kurzorem - Firefox pak vyvola mouseleave bez pohybu mysi a cerstve
+    # otevreny tooltip se zavre driv, nez ho stihneme precist (s vypnutymi animacemi, napr.
+    # prefers-reduced-motion na CI, okamzite); druhy klik presune kurzor na aktualni pozici
+    # elementu, vyvola novy mouseenter a tooltip znovu otevre
+    tooltip_text = None
+    for attempt in range(2):
+        # klikni mysi na element
+        element.click()
+        try:
+            # az se zobrazi tooltip, uloz jeho text, abys ho mohl vratit
+            # poznamka: .text se vola az po novem find_element, ne na referenci z .until(),
+            # ktera muze byt stale kvuli prekresleni DOM (StaleElementReferenceException)
+            # Mantine Tooltip renderuje element s role="tooltip" (stabilnejsi nez
+            # .mantine-Tooltip-tooltip hashed class)
+            WebDriverWait(driver, WAIT_TIME).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='tooltip']"))
+            )
+            tooltip_text = driver.find_element(By.CSS_SELECTOR, "[role='tooltip']").text
+            break
+        except (TimeoutException, NoSuchElementException, StaleElementReferenceException):
+            if attempt == 1:
+                raise
+            # odsun kurzor mimo element, aby dalsi klik vyvolal novy mouseenter
+            ActionChains(driver).move_to_element(
+                driver.find_element(By.TAG_NAME, "body")
+            ).perform()
     # odstran mys z elementu, aby se tooltip skryl
     ActionChains(driver).move_to_element(driver.find_element(By.TAG_NAME, "body")).perform()
     # vrat text tooltipu

@@ -334,10 +334,13 @@ def choose_attendancestate(found_attendance, new_attendancestate):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na pridani lekce
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_lecture_with_context(context)
-    )
+    # pockej na pridani lekce; refetch po mutaci muze kartu prekreslit uprostred prochazeni
+    # lekci (stale reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_lecture_with_context(context))
     # over, ze sedi pocet lekci
     assert lectures_cnt(context.browser) > context.old_lectures_cnt
 
@@ -346,18 +349,27 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na update lekci
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_lecture_with_context(context)
-    )
+    # pockej na update lekci; refetch po mutaci muze kartu prekreslit uprostred prochazeni
+    # lekci (stale reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_lecture_with_context(context))
     # over, ze sedi pocet lekci
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
 
 
 @then("the paid state of the attendance is updated")
 def step_impl(context):
-    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji; refetch po mutaci
+    # muze kartu prekreslit uprostred prochazeni lekci (stale reference) nebo zavrit cteny
+    # tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(
         lambda driver: verify_paid(
             find_lecture(context, context.date, context.time), context.new_paid
         )
@@ -366,8 +378,14 @@ def step_impl(context):
 
 @then("the attendance state of the attendance is updated")
 def step_impl(context):
-    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji; refetch po mutaci
+    # muze kartu prekreslit uprostred prochazeni lekci (stale reference) nebo zavrit cteny
+    # tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(
         lambda driver: verify_attendancestate(
             find_lecture(context, context.date, context.time), context.new_attendancestate
         )
