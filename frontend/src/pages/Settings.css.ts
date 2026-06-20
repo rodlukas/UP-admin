@@ -3,6 +3,9 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
+// `tableSection` (karta kolem tabulky) je sdílený povrch — žije v global/surfaces.css.ts
+export { tableSection } from "../global/surfaces.css"
+
 export const footer = style({})
 
 globalStyle(`${footer} a`, {
@@ -43,14 +46,6 @@ globalStyle(`${settingsColumn} hr`, {
 export const settingsColumnsRow = style({
     marginBottom: "1rem",
 })
-
-export const tableSection = style([
-    surfaceCard,
-    {
-        marginTop: "0.25rem",
-        overflow: "hidden",
-    },
-])
 
 export const configList = style({
     marginTop: "0.8rem",

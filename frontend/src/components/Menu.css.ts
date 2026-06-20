@@ -75,6 +75,15 @@ export const navList = style({
 })
 
 export const logoutButton = style({
+    // sjednoceny focus ring s navLink/spotlightButton: vychozi indigo ring Mantine
+    // (.mantine-focus-auto) ma vuci tmavemu navbaru jen ~3:1 (hranicni 1.4.11), blue-3
+    // je vyrazne viditelnejsi; vyssi specificita prebiji Mantine ring i pri shode poradi
+    selectors: {
+        "&.mantine-focus-auto:focus-visible": {
+            outline: "2px solid var(--mantine-color-blue-3)",
+            outlineOffset: "2px",
+        },
+    },
     "@media": {
         "(min-width: 992px)": {
             marginLeft: "0.5rem",

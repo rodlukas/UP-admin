@@ -155,6 +155,23 @@ const FormGroups: React.FC<Props> = (props) => {
         [form],
     )
 
+    // Sjednocení existujících klientů s aktuálními členy: čerstvě přidaný klient
+    // (přes "přidat nového", viz processAdditionOfClient) ještě není v `clientsData`
+    // kvůli asynchronnímu refetchi. Bez něj by MultiSelect vykreslil pill nad neznámým
+    // id (Mantine pošle do renderPill option: undefined → pád) a onChange by člena tiše
+    // zahodil. Sjednocením má každé vybrané id vždy odpovídající položku.
+    const clientsById = React.useMemo(() => {
+        const byId = new Map<string, ClientType>()
+        clientsData.forEach((c) => byId.set(c.id.toString(), c))
+        form.values.members.forEach((m) => {
+            const id = m.id.toString()
+            if (!byId.has(id)) {
+                byId.set(id, m)
+            }
+        })
+        return byId
+    }, [clientsData, form.values.members])
+
     const isLoading = clientsLoading || coursesVisibleContext.isLoading
     const isSubmit = createGroup.isPending || updateGroup.isPending
 
@@ -211,16 +228,14 @@ const FormGroups: React.FC<Props> = (props) => {
                                     </label>
                                     <MultiSelect
                                         id="members"
-                                        data={clientsData.map((c) => ({
+                                        data={[...clientsById.values()].map((c) => ({
                                             value: c.id.toString(),
                                             label: clientName(c),
                                         }))}
                                         value={form.values.members.map((m) => m.id.toString())}
                                         onChange={(vals) => {
                                             const found = vals
-                                                .map((v) =>
-                                                    clientsData.find((c) => c.id.toString() === v),
-                                                )
+                                                .map((v) => clientsById.get(v))
                                                 .filter((c): c is ClientType => c !== undefined)
                                             form.setFieldValue("members", found)
                                         }}

@@ -24,6 +24,13 @@ export const toggleButton = style({
             backgroundColor: "rgb(255 255 255 / 0.12)",
             color: "#ffffff",
         },
+        // sjednoceny focus ring s navLink: vychozi indigo ring Mantine (.mantine-focus-auto)
+        // ma vuci tmavemu navbaru jen ~3:1 (hranicni 1.4.11), blue-3 je vyrazne viditelnejsi;
+        // vyssi specificita prebiji Mantine ring i pri shode poradi
+        "&.mantine-focus-auto:focus-visible": {
+            outline: "2px solid var(--mantine-color-blue-3)",
+            outlineOffset: "2px",
+        },
     },
 })
 

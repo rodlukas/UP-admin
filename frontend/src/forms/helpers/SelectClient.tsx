@@ -33,7 +33,15 @@ const SelectClient: React.FC<SelectClientProps> = ({
     required,
     id = "client",
 }) => {
-    const data = options.map((c) => ({ value: c.id.toString(), label: clientName(c) }))
+    // Čerstvě vytvořený klient (přes "přidat nového") se do `value` dostane dřív, než ho
+    // asynchronní refetch přidá do `options`; bez doplnění by Select zobrazil prázdno.
+    const data = React.useMemo(() => {
+        const items = options.map((c) => ({ value: c.id.toString(), label: clientName(c) }))
+        if (value && !options.some((c) => c.id === value.id)) {
+            items.push({ value: value.id.toString(), label: clientName(value) })
+        }
+        return items
+    }, [options, value])
 
     return (
         <Select

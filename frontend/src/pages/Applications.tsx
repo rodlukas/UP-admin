@@ -1,4 +1,4 @@
-import { Badge, Container, Title, Tooltip } from "@mantine/core"
+import { Badge, Container, Skeleton, Title, Tooltip } from "@mantine/core"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
@@ -10,7 +10,6 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import ClientName from "../components/ClientName"
 import ClientPhone from "../components/ClientPhone"
 import Heading from "../components/Heading"
-import Loading from "../components/Loading"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
 import { dimmedTextCenter, mb0 } from "../global/utility.css"
@@ -66,7 +65,11 @@ const Applications: React.FC = () => {
                 isFetching={isFetching && applications.length > 0}
             />
             {isLoading ? (
-                <Loading />
+                <>
+                    {[...Array(3)].map((_, i) => (
+                        <Skeleton key={i} h={110} mb="md" radius="md" />
+                    ))}
+                </>
             ) : (
                 <>
                     {applications.map((courseApplications) => {

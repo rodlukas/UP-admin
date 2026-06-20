@@ -21,20 +21,8 @@ export const bold = style({
     fontWeight: 700,
 })
 
-export const semiBold = style({
-    fontWeight: 600,
-})
-
 export const mb0 = style({
     marginBottom: 0,
-})
-
-export const mt05 = style({
-    marginTop: "0.5rem",
-})
-
-export const ml025 = style({
-    marginLeft: "0.25rem",
 })
 
 export const ml05 = style({

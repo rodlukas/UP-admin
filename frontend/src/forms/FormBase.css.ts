@@ -182,13 +182,6 @@ export const formSection = style({
     padding: "1rem 1rem 0.95rem",
 })
 
-export const formPanel = style({
-    border: 0,
-    borderRadius: 0,
-    backgroundColor: "transparent",
-    padding: 0,
-})
-
 export const formSectionDanger = style([
     statusNoticeDanger,
     {
@@ -205,10 +198,6 @@ export const formSectionTitle = style({
     fontWeight: 700,
 })
 
-export const fieldRow = style({
-    marginBottom: "0.85rem",
-})
-
 export const fieldBlock = style({
     display: "flex",
     flexDirection: "column",
@@ -222,12 +211,6 @@ export const fieldLabel = style({
     fontWeight: 600,
 })
 
-export const fieldHint = style({
-    lineHeight: 1.35,
-    color: vars.text.subtleMuted,
-    fontSize: "0.75rem",
-})
-
 export const fieldStack = style({
     display: "flex",
     flexDirection: "column",
@@ -239,17 +222,6 @@ export const inlineCheckboxRow = style({
     alignItems: "center",
     gap: "0.5rem",
     minHeight: "2.7rem",
-})
-
-export const labelCol = style({
-    color: vars.text.slate,
-    fontWeight: 600,
-})
-
-globalStyle(`${labelCol} label`, {
-    display: "inline-block",
-    marginBottom: "0.2rem",
-    lineHeight: 1.35,
 })
 
 export const deleteAlertText = style({

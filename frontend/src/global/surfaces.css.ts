@@ -20,6 +20,19 @@ export const surfaceCard = style({
 })
 
 /**
+ * Karta obalující tabulku/seznam pod nadpisem sekce — `surfaceCard` s oříznutými rohy
+ * (aby pruhy tabulky nepřetékaly přes rádius) a drobným odsazením shora. Jediný zdroj
+ * pravdy pro stránky Klienti, Skupiny a Nastavení (dříve duplikováno na třech místech).
+ */
+export const tableSection = style([
+    surfaceCard,
+    {
+        marginTop: "0.25rem",
+        overflow: "hidden",
+    },
+])
+
+/**
  * Měkké stavové boxy (infobox, sekce formuláře) — jemný rámeček, výrazná levá linka
  * a bledé podbarvení z `vars.statusSoft`. Místa použití skládají přes
  * `style([statusNoticeInfo, {...padding a odchylky}])` — padding a typografie

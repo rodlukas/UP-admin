@@ -17,6 +17,7 @@ const Dashboard: React.FC = () => {
                 <div className={styles.dashboardSection}>
                     <Heading
                         title="Dnešní lekce"
+                        order={2}
                         buttons={<ModalLecturesWizard source="dashboard" />}
                     />
                     <DashboardDay date={toISODate(new Date())} withoutWaiting source="dashboard" />
