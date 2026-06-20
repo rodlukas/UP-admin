@@ -7,7 +7,6 @@ export const vars = {
     colors: {
         // Primární (značková indigo)
         primary: "var(--mantine-color-indigo-6)",
-        primaryHover: "var(--mantine-color-indigo-7)",
         // Sémantické (statusové) — light-dark() pro WCAG AA v obou schématech
         // (light varianty jsou tmavší než Mantine paleta, protože green-7 má na bílé jen
         // 2.75:1 a red-7 jen 3.84:1).
@@ -30,7 +29,6 @@ export const vars = {
         sm: "var(--mantine-radius-sm)",
         md: "var(--mantine-radius-md)",
         lg: "var(--mantine-radius-lg)",
-        xl: "var(--mantine-radius-xl)",
         pill: "999px",
     },
     // box-shadow neumožňuje light-dark() (jde jen o barvy), proto používáme pure-black
@@ -73,7 +71,6 @@ export const vars = {
     },
     border: {
         default: "light-dark(#d6dee9, var(--mantine-color-dark-4))",
-        subtle: "light-dark(#e2e8f0, var(--mantine-color-dark-5))",
         strong: "light-dark(#cbd5e1, var(--mantine-color-dark-3))",
         /** Tlumený oddělovač sekcí formuláře. */
         formDivider: "light-dark(#edf2f7, var(--mantine-color-dark-4))",
@@ -81,8 +78,6 @@ export const vars = {
     /** Hotové `border` shorthandy (1px solid + adaptivní barva). */
     borderShort: {
         default: "1px solid light-dark(#d6dee9, var(--mantine-color-dark-4))",
-        subtle: "1px solid light-dark(#e2e8f0, var(--mantine-color-dark-5))",
-        strong: "1px solid light-dark(#cbd5e1, var(--mantine-color-dark-3))",
         /** Tlumený oddělovač sekcí formuláře. */
         formDivider: "1px solid light-dark(#edf2f7, var(--mantine-color-dark-4))",
         /** Měkká žlutá hraniční čára pro varovné/zastaralé alerty. */
@@ -116,7 +111,8 @@ export const vars = {
      * než `statusSoft`, stav lekce musí být rozpoznatelný i bez rámečku a textu.
      * Dark varianty ztlumené přes color-mix s dark-7: plná sytost (yellow-9/green-8/red-9)
      * by srazila kontrast indigo odkazů (#9e9eff) na podbarvené lekci pod WCAG AA
-     * (např. red-9: 2.28:1); s mixem odkazy ≥4.5:1 a světlý text ≥10:1.
+     * (např. red-9: 2.28:1); s mixem se kontrast drží na prahu AA (success/danger ≥4.5:1,
+     * warning ~4.4:1) a světlý text ≥10:1.
      */
     statusTint: {
         warning:

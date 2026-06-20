@@ -28,11 +28,7 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
         <AttendancePaidButton paid={attendance.paid} attendanceId={attendance.id} source={source} />{" "}
         {attendance.number && (
             <>
-                <Badge
-                    variant="default"
-                    radius="xl"
-                    fw="bold"
-                    className={classNames(styles.attendanceNumber)}>
+                <Badge variant="default" radius="xl" fw="bold">
                     {attendance.number}
                 </Badge>{" "}
             </>

@@ -22,17 +22,6 @@ export const AXIS_LABEL = { fontSize: 11, fill: "var(--up-chart-tick-fill)" } as
 export const GRID_STROKE = "var(--up-chart-grid-stroke)"
 export const LEGEND_FONT = { fontSize: 12 } as const
 
-export const CHART_PALETTE = [
-    "var(--mantine-color-indigo-6)",
-    "var(--mantine-color-green-6)",
-    "var(--mantine-color-orange-6)",
-    "var(--mantine-color-red-6)",
-    "var(--mantine-color-teal-6)",
-    "var(--mantine-color-violet-6)",
-    "var(--mantine-color-yellow-6)",
-    "var(--mantine-color-cyan-6)",
-] as const
-
 export type ChartMargin = {
     top: number
     right: number

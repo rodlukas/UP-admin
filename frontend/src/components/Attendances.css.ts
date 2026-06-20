@@ -5,8 +5,6 @@ export const attendances = style({
     verticalAlign: "top",
 })
 
-export const attendanceNumber = style({})
-
 globalStyle(`${attendances} li`, {
     display: "flex",
     flexWrap: "wrap",
