@@ -83,7 +83,7 @@ globalStyle(
     "form[data-qa^='form_'] .mantine-Input-input, form[data-qa^='form_'] .mantine-Select-input, form[data-qa^='form_'] .mantine-Textarea-input",
     {
         transition:
-            "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out, transform 0.15s ease-in-out",
+            "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out",
         borderRadius: vars.radius.md,
         borderColor: vars.border.default,
         backgroundColor: vars.bg.elevated,

@@ -52,7 +52,12 @@ const SelectClient: React.FC<SelectClientProps> = ({
             data={data}
             value={value?.id.toString() ?? null}
             onChange={(val) => {
-                const found = options.find((c) => c.id.toString() === val) ?? null
+                // i čerstvě vytvořený klient (zatím mimo `options`, viz `data` memo) musí jít
+                // znovu vybrat – když `val` odpovídá aktuální hodnotě, vrať ji přímo
+                const found =
+                    value?.id.toString() === val
+                        ? value
+                        : (options.find((c) => c.id.toString() === val) ?? null)
                 onChangeCallback("client", found)
             }}
             placeholder="Vyberte existujícího klienta…"

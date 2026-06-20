@@ -23,7 +23,7 @@ export const course = style([
 ])
 
 export const applicationItem = style({
-    transition: "background-color 0.12s ease-in-out",
+    transition: "background-color 0.15s ease-in-out",
     borderTop: vars.borderShort.default,
     backgroundColor: vars.bg.surface,
     padding: "0.5rem 1rem",

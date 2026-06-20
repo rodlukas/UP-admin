@@ -260,16 +260,13 @@ const Diary: React.FC = () => {
             </Container>
             <div className={styles.weekGrid}>
                 <div className={styles.weekRow}>
-                    {week.map((day) => {
-                        const weekdayKey = new Date(day).getDay()
-                        return (
-                            <div
-                                key={weekdayKey}
-                                className={classNames(styles.weekDayCol, styles.diaryDay)}>
-                                <DashboardDay date={day} source="diary" />
-                            </div>
-                        )
-                    })}
+                    {week.map((day) => (
+                        <div
+                            key={day}
+                            className={classNames(styles.weekDayCol, styles.diaryDay)}>
+                            <DashboardDay date={day} source="diary" />
+                        </div>
+                    ))}
                 </div>
             </div>
         </>

@@ -36,7 +36,7 @@ export const statNote = style({
 })
 
 export const fetchingOverlay = style({
-    transition: "opacity 0.15s ease",
+    transition: "opacity 0.15s ease-in-out",
     opacity: 0.5,
     pointerEvents: "none",
 })

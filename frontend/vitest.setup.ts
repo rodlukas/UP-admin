@@ -1,5 +1,9 @@
-import "@testing-library/jest-dom/vitest"
 import { configure } from "@testing-library/dom"
+import "@testing-library/jest-dom/vitest"
+import { http, HttpResponse } from "msw"
+import { setupServer } from "msw/node"
+
+import * as data from "./__mocks__/data.json"
 
 // jsdom nepodporuje matchMedia, ktere pouziva MantineProvider pro detekci color scheme
 Object.defineProperty(window, "matchMedia", {
@@ -41,9 +45,6 @@ window.ResizeObserver ??= class {
         // no-op
     }
 }
-import { http, HttpResponse } from "msw"
-import { setupServer } from "msw/node"
-import * as data from "./__mocks__/data.json"
 
 configure({ testIdAttribute: "data-qa" })
 

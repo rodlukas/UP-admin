@@ -60,6 +60,17 @@ globalStyle(".mantine-Button-root[type='submit'][data-variant='filled']:hover", 
     },
 })
 
+// FontAwesome spinner (.fa-spin) nemá vlastní prefers-reduced-motion guard (FA core 1.2.36)
+// a respectReducedMotion v Mantine pokrývá jen Mantine přechody, ne tuto CSS animaci. Pro
+// uživatele s omezeným pohybem rotaci zastavíme – stav „načítání“ nese tvar ikony + role=status.
+globalStyle(".fa-spin", {
+    "@media": {
+        "(prefers-reduced-motion: reduce)": {
+            animation: "none",
+        },
+    },
+})
+
 globalStyle(".mantine-Input-input:focus, .mantine-Textarea-input:focus", {
     borderColor: vars.colors.primary,
     boxShadow: vars.shadow.focusRing,
