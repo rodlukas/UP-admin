@@ -209,7 +209,3 @@ export const chartEmpty = style({
     color: vars.text.subtleMuted,
     fontSize: "0.875rem",
 })
-
-export const rankingTable = style({
-    minWidth: "24rem",
-})

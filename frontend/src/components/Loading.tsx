@@ -61,7 +61,7 @@ const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
                 aria-hidden
             />
             <p className={styles.text}>
-                {text}...
+                {text}…
                 {loadingState === LOADING_STATE.LONG_LOADING && (
                     <span className={styles.longHint}>Stále pracuji</span>
                 )}

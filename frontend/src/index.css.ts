@@ -117,3 +117,11 @@ globalStyle(
         color: "transparent !important",
     },
 )
+
+// Vstupní pole vyhledávání Spotlightu – uživatel do něj píše jména/telefony klientů,
+// takže by v GDPR módu samotný dotaz prosvítil PII (výsledky pod ním už maskované jsou).
+// Stejný princip jako `gdprInput` u Select polí: text i kurzor zprůhledníme.
+globalStyle(".gdpr .mantine-Spotlight-search", {
+    caretColor: "transparent",
+    color: "transparent !important",
+})

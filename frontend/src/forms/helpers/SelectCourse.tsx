@@ -19,6 +19,8 @@ type SelectCourseProps = {
     required?: boolean
     /** Popisek pole (předán Mantine Select jako label). */
     label?: string
+    /** Chybová zpráva pod polem (validaci povinného pole řídí nadřazený formulář). */
+    error?: React.ReactNode
     /**
      * DOM id selectu — výchozí hodnotu "course" hledají E2E testy (`By.ID "course"`),
      * vlastní id zasílej jen pokud by mohly být současně namountované dvě instance.
@@ -42,6 +44,7 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
     isDisabled = false,
     required = false,
     label,
+    error,
     id = "course",
 }) => {
     const data = options.map((c) => ({ value: c.id.toString(), label: c.name }))
@@ -56,11 +59,12 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
                 onChangeCallback("course", found)
             }}
             label={label}
-            placeholder="Vyberte kurz..."
+            placeholder="Vyberte kurz…"
             searchable
             clearable={!required}
             withAsterisk={required}
             required={required}
+            error={error}
             disabled={isDisabled}
             comboboxProps={{ withinPortal: true }}
             renderOption={({ option }) => {

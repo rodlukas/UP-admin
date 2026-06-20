@@ -209,7 +209,7 @@ const Settings: React.FC = () => {
                                                         attendanceStateDefaultId?.toString() ?? null
                                                     }
                                                     onChange={onChangeDefaultState}
-                                                    placeholder="Vyberte stav..."
+                                                    placeholder="Vyberte stav…"
                                                     allowDeselect={false}
                                                     comboboxProps={{ withinPortal: true }}
                                                 />
@@ -238,7 +238,7 @@ const Settings: React.FC = () => {
                                                         attendanceStateExcusedId?.toString() ?? null
                                                     }
                                                     onChange={onChangeExcusedState}
-                                                    placeholder="Vyberte stav..."
+                                                    placeholder="Vyberte stav…"
                                                     allowDeselect={false}
                                                     comboboxProps={{ withinPortal: true }}
                                                 />

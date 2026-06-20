@@ -41,7 +41,7 @@ const App: React.FC = () => (
         theme={theme}
         defaultColorScheme="auto"
         colorSchemeManager={colorSchemeManager}>
-        <Notifications position="top-right" />
+        <Notifications position="top-right" limit={5} />
         <RouterProvider router={router} />
     </MantineProvider>
 )

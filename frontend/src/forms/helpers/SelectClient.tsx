@@ -17,6 +17,8 @@ type SelectClientProps = {
     autoFocus?: boolean
     /** Povinné pole (vizuální, validace probíhá v nadřazeném formuláři). */
     required?: boolean
+    /** Chybová zpráva pod polem (validaci povinného pole řídí nadřazený formulář). */
+    error?: React.ReactNode
     /**
      * DOM id selectu — výchozí hodnotu "client" hledají E2E testy (`By.ID "client"`),
      * vlastní id zasílej jen pokud by mohly být současně namountované dvě instance.
@@ -31,6 +33,7 @@ const SelectClient: React.FC<SelectClientProps> = ({
     options = [],
     autoFocus = true,
     required,
+    error,
     id = "client",
 }) => {
     // Čerstvě vytvořený klient (přes "přidat nového") se do `value` dostane dřív, než ho
@@ -52,12 +55,13 @@ const SelectClient: React.FC<SelectClientProps> = ({
                 const found = options.find((c) => c.id.toString() === val) ?? null
                 onChangeCallback("client", found)
             }}
-            placeholder="Vyberte existujícího klienta..."
+            placeholder="Vyberte existujícího klienta…"
             searchable
             clearable={!required}
             autoFocus={autoFocus}
             withAsterisk={required}
             required={required}
+            error={error}
             renderOption={({ option }) => <span data-gdpr>{option.label}</span>}
             classNames={{ input: styles.gdprInput }}
             comboboxProps={{ withinPortal: true }}

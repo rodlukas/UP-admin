@@ -74,13 +74,17 @@ const FormApplications: React.FC<Props> = (props) => {
 
     const isApplicationValue = isApplication(props.application)
 
+    // Po pokusu o odeslání s prázdným povinným Selectem (skrytý input neumí constraint
+    // validaci, takže reportValidity je no-op) zobrazíme chybu přes `error` prop Selectů.
+    const [triedSubmit, setTriedSubmit] = React.useState(false)
+
     const onSubmit = React.useCallback(
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
             const { course, client } = form.values
-            // pojistka: bez vybraneho kurzu/klienta neodesilame, zobrazime nativni validacni bubliny
+            // pojistka: bez vybraneho kurzu/klienta neodesilame a zobrazime chybu u Selectu
             if (!course || !client) {
-                e.currentTarget.reportValidity()
+                setTriedSubmit(true)
                 return
             }
             const courseId = course.id
@@ -149,6 +153,11 @@ const FormApplications: React.FC<Props> = (props) => {
                                         value={form.values.client}
                                         options={clientsData}
                                         onChangeCallback={onSelectChange}
+                                        error={
+                                            triedSubmit && !form.values.client
+                                                ? "Vyberte klienta"
+                                                : undefined
+                                        }
                                     />
                                     <Or
                                         content={
@@ -169,6 +178,11 @@ const FormApplications: React.FC<Props> = (props) => {
                                         value={form.values.course}
                                         onChangeCallback={onSelectChange}
                                         options={coursesVisibleContext.courses}
+                                        error={
+                                            triedSubmit && !form.values.course
+                                                ? "Vyberte kurz"
+                                                : undefined
+                                        }
                                     />
                                 </div>
                                 <div className={baseStyles.fieldBlock}>
@@ -178,7 +192,9 @@ const FormApplications: React.FC<Props> = (props) => {
                                         label="Poznámka"
                                         data-qa="application_field_note"
                                         spellCheck
+                                        autosize
                                         minRows={3}
+                                        maxRows={8}
                                     />
                                 </div>
                             </div>

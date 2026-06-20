@@ -16,7 +16,11 @@ const LectureNote: React.FC<Props> = ({ attendance }) => {
         return null
     }
     return (
-        <Badge variant="default" data-qa="lecture_attendance_note" className={styles.lectureNote}>
+        <Badge
+            variant="default"
+            data-qa="lecture_attendance_note"
+            data-gdpr
+            className={styles.lectureNote}>
             {attendance.note}
         </Badge>
     )

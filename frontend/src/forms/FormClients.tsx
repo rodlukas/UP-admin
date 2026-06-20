@@ -215,7 +215,9 @@ const FormClients: React.FC<Props> = (props) => {
                                     label="Poznámka"
                                     data-qa="client_field_note"
                                     spellCheck
+                                    autosize
                                     minRows={3}
+                                    maxRows={8}
                                 />
                             </div>
                             <div className={styles.fieldBlock}>

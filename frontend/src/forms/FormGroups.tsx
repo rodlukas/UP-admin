@@ -86,13 +86,17 @@ const FormGroups: React.FC<Props> = (props) => {
         onValuesChange: () => props.setFormDirty(),
     })
 
+    // Po pokusu o odeslání s prázdným povinným kurzem (skrytý input Selectu neumí constraint
+    // validaci, reportValidity je no-op) zobrazíme chybu přes `error` prop SelectCourse.
+    const [triedSubmit, setTriedSubmit] = React.useState(false)
+
     const onSubmit = React.useCallback(
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
             const { name, active, course, members } = form.getValues()
-            // pojistka: bez vybraneho kurzu neodesilame, zobrazime nativni validacni bubliny
+            // pojistka: bez vybraneho kurzu neodesilame a zobrazime chybu u SelectCourse
             if (!course) {
-                e.currentTarget.reportValidity()
+                setTriedSubmit(true)
                 return
             }
             const courseId = course.id
@@ -220,6 +224,11 @@ const FormGroups: React.FC<Props> = (props) => {
                                             form.setFieldValue("course", val ?? null)
                                         }
                                         options={coursesVisibleContext.courses}
+                                        error={
+                                            triedSubmit && !form.values.course
+                                                ? "Vyberte kurz"
+                                                : undefined
+                                        }
                                     />
                                 </div>
                                 <div className={styles.fieldBlock}>
@@ -239,7 +248,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                                 .filter((c): c is ClientType => c !== undefined)
                                             form.setFieldValue("members", found)
                                         }}
-                                        placeholder="Vyberte členy z existujících klientů..."
+                                        placeholder="Vyberte členy z existujících klientů…"
                                         searchable
                                         // Mantine MultiSelect ma `input` (PillsInput wrapper s pills)
                                         // a `inputField` (vnitrni <input> kam uzivatel pise) jako 2 sloty.

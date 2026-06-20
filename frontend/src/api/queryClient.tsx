@@ -123,6 +123,9 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
             queries: {
                 retry: 1,
                 refetchOnWindowFocus: false,
+                // 30s staleTime tlumí refetch při navigaci a remountu kontextových providerů;
+                // po mutaci se aktivní queries stejně refetchují přes mutationCache.onSuccess.
+                staleTime: 30_000,
             },
         },
         queryCache: new QueryCache({
@@ -143,7 +146,12 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                 // Invalidace pouze refetchuje aktivní queries a označí ostatní jako stale,
                 // takže se refetchují až když budou potřeba.
                 // Viz: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
-                void queryClient.invalidateQueries()
+                // Výjimka: bankovní data (["bank"]) nezávisí na mutacích v aplikaci a dotazují
+                // se na externí rate-limited API (banka má vlastní manuální refresh s minutovým
+                // limitem), proto je z plošné invalidace vyjmeme.
+                void queryClient.invalidateQueries({
+                    predicate: (query) => query.queryKey[0] !== "bank",
+                })
 
                 // Notifikace potlačíme, pokud je v meta nastaveno skipSuccessNotification
                 if (mutation.options.meta?.skipSuccessNotification) {

@@ -9,7 +9,7 @@ type Props = {
     /** Je vybráno zobrazení aktivních klientů/skupin (true). */
     active: boolean
     /** Funkce, která se zavolá při přepínání. */
-    onChange: (active: boolean, ignoreActiveRefresh: boolean) => void
+    onChange: (active: boolean) => void
     /** Identifikace místa, odkud byla akce provedena (pro analytiku). */
     source: AnalyticsSource
 }
@@ -24,7 +24,7 @@ const ActiveSwitcher: React.FC<Props> = (props) => {
         // pokud doslo ke zmene, propaguj vyse
         if (props.active !== value) {
             trackEvent("active_filter_toggled", { source: props.source, active: value })
-            props.onChange(value, true)
+            props.onChange(value)
         }
     }
 

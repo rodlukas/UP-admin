@@ -59,7 +59,10 @@ const Main: React.FC = () => {
                         <Burger
                             opened={isMenuOpened}
                             onClick={toggleNavbar}
-                            hiddenFrom="lg"
+                            // navbarCollapse/Menu/ColorSchemeToggle se rozbalují na min-width 992px
+                            // (Mantine `md`), burger proto skrýváme od stejného bodu – jinak by se
+                            // v pásmu 992–1199px zobrazoval burger i rozbalené menu zároveň
+                            hiddenFrom="md"
                             size="sm"
                             color="white"
                             aria-label={isMenuOpened ? "Zavřít menu" : "Otevřít menu"}

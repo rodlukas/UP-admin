@@ -554,7 +554,7 @@ function TopRankingSection<T extends { id: number; lecture_count: number }>({
     return (
         <ChartSection title={title}>
             {items.length > 0 ? (
-                <Table.ScrollContainer minWidth={220} className={styles.rankingTable}>
+                <Table.ScrollContainer minWidth={360}>
                     <Table verticalSpacing="xs" withRowBorders={false} mb={0}>
                         <Table.Thead>
                             <Table.Tr className={styles.rankingDivider}>
@@ -888,7 +888,7 @@ const Statistics: React.FC = () => {
 
             {/* Klienti & Skupiny – globální statistiky (neovlivněny filtrem roku) */}
             {statistics && (
-                <SimpleGrid cols={{ base: 2, md: 4 }} className={styles.sectionTightTopMb}>
+                <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }} className={styles.sectionTightTopMb}>
                     <div>
                         <EntityStatCard
                             title="Klienti"

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button, Menu, Select, Tooltip } from "@mantine/core"
+import { notifications } from "@mantine/notifications"
 import { faChevronDown, faPlus, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
@@ -91,6 +92,17 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     setObject(obj)
                     setModalSelectDone(true)
                 })
+                .catch(() => {
+                    if (requestSeqRef.current !== requestSeq) {
+                        return
+                    }
+                    // požadavek jde mimo React Query (přímo přes service), takže globální
+                    // error handling se neuplatní – chybu musíme ohlásit ručně
+                    notifications.show({
+                        color: "red",
+                        message: "Nepodařilo se načíst data pro předvyplnění formuláře.",
+                    })
+                })
                 .finally(() => {
                     if (requestSeqRef.current !== requestSeq) {
                         return
@@ -157,7 +169,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                             groupsActiveContext.groups.find((g) => g.id.toString() === val) ?? null
                         onSelectChange("group", found)
                     }}
-                    placeholder="Vyberte existující skupinu..."
+                    placeholder="Vyberte existující skupinu…"
                     searchable
                     autoFocus
                     comboboxProps={{ withinPortal: true }}
@@ -220,10 +232,10 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     </Menu.Target>
                     <Menu.Dropdown>
                         <Menu.Item onClick={(): void => setClient(true)}>
-                            přidat lekci <strong>klienta</strong>...
+                            přidat lekci <strong>klienta</strong>…
                         </Menu.Item>
                         <Menu.Item onClick={(): void => setClient(false)}>
-                            přidat lekci <strong>skupiny</strong>...
+                            přidat lekci <strong>skupiny</strong>…
                         </Menu.Item>
                     </Menu.Dropdown>
                 </Menu>

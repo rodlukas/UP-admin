@@ -120,7 +120,7 @@ const Applications: React.FC = () => {
                                                         )}
                                                     </Badge>
                                                 </Tooltip>
-                                                <span data-qa="application_note">
+                                                <span data-qa="application_note" data-gdpr>
                                                     {application.note}
                                                 </span>
                                             </div>
