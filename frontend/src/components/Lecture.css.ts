@@ -23,7 +23,6 @@ globalStyle(`${lectureCanceled} h4 span::after`, {
     right: 0,
     borderBottom: "2px solid rgb(255 0 0 / 0.6)",
     width: "100%",
-    color: "#fff",
     content: '""',
 })
 
