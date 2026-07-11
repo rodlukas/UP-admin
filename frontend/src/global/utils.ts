@@ -13,6 +13,13 @@ import { DAYS_WITHOUT_LECTURE_WARNING, LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
 import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
 
+/**
+ * Jednoduché české skloňování podle počtu: vrátí `one` pro 1, `few` pro 2–4, jinak `many`.
+ * Sjednocuje opakovaný count→tvar vzorec z přehledů klientů a skupin.
+ */
+export const pluralizeCs = (count: number, one: string, few: string, many: string): string =>
+    count === 1 ? one : count < 5 ? few : many
+
 export type GroupedObjectsByCourses<O> = { course: CourseType; objects: O[] }[]
 
 type GroupedObjectsByCoursesReduce<O> = Record<string, { course: CourseType; objects: O[] }>

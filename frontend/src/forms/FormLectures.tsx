@@ -425,6 +425,34 @@ const FormLectures: React.FC<Props> = (props) => {
         return attendances
     }, [atState, atPaid, atNote, members, props.lecture])
 
+    // Viditelné stavy účasti jako Select options – spočítají se jednou (ne ve `.filter().map()`
+    // pro každého účastníka při každém renderu); skrytý, ale aktuálně zvolený stav se doplní níže.
+    const visibleAttendanceStateOptions = React.useMemo(
+        () =>
+            attendanceStatesContext.attendancestates
+                .filter((s) => s.visible)
+                .map((s) => ({ value: s.id.toString(), label: s.name })),
+        [attendanceStatesContext.attendancestates],
+    )
+
+    const attendanceStatesById = React.useMemo(
+        () => new Map(attendanceStatesContext.attendancestates.map((s) => [s.id, s])),
+        [attendanceStatesContext.attendancestates],
+    )
+
+    /** Options pro Select stavu účasti člena: viditelné stavy + jeho aktuálně zvolený (i skrytý) stav. */
+    const getAttendanceStateOptions = (memberId: number): { value: string; label: string }[] => {
+        const currentStateId = atState[memberId]
+        const currentState =
+            currentStateId !== undefined ? attendanceStatesById.get(currentStateId) : undefined
+        return currentState && !currentState.visible
+            ? [
+                  ...visibleAttendanceStateOptions,
+                  { value: currentState.id.toString(), label: currentState.name },
+              ]
+            : visibleAttendanceStateOptions
+    }
+
     const onSubmit = React.useCallback(
         (
             e: React.SyntheticEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>,
@@ -433,9 +461,15 @@ const FormLectures: React.FC<Props> = (props) => {
             e.preventDefault()
 
             // pojistka: sekundarni submit tlacitko (onClick + preventDefault) obchazi nativni
-            // HTML validaci — reportValidity zobrazi nativni bubliny i na teto ceste
+            // HTML validaci formulare — spustime ji proto rucne, aby nativni bubliny vyskocily
+            // i na teto ceste u VSECH poli (datum, cas, trvani, pocet predplacenych), ne jen kurz
             const formElement =
                 e.currentTarget instanceof HTMLFormElement ? e.currentTarget : e.currentTarget.form
+            if (formElement && !formElement.reportValidity()) {
+                return
+            }
+            // skryty input SelectCourse constraint validaci neumi (reportValidity ho nezachyti),
+            // proto vyber kurzu (a dosud nevyplnene trvani) overujeme jeste zvlast
             if (!course || duration === undefined) {
                 formElement?.reportValidity()
                 return
@@ -670,6 +704,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                         jeden klient.
                                                     </>
                                                 }
+                                                tone="info"
                                             />
                                         )}
                                     </Group>
@@ -750,16 +785,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             <Select
                                                 id={`atState${member.id}`}
                                                 aria-label="Stav účasti"
-                                                data={attendanceStatesContext.attendancestates
-                                                    .filter(
-                                                        (s) =>
-                                                            s.visible ||
-                                                            s.id === atState[member.id],
-                                                    )
-                                                    .map((s) => ({
-                                                        value: s.id.toString(),
-                                                        label: s.name,
-                                                    }))}
+                                                data={getAttendanceStateOptions(member.id)}
                                                 value={atState[member.id]?.toString() ?? null}
                                                 onChange={(val) => {
                                                     if (!val) {
@@ -803,7 +829,10 @@ const FormLectures: React.FC<Props> = (props) => {
                                                     }
                                                 />
                                                 {prepaid && (
-                                                    <InfoTooltip text="Předplacená lekce je automaticky zaplacená." />
+                                                    <InfoTooltip
+                                                        text="Předplacená lekce je automaticky zaplacená."
+                                                        tone="info"
+                                                    />
                                                 )}
                                             </Group>
                                         </Grid.Col>
@@ -840,10 +869,10 @@ const FormLectures: React.FC<Props> = (props) => {
                                     </Grid>
                                 </div>
                             ))}
+                            {members.length === 0 && (
+                                <p className={dimmedTextCenter}>Žádní účastníci</p>
+                            )}
                         </div>
-                        {members.length === 0 && (
-                            <p className={dimmedTextCenter}>Žádní účastníci</p>
-                        )}
                         {isLecture(props.lecture) && (
                             <div
                                 className={`${baseStyles.formSection} ${baseStyles.formSectionDanger}`}>

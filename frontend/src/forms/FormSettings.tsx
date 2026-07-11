@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Checkbox, Group, Modal, TextInput, Title, Tooltip } from "@mantine/core"
+import { Checkbox, Group, Modal, TextInput, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { faHourglass } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
@@ -211,32 +211,27 @@ const FormSettings: React.FC<Props> = (props) => {
                             {isCourse(props.object) && (
                                 <>
                                     <div className={baseStyles.fieldBlock}>
-                                        <Tooltip label="Trvání (min.)" withinPortal>
-                                            <TextInput
-                                                type="number"
-                                                id="duration"
-                                                value={form.values.duration ?? ""}
-                                                onChange={(e) => {
-                                                    const v = e.currentTarget.value
-                                                    form.setFieldValue(
-                                                        "duration",
-                                                        v === "" ? undefined : Number(v),
-                                                    )
-                                                }}
-                                                label="Trvání (min.)"
-                                                description="pro jednotlivce"
-                                                required
-                                                withAsterisk
-                                                min="1"
-                                                data-qa="settings_field_duration"
-                                                leftSection={
-                                                    <FontAwesomeIcon
-                                                        icon={faHourglass}
-                                                        fixedWidth
-                                                    />
-                                                }
-                                            />
-                                        </Tooltip>
+                                        <TextInput
+                                            type="number"
+                                            id="duration"
+                                            value={form.values.duration ?? ""}
+                                            onChange={(e) => {
+                                                const v = e.currentTarget.value
+                                                form.setFieldValue(
+                                                    "duration",
+                                                    v === "" ? undefined : Number(v),
+                                                )
+                                            }}
+                                            label="Trvání (min.)"
+                                            description="pro jednotlivce"
+                                            required
+                                            withAsterisk
+                                            min="1"
+                                            data-qa="settings_field_duration"
+                                            leftSection={
+                                                <FontAwesomeIcon icon={faHourglass} fixedWidth />
+                                            }
+                                        />
                                     </div>
                                     <ColorPicker
                                         value={form.values.color}

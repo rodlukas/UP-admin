@@ -17,7 +17,7 @@ import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
 import { iconAfterText } from "../global/utility.css"
-import { isStaleActive } from "../global/utils"
+import { isStaleActive, pluralizeCs } from "../global/utils"
 import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
 
@@ -53,12 +53,7 @@ const Clients: React.FC = () => {
 
     const handleDeactivateAll = (): void => {
         const count = staleClients.length
-        let label = "klientů"
-        if (count === 1) {
-            label = "klienta"
-        } else if (count < 5) {
-            label = "klienty"
-        }
+        const label = pluralizeCs(count, "klienta", "klienty", "klientů")
         if (globalThis.confirm(`Opravdu chcete přesunout ${count} ${label} do neaktivních?`)) {
             deactivateClients.mutate(
                 staleClients.map((c) => c.id),
@@ -70,15 +65,12 @@ const Clients: React.FC = () => {
         }
     }
 
-    const staleText = React.useMemo(() => {
-        if (staleClients.length === 1) {
-            return "aktivní klient nemá"
-        }
-        if (staleClients.length < 5) {
-            return "aktivní klienti nemají"
-        }
-        return "aktivních klientů nemá"
-    }, [staleClients.length])
+    const staleText = pluralizeCs(
+        staleClients.length,
+        "aktivní klient nemá",
+        "aktivní klienti nemají",
+        "aktivních klientů nemá",
+    )
 
     return (
         <Container>

@@ -1,14 +1,22 @@
-import { MantineProvider } from "@mantine/core"
+import { localStorageColorSchemeManager, MantineProvider } from "@mantine/core"
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+
+import { COLOR_SCHEME_STORAGE_KEY } from "../global/constants"
 
 import ColorSchemeToggle from "./ColorSchemeToggle"
 
 // env="test" vypina transitions a hideDetached (v jsdom maji elementy nulove rozmery,
 // floating-ui by jinak dropdown menu skryl pres display: none);
-// defaultColorScheme="auto" odpovida realne aplikaci (index.tsx)
+// defaultColorScheme="auto" + realny colorSchemeManager (stejny klic jako index.tsx) odpovida
+// realne aplikaci a zaroven hlida kontrakt s FOUC init skriptem (color-scheme-init.js)
 const renderColorSchemeToggle = () =>
     render(
-        <MantineProvider env="test" defaultColorScheme="auto">
+        <MantineProvider
+            env="test"
+            defaultColorScheme="auto"
+            colorSchemeManager={localStorageColorSchemeManager({
+                key: COLOR_SCHEME_STORAGE_KEY,
+            })}>
             <ColorSchemeToggle />
         </MantineProvider>,
     )
@@ -45,6 +53,11 @@ test("switches color scheme to dark on click", async () => {
     await waitFor(() =>
         expect(document.documentElement).toHaveAttribute("data-mantine-color-scheme", "dark"),
     )
+
+    // kontrakt s FOUC init skriptem: volba se uloží pod stejný localStorage klíč, ze kterého
+    // color-scheme-init.js čte schéma před prvním vykreslením (jinak by dark uživatel po reloadu
+    // dostal záblesk světlého motivu)
+    expect(window.localStorage.getItem(COLOR_SCHEME_STORAGE_KEY)).toBe("dark")
 
     // po znovuotevreni menu je zaskrtnuta tmava polozka
     const items = await openMenu()

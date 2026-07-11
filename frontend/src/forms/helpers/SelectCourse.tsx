@@ -2,6 +2,7 @@ import { Group, Select } from "@mantine/core"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import * as React from "react"
 
+import { TEXTS } from "../../global/constants"
 import { CourseType } from "../../types/models"
 
 import * as styles from "./SelectCourse.css"
@@ -61,6 +62,7 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
             label={label}
             placeholder="Vyberte kurz…"
             searchable
+            nothingFoundMessage={TEXTS.NO_RESULTS}
             clearable={!required}
             withAsterisk={required}
             required={required}

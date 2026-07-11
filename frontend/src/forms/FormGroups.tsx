@@ -20,6 +20,7 @@ import GroupName from "../components/GroupName"
 import InfoTooltip from "../components/InfoTooltip"
 import Loading from "../components/Loading"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
+import { TEXTS } from "../global/constants"
 import { clientName } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import {
@@ -220,9 +221,15 @@ const FormGroups: React.FC<Props> = (props) => {
                                     <SelectCourse
                                         required
                                         value={form.values.course}
-                                        onChangeCallback={(_name, val) =>
+                                        onChangeCallback={(_name, val) => {
                                             form.setFieldValue("course", val ?? null)
-                                        }
+                                            // doplnění kurzu „odjistí" submit-validaci, ať chyba
+                                            // znovu nenaskočí jen kvůli pozdějšímu smazání bez
+                                            // nového pokusu o odeslání
+                                            if (val) {
+                                                setTriedSubmit(false)
+                                            }
+                                        }}
                                         options={coursesVisibleContext.courses}
                                         error={
                                             triedSubmit && !form.values.course
@@ -250,6 +257,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                         }}
                                         placeholder="Vyberte členy z existujících klientů…"
                                         searchable
+                                        nothingFoundMessage={TEXTS.NO_RESULTS}
                                         // Mantine MultiSelect ma `input` (PillsInput wrapper s pills)
                                         // a `inputField` (vnitrni <input> kam uzivatel pise) jako 2 sloty.
                                         // V GDPR rezimu musime maskovat oba – pily uz mask maji pres renderPill,

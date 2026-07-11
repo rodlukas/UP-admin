@@ -58,6 +58,10 @@ const FormApplications: React.FC<Props> = (props) => {
         onValuesChange: () => props.setFormDirty(),
     })
 
+    // Po pokusu o odeslání s prázdným povinným Selectem (skrytý input neumí constraint
+    // validaci, takže reportValidity je no-op) zobrazíme chybu přes `error` prop Selectů.
+    const [triedSubmit, setTriedSubmit] = React.useState(false)
+
     const onSelectChange = (
         name: "course" | "client",
         obj?: CourseType | ClientType | null,
@@ -67,21 +71,26 @@ const FormApplications: React.FC<Props> = (props) => {
         }
         if (name === "course") {
             form.setFieldValue("course", obj as CourseType | null)
+            // po doplnění obou povinných polí „odjisti" submit-validaci (counterpart bereme
+            // z aktuálních hodnot – mění se jen tento field), ať chyba znovu nenaskočí jen
+            // kvůli pozdějšímu smazání bez nového pokusu o odeslání
+            if (obj && form.values.client) {
+                setTriedSubmit(false)
+            }
         } else if (name === "client") {
             form.setFieldValue("client", obj as ClientType | null)
+            if (obj && form.values.course) {
+                setTriedSubmit(false)
+            }
         }
     }
 
     const isApplicationValue = isApplication(props.application)
 
-    // Po pokusu o odeslání s prázdným povinným Selectem (skrytý input neumí constraint
-    // validaci, takže reportValidity je no-op) zobrazíme chybu přes `error` prop Selectů.
-    const [triedSubmit, setTriedSubmit] = React.useState(false)
-
     const onSubmit = React.useCallback(
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
-            const { course, client } = form.values
+            const { course, client, note } = form.getValues()
             // pojistka: bez vybraneho kurzu/klienta neodesilame a zobrazime chybu u Selectu
             if (!course || !client) {
                 setTriedSubmit(true)
@@ -92,7 +101,7 @@ const FormApplications: React.FC<Props> = (props) => {
             const dataPost: ApplicationPostApi = {
                 course_id: courseId,
                 client_id: clientId,
-                note: form.values.note,
+                note,
             }
 
             if (isApplication(props.application)) {
@@ -112,7 +121,7 @@ const FormApplications: React.FC<Props> = (props) => {
                 })
             }
         },
-        [form.values, props, createApplication, updateApplication],
+        [form, props, createApplication, updateApplication],
     )
 
     const close = (): void => {

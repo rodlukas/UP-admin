@@ -11,6 +11,7 @@ import * as React from "react"
 import { createRoot } from "react-dom/client"
 
 import { initAnalytics } from "./analytics"
+import { COLOR_SCHEME_STORAGE_KEY } from "./global/constants"
 import { getEnvName, isHosted } from "./global/funcEnvironments"
 import "./index.css"
 import { isValidUrl } from "./global/utils"
@@ -33,7 +34,7 @@ initAnalytics("%GA4_ID", (handler) => {
     router.subscribe("onResolved", handler)
 })
 
-const colorSchemeManager = localStorageColorSchemeManager({ key: "mantine-color-scheme" })
+const colorSchemeManager = localStorageColorSchemeManager({ key: COLOR_SCHEME_STORAGE_KEY })
 
 /** Základní kostra aplikace. */
 const App: React.FC = () => (

@@ -6,3 +6,8 @@ import { vars } from "../theme/tokens"
 export const warningIcon = style({
     color: vars.colors.warning,
 })
+
+// Neutrální „nápovědní" tón pro čistě informativní tooltipy (ne varování).
+export const infoIcon = style({
+    color: vars.text.muted,
+})

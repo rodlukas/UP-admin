@@ -211,7 +211,6 @@ const Settings: React.FC = () => {
                                                     onChange={onChangeDefaultState}
                                                     placeholder="Vyberte stav…"
                                                     allowDeselect={false}
-                                                    comboboxProps={{ withinPortal: true }}
                                                 />
                                             </div>
                                         </div>
@@ -240,7 +239,6 @@ const Settings: React.FC = () => {
                                                     onChange={onChangeExcusedState}
                                                     placeholder="Vyberte stav…"
                                                     allowDeselect={false}
-                                                    comboboxProps={{ withinPortal: true }}
                                                 />
                                             </div>
                                         </div>

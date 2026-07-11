@@ -63,7 +63,7 @@ const Loading: React.FC<Props> = ({ text = "Načítání" }) => {
             <p className={styles.text}>
                 {text}…
                 {loadingState === LOADING_STATE.LONG_LOADING && (
-                    <span className={styles.longHint}>Stále pracuji</span>
+                    <span className={styles.longHint}>Stále pracuji 😎</span>
                 )}
             </p>
             {loadingState === LOADING_STATE.OVERLONG_LOADING && (

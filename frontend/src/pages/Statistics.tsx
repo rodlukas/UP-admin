@@ -315,11 +315,15 @@ const HoursYearTooltip: React.FC<HoursYearTooltipProps> = ({ active, payload, la
     if (!active || !payload?.length) {
         return null
     }
+    const [firstPayload] = payload
+    if (!firstPayload) {
+        return null
+    }
     return (
         <div className={styles.chartTooltip}>
             <div className={styles.tooltipLabel}>Rok {label}</div>
             <div>
-                Odučeno: <strong>{formatHours(payload[0].payload.hours)}</strong>
+                Odučeno: <strong>{formatHours(firstPayload.payload.hours)}</strong>
             </div>
         </div>
     )
@@ -337,7 +341,11 @@ const MonthTooltip: React.FC<MonthTooltipProps> = ({ active, payload, label, cha
     if (!active || !payload?.length) {
         return null
     }
-    const { value } = payload[0].payload
+    const [firstPayload] = payload
+    if (!firstPayload) {
+        return null
+    }
+    const { value } = firstPayload.payload
     return (
         <div className={styles.chartTooltip}>
             <div className={styles.tooltipLabel}>{label}</div>
@@ -987,7 +995,7 @@ const Statistics: React.FC = () => {
                                     },
                                     {
                                         badge: "odučeno",
-                                        badgeColor: "dark",
+                                        badgeColor: "gray",
                                         value: formatMinutesAsHours(
                                             statistics.lectures.total_minutes,
                                         ),
@@ -1087,8 +1095,8 @@ const Statistics: React.FC = () => {
                 </div>
             ) : (
                 <>
-                    {[...Array(4)].map((_, i) => (
-                        <Skeleton key={i} h={280} mb="xl" radius="md" />
+                    {["overview", "byCourse", "byYear", "byMonth"].map((key) => (
+                        <Skeleton key={key} h={280} mb="xl" radius="md" />
                     ))}
                 </>
             )}

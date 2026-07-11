@@ -10,6 +10,7 @@ import BaseModal from "../components/BaseModal"
 import Loading from "../components/Loading"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
+import { TEXTS } from "../global/constants"
 import { prettyDate } from "../global/funcDateTime"
 import {
     DefaultValuesForLecture,
@@ -142,6 +143,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                         value={object as ClientType}
                         options={clientsActiveContext.clients}
                         onChangeCallback={onSelectChange}
+                        required
                     />
                     <Or
                         content={
@@ -171,6 +173,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     }}
                     placeholder="Vyberte existující skupinu…"
                     searchable
+                    nothingFoundMessage={TEXTS.NO_RESULTS}
+                    withAsterisk
                     autoFocus
                     comboboxProps={{ withinPortal: true }}
                 />

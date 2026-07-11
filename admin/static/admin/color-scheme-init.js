@@ -3,7 +3,10 @@
 // nez se nacte React aplikace i Mantine.
 //
 // Semantika musi presne odpovidat Mantine (@mantine/core):
-// - stejny localStorage klic "mantine-color-scheme" (pouziva ho localStorageColorSchemeManager),
+// - stejny localStorage klic "mantine-color-scheme" — toto je EXPLICITNI override nastaveny v
+//   index.tsx (konstanta COLOR_SCHEME_STORAGE_KEY); Mantine ma jinak vychozi klic
+//   "mantine-color-scheme-value". Pri zmene klice je nutne upravit OBE mista (tento skript je
+//   plain ES5 a nemuze konstantu importovat); shodu hlida test ColorSchemeToggle.test.tsx,
 // - "auto" se ridi systemovym nastavenim (prefers-color-scheme),
 // - nastavuje se atribut data-mantine-color-scheme (na nej cili Mantine CSS)
 //   + inline style color-scheme (kvuli nativnim scrollbarum/form controls bez FOUC).

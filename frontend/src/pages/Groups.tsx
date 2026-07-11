@@ -16,7 +16,7 @@ import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
 import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
 import { iconAfterText, middle } from "../global/utility.css"
-import { areAllMembersActive, isStaleActive } from "../global/utils"
+import { areAllMembersActive, isStaleActive, pluralizeCs } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
 
@@ -51,12 +51,7 @@ const Groups: React.FC = () => {
 
     const handleDeactivateAll = (): void => {
         const count = staleGroups.length
-        let label = "skupin"
-        if (count === 1) {
-            label = "skupinu"
-        } else if (count < 5) {
-            label = "skupiny"
-        }
+        const label = pluralizeCs(count, "skupinu", "skupiny", "skupin")
         if (globalThis.confirm(`Opravdu chcete přesunout ${count} ${label} do neaktivních?`)) {
             deactivateGroups.mutate(
                 staleGroups.map((g) => g.id),
@@ -68,15 +63,12 @@ const Groups: React.FC = () => {
         }
     }
 
-    const staleText = React.useMemo(() => {
-        if (staleGroups.length === 1) {
-            return "aktivní skupina nemá"
-        }
-        if (staleGroups.length < 5) {
-            return "aktivní skupiny nemají"
-        }
-        return "aktivních skupin nemá"
-    }, [staleGroups.length])
+    const staleText = pluralizeCs(
+        staleGroups.length,
+        "aktivní skupina nemá",
+        "aktivní skupiny nemají",
+        "aktivních skupin nemá",
+    )
 
     return (
         <Container>

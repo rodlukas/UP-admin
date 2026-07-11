@@ -36,6 +36,8 @@ export const vars = {
     shadow: {
         card: "0 14px 30px rgb(0 0 0 / 0.12), 0 4px 12px rgb(0 0 0 / 0.08)",
         elevated: "0 18px 34px rgb(0 0 0 / 0.18), 0 6px 14px rgb(0 0 0 / 0.1)",
+        /** Jemný stín samostatných ovládacích prvků (např. navigační šipky v diáři). */
+        control: "0 4px 10px rgb(0 0 0 / 0.1)",
         focusRing: "0 0 0 0.18rem rgb(76 110 245 / 0.16)",
     },
     // Adaptivní hodnoty (light-dark)

@@ -24,9 +24,19 @@ export const courseHeading = style({
 export const courseHeadingItem = style({
     backgroundColor: `${cardVars.courseBackground} !important`,
     backgroundImage: `linear-gradient(rgb(15 23 42 / ${COURSE_HEADING_OVERLAY_OPACITY}), rgb(15 23 42 / ${COURSE_HEADING_OVERLAY_OPACITY}))`,
+    // vlastní padding (dřív se dědil z `infoListItem`); hlavička už `infoListItem` nenese,
+    // aby `& + &` oddělovač nekreslil čáru mezi barevnou hlavičkou a první lekcí
+    padding: "0.5rem 1rem",
 })
 
-export const lectureCard = style({})
+export const lectureCard = style({
+    // Řádek lekce nese zároveň `infoListItem` (kvůli oddělovači `& + &`) i `lecture`
+    // (Lecture.css.ts) — oba definují `padding` se shodnou specificitou a pořadí tříd napříč
+    // soubory není v bundlu garantované. Padding proto určíme explicitně (!important, stejný
+    // pattern jako DashboardDay.css.ts): vodorovné odsazení dávají vnitřní lectureHeading/
+    // lectureContent, řádek má tedy – shodně s lekcemi na Dashboardu – jen spodní mezeru.
+    padding: "0 0 0.75rem !important",
+})
 
 globalStyle(`${lectureCard} h4`, {
     flexGrow: 1,

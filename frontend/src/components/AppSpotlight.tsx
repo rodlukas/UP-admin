@@ -39,8 +39,23 @@ const buildClientDescription = (client: ClientActiveType): string | undefined =>
     return parts.length > 0 ? parts.join(" · ") : undefined
 }
 
-/** Popisek skupiny výsledků s počtem položek. */
-const groupLabel = (label: string, count: number): string => `${label} (${count})`
+/** Max. počet akcí zobrazených v jedné skupině (klienti/skupiny). Spotlight `limit` ořezává
+ *  napříč skupinami, takže početnější klienti dřív „vyhladověli" skupiny (ty se vůbec nezobrazily);
+ *  oříznutí per-skupina zaručí, že se obě skupiny vždy vejdou, a drží délku palety v rozumu. */
+const MAX_ACTIONS_PER_GROUP = 25
+
+/** Sestaví skupinu výsledků s počtem v popisku; při oříznutí ukáže „zobrazeno z celkem". */
+const buildActionGroup = (
+    label: string,
+    groupActions: SpotlightActionData[],
+): SpotlightActionGroupData => {
+    const shown = groupActions.slice(0, MAX_ACTIONS_PER_GROUP)
+    const labelWithCount =
+        groupActions.length > shown.length
+            ? `${label} (${shown.length} z ${groupActions.length})`
+            : `${label} (${groupActions.length})`
+    return { group: labelWithCount, actions: shown }
+}
 
 const buildGroupDescription = (group: GroupType): string | undefined => {
     const memberCount = group.memberships.length
@@ -105,16 +120,10 @@ const AppSpotlight: React.FC = () => {
     const actions = React.useMemo<(SpotlightActionData | SpotlightActionGroupData)[]>(() => {
         const groups: SpotlightActionGroupData[] = []
         if (clientActions.length > 0) {
-            groups.push({
-                group: groupLabel("Klienti", clientActions.length),
-                actions: clientActions,
-            })
+            groups.push(buildActionGroup("Klienti", clientActions))
         }
         if (groupActions.length > 0) {
-            groups.push({
-                group: groupLabel("Skupiny", groupActions.length),
-                actions: groupActions,
-            })
+            groups.push(buildActionGroup("Skupiny", groupActions))
         }
         return groups
     }, [clientActions, groupActions])
@@ -155,16 +164,10 @@ const AppSpotlight: React.FC = () => {
             // ne celkovému počtu klientů/skupin
             const filtered: (SpotlightActionData | SpotlightActionGroupData)[] = []
             if (filteredClientActions.length > 0) {
-                filtered.push({
-                    group: groupLabel("Klienti", filteredClientActions.length),
-                    actions: filteredClientActions,
-                })
+                filtered.push(buildActionGroup("Klienti", filteredClientActions))
             }
             if (filteredGroupActions.length > 0) {
-                filtered.push({
-                    group: groupLabel("Skupiny", filteredGroupActions.length),
-                    actions: filteredGroupActions,
-                })
+                filtered.push(buildActionGroup("Skupiny", filteredGroupActions))
             }
             return filtered
         },
@@ -185,6 +188,10 @@ const AppSpotlight: React.FC = () => {
                     hasResults:
                         clientFuse.search(query).length + groupFuse.search(query).length > 0,
                 }
+            } else {
+                // dotaz smazaný nebo příliš krátký – nepovažuj za vyhledávání, ať se při
+                // zavření nehlásí `search_used` nad mezitím opuštěným dotazem
+                searchSessionRef.current = { queried: false, hasResults: false }
             }
         },
         [clientFuse, groupFuse],
@@ -216,12 +223,15 @@ const AppSpotlight: React.FC = () => {
         [],
     )
 
+    // Během prvního načítání dat (klienti/skupiny ještě nejsou) nesmí paleta tvrdit
+    // „nic nenalezeno" – místo toho dá najevo, že se data teprve načítají.
+    const isLoadingData = clientsActiveContext.isLoading || groupsActiveContext.isLoading
+
     return (
         <Spotlight
             actions={actions}
-            nothingFound="Žádné výsledky odpovídající dotazu."
+            nothingFound={isLoadingData ? "Načítání…" : "Žádné výsledky odpovídající dotazu."}
             shortcut={null}
-            limit={20}
             highlightQuery
             scrollAreaProps={{ mah: 420 }}
             filter={filter}

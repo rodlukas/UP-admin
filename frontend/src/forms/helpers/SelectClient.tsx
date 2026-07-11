@@ -1,6 +1,7 @@
 import { Select } from "@mantine/core"
 import * as React from "react"
 
+import { TEXTS } from "../../global/constants"
 import { clientName } from "../../global/utils"
 import { ClientType } from "../../types/models"
 
@@ -62,6 +63,7 @@ const SelectClient: React.FC<SelectClientProps> = ({
             }}
             placeholder="Vyberte existujícího klienta…"
             searchable
+            nothingFoundMessage={TEXTS.NO_RESULTS}
             clearable={!required}
             autoFocus={autoFocus}
             withAsterisk={required}

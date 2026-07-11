@@ -46,7 +46,7 @@ export const arrowBtn = style({
     transition: "all 0.15s ease-in-out",
     marginTop: "0.15rem",
     borderRadius: vars.radius.pill,
-    boxShadow: "0 4px 10px rgb(15 23 42 / 0.1)",
+    boxShadow: vars.shadow.control,
     backgroundColor: vars.bg.control,
     cursor: "pointer",
     padding: "0.2rem",
@@ -73,7 +73,7 @@ export const arrowBtn = style({
 export const titleDate = style({
     display: "inline-block",
     borderRadius: vars.radius.sm, // aby mely dny v tydennim prehledu vzdy stejnou sirku
-    backgroundColor: "rgb(148 163 184 / 0.12)",
+    backgroundColor: vars.bg.muted,
     padding: "0.05rem 0.2rem",
     width: "6ch",
     textAlign: "center",

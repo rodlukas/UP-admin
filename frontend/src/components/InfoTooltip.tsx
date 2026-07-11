@@ -16,6 +16,12 @@ type Props = {
     icon?: FontAwesomeIconProps["icon"]
     /** Přístupný popisek ikony pro čtečky obrazovky. */
     label?: string
+    /**
+     * Vizuální tón ikony. Výchozí „warning" (jantarová) – většina tooltipů upozorňuje na stav
+     * typu „neaktivní / nelze / zastaralé". Pro čistě vysvětlující text použij „info" (neutrální),
+     * aby ikona nebudila dojem varování.
+     */
+    tone?: "info" | "warning"
 }
 
 /** Komponenta pro zobrazení info ikony s titulkem po najetí myší nebo focusu z klávesnice. */
@@ -25,19 +31,23 @@ const InfoTooltip: React.FC<Props> = ({
     placement = "bottom",
     icon = faInfoCircle,
     label = "Doplňující informace",
-}) => (
-    <MantineTooltip
-        label={text}
-        position={placement}
-        withinPortal
-        // focus + tabIndex: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13)
-        events={{ hover: true, focus: true, touch: true }}>
-        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- trigger tooltipu
-            musí být fokusovatelný, jinak je obsah jen pro myš (WAI-ARIA tooltip pattern) */}
-        <span className={styles.warningIcon} tabIndex={0} role="img" aria-label={label}>
-            <FontAwesomeIcon icon={icon} size={size} aria-hidden />
-        </span>
-    </MantineTooltip>
-)
+    tone = "warning",
+}) => {
+    const iconClassName = tone === "warning" ? styles.warningIcon : styles.infoIcon
+    return (
+        <MantineTooltip
+            label={text}
+            position={placement}
+            withinPortal
+            // focus + tabIndex: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13)
+            events={{ hover: true, focus: true, touch: true }}>
+            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- trigger tooltipu
+                musí být fokusovatelný, jinak je obsah jen pro myš (WAI-ARIA tooltip pattern) */}
+            <span className={iconClassName} tabIndex={0} role="img" aria-label={label}>
+                <FontAwesomeIcon icon={icon} size={size} aria-hidden />
+            </span>
+        </MantineTooltip>
+    )
+}
 
 export default InfoTooltip

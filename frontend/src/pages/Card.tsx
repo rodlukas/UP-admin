@@ -468,10 +468,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                 data-qa="card_course">
                                 <div className={styles.infoList}>
                                     <div
-                                        className={classNames(
-                                            styles.infoListItem,
-                                            styles.courseHeadingItem,
-                                        )}
+                                        className={styles.courseHeadingItem}
                                         style={assignInlineVars(styles.cardVars, {
                                             courseBackground: courseLectures.course.color,
                                             // pozadí hlavičky ztmavuje overlay (viz Card.css.ts)

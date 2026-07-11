@@ -65,7 +65,9 @@ export const courseName = style({
 })
 
 export const lectureNumber = style({
-    backgroundColor: "light-dark(white, var(--mantine-color-dark-6))",
+    // !important: přebíjí background Mantine Badge varianty `white` (stejná specificita, pořadí
+    // tříd napříč bundly není garantované) — jinak by v dark módu mohl zůstat bílý pill
+    backgroundColor: "light-dark(white, var(--mantine-color-dark-6)) !important",
 })
 
 export const lectureFree = style({

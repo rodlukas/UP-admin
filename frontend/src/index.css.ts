@@ -2,7 +2,9 @@ import { globalStyle } from "@vanilla-extract/css"
 
 import { vars } from "./theme/tokens"
 
-globalStyle("html, body, .main, .root", {
+// `.main` = app wrapper (Main.tsx), `.root` byl mrtvý selektor (mount node má id="root",
+// ne class) — html/body pozadí stejně vykreslují, takže odstraněn
+globalStyle("html, body, .main", {
     backgroundColor: vars.bg.page,
 })
 

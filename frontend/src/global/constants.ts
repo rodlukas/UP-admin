@@ -1,6 +1,14 @@
 /** ULR adresa API. */
 export const API_URL = "/api/v1/"
 
+/**
+ * localStorage klíč pro uložené barevné schéma (Mantine `localStorageColorSchemeManager`).
+ * POZOR: stejný literál musí používat i FOUC init skript `admin/static/admin/color-scheme-init.js`,
+ * který schéma čte ještě před startem Reactu (je to plain ES5 skript a nemůže tento modul importovat).
+ * Jde o explicitní override – Mantine má jinak výchozí klíč „mantine-color-scheme-value".
+ */
+export const COLOR_SCHEME_STORAGE_KEY = "mantine-color-scheme"
+
 /** Texty notifikací. */
 export enum NOTIFY_TEXT {
     ERROR = "Chyba při provádění požadavku",
