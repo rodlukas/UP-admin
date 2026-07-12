@@ -176,7 +176,6 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     nothingFoundMessage={TEXTS.NO_RESULTS}
                     withAsterisk
                     autoFocus
-                    comboboxProps={{ withinPortal: true }}
                 />
                 <Or
                     content={
@@ -205,12 +204,15 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         <>
             <div className={styles.modalLecturesWizard}>
                 <Menu position={menuPosition}>
-                    <Menu.Target>
-                        <Tooltip
-                            label={title}
-                            position={tooltipPosition}
-                            withinPortal
-                            events={{ hover: true, focus: true, touch: true }}>
+                    {/* Tooltip musí obalovat Menu.Target (ne naopak): Menu.Target klonuje
+                        ARIA props (aria-haspopup/expanded/controls) na své přímé dítě a
+                        Tooltip by je rozprostřel na plovoucí tělo tooltipu místo na trigger */}
+                    <Tooltip
+                        label={title}
+                        position={tooltipPosition}
+                        withinPortal
+                        events={{ hover: true, focus: true, touch: true }}>
+                        <Menu.Target>
                             <Button
                                 className={classNames(
                                     props.dropdownClassName,
@@ -232,8 +234,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                     data-qa={props.isFetching ? "loading" : undefined}
                                 />
                             </Button>
-                        </Tooltip>
-                    </Menu.Target>
+                        </Menu.Target>
+                    </Tooltip>
                     <Menu.Dropdown>
                         <Menu.Item onClick={(): void => setClient(true)}>
                             přidat lekci <strong>klienta</strong>…

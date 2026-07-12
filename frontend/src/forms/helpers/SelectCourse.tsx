@@ -48,7 +48,17 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
     error,
     id = "course",
 }) => {
-    const data = options.map((c) => ({ value: c.id.toString(), label: c.name }))
+    // Formuláře posílají jen viditelné kurzy — vybraný, ale mezitím skrytý kurz
+    // (visible=false u editované skupiny/lekce/zájemce) by v options chyběl a Select by
+    // zobrazil prázdno; povinný input by pak nativní validací blokoval celé uložení.
+    // Stejný vzor jako v SelectClient.
+    const data = React.useMemo(() => {
+        const items = options.map((c) => ({ value: c.id.toString(), label: c.name }))
+        if (value && !options.some((c) => c.id === value.id)) {
+            items.push({ value: value.id.toString(), label: value.name })
+        }
+        return items
+    }, [options, value])
 
     return (
         <Select
@@ -56,7 +66,12 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
             data={data}
             value={value?.id.toString() ?? null}
             onChange={(val) => {
-                const found = options.find((c) => c.id.toString() === val) ?? null
+                // i skrytý kurz (mimo `options`, viz `data` memo) musí jít znovu vybrat –
+                // když `val` odpovídá aktuální hodnotě, vrať ji přímo
+                const found =
+                    value?.id.toString() === val
+                        ? value
+                        : (options.find((c) => c.id.toString() === val) ?? null)
                 onChangeCallback("course", found)
             }}
             label={label}
@@ -68,13 +83,16 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
             required={required}
             error={error}
             disabled={isDisabled}
-            comboboxProps={{ withinPortal: true }}
             renderOption={({ option }) => {
-                const course = options.find((c) => c.id.toString() === option.value)
+                const course =
+                    options.find((c) => c.id.toString() === option.value) ??
+                    (value?.id.toString() === option.value ? value : undefined)
                 return (
                     <Group gap="xs" wrap="nowrap">
                         {course && <CourseDot color={course.color} />}
-                        <span data-gdpr>{option.label}</span>
+                        {/* název kurzu není osobní údaj — bez data-gdpr (GDPR režim by
+                            volby začernil a kurz by nešlo vybrat) */}
+                        <span>{option.label}</span>
                     </Group>
                 )
             }}

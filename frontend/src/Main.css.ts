@@ -57,6 +57,13 @@ export const navbarBadge = style({
 
 export const navbarBurger = style({
     marginLeft: "auto",
+    // burger se skrývá od stejného px breakpointu jako se rozbaluje navbarCollapse —
+    // záměrně px query místo Mantine hiddenFrom (em-based, viz komentář v Main.tsx)
+    "@media": {
+        "(min-width: 992px)": {
+            display: "none",
+        },
+    },
 })
 
 export const navbarCollapse = style({
@@ -80,6 +87,18 @@ export const navbarCollapseOpen = style({
     gap: "0.2rem",
     paddingBottom: "0.5rem",
     width: "100%",
+    // otevřené mobilní menu + zvětšení okna ≥992px (rotace tabletu): burger už je skrytý
+    // a isMenuOpened nemá jak se resetovat — desktop hodnoty proto musí mobilní layout
+    // přebít i v otevřeném stavu, jinak zůstane navbar rozbitý do další navigace
+    "@media": {
+        "(min-width: 992px)": {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 0,
+            paddingBottom: 0,
+            width: "auto",
+        },
+    },
 })
 
 export const isAuthenticated = style({

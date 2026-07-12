@@ -47,7 +47,9 @@ const Main: React.FC = () => {
                             </Badge>
                         )}
                         {isEnvTesting() && (
-                            <Badge color="blue" className={styles.navbarBadge}>
+                            // tt="none": výchozí uppercase Badge by překreslil commit hash
+                            // na velká písmena a vizuálně by neodpovídal `git log`/GitHubu
+                            <Badge color="blue" tt="none" className={styles.navbarBadge}>
                                 Testing <AppCommit />
                             </Badge>
                         )}
@@ -59,10 +61,12 @@ const Main: React.FC = () => {
                         <Burger
                             opened={isMenuOpened}
                             onClick={toggleNavbar}
-                            // navbarCollapse/Menu/ColorSchemeToggle se rozbalují na min-width 992px
-                            // (Mantine `md`), burger proto skrýváme od stejného bodu – jinak by se
-                            // v pásmu 992–1199px zobrazoval burger i rozbalené menu zároveň
-                            hiddenFrom="md"
+                            // burger skrývá px media query v navbarBurger (Main.css.ts), NE
+                            // Mantine hiddenFrom: to generuje em-based query (md = 62em), která
+                            // se s px breakpointy zbytku navbaru (992px) shoduje jen při
+                            // výchozích 16px písma prohlížeče — při jiné velikosti by v pásmu
+                            // kolem breakpointu chybělo menu úplně, nebo by byly vidět burger
+                            // i rozbalené menu zároveň
                             size="sm"
                             color="white"
                             aria-label={isMenuOpened ? "Zavřít menu" : "Otevřít menu"}

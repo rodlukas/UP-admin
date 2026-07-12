@@ -65,7 +65,12 @@ const Menu: React.FC<Props> = (props) => {
             {authContext.isAuth && (
                 <>
                     <UnstyledButton
-                        onClick={spotlight.open}
+                        onClick={() => {
+                            // na mobilu by jinak rozbalené burger menu zůstalo otevřené
+                            // za Spotlightem (a po jeho zavření dál překrývalo obsah)
+                            props.closeNavbar()
+                            spotlight.open()
+                        }}
                         className={styles.spotlightButton}
                         aria-label={`Otevřít vyhledávání (${spotlightShortcutLabel})`}>
                         <FontAwesomeIcon icon={faSearch} fixedWidth />

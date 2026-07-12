@@ -456,7 +456,9 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                             memberships={object.memberships}
                         />
                     )}
-                    <Title order={2}>Lekce</Title>
+                    <Title order={2} className={styles.lecturesTitle}>
+                        Lekce
+                    </Title>
                     <div className={styles.lectureColumns}>
                         {lectures.map((courseLectures) => (
                             <div

@@ -255,18 +255,9 @@ globalStyle(`${modalActions} .mantine-Button-root[data-variant='default']:hover`
     backgroundColor: vars.bg.hoverElevated,
 })
 
-globalStyle(`${modalActions} [type='submit']`, {
-    boxShadow: "0 10px 18px rgb(34 139 230 / 0.18)",
-})
-
-// hover lift jen pokud uzivatel nema omezeny pohyb (prefers-reduced-motion)
-globalStyle(`${modalActions} [type='submit']:hover`, {
-    "@media": {
-        "(prefers-reduced-motion: no-preference)": {
-            transform: "translateY(-1px)",
-        },
-    },
-})
+// Stín a hover lift submit tlačítka řeší globální pravidla v index.css.ts
+// (`.mantine-Button-root[type='submit'][data-variant='filled']`) — lokální kopie tu dřív
+// byla mrtvá (nižší specificita) a držela zastaralou modrou z doby před indigo primary.
 
 globalStyle(`${modalActions} > *`, {
     "@media": {

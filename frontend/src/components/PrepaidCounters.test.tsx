@@ -57,6 +57,7 @@ function createMembership(id: number, prepaidCnt: number): MembershipType {
 async function renderPrepaidCounters(memberships: MembershipType[]): Promise<{
     queryClient: QueryClient
     refetchMemberships: (next: MembershipType[]) => void
+    unmount: () => void
 }> {
     const queryClient = createQueryClient()
     let setMemberships: (next: MembershipType[]) => void = () => undefined
@@ -70,7 +71,7 @@ async function renderPrepaidCounters(memberships: MembershipType[]): Promise<{
             <Wrapper />
         </MantineProvider>,
     )
-    render(
+    const { unmount } = render(
         <QueryClientProvider client={queryClient}>
             <RouterProvider router={router} />
         </QueryClientProvider>,
@@ -82,6 +83,7 @@ async function renderPrepaidCounters(memberships: MembershipType[]): Promise<{
                 setMemberships(next)
             })
         },
+        unmount,
     }
 }
 
@@ -206,4 +208,73 @@ test("out-of-order PATCH responses don't overwrite the newer confirmed value", a
     fireEvent.blur(input)
     await flushAsync()
     expect(patchMock).toHaveBeenCalledTimes(2)
+})
+
+// TanStack Query v5 dorucuje per-mutate callbacky jen POSLEDNIMU mutate() na instanci -
+// pri soubehu PATCHu dvou ruznych clenu se cleanup prvniho nesmi ztratit (jinak zustane
+// prvni clen navzdy "dirty" a ignoruje vsechny dalsi refetche).
+test("concurrent saves of two different members both complete their cleanup", async () => {
+    const firstPatch = createDeferred()
+    const secondPatch = createDeferred()
+    patchMock.mockReturnValueOnce(firstPatch.promise).mockReturnValueOnce(secondPatch.promise)
+    const { queryClient, refetchMemberships } = await renderPrepaidCounters([
+        createMembership(1, 3),
+        createMembership(2, 5),
+    ])
+    const [input1, input2] = screen.getAllByRole("spinbutton")
+
+    // uzivatel ulozi clena 1 (PATCH v letu) a hned nato ulozi clena 2
+    fireEvent.change(input1, { target: { value: "7" } })
+    fireEvent.blur(input1)
+    await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
+    fireEvent.change(input2, { target: { value: "8" } })
+    fireEvent.blur(input2)
+    await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(2))
+
+    firstPatch.resolve(createMembership(1, 7))
+    secondPatch.resolve(createMembership(2, 8))
+    await waitForMutationsSettled(queryClient)
+
+    // oba PATCHe dobehly -> zadny clen neni dirty a pozdejsi serverova zmena
+    // (napr. dekrement po predplacene lekci) se musi propsat do UI
+    refetchMemberships([createMembership(1, 4), createMembership(2, 8)])
+    expect(input1).toHaveValue(4)
+    expect(input2).toHaveValue(8)
+})
+
+// React unmount nevyvola blur - rozepsana hodnota by se pri SPA navigaci tise ztratila
+test("unmount flushes an edited value that never received blur", async () => {
+    patchMock.mockResolvedValue(createMembership(1, 7))
+    const { unmount } = await renderPrepaidCounters([createMembership(1, 3)])
+    const input = screen.getByRole("spinbutton")
+
+    fireEvent.change(input, { target: { value: "7" } })
+    unmount()
+
+    await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
+    expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 7 })
+})
+
+// Zavreni tabu blur ani unmount nezaruci - prohlizec musi varovat pres beforeunload
+test("beforeunload is prevented only while an edit is unsaved", async () => {
+    patchMock.mockResolvedValue(createMembership(1, 7))
+    const { queryClient } = await renderPrepaidCounters([createMembership(1, 3)])
+    const input = screen.getByRole("spinbutton")
+
+    // bez rozepsane zmeny se zavreni tabu nesmi blokovat
+    const eventBefore = new Event("beforeunload", { cancelable: true })
+    window.dispatchEvent(eventBefore)
+    expect(eventBefore.defaultPrevented).toBe(false)
+
+    fireEvent.change(input, { target: { value: "7" } })
+    const eventDirty = new Event("beforeunload", { cancelable: true })
+    window.dispatchEvent(eventDirty)
+    expect(eventDirty.defaultPrevented).toBe(true)
+
+    // po ulozeni (blur + dobehnuti PATCHe) uz zadna neulozena zmena neni
+    fireEvent.blur(input)
+    await waitForMutationsSettled(queryClient)
+    const eventSaved = new Event("beforeunload", { cancelable: true })
+    window.dispatchEvent(eventSaved)
+    expect(eventSaved.defaultPrevented).toBe(false)
 })

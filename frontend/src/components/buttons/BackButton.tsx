@@ -12,12 +12,15 @@ type Props = Omit<ButtonProps, "content"> & {
 }
 
 /** Tlačítko pro krok zpět v aplikaci. */
-const BackButton: React.FC<Props> = ({ onClick, content = "Jít zpět" }) => (
+const BackButton: React.FC<Props> = ({ onClick, content = "Jít zpět", ...props }) => (
+    // ...props až za výchozími hodnotami — typ slibuje průchod ButtonProps, takže caller
+    // musí umět přebít variant/color a předat disabled, data-* apod.
     <Button
         variant="filled"
         color="gray"
         onClick={onClick}
-        leftSection={<FontAwesomeIcon icon={faArrowLeft} className={styles.btnIcon} />}>
+        leftSection={<FontAwesomeIcon icon={faArrowLeft} className={styles.btnIcon} />}
+        {...props}>
         {content}
     </Button>
 )

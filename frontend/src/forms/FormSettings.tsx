@@ -65,12 +65,22 @@ const FormSettings: React.FC<Props> = (props) => {
                 : (undefined as number | undefined),
             color: isCourse(props.object) ? props.object.color : "#000000",
         },
+        validate: {
+            // ColorInput propaguje onChange i rozepsaný text ("#D2") — Enter uprostřed
+            // psaní by bez validace odeslal nevalidní hex, API ho odmítne 400 a modal
+            // by zůstal otevřený bez viditelné chyby; regex shodný s api/serializers.py
+            color: (value) =>
+                /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(value) ? null : "Barva není v HEX formátu",
+        },
         onValuesChange: () => props.setFormDirty(),
     })
 
     const onSubmit = React.useCallback(
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
+            if (form.validate().hasErrors) {
+                return
+            }
             const { name, visible, duration, color } = form.getValues()
 
             if (isCourse(props.object)) {
@@ -236,6 +246,7 @@ const FormSettings: React.FC<Props> = (props) => {
                                     <ColorPicker
                                         value={form.values.color}
                                         onChange={(hex) => form.setFieldValue("color", hex)}
+                                        error={form.errors.color}
                                     />
                                 </>
                             )}

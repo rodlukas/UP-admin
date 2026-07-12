@@ -18,6 +18,10 @@ export const cardVars = createThemeContract({
 })
 
 export const courseHeading = style({
+    marginTop: 0,
+    // holé <h4> si po odstranění Bootstrap rebootu drží UA default margin-top (~21px),
+    // který by uvnitř barevného pruhu přidával prostor jen NAD textem (Mantine preflight
+    // resetuje pouze body, index.css.ts styluje jen h1–h3)
     color: cardVars.courseText,
 })
 
@@ -135,4 +139,10 @@ export const lectureColumnNarrow = style({
     "@media": {
         "(min-width: 1200px)": { maxWidth: "33.33%" },
     },
+})
+
+export const lecturesTitle = style({
+    // Mantine Title má margin: 0 (globální pravidlo pro h1–h3 na něj záměrně nedosáhne,
+    // viz index.css.ts) — bez lokálního okraje by nadpis seděl nalepený na sloupcích lekcí
+    marginBottom: "0.65rem",
 })

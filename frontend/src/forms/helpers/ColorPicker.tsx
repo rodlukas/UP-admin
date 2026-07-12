@@ -24,6 +24,8 @@ type Props = {
     value: string
     /** Funkce, která se zavolá při změně barvy kurzu. */
     onChange: (hex: string) => void
+    /** Chybová zpráva pod polem (validaci hex formátu řídí nadřazený formulář). */
+    error?: React.ReactNode
 }
 
 const hasLowContrast = (hex: string): boolean => {
@@ -35,7 +37,7 @@ const hasLowContrast = (hex: string): boolean => {
 }
 
 /** Komponenta pro pole s výběrem barvy kurzu. */
-const ColorPicker: React.FC<Props> = ({ value, onChange }) => {
+const ColorPicker: React.FC<Props> = ({ value, onChange, error }) => {
     // čistá derivace z props — počítá se přímo při renderu, žádný stav/efekt není potřeba
     const showContrastWarning = hasLowContrast(value)
 
@@ -57,6 +59,7 @@ const ColorPicker: React.FC<Props> = ({ value, onChange }) => {
                 value={value}
                 onChange={handleChange}
                 swatches={COLOR_SWATCHES}
+                error={error}
                 data-qa="settings_color_picker"
             />
             {showContrastWarning && (

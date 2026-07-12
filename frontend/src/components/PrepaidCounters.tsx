@@ -105,14 +105,18 @@ const PrepaidCounters: React.FC<Props> = (props) => {
     }, [])
 
     // Commit hodnotu na server az pri blur, ne pri kazdem keystroke.
-    // serverPrepaidCntsRef se aktualizuje az v onSuccess (drzi server-potvrzenou hodnotu).
-    // inFlightRef se aktualizuje pred mutate a maze v onSettled (drzi prave odesilanou hodnotu)
-    // → rapid blur/refocus se stejnou hodnotou nepustí duplicitni PATCH a refetch ji nesmaze.
-    const onBlur = React.useCallback(
-        (e: React.FocusEvent<HTMLInputElement>): void => {
-            const target = e.currentTarget
-            const value = Number(target.value)
-            const id = Number(target.dataset.id)
+    // serverPrepaidCntsRef se aktualizuje az po uspechu (drzi server-potvrzenou hodnotu).
+    // inFlightRef se aktualizuje pred odeslanim a maze po dobehnuti (drzi prave odesilanou
+    // hodnotu) → rapid blur/refocus se stejnou hodnotou nepustí duplicitni PATCH a refetch
+    // ji nesmaze.
+    //
+    // Zamerne mutateAsync + vlastni .then/.catch misto per-mutate onSuccess/onError:
+    // TanStack Query v5 doruci per-mutate callbacky jen POSLEDNIMU mutate() na sdilene
+    // useMutation instanci — pri soubehu ulozeni dvou ruznych clenu by cleanup prvniho
+    // nikdy neprobehl (clen by zustal navzdy dirty a ignoroval dalsi refetche). Promise
+    // z mutateAsync se vaze na konkretni mutaci a usadi se vzdy.
+    const commit = React.useCallback(
+        (id: number, value: number): void => {
             const serverValue = serverPrepaidCntsRef.current[id]
             const inFlightValue = inFlightRef.current[id]
             const effectiveValue = inFlightValue ?? serverValue
@@ -122,35 +126,76 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                 return
             }
             inFlightRef.current[id] = value
-            patchMembership.mutate(
-                { id, prepaid_cnt: value },
-                {
-                    onSuccess: () => {
-                        // Pokud uz je v letu novejsi PATCH (uzivatel mezitim zmenil hodnotu
-                        // a znovu blurnul), necham vsechno na ten novejsi mutate – jinak by
-                        // out-of-order odpoved tohoto PATCHe stale prepsala serverRef i dirty.
-                        if (inFlightRef.current[id] !== value) {
-                            return
-                        }
-                        serverPrepaidCntsRef.current = {
-                            ...serverPrepaidCntsRef.current,
-                            [id]: value,
-                        }
-                        dirtyIdsRef.current.delete(id)
+            patchMembership
+                .mutateAsync({ id, prepaid_cnt: value })
+                .then(() => {
+                    // Pokud uz je v letu novejsi PATCH (uzivatel mezitim zmenil hodnotu
+                    // a znovu blurnul), necham vsechno na ten novejsi — jinak by
+                    // out-of-order odpoved tohoto PATCHe stale prepsala serverRef i dirty.
+                    if (inFlightRef.current[id] !== value) {
+                        return
+                    }
+                    serverPrepaidCntsRef.current = {
+                        ...serverPrepaidCntsRef.current,
+                        [id]: value,
+                    }
+                    dirtyIdsRef.current.delete(id)
+                    delete inFlightRef.current[id]
+                })
+                .catch(() => {
+                    // Stejna ochrana: pokud uz je v letu novejsi PATCH, nech mu drzet inFlight.
+                    if (inFlightRef.current[id] === value) {
                         delete inFlightRef.current[id]
-                    },
-                    onError: () => {
-                        // Stejna ochrana: pokud uz je v letu novejsi PATCH, nech mu drzet inFlight.
-                        if (inFlightRef.current[id] === value) {
-                            delete inFlightRef.current[id]
-                        }
-                        // dirty zustava → efekt na refetchi UI neprepise a retry projde
-                    },
-                },
-            )
+                    }
+                    // dirty zustava → efekt na refetchi UI neprepise a retry projde
+                    // (chybovou notifikaci zobrazuje globalni onError v queryClient)
+                })
         },
         [patchMembership],
     )
+
+    const onBlur = React.useCallback(
+        (e: React.FocusEvent<HTMLInputElement>): void => {
+            const target = e.currentTarget
+            commit(Number(target.dataset.id), Number(target.value))
+        },
+        [commit],
+    )
+
+    // Nejnovejsi hodnoty + commit pro flush pri unmountu — ulozene v ref, aby unmount
+    // efekt mohl mit prazdne deps (jinak by se cleanup spoustel pri kazde zmene a PATCHoval
+    // uprostred psani).
+    const latestRef = React.useRef({ prepaidCnts, commit })
+    React.useEffect(() => {
+        latestRef.current = { prepaidCnts, commit }
+    })
+
+    // React unmount nevyvola blur — bez flushe by SPA navigace (zavreni karty skupiny apod.)
+    // rozepsanou hodnotu tise zahodila. Mutace bezi v queryClient cache, unmount ji neprerusi.
+    React.useEffect(
+        () => (): void => {
+            const latest = latestRef.current
+            for (const id of Array.from(dirtyIdsRef.current)) {
+                if (id in latest.prepaidCnts) {
+                    latest.commit(id, latest.prepaidCnts[id])
+                }
+            }
+        },
+        [],
+    )
+
+    // Zavreni tabu / reload nevyvola blur ani unmount cleanup spolehlive — pri neulozene
+    // zmene varuj nativnim dialogem (stejny vzor jako useModal).
+    React.useEffect(() => {
+        const beforeUnload = (e: BeforeUnloadEvent): void => {
+            if (dirtyIdsRef.current.size > 0) {
+                e.preventDefault()
+                e.returnValue = ""
+            }
+        }
+        globalThis.addEventListener("beforeunload", beforeUnload)
+        return (): void => globalThis.removeEventListener("beforeunload", beforeUnload)
+    }, [])
 
     function onFocus(e: React.ChangeEvent<HTMLInputElement>): void {
         e.currentTarget.select()

@@ -263,7 +263,6 @@ const FormGroups: React.FC<Props> = (props) => {
                                         // V GDPR rezimu musime maskovat oba – pily uz mask maji pres renderPill,
                                         // ale vlastni search field by jinak prosvitl naepsane casti jmen klientu.
                                         classNames={{ input: gdprInput, inputField: gdprInput }}
-                                        comboboxProps={{ withinPortal: true }}
                                         renderOption={({ option }) => (
                                             <span data-gdpr>{option.label}</span>
                                         )}

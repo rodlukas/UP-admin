@@ -91,6 +91,9 @@ globalStyle("b", {
     fontWeight: 600,
 })
 
+// POZOR: platí jen pro holé <h1>–<h3> elementy. Na Mantine <Title> se neaplikuje
+// (jeho třída nastavuje margin: 0 s vyšší specificitou) — to je záměr: Title řeší
+// odsazení layoutem (Group mb apod.); pokud okraj potřebuje, dej mu lokální třídu.
 globalStyle("h1, h2, h3", {
     marginBottom: "0.65rem",
 })

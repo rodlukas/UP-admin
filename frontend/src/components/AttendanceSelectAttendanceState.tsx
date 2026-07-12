@@ -49,7 +49,6 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
             value={props.value.toString()}
             onChange={onChange}
             size="sm"
-            comboboxProps={{ withinPortal: true }}
             allowDeselect={false}
             // select nemá viditelný label — přístupný název pro čtečky obrazovky
             aria-label="Výběr stavu účasti klienta na lekci"

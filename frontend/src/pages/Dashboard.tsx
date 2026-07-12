@@ -15,9 +15,12 @@ const Dashboard: React.FC = () => {
         <Container size="xl">
             <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg" verticalSpacing="lg">
                 <div className={styles.dashboardSection}>
+                    {/* jediný h1 stránky (osnova pro čtečky / axe page-has-heading-one);
+                        vizuálně zůstává h2, aby ladil se sousední sekcí Bankovní účet */}
                     <Heading
                         title="Dnešní lekce"
-                        order={2}
+                        order={1}
+                        size="h2"
                         buttons={<ModalLecturesWizard source="dashboard" />}
                     />
                     <DashboardDay date={toISODate(new Date())} withoutWaiting source="dashboard" />

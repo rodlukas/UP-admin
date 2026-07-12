@@ -277,6 +277,11 @@ const FormLectures: React.FC<Props> = (props) => {
     const [canceledDisabled, setCanceledDisabled] = React.useState(false)
     /** Formulář byl odeslán (true). */
     const [isSubmit, setIsSubmit] = React.useState(false)
+
+    // pokus o odeslání bez vybraného kurzu — řídí zobrazení chyby u SelectCourse
+    // (searchable input s napsaným textem projde nativní validací required, takže by
+    // submit byl jinak tichý no-op; stejný vzor jako FormGroups/FormApplications)
+    const [triedSubmit, setTriedSubmit] = React.useState(false)
     /** Počet přidávaných předplacených lekcí. */
     const [prepaidCnt, setPrepaidCnt] = React.useState(1)
 
@@ -376,6 +381,9 @@ const FormLectures: React.FC<Props> = (props) => {
             setCourse(courseValue)
             if (courseValue) {
                 setDuration(courseValue.duration)
+                // doplnění kurzu „odjistí" submit-validaci, ať chyba znovu nenaskočí
+                // jen kvůli pozdějšímu smazání bez nového pokusu o odeslání
+                setTriedSubmit(false)
             }
         },
         [props],
@@ -469,8 +477,11 @@ const FormLectures: React.FC<Props> = (props) => {
                 return
             }
             // skryty input SelectCourse constraint validaci neumi (reportValidity ho nezachyti),
-            // proto vyber kurzu (a dosud nevyplnene trvani) overujeme jeste zvlast
+            // proto vyber kurzu (a dosud nevyplnene trvani) overujeme jeste zvlast;
+            // triedSubmit zobrazi chybu "Vyberte kurz" — samotne reportValidity projde,
+            // kdyz ma searchable input jen napsany (nevybrany) text
             if (!course || duration === undefined) {
+                setTriedSubmit(true)
                 formElement?.reportValidity()
                 return
             }
@@ -716,6 +727,9 @@ const FormLectures: React.FC<Props> = (props) => {
                                         onChangeCallback={onSelectChange}
                                         options={coursesVisibleContext.courses}
                                         isDisabled={!isClient(props.object)}
+                                        error={
+                                            triedSubmit && !course ? "Vyberte kurz" : undefined
+                                        }
                                     />
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
@@ -800,7 +814,6 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 required
                                                 withAsterisk
                                                 allowDeselect={false}
-                                                comboboxProps={{ withinPortal: true }}
                                                 data-qa="lecture_select_attendance_attendancestate"
                                             />
                                         </Grid.Col>

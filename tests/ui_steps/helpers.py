@@ -65,15 +65,17 @@ def get_tooltip_text(driver, element):
         # klikni mysi na element
         element.click()
         try:
-            # az se zobrazi tooltip, uloz jeho text, abys ho mohl vratit
-            # poznamka: .text se vola az po novem find_element, ne na referenci z .until(),
-            # ktera muze byt stale kvuli prekresleni DOM (StaleElementReferenceException)
-            # Mantine Tooltip renderuje element s role="tooltip" (stabilnejsi nez
-            # .mantine-Tooltip-tooltip hashed class)
+            # tooltip dohledavame pres aria-describedby kliknuteho elementu (Mantine ho
+            # na trigger nastavuje jen po dobu otevreni) - globalni [role='tooltip'] by
+            # mohl matchnout cizi, uz otevreny tooltip jineho triggeru (kurzor zaparkovany
+            # po predchozim cteni muze hoverovat jiny element) a vratit spatny text
             WebDriverWait(driver, timeout).until(
-                EC.visibility_of_element_located((By.CSS_SELECTOR, "[role='tooltip']"))
+                lambda _: element.get_attribute("aria-describedby")
             )
-            tooltip_text = driver.find_element(By.CSS_SELECTOR, "[role='tooltip']").text
+            tooltip_id = element.get_attribute("aria-describedby")
+            # poznamka: .text se cte az po novem find_element, ne na referenci z .until(),
+            # ktera muze byt stale kvuli prekresleni DOM (StaleElementReferenceException)
+            tooltip_text = driver.find_element(By.ID, tooltip_id).text
             break
         except (TimeoutException, NoSuchElementException, StaleElementReferenceException):
             if attempt == 1:

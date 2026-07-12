@@ -71,7 +71,6 @@ const SelectClient: React.FC<SelectClientProps> = ({
             error={error}
             renderOption={({ option }) => <span data-gdpr>{option.label}</span>}
             classNames={{ input: styles.gdprInput }}
-            comboboxProps={{ withinPortal: true }}
         />
     )
 }

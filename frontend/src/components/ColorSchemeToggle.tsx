@@ -49,8 +49,11 @@ const ColorSchemeToggle: React.FC = () => {
 
     return (
         <Menu shadow="md" position="bottom-end" withinPortal>
-            <Menu.Target>
-                <Tooltip label={tooltipLabel} withinPortal>
+            {/* Tooltip musí obalovat Menu.Target (ne naopak): Menu.Target klonuje ARIA
+                props (aria-haspopup/expanded/controls) na své přímé dítě a Tooltip by je
+                rozprostřel na plovoucí tělo tooltipu místo na trigger tlačítko */}
+            <Tooltip label={tooltipLabel} withinPortal>
+                <Menu.Target>
                     <ActionIcon
                         variant="subtle"
                         size="lg"
@@ -59,8 +62,8 @@ const ColorSchemeToggle: React.FC = () => {
                         data-qa="color_scheme_toggle">
                         <FontAwesomeIcon icon={targetIcon} />
                     </ActionIcon>
-                </Tooltip>
-            </Menu.Target>
+                </Menu.Target>
+            </Tooltip>
             <Menu.Dropdown className={styles.dropdown}>
                 <Menu.Label>Barevné schéma</Menu.Label>
                 {/* menuitemradio polozky musi byt dle ARIA 1.2 seskupene v role="group"
