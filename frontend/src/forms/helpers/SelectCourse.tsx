@@ -75,6 +75,8 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
                 onChangeCallback("course", found)
             }}
             label={label}
+            // bez viditelného labelu (většina formulářů) by select neměl přístupný název
+            aria-label={label ?? "Kurz"}
             placeholder="Vyberte kurz…"
             searchable
             nothingFoundMessage={TEXTS.NO_RESULTS}

@@ -184,8 +184,14 @@ const FormGroups: React.FC<Props> = (props) => {
         <form onSubmit={onSubmit} data-qa="form_group">
             <Modal.Header>
                 <Modal.Title>
-                    {isGroup(props.group) ? "Úprava" : "Přidání"} skupiny:{" "}
-                    <GroupName group={{ name: form.values.name }} bold />
+                    {isGroup(props.group) ? "Úprava" : "Přidání"} skupiny
+                    {/* dvojtečka až s názvem — u prázdného formuláře by za nadpisem visela */}
+                    {form.values.name.trim() !== "" && (
+                        <>
+                            {": "}
+                            <GroupName group={{ name: form.values.name }} bold />
+                        </>
+                    )}
                 </Modal.Title>
                 <Modal.CloseButton />
             </Modal.Header>

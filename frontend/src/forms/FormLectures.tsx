@@ -627,6 +627,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                     withAsterisk={prepaid}
                                                     onChange={onChange}
                                                     min="1"
+                                                    aria-label="Počet předplacených lekcí"
                                                 />
                                             )}
                                         </Group>

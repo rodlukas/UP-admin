@@ -31,9 +31,16 @@ export const dashboardDayDate = style({
     color: vars.text.headingSoft,
 })
 
-// přebíjí `dashboardDayDate` výše — stejná specificita, vyhrává pozdější pořadí v tomto souboru
+/**
+ * Přebíjí `dashboardDayDate` výše — stejná specificita, vyhrává pozdější pořadí v tomto souboru.
+ * Dark varianta se stejně jako `statusTint` v tokens.ts tlumí přes color-mix s povrchem:
+ * plné indigo-9 odlišuje hlavičku od karty poměrem 2,29:1 a v týdenním přehledu překřičí
+ * obsah, kdežto light indigo-1 je jen jemný nádech (1,27:1) — 35% mix drží obě schémata
+ * na stejné míře zvýraznění (1,28:1) a text (gray-1) na něm má 10,9:1.
+ */
 export const dashboardDayDateToday = style({
-    backgroundColor: "light-dark(var(--mantine-color-indigo-1), var(--mantine-color-indigo-9))",
+    backgroundColor:
+        "light-dark(var(--mantine-color-indigo-1), color-mix(in srgb, var(--mantine-color-indigo-9) 35%, var(--mantine-color-dark-7)))",
 })
 
 export const celebrationNone = style({

@@ -12,9 +12,8 @@ import * as React from "react"
 import { useBank } from "../api/hooks"
 import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff } from "../global/funcDateTime"
-import { bold, inlineBlockNowrap, nowrap } from "../global/utility.css"
+import { bold, iconDanger, inlineBlockNowrap, nowrap } from "../global/utility.css"
 import { prettyAmount } from "../global/utils"
-import { vars } from "../theme/tokens"
 import { BankType, BankSuccessType, BankErrorType } from "../types/models"
 
 import * as styles from "./Bank.css"
@@ -167,7 +166,12 @@ const Bank: React.FC = () => {
         <div className={styles.bankWrapper}>
             <Box
                 ta="center"
-                className={`${styles.bankTitle} ${isLackOfMoney ? styles.bankTitleWarning : styles.bankTitleOk}`}>
+                className={classNames(styles.bankTitle, {
+                    // zelená hlavička jen když stav účtu skutečně známe a peníze stačí
+                    [styles.bankTitleUnknown]: !isSuccess,
+                    [styles.bankTitleWarning]: isLackOfMoney,
+                    [styles.bankTitleOk]: isSuccess && !isLackOfMoney,
+                })}>
                 <div className={styles.bankTitleInner}>
                     <Title order={4} className={`${styles.bankTitleText} ${inlineBlockNowrap}`}>
                         Aktuální stav: {getBalanceText()}{" "}
@@ -188,7 +192,7 @@ const Bank: React.FC = () => {
                                     {/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
                                     <FontAwesomeIcon
                                         icon={faExclamationCircle}
-                                        color={vars.colors.danger}
+                                        className={iconDanger}
                                         size="lg"
                                         aria-hidden
                                     />

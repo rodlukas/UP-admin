@@ -21,29 +21,21 @@ type Props = {
 }
 
 type MyNavLinkProps = {
-    className?: string
-    activeClassName?: string
     exact?: boolean
     onCloseNavbar: fEmptyVoid
 } & QA &
     Omit<LinkProps, "className">
 
-const MyNavLink: React.FC<MyNavLinkProps> = ({
-    className,
-    activeClassName = "active",
-    exact = false,
-    onCloseNavbar,
-    ...otherProps
-}) => (
+const MyNavLink: React.FC<MyNavLinkProps> = ({ exact = false, onCloseNavbar, ...otherProps }) => (
     <Link
         {...otherProps}
         onClick={onCloseNavbar}
         activeOptions={{ exact }}
         activeProps={{
-            className: classNames(styles.navLink, className, activeClassName),
+            className: classNames(styles.navLink, styles.navLinkActive),
         }}
         inactiveProps={{
-            className: classNames(styles.navLink, className),
+            className: styles.navLink,
         }}
     />
 )

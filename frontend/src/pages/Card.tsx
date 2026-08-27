@@ -214,9 +214,7 @@ const ClientInfo: React.FC<ClientInfoProps> = ({
                 <b>Poznámka:</b> <ClientNote note={client.note} />
             </div>
         </div>
-        <div className={styles.analysisPanel}>
-            <ClientAnalysis clientId={id} lectures={lectures} />
-        </div>
+        <ClientAnalysis clientId={id} lectures={lectures} />
     </div>
 )
 

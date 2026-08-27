@@ -93,8 +93,8 @@ const Diary: React.FC = () => {
         [params],
     )
 
-    /** Pole se dny v zobrazeném týdnu. */
-    const [week, setWeek] = React.useState<string[]>(getWeek())
+    /** Pole se dny v zobrazeném týdnu — odvozeno z URL parametrů, ne stav. */
+    const week = React.useMemo(() => getWeek(), [getWeek])
 
     const getFridayDate = React.useCallback((): Date => new Date(week[4]), [week])
 
@@ -155,23 +155,14 @@ const Diary: React.FC = () => {
 
     React.useEffect(() => {
         document.addEventListener("keydown", onKeyDown)
-        refreshTitle()
         return () => {
             document.removeEventListener("keydown", onKeyDown)
         }
-    }, [onKeyDown, refreshTitle])
+    }, [onKeyDown])
 
-    const prevRequiredMondayRef = React.useRef<Date>(getRequiredMonday())
     React.useEffect(() => {
-        const requiredMonday = getRequiredMonday()
-
-        // aktualizujeme pouze pokud se skutecne zmenil pozadovany pocatek tydne
-        if (!isEqualDate(prevRequiredMondayRef.current, requiredMonday)) {
-            setWeek(getWeek())
-            refreshTitle()
-            prevRequiredMondayRef.current = requiredMonday
-        }
-    }, [params, getRequiredMonday, getWeek, refreshTitle])
+        refreshTitle()
+    }, [refreshTitle])
 
     return (
         <>

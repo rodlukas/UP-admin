@@ -61,6 +61,19 @@ export const textCenterMb0 = style([textCenter, mb0])
 
 export const dimmedTextCenter = style([dimmedText, textCenter])
 
+/** Ikona v sémantické barvě — místo inline `color={vars…}` na FontAwesomeIcon. */
+export const iconSuccess = style({
+    color: vars.colors.success,
+})
+
+export const iconWarning = style({
+    color: vars.colors.warning,
+})
+
+export const iconDanger = style({
+    color: vars.colors.danger,
+})
+
 export const iconInlineX = style({
     marginRight: "0.25rem",
     marginLeft: "0.25rem",

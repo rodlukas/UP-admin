@@ -1,35 +1,47 @@
 import { style } from "@vanilla-extract/css"
 
+import { vars } from "../theme/tokens"
+
+import { navbarFocusRing } from "./Menu.css"
+
+/**
+ * Spouštěč přepínače. Na desktopu ikona samotná, v rozbaleném mobilním menu řádek
+ * s popiskem — mezi textovými položkami menu by osamocená ikona nebyla srozumitelná.
+ */
 export const toggleButton = style({
-    border: "none",
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    transition: "all 0.15s ease-in-out",
+    borderRadius: vars.radius.md,
     color: "rgb(241 245 249 / 0.85)",
-    // Mantine ActionIcon v "subtle" variantě ovládá barvu ikony přes --ai-color;
-    // navbar má fixní tmavé pozadí ve všech motivech, takže ikonu držíme světlou.
-    vars: {
-        "--ai-color": "rgb(241 245 249 / 0.85)",
-        "--ai-hover-color": "#ffffff",
-        "--ai-hover": "rgb(255 255 255 / 0.12)",
+    ":hover": {
+        backgroundColor: "rgb(255 255 255 / 0.12)",
+        color: "#ffffff",
+    },
+    selectors: {
+        "&.mantine-focus-auto:focus-visible": navbarFocusRing,
     },
     "@media": {
         "(min-width: 992px)": {
+            justifyContent: "center",
             marginLeft: "0.25rem",
+            padding: "0.4rem 0.55rem",
         },
         "(max-width: 991.98px)": {
-            alignSelf: "flex-start",
             marginTop: "0.25rem",
+            padding: "0.5rem 0.85rem",
+            width: "100%",
+            fontWeight: 500,
         },
     },
-    selectors: {
-        "&:hover": {
-            backgroundColor: "rgb(255 255 255 / 0.12)",
-            color: "#ffffff",
-        },
-        // sjednoceny focus ring s navLink: vychozi indigo ring Mantine (.mantine-focus-auto)
-        // ma vuci tmavemu navbaru jen ~3:1 (hranicni 1.4.11), blue-3 je vyrazne viditelnejsi;
-        // vyssi specificita prebiji Mantine ring i pri shode poradi
-        "&.mantine-focus-auto:focus-visible": {
-            outline: "2px solid var(--mantine-color-blue-3)",
-            outlineOffset: "2px",
+})
+
+/** Popisek vedle ikony — jen v mobilním menu, na desktopu stačí ikona s tooltipem. */
+export const toggleLabel = style({
+    "@media": {
+        "(min-width: 992px)": {
+            display: "none",
         },
     },
 })

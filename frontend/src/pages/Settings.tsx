@@ -24,8 +24,7 @@ import Heading from "../components/Heading"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE } from "../global/constants"
-import { bold, iconInlineX, mb0 } from "../global/utility.css"
-import { vars } from "../theme/tokens"
+import { bold, dimmedText, iconInlineX, iconSuccess, mb0 } from "../global/utility.css"
 import { AttendanceStateType } from "../types/models"
 import { QA } from "../types/types"
 
@@ -42,7 +41,7 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
         icon={visible ? faCheck : faTimes}
         size="lg"
         {...props}
-        color={visible ? vars.colors.success : vars.text.muted}
+        className={visible ? iconSuccess : dimmedText}
     />
 )
 

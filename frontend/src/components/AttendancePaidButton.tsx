@@ -47,20 +47,15 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
     // focus: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13)
     return (
         <Tooltip label={title} position="right" events={{ hover: true, focus: true, touch: true }}>
-            <span
-                role="button"
-                tabIndex={0}
+            {/* nativní <button>: aktivaci klávesnicí, focus i sémantiku řeší prohlížeč
+                (aria-disabled místo `disabled`, aby tooltip zůstal dosažitelný i během ukládání) */}
+            <button
+                type="button"
                 aria-label={title}
                 aria-busy={isPending}
                 aria-disabled={isPending}
                 className={styles.buttonWrap}
-                onClick={onClick}
-                onKeyDown={(e): void => {
-                    if ((e.key === "Enter" || e.key === " ") && !isPending) {
-                        e.preventDefault()
-                        onClick()
-                    }
-                }}>
+                onClick={onClick}>
                 <FontAwesomeIcon
                     icon={faUsdCircle}
                     size="2x"
@@ -68,7 +63,7 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
                     data-qa="lecture_attendance_paid"
                     data-paid={props.paid}
                 />
-            </span>
+            </button>
         </Tooltip>
     )
 }

@@ -3,7 +3,7 @@ import { Tooltip } from "@mantine/core"
 import { faCommentAltDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
-import { vars } from "../theme/tokens"
+import { iconWarning } from "../global/utility.css"
 import { AttendanceType } from "../types/models"
 
 type Props = {
@@ -22,7 +22,7 @@ const AttendanceRemindPay: React.FC<Props> = ({ attendance }) => {
                 <FontAwesomeIcon
                     icon={faCommentAltDollar}
                     size="lg"
-                    color={vars.colors.warning}
+                    className={iconWarning}
                     transform="up-4"
                 />
             </span>

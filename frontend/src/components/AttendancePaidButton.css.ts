@@ -4,7 +4,10 @@ import { vars } from "../theme/tokens"
 
 export const buttonWrap = style({
     display: "inline-flex",
+    border: 0,
     borderRadius: vars.radius.sm,
+    backgroundColor: "transparent",
+    padding: 0,
     selectors: {
         "&:focus-visible": {
             outline: `2px solid ${vars.colors.primary}`,

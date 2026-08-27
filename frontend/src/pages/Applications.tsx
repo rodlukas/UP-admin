@@ -17,25 +17,11 @@ import {
     getReadableTextColor,
     GroupedObjectsByCourses,
     groupObjectsByCourses,
+    pluralizeCs,
 } from "../global/utils"
 import { ApplicationType } from "../types/models"
 
 import * as styles from "./Applications.css"
-
-/**
- * Vrací správnou koncovku pro slovo "zájemc" podle počtu.
- * @param cnt Počet zájemců
- * @returns Koncovka: "e" pro 1, "i" pro 2-4, "ů" pro 5+
- */
-const getZajemciSuffix = (cnt: number): string => {
-    if (cnt === 1) {
-        return "e"
-    }
-    if (cnt > 1 && cnt < 5) {
-        return "i"
-    }
-    return "ů"
-}
 
 /** Stránka se zájemci o kurzy. */
 const Applications: React.FC = () => {
@@ -94,7 +80,7 @@ const Applications: React.FC = () => {
                                     </Title>
                                     <Badge radius="xl" className={styles.courseHeadingBadge}>
                                         <span data-qa="applications_for_course_cnt">{cnt}</span>{" "}
-                                        zájemc{getZajemciSuffix(cnt)}
+                                        {pluralizeCs(cnt, "zájemce", "zájemci", "zájemců")}
                                     </Badge>
                                 </div>
                                 {courseApplications.objects.map((application) => (

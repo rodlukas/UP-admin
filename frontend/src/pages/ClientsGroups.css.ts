@@ -17,7 +17,7 @@ export const staleAlert = style({
 
 export const hiddenBelowSm = style({
     "@media": {
-        "(max-width: 575px)": {
+        "(max-width: 575.98px)": {
             display: "none",
         },
     },

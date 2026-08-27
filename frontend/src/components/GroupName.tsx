@@ -55,9 +55,9 @@ const GroupName: React.FC<GroupNameProps> = ({
     bold = false,
     noWrap = false,
 }) => {
-    const PlainGroupNameComponent: React.FC = () => (
-        <PlainName group={group} title={title} bold={bold} />
-    )
+    // element, ne komponenta definovana v renderu — ta by mela pri kazdem renderu novy typ,
+    // takze by React podstrom odmountoval a znovu namountoval
+    const plainName = <PlainName group={group} title={title} bold={bold} />
     return (
         <span>
             {"id" in group && link ? (
@@ -70,11 +70,11 @@ const GroupName: React.FC<GroupNameProps> = ({
                                 className={styles.courseCircle}
                             />
                         )}
-                        <PlainGroupNameComponent />
+                        {plainName}
                     </span>
                 </Link>
             ) : (
-                <PlainGroupNameComponent />
+                plainName
             )}
         </span>
     )

@@ -24,6 +24,15 @@ export const vars = {
         danger: "light-dark(var(--mantine-color-red-9), var(--mantine-color-red-4))",
         /** Light #a61e1e = 7.43:1 na bílé — tmavší než `danger` (red-9), hover tedy ztmavuje. */
         dangerHover: "light-dark(#a61e1e, var(--mantine-color-red-3))",
+        /**
+         * Barva textových odkazů v obsahu (globální pravidlo pro `a` v index.css.ts).
+         * Odstín je zvolený tak, aby splnil WCAG AA i na nejtmavším podkladu, na kterém
+         * odkaz stojí: light indigo-9 má 5.07:1 na `statusTint.danger` (indigo-8 jen 4.24:1),
+         * dark indigo-3 má 4.89:1 na `bg.hoverElevated` (indigo-4 jen 3.78:1).
+         */
+        link: "light-dark(var(--mantine-color-indigo-9), var(--mantine-color-indigo-3))",
+        /** O stupeň výraznější odstín pro hover (light tmavší, dark světlejší). */
+        linkHover: "light-dark(#2b3f9e, var(--mantine-color-indigo-2))",
     },
     radius: {
         sm: "var(--mantine-radius-sm)",
@@ -68,8 +77,13 @@ export const vars = {
         headingSoft: "light-dark(#0f172a, var(--mantine-color-gray-1))",
         /** Sekundární text – chladnější slate, používá se mj. v rámečcích formulářů. */
         slate: "light-dark(#334155, var(--mantine-color-gray-2))",
-        /** Tlumený popisek (hint, caption, statistický mezitext). */
-        subtleMuted: "light-dark(#64748b, var(--mantine-color-dark-1))",
+        /**
+         * Tlumený popisek (hint, caption, statistický mezitext).
+         * Light #5b6878 = 4.87:1 na pozadí stránky a 5.68:1 na bílém povrchu — používá se
+         * i mimo karty (úvodní odstavce stránek), takže musí projít i na tmavším z obou
+         * podkladů (slate #64748b měl na pozadí stránky jen 4.08:1).
+         */
+        subtleMuted: "light-dark(#5b6878, var(--mantine-color-dark-1))",
     },
     border: {
         default: "light-dark(#d6dee9, var(--mantine-color-dark-4))",

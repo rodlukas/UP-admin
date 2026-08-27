@@ -53,11 +53,11 @@ export const courseHeadingItem = style({
 export const courseHeadingBadge = style({
     marginLeft: "0.1rem",
     backgroundColor: `${applicationsVars.courseBackground} !important`,
+    // Mantine Badge má ve výchozím stavu text-transform: uppercase; popisek „3 zájemci"
+    // má ale zůstat malými písmeny
     textTransform: "none",
     color: `${applicationsVars.badgeColor} !important`,
     fontSize: "0.7rem",
-    // Mantine Badge má ve výchozím stavu text-transform: uppercase; popisek „3 zájemci"
-    // má ale zůstat malými písmeny (jako v původním reactstrap badge)
     fontWeight: 700,
 })
 

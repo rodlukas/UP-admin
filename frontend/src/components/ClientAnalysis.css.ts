@@ -1,16 +1,22 @@
 import { style } from "@vanilla-extract/css"
 
+import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
-
-import { chartBaseStyles } from "./charts.css"
 
 export { chartTooltip as tooltip, tooltipSeriesColor, tooltipSeriesEntry } from "./charts.css"
 
-export const chartPanel = style({
-    ...chartBaseStyles,
-    boxShadow: vars.shadow.card,
-    padding: "0.8rem",
-})
+/**
+ * Povrch karty analýzy. Nese ho komponenta sama (ne volající) — když analýza nemá co
+ * zobrazit, vrací `null` a nezůstane po ní prázdná karta.
+ */
+export const chartPanel = style([
+    surfaceCard,
+    {
+        flexGrow: 1,
+        padding: "0.8rem",
+        minWidth: 0,
+    },
+])
 
 export const tooltipLabel = style({
     marginBottom: "0.25rem",

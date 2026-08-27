@@ -1,11 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-    ActionIcon,
-    Menu,
-    Tooltip,
-    useComputedColorScheme,
-    useMantineColorScheme,
-} from "@mantine/core"
+import { Menu, Tooltip, UnstyledButton, useComputedColorScheme, useMantineColorScheme } from "@mantine/core"
 import type { MantineColorScheme } from "@mantine/core"
 import { faDesktop, faMoon, faSun } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
@@ -54,14 +48,13 @@ const ColorSchemeToggle: React.FC = () => {
                 rozprostřel na plovoucí tělo tooltipu místo na trigger tlačítko */}
             <Tooltip label={tooltipLabel} withinPortal>
                 <Menu.Target>
-                    <ActionIcon
-                        variant="subtle"
-                        size="lg"
+                    <UnstyledButton
                         className={styles.toggleButton}
                         aria-label="Přepnout barevné schéma"
                         data-qa="color_scheme_toggle">
-                        <FontAwesomeIcon icon={targetIcon} />
-                    </ActionIcon>
+                        <FontAwesomeIcon icon={targetIcon} fixedWidth />
+                        <span className={styles.toggleLabel}>{tooltipLabel}</span>
+                    </UnstyledButton>
                 </Menu.Target>
             </Tooltip>
             <Menu.Dropdown className={styles.dropdown}>

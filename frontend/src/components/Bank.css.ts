@@ -48,6 +48,12 @@ export const bankAmountColumn = style({
     minWidth: "7em",
 })
 
+/** Neutrální hlavička — dokud stav účtu není známý (načítání / chyba), nesmí hlásit „v pořádku". */
+export const bankTitleUnknown = style({
+    backgroundColor: vars.bg.subtle,
+    color: vars.text.heading,
+})
+
 // V dark módu nelze použít plné green-9/red-9 pozadí (světlý text by na něm neměl WCAG AA
 // kontrast), proto se sytá barva tlumí přes color-mix s povrchem dark-7 — stejně jako u today-row.
 // Kontrasty textu: light #1e6b30 na green-1 = 5.72:1; dark green-2 na mixu (#26482d) = 7.97:1.

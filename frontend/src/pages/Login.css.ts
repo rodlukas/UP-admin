@@ -1,7 +1,6 @@
 import { style } from "@vanilla-extract/css"
 
 import { surfaceCard } from "../global/surfaces.css"
-import { NAVBAR_HEIGHT } from "../Main.css"
 import { vars } from "../theme/tokens"
 
 export const loginContainer = style({
@@ -9,8 +8,9 @@ export const loginContainer = style({
     alignItems: "center",
     justifyContent: "center",
     padding: "2rem 1rem",
-    // vycentrování karty ve viewportu zmenšeném o fixní navbar (3.5rem)
-    minHeight: `calc(100vh - ${NAVBAR_HEIGHT / 16}rem)`,
+    // přihlašovací stránka běží bez navbaru (Main.tsx ho renderuje jen pro přihlášené),
+    // karta se proto centruje přes celou výšku viewportu
+    minHeight: "100dvh",
 })
 
 export const loginCard = style([

@@ -19,17 +19,17 @@ export const cardVars = createThemeContract({
 
 export const courseHeading = style({
     marginTop: 0,
-    // holé <h4> si po odstranění Bootstrap rebootu drží UA default margin-top (~21px),
-    // který by uvnitř barevného pruhu přidával prostor jen NAD textem (Mantine preflight
-    // resetuje pouze body, index.css.ts styluje jen h1–h3)
+    // holé <h4> nese UA default margin-top (~21px), který by uvnitř barevného pruhu
+    // přidával prostor jen NAD textem (Mantine preflight resetuje pouze body,
+    // index.css.ts styluje jen h1–h3)
     color: cardVars.courseText,
 })
 
 export const courseHeadingItem = style({
     backgroundColor: `${cardVars.courseBackground} !important`,
     backgroundImage: `linear-gradient(rgb(15 23 42 / ${COURSE_HEADING_OVERLAY_OPACITY}), rgb(15 23 42 / ${COURSE_HEADING_OVERLAY_OPACITY}))`,
-    // vlastní padding (dřív se dědil z `infoListItem`); hlavička už `infoListItem` nenese,
-    // aby `& + &` oddělovač nekreslil čáru mezi barevnou hlavičkou a první lekcí
+    // vlastní padding: hlavička záměrně nenese `infoListItem`, aby `& + &` oddělovač
+    // nekreslil čáru mezi barevnou hlavičkou a první lekcí
     padding: "0.5rem 1rem",
 })
 
@@ -92,15 +92,6 @@ export const clientSummaryPanel = style([
         flex: "0 0 auto",
         minWidth: "220px",
         overflow: "hidden",
-    },
-])
-
-export const analysisPanel = style([
-    surfaceCard,
-    {
-        flexGrow: 1,
-        padding: "0.55rem 0.65rem",
-        minWidth: 0,
     },
 ])
 

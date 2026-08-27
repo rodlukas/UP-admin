@@ -15,7 +15,7 @@ import * as React from "react"
 import { trackEvent } from "../analytics"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
-import { clientName, isModalShown, prettyPhone } from "../global/utils"
+import { clientName, isModalShown, pluralizeCs, prettyPhone } from "../global/utils"
 import { ClientActiveType, GroupType } from "../types/models"
 
 const clientFuseOptions: IFuseOptions<ClientActiveType> = {
@@ -63,7 +63,7 @@ const buildGroupDescription = (group: GroupType): string | undefined => {
     const parts = [
         courseName ? `kurz: ${courseName}` : null,
         memberCount > 0
-            ? `${memberCount} ${memberCount === 1 ? "člen" : memberCount < 5 ? "členové" : "členů"}`
+            ? `${memberCount} ${pluralizeCs(memberCount, "člen", "členové", "členů")}`
             : null,
     ].filter(Boolean)
     return parts.length > 0 ? parts.join(" · ") : undefined

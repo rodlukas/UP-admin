@@ -105,18 +105,25 @@ const FormClients: React.FC<Props> = (props) => {
     )
 
     const isSubmit = createClient.isPending || updateClient.isPending
+    const hasName = Boolean(form.values.firstname.trim() || form.values.surname.trim())
     return (
         <form onSubmit={onSubmit} data-qa="form_client">
             <Modal.Header>
                 <Modal.Title>
-                    {isClient(props.client) ? "Úprava" : "Přidání"} klienta:{" "}
-                    <ClientName
-                        client={{
-                            firstname: form.values.firstname,
-                            surname: form.values.surname,
-                        }}
-                        bold
-                    />
+                    {isClient(props.client) ? "Úprava" : "Přidání"} klienta
+                    {/* dvojtečka až se jménem — u prázdného formuláře by za nadpisem visela */}
+                    {hasName && (
+                        <>
+                            {": "}
+                            <ClientName
+                                client={{
+                                    firstname: form.values.firstname,
+                                    surname: form.values.surname,
+                                }}
+                                bold
+                            />
+                        </>
+                    )}
                 </Modal.Title>
                 <Modal.CloseButton />
             </Modal.Header>
@@ -179,7 +186,7 @@ const FormClients: React.FC<Props> = (props) => {
                                         props.setFormDirty()
                                         form.setFieldValue("email", e.currentTarget.value)
                                     }}
-                                    label="Email"
+                                    label="E-mail"
                                     data-qa="client_field_email"
                                 />
                             </div>

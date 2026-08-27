@@ -2,6 +2,25 @@ import { globalStyle, style } from "@vanilla-extract/css"
 
 import { vars } from "../theme/tokens"
 
+/**
+ * Focus ring prvků ležících na tmavém navbaru. Výchozí indigo ring Mantine
+ * (`.mantine-focus-auto`) i poloprůsvitný stín mají vůči navbaru (#1f2b3c) jen ~2,3–3:1,
+ * tedy pod WCAG 1.4.11; blue-3 je výrazně viditelnější a plný outline přežije i
+ * forced-colors režim.
+ *
+ * Na prvcích Mantine (nesou třídu `mantine-focus-auto`) musí selektor znít
+ * `&.mantine-focus-auto:focus-visible` — se samotným `:focus-visible` je specificita
+ * shodná a rozhodovalo by pořadí pravidel v bundlu. Prvky bez té třídy (`Link`)
+ * použijí `:focus-visible` přímo.
+ *
+ * Bez TS anotací — vanilla-extract loader vkládá zdroj .css.ts do child kompilace
+ * bez transpilace typů (viz global/surfaces.css.ts).
+ */
+export const navbarFocusRing = {
+    outline: "2px solid var(--mantine-color-blue-3)",
+    outlineOffset: "2px",
+}
+
 export const navLink = style({
     display: "block",
     transition: "all 0.15s ease-in-out",
@@ -15,13 +34,7 @@ export const navLink = style({
         textDecoration: "none",
         color: "#ffffff",
     },
-    // plny outline misto poloprusvitneho stinu - ring s alpha 0.45 mel vuci tmavemu
-    // navbaru jen ~2.3:1 (pod WCAG 1.4.11); blue-3 na #1f2b3c dava >3:1 a outline
-    // prezije i forced-colors rezim
-    ":focus-visible": {
-        outline: "2px solid var(--mantine-color-blue-3)",
-        outlineOffset: "2px",
-    },
+    ":focus-visible": navbarFocusRing,
     "@media": {
         "(min-width: 992px)": {
             borderBottom: "2px solid transparent",
@@ -37,7 +50,8 @@ export const navLink = style({
     },
 })
 
-globalStyle(`.active${navLink}`, {
+// deklarováno až za `navLink` — při shodné specificitě rozhoduje pořadí v souboru
+export const navLinkActive = style({
     backgroundColor: "rgb(255 255 255 / 0.18)",
     color: "#ffffff",
     fontWeight: 600,
@@ -75,14 +89,8 @@ export const navList = style({
 })
 
 export const logoutButton = style({
-    // sjednoceny focus ring s navLink/spotlightButton: vychozi indigo ring Mantine
-    // (.mantine-focus-auto) ma vuci tmavemu navbaru jen ~3:1 (hranicni 1.4.11), blue-3
-    // je vyrazne viditelnejsi; vyssi specificita prebiji Mantine ring i pri shode poradi
     selectors: {
-        "&.mantine-focus-auto:focus-visible": {
-            outline: "2px solid var(--mantine-color-blue-3)",
-            outlineOffset: "2px",
-        },
+        "&.mantine-focus-auto:focus-visible": navbarFocusRing,
     },
     "@media": {
         "(min-width: 992px)": {
@@ -108,12 +116,8 @@ export const spotlightButton = style({
         backgroundColor: "rgb(255 255 255 / 0.12)",
         color: "#ffffff",
     },
-    // plny outline misto poloprusvitneho stinu - ring s alpha 0.45 mel vuci tmavemu
-    // navbaru jen ~2.3:1 (pod WCAG 1.4.11); blue-3 na #1f2b3c dava >3:1 a outline
-    // prezije i forced-colors rezim
-    ":focus-visible": {
-        outline: "2px solid var(--mantine-color-blue-3)",
-        outlineOffset: "2px",
+    selectors: {
+        "&.mantine-focus-auto:focus-visible": navbarFocusRing,
     },
     "@media": {
         "(min-width: 992px)": {

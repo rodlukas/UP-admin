@@ -19,7 +19,7 @@ export const phoneCell = style({
 
 export const hiddenBelowMd = style({
     "@media": {
-        "(max-width: 767px)": {
+        "(max-width: 767.98px)": {
             display: "none",
         },
     },

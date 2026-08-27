@@ -1,5 +1,6 @@
 import { createVar, globalStyle, style } from "@vanilla-extract/css"
 
+import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
 // Recharts předává `stroke`/`fill` jako SVG prezentační atributy — `var()` v nich funguje
@@ -23,19 +24,25 @@ globalStyle(":root[data-mantine-color-scheme='dark']", {
     },
 })
 
-export const chartBaseStyles = {
-    border: vars.borderShort.default,
-    borderRadius: vars.radius.md,
-    backgroundColor: vars.bg.surface,
-}
+/** Plovoucí tooltip grafu — `surfaceCard` s vyšší elevací (leží nad plochou grafu). */
+export const chartTooltip = style([
+    surfaceCard,
+    {
+        boxShadow: vars.shadow.elevated,
+        padding: "0.5rem 0.75rem",
+        lineHeight: 1.5,
+        color: vars.text.primary,
+        fontSize: "0.8rem",
+    },
+])
 
-export const chartTooltip = style({
-    ...chartBaseStyles,
-    boxShadow: vars.shadow.elevated,
-    padding: "0.5rem 0.75rem",
-    lineHeight: 1.5,
-    color: vars.text.primary,
-    fontSize: "0.8rem",
+/**
+ * Recharts obarvuje text položky legendy barvou série (fill baru/čáry) — barvy kurzů
+ * i palety grafů na tom mají 2,2–4,4:1 vůči povrchu, tedy pod WCAG AA. Sérii identifikuje
+ * barevná ikona vedle textu, samotný popisek proto vracíme na běžnou barvu textu.
+ */
+globalStyle(".recharts-legend-item-text", {
+    color: `${vars.text.primary} !important`,
 })
 
 /** Barva série grafu pro položku tooltipu — dynamická hodnota přes assignInlineVars. */

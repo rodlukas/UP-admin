@@ -9,6 +9,8 @@ export const statCard = style([
     surfaceCard,
     {
         padding: "1rem",
+        height: "100%",
+        // dlaždice v jednom řádku mřížky mají stejnou výšku i při různém počtu řádků rozpadu
         minHeight: "9rem",
     },
 ])
@@ -66,7 +68,7 @@ export const yearFilterButtons = style({
 
 globalStyle(`${yearFilterButtons} > *`, {
     "@media": {
-        "screen and (max-width: 575.98px)": {
+        "(max-width: 575.98px)": {
             flex: 1,
             minWidth: "4.5rem",
         },
@@ -91,7 +93,7 @@ export const filterHint = style({
 export const metricToggle = style({
     marginBottom: 0,
     "@media": {
-        "screen and (max-width: 767px)": {
+        "(max-width: 767.98px)": {
             display: "flex",
             width: "100%",
         },
@@ -101,7 +103,7 @@ export const metricToggle = style({
 globalStyle(`${metricToggle} button`, {
     whiteSpace: "nowrap",
     "@media": {
-        "screen and (max-width: 767px)": {
+        "(max-width: 767.98px)": {
             flex: 1,
             minWidth: 0,
         },
@@ -170,7 +172,7 @@ export const chartTitleRow = style({
     gap: "0.5rem",
     marginBottom: "0.25rem",
     "@media": {
-        "screen and (max-width: 767px)": {
+        "(max-width: 767.98px)": {
             alignItems: "flex-start",
             justifyContent: "flex-start",
         },
@@ -197,7 +199,7 @@ export const chartPanel = style([
     {
         padding: "1rem",
         "@media": {
-            "screen and (max-width: 767px)": {
+            "(max-width: 767.98px)": {
                 padding: "0.5rem",
             },
         },

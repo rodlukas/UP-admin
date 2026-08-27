@@ -3,7 +3,8 @@ import { Tooltip as MantineTooltip, TooltipProps } from "@mantine/core"
 import { faInfoCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
-import * as styles from "./InfoTooltip.css"
+import { dimmedText, iconWarning } from "../global/utility.css"
+
 
 type Props = {
     /** Text zobrazený v Tooltipu. */
@@ -33,7 +34,8 @@ const InfoTooltip: React.FC<Props> = ({
     label = "Doplňující informace",
     tone = "warning",
 }) => {
-    const iconClassName = tone === "warning" ? styles.warningIcon : styles.infoIcon
+    // „warning" = jantarová (upozornění na stav), „info" = neutrální tlumená
+    const iconClassName = tone === "warning" ? iconWarning : dimmedText
     return (
         <MantineTooltip
             label={text}

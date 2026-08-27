@@ -44,7 +44,7 @@ const App: React.FC = () => (
         colorSchemeManager={colorSchemeManager}>
         {/* zIndex: default 400 by toasty schoval pod fixní navbar (1030) i modaly (1050);
             notifikace patří nad vše včetně tooltipů (1300) — jinak uživatel nevidí
-            chybové hlášky z formulářů v modalech (react-toastify býval na 9999) */}
+            chybové hlášky z formulářů v modalech */}
         <Notifications position="top-right" limit={5} zIndex={1400} />
         <RouterProvider router={router} />
     </MantineProvider>

@@ -44,15 +44,15 @@ const ClientName: React.FC<ClientNameProps> = ({
     bold = false,
     className,
 }) => {
-    const PlainClientNameComponent: React.FC = () => <PlainClientName client={client} bold={bold} />
+    // element, ne komponenta definovana v renderu — ta by mela pri kazdem renderu novy typ,
+    // takze by React podstrom odmountoval a znovu namountoval
+    const plainName = <PlainClientName client={client} bold={bold} />
     return (
         <span className={className}>
             {"id" in client && link ? (
-                <Link to={`${APP_URLS.klienti.url}/${client.id}`}>
-                    <PlainClientNameComponent />
-                </Link>
+                <Link to={`${APP_URLS.klienti.url}/${client.id}`}>{plainName}</Link>
             ) : (
-                <PlainClientNameComponent />
+                plainName
             )}
         </span>
     )

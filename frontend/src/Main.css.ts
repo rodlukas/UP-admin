@@ -2,8 +2,7 @@ import { globalStyle, style } from "@vanilla-extract/css"
 
 /**
  * Výška fixního navbaru v px — jediný zdroj pravdy pro odvozené layout hodnoty:
- * `navbarInner.minHeight`, `isAuthenticated.paddingTop` (navbar + odstup obsahu)
- * a `loginContainer.minHeight` v Login.css.ts (100vh − navbar).
+ * `navbarInner.minHeight` a `isAuthenticated.paddingTop` (navbar + odstup obsahu).
  * Odvozené hodnoty se zapisují v rem (56px = 3.5rem při výchozích 16px = 1rem),
  * aby škálovaly s uživatelskou velikostí písma.
  */
@@ -103,15 +102,10 @@ export const navbarCollapseOpen = style({
 
 export const isAuthenticated = style({
     // výška navbaru (3.5rem) + 0.25rem odstup obsahu pod fixním navbarem
-    paddingTop: `${NAVBAR_HEIGHT / 16 + 0.25}rem`,
-})
-
-globalStyle(".main", {
     marginBottom: "1.5rem",
-})
-
-globalStyle(".nav-content", {
-    maxWidth: "900px",
+    // odstup pod obsahem stránky; nepřihlášené stránky (přihlášení, 404) ho nemají,
+    // aby se jejich obsah dal vycentrovat přes celou výšku viewportu
+    paddingTop: `${NAVBAR_HEIGHT / 16 + 0.25}rem`,
 })
 
 // Mantine žádný `[data-mantine-modal]` atribut nevykresluje — obsah modalu je

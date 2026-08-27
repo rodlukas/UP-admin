@@ -22,7 +22,7 @@ export const surfaceCard = style({
 /**
  * Karta obalující tabulku/seznam pod nadpisem sekce — `surfaceCard` s oříznutými rohy
  * (aby pruhy tabulky nepřetékaly přes rádius) a drobným odsazením shora. Jediný zdroj
- * pravdy pro stránky Klienti, Skupiny a Nastavení (dříve duplikováno na třech místech).
+ * pravdy pro stránky Klienti, Skupiny a Nastavení.
  */
 export const tableSection = style([
     surfaceCard,

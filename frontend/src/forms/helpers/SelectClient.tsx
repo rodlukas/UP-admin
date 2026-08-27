@@ -61,6 +61,8 @@ const SelectClient: React.FC<SelectClientProps> = ({
                         : (options.find((c) => c.id.toString() === val) ?? null)
                 onChangeCallback("client", found)
             }}
+            // select nemá viditelný label — přístupný název pro čtečky obrazovky
+            aria-label="Klient"
             placeholder="Vyberte existujícího klienta…"
             searchable
             nothingFoundMessage={TEXTS.NO_RESULTS}

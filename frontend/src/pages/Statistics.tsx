@@ -104,20 +104,20 @@ const ChartSection: React.FC<ChartSectionProps> = ({ title, caption, headerActio
 
 /** Přepínač metriky pro grafy (počet lekcí / odučené hodiny). */
 const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
+    // varianty filled/default drží stejný vzhled jako přepínač Aktivní/Neaktivní
+    // (ActiveSwitcher) — v aplikaci je jen jeden vizuál segmentového přepínače
     <Button.Group className={styles.metricToggle}>
-        {/* aria-pressed: aktivní metrika je jinak rozlišená jen vizuálně (filled/outline) */}
+        {/* aria-pressed: aktivní metrika je jinak rozlišená jen vizuálně */}
         <Button
             size="sm"
-            color="gray"
-            variant={value === "lectures" ? "filled" : "outline"}
+            variant={value === "lectures" ? "filled" : "default"}
             aria-pressed={value === "lectures"}
             onClick={() => onChange("lectures")}>
             {CHART_METRIC_LABEL.lectures}
         </Button>
         <Button
             size="sm"
-            color="gray"
-            variant={value === "hours" ? "filled" : "outline"}
+            variant={value === "hours" ? "filled" : "default"}
             aria-pressed={value === "hours"}
             onClick={() => onChange("hours")}>
             {CHART_METRIC_LABEL.hours}
@@ -951,8 +951,8 @@ const Statistics: React.FC = () => {
                 <div className={styles.yearFilterButtons}>
                     <Button
                         size="sm"
-                        color="gray"
-                        variant={lecturesYear === null ? "filled" : "outline"}
+                        variant={lecturesYear === null ? "filled" : "default"}
+                        aria-pressed={lecturesYear === null}
                         onClick={() => setLecturesYear(null)}>
                         Celkem
                     </Button>
@@ -960,8 +960,8 @@ const Statistics: React.FC = () => {
                         <Button
                             key={y}
                             size="sm"
-                            color="gray"
-                            variant={lecturesYear === y ? "filled" : "outline"}
+                            variant={lecturesYear === y ? "filled" : "default"}
+                            aria-pressed={lecturesYear === y}
                             onClick={() => setLecturesYear(y)}>
                             {y}
                         </Button>

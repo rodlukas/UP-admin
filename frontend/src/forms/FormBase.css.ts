@@ -148,7 +148,6 @@ globalStyle(`${modalWizardContent} .mantine-Modal-body`, {
 /** Sjednotí šířku s `Modal` size u klienta/skupiny: Přidat i Upravit stejně široké. */
 export const modalContentClientGroup = style({
     boxSizing: "border-box",
-    alignSelf: "stretch",
     minWidth: "min(100%, 40rem)",
     maxWidth: "100%",
 })
@@ -254,10 +253,6 @@ globalStyle(`${modalActions} .mantine-Button-root[data-variant='default']`, {
 globalStyle(`${modalActions} .mantine-Button-root[data-variant='default']:hover`, {
     backgroundColor: vars.bg.hoverElevated,
 })
-
-// Stín a hover lift submit tlačítka řeší globální pravidla v index.css.ts
-// (`.mantine-Button-root[type='submit'][data-variant='filled']`) — lokální kopie tu dřív
-// byla mrtvá (nižší specificita) a držela zastaralou modrou z doby před indigo primary.
 
 globalStyle(`${modalActions} > *`, {
     "@media": {
