@@ -3,6 +3,8 @@ import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
 import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
+import { lectureTitle } from "./Lecture.css"
+
 // Opacita ztmavujícího overlaye hlavičky — sdílená konstanta pro CSS gradient níže
 // i pro výpočet barvy textu v DashboardDay.tsx (getReadableTextColorWithOverlay);
 // musí být jedna hodnota, jinak by se text počítal proti jinému pozadí, než se vykreslí.
@@ -56,7 +58,7 @@ export const dashboardDayDateAction = style({
 
 export const lectureCanceledDashboardday = style({})
 
-globalStyle(`${lectureCanceledDashboardday} h4 span::after`, {
+globalStyle(`${lectureCanceledDashboardday} ${lectureTitle} span::after`, {
     transform: "skewY(10deg)",
 })
 

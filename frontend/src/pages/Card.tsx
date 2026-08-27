@@ -369,7 +369,9 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                 data-qa="lecture"
                 {...(lecture.canceled && { "data-qa-canceled": "true" })}>
                 <div className={lectureStyles.lectureHeading}>
-                    <Title order={4}>
+                    {/* order/size odděleně: h2 „Lekce" → h3 název kurzu → h4 datum lekce,
+                        vzhled zůstává h4 */}
+                    <Title order={4} className={lectureStyles.lectureTitle}>
                         <Tooltip label={courseDuration(lecture.duration)}>
                             <span data-qa="lecture_start">
                                 {isPrepaidLecture
@@ -477,11 +479,13 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                                 styles.COURSE_HEADING_OVERLAY_OPACITY,
                                             ),
                                         })}>
-                                        <h4
+                                        <Title
+                                            order={3}
+                                            size="h4"
                                             className={`${styles.courseHeading} ${textCenterMb0}`}
                                             data-qa="card_course_name">
                                             {courseLectures.course.name}
-                                        </h4>
+                                        </Title>
                                     </div>
                                     {courseLectures.objects.map(renderLecture)}
                                 </div>

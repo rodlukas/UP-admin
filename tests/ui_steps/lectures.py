@@ -213,9 +213,9 @@ def insert_to_form(context, verify_current_data=False):
         # vyber tedy musi uspet
         assert helpers.combobox_insert(context.browser, course_field, context.course)
     # smaz vsechny udaje
-    date_field.clear()
-    time_field.clear()
-    duration_field.clear()
+    helpers.clear_input(date_field)
+    helpers.clear_input(time_field)
+    helpers.clear_input(duration_field)
     # vloz nove udaje
     date_field.send_keys(context.date)
     time_field.send_keys(context.time)
@@ -252,7 +252,7 @@ def insert_to_form(context, verify_current_data=False):
                 note_field.get_attribute("value"),
             )
         # smazani stavajicich udaju
-        note_field.clear()
+        helpers.clear_input(note_field)
         # vlozeni novych udaju
         if (attendance["paid"] and not paid_checkbox.is_selected()) or (
             not attendance["paid"] and paid_checkbox.is_selected()

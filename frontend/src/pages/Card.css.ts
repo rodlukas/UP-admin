@@ -1,6 +1,7 @@
 import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
 
 import { plainName as groupPlainName } from "../components/GroupName.css"
+import { lectureTitle } from "../components/Lecture.css"
 import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
@@ -18,10 +19,6 @@ export const cardVars = createThemeContract({
 })
 
 export const courseHeading = style({
-    marginTop: 0,
-    // holé <h4> nese UA default margin-top (~21px), který by uvnitř barevného pruhu
-    // přidával prostor jen NAD textem (Mantine preflight resetuje pouze body,
-    // index.css.ts styluje jen h1–h3)
     color: cardVars.courseText,
 })
 
@@ -42,7 +39,7 @@ export const lectureCard = style({
     padding: "0 0 0.75rem !important",
 })
 
-globalStyle(`${lectureCard} h4`, {
+globalStyle(`${lectureCard} ${lectureTitle}`, {
     flexGrow: 1,
 })
 

@@ -12,12 +12,26 @@ export const lectureCanceled = style({
     backgroundColor: vars.statusTint.danger,
 })
 
-globalStyle(`${lectureCanceled} h4 span`, {
+/**
+ * Nadpis lekce a jméno skupiny se cílí přes třídy, ne přes `h4`/`h5` — jejich sémantická
+ * úroveň se odvíjí od nadpisů kolem (stránka vs. karta), vzhled se ale měnit nesmí.
+ */
+export const lectureTitle = style({
+    display: "inline-block",
+    margin: 0,
+})
+
+export const lectureSubtitle = style({
+    marginTop: "0.4rem",
+    marginBottom: "0.2rem",
+})
+
+globalStyle(`${lectureCanceled} ${lectureTitle} span`, {
     position: "relative",
     display: "inline-block",
 })
 
-globalStyle(`${lectureCanceled} h4 span::after`, {
+globalStyle(`${lectureCanceled} ${lectureTitle} span::after`, {
     position: "absolute",
     top: "50%",
     right: 0,
@@ -40,18 +54,8 @@ export const lectureHeading = style({
     },
 })
 
-globalStyle(`${lectureHeading} h4`, {
-    display: "inline-block",
-    margin: 0,
-})
-
 export const lectureContent = style({
     padding: "0 1rem",
-})
-
-globalStyle(`${lectureContent} h5`, {
-    marginTop: "0.4rem",
-    marginBottom: "0.2rem",
 })
 
 export const lectureNumber = style({

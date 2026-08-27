@@ -73,7 +73,7 @@ const Applications: React.FC = () => {
                                             courseApplications.course.color,
                                         ),
                                     })}>
-                                    <Title order={4} className={styles.courseHeading}>
+                                    <Title order={2} size="h4" className={styles.courseHeading}>
                                         <span data-qa="application_course">
                                             {courseApplications.course.name}
                                         </span>
@@ -90,7 +90,7 @@ const Applications: React.FC = () => {
                                         data-qa="application">
                                         <div className={styles.applicationRow}>
                                             <div className={styles.applicationNameCol}>
-                                                <Title order={5} className={mb0}>
+                                                <Title order={3} size="h5" className={mb0}>
                                                     <ClientName client={application.client} link />
                                                 </Title>
                                             </div>

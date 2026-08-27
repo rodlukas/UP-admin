@@ -88,7 +88,9 @@ const DashboardDay: React.FC<Props> = (props) => {
                                 styles.LECTURE_HEADING_OVERLAY_OPACITY,
                             ),
                         })}>
-                        <Title order={4}>
+                        {/* order/size odděleně: úroveň nadpisu musí navazovat na nadpis
+                            dne (h2), vzhled zůstává h4 */}
+                        <Title order={3} size="h4" className={lectureStyles.lectureTitle}>
                             <Tooltip label={courseDuration(lecture.duration)}>
                                 <strong>{prettyTime(new Date(lecture.start))}</strong>
                             </Tooltip>
@@ -111,7 +113,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                     </div>
                     <div className={lectureStyles.lectureContent}>
                         {lecture.group && (
-                            <Title order={5}>
+                            <Title order={4} size="h5" className={lectureStyles.lectureSubtitle}>
                                 <GroupName group={lecture.group} title link />
                             </Title>
                         )}
@@ -141,7 +143,8 @@ const DashboardDay: React.FC<Props> = (props) => {
                 ta="center"
                 className={`${styles.dashboardDayDate}${isToday(getDate()) ? ` ${styles.dashboardDayDateToday}` : ""}`}>
                 <Title
-                    order={4}
+                    order={2}
+                    size="h4"
                     className={classNames(
                         isUserCelebratingResult === USER_CELEBRATION.NOTHING
                             ? styles.celebrationNone

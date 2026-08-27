@@ -60,7 +60,7 @@ def insert_to_form(context, verify_current_data=False):
         ), f"clenove: {members_field_values}"
         assert context.old_group_activity == found_active, f"aktivita: {found_active}"
     # smaz vsechny udaje
-    name_field.clear()
+    helpers.clear_input(name_field)
     course_field.send_keys(Keys.BACK_SPACE)
     # v testech jsou max 2 clenove - odstran je
     members_field.send_keys(Keys.BACK_SPACE)

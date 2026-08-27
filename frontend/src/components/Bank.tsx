@@ -173,7 +173,10 @@ const Bank: React.FC = () => {
                     [styles.bankTitleOk]: isSuccess && !isLackOfMoney,
                 })}>
                 <div className={styles.bankTitleInner}>
-                    <Title order={4} className={`${styles.bankTitleText} ${inlineBlockNowrap}`}>
+                    <Title
+                        order={3}
+                        size="h4"
+                        className={`${styles.bankTitleText} ${inlineBlockNowrap}`}>
                         Aktuální stav: {getBalanceText()}{" "}
                         {isLackOfMoney && (
                             <Tooltip

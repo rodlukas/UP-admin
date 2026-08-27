@@ -107,7 +107,10 @@ const FormLectures: React.FC<Props> = (props) => {
 
     const isAtStateWithoutEmpty = (atState: AtStateWithEmpty | AtState): atState is AtState => {
         for (const [, value] of Object.entries(atState)) {
-            if (value === null) {
+            // `== null` zachytí i `undefined` — tim je hodnota bez vybraneho stavu
+            // reprezentovana (viz AtStateWithEmpty), takze samotne `=== null` by
+            // neproslo nikdy a stráž by propustila i neuplna data
+            if (value == null) {
                 return false
             }
         }
@@ -302,7 +305,13 @@ const FormLectures: React.FC<Props> = (props) => {
             }
         }
         if (clientCnt === excusedCnt) {
-            setCanceledPrevious(canceled)
+            // hodnotu k obnoveni ulozit jen pri PRECHODU do automaticky zruseneho stavu:
+            // efekt bezi znovu i po vlastnim setCanceled(true) a bez teto podminky by si
+            // prepsal zapamatovanou hodnotu na `true` — po odomluveni klienta by pak
+            // checkbox zustal zaskrtnuty, i kdyz lekce puvodne zrusena nebyla
+            if (!canceledDisabled) {
+                setCanceledPrevious(canceled)
+            }
             setCanceled(true)
             setCanceledDisabled(true)
         } else {

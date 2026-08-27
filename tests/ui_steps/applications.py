@@ -113,7 +113,7 @@ def insert_to_form(context, verify_current_data=False):
     # smaz vsechny udaje
     client_field.send_keys(Keys.BACK_SPACE)
     course_field.send_keys(Keys.BACK_SPACE)
-    note_field.clear()
+    helpers.clear_input(note_field)
     # vloz nove udaje
     # klient a kurz jsou povinne selecty - scenare "is not added" zamerne pouzivaji
     # prazdne/neexistujici/skryte hodnoty, u kterych vyber (zamerne) selze; uspesnost se

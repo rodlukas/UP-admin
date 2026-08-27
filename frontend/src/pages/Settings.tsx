@@ -23,7 +23,7 @@ import CourseCircle from "../components/CourseCircle"
 import Heading from "../components/Heading"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalSettings from "../forms/ModalSettings"
-import { EDIT_TYPE } from "../global/constants"
+import { EDIT_TYPE, GITHUB_REPO_URL } from "../global/constants"
 import { bold, dimmedText, iconInlineX, iconSuccess, mb0 } from "../global/utility.css"
 import { AttendanceStateType } from "../types/models"
 import { QA } from "../types/types"
@@ -316,7 +316,7 @@ const Settings: React.FC = () => {
                                 <a
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    href="https://github.com/rodlukas/UP-admin"
+                                    href={GITHUB_REPO_URL}
                                     className={iconInlineX}>
                                     <FontAwesomeIcon
                                         icon={faGithub}

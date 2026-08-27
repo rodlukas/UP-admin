@@ -70,11 +70,11 @@ def insert_to_form(context, verify_current_data=False):
             and context.old_client_activity == active_checkbox.is_selected()
         )
     # smaz vsechny udaje
-    firstname_field.clear()
-    surname_field.clear()
-    phone_field.clear()
-    email_field.clear()
-    note_field.clear()
+    helpers.clear_input(firstname_field)
+    helpers.clear_input(surname_field)
+    helpers.clear_input(phone_field)
+    helpers.clear_input(email_field)
+    helpers.clear_input(note_field)
     # vloz nove udaje
     firstname_field.send_keys(context.firstname)
     surname_field.send_keys(context.surname)

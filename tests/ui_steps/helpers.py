@@ -90,6 +90,19 @@ def get_tooltip_text(driver, element):
     return tooltip_text
 
 
+def clear_input(element):
+    """Vymaze obsah ovladaneho (React) inputu znak po znaku.
+
+    `element.clear()` nastavi hodnotu pres WebDriver primo a jednotlive prohlizece se
+    lisi v tom, jake udalosti u toho posilaji - React onChange se nemusi spustit vubec
+    a controlled input si pri dalsim renderu vrati puvodni hodnotu (nasledny send_keys
+    pak pise ZA ni). Mazani BACK_SPACE je bezne uzivatelske chovani a chova se stejne
+    ve vsech prohlizecich (stejny duvod jako v `combobox_insert`).
+    """
+    for _ in range(len(element.get_attribute("value") or "")):
+        element.send_keys(Keys.BACK_SPACE)
+
+
 def wait_form_settings_visible(driver):
     WebDriverWait(driver, WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=form_settings]"))

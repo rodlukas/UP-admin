@@ -16,6 +16,8 @@ globalStyle(":root[data-mantine-color-scheme='dark']", {
     vars: {
         "--mantine-color-dimmed": "var(--mantine-color-dark-1)",
         "--mantine-color-placeholder": "var(--mantine-color-dark-2)",
+        // viz komentář u light varianty níže
+        "--mantine-color-error": "var(--mantine-color-red-4)",
     },
 })
 
@@ -54,6 +56,14 @@ globalStyle(":root[data-mantine-color-scheme='light']", {
         "--mantine-color-red-filled": "var(--mantine-color-red-9)",
         // red-9 je nejtmavší odstín palety, hover proto ztmavuje vlastním hexem (7.43:1)
         "--mantine-color-red-filled-hover": "#a61e1e",
+        /**
+         * Chybové hlášky pod poli (`error` prop – např. „Vyberte kurz") a hvězdička
+         * povinného pole. Mantine je staví na red-6, který má 3.28:1 na bílém povrchu
+         * formuláře a 4.13:1 na dark-6 — pod WCAG AA v OBOU schématech. Hodnoty přebíráme
+         * ze sémantického tokenu `colors.danger` (light red-9 = 5.46:1, dark red-4 = 5.86:1),
+         * ať je chybová červená v aplikaci jen jedna.
+         */
+        "--mantine-color-error": "var(--mantine-color-red-9)",
     },
 })
 
