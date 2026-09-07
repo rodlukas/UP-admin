@@ -1,4 +1,4 @@
-import { globalStyle, style } from "@vanilla-extract/css"
+import { createVar, globalStyle, style } from "@vanilla-extract/css"
 
 import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
@@ -15,26 +15,32 @@ export const statCard = style([
     },
 ])
 
+/**
+ * Titulek statistické karty. Dřív verzálky s prostrkáním na 0,75 rem — zdrobnělý
+ * verzálkový štítek nad každým číslem je nejčastější ozdoba generovaných dashboardů
+ * a v aplikaci není text menší než 1 rem. Rozlišení nese váha a tlumená barva.
+ */
 export const statCardTitle = style({
     marginBottom: "0.5rem",
-    textTransform: "uppercase",
-    letterSpacing: "0.04em",
     color: vars.text.subtleMuted,
-    fontSize: "0.75rem",
+    fontSize: "1rem",
     fontWeight: 600,
 })
 
 export const metricValue = style({
     lineHeight: 1,
+    letterSpacing: "-0.02em",
+    color: vars.text.heading,
     fontSize: "2.4rem",
     fontWeight: 700,
+    fontVariantNumeric: "tabular-nums",
 })
 
 export const statNote = style({
     marginBottom: "0.5rem",
     lineHeight: 1.45,
     color: vars.text.subtleMuted,
-    fontSize: "0.75rem",
+    fontSize: "1rem",
 })
 
 export const fetchingOverlay = style({
@@ -48,7 +54,7 @@ export const pageLead = style({
     maxWidth: "42rem",
     lineHeight: 1.5,
     color: vars.text.subtleMuted,
-    fontSize: "0.875rem",
+    fontSize: "1rem",
 })
 
 export const sectionTightTop = style({
@@ -60,16 +66,18 @@ export const filterSection = style({
     paddingBottom: "1rem",
 })
 
+/**
+ * Přepínač rozsahu roků. `width: fit-content` je podstatné: `SegmentedControl` se jinak
+ * roztáhne na celou šířku rodiče a tři volby pak zabírají 1300 px.
+ */
 export const yearFilterButtons = style({
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "0.25rem",
+    width: "fit-content",
+    maxWidth: "100%",
 })
 
-globalStyle(`${yearFilterButtons} > *`, {
+globalStyle(`${yearFilterButtons} label`, {
     "@media": {
         "(max-width: 575.98px)": {
-            flex: 1,
             minWidth: "4.5rem",
         },
     },
@@ -78,7 +86,7 @@ globalStyle(`${yearFilterButtons} > *`, {
 export const filterHeading = style({
     marginBottom: "0.25rem",
     color: vars.text.primary,
-    fontSize: "0.875rem",
+    fontSize: "1rem",
     fontWeight: 600,
 })
 
@@ -87,27 +95,17 @@ export const filterHint = style({
     maxWidth: "42rem",
     lineHeight: 1.45,
     color: vars.text.subtleMuted,
-    fontSize: "0.8rem",
+    fontSize: "1rem",
 })
 
 export const metricToggle = style({
     marginBottom: 0,
-    "@media": {
-        "(max-width: 767.98px)": {
-            display: "flex",
-            width: "100%",
-        },
-    },
+    width: "fit-content",
+    maxWidth: "100%",
 })
 
-globalStyle(`${metricToggle} button`, {
+globalStyle(`${metricToggle} label`, {
     whiteSpace: "nowrap",
-    "@media": {
-        "(max-width: 767.98px)": {
-            flex: 1,
-            minWidth: 0,
-        },
-    },
 })
 
 export const chartSection = style({
@@ -118,7 +116,7 @@ export const chartSection = style({
 export const totalLabel = style({
     marginBottom: "1rem",
     color: vars.text.muted,
-    fontSize: "0.875em",
+    fontSize: "1rem",
 })
 
 export const breakdownRow = style({
@@ -134,8 +132,33 @@ export const breakdownRowSpaced = style([
     },
 ])
 
+export const breakdownLabel = style({
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    color: vars.text.muted,
+    fontSize: "1rem",
+})
+
+/**
+ * Barva puntíku před popiskem řádku – dynamická přes assignInlineVars, stejný vzor
+ * jako `tooltipSeriesColor` v charts.css.ts. Puntík se dřív nesl barvou `badge bg-*`
+ * (Bootstrap); tady jde jen o kategorii, ne o důraz, proto malá tečka místo pilulky.
+ */
+export const breakdownDotColor = createVar()
+
+export const breakdownDot = style({
+    flexShrink: 0,
+    borderRadius: "50%",
+    backgroundColor: breakdownDotColor,
+    width: "0.5rem",
+    height: "0.5rem",
+})
+
 export const breakdownValue = style({
+    color: vars.text.primary,
     fontWeight: 600,
+    fontVariantNumeric: "tabular-nums",
 })
 
 export const tooltipLabel = style({
@@ -191,7 +214,7 @@ export const chartCaption = style({
     maxWidth: "48rem",
     lineHeight: 1.45,
     color: vars.text.subtleMuted,
-    fontSize: "0.8rem",
+    fontSize: "1rem",
 })
 
 export const chartPanel = style([
@@ -209,5 +232,5 @@ export const chartPanel = style([
 export const chartEmpty = style({
     marginBottom: 0,
     color: vars.text.subtleMuted,
-    fontSize: "0.875rem",
+    fontSize: "1rem",
 })

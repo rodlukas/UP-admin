@@ -1,4 +1,4 @@
-import { Badge, Container, Skeleton, Title, Tooltip } from "@mantine/core"
+import { Container, Skeleton, Title, Tooltip } from "@mantine/core"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
@@ -6,15 +6,17 @@ import * as React from "react"
 import { trackEvent } from "../analytics"
 import { useApplications, useDeleteApplication } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
-import DeleteButton from "../components/buttons/DeleteButton"
+import DeleteIconButton from "../components/buttons/DeleteIconButton"
 import ClientName from "../components/ClientName"
 import ClientPhone from "../components/ClientPhone"
+import { courseBandVars } from "../components/CourseName.css"
 import Heading from "../components/Heading"
+import { SkeletonShell } from "../components/Skeletons"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
 import { dimmedTextCenter, mb0 } from "../global/utility.css"
 import {
-    getReadableTextColor,
+    contrastingTextColor,
     GroupedObjectsByCourses,
     groupObjectsByCourses,
     pluralizeCs,
@@ -23,9 +25,55 @@ import { ApplicationType } from "../types/models"
 
 import * as styles from "./Applications.css"
 
+/**
+ * Kostra jednoho řádku zájemce — kopíruje `applicationRow`: jméno, datum s poznámkou,
+ * telefon a dvojice akčních tlačítek (úprava, smazání), stejné čtyři sloupce jako reálný řádek.
+ */
+const ApplicationRowSkeleton: React.FC = () => (
+    <div className={styles.applicationItem}>
+        <div className={styles.applicationRow}>
+            <div className={styles.applicationNameCol}>
+                <Skeleton h={20} radius="sm" w="70%" />
+            </div>
+            <div className={styles.applicationMeta}>
+                <Skeleton h={18} radius="sm" w="55%" />
+            </div>
+            <div className={styles.applicationPhoneCol}>
+                <Skeleton h={16} radius="sm" w="65%" />
+            </div>
+            <div className={styles.applicationActionsCol}>
+                <div className={styles.applicationActions}>
+                    <Skeleton h={32} w={32} circle />
+                    <Skeleton h={32} w={32} circle />
+                </div>
+            </div>
+        </div>
+    </div>
+)
+
+/**
+ * Kostra stránky zájemců — kopíruje tvar skutečného obsahu: pruh s názvem kurzu a počtem
+ * zájemců, pod ním pár řádků zájemců. Pruh je bez barvy (na rozdíl od `courseHeadingItem`
+ * v reálném obsahu) — barva kurzu se dozví až po dotažení dat.
+ */
+const ApplicationListSkeleton: React.FC = () => (
+    <SkeletonShell>
+        {[...Array(3)].map((_, i) => (
+            <div key={i} className={classNames(styles.course, styles.listSection)}>
+                <div className={styles.courseHeadingItem}>
+                    <Skeleton h={18} radius="sm" w="35%" />
+                    <Skeleton h={20} radius="xl" w={70} />
+                </div>
+                <ApplicationRowSkeleton />
+                <ApplicationRowSkeleton />
+            </div>
+        ))}
+    </SkeletonShell>
+)
+
 /** Stránka se zájemci o kurzy. */
 const Applications: React.FC = () => {
-    const { data: applicationsData, isLoading, isFetching } = useApplications()
+    const { data: applicationsData, isLoading } = useApplications()
     const deleteApplication = useDeleteApplication()
 
     const applications: GroupedObjectsByCourses<ApplicationType> = React.useMemo(() => {
@@ -45,17 +93,9 @@ const Applications: React.FC = () => {
 
     return (
         <Container>
-            <Heading
-                title={APP_URLS.zajemci.title}
-                buttons={<ModalApplications />}
-                isFetching={isFetching && applications.length > 0}
-            />
+            <Heading title={APP_URLS.zajemci.title} buttons={<ModalApplications />} />
             {isLoading ? (
-                <>
-                    {[...Array(3)].map((_, i) => (
-                        <Skeleton key={i} h={110} mb="md" radius="md" />
-                    ))}
-                </>
+                <ApplicationListSkeleton />
             ) : (
                 <>
                     {applications.map((courseApplications) => {
@@ -67,21 +107,23 @@ const Applications: React.FC = () => {
                                 data-qa="applications_for_course">
                                 <div
                                     className={styles.courseHeadingItem}
-                                    style={assignInlineVars(styles.applicationsVars, {
-                                        courseBackground: courseApplications.course.color,
-                                        badgeColor: getReadableTextColor(
-                                            courseApplications.course.color,
-                                        ),
+                                    style={assignInlineVars(courseBandVars, {
+                                        color: courseApplications.course.color,
+                                        text: contrastingTextColor(courseApplications.course.color),
                                     })}>
                                     <Title order={2} size="h4" className={styles.courseHeading}>
                                         <span data-qa="application_course">
                                             {courseApplications.course.name}
                                         </span>
                                     </Title>
-                                    <Badge radius="xl" className={styles.courseHeadingBadge}>
-                                        <span data-qa="applications_for_course_cnt">{cnt}</span>{" "}
-                                        {pluralizeCs(cnt, "zájemce", "zájemci", "zájemců")}
-                                    </Badge>
+                                    <span className={styles.courseHeadingCount}>
+                                        {/* nezlomitelná mezera, ne obyčejná: `courseHeadingCount`
+                                            (= `lectureNumber`) je `inline-flex` a mezeru samotnou
+                                            jako text node mezi dvěma flex položkami by prohlížeč
+                                            zahodil jako čistě bílý znak */}
+                                        <span data-qa="applications_for_course_cnt">{cnt}</span>
+                                        {` ${pluralizeCs(cnt, "zájemce", "zájemci", "zájemců")}`}
+                                    </span>
                                 </div>
                                 {courseApplications.objects.map((application) => (
                                     <div
@@ -90,23 +132,32 @@ const Applications: React.FC = () => {
                                         data-qa="application">
                                         <div className={styles.applicationRow}>
                                             <div className={styles.applicationNameCol}>
-                                                <Title order={3} size="h5" className={mb0}>
+                                                {/* velikost i řez shodné s jménem klienta v účasti
+                                                    (`clientName` v Attendances.css.ts) — jinak stejný
+                                                    údaj v diáři a v zájemcích vypadá jinak velký */}
+                                                <Title
+                                                    order={3}
+                                                    size="h5"
+                                                    fz="1.15rem"
+                                                    fw={600}
+                                                    className={mb0}>
                                                     <ClientName client={application.client} link />
                                                 </Title>
                                             </div>
                                             <div className={styles.applicationMeta}>
                                                 <Tooltip label="Datum přidání">
-                                                    <Badge
-                                                        variant="light"
-                                                        color="gray"
-                                                        className={styles.createdBadge}
+                                                    <span
+                                                        className={styles.createdDate}
                                                         data-qa="application_created_at">
                                                         {prettyDateWithYear(
                                                             new Date(application.created_at),
                                                         )}
-                                                    </Badge>
+                                                    </span>
                                                 </Tooltip>
-                                                <span data-qa="application_note" data-gdpr>
+                                                <span
+                                                    className={styles.applicationNote}
+                                                    data-qa="application_note"
+                                                    data-gdpr>
                                                     {application.note}
                                                 </span>
                                             </div>
@@ -123,8 +174,8 @@ const Applications: React.FC = () => {
                                                     <ModalApplications
                                                         currentApplication={application}
                                                     />
-                                                    <DeleteButton
-                                                        size="sm"
+                                                    <DeleteIconButton
+                                                        content={`zájemce ${application.client.surname} ${application.client.firstname} o ${application.course.name}`}
                                                         onClick={(): void => {
                                                             if (
                                                                 globalThis.confirm(

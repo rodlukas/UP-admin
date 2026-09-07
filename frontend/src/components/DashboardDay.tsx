@@ -16,8 +16,8 @@ import {
     prettyTime,
     toISODate,
 } from "../global/funcDateTime"
-import { inlineBlockNowrap, mb0 } from "../global/utility.css"
-import { courseDuration, getReadableTextColorWithOverlay } from "../global/utils"
+import { inlineBlockNowrap, mb0, srOnly } from "../global/utility.css"
+import { contrastingTextColor, courseDuration } from "../global/utils"
 import { DEFAULT_DELAY, useDelayedValue } from "../hooks/useDelayedValue"
 
 import Attendances from "./Attendances"
@@ -27,7 +27,8 @@ import * as styles from "./DashboardDay.css"
 import GroupName from "./GroupName"
 import * as lectureStyles from "./Lecture.css"
 import LectureNumber from "./LectureNumber"
-import Loading from "./Loading"
+import LectureTypeIcon from "./LectureTypeIcon"
+import { LectureListSkeleton } from "./Skeletons"
 
 type Props = {
     /** Při požadavcích na API nedělej prodlevu (true) - prodleva se hodí při rychlém překlikávání mezi dny v diáři. */
@@ -55,38 +56,40 @@ const DashboardDay: React.FC<Props> = (props) => {
 
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())
+    const isDayToday = isToday(getDate())
 
-    const showLoading = isLoading || attendanceStatesContext.isLoading
+    /**
+     * Než prodleva dojede, míří dotaz pořád na předchozí datum — a jeho odpověď bývá v cache,
+     * takže `isLoading` je false a sloupec by pod novým datem v hlavičce vykreslil lekce toho
+     * minulého (a „Upravit lekci“ by otevřela lekci z jiného týdne). Po dobu prodlevy se proto
+     * ukazuje kostra, tedy totéž, co ukazoval dotaz vystřelený okamžitě.
+     */
+    const isDatePending = delayedDate !== props.date
+
+    const showLoading = isDatePending || isLoading || attendanceStatesContext.isLoading
     const hasLectures = lectures.length > 0
     let content: React.ReactNode
     if (showLoading) {
-        content = (
-            <div className={classNames(lectureStyles.lecture, styles.dashboardDayItem)}>
-                <Loading />
-            </div>
-        )
+        content = <LectureListSkeleton count={3} />
     } else if (hasLectures) {
         content = lectures.map((lecture) => {
-            const className = classNames(lectureStyles.lecture, styles.dashboardDayItem, {
-                [styles.lectureGroup]: lecture.group && !lecture.canceled,
-                [lectureStyles.lectureCanceled]: lecture.canceled,
-                [styles.lectureCanceledDashboardday]: lecture.canceled,
-            })
             return (
                 <div
                     key={lecture.id}
                     data-qa="lecture"
-                    className={className}
+                    className={classNames(styles.lectureBlock, styles.dashboardDayItem, {
+                        [lectureStyles.lectureCanceledStruck]: lecture.canceled,
+                    })}
+                    // barvu kurzu nese pruh hlavičky (`lectureHeader`); text v něm musí
+                    // zůstat čitelný i na světlém či tmavém uživatelském hexu
+                    style={assignInlineVars(lectureStyles.lectureVars, {
+                        courseColor: lecture.course.color,
+                        courseText: contrastingTextColor(lecture.course.color),
+                    })}
                     {...(lecture.canceled && { "data-qa-canceled": "true" })}>
                     <div
-                        className={classNames(lectureStyles.lectureHeading, styles.lectureHeading)}
-                        style={assignInlineVars(styles.dashboardDayVars, {
-                            courseBackground: lecture.course.color,
-                            // pozadí hlavičky ztmavuje overlay (viz DashboardDay.css.ts)
-                            courseText: getReadableTextColorWithOverlay(
-                                lecture.course.color,
-                                styles.LECTURE_HEADING_OVERLAY_OPACITY,
-                            ),
+                        className={classNames(styles.lectureHeader, {
+                            [styles.lectureHeaderCanceled]: lecture.canceled,
                         })}>
                         {/* order/size odděleně: úroveň nadpisu musí navazovat na nadpis
                             dne (h2), vzhled zůstává h4 */}
@@ -95,23 +98,26 @@ const DashboardDay: React.FC<Props> = (props) => {
                                 <strong>{prettyTime(new Date(lecture.start))}</strong>
                             </Tooltip>
                         </Title>
-                        <CourseName course={lecture.course} className={styles.courseName} />
-                        <LectureNumber
-                            lecture={lecture}
-                            colorize
-                            className={classNames(
-                                lectureStyles.lectureNumber,
-                                styles.lectureNumber,
-                            )}
-                            color="light"
+                        <CourseName
+                            course={lecture.course}
+                            withDot={false}
+                            className={styles.lectureHeaderCourse}
                         />
+                        <LectureTypeIcon lecture={lecture} />
+                        <LectureNumber lecture={lecture} />
                         <ModalLectures
                             object={lecture.group ?? lecture.attendances[0].client}
                             currentLecture={lecture}
                             source={source}
                         />
                     </div>
-                    <div className={lectureStyles.lectureContent}>
+                    <div
+                        className={classNames(styles.lectureBody, {
+                            [styles.lectureBodyCanceled]: lecture.canceled,
+                        })}>
+                        {/* přeškrtnutí je pro oko, tenhle text pro čtečku — bez něj by stav
+                            nesl jen vzhled (WCAG 1.4.1) */}
+                        {lecture.canceled && <span className={srOnly}>Zrušeno</span>}
                         {lecture.group && (
                             <Title order={4} size="h5" className={lectureStyles.lectureSubtitle}>
                                 <GroupName group={lecture.group} title link />
@@ -138,10 +144,14 @@ const DashboardDay: React.FC<Props> = (props) => {
     }
 
     return (
-        <div className={styles.dashboardDayWrapper}>
+        <div
+            className={classNames(styles.dashboardDayWrapper, {
+                [styles.dashboardDayToday]: isDayToday,
+            })}>
             <Box
-                ta="center"
-                className={`${styles.dashboardDayDate}${isToday(getDate()) ? ` ${styles.dashboardDayDateToday}` : ""}`}>
+                className={classNames(styles.dashboardDayDate, {
+                    [styles.dashboardDayDateToday]: isDayToday,
+                })}>
                 <Title
                     order={2}
                     size="h4"
@@ -158,6 +168,7 @@ const DashboardDay: React.FC<Props> = (props) => {
                     date={props.date}
                     dropdownClassName={styles.dashboardDayDateAction}
                     dropdownSize="sm"
+                    dropdownVariant="subtle"
                     dropdownDirection="up"
                     isFetching={isFetching && !isLoading}
                     source={source}

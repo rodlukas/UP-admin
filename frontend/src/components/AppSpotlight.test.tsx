@@ -6,10 +6,15 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { trackEvent } from "../analytics"
 import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
+import { rememberRecentRecord } from "../global/recentRecords"
 import { createTestRouter } from "../testUtils/createTestRouter"
 import { ClientActiveType, GroupType } from "../types/models"
 
 import AppSpotlight from "./AppSpotlight"
+import { courseBandVars } from "./CourseName.css"
+
+/** Z `var(--x)` udělá `--x`, aby se dala přečíst přes `style.getPropertyValue`. */
+const cssVarName = (cssVar: string): string => cssVar.replace(/^var\((.+)\)$/, "$1")
 
 vi.mock("../analytics", () => ({
     trackEvent: vi.fn(),
@@ -53,18 +58,22 @@ const groups: GroupType[] = [
     },
 ]
 
-async function renderAppSpotlight(): Promise<void> {
+type TestRouter = Awaited<ReturnType<typeof createTestRouter>>
+
+async function renderAppSpotlight(): Promise<{ router: TestRouter }> {
     const router = await createTestRouter(
         <MantineProvider env="test">
-            <ClientsActiveContext.Provider value={{ clients, isLoading: false, isFetching: false }}>
-                <GroupsActiveContext.Provider
-                    value={{ groups, isLoading: false, isFetching: false }}>
+            <ClientsActiveContext.Provider value={{ clients, isLoading: false, isSuccess: true }}>
+                <GroupsActiveContext.Provider value={{ groups, isLoading: false, isSuccess: true }}>
                     <AppSpotlight />
                 </GroupsActiveContext.Provider>
             </ClientsActiveContext.Provider>
         </MantineProvider>,
+        // paleta na kartu naviguje, router ji tedy musí znát
+        { paths: ["/klienti/$id"] },
     )
     render(<RouterProvider router={router} />)
+    return { router }
 }
 
 const getSearchInput = async (): Promise<HTMLElement> =>
@@ -93,6 +102,8 @@ function getGroupLabels(): string[] {
 
 beforeEach(() => {
     vi.mocked(trackEvent).mockClear()
+    // naposledy otevřené žijí v localStorage a mezi testy by protekly
+    localStorage.clear()
 })
 
 afterEach(async () => {
@@ -111,14 +122,33 @@ afterEach(async () => {
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument())
 })
 
-test("shows all actions with total counts when query is empty", async () => {
+test("offers recently opened records when query is empty", async () => {
+    rememberRecentRecord({ kind: "client", id: 2 })
+    rememberRecentRecord({ kind: "group", id: 21 })
     await renderAppSpotlight()
     await openSpotlight()
 
-    expect(getActionLabels()).toEqual(["Robeš Radim", "Rod Pavels", "Žáková Eva", "Žabky"])
     // uvozovky: čte se interní Mantine CSS proměnná --spotlight-label (jsdom neumí přečíst
     // ::before content) — při upgradu Mantine může assert vyžadovat úpravu
-    expect(getGroupLabels()).toEqual(["'Klienti (3)'", "'Skupiny (1)'"])
+    await waitFor(() => expect(getGroupLabels()).toEqual(["'Naposledy otevřené'"]))
+    // nejnovější první
+    expect(getActionLabels()).toEqual(["Žabky", "Rod Pavels"])
+})
+
+test("skips a remembered record that is no longer among active records", async () => {
+    rememberRecentRecord({ kind: "client", id: 999 })
+    rememberRecentRecord({ kind: "client", id: 2 })
+    await renderAppSpotlight()
+    await openSpotlight()
+
+    await waitFor(() => expect(getActionLabels()).toEqual(["Rod Pavels"]))
+})
+
+test("invites typing when nothing has been opened yet", async () => {
+    await renderAppSpotlight()
+    await openSpotlight()
+
+    expect(await screen.findByText("Začněte psát jméno klienta nebo skupiny.")).toBeInTheDocument()
 })
 
 test("orders search results by relevance, not by source array order", async () => {
@@ -140,6 +170,38 @@ test("shows filtered match counts in group labels when query is active", async (
 
     // 2 nalezeni klienti ze 3 celkem; skupina bez shody uplne zmizi
     await waitFor(() => expect(getGroupLabels()).toEqual(["'Klienti (2)'"]))
+})
+
+test("opens the card of the record whose action is triggered", async () => {
+    rememberRecentRecord({ kind: "client", id: 2 })
+    const { router } = await renderAppSpotlight()
+    await openSpotlight()
+
+    fireEvent.click(await screen.findByText("Rod Pavels"))
+
+    await waitFor(() => expect(router.state.location.pathname).toBe("/klienti/2"))
+})
+
+test("marks a group result with the color of its course", async () => {
+    await renderAppSpotlight()
+    const input = await openSpotlight()
+
+    fireEvent.change(input, { target: { value: "zab" } })
+
+    // stejný chip jako v seznamu skupin (`<CourseName band />`) — barva kurzu do něj jde
+    // inline CSS proměnnou, takže se čte z ní; `getComputedStyle` v jsdom `var()` nerozbalí
+    const courseName = await screen.findByText("Plavání")
+    expect(courseName).toHaveAttribute("data-qa", "course_name")
+    expect(courseName.style.getPropertyValue(cssVarName(courseBandVars.color))).toBe("#f39c12")
+})
+
+test("shows keyboard hints for moving, opening and closing", async () => {
+    await renderAppSpotlight()
+    await openSpotlight()
+
+    expect(screen.getByText("pohyb")).toBeInTheDocument()
+    expect(screen.getByText("otevřít")).toBeInTheDocument()
+    expect(screen.getByText("zavřít")).toBeInTheDocument()
 })
 
 test("shows nothing found message for query without matches", async () => {

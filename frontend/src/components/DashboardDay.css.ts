@@ -1,82 +1,51 @@
-import { createThemeContract, globalStyle, style } from "@vanilla-extract/css"
+import { globalStyle, style } from "@vanilla-extract/css"
 
-import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
-import { lectureTitle } from "./Lecture.css"
+import { lectureVars } from "./Lecture.css"
 
-// Opacita ztmavujícího overlaye hlavičky — sdílená konstanta pro CSS gradient níže
-// i pro výpočet barvy textu v DashboardDay.tsx (getReadableTextColorWithOverlay);
-// musí být jedna hodnota, jinak by se text počítal proti jinému pozadí, než se vykreslí.
-export const LECTURE_HEADING_OVERLAY_OPACITY = 0.18
-
-export const dashboardDayVars = createThemeContract({
-    courseBackground: "",
-    // Barva textu podle luminance složeného pozadí (kurz + overlay níže) —
-    // viz getReadableTextColorWithOverlay; natvrdo bílý text neměl na světlých
-    // barvách kurzů dostatečný kontrast.
-    courseText: "",
-})
-
-export const lectureGroup = style({
-    backgroundColor: vars.bg.muted,
-})
-
+/**
+ * Hlavička dne — lepí se při rolování, aby bylo v dlouhém dni pořád vidět, o který jde.
+ * Vlastní zaoblení rohů nepotřebuje: panel, ve kterém sedí (`weekDayCol` v diáři,
+ * `lecturesPanel` na přehledu), obsah ořezává přes `overflow: clip`.
+ */
 export const dashboardDayDate = style({
+    position: "sticky",
+    zIndex: 3,
+    top: 0,
     display: "flex",
     alignItems: "center",
     gap: "0.5rem",
     borderBottom: vars.borderShort.default,
     backgroundColor: vars.bg.surface,
-    padding: "0.6rem 0.85rem",
-    minHeight: "3.25rem",
+    padding: "0.55rem 0.85rem",
     color: vars.text.headingSoft,
 })
 
 /**
- * Přebíjí `dashboardDayDate` výše — stejná specificita, vyhrává pozdější pořadí v tomto souboru.
- * Dark varianta se stejně jako `statusTint` v tokens.ts tlumí přes color-mix s povrchem:
- * plné indigo-9 odlišuje hlavičku od karty poměrem 2,29:1 a v týdenním přehledu překřičí
- * obsah, kdežto light indigo-1 je jen jemný nádech (1,27:1) — 35% mix drží obě schémata
- * na stejné míře zvýraznění (1,28:1) a text (gray-1) na něm má 10,9:1.
+ * Hlavička dnešního dne. Přebíjí `dashboardDayDate` výše — stejná specificita, vyhrává
+ * pozdější pořadí v tomto souboru.
+ *
+ * Nese jen váhu písma; vlastní značku dne kreslí linka na hraně sloupce
+ * (`dashboardDayToday` níže). Váha tu zůstává proto, aby stav neurčovala jen barevná
+ * linka (WCAG 1.4.1).
  */
 export const dashboardDayDateToday = style({
-    backgroundColor:
-        "light-dark(var(--mantine-color-indigo-1), color-mix(in srgb, var(--mantine-color-indigo-9) 35%, var(--mantine-color-dark-7)))",
+    fontWeight: 700,
 })
 
+/**
+ * Nadpis dne bez oslavy. Dřív vycentrovaný s levým odsazením, které kompenzovalo
+ * tlačítko vpravo; hlavička dne se dnes rovná doleva jako všechen ostatní obsah,
+ * takže stačí, aby vyplnila zbylé místo.
+ */
 export const celebrationNone = style({
     flex: 1,
-    paddingLeft: "2.4rem",
     minWidth: 0,
-    textAlign: "center",
 })
 
 export const dashboardDayDateAction = style({
     flexShrink: 0,
-})
-
-export const lectureCanceledDashboardday = style({})
-
-globalStyle(`${lectureCanceledDashboardday} ${lectureTitle} span::after`, {
-    transform: "skewY(10deg)",
-})
-
-export const lectureHeading = style({
-    backgroundColor: `${dashboardDayVars.courseBackground} !important`,
-    backgroundImage: `linear-gradient(rgb(15 23 42 / ${LECTURE_HEADING_OVERLAY_OPACITY}), rgb(15 23 42 / ${LECTURE_HEADING_OVERLAY_OPACITY}))`,
-    color: dashboardDayVars.courseText,
-})
-
-export const courseName = style({
-    flexGrow: 1,
-    lineHeight: 0.9,
-})
-
-export const lectureNumber = style({
-    // !important: přebíjí background Mantine Badge varianty `white` (stejná specificita, pořadí
-    // tříd napříč bundly není garantované) — jinak by v dark módu mohl zůstat bílý pill
-    backgroundColor: "light-dark(white, var(--mantine-color-dark-6)) !important",
 })
 
 export const lectureFree = style({
@@ -85,13 +54,32 @@ export const lectureFree = style({
     paddingTop: "1rem !important",
 })
 
-export const dashboardDayWrapper = style([
-    surfaceCard,
-    {
-        position: "relative",
-        overflow: "hidden",
-    },
-])
+/** Šířka linky, kterou se značí dnešní den. */
+const TODAY_MARK_WIDTH = "3px"
+
+/** Den je plocha, ne karta — obsah drží pohromadě jen linky mezi lekcemi. */
+export const dashboardDayWrapper = style({
+    position: "relative",
+    backgroundColor: vars.bg.surface,
+})
+
+/**
+ * Dnešek značí **linka na levé hraně sloupce**, ne podbarvení hlavičky ani podtržení data.
+ * Je to tentýž zápis, jakým pruh navigace značí aktivní položku (`navLinkActive`
+ * v Menu.css.ts): linka a váha písma, žádná další barevná plocha. Na rozdíl od značky
+ * v hlavičce je vidět z celé výšky sloupce, tedy i když je hlavička odrolovaná.
+ *
+ * Kreslí ji **vnitřní stín, ne `border`**. Border zabírá místo v boxu, takže sloty lekcí
+ * uvnitř končily 3 px od kraje a při hoveru zůstal vlevo nepodbarvený proužek v barvě
+ * povrchu. Aby dny v mřížce lícovaly, musely by tu linku mít průhlednou i ostatní dny —
+ * a ten proužek by pak nesvítil jen dnes, ale všude. Stín se do rozvržení nepočítá, takže
+ * odpadá obojí: sloty jdou přes celou šířku a ostatní dny nepotřebují nic.
+ *
+ * Deklarováno až za `dashboardDayWrapper` — při shodné specificitě rozhoduje pořadí.
+ */
+export const dashboardDayToday = style({
+    boxShadow: `inset ${TODAY_MARK_WIDTH} 0 0 ${vars.text.primary}`,
+})
 
 export const dashboardDayItem = style({
     transition: "background-color 0.15s ease-in-out",
@@ -101,4 +89,90 @@ export const dashboardDayItem = style({
             backgroundColor: vars.bg.hover,
         },
     },
+})
+
+/**
+ * Lekce v diáři a přehledu. Při reálné hustotě (8–9 lekcí ve sloupci) splývaly bílé bloky
+ * s vlasovou linkou do jednolité stěny, proto tu identitu nese barva ve třech vrstvách:
+ *
+ * - **kurz** → pruh hlavičky v barvě kurzu,
+ * - **typ** → ikona jednotlivec/skupina (`LectureTypeIcon`),
+ * - **stav** → zrušená lekce přebíjí pruh i tělo červenou.
+ *
+ * Blok proto nemá vlastní odsazení — to si drží hlavička a tělo, aby pruh šel přes celou šířku.
+ */
+export const lectureBlock = style({
+    padding: 0,
+})
+
+/**
+ * Pruh v syté barvě kurzu — barva kurzu má být na první pohled poznat, stejně jako ji
+ * nesla plnobarevná pilulka v předchozím vydání. Odstín se nijak neředí; čitelnost drží
+ * barva textu, kterou podle kontrastu dopočítá `contrastingTextColor` (bílá, nebo inkoust)
+ * a předá sem přes `lectureVars.courseText`. Proto je odstín i text v obou motivech stejný.
+ */
+export const lectureHeader = style({
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    background: lectureVars.courseColor,
+    padding: "0.4rem 0.85rem",
+    color: lectureVars.courseText,
+})
+
+/**
+ * Zrušená lekce — pruh přebíjí barvu kurzu, stav je důležitější než příslušnost.
+ *
+ * Je světle červený, ne sytý: celý slot (pruh i tělo) tak drží jednu světlost a přes oba
+ * projde jedna úhlopříčka v jednom odstínu (`lectureCanceledStruck`). Se sytým pruhem by
+ * škrt na jedné z těch dvou ploch zmizel a musel by být dvoubarevný, což vypadalo rozbitě.
+ */
+export const lectureHeaderCanceled = style({
+    background: `light-dark(#f0c9ce, color-mix(in srgb, var(--mantine-color-red-9) 46%, var(--mantine-color-dark-7)))`,
+    color: "light-dark(#6d1414, #ffdcdc)",
+})
+
+/**
+ * Vše v pruhu píše barvou pruhu (`currentColor`) — čas, název kurzu, ikona typu, pořadí
+ * i tužka mají jinak vlastní tlumené barvy z palety, které by na sytém podkladu zmizely.
+ */
+globalStyle(
+    `${lectureHeader} h3, ${lectureHeader} h4, ${lectureHeader} span, ${lectureHeader} .mantine-ActionIcon-root`,
+    {
+        color: "inherit",
+    },
+)
+
+/** Tužka na sytém pruhu: hover jen prosvětlí podklad, barvu si drží z pruhu. */
+globalStyle(`${lectureHeader} .mantine-ActionIcon-root:hover`, {
+    backgroundColor: "rgb(255 255 255 / 0.22)",
+    color: "inherit",
+})
+
+/**
+ * Název kurzu v pruhu vyplní zbylé místo a odsune ikonu, pořadí a tužku doprava.
+ * Zalamuje se (ne ellipsis) — v pěti sloupcích diáře se delší názvy nevejdou na řádek
+ * a useknuté „Bilaterální integr…" už kurz nepojmenuje; radši vyšší pruh než ztráta údaje.
+ */
+export const lectureHeaderCourse = style({
+    flex: 1,
+    minWidth: 0,
+    overflowWrap: "anywhere",
+    lineHeight: 1.25,
+    color: vars.text.heading,
+    fontWeight: 600,
+})
+
+export const lectureBody = style({
+    transition: "background-color 0.15s ease-in-out",
+    backgroundColor: vars.bg.surface,
+    padding: "0.6rem 0.85rem",
+})
+
+export const lectureBodyCanceled = style({
+    backgroundColor: vars.statusTint.danger,
+})
+
+globalStyle(`${dashboardDayItem}:hover ${lectureBody}`, {
+    backgroundColor: vars.bg.hover,
 })

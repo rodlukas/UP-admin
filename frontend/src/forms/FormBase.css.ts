@@ -3,9 +3,19 @@ import { globalStyle, style } from "@vanilla-extract/css"
 import { statusNoticeDanger } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
+/**
+ * Vzhled polí ve formulářích. Zbytek aplikace používá obrysová (bílá) pole, ale ta by na
+ * jedné bílé ploše modalu splynula do vlasové linky. Pole proto v klidu nesou jemnou výplň,
+ * aby se četla jako plný ovládací prvek, a při focusu se „zvednou" na `elevated` povrch
+ * s primárním rámečkem a prstencem — tedy do stejného stavu, jaký má focus všude jinde.
+ * (Sladěné s `index.css.ts`, kde focus přebarvuje rámeček na `primary`.)
+ */
+const FIELD_BG = "light-dark(#f3f6fb, var(--mantine-color-dark-6))"
+const FIELD_BG_HOVER = "light-dark(#eaf0f8, var(--mantine-color-dark-5))"
+
 globalStyle("form[data-qa^='form_'] .mantine-Modal-header", {
     borderBottom: vars.borderShort.formDivider,
-    backgroundColor: vars.bg.subtle,
+    backgroundColor: vars.bg.surface,
     padding: "1rem 1.25rem 0.95rem",
 })
 
@@ -20,7 +30,8 @@ globalStyle(".mantine-Modal-content:has(form[data-qa^='form_'])", {
      * řeší `Modal.Body` s `minHeight: 0`.
      */
     border: 0,
-    borderRadius: vars.radius.lg,
+    // plocha = `md`, stejně jako `surfacePanel`; modal není jiný druh prvku, jen jiná vrstva
+    borderRadius: vars.radius.md,
     boxShadow:
         "0 18px 48px rgb(15 23 42 / 0.16), 0 6px 18px rgb(15 23 42 / 0.08), 0 0 0 1px light-dark(rgb(226 232 240 / 0.85), rgb(60 70 90 / 0.6))",
     backgroundColor: vars.bg.surface,
@@ -56,15 +67,15 @@ globalStyle("form[data-qa^='form_'] .mantine-Modal-title", {
 
 globalStyle(".mantine-Modal-content form[data-qa^='form_'] .mantine-Modal-body", {
     flex: "1 1 auto",
-    backgroundColor: vars.bg.subtle,
-    padding: "1rem 1.25rem 0.95rem",
+    backgroundColor: vars.bg.surface,
+    padding: "1.1rem 1.25rem 1rem",
     minWidth: 0,
     minHeight: 0,
     overflowY: "auto",
 })
 
 globalStyle("form[data-qa^='form_'] .mantine-Modal-close", {
-    borderRadius: vars.radius.md,
+    borderRadius: vars.radius.sm,
     color: vars.text.subtleMuted,
 })
 
@@ -84,19 +95,21 @@ globalStyle(
     {
         transition:
             "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out",
-        borderRadius: vars.radius.md,
+        // ovládací prvek = `sm` (Mantine `defaultRadius`), ať se pole ve formuláři
+        // neliší od polí na stránkách
+        borderRadius: vars.radius.sm,
         borderColor: vars.border.default,
-        backgroundColor: vars.bg.elevated,
+        backgroundColor: FIELD_BG,
     },
 )
 
 globalStyle(
     "form[data-qa^='form_'] .mantine-InputWrapper-label, form[data-qa^='form_'] .mantine-Textarea-label",
     {
-        marginBottom: "0.35rem",
+        marginBottom: "0.4rem",
         lineHeight: 1.35,
         color: vars.text.primary,
-        fontSize: "0.84rem",
+        fontSize: "1rem",
         fontWeight: 600,
     },
 )
@@ -104,10 +117,10 @@ globalStyle(
 globalStyle(
     "form[data-qa^='form_'] .mantine-InputWrapper-description, form[data-qa^='form_'] .mantine-Textarea-description",
     {
-        marginTop: "0.35rem",
-        lineHeight: 1.35,
+        marginTop: "0.3rem",
+        lineHeight: 1.4,
         color: vars.text.subtleMuted,
-        fontSize: "0.75rem",
+        fontSize: "1rem",
     },
 )
 
@@ -115,7 +128,7 @@ globalStyle(
     "form[data-qa^='form_'] .mantine-Input-input:hover, form[data-qa^='form_'] .mantine-Select-input:hover, form[data-qa^='form_'] .mantine-Textarea-input:hover",
     {
         borderColor: vars.border.strong,
-        backgroundColor: vars.bg.elevated,
+        backgroundColor: FIELD_BG_HOVER,
     },
 )
 
@@ -170,30 +183,43 @@ export const modalActions = style({
 export const formContent = style({
     display: "flex",
     flexDirection: "column",
-    gap: "1.05rem",
 })
 
+/**
+ * Sekce formuláře. V duchu plochého jazyka aplikace (obsah na jedné ploše, ne v kartách)
+ * nemá rámeček ani vlastní pozadí — sousední sekce dělí jen vlasová linka a bílé místo.
+ */
 export const formSection = style({
-    border: vars.borderShort.formDivider,
-    borderRadius: vars.radius.md,
-    boxShadow: "0 1px 2px rgb(15 23 42 / 0.04)",
-    backgroundColor: vars.bg.elevated,
-    padding: "1rem 1rem 0.95rem",
+    border: 0,
+    backgroundColor: "transparent",
+    padding: 0,
 })
 
+/** Nebezpečná zóna (mazání) zůstává tónovaným blokem — smysl nese barva, ne rámeček. */
 export const formSectionDanger = style([
     statusNoticeDanger,
     {
+        marginTop: "1.4rem",
         padding: "0.95rem 1rem",
     },
 ])
 
+/**
+ * Sousední ploché sekce dělí vlasová linka + bílé místo. Tónovaná nebezpečná zóna
+ * (`formSectionDanger`) se vylučuje — odděluje se sama pozadím a vlastním `marginTop`.
+ */
+globalStyle(`${formSection} + ${formSection}:not(${formSectionDanger})`, {
+    marginTop: "1.4rem",
+    borderTop: vars.borderShort.formDivider,
+    paddingTop: "1.4rem",
+})
+
 export const formSectionTitle = style({
-    marginBottom: "0.8rem",
+    marginBottom: "0.85rem",
     textTransform: "none",
     letterSpacing: "-0.01em",
-    color: vars.text.primary,
-    fontSize: "0.94rem",
+    color: vars.text.heading,
+    fontSize: "1.05rem",
     fontWeight: 700,
 })
 
@@ -206,7 +232,7 @@ export const fieldBlock = style({
 export const fieldLabel = style({
     lineHeight: 1.35,
     color: vars.text.primary,
-    fontSize: "0.84rem",
+    fontSize: "1rem",
     fontWeight: 600,
 })
 
@@ -239,7 +265,7 @@ globalStyle(`${modalActions} button`, {
 })
 
 globalStyle(`${modalActions} .mantine-Button-root`, {
-    borderRadius: vars.radius.lg,
+    // bez vlastního rádiusu — tlačítko v modalu musí vypadat jako tlačítko na stránce
     minHeight: "2.8rem",
     fontWeight: 600,
 })

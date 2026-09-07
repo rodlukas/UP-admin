@@ -7,8 +7,6 @@ import { AttendanceStateType } from "../types/models"
 type Context = {
     /** Probíhá první načítání dat (true) - data ještě nejsou načtená. */
     isLoading: boolean
-    /** Probíhá načítání dat na pozadí (true). */
-    isFetching: boolean
     /** Pole se stavy účastí. */
     attendancestates: AttendanceStateType[]
 }
@@ -20,14 +18,13 @@ const AttendanceStatesContext = React.createContext<AttendanceStatesContextInter
 
 /** Provider kontextu se stavy účastí. */
 export const AttendanceStatesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { data: attendancestates = [], isLoading, isFetching } = useAttendanceStates()
+    const { data: attendancestates = [], isLoading } = useAttendanceStates()
 
     return (
         <AttendanceStatesContext.Provider
             value={{
                 attendancestates,
                 isLoading,
-                isFetching,
             }}>
             {children}
         </AttendanceStatesContext.Provider>

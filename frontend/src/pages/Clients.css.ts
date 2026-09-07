@@ -1,7 +1,13 @@
 import { style } from "@vanilla-extract/css"
 
 // Styly sdílené se stránkou Skupiny (záměrně paralelní UI) žijí v ClientsGroups.css.ts
-export { hiddenBelowSm, staleAlert, tableSection } from "./ClientsGroups.css"
+export {
+    hiddenBelowSm,
+    pagination,
+    staleAlert,
+    tableSection,
+    titleCount,
+} from "./ClientsGroups.css"
 
 export const emailHeader = style({
     wordBreak: "keep-all",

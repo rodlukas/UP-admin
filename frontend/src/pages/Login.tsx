@@ -84,8 +84,9 @@ const Login: React.FC = () => {
                             autoCapitalize="none"
                             autoComplete="username"
                             autoFocus
-                            aria-label="Uživatelské jméno"
-                            placeholder="Uživatelské jméno"
+                            // viditelny popisek misto placeholderu: placeholder pri psani
+                            // zmizi, takze uzivatel uz nevidi, co do pole patri
+                            label="Uživatelské jméno"
                             data-qa="login_field_username"
                         />
                     </div>
@@ -99,8 +100,7 @@ const Login: React.FC = () => {
                             ref={passwordField}
                             required
                             autoComplete="current-password"
-                            aria-label="Heslo"
-                            placeholder="Heslo"
+                            label="Heslo"
                             data-qa="login_field_password"
                         />
                     </div>

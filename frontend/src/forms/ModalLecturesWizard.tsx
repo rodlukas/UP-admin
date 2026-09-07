@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button, Menu, Select, Tooltip } from "@mantine/core"
+import { Button, Menu, Select, Skeleton, Tooltip } from "@mantine/core"
 import { notifications } from "@mantine/notifications"
 import { faChevronDown, faPlus, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
@@ -7,7 +7,7 @@ import * as React from "react"
 
 import { AnalyticsSource } from "../analytics"
 import BaseModal from "../components/BaseModal"
-import Loading from "../components/Loading"
+import { SkeletonShell } from "../components/Skeletons"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { TEXTS } from "../global/constants"
@@ -22,6 +22,7 @@ import { ClientType, GroupType } from "../types/models"
 
 import { modalWizardContent } from "./FormBase.css"
 import Or from "./helpers/Or"
+import { or as orStyles } from "./helpers/Or.css"
 import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
 import ModalGroups from "./ModalGroups"
@@ -35,6 +36,18 @@ type Props = {
     dropdownClassName?: string
     /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
     dropdownSize?: "xs" | "sm" | "md" | "lg" | "xl"
+    /**
+     * Varianta tlačítka. Výchozí `filled` je pro hlavní akci stránky; opakované výskyty
+     * (tlačítko v hlavičce každého dne v diáři) posílej jako `subtle`, aby se z pěti
+     * sytých tlačítek nestala barevná mřížka.
+     */
+    dropdownVariant?: "filled" | "subtle"
+    /**
+     * Text vedle ikony. Bez něj je tlačítko jen „+" (název nese `aria-label`), což stačí
+     * v hlavičce dne, ale ne v prázdném stavu — tam je to jediná nabízená akce a musí
+     * být poznat, co udělá.
+     */
+    dropdownLabel?: string
     /** Směr otevírání dropdownu pro výběr klient/skupina. */
     dropdownDirection?: "up" | "down"
     /** Probíhá načítání dat (true) - zobrazí spinner na tlačítku. */
@@ -129,12 +142,6 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         selectedTargetLabel = "skupiny"
     }
 
-    const getLoadingText = React.useCallback((): string => {
-        const datePart = isClient ? ", čas a kurz" : " a čas"
-        const objectPart = isClient ? "klienta" : "skupinu"
-        return `Vypočítávám optimální datum${datePart} pro ${objectPart}`
-    }, [isClient])
-
     const renderClientOrGroupSelect = React.useCallback((): React.ReactElement => {
         if (isClient) {
             return (
@@ -174,6 +181,10 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     placeholder="Vyberte existující skupinu…"
                     searchable
                     nothingFoundMessage={TEXTS.NO_RESULTS}
+                    // pole je vzdy povinne (bez neho nejde krok wizardu dokoncit) — bez
+                    // tohohle jde hodnotu vynulovat i preklinutim uz vybrane polozky
+                    // v otevrenem dropdownu (Mantine `allowDeselect` je jinak defaultne `true`)
+                    allowDeselect={false}
                     withAsterisk
                     autoFocus
                 />
@@ -219,6 +230,11 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                     styles.dropdownToggle,
                                 )}
                                 size={props.dropdownSize}
+                                variant={props.dropdownVariant ?? "filled"}
+                                // `subtle` varianta je pro opakovane vyskyty, a tam ma byt
+                                // tlacitko tlumene — indigo glyf by z peti hlavicek dnu
+                                // udelal barevny pas. Hlavni akce stranky zustava indigo.
+                                color={props.dropdownVariant === "subtle" ? "gray" : undefined}
                                 disabled={props.isFetching}
                                 // tlacitko obsahuje jen ikony - jmeno pro ctecky z tooltipu
                                 aria-label={title}
@@ -229,10 +245,14 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                 }>
                                 <FontAwesomeIcon
                                     icon={props.isFetching ? faSpinnerThird : faPlus}
-                                    size="lg"
                                     spin={props.isFetching}
                                     data-qa={props.isFetching ? "loading" : undefined}
                                 />
+                                {props.dropdownLabel && (
+                                    <span className={styles.dropdownToggleLabel}>
+                                        {props.dropdownLabel}
+                                    </span>
+                                )}
                             </Button>
                         </Menu.Target>
                     </Tooltip>
@@ -260,7 +280,12 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                         {isLoading ||
                         (isClient && clientsActiveContext.isLoading) ||
                         (!isClient && groupsActiveContext.isLoading) ? (
-                            <Loading text={isLoading ? getLoadingText() : undefined} />
+                            // jeden select (klient/skupina) + krátký odkaz "nebo přidat nového",
+                            // stejně jako skutečný obsah kroku (`renderClientOrGroupSelect`)
+                            <SkeletonShell>
+                                <Skeleton h={38} radius="sm" />
+                                <Skeleton h={18} radius="sm" w="40%" className={orStyles} />
+                            </SkeletonShell>
                         ) : (
                             renderClientOrGroupSelect()
                         )}

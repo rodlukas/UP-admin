@@ -9,6 +9,25 @@ export const API_URL = "/api/v1/"
  */
 export const COLOR_SCHEME_STORAGE_KEY = "mantine-color-scheme"
 
+/** localStorage klíč pro naposledy otevřené karty, které nabízí paleta příkazů (⌘K). */
+export const RECENT_RECORDS_STORAGE_KEY = "upadmin-recent-records"
+
+/**
+ * Šířka inkoustového pruhu navigace. Pruh je vždy takhle široký — nesbaluje se.
+ * Žije tady, a ne v `.css.ts`: ten soubor prochází child kompilací vanilla-extractu
+ * a na export hodnot pro `.tsx` se nehodí.
+ */
+export const RAIL_WIDTH_LABELS = "12rem"
+
+/**
+ * Levý okraj sloupce ikon, měřeno od hrany pruhu. Drží ho značka i položky navigace,
+ * takže ikony a text stojí na jedné svislé ose.
+ *
+ * Schválně v `rem`, ne `em` — značka má jinou velikost písma než položky a v `em`
+ * by jí vyšel jiný sloupec.
+ */
+export const RAIL_ICON_INSET = "1.5rem"
+
 /** Texty notifikací. */
 export enum NOTIFY_TEXT {
     ERROR = "Chyba při provádění požadavku",

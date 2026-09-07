@@ -11,6 +11,12 @@
 // - nastavuje se atribut data-mantine-color-scheme (na nej cili Mantine CSS)
 //   + inline style color-scheme (kvuli nativnim scrollbarum/form controls bez FOUC).
 (function () {
+    // Barva `vars.bg.rail` (frontend/src/theme/tokens.ts) pro kazdy motiv - `<meta
+    // name="theme-color">` neumi CSS `light-dark()` ani promenne, hodnotu proto musi
+    // duplikovat i tenhle plain ES5 skript. Pri zmene tokenu uprav i tady.
+    var RAIL_COLOR_LIGHT = "#16233a";
+    var RAIL_COLOR_DARK = "#0b0f16";
+
     try {
         // povolene ulozene hodnoty — cokoliv jineho (poskozena/rucne prepsana hodnota
         // v localStorage) musi spadnout na chovani "auto"
@@ -28,6 +34,17 @@
 
         document.documentElement.setAttribute("data-mantine-color-scheme", resolved);
         document.documentElement.style.colorScheme = resolved;
+
+        // drzi `theme-color` v kroku s `bg.rail` (viz komentar v head.html) - bez tohoto
+        // kroku by v tmavem motivu zustal staticky `content` z <head> (svetla hodnota)
+        // a vznikl by viditelny sev mezi status barem a hlavickou aplikace
+        var themeColorMeta = document.getElementById("theme-color-meta");
+        if (themeColorMeta) {
+            themeColorMeta.setAttribute(
+                "content",
+                resolved === "dark" ? RAIL_COLOR_DARK : RAIL_COLOR_LIGHT,
+            );
+        }
     } catch (e) {
         // localStorage/matchMedia nemusi byt dostupne (private mode apod.) — ticha
         // degradace, schema pak nastavi az Mantine po startu aplikace

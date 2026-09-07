@@ -50,7 +50,7 @@ export const summaryNumber = style({
 
 export const summaryLabel = style({
     color: vars.text.muted,
-    fontSize: "0.875em",
+    fontSize: "1rem",
 })
 
 export const chartDivider = style({

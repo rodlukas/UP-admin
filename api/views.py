@@ -11,6 +11,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
 from rest_framework import status, viewsets, mixins
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -422,15 +423,63 @@ class LectureViewSet(viewsets.ModelViewSet):
     filterset_class = custom_filters.LectureFilter
     ordering_fields = ("start",)
 
+    #: Horní mez pro `limit` — bez ní by `limit=999999999` vrátil přesně tu odpověď
+    #: přes celý kalendář, které parametr existuje, aby zabránil.
+    MAX_LIMIT = 200
+
+    @staticmethod
+    def _parse_limit(request: Request) -> int | None:
+        """
+        Volitelný parametr `limit` — kolik lekcí nejvýš vrátit.
+
+        Endpoint není stránkovaný, takže bez tohohle si volající, který potřebuje jen pár
+        nejbližších lekcí (přehled), stáhne celý zbytek kalendáře i s vnořenými účastmi,
+        klienty a členstvími.
+
+        Neplatná hodnota končí chybou 400, **nespadne na „bez limitu“**: `limit=0` z překlepu
+        nebo z rozbitého klienta by jinak vrátil přesně tu odpověď přes celý kalendář, kvůli
+        které parametr vznikl — a nikde by se to neprojevilo jako chyba.
+        """
+        raw = request.query_params.get("limit")
+        if raw is None:
+            return None
+        error = f"Musí být celé číslo v rozsahu 1 až {LectureViewSet.MAX_LIMIT}."
+        try:
+            limit = int(raw)
+        except ValueError:
+            raise ValidationError({"limit": error}) from None
+        if limit < 1 or limit > LectureViewSet.MAX_LIMIT:
+            raise ValidationError({"limit": error})
+        return limit
+
     @extend_schema(
         summary="Seznam lekcí",
         description=(
-            "Vrátí seznam všech lekcí seřazených sestupně dle startu lekce včetně vnořených informací o kurzu, "
-            "účastech (a příslušných klientech), kurzu skupiny, členství ve skupině (a příslušných klientech)."
+            "Vrátí seznam všech lekcí (bez `limit` seřazených sestupně dle startu lekce) včetně "
+            "vnořených informací o kurzu, účastech (a příslušných klientech), kurzu skupiny, "
+            "členství ve skupině (a příslušných klientech). "
+            "Volitelný parametr `limit` omezí počet vrácených lekcí (uplatní se až po filtrech "
+            "a řazení); bez explicitního `ordering` se v tom případě řadí vzestupně, aby limit "
+            "vracel nejbližší, ne nejvzdálenější lekce. Musí to být celé číslo od 1 do "
+            f"{MAX_LIMIT}, jinak endpoint vrátí 400."
         ),
     )
     def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        return super().list(request, *args, **kwargs)
+        limit = self._parse_limit(request)
+        if limit is None:
+            return super().list(request, *args, **kwargs)
+        # slice až za `filter_queryset` — na už oříznutý queryset by další filtr spadl
+        queryset = self.filter_queryset(self.get_queryset())
+        # `limit` dává smysl jen pro „pár nejbližších lekcí" (viz `_parse_limit`). Bez
+        # SKUTEČNĚ uplatněného `ordering` by zůstalo výchozí sestupné řazení querysetu
+        # a `[:limit]` by vrátil N NEJVZDÁLENĚJŠÍCH lekcí — přesný opak účelu parametru.
+        # Kontrola musí jít přes `get_ordering`, ne přes pouhou přítomnost klíče
+        # v `request.query_params`: chybějící, prázdný (`?ordering=`) i neplatný
+        # (`?ordering=neexistujici_pole`) parametr `OrderingFilter.get_ordering` stejně
+        # vyhodnotí jako „žádné řazení" a `filter_queryset` pak sestupné řazení nezmění.
+        if not OrderingFilter().get_ordering(request, self.get_queryset(), self):
+            queryset = queryset.order_by("start")
+        return Response(self.get_serializer(queryset[:limit], many=True).data)
 
     @extend_schema(summary="Detail lekce", description="Vrátí konkrétní lekci.")
     def retrieve(self, request: Request, *args: Any, **kwargs: Any) -> Response:

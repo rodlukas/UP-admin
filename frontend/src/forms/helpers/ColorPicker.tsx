@@ -64,8 +64,8 @@ const ColorPicker: React.FC<Props> = ({ value, onChange, error }) => {
             />
             {showContrastWarning && (
                 <Alert color="yellow" mt="xs">
-                    Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět,
-                    zvolte kontrastnější.
+                    Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět, zvolte
+                    kontrastnější.
                 </Alert>
             )}
         </div>

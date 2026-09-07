@@ -6,6 +6,8 @@ import { usePatchAttendance } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { AttendanceStateType, AttendanceType } from "../types/models"
 
+import * as styles from "./AttendanceSelectAttendanceState.css"
+
 type Props = {
     /** ID účasti. */
     attendanceId: AttendanceType["id"]
@@ -48,7 +50,11 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
             data={data}
             value={props.value.toString()}
             onChange={onChange}
-            size="sm"
+            // md (1rem), ne sm (0.875rem) — v aplikaci není text menší než 1rem;
+            // vyšší řádek vyrovnává `variant="unstyled"`, který ubírá rámeček a pozadí
+            size="md"
+            variant="unstyled"
+            classNames={{ input: styles.ruledInput }}
             allowDeselect={false}
             // select nemá viditelný label — přístupný název pro čtečky obrazovky
             aria-label="Výběr stavu účasti klienta na lekci"

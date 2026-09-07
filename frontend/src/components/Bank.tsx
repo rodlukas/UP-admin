@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Box, Table, Text, Title, Tooltip } from "@mantine/core"
+import { useMediaQuery } from "@mantine/hooks"
 import {
     faExclamationCircle,
     faExternalLink,
@@ -12,6 +13,7 @@ import * as React from "react"
 import { useBank } from "../api/hooks"
 import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff } from "../global/funcDateTime"
+import { tableFlat } from "../global/surfaces.css"
 import { bold, iconDanger, inlineBlockNowrap, nowrap } from "../global/utility.css"
 import { prettyAmount } from "../global/utils"
 import { BankType, BankSuccessType, BankErrorType } from "../types/models"
@@ -36,12 +38,14 @@ const REFRESH_TIMEOUT = 60 // sekundy
 type TableInfoProps = {
     /**  Text k zobrazení. */
     text?: string
+    /** Počet sloupců tabulky (na úzkých displejích je sloupec „Zpráva pro příjemce" skrytý). */
+    colSpan: number
 }
 
 /** Pomocná komponenta pro výpis hlášky místo transakcí v tabulce. */
-const TableInfo: React.FC<TableInfoProps> = ({ text }) => (
+const TableInfo: React.FC<TableInfoProps> = ({ text, colSpan }) => (
     <Table.Tr>
-        <Table.Td colSpan={4} ta="center" c="dimmed">
+        <Table.Td colSpan={colSpan} ta="center" c="dimmed">
             {text}
         </Table.Td>
     </Table.Tr>
@@ -50,6 +54,13 @@ const TableInfo: React.FC<TableInfoProps> = ({ text }) => (
 /** Komponenta zobrazující přehled transakcí z banky. */
 const Bank: React.FC = () => {
     const { data: bankData, isLoading, refetch, isFetching } = useBank()
+    // Na úzkých displejích (telefon) se skryje sloupec „Zpráva pro příjemce", aby zbyla
+    // šířka na „Suma" — tu je bez horizontálního scrollu jinak vidět jen zpola. Stejný
+    // princip jako skrývání vedlejších sloupců v tabulce klientů.
+    // `getInitialValueInEffect: false` — aplikace běží jen CSR, sloupce potřebujeme
+    // rozhodnout už při prvním renderu, jinak by tabulka problikla v plné šířce.
+    const isNarrow = useMediaQuery("(max-width: 36em)", false, { getInitialValueInEffect: false })
+    const columnCount = isNarrow ? 3 : 4
     /** Manuální obnovení dat je zakázané (true). */
     const [isRefreshDisabled, setIsRefreshDisabled] = React.useState(true)
     const timeoutIdRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -75,6 +86,7 @@ const Bank: React.FC = () => {
     const isSuccess = isBankSuccess(bankData)
     const isLackOfMoney =
         isSuccess && bankData.accountStatement.info.closingBalance < bankData.rent_price
+    const isEnoughMoney = isSuccess && !isLackOfMoney
     const isLoadingState = isLoading || isFetching
 
     const getBalanceText = (): React.ReactNode => {
@@ -90,7 +102,7 @@ const Bank: React.FC = () => {
 
     const renderTableBody = (data: BankSuccessType): React.ReactNode => {
         if (data.accountStatement.transactionList.transaction.length === 0 && !isLoadingState) {
-            return <TableInfo text="Žádné nedávné transakce" />
+            return <TableInfo text="Žádné nedávné transakce" colSpan={columnCount} />
         }
 
         return data.accountStatement.transactionList.transaction.map((transaction) => {
@@ -100,36 +112,58 @@ const Bank: React.FC = () => {
             const id = transaction.column22.value
             const commentObj = transaction.column25
             const duplicates = messageObj && messageObj.value === commentObj?.value
+            // Na úzkém displeji sloupec zprávy neexistuje, takže se ani nespojuje buňka
+            // poznámky (colSpan) a zpráva se nevykresluje jako vlastní sloupec.
+            const showMessageColumn = !duplicates && !isNarrow
+            // Náhrada za chybějící sloupec: bez podřádku by transakce, jejíž jediný
+            // identifikující text nese právě zpráva (poznámka i vlastník protiúčtu chybí),
+            // skončila jako řádek bez jakéhokoli textu. Podřádek přes celou šířku zprávu
+            // ukáže vždycky, ne jen v tomhle nejhorším případě.
+            const showMessageRow = isNarrow && !duplicates && !!messageObj
             const targetAccountOwnerObj = transaction.column10
+            const rowClassName = isToday(date) ? styles.bankRowToday : undefined
             return (
-                <Table.Tr key={id} className={isToday(date) ? styles.bankRowToday : undefined}>
-                    <Table.Td
-                        colSpan={duplicates ? 2 : undefined}
-                        data-gdpr
-                        data-qa="bank_account_owner">
-                        {commentObj?.value ??
-                            (targetAccountOwnerObj?.value ? (
-                                `Vlastník protiúčtu: ${targetAccountOwnerObj.value}`
-                            ) : (
-                                <NoInfo />
-                            ))}
-                    </Table.Td>
-                    {!duplicates && (
-                        <Table.Td data-gdpr data-qa="bank_transaction_message">
-                            {messageObj ? messageObj.value : <NoInfo />}
+                <React.Fragment key={id}>
+                    <Table.Tr className={rowClassName}>
+                        <Table.Td
+                            colSpan={duplicates && !isNarrow ? 2 : undefined}
+                            data-gdpr
+                            data-qa="bank_account_owner">
+                            {commentObj?.value ??
+                                (targetAccountOwnerObj?.value ? (
+                                    `Vlastník protiúčtu: ${targetAccountOwnerObj.value}`
+                                ) : (
+                                    <NoInfo />
+                                ))}
                         </Table.Td>
+                        {showMessageColumn && (
+                            <Table.Td data-gdpr data-qa="bank_transaction_message">
+                                {messageObj ? messageObj.value : <NoInfo />}
+                            </Table.Td>
+                        )}
+                        <Table.Td ta="right" className={`${styles.bankDateColumn} ${nowrap}`}>
+                            {prettyDateWithDayYearIfDiff(date, true)}
+                        </Table.Td>
+                        <Table.Td
+                            ta="right"
+                            className={classNames(styles.bankAmountColumn, nowrap, bold, {
+                                [styles.bankDangerText]: amount < 0,
+                            })}>
+                            {prettyAmount(amount)}
+                        </Table.Td>
+                    </Table.Tr>
+                    {showMessageRow && (
+                        <Table.Tr className={rowClassName}>
+                            <Table.Td
+                                colSpan={columnCount}
+                                data-gdpr
+                                data-qa="bank_transaction_message"
+                                className={styles.bankMessageRow}>
+                                {messageObj?.value}
+                            </Table.Td>
+                        </Table.Tr>
                     )}
-                    <Table.Td ta="right" className={`${styles.bankDateColumn} ${nowrap}`}>
-                        {prettyDateWithDayYearIfDiff(date, true)}
-                    </Table.Td>
-                    <Table.Td
-                        ta="right"
-                        className={classNames(styles.bankAmountColumn, nowrap, bold, {
-                            [styles.bankDangerText]: amount < 0,
-                        })}>
-                        {prettyAmount(amount)}
-                    </Table.Td>
-                </Table.Tr>
+                </React.Fragment>
             )
         })
     }
@@ -137,12 +171,12 @@ const Bank: React.FC = () => {
     const renderMainContent = (): React.ReactNode => {
         if (isBankSuccess(bankData)) {
             return (
-                <Table.ScrollContainer minWidth={400}>
-                    <Table striped withRowBorders={false}>
+                <Table.ScrollContainer minWidth={isNarrow ? 280 : 400}>
+                    <Table className={tableFlat}>
                         <Table.Thead>
                             <Table.Tr>
                                 <Table.Th>Poznámka</Table.Th>
-                                <Table.Th>Zpráva pro příjemce</Table.Th>
+                                {!isNarrow && <Table.Th>Zpráva pro příjemce</Table.Th>}
                                 <Table.Th ta="right">Datum</Table.Th>
                                 <Table.Th ta="right">Suma</Table.Th>
                             </Table.Tr>
@@ -165,44 +199,44 @@ const Bank: React.FC = () => {
     return (
         <div className={styles.bankWrapper}>
             <Box
-                ta="center"
                 className={classNames(styles.bankTitle, {
-                    // zelená hlavička jen když stav účtu skutečně známe a peníze stačí
-                    [styles.bankTitleUnknown]: !isSuccess,
+                    [styles.bankTitleSuccess]: isEnoughMoney,
                     [styles.bankTitleWarning]: isLackOfMoney,
-                    [styles.bankTitleOk]: isSuccess && !isLackOfMoney,
                 })}>
                 <div className={styles.bankTitleInner}>
-                    <Title
-                        order={3}
-                        size="h4"
-                        className={`${styles.bankTitleText} ${inlineBlockNowrap}`}>
-                        Aktuální stav: {getBalanceText()}{" "}
-                        {isLackOfMoney && (
-                            <Tooltip
-                                label={`Na účtu není dostatek peněz (alespoň ${prettyAmount(bankData.rent_price)}) pro zaplacení nájmu!`}
-                                // focus + tabIndex: obsah tooltipu musí být dosažitelný
-                                // i z klávesnice (WCAG 1.4.13)
-                                events={{ hover: true, focus: true, touch: true }}>
-                                {/* eslint-disable jsx-a11y/no-noninteractive-tabindex --
+                    <div>
+                        <div className={styles.bankBalanceLabel}>Stav účtu</div>
+                        <Title
+                            order={3}
+                            size="h4"
+                            className={classNames(styles.bankBalance, inlineBlockNowrap)}>
+                            {getBalanceText()}{" "}
+                            {isLackOfMoney && (
+                                <Tooltip
+                                    label={`Na účtu není dostatek peněz (alespoň ${prettyAmount(bankData.rent_price)}) pro zaplacení nájmu!`}
+                                    // focus + tabIndex: obsah tooltipu musí být dosažitelný
+                                    // i z klávesnice (WCAG 1.4.13)
+                                    events={{ hover: true, focus: true, touch: true }}>
+                                    {/* eslint-disable jsx-a11y/no-noninteractive-tabindex --
                                     trigger tooltipu musí být fokusovatelný, jinak je obsah
                                     jen pro myš (WAI-ARIA tooltip pattern); bloková forma,
                                     protože -next-line nedosáhne na atribut o 2 řádky níž */}
-                                <span
-                                    tabIndex={0}
-                                    role="img"
-                                    aria-label="Varování: nedostatek peněz na zaplacení nájmu">
-                                    {/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
-                                    <FontAwesomeIcon
-                                        icon={faExclamationCircle}
-                                        className={iconDanger}
-                                        size="lg"
-                                        aria-hidden
-                                    />
-                                </span>
-                            </Tooltip>
-                        )}
-                    </Title>
+                                    <span
+                                        tabIndex={0}
+                                        role="img"
+                                        aria-label="Varování: nedostatek peněz na zaplacení nájmu">
+                                        {/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
+                                        <FontAwesomeIcon
+                                            icon={faExclamationCircle}
+                                            className={iconDanger}
+                                            size="lg"
+                                            aria-hidden
+                                        />
+                                    </span>
+                                </Tooltip>
+                            )}
+                        </Title>
+                    </div>
                     <div className={styles.bankActions}>
                         <Tooltip
                             label={
@@ -214,7 +248,6 @@ const Bank: React.FC = () => {
                                 <CustomButton
                                     onClick={onClick}
                                     disabled={isRefreshDisabled}
-                                    size="sm"
                                     aria-label="Obnovit výpis"
                                     content={
                                         <FontAwesomeIcon

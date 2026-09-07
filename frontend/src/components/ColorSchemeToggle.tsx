@@ -1,10 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Menu, Tooltip, UnstyledButton, useComputedColorScheme, useMantineColorScheme } from "@mantine/core"
+import {
+    Menu,
+    Tooltip,
+    UnstyledButton,
+    useComputedColorScheme,
+    useMantineColorScheme,
+} from "@mantine/core"
 import type { MantineColorScheme } from "@mantine/core"
 import { faDesktop, faMoon, faSun } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
 import * as styles from "./ColorSchemeToggle.css"
+import * as menuStyles from "./Menu.css"
 
 const SCHEME_ICON: Record<MantineColorScheme, typeof faDesktop> = {
     auto: faDesktop,
@@ -18,7 +25,7 @@ const SCHEME_LABEL: Record<MantineColorScheme, string> = {
     dark: "Tmavý",
 }
 
-/** Přepínač barevného schématu (Systém / Světlý / Tmavý) v hlavičce. */
+/** Přepínač barevného schématu (Systém / Světlý / Tmavý) v inkoustovém pruhu. */
 const ColorSchemeToggle: React.FC = () => {
     const { colorScheme, setColorScheme } = useMantineColorScheme()
     // `getInitialValueInEffect: false` – aplikace bezi pouze CSR (zadny SSR/hydration),
@@ -28,9 +35,10 @@ const ColorSchemeToggle: React.FC = () => {
     // ktery je namountovany vzdy — tato komponenta resi jen UI prepinace.)
     const computedColorScheme = useComputedColorScheme("light", { getInitialValueInEffect: false })
 
-    // theme-color meta nemenime per scheme: navbar je fixne tmavy gradient v obou motivech
-    // (viz Main.css.ts), takze i mobile Chrome / PWA status bar drzime na barve horniho
-    // okraje navbaru, aby nevznikal viditelny sev mezi status barem a navbarem.
+    // theme-color meta nemenime per scheme: chrome aplikace (inkoustovy pruh vlevo a slim
+    // hlavicka na mobilu, viz Main.css.ts) je tmavy inkoust v obou motivech, takze i mobile
+    // Chrome / PWA status bar drzime na te barve, aby nevznikal viditelny sev mezi
+    // status barem a hlavickou.
 
     // V „auto" režimu ukazuj v navbaru ikonu aktuálně aplikovaného schématu
     // (sun/moon), aby bylo na první pohled vidět, co je právě zobrazeno.
@@ -53,7 +61,7 @@ const ColorSchemeToggle: React.FC = () => {
                         aria-label="Přepnout barevné schéma"
                         data-qa="color_scheme_toggle">
                         <FontAwesomeIcon icon={targetIcon} fixedWidth />
-                        <span className={styles.toggleLabel}>{tooltipLabel}</span>
+                        <span className={menuStyles.navLabel}>{SCHEME_LABEL[colorScheme]}</span>
                     </UnstyledButton>
                 </Menu.Target>
             </Tooltip>

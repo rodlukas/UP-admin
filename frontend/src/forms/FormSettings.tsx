@@ -266,7 +266,6 @@ const FormSettings: React.FC<Props> = (props) => {
                                         ", smažou se také všichni zájemci o tento kurz"}
                                 </p>
                                 <DeleteButton
-                                    size="sm"
                                     content={type}
                                     onClick={(): void => {
                                         if (

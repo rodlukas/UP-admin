@@ -67,6 +67,9 @@ const SelectClient: React.FC<SelectClientProps> = ({
             searchable
             nothingFoundMessage={TEXTS.NO_RESULTS}
             clearable={!required}
+            // bez tohohle jde povinnou hodnotu vynulovat i překliknutím už vybrané položky
+            // v otevřeném dropdownu (Mantine `allowDeselect` je jinak defaultně `true`)
+            allowDeselect={!required}
             autoFocus={autoFocus}
             withAsterisk={required}
             required={required}

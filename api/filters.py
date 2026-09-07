@@ -10,14 +10,20 @@ from admin.models import Lecture, Group
 
 class LectureFilter(filters.FilterSet):
     """
-    Filtr lekcí podle startu (date), skupiny (group) a klienta (client).
+    Filtr lekcí podle startu (date, dateFrom), skupiny (group) a klienta (client).
     Filtr skupiny je základní.
     Filtr startu a klienta umožňuje filtrovat jednodušším URL parametrem, než konkrétní cestou k related_field (xx_yy).
+    Filtr dateFrom vrátí lekce od daného dne včetně (start__date >= hodnota) — používá ho
+    přehled pro nejbližší příští lekce, kde je potřeba rozsah, ne konkrétní den.
+    Filtr canceled odfiltruje zrušené lekce (canceled=false) — přehled nesmí zrušenou lekci
+    nabídnout jako „nejbližší příští", protože se nekoná.
     Filtr klienta ve výchozím stavu vrátí jen individuální lekce (group__isnull=True).
     Parametr includeGroup=true přidá i skupinové lekce klienta (group__isnull=False).
     """
 
     date = filters.DateFilter(field_name="start__date")
+    dateFrom = filters.DateFilter(field_name="start__date", lookup_expr="gte")
+    canceled = filters.BooleanFilter(field_name="canceled")
     client = filters.NumberFilter(field_name="attendances__client", method="filter_client")
     includeGroup = filters.BooleanFilter(method="filter_include_group")
 
@@ -35,7 +41,7 @@ class LectureFilter(filters.FilterSet):
 
     class Meta:
         model = Lecture
-        fields = "date", "group"
+        fields = "date", "dateFrom", "canceled", "group"
 
 
 class GroupFilter(filters.FilterSet):

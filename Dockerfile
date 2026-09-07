@@ -17,4 +17,12 @@ COPY . .
 # expose the port
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "2", "up.wsgi"]
+# Fly proxy odpovedi nebufferuje, takze pomaly klient drzi spojeni az do timeoutu.
+# Sync worker by u nej stal zablokovany v recv/sendall a obsadil jeden ze dvou procesu,
+# proto gthread - pomale spojeni zabere jedno vlakno, ne cely worker.
+# max-requests recykluje workery, aby jim na 256MB stroji nerostlo RSS bez omezeni.
+CMD ["gunicorn", "--bind", ":8000", \
+     "--worker-class", "gthread", "--workers", "2", "--threads", "4", \
+     "--timeout", "60", "--graceful-timeout", "30", \
+     "--max-requests", "500", "--max-requests-jitter", "50", \
+     "up.wsgi"]

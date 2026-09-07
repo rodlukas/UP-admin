@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Tooltip } from "@mantine/core"
-import { faUsdCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { faCheckCircle, faUsdCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
 
@@ -56,9 +56,14 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
                 aria-disabled={isPending}
                 className={styles.buttonWrap}
                 onClick={onClick}>
+                {/* Jiny glyf pro kazdy stav, ne jen jina barva: stav platby tak nenese
+                    pouze barva (WCAG 1.4.1) a zaplaceno smi byt tiche. `data-qa` a
+                    `data-paid` na ikone jsou kontrakt s E2E kroky — neodstranovat. */}
+                {/* kroužkovaný glyf pro oba stavy — stejná rodina jako „příště platit",
+                    aby se stavy lišily významem a barvou, ne tvarem a velikostí */}
                 <FontAwesomeIcon
-                    icon={faUsdCircle}
-                    size="2x"
+                    icon={props.paid ? faCheckCircle : faUsdCircle}
+                    size="lg"
                     className={className}
                     data-qa="lecture_attendance_paid"
                     data-paid={props.paid}

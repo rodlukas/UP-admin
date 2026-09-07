@@ -1,3 +1,4 @@
+import concurrent.futures
 from datetime import datetime, timedelta
 from typing import Any, Dict, Iterable, Mapping, Tuple, cast
 
@@ -15,6 +16,21 @@ from admin.models import Attendance, Client, Group, Lecture
 # Cache klíč a timeout pro výpis bankovních transakcí.
 FIO_CACHE_KEY = "fio_transactions"
 FIO_CACHE_TIMEOUT_SECONDS = 60
+# Timeout na Fio (connect, read) v sekundach - ale POZOR, ani soucet neni skutecny strop
+# na CELKOVOU dobu volani: read timeout se resetuje s kazdym prijatym bytem (viz "Neither
+# the connect nor read timeouts are wall clock timeouts" v dokumentaci `requests`), takze
+# pomalu odkapavajici spojeni (par bajtu kazdych ~10 s) by jim neprošlo vůbec a bezelo by
+# donekonečna.
+FIO_TIMEOUT_SECONDS = (5, 15)
+# Skutecny wall-clock strop na CELKOVE volani Fio API - viz `perform_api_request`.
+#
+# Nestaci se spolehnout na to, ze zaseknuty pozadavek zabije worker gunicornu a ten se
+# restartuje: worker bezi pod gthread (viz Dockerfile), kde `--timeout` hlida jen "srdecni
+# tep" workeru - `ThreadWorker.notify()` (gunicorn) se vola z accept smycky bez ohledu na
+# to, jestli je nektere z jeho vlaken zaseknute v synchronnim `requests.get`. Zaseknuty
+# pozadavek by tak nezabil ani worker, jen by natrvalo obsadil jedno z jeho vlaken (a pri
+# par soubeznych volanich klidne cely worker, tedy polovinu kapacity aplikace).
+FIO_WALL_CLOCK_TIMEOUT_SECONDS = 20
 
 
 class Bank:
@@ -67,17 +83,36 @@ class Bank:
     def perform_api_request(self, url_secret: str) -> Tuple[dict, int]:
         """
         Provede požadavek na Fio API a zpracuje příchozí data nebo chybu.
+
+        `requests.get` se pouští v samostatném vlákně (`ThreadPoolExecutor`), na které
+        vlákno gunicornu obsluhující tenhle HTTP požadavek čeká nejvýš
+        `FIO_WALL_CLOCK_TIMEOUT_SECONDS` (`future.result(timeout=...)`) - déle ne, i kdyby
+        samotné `requests.get` ještě běželo dál. Bez tohohle by `FIO_TIMEOUT_SECONDS` u
+        pomalu odkapávajícího spojení vůbec nezasáhlo (viz komentář u konstanty) a vlákno
+        by zůstalo obsazené donekonečna.
+
+        `executor.shutdown(wait=False)` v `finally` schválně nečeká na dokončení vlákna na
+        pozadí - kdyby čekal, degradoval by celý mechanismus zpátky na blokující čekání.
+        Cena: dokud se zaseknuté volání na pozadí nedokončí (nebo mu Fio spojení samo
+        nespadne), zůstává otevřené - `concurrent.futures` ho navíc při ukončení procesu
+        (atexit) dojde, takže by o tolik prodloužilo i graceful shutdown workeru při
+        deploji. Gunicornovo `--graceful-timeout 30` ho pak i tak ukončí SIGKILLem, takže
+        jde nanejvýš o dodatečné zpoždění restartu, ne o trvalé zablokování.
         """
+        executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
         try:
-            input_data = requests.get(url_secret, timeout=25)
+            future = executor.submit(requests.get, url_secret, timeout=FIO_TIMEOUT_SECONDS)
+            input_data = future.result(timeout=FIO_WALL_CLOCK_TIMEOUT_SECONDS)
             input_data.raise_for_status()
-        except requests.exceptions.Timeout:
+        except (concurrent.futures.TimeoutError, requests.exceptions.Timeout):
             return self.process_error(status.HTTP_503_SERVICE_UNAVAILABLE)
         except requests.exceptions.RequestException as e:
             status_code = getattr(e.response, "status_code", status.HTTP_500_INTERNAL_SERVER_ERROR)
             return self.process_error(status_code)
         else:
             return self.process_data(input_data)
+        finally:
+            executor.shutdown(wait=False)
 
     def process_data(self, req: requests.Response) -> Tuple[dict, int]:
         """

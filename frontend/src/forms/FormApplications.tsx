@@ -6,7 +6,7 @@ import { trackEvent } from "../analytics"
 import { useClients, useCreateApplication, useUpdateApplication } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import Loading from "../components/Loading"
+import { FormSkeleton } from "../components/Skeletons"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import {
     ApplicationPostApi,
@@ -145,7 +145,7 @@ const FormApplications: React.FC<Props> = (props) => {
             </Modal.Header>
             <Modal.Body>
                 {isLoading ? (
-                    <Loading />
+                    <FormSkeleton count={3} />
                 ) : (
                     <div className={baseStyles.formContent}>
                         <div className={baseStyles.formSection}>
@@ -159,6 +159,7 @@ const FormApplications: React.FC<Props> = (props) => {
                                     </label>
                                     <SelectClient
                                         required
+                                        autoFocus={false}
                                         value={form.values.client}
                                         options={clientsData}
                                         onChangeCallback={onSelectChange}

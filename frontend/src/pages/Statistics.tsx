@@ -1,4 +1,4 @@
-import { Badge, Button, Container, SimpleGrid, Skeleton, Table, Title } from "@mantine/core"
+import { Container, SegmentedControl, SimpleGrid, Table, Title } from "@mantine/core"
 import { Link } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
@@ -20,6 +20,7 @@ import {
 
 import { useStatistics } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
+import * as segmented from "../components/buttons/segmented.css"
 import {
     AXIS_LABEL,
     AXIS_TICK,
@@ -30,15 +31,23 @@ import {
 } from "../components/charts"
 import ClientName from "../components/ClientName"
 import Heading from "../components/Heading"
+import {
+    ChartSkeleton,
+    RankingTableSkeleton,
+    SkeletonShell,
+    StatCardsSkeleton,
+} from "../components/Skeletons"
+import { tableFlat } from "../global/surfaces.css"
+import { vars } from "../theme/tokens"
 import { StatisticsType } from "../types/models"
 
 import * as styles from "./Statistics.css"
 
 /** Sjednocené okraje a mřížka napříč Recharts. */
-const CHART_MARGIN: ChartMargin = { top: 12, right: 16, left: 4, bottom: 12 }
+const CHART_MARGIN: ChartMargin = { top: 12, right: 16, left: 4, bottom: 34 }
 /** Okraje pro grafy s legendou dole – extra bottom pro legendu + XAxis popisek. */
-const CHART_MARGIN_BOTTOM_LEGEND: ChartMargin = { top: 12, right: 16, left: 4, bottom: 48 }
-const CHART_MARGIN_BAR_VERTICAL: ChartMargin = { top: 12, right: 16, left: 8, bottom: 48 }
+const CHART_MARGIN_BOTTOM_LEGEND: ChartMargin = { top: 12, right: 16, left: 4, bottom: 66 }
+const CHART_MARGIN_BAR_VERTICAL: ChartMargin = { top: 12, right: 16, left: 8, bottom: 66 }
 
 function formatStackedBarLegend(value: string): string {
     if (value === "individual") {
@@ -55,6 +64,13 @@ function formatStackedBarLegend(value: string): string {
 
 type ChartMetric = "lectures" | "hours"
 
+/**
+ * Hodnota „bez filtru roku" v přepínači rozsahu. `SegmentedControl` pracuje s řetězci,
+ * takže `null` (= celá historie) potřebuje vlastní sentinel — roky jsou čísla, tenhle
+ * klíč se s nimi tedy nemůže potkat.
+ */
+const YEAR_ALL = "all"
+
 const CHART_METRIC_LABEL: Record<ChartMetric, string> = {
     lectures: "Počet lekcí",
     hours: "Odučené hodiny",
@@ -67,7 +83,13 @@ const formatHours = (hours: number): string =>
 /** Formátuje minuty jako hodiny – převede a zavolá formatHours. */
 const formatMinutesAsHours = (minutes: number): string => formatHours(minutes / 60)
 
-type EntityStatCardRow = { badge: React.ReactNode; badgeColor: string; value: React.ReactNode }
+type EntityStatCardRow = {
+    label: React.ReactNode
+    value: React.ReactNode
+    /** Barva puntíku před popiskem – jen tam, kde odpovídá barvě jinde v appce
+     *  (viz komentář u `EntityStatCard`). Bez ní řádek zůstává bez puntíku. */
+    dotColor?: string
+}
 
 type EntityStatCardProps = {
     title: string
@@ -104,25 +126,21 @@ const ChartSection: React.FC<ChartSectionProps> = ({ title, caption, headerActio
 
 /** Přepínač metriky pro grafy (počet lekcí / odučené hodiny). */
 const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
-    // varianty filled/default drží stejný vzhled jako přepínač Aktivní/Neaktivní
-    // (ActiveSwitcher) — v aplikaci je jen jeden vizuál segmentového přepínače
-    <Button.Group className={styles.metricToggle}>
-        {/* aria-pressed: aktivní metrika je jinak rozlišená jen vizuálně */}
-        <Button
-            size="sm"
-            variant={value === "lectures" ? "filled" : "default"}
-            aria-pressed={value === "lectures"}
-            onClick={() => onChange("lectures")}>
-            {CHART_METRIC_LABEL.lectures}
-        </Button>
-        <Button
-            size="sm"
-            variant={value === "hours" ? "filled" : "default"}
-            aria-pressed={value === "hours"}
-            onClick={() => onChange("hours")}>
-            {CHART_METRIC_LABEL.hours}
-        </Button>
-    </Button.Group>
+    // stejny `SegmentedControl` jako prepinac Aktivni/Neaktivni — v aplikaci je jeden
+    // segmentovy ovladac a jeden jeho vzhled (segmented.css.ts)
+    <SegmentedControl
+        value={value}
+        onChange={(next) => onChange(next as ChartMetric)}
+        data={[
+            { value: "lectures", label: CHART_METRIC_LABEL.lectures },
+            { value: "hours", label: CHART_METRIC_LABEL.hours },
+        ]}
+        classNames={{
+            root: `${segmented.segmentedRoot} ${styles.metricToggle}`,
+            indicator: segmented.segmentedIndicator,
+            label: segmented.segmentedLabel,
+        }}
+    />
 )
 
 /** Karta se statistikami entity nebo skupiny metrik. */
@@ -136,15 +154,26 @@ const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, total, rows, not
                 <div className={styles.totalLabel}>celkem</div>
             </>
         )}
+        {/* Dřív sytá pilulka na každém řádku bez ladu a skladu. Puntík se vrací jen
+            tam, kde stejnou barvu nese i něco jiného na stránce: stavy klientů/skupin
+            drží barvy `iconSuccess`/`iconWarning` odjinud z appky, řádky lekcí barvy
+            legendy grafů níže (`--up-chart-series-*`). Kde takový protějšek není
+            („odučeno"), zůstává řádek bez puntíku, ne s barvou jen do počtu. */}
         {rows.map((row, i) => (
             <div
-                key={typeof row.badge === "string" ? `${title}-${row.badge}` : String(i)}
+                key={typeof row.label === "string" ? `${title}-${row.label}` : String(i)}
                 className={i < rows.length - 1 ? styles.breakdownRowSpaced : styles.breakdownRow}>
-                {/* autoContrast: na světlých výplních (yellow, …) by byl bílý text
-                    badge nečitelný (~1.9:1) — Mantine zvolí černou/bílou podle výplně */}
-                <Badge color={row.badgeColor} radius="xl" autoContrast>
-                    {row.badge}
-                </Badge>
+                <span className={styles.breakdownLabel}>
+                    {row.dotColor ? (
+                        <span
+                            className={styles.breakdownDot}
+                            style={assignInlineVars({
+                                [styles.breakdownDotColor]: row.dotColor,
+                            })}
+                        />
+                    ) : null}
+                    {row.label}
+                </span>
                 <span className={styles.breakdownValue}>{row.value}</span>
             </div>
         ))}
@@ -563,7 +592,7 @@ function TopRankingSection<T extends { id: number; lecture_count: number }>({
         <ChartSection title={title}>
             {items.length > 0 ? (
                 <Table.ScrollContainer minWidth={360}>
-                    <Table verticalSpacing="xs" withRowBorders={false} mb={0}>
+                    <Table className={tableFlat} mb={0}>
                         <Table.Thead>
                             <Table.Tr className={styles.rankingDivider}>
                                 <Table.Th c="dimmed" fw={400}>
@@ -730,19 +759,19 @@ const LecturesCourseSection: React.FC<LecturesCourseSectionProps> = ({ byCourse,
                     <Bar
                         dataKey="individual"
                         stackId="a"
-                        fill="var(--mantine-color-indigo-6)"
+                        fill="var(--up-chart-series-individual)"
                         name="individual"
                     />
                     <Bar
                         dataKey="group"
                         stackId="a"
-                        fill="var(--mantine-color-teal-6)"
+                        fill="var(--up-chart-series-group)"
                         name="group"
                     />
                     <Bar
                         dataKey="canceled_count"
                         stackId="a"
-                        fill="var(--mantine-color-red-6)"
+                        fill="var(--up-chart-series-canceled)"
                         name="canceled_count"
                         radius={[0, 3, 3, 0]}
                         opacity={0.8}
@@ -815,19 +844,19 @@ const LecturesYearSection: React.FC<LecturesYearSectionProps> = ({
                             <Bar
                                 dataKey="individual"
                                 stackId="a"
-                                fill="var(--mantine-color-indigo-6)"
+                                fill="var(--up-chart-series-individual)"
                                 name="individual"
                             />
                             <Bar
                                 dataKey="group"
                                 stackId="a"
-                                fill="var(--mantine-color-teal-6)"
+                                fill="var(--up-chart-series-group)"
                                 name="group"
                             />
                             <Bar
                                 dataKey="canceled_count"
                                 stackId="a"
-                                fill="var(--mantine-color-red-6)"
+                                fill="var(--up-chart-series-canceled)"
                                 name="canceled_count"
                                 radius={[3, 3, 0, 0]}
                                 opacity={0.8}
@@ -884,9 +913,38 @@ const Statistics: React.FC = () => {
         return () => media.removeEventListener("change", apply)
     }, [])
 
+    // Rok – filtr. Nezávisí na `statistics` (funguje i s jen "Celkem" před prvním
+    // dotažením) — proto se skládá jednou a vkládá beze změny do obou větví níže, ne
+    // uvnitř samotné podmínky na `statistics`.
+    const yearFilter = (
+        <div className={styles.filterSection}>
+            <div className={styles.filterHeading}>Rozsah lekcí</div>
+            <p className={styles.filterHint}>
+                Filtruje karty lekcí, žebříčky klientů a skupin a grafy podle měsíce a kurzu. Grafy
+                vývoje podle roku se zobrazí pouze při výběru <strong>Celkem</strong>.
+            </p>
+            <SegmentedControl
+                value={lecturesYear === null ? YEAR_ALL : String(lecturesYear)}
+                onChange={(value) => setLecturesYear(value === YEAR_ALL ? null : Number(value))}
+                data={[
+                    { value: YEAR_ALL, label: "Celkem" },
+                    ...(statistics?.lectures.available_years ?? []).map((y) => ({
+                        value: String(y),
+                        label: String(y),
+                    })),
+                ]}
+                classNames={{
+                    root: `${segmented.segmentedRoot} ${styles.yearFilterButtons}`,
+                    indicator: segmented.segmentedIndicator,
+                    label: segmented.segmentedLabel,
+                }}
+            />
+        </div>
+    )
+
     return (
         <Container>
-            <Heading title={APP_URLS.statistiky.title} isFetching={statisticsFetching} />
+            <Heading title={APP_URLS.statistiky.title} />
 
             <p className={styles.pageLead}>
                 Souhrn klientů, skupin a lekcí. Počty u <strong>lekcí</strong> níže závisí na
@@ -894,28 +952,62 @@ const Statistics: React.FC = () => {
                 <strong>skupiny</strong> jsou vždy za celou historii aplikace.
             </p>
 
-            {/* Klienti & Skupiny – globální statistiky (neovlivněny filtrem roku) */}
+            {/*
+             * Klienti/Skupiny a Lekce mají odděleně vypadající kostry (dva různé tvary),
+             * ale obojí čeká na stejný `statistics` - jeden `SkeletonShell` níže drží celé
+             * načítání coby jedinou `aria-live` oblast s jednou pojistkou na 25 s. Dva
+             * samostatné `SkeletonShell` by tu při prvním vstupu na stránku byly zároveň
+             * (a po 25 s by uživatel dostal dvě totožná hlášení "Načíst stránku znovu").
+             */}
+            {!statistics && (
+                <SkeletonShell>
+                    {/* Klienti mají 3 řádky rozpadu (Aktivní/Neaktivní/Bez lekce),
+                        Skupiny jen 2 (Aktivní/Neaktivní) */}
+                    <StatCardsSkeleton rows={[3, 2]} />
+                    {yearFilter}
+                    {/* Proběhlé má 3 řádky rozpadu (Individuální/Skupinové/Odučeno) a poznámku,
+                        Neproběhlé jen 2 (Míra zrušení/Omluvené) a taky poznámku */}
+                    <StatCardsSkeleton rows={[3, 2]} notes={[true, true]} />
+                    {/* Žebříčky nejaktivnějších klientů a skupin (TopRankingSection) */}
+                    <SimpleGrid cols={{ base: 1, md: 2 }} className={styles.gridMb}>
+                        <RankingTableSkeleton />
+                        <RankingTableSkeleton />
+                    </SimpleGrid>
+                    {/* LecturesMonthSection: má přepínač metriky i popisek */}
+                    <ChartSkeleton withToggle withCaption />
+                    {/* LecturesCourseSection: ani jedno */}
+                    <ChartSkeleton />
+                    {/* LecturesYearSection: jen přepínač metriky */}
+                    <ChartSkeleton withToggle />
+                    {/* LecturesYearCourseSection: ani jedno */}
+                    <ChartSkeleton />
+                </SkeletonShell>
+            )}
             {statistics && (
-                <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }} className={styles.sectionTightTopMb}>
+                <SimpleGrid
+                    // dve karty ve ctyrsloupcove mrizce nechavaly pulku radku prazdnou;
+                    // dvousloupcova mrizka sedi i s dvojici karet lekci nize
+                    cols={{ base: 1, xs: 2 }}
+                    className={styles.sectionTightTopMb}>
                     <div>
                         <EntityStatCard
                             title="Klienti"
                             total={statistics.clients.total}
                             rows={[
                                 {
-                                    badge: "aktivní",
-                                    badgeColor: "green",
+                                    label: "Aktivní",
                                     value: statistics.clients.active,
+                                    dotColor: vars.colors.success,
                                 },
                                 {
-                                    badge: "neaktivní",
-                                    badgeColor: "gray",
+                                    label: "Neaktivní",
                                     value: statistics.clients.inactive,
+                                    dotColor: vars.border.strong,
                                 },
                                 {
-                                    badge: "bez lekce",
-                                    badgeColor: "yellow",
+                                    label: "Bez lekce",
                                     value: statistics.clients.without_lectures,
+                                    dotColor: vars.colors.warning,
                                 },
                             ]}
                         />
@@ -926,14 +1018,14 @@ const Statistics: React.FC = () => {
                             total={statistics.groups.total}
                             rows={[
                                 {
-                                    badge: "aktivní",
-                                    badgeColor: "green",
+                                    label: "Aktivní",
                                     value: statistics.groups.active,
+                                    dotColor: vars.colors.success,
                                 },
                                 {
-                                    badge: "neaktivní",
-                                    badgeColor: "gray",
+                                    label: "Neaktivní",
                                     value: statistics.groups.inactive,
+                                    dotColor: vars.border.strong,
                                 },
                             ]}
                         />
@@ -941,36 +1033,14 @@ const Statistics: React.FC = () => {
                 </SimpleGrid>
             )}
 
-            {/* Rok – filtr */}
-            <div className={styles.filterSection}>
-                <div className={styles.filterHeading}>Rozsah lekcí</div>
-                <p className={styles.filterHint}>
-                    Filtruje karty lekcí, žebříčky klientů a skupin a grafy podle měsíce a kurzu.
-                    Grafy vývoje podle roku se zobrazí pouze při výběru <strong>Celkem</strong>.
-                </p>
-                <div className={styles.yearFilterButtons}>
-                    <Button
-                        size="sm"
-                        variant={lecturesYear === null ? "filled" : "default"}
-                        aria-pressed={lecturesYear === null}
-                        onClick={() => setLecturesYear(null)}>
-                        Celkem
-                    </Button>
-                    {statistics?.lectures.available_years.map((y) => (
-                        <Button
-                            key={y}
-                            size="sm"
-                            variant={lecturesYear === y ? "filled" : "default"}
-                            aria-pressed={lecturesYear === y}
-                            onClick={() => setLecturesYear(y)}>
-                            {y}
-                        </Button>
-                    ))}
-                </div>
-            </div>
+            {/* `!statistics` má svou vlastní kopii uvnitř sdíleného SkeletonShell výš —
+                tahle se vykresluje, jen jakmile jsou data k dispozici, aby se filtr
+                nezobrazil dvakrát naráz. */}
+            {statistics && yearFilter}
 
-            {/* Lekce statistiky – spinner při prvním načtení, dimování při refetchi */}
-            {statistics ? (
+            {/* Lekce statistiky – dimování při refetchi (prvotní načtení řeší sdílený
+                SkeletonShell nahoře) */}
+            {statistics && (
                 <div
                     className={classNames({
                         [styles.fetchingOverlay]: statisticsFetching,
@@ -984,18 +1054,17 @@ const Statistics: React.FC = () => {
                                 note="Nezrušené lekce, kde se aspoň jeden klient skutečně zúčastnil."
                                 rows={[
                                     {
-                                        badge: "individuální",
-                                        badgeColor: "indigo",
+                                        label: "Individuální",
                                         value: statistics.lectures.individual,
+                                        dotColor: "var(--up-chart-series-individual)",
                                     },
                                     {
-                                        badge: "skupinové",
-                                        badgeColor: "cyan",
+                                        label: "Skupinové",
                                         value: statistics.lectures.group,
+                                        dotColor: "var(--up-chart-series-group)",
                                     },
                                     {
-                                        badge: "odučeno",
-                                        badgeColor: "gray",
+                                        label: "Odučeno",
                                         value: formatMinutesAsHours(
                                             statistics.lectures.total_minutes,
                                         ),
@@ -1010,14 +1079,14 @@ const Statistics: React.FC = () => {
                                 note="Zrušené lekce + skupinové kde nebyl přítomen nikdo. Omluvené jsou podmnožinou zrušených."
                                 rows={[
                                     {
-                                        badge: "míra zrušení",
-                                        badgeColor: "red",
+                                        label: "Míra zrušení",
                                         value: `${statistics.lectures.canceled_rate.toLocaleString("cs-CZ", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}\u202f%`,
+                                        dotColor: "var(--up-chart-series-canceled)",
                                     },
                                     {
-                                        badge: "z toho omluvené (individuální + skupinové)",
-                                        badgeColor: "yellow",
+                                        label: "Z toho omluvené (individuální + skupinové)",
                                         value: statistics.lectures.excused_not_happened_count,
+                                        dotColor: vars.colors.warning,
                                     },
                                 ]}
                             />
@@ -1093,12 +1162,6 @@ const Statistics: React.FC = () => {
                         compact={compactCharts}
                     />
                 </div>
-            ) : (
-                <>
-                    {["overview", "byCourse", "byYear", "byMonth"].map((key) => (
-                        <Skeleton key={key} h={280} mb="xl" radius="md" />
-                    ))}
-                </>
             )}
         </Container>
     )

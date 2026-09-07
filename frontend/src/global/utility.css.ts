@@ -25,6 +25,10 @@ export const mb0 = style({
     marginBottom: 0,
 })
 
+export const mb1 = style({
+    marginBottom: "1rem",
+})
+
 export const ml05 = style({
     marginLeft: "0.5rem",
 })
@@ -57,8 +61,6 @@ export const textCenter = style({
     textAlign: "center",
 })
 
-export const textCenterMb0 = style([textCenter, mb0])
-
 export const dimmedTextCenter = style([dimmedText, textCenter])
 
 /** Ikona v sémantické barvě — místo inline `color={vars…}` na FontAwesomeIcon. */
@@ -74,7 +76,28 @@ export const iconDanger = style({
     color: vars.colors.danger,
 })
 
+/** Buňka s číslem — tabulkové číslice, aby se hodnoty ve sloupci srovnaly pod sebe. */
+export const numericCell = style({
+    fontVariantNumeric: "tabular-nums",
+})
+
 export const iconInlineX = style({
     marginRight: "0.25rem",
     marginLeft: "0.25rem",
+})
+
+/**
+ * Text jen pro čtečky obrazovky — vizuálně skrytý, ale v přístupnostním stromu zůstává.
+ * Záměrně ne `display: none` ani `visibility: hidden`, těmi by o něj čtečka přišla.
+ *
+ * Používá se tam, kde stav nese vizuálně netextový prostředek (např. přeškrtnutí zrušené
+ * lekce): kresba je pro oko, tenhle text pro čtečku, takže význam nenese jen vzhled.
+ */
+export const srOnly = style({
+    position: "absolute",
+    clipPath: "inset(50%)",
+    width: "1px",
+    height: "1px",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
 })

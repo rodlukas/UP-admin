@@ -116,7 +116,8 @@ def wait_loading_ends(driver):
 
 
 def frontend_empty_str(text):
-    return "---" if text == "" else text
+    # znak musi odpovidat komponente NoInfo ve frontendu
+    return "—" if text == "" else text
 
 
 def wait_for_alert_and_accept(driver):
@@ -253,18 +254,85 @@ def toggle_switcher_active(driver, active):
     driver.find_element(By.CSS_SELECTOR, f"[data-qa={button_str}]").click()
 
 
+def _paginated_pages(driver):
+    """
+    Generátor: postupně navštíví každou stránku stránkování (viz `useDataTable`) a po
+    každém příchodu na ni vydá řízení zpět volajícímu — ten si sám vytáhne živé prvky
+    té konkrétní stránky (`driver.find_elements(...)`), než generátor pokročí dál.
+    Bez stránkování (`[data-qa=pagination]` v DOMu není) vydá řízení jen jednou.
+
+    Nevrací prvky sám: prvek nalezený na stránce N je po přechodu na stránku N+1 pryč
+    z DOMu (React ho odmountuje) a další interakce s ním skončí
+    `StaleElementReferenceException` — proto vždy pracuj s prvky té stránky, na které
+    generátor právě je, ne s prvky nasbíranými napříč voláními.
+    """
+    try:
+        pagination = driver.find_element(By.CSS_SELECTOR, "[data-qa=pagination]")
+    except NoSuchElementException:
+        yield
+        return
+
+    # zacni vzdy na strance 1: cislo "1" je vzdy viditelne (Mantine "boundaries" ho
+    # nikdy neschova za vypustku), na rozdil od cisel uprostred delsiho seznamu.
+    # `useDataTable` resetuje aktualni stranku jen pri hledani nebo prerazeni, ne pri
+    # prepnuti aktivni/neaktivni - bez explicitniho kliku by tak prvni kolo sbiralo
+    # radky z toho, kde stranka zustala po predchozim volani
+    pagination.find_element(By.XPATH, ".//button[text()='1']").click()
+    wait_loading_cycle(driver)
+    yield
+
+    # dal uz jen sipka "next" (data-qa="pagination_next", viz useDataTable.ts):
+    # cisla stranek uprostred delsiho seznamu Mantine schova za vypustku (siblings=1),
+    # ale sipka zustava klikatelna a disabled az na posledni strance
+    next_button = pagination.find_element(By.CSS_SELECTOR, "[data-qa=pagination_next]")
+    while next_button.get_attribute("disabled") is None:
+        next_button.click()
+        wait_loading_cycle(driver)
+        yield
+
+
+def _paginated_elements(driver, selector):
+    """
+    Spočítá prvky přes všechny stránky stránkování — bez toho by `clients_cnt` a obdoby
+    nad delším seznamem (víc řádků, než kolik jich `useDataTable` zobrazí na jednu
+    stránku) tiše počítaly jen v rámci jedné stránky.
+
+    Vrácený seznam je určený **jen k počítání** (`len(...)`): prvky ze všech stránek
+    kromě té poslední jsou v okamžiku návratu už mimo DOM (viz `_paginated_pages`).
+    Na hledání a interakci (klik) použij `_find_paginated_row`.
+    """
+    elements = []
+    for _ in _paginated_pages(driver):
+        elements += driver.find_elements(By.CSS_SELECTOR, selector)
+    return elements
+
+
+def _find_paginated_row(driver, selector, matches):
+    """
+    Projde všechny stránky stránkování a vrátí první živý prvek `selector`, pro který
+    `matches(prvek)` vrátí pravdivou hodnotu — na rozdíl od `_paginated_elements` je
+    vrácený prvek platný (žádná další navigace mezi nalezením prvku a jeho použitím
+    voláním kódem), protože se vrací hned po nálezu na té stránce, kde se nachází.
+    """
+    for _ in _paginated_pages(driver):
+        for element in driver.find_elements(By.CSS_SELECTOR, selector):
+            if matches(element):
+                return element
+    return None
+
+
 def get_clients(driver, active):
     toggle_switcher_active(driver, active)
     # pockej na pripadny loading cyklus (robustnejsi nez pouze ends)
     wait_loading_cycle(driver)
-    return driver.find_elements(By.CSS_SELECTOR, "[data-qa=client]")
+    return _paginated_elements(driver, "[data-qa=client]")
 
 
 def get_groups(driver, active):
     toggle_switcher_active(driver, active)
     # pockej na pripadny loading cyklus (robustnejsi nez pouze ends)
     wait_loading_cycle(driver)
-    return driver.find_elements(By.CSS_SELECTOR, "[data-qa=group]")
+    return _paginated_elements(driver, "[data-qa=group]")
 
 
 def close_modal(driver):
@@ -289,39 +357,50 @@ def wait_modal_closed(driver):
 
 
 def _find_group_with_activity(activity, context, name, open_card=False, validate_context=False):
-    # nacti skupiny s prislusnou ne/aktivitou
-    groups = get_groups(context.browser, activity)
-    # najdi skupinu s udaji v parametrech
-    for group in groups:
+    # nastav pozadovanou ne/aktivitu (stejne jako driv delal get_groups)
+    toggle_switcher_active(context.browser, activity)
+    wait_loading_cycle(context.browser)
+
+    # najdena data se ulozi sem - `matches` bezi na zive strance, `context` se plni
+    # az po potvrzenem nalezu, aby se nezapsal z radku, ktery nakonec neodpovidal
+    found = {}
+
+    def matches(group):
         found_name_element = group.find_element(By.CSS_SELECTOR, "[data-qa=group_name]")
         found_name = found_name_element.text
-        found_group = None
         # srovnej identifikatory
-        if found_name == name:
-            # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-            found_course = group.find_element(By.CSS_SELECTOR, "[data-qa=course_name]").text
-            found_members = [
-                element.text
-                for element in group.find_elements(By.CSS_SELECTOR, "[data-qa=client_name]")
-            ]
-            if not validate_context or (
-                validate_context
-                and set(found_members) == set(context.members)
-                and found_course == context.course
-                and activity == context.active
-            ):
-                # uloz stara data do kontextu pro pripadne overeni spravnosti
-                context.old_group_name = found_name
-                context.old_group_course = found_course
-                context.old_group_members = found_members
-                context.old_group_activity = activity
-                # uloz nalezenou skupinu
-                found_group = group
-        if found_group:
-            if open_card:
-                found_name_element.click()
-            return found_group
-    return None
+        if found_name != name:
+            return False
+        # identifikatory sedi, otestuj pripadna dalsi zaslana data
+        found_course = group.find_element(By.CSS_SELECTOR, "[data-qa=course_name]").text
+        found_members = [
+            element.text
+            for element in group.find_elements(By.CSS_SELECTOR, "[data-qa=client_name]")
+        ]
+        if validate_context and not (
+            set(found_members) == set(context.members)
+            and found_course == context.course
+            and activity == context.active
+        ):
+            return False
+        found["name_element"] = found_name_element
+        found["name"] = found_name
+        found["course"] = found_course
+        found["members"] = found_members
+        return True
+
+    found_group = _find_paginated_row(context.browser, "[data-qa=group]", matches)
+    if found_group is None:
+        return None
+
+    # uloz stara data do kontextu pro pripadne overeni spravnosti
+    context.old_group_name = found["name"]
+    context.old_group_course = found["course"]
+    context.old_group_members = found["members"]
+    context.old_group_activity = activity
+    if open_card:
+        found["name_element"].click()
+    return found_group
 
 
 def find_group(context, name, open_card=False, validate_context=False):
@@ -335,41 +414,52 @@ def find_group(context, name, open_card=False, validate_context=False):
 
 
 def _find_client_with_activity(activity, context, full_name, open_card, **data):
-    # nacti klienty s prislusnou ne/aktivitou
-    clients = get_clients(context.browser, activity)
-    # najdi klienta s udaji v parametrech
-    for client in clients:
+    # nastav pozadovanou ne/aktivitu (stejne jako driv delal get_clients)
+    toggle_switcher_active(context.browser, activity)
+    wait_loading_cycle(context.browser)
+
+    # najdena data se ulozi sem - `matches` bezi na zive strance, `context` se plni
+    # az po potvrzenem nalezu, aby se nezapsal z radku, ktery nakonec neodpovidal
+    found = {}
+
+    def matches(client):
         found_name_element = client.find_element(By.CSS_SELECTOR, "[data-qa=client_name]")
         found_name = found_name_element.text
-        found_client = None
         # srovnej identifikatory
-        if found_name == full_name:
-            found_phone = client.find_element(By.CSS_SELECTOR, "[data-qa=client_phone]").text
-            found_email = client.find_element(By.CSS_SELECTOR, "[data-qa=client_email]").text
-            found_note = client.find_element(By.CSS_SELECTOR, "[data-qa=client_note]").text
-            found_phone_value = common_helpers.shrink_str(found_phone)
-            # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
-            if not data or (
-                data
-                and found_phone_value
-                == frontend_empty_str(common_helpers.shrink_str(data["phone"]))
-                and found_email == frontend_empty_str(data["email"])
-                and found_note == frontend_empty_str(data["note"])
-                and activity == data["active"]
-            ):
-                # uloz stara data do kontextu pro pripadne overeni spravnosti
-                context.old_client_name = found_name
-                context.old_client_phone = found_phone_value
-                context.old_client_email = found_email
-                context.old_client_note = found_note
-                context.old_client_activity = activity
-                # uloz nalezeneho klienta
-                found_client = client
-        if found_client:
-            if open_card:
-                found_name_element.click()
-            return found_client
-    return None
+        if found_name != full_name:
+            return False
+        found_phone = client.find_element(By.CSS_SELECTOR, "[data-qa=client_phone]").text
+        found_email = client.find_element(By.CSS_SELECTOR, "[data-qa=client_email]").text
+        found_note = client.find_element(By.CSS_SELECTOR, "[data-qa=client_note]").text
+        found_phone_value = common_helpers.shrink_str(found_phone)
+        # identifikatory sedi, otestuj pripadna dalsi zaslana data
+        if data and not (
+            found_phone_value == frontend_empty_str(common_helpers.shrink_str(data["phone"]))
+            and found_email == frontend_empty_str(data["email"])
+            and found_note == frontend_empty_str(data["note"])
+            and activity == data["active"]
+        ):
+            return False
+        found["name_element"] = found_name_element
+        found["name"] = found_name
+        found["phone"] = found_phone_value
+        found["email"] = found_email
+        found["note"] = found_note
+        return True
+
+    found_client = _find_paginated_row(context.browser, "[data-qa=client]", matches)
+    if found_client is None:
+        return None
+
+    # uloz stara data do kontextu pro pripadne overeni spravnosti
+    context.old_client_name = found["name"]
+    context.old_client_phone = found["phone"]
+    context.old_client_email = found["email"]
+    context.old_client_note = found["note"]
+    context.old_client_activity = activity
+    if open_card:
+        found["name_element"].click()
+    return found_client
 
 
 def find_client(context, full_name, open_card=False, **data):

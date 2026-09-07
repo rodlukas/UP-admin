@@ -4,6 +4,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 import * as React from "react"
 
 import { AuthProvider } from "./auth/AuthContext"
+import TopProgressBar from "./components/TopProgressBar"
 import { ClientsActiveProvider } from "./contexts/ClientsActiveContext"
 import { GroupsActiveProvider } from "./contexts/GroupsActiveContext"
 import Main from "./Main"
@@ -19,6 +20,7 @@ const isDevtoolsEnabled =
 
 const AppLayout: React.FC<AppLayoutProps> = ({ queryClient }) => (
     <QueryClientProvider client={queryClient}>
+        <TopProgressBar />
         <ErrorBoundary>
             <AuthProvider>
                 <ClientsActiveProvider>

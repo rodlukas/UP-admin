@@ -6,6 +6,7 @@ import {
     Group,
     Modal,
     Select,
+    Skeleton,
     TextInput,
     Title,
     Tooltip,
@@ -26,7 +27,7 @@ import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
 import GroupName from "../components/GroupName"
 import InfoTooltip from "../components/InfoTooltip"
-import Loading from "../components/Loading"
+import { SkeletonShell } from "../components/Skeletons"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import {
@@ -87,6 +88,65 @@ type Props = {
     /** Identifikace místa, odkud byl formulář otevřen (pro analytiku). */
     source: AnalyticsSource
 }
+
+type FormLecturesSkeletonProps = {
+    /** Počet bloků účastníků — u individuální lekce 1, u skupiny podle počtu členů. */
+    memberCount: number
+    /** Blok účastníka nese jméno (`ClientName`) jen u skupinové lekce, ne u individuální. */
+    withMemberNames: boolean
+}
+
+/**
+ * Kostra formuláře lekce — kopíruje mřížku skutečného obsahu: sekce „Parametry lekce"
+ * (dva řádky po třech polích) a „Účastníci" (opakující se blok se stejným rozvržením sloupců
+ * jako řádek účasti), místo plochého seznamu popisek+pole obecné `FormSkeleton`.
+ */
+const FormLecturesSkeleton: React.FC<FormLecturesSkeletonProps> = ({
+    memberCount,
+    withMemberNames,
+}) => (
+    <SkeletonShell>
+        <div className={styles.sectionCard}>
+            <Title order={5} className={styles.sectionTitle}>
+                Parametry lekce
+            </Title>
+            {[0, 1].map((rowIndex) => (
+                <Grid key={rowIndex} align="center" mb="sm" className={styles.formGroup}>
+                    <Grid.Col span={{ base: 12, sm: 4 }}>
+                        <Skeleton h={38} radius="sm" />
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 12, sm: 4 }}>
+                        <Skeleton h={38} radius="sm" />
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 12, sm: 4 }}>
+                        <Skeleton h={38} radius="sm" />
+                    </Grid.Col>
+                </Grid>
+            ))}
+        </div>
+        <div className={styles.sectionCard}>
+            <Title order={5} className={styles.sectionTitle}>
+                Účastníci
+            </Title>
+            {[...Array(memberCount)].map((_, index) => (
+                <div key={index} className={styles.attendeeBlock}>
+                    {withMemberNames && <Skeleton h={20} mb="sm" radius="sm" w="35%" />}
+                    <Grid align="center" mb="sm" className={styles.formGroup}>
+                        <Grid.Col span={{ base: 12, sm: 4 }}>
+                            <Skeleton h={38} radius="sm" />
+                        </Grid.Col>
+                        <Grid.Col span={{ base: 12, sm: 2 }}>
+                            <Skeleton h={38} radius="sm" />
+                        </Grid.Col>
+                        <Grid.Col span={{ base: 12, sm: 6 }}>
+                            <Skeleton h={38} radius="sm" />
+                        </Grid.Col>
+                    </Grid>
+                </div>
+            ))}
+        </div>
+    </SkeletonShell>
+)
 
 /** Formulář pro lekce. */
 const FormLectures: React.FC<Props> = (props) => {
@@ -383,6 +443,28 @@ const FormLectures: React.FC<Props> = (props) => {
         [props],
     )
 
+    /**
+     * Otevře nativní picker data/času. Nativní glyf výběru je skrytý (viz `nativeDateTime`
+     * v FormLectures.css.ts), takže afordanci nese značková ikona v `leftSection` — proto
+     * má pole `leftSectionPointerEvents="all"` (výchozí je `none`, tedy neklikatelná).
+     *
+     * **Nesmí viset na celém poli.** Klik do rozepsaného data má umístit kurzor do segmentu;
+     * picker ho místo toho překryje a vezme si focus, takže překlep v roce by pak nešlo
+     * myší opravit. `showPicker` není ve starších prohlížečích a mimo user gesto vyhazuje
+     * výjimku — proto guard i try/catch.
+     */
+    const openNativePicker = React.useCallback((inputId: string): void => {
+        const input = document.getElementById(inputId)
+        if (input instanceof HTMLInputElement && typeof input.showPicker === "function") {
+            try {
+                input.showPicker()
+            } catch {
+                // showPicker může vyhodit (mimo user gesto / nepodporováno / disabled pole)
+                // — pole pak zůstane běžně editovatelné, jen se neotevře kalendář
+            }
+        }
+    }, [])
+
     const onSelectChange = React.useCallback(
         (_name: "course", obj?: CourseType | null): void => {
             props.setFormDirty()
@@ -605,7 +687,10 @@ const FormLectures: React.FC<Props> = (props) => {
             </Modal.Header>
             <Modal.Body>
                 {isLoading ? (
-                    <Loading />
+                    <FormLecturesSkeleton
+                        memberCount={members.length || 1}
+                        withMemberNames={!isClient(props.object)}
+                    />
                 ) : (
                     <>
                         <div className={styles.sectionCard}>
@@ -652,6 +737,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                         <TextInput
                                             type="date"
                                             id="date"
+                                            className={styles.nativeDateTime}
                                             value={date}
                                             disabled={prepaid}
                                             onChange={onChange}
@@ -663,13 +749,19 @@ const FormLectures: React.FC<Props> = (props) => {
                                             placeholder="yyyy-mm-dd"
                                             aria-label="Datum lekce"
                                             data-qa="lecture_field_date"
+                                            leftSectionPointerEvents="all"
                                             leftSection={
-                                                <label htmlFor="date">
+                                                <button
+                                                    type="button"
+                                                    className={styles.nativeDateTimeTrigger}
+                                                    disabled={prepaid}
+                                                    onClick={() => openNativePicker("date")}
+                                                    aria-label="Otevřít výběr data">
                                                     <FontAwesomeIcon
                                                         icon={faCalendarAlt}
                                                         fixedWidth
                                                     />
-                                                </label>
+                                                </button>
                                             }
                                         />
                                     </Tooltip>
@@ -682,6 +774,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                         <TextInput
                                             type="time"
                                             id="time"
+                                            className={styles.nativeDateTime}
                                             value={time}
                                             disabled={prepaid}
                                             onChange={onChange}
@@ -690,10 +783,16 @@ const FormLectures: React.FC<Props> = (props) => {
                                             placeholder="hh:mm"
                                             aria-label="Čas lekce"
                                             data-qa="lecture_field_time"
+                                            leftSectionPointerEvents="all"
                                             leftSection={
-                                                <label htmlFor="time">
+                                                <button
+                                                    type="button"
+                                                    className={styles.nativeDateTimeTrigger}
+                                                    disabled={prepaid}
+                                                    onClick={() => openNativePicker("time")}
+                                                    aria-label="Otevřít výběr času">
                                                     <FontAwesomeIcon icon={faClock} fixedWidth />
-                                                </label>
+                                                </button>
                                             }
                                         />
                                     </Tooltip>
@@ -737,9 +836,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                         onChangeCallback={onSelectChange}
                                         options={coursesVisibleContext.courses}
                                         isDisabled={!isClient(props.object)}
-                                        error={
-                                            triedSubmit && !course ? "Vyberte kurz" : undefined
-                                        }
+                                        error={triedSubmit && !course ? "Vyberte kurz" : undefined}
                                     />
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
@@ -905,7 +1002,6 @@ const FormLectures: React.FC<Props> = (props) => {
                                 <div className={baseStyles.deleteAlertText}>
                                     <p>Nenávratně smaže vybranou lekci včetně všech účastí.</p>
                                     <DeleteButton
-                                        size="sm"
                                         content="lekci"
                                         onClick={(): void => {
                                             const msgDateTime = prepaid

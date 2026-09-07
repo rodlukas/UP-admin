@@ -30,8 +30,9 @@ globalStyle(`${prepaidCountersInput} input`, {
 
 export const prepaidCountersInputGroupLabel = style({
     // rádius kopíruje pole, aby barevná sekce nepřetékala přes jeho zaoblený roh
-    borderTopLeftRadius: vars.radius.md,
-    borderBottomLeftRadius: vars.radius.md,
+    // (pole je `sm` — viz `FormBase.css.ts`)
+    borderTopLeftRadius: vars.radius.sm,
+    borderBottomLeftRadius: vars.radius.sm,
     backgroundColor: vars.colors.successSolid,
     color: "white",
 })

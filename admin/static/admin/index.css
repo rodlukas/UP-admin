@@ -1,7 +1,7 @@
 .loader:empty {
     animation: load8 1.1s infinite linear;
-    border: 0.5em solid rgba(0, 0, 0, 0.1);
-    border-left: 0.5em solid #000000;
+    border: 0.5em solid rgba(22, 35, 58, 0.12);
+    border-left: 0.5em solid #16233a;
     border-radius: 50%;
     height: 3em;
     left: calc(50% - 2em);
@@ -19,19 +19,20 @@
     }
 }
 
-/* Stejné hexy jako pozadí SPA — token `vars.bg.page` v frontend/src/theme/tokens.ts
-   (light #e9eef5, dark dark-9 #141414), aby pozadí při mountu Reactu neskočilo.
+/* Stejné hexy jako plocha SPA — token `vars.bg.page` v frontend/src/theme/tokens.ts
+   (light #f4f7fb, dark dark-8 #141a24 z inkoustové palety v theme/theme.ts), aby pozadí
+   při mountu Reactu neskočilo.
    Tento soubor nemůže TS tokeny importovat, hodnoty drž v synchronu ručně. */
 body {
-    background-color: #e9eef5;
+    background-color: #f4f7fb;
     font-family: "Segoe UI", Arial, sans-serif;
 }
 
 html[data-mantine-color-scheme="dark"] body {
-    background-color: #141414;
+    background-color: #141a24;
 }
 
 html[data-mantine-color-scheme="dark"] .loader:empty {
-    border-color: rgba(255, 255, 255, 0.1);
-    border-left-color: #f8fafc;
+    border-color: rgba(231, 236, 244, 0.12);
+    border-left-color: #e7ecf4;
 }

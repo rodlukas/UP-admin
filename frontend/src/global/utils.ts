@@ -132,6 +132,26 @@ export function prettyAmount(amount: number): string {
     })
 }
 
+/**
+ * Barva textu čitelná na zadaném podkladu. Barva kurzu je libovolný uživatelský hex, takže
+ * napevno zvolená bílá (jako dřív u pilulky kurzu) na světlých odstínech zmizí — vybírá se
+ * proto ta ze dvojice bílá / inkoust, která má proti podkladu vyšší kontrast.
+ *
+ * Inkoust je `vars.text.primary` ze světlého motivu; jde o podklad v syté barvě kurzu,
+ * který je v obou motivech stejný, takže text se schématem měnit nemá.
+ */
+export function contrastingTextColor(background: CourseType["color"]): string {
+    const ink = "#16233a"
+    try {
+        return chroma.contrast(background, "white") >= chroma.contrast(background, ink)
+            ? "#ffffff"
+            : ink
+    } catch {
+        // neplatný hex z API/DB nesmí shodit vykreslení lekce
+        return ink
+    }
+}
+
 /** Vrátí telefonní číslo ve srozumitelném formátu. */
 export function prettyPhone(phone: ClientType["phone"]): string {
     if (!phone) {
@@ -178,58 +198,18 @@ export function isApplePlatform(): boolean {
     return /mac|iphone|ipad|ipod/i.test(uaDataPlatform ?? navigator.platform)
 }
 
-/**
- * Vrátí čitelnou barvu textu (bílá nebo tmavá) pro daný background hex.
- * Používá WCAG kontrast vůči oběma alternativám a vybere tu lepší.
- */
-export function getReadableTextColor(bgHex: string): string {
-    try {
-        const bg = chroma(bgHex)
-        const darkText = "#0f172a"
-        return chroma.contrast(bg, "white") >= chroma.contrast(bg, darkText) ? "white" : darkText
-    } catch {
-        return "white"
-    }
-}
-
-/**
- * Varianta getReadableTextColor pro hlavičky obarvené kurzem, které mají přes pozadí
- * ztmavující overlay `rgb(15 23 42 / N)` (viz Card.css.ts / DashboardDay.css.ts) —
- * kontrast se musí počítat vůči výsledné složené barvě, ne vůči surové barvě kurzu.
- */
-export function getReadableTextColorWithOverlay(bgHex: string, overlayOpacity: number): string {
-    try {
-        // alpha kompozice nad neprůhledným pozadím = lineární interpolace v sRGB po kanálech
-        return getReadableTextColor(chroma.mix(bgHex, "#0f172a", overlayOpacity, "rgb").hex())
-    } catch {
-        return "white"
-    }
-}
-
-/**
- * Upraví barvu (ztmaví/zesvětlí směrem od pozadí) tak, aby na daném pozadí dosáhla
- * alespoň WCAG AA kontrastu 4.5:1 — pro akcentní text obarvený uživatelskou barvou
- * (např. barva kurzu), kde nelze barvu pozadí měnit. Identita barvy (odstín) zůstává.
- */
-export function adjustColorForContrast(colorHex: string, bgHex: string): string {
-    try {
-        const bg = chroma(bgHex)
-        // na světlém pozadí ztmavujeme, na tmavém zesvětlujeme
-        const step = bg.luminance() > 0.5 ? -0.2 : 0.2
-        let color = chroma(colorHex)
-        // krok 0.2 ~ jemný posun; 20 iterací bezpečně dosáhne černé/bílé
-        for (let i = 0; i < 20 && chroma.contrast(color, bg) < 4.5; i++) {
-            color = step < 0 ? color.darken(-step) : color.brighten(step)
-        }
-        return color.hex()
-    } catch {
-        return colorHex
-    }
-}
-
 /** Vrátí string s velkým počátečním písmenem. */
 export function capitalizeString(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+/**
+ * Odstraní diakritiku ("Němec" → "Nemec"), aby hledání fungovalo bez ohledu na to, jestli
+ * uživatel diakritiku napsal. Stejná technika jako v `admin/static/admin/gdpr.js`
+ * (`removeDiacritics`) — tam je vlastní kopie, protože ten skript je plain JS bez importů.
+ */
+export function removeDiacritics(value: string): string {
+    return value.normalize("NFD").replace(/\p{Diacritic}/gu, "")
 }
 
 /** Prázdná funkce. */

@@ -5,8 +5,8 @@ import { createQueryClient } from "./api/queryClient"
 import AppLayout from "./App"
 import APP_URLS from "./APP_URLS"
 import PrivateRoute from "./auth/PrivateRoute"
-import Loading from "./components/Loading"
 import Page from "./components/Page"
+import { PageSkeleton } from "./components/Skeletons"
 import lazySafe from "./global/lazySafe"
 
 // lazy nacitani pro jednotlive stranky
@@ -140,7 +140,7 @@ const routeTree = rootRoute.addChildren([
 
 const router = createRouter({
     routeTree,
-    defaultPendingComponent: () => <Loading />,
+    defaultPendingComponent: () => <PageSkeleton />,
     defaultPendingMs: 0,
 })
 export { router }

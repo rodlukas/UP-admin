@@ -8,6 +8,29 @@ globalStyle("html, body, .main", {
 })
 
 /**
+ * Odznaky mají v Mantine **vlastní škálu písma** (`--badge-fz-md` je 11 px), která
+ * s `theme.fontSizes` nemá nic společného — pravidlo „žádný textový obsah pod 1 rem"
+ * by je jinak minulo a `size` prop by ho nespravil, protože jeho hodnoty jsou 9–16 px.
+ *
+ * Řeší se to proměnnou, ne `font-size`: z ní si Badge odvozuje i odsazení. Výška musí být
+ * `auto`, jinak se větší text do pevných 20 px nevejde a ořízne se.
+ *
+ * POZOR: `size` prop u `Badge` tímhle **přestává být použitelný** — Mantine ho vypisuje
+ * jako inline styl, který tohle pravidlo přebije zpátky na 9–16 px.
+ */
+globalStyle(".mantine-Badge-root", {
+    vars: {
+        "--badge-fz": "1rem",
+        "--badge-height": "auto",
+    },
+})
+
+globalStyle(".mantine-Badge-label", {
+    paddingTop: "0.1rem",
+    paddingBottom: "0.1rem",
+})
+
+/**
  * Mantine v9 default `dark-2` (#828282) má kontrast 4.04:1 na `dark-7` pozadí (#242424) —
  * těsně pod WCAG AA hranicí pro normální text. Přemapováváme `dimmed` a `placeholder` na světlejší
  * odstíny, aby byl kontrast lepší v dark mode.
@@ -24,7 +47,7 @@ globalStyle(":root[data-mantine-color-scheme='dark']", {
 /**
  * Zrcadlení dark remapu výše pro light mode: default `dimmed` je gray-6 (#868e96) s kontrastem
  * jen 3.32:1 na bílém povrchu — pod WCAG AA. Remap na gray-7 (#495057) dává 8.18:1 na bílé
- * a 7.01:1 na pozadí stránky (#e9eef5). `placeholder` (gray-5, 2.07:1) posouváme o odstín
+ * ploše aplikace. `placeholder` (gray-5, 2.07:1) posouváme o odstín
  * na gray-6 (3.32:1), stejně jako dark remap posouvá placeholder o jeden odstín.
  * Placeholder smí zůstat pod 4.5:1 — WCAG 1.4.3 cílí na běžný text, placeholder je vodítko
  * a musí zůstat vizuálně odlišený od vyplněné hodnoty.
@@ -34,10 +57,10 @@ globalStyle(":root[data-mantine-color-scheme='light']", {
         "--mantine-color-dimmed": "var(--mantine-color-gray-7)",
         "--mantine-color-placeholder": "var(--mantine-color-gray-6)",
         /**
-         * Šedé `filled`/`outline` varianty (tlačítka Odhlásit, Jít zpět, přepínače v
-         * Statistikách, šedé odznaky) staví Mantine v light módu na gray-6 (#868e96):
-         * bílý text na něm má 3.32:1 a samotný gray-6 text na pozadí stránky 2.85:1 —
-         * obojí pod WCAG AA. Posun o odstín dává 7.44:1 resp. 7.02:1.
+         * Šedé `filled`/`outline` varianty (tlačítka Jít zpět, přepínače v Statistikách,
+         * šedé odznaky) staví Mantine v light módu na gray-6 (#868e96): bílý text na něm
+         * má 3.32:1 a samotný gray-6 text na bílé ploše 3.32:1 — obojí pod WCAG AA.
+         * Posun o odstín dává 7.44:1 resp. 8.18:1.
          * Dark mód remap nepotřebuje, tam Mantine používá gray-8 / gray-4.
          */
         "--mantine-color-gray-filled": "var(--mantine-color-gray-7)",
@@ -68,10 +91,6 @@ globalStyle(":root[data-mantine-color-scheme='light']", {
 })
 
 globalStyle("body", {
-    // Zastávky #e9eef5 = light hodnota `vars.bg.page`; uvnitř gradientu token použít nejde
-    // (obsahuje celý light-dark() výraz), gradient má navíc vlastní jemně odlišné krajní odstíny.
-    backgroundImage:
-        "light-dark(radial-gradient(circle at 0% 0%, #f6f9ff 0%, #e9eef5 45%, #e6edf5 100%), none)",
     lineHeight: 1.5,
     color: vars.text.primary,
 })
@@ -79,19 +98,6 @@ globalStyle("body", {
 // fontWeight tlačítek definuje theme (Button.styles.root v theme.ts), tady jen přechod
 globalStyle(".mantine-Button-root", {
     transition: "all 0.15s ease-in-out",
-})
-
-globalStyle(".mantine-Button-root[type='submit'][data-variant='filled']", {
-    boxShadow: "0 6px 14px rgb(79 70 229 / 0.28)",
-})
-
-// hover lift jen pokud uzivatel nema omezeny pohyb (prefers-reduced-motion)
-globalStyle(".mantine-Button-root[type='submit'][data-variant='filled']:hover", {
-    "@media": {
-        "(prefers-reduced-motion: no-preference)": {
-            transform: "translateY(-1px)",
-        },
-    },
 })
 
 // FontAwesome spinner (.fa-spin) nemá vlastní prefers-reduced-motion guard (FA core 1.2.36)
@@ -106,8 +112,8 @@ globalStyle(".fa-spin", {
 })
 
 /**
- * Neaktivní tlačítko: Mantine mu dává gray-2 pozadí, které na pozadí stránky (#e9eef5)
- * splývá do neviditelna — tvar ovládacího prvku musí zůstat čitelný i ve vypnutém stavu
+ * Neaktivní tlačítko: Mantine mu dává gray-2 pozadí, které na bílé ploše splývá do
+ * neviditelna — tvar ovládacího prvku musí zůstat čitelný i ve vypnutém stavu
  * (např. „Dnes" v diáři na aktuálním týdnu).
  */
 globalStyle(".mantine-Button-root:disabled, .mantine-Button-root[data-disabled]", {
@@ -119,9 +125,18 @@ globalStyle(".mantine-Input-input:focus, .mantine-Textarea-input:focus", {
     boxShadow: vars.shadow.focusRing,
 })
 
-globalStyle(".mantine-Input-input, .mantine-Textarea-input", {
-    borderColor: vars.border.default,
-})
+/**
+ * `:not([data-variant="unstyled"])` je podstatné: Mantine u varianty `unstyled` jen nastaví
+ * `--input-bd: transparent` a rámeček nechává deklarovaný. Bez té výjimky by tohle pravidlo
+ * barvu vrátilo a „nestylované" pole by mělo plný box — což rozbíjelo vyplňovací linku
+ * u stavu docházky v diáři (AttendanceSelectAttendanceState.css.ts).
+ */
+globalStyle(
+    '.mantine-Input-input:not([data-variant="unstyled"]), .mantine-Textarea-input:not([data-variant="unstyled"])',
+    {
+        borderColor: vars.border.default,
+    },
+)
 
 // omezeni max sirky kontejneru
 globalStyle(".mantine-Container-root", {

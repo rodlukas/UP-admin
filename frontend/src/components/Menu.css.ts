@@ -1,12 +1,12 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { RAIL_ICON_INSET } from "../global/constants"
 import { vars } from "../theme/tokens"
 
 /**
- * Focus ring prvků ležících na tmavém navbaru. Výchozí indigo ring Mantine
- * (`.mantine-focus-auto`) i poloprůsvitný stín mají vůči navbaru (#1f2b3c) jen ~2,3–3:1,
- * tedy pod WCAG 1.4.11; blue-3 je výrazně viditelnější a plný outline přežije i
- * forced-colors režim.
+ * Focus ring prvků ležících na inkoustovém pruhu. Výchozí indigo ring Mantine
+ * (`.mantine-focus-auto`) i poloprůsvitný stín mají vůči pruhu jen ~2,3–3:1, tedy pod
+ * WCAG 1.4.11; blue-3 má na pruhu 8:1 a plný outline přežije i forced-colors režim.
  *
  * Na prvcích Mantine (nesou třídu `mantine-focus-auto`) musí selektor znít
  * `&.mantine-focus-auto:focus-visible` — se samotným `:focus-visible` je specificita
@@ -16,128 +16,103 @@ import { vars } from "../theme/tokens"
  * Bez TS anotací — vanilla-extract loader vkládá zdroj .css.ts do child kompilace
  * bez transpilace typů (viz global/surfaces.css.ts).
  */
-export const navbarFocusRing = {
+/** Šířka levé linky, kterou se značí aktivní položka. Nese ji každá položka průhledná. */
+const ACTIVE_MARK_WIDTH = "3px"
+
+const navbarFocusRing = {
     outline: "2px solid var(--mantine-color-blue-3)",
-    outlineOffset: "2px",
+    outlineOffset: "-2px",
 }
 
+/**
+ * Položka pruhu. Aktivní stav nese levá linka + váha písma, ne barevná plocha —
+ * v pruhu je jediná plocha inkoust a barva by z něj udělala další chrome.
+ *
+ * Vodorovně stojí ikona na sloupci `RAIL_ICON_INSET`, tedy na téže ose jako značka nahoře.
+ *
+ * Výška je pevná a odsazení jen vodorovné: obsah položek se liší (u Hledat je navíc `Kbd`,
+ * který je vyšší než ikona), takže bez pevné výšky by položky nebyly stejně vysoké.
+ * `line-height: 1` brání tomu, aby výšku nafoukl řádek textu.
+ */
 export const navLink = style({
-    display: "block",
-    transition: "all 0.15s ease-in-out",
-    borderRadius: vars.radius.md,
-    padding: "0.5rem 0.85rem",
+    display: "flex",
+    flexShrink: 0,
+    alignItems: "center",
+    gap: "0.7rem",
+    transition: "background-color 0.15s ease-in-out, color 0.15s ease-in-out",
+    borderLeft: `${ACTIVE_MARK_WIDTH} solid transparent`,
+    // linka aktivní položky posouvá obsah o svou šířku, proto se od sloupce odečítá
+    padding: `0 1rem 0 calc(${RAIL_ICON_INSET} - ${ACTIVE_MARK_WIDTH})`,
+    height: "2.6rem",
     textDecoration: "none",
-    color: "rgb(241 245 249 / 0.78)",
+    // bez zalamování: při rozbalení pruhu se popisek jen odkryje, nezalomí se a nereflowuje
+    // (ořez řeší `rail` v Main.css.ts)
+    lineHeight: 1,
+    whiteSpace: "nowrap",
+    color: vars.text.rail,
+    fontSize: "1rem",
     fontWeight: 500,
     ":hover": {
-        backgroundColor: "rgb(255 255 255 / 0.12)",
+        backgroundColor: vars.bg.railHover,
         textDecoration: "none",
-        color: "#ffffff",
+        color: vars.text.railStrong,
     },
     ":focus-visible": navbarFocusRing,
-    "@media": {
-        "(min-width: 992px)": {
-            borderBottom: "2px solid transparent",
-            borderRadius: 0,
-            backgroundColor: "transparent",
-            padding: "0.75rem 0.5rem 0.625rem",
-            ":hover": {
-                borderBottomColor: "rgb(255 255 255 / 0.6)",
-                backgroundColor: "transparent",
-                color: "#ffffff",
-            },
-        },
-    },
+})
+
+/**
+ * Ikona ani popisek se **nesmí zmenšovat**. Během rozbalování je pruh na okamžik užší, než
+ * kolik obsah položky potřebuje, a s výchozím `flex-shrink: 1` se v té chvíli ikona stlačí —
+ * popisek se za ní posune o pár pixelů a po doběhnutí animace skočí zpátky. Když se nezmenší
+ * nic, drží obsah pozici od prvního snímku a přebytek jen ořízne `overflow: clip` na pruhu.
+ */
+globalStyle(`${navLink} > svg`, {
+    flexShrink: 0,
 })
 
 // deklarováno až za `navLink` — při shodné specificitě rozhoduje pořadí v souboru
 export const navLinkActive = style({
-    backgroundColor: "rgb(255 255 255 / 0.18)",
-    color: "#ffffff",
+    borderLeftColor: vars.text.railStrong,
+    backgroundColor: vars.bg.railActive,
+    color: vars.text.railStrong,
     fontWeight: 600,
-    "@media": {
-        "(min-width: 992px)": {
-            borderBottomColor: "#ffffff",
-            backgroundColor: "transparent",
-        },
-    },
 })
 
-export const navExternalLink = style({
-    whiteSpace: "nowrap",
+/** Popisek položky — u odkazů je to zároveň jejich přístupný název. */
+export const navLabel = style({
+    flexShrink: 0,
 })
 
-globalStyle(`${navExternalLink} svg`, {
-    marginLeft: "0.2em",
+/** Klávesová zkratka u vyhledávání. */
+export const navShortcut = style({
+    flexShrink: 0,
 })
 
 export const navList = style({
     display: "flex",
     flexDirection: "column",
+    gap: "1px",
     margin: 0,
     padding: 0,
     width: "100%",
     listStyle: "none",
-    "@media": {
-        "(min-width: 992px)": {
-            flexDirection: "row",
-            gap: "0.25rem",
-            marginLeft: "auto",
-            width: "auto",
-        },
-    },
 })
 
-export const logoutButton = style({
-    selectors: {
-        "&.mantine-focus-auto:focus-visible": navbarFocusRing,
-    },
-    "@media": {
-        "(min-width: 992px)": {
-            marginLeft: "0.5rem",
+/** Odhlášení a přepínač sbalení jsou tlačítka, ale v pruhu se chovají jako položky. */
+export const railButton = style([
+    navLink,
+    {
+        border: 0,
+        borderLeft: `${ACTIVE_MARK_WIDTH} solid transparent`,
+        background: "none",
+        cursor: "pointer",
+        width: "100%",
+        textAlign: "left",
+        selectors: {
+            "&.mantine-focus-auto:focus-visible": navbarFocusRing,
         },
-        "(max-width: 991.98px)": {
-            marginTop: "0.5rem",
-            width: "100%",
-        },
     },
-})
+])
 
-export const spotlightButton = style({
-    display: "flex",
-    alignItems: "center",
-    gap: "0.5rem",
-    transition: "all 0.15s ease-in-out",
-    borderRadius: vars.radius.md,
-    padding: "0.4rem 0.75rem",
-    color: "rgb(241 245 249 / 0.78)",
-    fontSize: "0.875rem",
-    ":hover": {
-        backgroundColor: "rgb(255 255 255 / 0.12)",
-        color: "#ffffff",
-    },
-    selectors: {
-        "&.mantine-focus-auto:focus-visible": navbarFocusRing,
-    },
-    "@media": {
-        "(min-width: 992px)": {
-            marginRight: "0.75rem",
-            border: "1px solid rgb(255 255 255 / 0.2)",
-            width: "18rem",
-            maxWidth: "30vw",
-        },
-        "(max-width: 991.98px)": {
-            marginBottom: "0.25rem",
-            padding: "0.5rem 0.85rem",
-            width: "100%",
-        },
-    },
-})
-
-export const spotlightButtonLabel = style({
-    flex: 1,
-    overflow: "hidden",
-    textAlign: "left",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-})
+/** Spouštěč Spotlightu je v pruhu obyčejná položka. */
+export const spotlightButton = railButton

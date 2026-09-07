@@ -11,7 +11,7 @@ import {
     Title,
     Tooltip,
 } from "@mantine/core"
-import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { faCheck, faLayerGroup, faTasks, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
 import { useCourses, usePatchAttendanceState } from "../api/hooks"
@@ -20,15 +20,74 @@ import AppCommit from "../components/AppCommit"
 import AppDate from "../components/AppDate"
 import AppRelease from "../components/AppRelease"
 import CourseCircle from "../components/CourseCircle"
+import EmptyState from "../components/EmptyState"
 import Heading from "../components/Heading"
+import { SkeletonShell } from "../components/Skeletons"
+import * as skeletonStyles from "../components/Skeletons.css"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE, GITHUB_REPO_URL } from "../global/constants"
-import { bold, dimmedText, iconInlineX, iconSuccess, mb0 } from "../global/utility.css"
+import { tableFlat } from "../global/surfaces.css"
+import { bold, dimmedText, iconInlineX, iconSuccess, mb0, numericCell } from "../global/utility.css"
 import { AttendanceStateType } from "../types/models"
 import { QA } from "../types/types"
 
 import * as styles from "./Settings.css"
+
+/**
+ * Kostra tabulky stavů účasti — 3 sloupce jako reálná tabulka (Název / Viditelný / Akce),
+ * plus samostatný blok pro „Konfiguraci stavů účasti" pod ní (dvojice popisek + select),
+ * stejně jako to celé sedí v jedné kartě reálného obsahu.
+ */
+const AttendanceStatesSkeleton: React.FC = () => (
+    <div className={styles.settingsColumn}>
+        <Skeleton h={26} mb="sm" radius="sm" w="55%" />
+        <div className={skeletonStyles.panel}>
+            {[0, 1, 2].map((index) => (
+                <div key={index} className={skeletonStyles.row}>
+                    <Skeleton h={18} radius="sm" w="50%" />
+                    <Skeleton h={20} w={20} circle />
+                    <Skeleton h={28} w={28} circle />
+                </div>
+            ))}
+        </div>
+        <hr />
+        <Skeleton h={22} mb="sm" mt="xs" radius="sm" w="65%" />
+        <Skeleton h={14} mb="xs" radius="sm" />
+        <Skeleton h={14} mb="md" radius="sm" w="80%" />
+        {[0, 1].map((index) => (
+            <div key={index} className={styles.configListItem}>
+                <div className={styles.configRow}>
+                    <Skeleton h={16} radius="sm" className={styles.configRowLabel} />
+                    <div className={styles.configRowControl}>
+                        <Skeleton h={36} radius="sm" />
+                    </div>
+                </div>
+            </div>
+        ))}
+    </div>
+)
+
+/**
+ * Kostra tabulky kurzů — 5 sloupců jako reálná tabulka (Název / Viditelný / Barva / Trvání /
+ * Akce), barevný kroužek kurzu (`CourseCircle`) nahrazuje kolečko stejné velikosti.
+ */
+const CoursesSkeleton: React.FC = () => (
+    <div className={styles.settingsColumn}>
+        <Skeleton h={26} mb="sm" radius="sm" w="35%" />
+        <div className={skeletonStyles.panel}>
+            {[0, 1, 2, 3, 4, 5].map((index) => (
+                <div key={index} className={skeletonStyles.row}>
+                    <Skeleton h={18} radius="sm" w="30%" />
+                    <Skeleton h={20} w={20} circle />
+                    <Skeleton h={22} w={22} circle />
+                    <Skeleton h={16} radius="sm" w="12%" />
+                    <Skeleton h={28} w={28} circle />
+                </div>
+            ))}
+        </div>
+    </div>
+)
 
 type VisibleProps = QA & {
     /** Kurz/stav účasti je viditelný (true). */
@@ -48,11 +107,7 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
 /** Stránka s nastavením – správa kurzů, stavů účasti, info o aplikaci. */
 const Settings: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
-    const {
-        data: courses = [],
-        isLoading: coursesLoading,
-        isFetching: coursesFetching,
-    } = useCourses()
+    const { data: courses = [], isLoading: coursesLoading } = useCourses()
 
     const patchAttendanceState = usePatchAttendanceState()
 
@@ -94,13 +149,11 @@ const Settings: React.FC = () => {
     }
 
     const isLoading = coursesLoading || attendanceStatesContext.isLoading
-    const isFetching = coursesFetching || attendanceStatesContext.isFetching
 
     return (
         <Container>
             <Heading
                 title={APP_URLS.nastaveni.title}
-                isFetching={isFetching}
                 buttons={
                     <>
                         <ModalSettings TYPE={EDIT_TYPE.STATE} />
@@ -109,11 +162,13 @@ const Settings: React.FC = () => {
                 }
             />
             {isLoading ? (
-                <>
-                    {[...Array(4)].map((_, i) => (
-                        <Skeleton key={i} h={36} mb="xs" radius="sm" />
-                    ))}
-                </>
+                <SkeletonShell>
+                    {/* dva sloupce vedle sebe, stejně jako skutečný obsah níže */}
+                    <SimpleGrid cols={{ base: 1, md: 2 }} className={styles.settingsColumnsRow}>
+                        <AttendanceStatesSkeleton />
+                        <CoursesSkeleton />
+                    </SimpleGrid>
+                </SkeletonShell>
             ) : (
                 <>
                     <SimpleGrid cols={{ base: 1, md: 2 }} className={styles.settingsColumnsRow}>
@@ -124,7 +179,7 @@ const Settings: React.FC = () => {
                                     <Table.ScrollContainer
                                         minWidth={300}
                                         className={styles.tableSection}>
-                                        <Table striped highlightOnHover verticalSpacing="xs">
+                                        <Table className={tableFlat}>
                                             <Table.Thead>
                                                 <Table.Tr>
                                                     <Table.Th>Název</Table.Th>
@@ -163,9 +218,11 @@ const Settings: React.FC = () => {
                                     </Table.ScrollContainer>
                                 )}
                                 {attendanceStatesContext.attendancestates.length === 0 && (
-                                    <Text c="dimmed" className={styles.emptyMessage}>
-                                        Žádné stavy účasti
-                                    </Text>
+                                    <EmptyState
+                                        icon={faTasks}
+                                        title="Žádné stavy účasti"
+                                        description={`Stavy účasti se nabízejí u každého klienta v diáři — přidej alespoň „OK“ a „omluven“.`}
+                                    />
                                 )}
                                 <hr />
                                 <Title order={3}>Konfigurace stavů účasti</Title>
@@ -252,13 +309,13 @@ const Settings: React.FC = () => {
                                     <Table.ScrollContainer
                                         minWidth={300}
                                         className={styles.tableSection}>
-                                        <Table striped highlightOnHover verticalSpacing="xs">
+                                        <Table className={tableFlat}>
                                             <Table.Thead>
                                                 <Table.Tr>
                                                     <Table.Th>Název</Table.Th>
                                                     <Table.Th ta="center">Viditelný</Table.Th>
                                                     <Table.Th ta="center">Barva</Table.Th>
-                                                    <Table.Th ta="center">Trvání (min.)</Table.Th>
+                                                    <Table.Th ta="right">Trvání (min.)</Table.Th>
                                                     <Table.Th ta="right">Akce</Table.Th>
                                                 </Table.Tr>
                                             </Table.Thead>
@@ -281,9 +338,13 @@ const Settings: React.FC = () => {
                                                                 showTitle
                                                             />
                                                         </Table.Td>
+                                                        {/* cisla vpravo a tabulkovymi
+                                                            cislicemi, aby se ve sloupci
+                                                            srovnala pod sebe */}
                                                         <Table.Td
                                                             data-qa="course_duration"
-                                                            ta="center">
+                                                            ta="right"
+                                                            className={numericCell}>
                                                             {course.duration}
                                                         </Table.Td>
                                                         <Table.Td ta="right">
@@ -299,9 +360,11 @@ const Settings: React.FC = () => {
                                     </Table.ScrollContainer>
                                 )}
                                 {courses.length === 0 && (
-                                    <Text c="dimmed" className={styles.emptyMessage}>
-                                        Žádné kurzy
-                                    </Text>
+                                    <EmptyState
+                                        icon={faLayerGroup}
+                                        title="Žádné kurzy"
+                                        description="Kurz určuje barvu a délku lekce; bez něj nejde lekci založit."
+                                    />
                                 )}
                             </div>
                         </div>

@@ -1,10 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Tooltip } from "@mantine/core"
-import { faCommentAltDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { faExclamationCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
 import { iconWarning } from "../global/utility.css"
 import { AttendanceType } from "../types/models"
+
+import { attendanceIconSlot } from "./Attendances.css"
 
 type Props = {
     /** Účast klienta na lekci. */
@@ -18,13 +20,10 @@ const AttendanceRemindPay: React.FC<Props> = ({ attendance }) => {
     }
     return (
         <Tooltip label="Příště platit">
-            <span>
-                <FontAwesomeIcon
-                    icon={faCommentAltDollar}
-                    size="lg"
-                    className={iconWarning}
-                    transform="up-4"
-                />
+            {/* stejný slot i velikost jako ikona platby — bez `transform`, který ikonu
+                dřív zvedal nad účaří a rozhazoval řádek */}
+            <span className={attendanceIconSlot}>
+                <FontAwesomeIcon icon={faExclamationCircle} size="lg" className={iconWarning} />
             </span>
         </Tooltip>
     )

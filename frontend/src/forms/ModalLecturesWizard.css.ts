@@ -7,3 +7,8 @@ export const modalLecturesWizard = style({
 export const dropdownToggle = style({
     verticalAlign: "top",
 })
+
+/** Text vedle „+" — používá se jen tam, kde tlačítko stojí samo (prázdný stav). */
+export const dropdownToggleLabel = style({
+    marginLeft: "0.45rem",
+})

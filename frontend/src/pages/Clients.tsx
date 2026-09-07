@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Alert, Badge, Button, Container, Group, Skeleton, Table, Text } from "@mantine/core"
-import { faHourglassEnd, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Alert, Button, Container, Group, Pagination, Table } from "@mantine/core"
+import { faCalendarTimes, faSpinnerThird, faUsers } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
 import { trackEvent } from "../analytics"
@@ -11,17 +11,41 @@ import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
+import EmptyState from "../components/EmptyState"
 import Heading from "../components/Heading"
 import InfoTooltip from "../components/InfoTooltip"
+import { SkeletonShell, TableSkeleton } from "../components/Skeletons"
+import SortableTh from "../components/SortableTh"
+import TableToolbar from "../components/TableToolbar"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
+import { tableFlat } from "../global/surfaces.css"
 import { iconAfterText } from "../global/utility.css"
 import { isStaleActive, pluralizeCs } from "../global/utils"
+import { DataTableColumn, paginationControlProps, useDataTable } from "../hooks/useDataTable"
 import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
 
 import * as styles from "./Clients.css"
+
+/** V čem hledá vyhledávání nad tabulkou. */
+const SEARCH_IN = (client: ClientType): (string | null | undefined)[] => [
+    client.surname,
+    client.firstname,
+    client.phone,
+    client.email,
+    client.note,
+]
+
+/**
+ * Řaditelné sloupce. Záměrně jen jméno: řazení podle telefonu, e-mailu nebo poznámky
+ * nikdo nepoužije a šipka u každé hlavičky je jen šum (Carbon: řaditelné mají být
+ * sloupce, u kterých to dává smysl).
+ */
+const COLUMNS: DataTableColumn<ClientType>[] = [
+    { key: "name", value: (client) => `${client.surname} ${client.firstname}` },
+]
 
 /** Stránka s klienty. */
 const Clients: React.FC = () => {
@@ -33,8 +57,17 @@ const Clients: React.FC = () => {
 
     const isLoading = (): boolean => (active ? clientsActiveContext.isLoading : inactiveLoading)
 
-    const getClientsData = (): ClientType[] =>
-        active ? clientsActiveContext.clients : inactiveClients
+    const getClientsData = React.useCallback(
+        (): ClientType[] => (active ? clientsActiveContext.clients : inactiveClients),
+        [active, clientsActiveContext.clients, inactiveClients],
+    )
+
+    const table = useDataTable<ClientType>({
+        rows: getClientsData(),
+        searchIn: SEARCH_IN,
+        columns: COLUMNS,
+        initialSortKey: "name",
+    })
 
     const staleClients = React.useMemo(
         () => clientsActiveContext.clients.filter((c) => isStaleActive(c.last_lecture_date)),
@@ -79,41 +112,40 @@ const Clients: React.FC = () => {
                     <>
                         {APP_URLS.klienti.title}{" "}
                         {!isLoading() && (
-                            <Badge color="gray" radius="xl">
-                                {getClientsData().length}
-                            </Badge>
+                            <span className={styles.titleCount}>{getClientsData().length}</span>
                         )}
                     </>
                 }
+                // ActiveSwitcher zustava vzdy vykreslovany (i behem nacitani): jinak by
+                // se pri prvnim prepnuti na neaktivni (studeny fetch) na chvili ztratil
+                // a uzivatel by se nemel jak prepnout zpatky
                 buttons={
                     <>
                         <ActiveSwitcher onChange={refresh} active={active} source="clients_page" />
                         <ModalClients refresh={refreshFromModal} source="clients_page" />
                     </>
                 }
-                isFetching={
-                    active
-                        ? clientsActiveContext.isFetching && clientsActiveContext.clients.length > 0
-                        : false
-                }
             />
             {active && !clientsActiveContext.isLoading && staleClients.length > 0 && (
-                <Alert color="yellow" className={styles.staleAlert}>
+                <Alert
+                    // pozadi i ramecek dodava `staleAlert` (statusNoticeWarning) — Mantine
+                    // `light` varianta by pres nej nakreslila svou sytou zlutou plochu
+                    variant="transparent"
+                    color="yellow"
+                    className={styles.staleAlert}>
                     <Group justify="space-between" wrap="wrap" gap="sm">
                         <Group gap="sm" wrap="nowrap">
-                            <FontAwesomeIcon icon={faHourglassEnd} />
+                            <FontAwesomeIcon icon={faCalendarTimes} />
                             <span>
                                 {staleClients.length} {staleText} lekci déle než{" "}
                                 {DAYS_WITHOUT_LECTURE_WARNING} dní.
                             </span>
                         </Group>
-                        {/* autoContrast: bílý text na yellow-filled měl jen 1.86:1 (light,
-                            yellow-6) / 2.48:1 (dark, yellow-8); černý text dává 11.28:1 /
-                            8.46:1 (WCAG AA ≥ 4.5:1) a ladí s tmavým textem žlutého banneru. */}
+                        {/* `default` varianta: sytě žluté tlačítko bylo na měkkém notice
+                            nejhlasitější věcí stránky. Neutrální obrys drží akci čitelnou
+                            a `autoContrast` uz neni potreba (neresi se bily text na zlute). */}
                         <Button
-                            color="yellow"
-                            autoContrast
-                            size="sm"
+                            variant="default"
                             disabled={deactivateClients.isPending}
                             onClick={handleDeactivateAll}>
                             Přesunout do neaktivních
@@ -129,67 +161,113 @@ const Clients: React.FC = () => {
                 </Alert>
             )}
             {isLoading() ? (
-                <div className={styles.tableSection}>
-                    {[...Array(6)].map((_, i) => (
-                        <Skeleton key={i} h={36} mb="xs" radius="sm" />
-                    ))}
-                </div>
+                <SkeletonShell>
+                    <TableSkeleton />
+                </SkeletonShell>
             ) : getClientsData().length > 0 ? (
-                <Table.ScrollContainer minWidth={560} className={styles.tableSection}>
-                    <Table striped highlightOnHover verticalSpacing="xs">
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th>Příjmení a jméno</Table.Th>
-                                <Table.Th className={styles.hiddenBelowMd}>Telefon</Table.Th>
-                                <Table.Th
-                                    className={`${styles.emailHeader} ${styles.hiddenBelowMd}`}>
-                                    E-mail
-                                </Table.Th>
-                                <Table.Th className={styles.hiddenBelowSm}>Poznámka</Table.Th>
-                                <Table.Th ta="right">Akce</Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {getClientsData().map((client) => (
-                                <Table.Tr key={client.id} data-qa="client">
-                                    <Table.Td className={styles.nameCell}>
-                                        <ClientName client={client} link />{" "}
-                                        {client.active &&
-                                            isStaleActive(client.last_lecture_date) && (
-                                                <InfoTooltip
-                                                    placement="right"
-                                                    size="1x"
-                                                    icon={faHourglassEnd}
-                                                    text={TEXTS.WARNING_STALE_CLIENT}
+                <>
+                    <TableToolbar
+                        query={table.query}
+                        onQueryChange={table.search}
+                        label="klienta"
+                        fields="jméno, telefon, e-mail, poznámka"
+                        filteredCount={table.filteredCount}
+                        totalCount={getClientsData().length}
+                    />
+                    {table.filteredCount === 0 ? (
+                        <EmptyState
+                            icon={faUsers}
+                            title="Nic nenalezeno"
+                            description={`Hledání „${table.query}“ neodpovídá žádný klient.`}
+                        />
+                    ) : (
+                        <Table.ScrollContainer minWidth={560} className={styles.tableSection}>
+                            <Table className={tableFlat}>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <SortableTh
+                                            sortKey="name"
+                                            activeKey={table.sortKey}
+                                            direction={table.sortDirection}
+                                            onSort={table.toggleSort}>
+                                            Příjmení a jméno
+                                        </SortableTh>
+                                        <Table.Th className={styles.hiddenBelowMd}>
+                                            Telefon
+                                        </Table.Th>
+                                        <Table.Th
+                                            className={`${styles.emailHeader} ${styles.hiddenBelowMd}`}>
+                                            E-mail
+                                        </Table.Th>
+                                        <Table.Th className={styles.hiddenBelowSm}>
+                                            Poznámka
+                                        </Table.Th>
+                                        <Table.Th ta="right">Akce</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>
+                                    {table.rowsOnPage.map((client) => (
+                                        <Table.Tr key={client.id} data-qa="client">
+                                            <Table.Td className={styles.nameCell}>
+                                                <ClientName client={client} link />{" "}
+                                                {client.active &&
+                                                    isStaleActive(client.last_lecture_date) && (
+                                                        <InfoTooltip
+                                                            placement="right"
+                                                            size="1x"
+                                                            icon={faCalendarTimes}
+                                                            text={TEXTS.WARNING_STALE_CLIENT}
+                                                        />
+                                                    )}
+                                            </Table.Td>
+                                            <Table.Td
+                                                className={`${styles.phoneCell} ${styles.hiddenBelowMd}`}>
+                                                <ClientPhone phone={client.phone} />
+                                            </Table.Td>
+                                            <Table.Td className={styles.hiddenBelowMd}>
+                                                <ClientEmail email={client.email} />
+                                            </Table.Td>
+                                            <Table.Td className={styles.hiddenBelowSm}>
+                                                <ClientNote note={client.note} />
+                                            </Table.Td>
+                                            <Table.Td ta="right">
+                                                <ModalClients
+                                                    currentClient={client}
+                                                    refresh={refreshFromModal}
+                                                    source="clients_page"
                                                 />
-                                            )}
-                                    </Table.Td>
-                                    <Table.Td
-                                        className={`${styles.phoneCell} ${styles.hiddenBelowMd}`}>
-                                        <ClientPhone phone={client.phone} />
-                                    </Table.Td>
-                                    <Table.Td className={styles.hiddenBelowMd}>
-                                        <ClientEmail email={client.email} />
-                                    </Table.Td>
-                                    <Table.Td className={styles.hiddenBelowSm}>
-                                        <ClientNote note={client.note} />
-                                    </Table.Td>
-                                    <Table.Td ta="right">
-                                        <ModalClients
-                                            currentClient={client}
-                                            refresh={refreshFromModal}
-                                            source="clients_page"
-                                        />
-                                    </Table.Td>
-                                </Table.Tr>
-                            ))}
-                        </Table.Tbody>
-                    </Table>
-                </Table.ScrollContainer>
+                                            </Table.Td>
+                                        </Table.Tr>
+                                    ))}
+                                </Table.Tbody>
+                            </Table>
+                        </Table.ScrollContainer>
+                    )}
+                    {table.isPaginated && (
+                        // `data-qa="pagination"`: E2E kroky přes ni umí projít všechny
+                        // stránky, aby `[data-qa=client]` počítaly/hledaly nad celým
+                        // seznamem, ne jen nad aktuální stránkou (viz useDataTable)
+                        <div data-qa="pagination">
+                            <Pagination
+                                value={table.page}
+                                onChange={table.setPage}
+                                total={table.pageCount}
+                                getControlProps={paginationControlProps}
+                                className={styles.pagination}
+                            />
+                        </div>
+                    )}
+                </>
             ) : (
-                <Text c="dimmed" ta="center">
-                    Žádní {active ? "aktivní" : "neaktivní"} klienti
-                </Text>
+                <EmptyState
+                    icon={faUsers}
+                    title={`Žádní ${active ? "aktivní" : "neaktivní"} klienti`}
+                    description={
+                        active
+                            ? "Přidej prvního klienta a objeví se tady."
+                            : "Neaktivní jsou klienti, kteří sem byli přesunuti ze seznamu aktivních."
+                    }
+                />
             )}
         </Container>
     )

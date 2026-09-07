@@ -1,5 +1,3 @@
-import { Badge } from "@mantine/core"
-import classNames from "classnames"
 import * as React from "react"
 
 import { AnalyticsSource } from "../analytics"
@@ -24,24 +22,43 @@ type AttendanceProps = {
 /** Komponenta zobrazující jednotlivou účast klienta na dané lekci. */
 const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false, source }) => (
     <li data-qa="lecture_attendance">
-        {showClient && <ClientName client={attendance.client} link className={styles.clientName} />}{" "}
-        <AttendancePaidButton paid={attendance.paid} attendanceId={attendance.id} source={source} />{" "}
-        {attendance.number && (
-            <>
-                <Badge variant="default" radius="xl" fw="bold">
-                    {attendance.number}
-                </Badge>{" "}
-            </>
-        )}
-        <AttendanceRemindPay attendance={attendance} />
-        <LectureNote attendance={attendance} />
-        <div className={styles.attendanceStateWrapper}>
+        <div className={styles.attendanceMain}>
+            {showClient && (
+                <ClientName client={attendance.client} link className={styles.clientName} />
+            )}
+            <span className={styles.attendanceBadges}>
+                {/* Upozorneni na platbu jde PRED platbu, prestoze je podminene: skupina se
+                    zarovnava doprava (`margin-left: auto`), takze podmineny prvek na konci
+                    by pri kazdem vyskytu odsunul platbu i cislo doleva a rady by mezi sebou
+                    odskakovaly. Vpredu roste do volneho mista a kotvy vpravo zustanou stat. */}
+                <AttendanceRemindPay attendance={attendance} />
+                <AttendancePaidButton
+                    paid={attendance.paid}
+                    attendanceId={attendance.id}
+                    source={source}
+                />
+                {/* Poradove cislo ucasti klienta — tlumeny ordinal tabulkovymi cislicemi,
+                    stejne jako cislo lekce (LectureNumber). Drive obtazena pilulka, ktera
+                    u kazdeho jmena delala dalsi objekt navic. */}
+                {attendance.number && (
+                    <span className={styles.attendanceNumber} title={`${attendance.number}. lekce`}>
+                        {attendance.number}.
+                    </span>
+                )}
+            </span>
+        </div>
+        <div className={styles.attendanceState}>
             <AttendanceSelectAttendanceState
                 value={attendance.attendancestate}
                 attendanceId={attendance.id}
                 source={source}
             />
         </div>
+        {/* Poznámka má vlastní řádek pod jménem, ikonami i stavem. Vedle nich soutěžila
+            o šířku a delší text rozhodil celý slot: jméno zůstalo nahoře, ikony spadly
+            pod něj a řádky sousedních klientů přestaly lícovat. Přes celou šířku se
+            vejde v klidu a nic kolem se nehne. */}
+        <LectureNote attendance={attendance} className={styles.attendanceNote} />
     </li>
 )
 
@@ -56,11 +73,8 @@ type AttendancesProps = {
 
 /** Komponenta zobrazující účasti všech klientů na dané lekci. */
 const Attendances: React.FC<AttendancesProps> = ({ lecture, showClient = false, source }) => {
-    const className = classNames(styles.attendances, {
-        [styles.attendancesGroup]: lecture.group,
-    })
     return (
-        <ul className={className}>
+        <ul className={styles.attendances}>
             {lecture.attendances.map((attendance) => (
                 <Attendance
                     attendance={attendance}

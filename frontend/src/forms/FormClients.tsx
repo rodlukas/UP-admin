@@ -16,6 +16,7 @@ import { ClientPostApiDummy, ClientType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
 import * as styles from "./FormBase.css"
+import * as phoneStyles from "./FormClients.css"
 
 type Props = {
     /** Klient. */
@@ -205,10 +206,12 @@ const FormClients: React.FC<Props> = (props) => {
                                         form.setFieldValue("phone", formatted)
                                     }}
                                     label="Telefon"
-                                    description="Formát: 123 456 789"
                                     pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
                                     data-qa="client_field_phone"
+                                    className={phoneStyles.phoneInput}
                                     leftSection={<span>+420</span>}
+                                    leftSectionWidth="3.1rem"
+                                    leftSectionProps={{ className: phoneStyles.phonePrefixSection }}
                                 />
                             </div>
                             <div className={styles.fieldBlock}>
@@ -265,7 +268,6 @@ const FormClients: React.FC<Props> = (props) => {
                                     všechny jeho zájmy o kurzy a členství ve skupinách.
                                 </p>
                                 <DeleteButton
-                                    size="sm"
                                     content="klienta"
                                     onClick={(): void => {
                                         if (

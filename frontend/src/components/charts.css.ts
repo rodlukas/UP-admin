@@ -1,6 +1,6 @@
 import { createVar, globalStyle, style } from "@vanilla-extract/css"
 
-import { surfaceCard } from "../global/surfaces.css"
+import { surfaceFloating } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
 // Recharts předává `stroke`/`fill` jako SVG prezentační atributy — `var()` v nich funguje
@@ -14,6 +14,13 @@ globalStyle(":root", {
     vars: {
         "--up-chart-grid-stroke": "var(--mantine-color-gray-3)",
         "--up-chart-tick-fill": "var(--mantine-color-gray-7)",
+        // Statusové řady grafů (individuální / skupinové / zrušené). Individuální drží
+        // značkové indigo; skupinové a zrušené jsou proti syté Mantine paletě (teal-6,
+        // red-6) ztlumené do klidnějších tónů, aby ladily s inkoustovou plochou. Čitelnost
+        // legendy nese remap barvy textu níže, ne sytost výplně — tón proto může být tišší.
+        "--up-chart-series-individual": "var(--mantine-color-indigo-6)",
+        "--up-chart-series-group": "#2f9e78",
+        "--up-chart-series-canceled": "#cb5a52",
     },
 })
 
@@ -21,14 +28,17 @@ globalStyle(":root[data-mantine-color-scheme='dark']", {
     vars: {
         "--up-chart-grid-stroke": "var(--mantine-color-dark-4)",
         "--up-chart-tick-fill": "var(--mantine-color-dark-1)",
+        // Na tmavé ploše potřebují tlumené tóny o stupeň víc jasu, aby nezapadly.
+        "--up-chart-series-individual": "var(--mantine-color-indigo-4)",
+        "--up-chart-series-group": "#43c49a",
+        "--up-chart-series-canceled": "#ef8f88",
     },
 })
 
-/** Plovoucí tooltip grafu — `surfaceCard` s vyšší elevací (leží nad plochou grafu). */
+/** Plovoucí tooltip grafu — leží nad plochou grafu, a smí tedy mít stín. */
 export const chartTooltip = style([
-    surfaceCard,
+    surfaceFloating,
     {
-        boxShadow: vars.shadow.elevated,
         padding: "0.5rem 0.75rem",
         lineHeight: 1.5,
         color: vars.text.primary,

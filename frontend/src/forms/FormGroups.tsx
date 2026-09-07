@@ -18,7 +18,7 @@ import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import GroupName from "../components/GroupName"
 import InfoTooltip from "../components/InfoTooltip"
-import Loading from "../components/Loading"
+import { FormSkeleton } from "../components/Skeletons"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { TEXTS } from "../global/constants"
 import { clientName } from "../global/utils"
@@ -197,7 +197,7 @@ const FormGroups: React.FC<Props> = (props) => {
             </Modal.Header>
             <Modal.Body>
                 {isLoading ? (
-                    <Loading />
+                    <FormSkeleton count={4} />
                 ) : (
                     <div className={styles.formContent}>
                         <div className={styles.formSection}>
@@ -325,7 +325,6 @@ const FormGroups: React.FC<Props> = (props) => {
                                 <div className={styles.deleteAlertText}>
                                     <p>Nenávratně smaže skupinu i s jejími lekcemi.</p>
                                     <DeleteButton
-                                        size="sm"
                                         content="skupinu"
                                         onClick={(): void => {
                                             if (

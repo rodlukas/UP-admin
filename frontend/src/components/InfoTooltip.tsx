@@ -5,6 +5,8 @@ import * as React from "react"
 
 import { dimmedText, iconWarning } from "../global/utility.css"
 
+/** Přístupný popisek ikony pro čtečky obrazovky. */
+const LABEL = "Doplňující informace"
 
 type Props = {
     /** Text zobrazený v Tooltipu. */
@@ -15,8 +17,6 @@ type Props = {
     placement?: TooltipProps["position"]
     /** Ikona zobrazená jako trigger Tooltipu (výchozí: faInfoCircle). */
     icon?: FontAwesomeIconProps["icon"]
-    /** Přístupný popisek ikony pro čtečky obrazovky. */
-    label?: string
     /**
      * Vizuální tón ikony. Výchozí „warning" (jantarová) – většina tooltipů upozorňuje na stav
      * typu „neaktivní / nelze / zastaralé". Pro čistě vysvětlující text použij „info" (neutrální),
@@ -31,7 +31,6 @@ const InfoTooltip: React.FC<Props> = ({
     size = "lg",
     placement = "bottom",
     icon = faInfoCircle,
-    label = "Doplňující informace",
     tone = "warning",
 }) => {
     // „warning" = jantarová (upozornění na stav), „info" = neutrální tlumená
@@ -45,7 +44,7 @@ const InfoTooltip: React.FC<Props> = ({
             events={{ hover: true, focus: true, touch: true }}>
             {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- trigger tooltipu
                 musí být fokusovatelný, jinak je obsah jen pro myš (WAI-ARIA tooltip pattern) */}
-            <span className={iconClassName} tabIndex={0} role="img" aria-label={label}>
+            <span className={iconClassName} tabIndex={0} role="img" aria-label={LABEL}>
                 <FontAwesomeIcon icon={icon} size={size} aria-hidden />
             </span>
         </MantineTooltip>

@@ -1,12 +1,9 @@
-import { createThemeContract, style } from "@vanilla-extract/css"
+import { style } from "@vanilla-extract/css"
 
+import { courseBand } from "../components/CourseName.css"
+import { lectureNumber } from "../components/LectureNumber.css"
 import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
-
-export const applicationsVars = createThemeContract({
-    courseBackground: "",
-    badgeColor: "",
-})
 
 export const course = style([
     surfaceCard,
@@ -40,30 +37,33 @@ export const applicationRow = style({
     alignItems: "center",
 })
 
-export const courseHeadingItem = style({
-    display: "flex",
-    alignItems: "center",
-    gap: "0.65rem",
-    borderBottom: vars.borderShort.default,
-    borderLeft: `4px solid ${applicationsVars.courseBackground}`,
-    backgroundColor: vars.bg.muted,
-    padding: "0.6rem 1rem",
-})
+/**
+ * Hlavička sloupce kurzu. Šedé podbarvení odstraněno — v plochém jazyce nese oddělení
+ * linka a barvu kurzu levá linka. Ta jde stejným `color-mix` receptem jako `courseDot`
+ * (CourseName.css.ts): barva kurzu je uživatelský hex, který by na bílé nebo na tmavé
+ * ploše jinak zmizel.
+ */
+export const courseHeadingItem = style([
+    courseBand,
+    {
+        display: "flex",
+        alignItems: "center",
+        gap: "0.65rem",
+        padding: "0.6rem 1rem",
+    },
+])
 
-export const courseHeadingBadge = style({
-    marginLeft: "0.1rem",
-    backgroundColor: `${applicationsVars.courseBackground} !important`,
-    // Mantine Badge má ve výchozím stavu text-transform: uppercase; popisek „3 zájemci"
-    // má ale zůstat malými písmeny
-    textTransform: "none",
-    color: `${applicationsVars.badgeColor} !important`,
-    fontSize: "0.7rem",
-    fontWeight: 700,
-})
+/**
+ * Počet zájemců u kurzu — stejný odznak jako pořadové číslo lekce v diáři (`LectureNumber`):
+ * tlumený ordinál s podkladem odvozeným z `currentColor`, ne vlastní barva z palety, která by
+ * na sytém hexu kurzu zmizela.
+ */
+export const courseHeadingCount = lectureNumber
 
 export const courseHeading = style({
     marginBottom: 0,
-    color: vars.text.primary,
+    // barvu nese podklad hlavičky (`courseBand`), text musí psát jeho barvou
+    color: "inherit",
     fontSize: "1rem",
     fontWeight: 600,
 })
@@ -71,7 +71,6 @@ export const courseHeading = style({
 export const applicationMeta = style({
     marginTop: "0.25rem",
     width: "100%",
-    color: vars.text.subtleMuted,
     "@media": {
         "(min-width: 768px)": {
             flex: "0 0 41.666667%",
@@ -81,13 +80,39 @@ export const applicationMeta = style({
     },
 })
 
-export const createdBadge = style({
+/**
+ * Datum přidání zájemce jako odznak — stejný recept jako `attendanceNumber`
+ * (pořadí účasti v diáři): tlumený podklad dá volně stojícímu datu hranici,
+ * takže je vidět hned, ne až po přečtení řádku.
+ */
+export const createdDate = style({
+    display: "inline-flex",
     marginRight: "0.35rem",
+    borderRadius: vars.radius.pill,
+    backgroundColor: vars.bg.control,
+    padding: "0.05rem 0.45rem",
+    color: vars.text.muted,
     fontWeight: 600,
+    fontVariantNumeric: "tabular-nums",
 })
 
+/**
+ * Poznámka zájemce — dřív tlumená stejně jako datum vedle ní, splývala s ním a byla
+ * hůř čitelná. Je to obsah, který napsal uchazeč, ne metadata záznamu, proto tmavší
+ * `text.muted` místo `text.subtleMuted`.
+ */
+export const applicationNote = style({
+    color: vars.text.muted,
+})
+
+/**
+ * Tužka a koš na řádku zájemce. `align-items: center` je pojistka: obě tlačítka mají mít
+ * stejnou velikost (`md` z `EditButton`/`DeleteIconButton`), ale bez zarovnání by se při
+ * jakémkoli rozdílu ve výšce zavěsila za horní hranu a jejich glyfy by seděly každý jinde.
+ */
 export const applicationActions = style({
     display: "flex",
+    alignItems: "center",
     justifyContent: "flex-end",
     gap: "0.35rem",
     "@media": {
@@ -120,6 +145,10 @@ export const applicationPhoneCol = style({
     "@media": {
         "(min-width: 768px)": {
             flex: "0 0 16.666667%",
+            // bez odstupu telefon vizuálně lepí na datum/poznámku vlevo (`applicationMeta`) —
+            // sloupce jsou holé flex položky bez mezery mezi sebou, na rozdíl od tabulky
+            // v Clients.tsx, kde odstup dávají buňky samy
+            paddingLeft: "1rem",
             width: "16.666667%",
         },
         "(max-width: 767.98px)": {

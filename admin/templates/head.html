@@ -3,16 +3,24 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 <meta name="robots" content="noindex, nofollow"/>
-<!-- Barva odpovida hornimu okraji tmaveho navbar gradientu v Main.css.ts (#1f2b3c -> #223247).
-     Navbar je fixne tmavy v obou motivech, takze i theme-color drzime jednotne, aby na mobilnim
-     Chrome / PWA nevznikal viditelny sev mezi status barem a navbarem.
-     Stejnou barvu (#1f2b3c) ma i background_color v site.webmanifest (JSON neumi komentare,
-     proto je rozhodnuti zdokumentovane zde): manifest je staticky a neumi reagovat na barevne
-     schema, tmavy splash ale sedi k theme_color/status baru i fixne tmavemu navbaru v obou
-     motivech: kratky tmavy splash u svetleho motivu je mensi zlo nez bily zablesk u tmaveho. -->
-<meta name="theme-color" content="#1f2b3c"/>
-<!-- Synchronni (blokujici) skript zamerne bez async/defer - barevne schema se musi
-     nastavit pred prvnim vykreslenim, jinak u dark uzivatelu blikne svetle pozadi. -->
+<!-- Barva odpovida inkoustovemu chrome aplikace: `vars.bg.rail` v
+     frontend/src/theme/tokens.ts, tedy bocni pruh navigace a slim hlavicka, ktera je na
+     mobilu horni hranou stranky. Token uz ale neni jednotny pres oba motivy
+     (`light-dark(#16233a, var(--mantine-color-dark-9))` = #16233a / #0b0f16, viz
+     theme.ts) - staticky `content` by proto v tmavem motivu vytvoril presne ten sev mezi
+     status barem a hlavickou, ktere ma tenhle tag zabranit. `content` je tu jen fallback
+     pro pripad, ze by nize nacteny skript neprobehl (napr. blokovane cookies/storage) -
+     skutecnou hodnotu pro aktualni motiv nastavuje synchronne, pred prvnim vykreslenim,
+     `color-scheme-init.js` (ma i vlastni ID, na ktere ten skript cili).
+     background_color v site.webmanifest zustava staticky natvrdo na #16233a (JSON neumi
+     ani komentare, ani media query) - splash pri spusteni instalovane PWA proto v tmavem
+     motivu bude kratce svetlejsi, nez je bezici chrome. Zamerny kompromis: staticky
+     manifest musi zvolit jednu hodnotu, a kratky svetlejsi zablesk pri startu je mensi
+     zlo nez zavislost splashe na JS. -->
+<meta name="theme-color" content="#16233a" id="theme-color-meta"/>
+<!-- Synchronni (blokujici) skript zamerne bez async/defer - barevne schema (a barva
+     `theme-color` vyse) se musi nastavit pred prvnim vykreslenim, jinak u dark uzivatelu
+     blikne svetle pozadi. -->
 <script src="{% static "admin/color-scheme-init.js" %}"></script>
 
 <!-- FAVICONY -->

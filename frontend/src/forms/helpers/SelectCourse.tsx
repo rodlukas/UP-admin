@@ -81,6 +81,9 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
             searchable
             nothingFoundMessage={TEXTS.NO_RESULTS}
             clearable={!required}
+            // bez tohohle jde povinnou hodnotu vynulovat i překliknutím už vybrané položky
+            // v otevřeném dropdownu (Mantine `allowDeselect` je jinak defaultně `true`)
+            allowDeselect={!required}
             withAsterisk={required}
             required={required}
             error={error}

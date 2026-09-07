@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css"
 
-import { surfaceCard } from "../global/surfaces.css"
+import { surfaceFloating } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
 export const loginContainer = style({
@@ -13,11 +13,13 @@ export const loginContainer = style({
     minHeight: "100dvh",
 })
 
+/**
+ * Přihlašovací karta je jediný prvek na stránce a stránka nemá navigaci ani obsah kolem —
+ * proto smí být skutečný plovoucí panel se stínem, i když je jinak v aplikaci obsah plochý.
+ */
 export const loginCard = style([
-    surfaceCard,
+    surfaceFloating,
     {
-        // záměrně vyšší elevace než `shadow.card` — přihlašovací karta je fokusní prvek stránky
-        boxShadow: vars.shadow.elevated,
         padding: "2.25rem",
         width: "100%",
         maxWidth: "420px",
@@ -49,7 +51,7 @@ export const subtitle = style({
     marginBottom: "2rem",
     textAlign: "center",
     color: vars.text.muted,
-    fontSize: "0.95rem",
+    fontSize: "1rem",
     fontWeight: 400,
 })
 

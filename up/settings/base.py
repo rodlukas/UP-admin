@@ -71,7 +71,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "django_filters",
 ]
-if not TESTS_RUNNING:
+if not TESTS_RUNNING and not DEPLOYED:
     INSTALLED_APPS.append("debug_toolbar")
 if not DEPLOYED:
     INSTALLED_APPS.append("behave_django")
@@ -159,7 +159,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if not TESTS_RUNNING:
+if not TESTS_RUNNING and not DEPLOYED:
     MIDDLEWARE.insert(3, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
 ROOT_URLCONF = "up.urls"

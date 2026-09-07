@@ -1,7 +1,18 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button, Kbd, UnstyledButton } from "@mantine/core"
+import { Kbd, UnstyledButton } from "@mantine/core"
 import { spotlight } from "@mantine/spotlight"
-import { faExternalLink, faSearch } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import {
+    faCalendar,
+    faChartLine,
+    faCog,
+    faExternalLink,
+    faHourglassHalf,
+    faHouse,
+    faSearch,
+    faSignOut,
+    faUser,
+    faUsers,
+} from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { Link, LinkProps } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
@@ -10,23 +21,33 @@ import APP_URLS from "../APP_URLS"
 import AuthChecking from "../auth/AuthChecking"
 import { useAuthContext } from "../auth/AuthContext"
 import { isApplePlatform } from "../global/utils"
+import * as mainStyles from "../Main.css"
 import { fEmptyVoid, QA } from "../types/types"
 
 import ColorSchemeToggle from "./ColorSchemeToggle"
+import EnvBadge, { hasEnvBadge } from "./EnvBadge"
 import * as styles from "./Menu.css"
 
 type Props = {
-    /** Funkce pro zavření otevřeného hamburger menu. */
+    /** Funkce pro zavření otevřeného menu (drawer pod breakpointem `md`). */
     closeNavbar: fEmptyVoid
 }
 
 type MyNavLinkProps = {
     exact?: boolean
     onCloseNavbar: fEmptyVoid
+    icon: typeof faHouse
+    label: string
 } & QA &
-    Omit<LinkProps, "className">
+    Omit<LinkProps, "className" | "children">
 
-const MyNavLink: React.FC<MyNavLinkProps> = ({ exact = false, onCloseNavbar, ...otherProps }) => (
+const MyNavLink: React.FC<MyNavLinkProps> = ({
+    exact = false,
+    onCloseNavbar,
+    icon,
+    label,
+    ...otherProps
+}) => (
     <Link
         {...otherProps}
         onClick={onCloseNavbar}
@@ -36,119 +57,111 @@ const MyNavLink: React.FC<MyNavLinkProps> = ({ exact = false, onCloseNavbar, ...
         }}
         inactiveProps={{
             className: styles.navLink,
-        }}
-    />
+        }}>
+        <FontAwesomeIcon icon={icon} fixedWidth />
+        <span className={styles.navLabel}>{label}</span>
+    </Link>
 )
+
+/** Položky navigace. `qa` atributy jsou kontrakt s E2E kroky — neměnit ani nemazat. */
+const NAV_ITEMS = [
+    { url: APP_URLS.prehled.url, label: "Přehled", icon: faHouse, exact: true },
+    { url: APP_URLS.diar.url, label: "Diář", icon: faCalendar },
+    { url: APP_URLS.klienti.url, label: "Klienti", icon: faUser, qa: "menu_clients" },
+    { url: APP_URLS.skupiny.url, label: "Skupiny", icon: faUsers, qa: "menu_groups" },
+    {
+        url: APP_URLS.zajemci.url,
+        label: "Zájemci",
+        icon: faHourglassHalf,
+        qa: "menu_applications",
+    },
+    {
+        url: APP_URLS.statistiky.url,
+        label: "Statistiky",
+        icon: faChartLine,
+        qa: "menu_statistics",
+    },
+    { url: APP_URLS.nastaveni.url, label: "Nastavení", icon: faCog, qa: "menu_settings" },
+] as const
 
 // zkratka zobrazená v UI i v aria-labelu musí odpovídat skutečné klávese
 // na dané platformě (mod = ⌘ na Apple platformách, jinde Ctrl)
 const spotlightShortcutLabel = isApplePlatform() ? "⌘K" : "Ctrl K"
 
-/** Komponenta zobrazující menu aplikace pro přihlášené uživatele. */
-const Menu: React.FC<Props> = (props) => {
+/** Obsah inkoustového pruhu pro přihlášené uživatele. */
+const Menu: React.FC<Props> = ({ closeNavbar }) => {
     const authContext = useAuthContext()
     const onClickLogout = () => {
-        props.closeNavbar()
+        closeNavbar()
         authContext.logout()
+    }
+
+    if (!authContext.isAuth) {
+        return null
     }
 
     return (
         <>
-            {authContext.isAuth && (
-                <>
-                    <UnstyledButton
-                        onClick={() => {
-                            // na mobilu by jinak rozbalené burger menu zůstalo otevřené
-                            // za Spotlightem (a po jeho zavření dál překrývalo obsah)
-                            props.closeNavbar()
-                            spotlight.open()
-                        }}
-                        className={styles.spotlightButton}
-                        aria-label={`Otevřít vyhledávání (${spotlightShortcutLabel})`}>
-                        <FontAwesomeIcon icon={faSearch} fixedWidth />
-                        <span className={styles.spotlightButtonLabel}>
-                            Hledat klienta, skupinu...
-                        </span>
-                        <Kbd size="xs">{spotlightShortcutLabel}</Kbd>
-                    </UnstyledButton>
-                    <ul className={styles.navList}>
-                        <li>
-                            <MyNavLink
-                                exact
-                                to={APP_URLS.prehled.url}
-                                onCloseNavbar={props.closeNavbar}>
-                                Přehled
-                            </MyNavLink>
-                        </li>
-                        <li>
-                            <MyNavLink to={APP_URLS.diar.url} onCloseNavbar={props.closeNavbar}>
-                                Diář
-                            </MyNavLink>
-                        </li>
-                        <li>
-                            <MyNavLink
-                                to={APP_URLS.klienti.url}
-                                data-qa="menu_clients"
-                                onCloseNavbar={props.closeNavbar}>
-                                Klienti
-                            </MyNavLink>
-                        </li>
-                        <li>
-                            <MyNavLink
-                                to={APP_URLS.skupiny.url}
-                                data-qa="menu_groups"
-                                onCloseNavbar={props.closeNavbar}>
-                                Skupiny
-                            </MyNavLink>
-                        </li>
-                        <li>
-                            <MyNavLink
-                                to={APP_URLS.zajemci.url}
-                                data-qa="menu_applications"
-                                onCloseNavbar={props.closeNavbar}>
-                                Zájemci
-                            </MyNavLink>
-                        </li>
-                        <li>
-                            <MyNavLink
-                                to={APP_URLS.statistiky.url}
-                                data-qa="menu_statistics"
-                                onCloseNavbar={props.closeNavbar}>
-                                Statistiky
-                            </MyNavLink>
-                        </li>
-                        <li>
-                            <MyNavLink
-                                to={APP_URLS.nastaveni.url}
-                                data-qa="menu_settings"
-                                onCloseNavbar={props.closeNavbar}>
-                                Nastavení
-                            </MyNavLink>
-                        </li>
-                        <li>
-                            <a
-                                href="https://uspesnyprvnacek.cz/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={classNames(styles.navLink, styles.navExternalLink)}>
-                                Web&nbsp;
-                                <FontAwesomeIcon icon={faExternalLink} />
-                            </a>
-                        </li>
-                    </ul>
-                    <ColorSchemeToggle />
-                    <Button
-                        variant="filled"
-                        color="gray"
-                        size="sm"
-                        onClick={onClickLogout}
-                        data-qa="button_logout"
-                        className={styles.logoutButton}>
-                        Odhlásit
-                    </Button>
-                    <AuthChecking />
-                </>
-            )}
+            <ul className={styles.navList}>
+                {NAV_ITEMS.map((item) => (
+                    <li key={item.url}>
+                        <MyNavLink
+                            to={item.url}
+                            exact={"exact" in item ? item.exact : false}
+                            label={item.label}
+                            icon={item.icon}
+                            data-qa={"qa" in item ? item.qa : undefined}
+                            onCloseNavbar={closeNavbar}
+                        />
+                    </li>
+                ))}
+                <li>
+                    <a
+                        href="https://uspesnyprvnacek.cz/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.navLink}>
+                        <FontAwesomeIcon icon={faExternalLink} fixedWidth />
+                        <span className={styles.navLabel}>Web</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div className={mainStyles.railSpacer} />
+
+            <div className={mainStyles.railFoot}>
+                <UnstyledButton
+                    onClick={() => {
+                        // na mobilu by jinak rozbalený drawer zůstal otevřený
+                        // za Spotlightem (a po jeho zavření dál překrýval obsah)
+                        closeNavbar()
+                        spotlight.open()
+                    }}
+                    className={styles.spotlightButton}
+                    aria-label={`Otevřít vyhledávání (${spotlightShortcutLabel})`}>
+                    <FontAwesomeIcon icon={faSearch} fixedWidth />
+                    <span className={styles.navLabel}>Hledat</span>
+                    <Kbd className={styles.navShortcut}>{spotlightShortcutLabel}</Kbd>
+                </UnstyledButton>
+
+                <ColorSchemeToggle />
+
+                <UnstyledButton
+                    onClick={onClickLogout}
+                    data-qa="button_logout"
+                    className={styles.railButton}>
+                    <FontAwesomeIcon icon={faSignOut} fixedWidth />
+                    <span className={styles.navLabel}>Odhlásit</span>
+                </UnstyledButton>
+
+                {hasEnvBadge() && (
+                    <p className={mainStyles.railEnv}>
+                        <EnvBadge />
+                    </p>
+                )}
+            </div>
+
+            <AuthChecking />
         </>
     )
 }

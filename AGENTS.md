@@ -110,7 +110,7 @@ React 19 SPA v [frontend/src/](frontend/src/). Webpack dev server na portu 3000 
 - Server state: TanStack Query (React Query) — veškerá komunikace s API
 - CSS: vanilla-extract (type-safe CSS-in-JS, soubory `*.css.ts`)
 - UI: Mantine 9 (`@mantine/core`, `form`, `hooks`, `notifications`, `spotlight`) + FontAwesome PRO ikony
-- Dark mode: barevné schéma (světlý/tmavý/systém) přes Mantine, přepínač v navbaru; FOUC řeší init skript `admin/static/admin/color-scheme-init.js`
+- Dark mode: barevné schéma (světlý/tmavý/systém) přes Mantine, přepínač v inkoustovém pruhu; FOUC řeší init skript `admin/static/admin/color-scheme-init.js`
 - Fuzzy search: Fuse.js
 - Grafy: Recharts
 
@@ -123,11 +123,78 @@ React 19 SPA v [frontend/src/](frontend/src/). Webpack dev server na portu 3000 
 - `hooks/` — custom React hooky
 - `contexts/` — React Context provídery
 
+### Vizuální jazyk
+
+Aplikace má **jedno chrome: inkoustový pruh navigace vlevo** (`AppShell.Navbar`
+v `frontend/src/Main.tsx`). Nad breakpointem `md` žádná horní lišta neexistuje; pod ním
+se pruh chová jako drawer a zbývá slim hlavička s burgerem. **Pruh se nesbaluje** — je vždy
+široký `RAIL_WIDTH_LABELS` a popisky jsou vidět pořád. Dřív se sbaloval na ikony (podle šířky
+okna a na Diáři vždy), ale ovládací prvek navíc a měnící se šířka za to nestály; diář si
+šířku vyřešil sám stropem sloupce dne.
+
+**Označení prostředí** (testing / demo / vývojová verze) nesmí zmizet — nad reálně vypadajícími
+daty musí být poznat, že nejde o produkci. Nese ho `EnvBadge` v patičce pruhu a pod `md` navíc
+ve slim hlavičce, protože tam je pruh zavřený drawer.
+
+Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, která platí napříč:
+
+- **Plocha stránky je tónovaná** (`vars.bg.page` = `#f4f7fb` / `dark-8`), obsah na ní stojí
+  v panelech na `vars.bg.surface` (bílá / `dark-7`). Dřív byla plocha i obsah bílé a bloky
+  na ní splývaly — nebylo poznat, kde blok začíná a končí.
+- Panel dělá **`surfacePanel`** v `global/surfaces.css.ts` (rámeček + rádius + `bg.surface`).
+  Je to jediný zdroj pravdy — skládá ho `surfaceCard`, `tableSection`, sloupec dne v diáři
+  i sloupec kurzu na kartě. Vnořený `tableSection` uvnitř panelu si rámeček nekreslí
+  (jinak vznikne rámeček v rámečku).
+- **Stín má jen to, co skutečně plave** — modal a dropdown (řeší Mantine), přihlašovací
+  karta a tooltip grafu (`surfaceFloating`). Na obsahu stránky stín nehledej; panely
+  se od plochy oddělují rámečkem, ne stínem.
+- **Barva kurzu** je uživatelský hex z Nastavení a nese ji **sytý podklad** — odstín se
+  neředí, aby byl kurz poznat na první pohled. Recept je `courseBand` v `CourseName.css.ts`
+  (podklad + `contrastingTextColor`); skládá ho hlavička kurzu na kartě klienta i u zájemců
+  a chip v seznamu skupin (`<CourseName band />`), v diáři a přehledu totéž dělá pruh
+  hlavičky lekce (`lectureHeader` v `DashboardDay.css.ts`). Tichou variantou je `courseDot`
+  — ředěná tečka do hustého seznamu tam, kde barva není hlavní nosič. **Vše uvnitř sytého
+  podkladu musí psát `currentColor`**; tlumené odstíny z palety na barvě kurzu zmizí. Čitelnost drží barva textu, kterou podle kontrastu dopočítá
+  `contrastingTextColor` (`global/utils.ts`, přes `chroma`) a předá se pruhu jako
+  `lectureVars.courseText`; proto je pruh i jeho text v obou motivech stejný.
+  Jinde (tečka u názvu kurzu `courseDot` v `CourseName.css.ts`, levá linka skupiny zájemců
+  `courseHeadingItem` v `Applications.css.ts`) barva prochází `color-mix` receptem, který ji
+  srovná ke světlosti plochy — bez toho zmizí na bílé nebo na tmavé. `ColorPicker` varuje
+  jen při kontrastu pod 2:1 vůči bílé, na tmavou plochu sám nestačí.
+- **Lekce v diáři a přehledu nese identitu ve třech vrstvách:** kurz = barva pruhu,
+  typ = ikona jednotlivec/skupina, stav = zrušená lekce přebíjí pruh i tělo červenou.
+- **Tmavá paleta `dark-*` je v `theme/theme.ts` přebarvená do inkoustové škály**, aby
+  odstín držely i komponenty, které si `--mantine-color-dark-N` berou samy.
+  `dark-3` má na ploše jen 3.52:1 — je to odstín pro linky a ikony, **ne pro text**.
+- **Text nikdy menší než `1rem`**, hierarchii nes vahou a barvou. Časy, peníze a počty
+  mají `font-variant-numeric: tabular-nums`, aby se ve sloupci zarovnaly.
+
+  Mantine má u většiny prvků výchozí velikost `sm` (0,875 rem = 14 px), což je proti masteru
+  na Bootstrapu (1 rem) zmenšení, které uživatelce v provozu vadí. Textové prvky obsahu proto
+  mají v `theme.ts` `defaultProps: { size: "md" }` (tlačítka, pole, tabulky, odznaky,
+  stránkování, alerty) a **u volání se `size` nepřebíjí zpět na `sm`**. Výjimkou je
+  `ActionIcon`, kde `size` znamená rozměr plochy, ne velikost písma. Segmentové přepínače
+  jedou přes `--sc-font-size` v `buttons/segmented.css.ts`.
+- **Stavy nesmí nést jen barva** (WCAG 1.4.1): zrušená lekce má k podbarvení textový
+  štítek, stav platby jiný glyf pro každý stav. Glyfy platby a „příště platit“ jsou z jedné
+  kroužkované rodiny ve stejném slotu (`attendanceIconSlot`), aby se lišily významem
+  a barvou, ne tvarem a velikostí — `AttendancePaidButton.css.ts` ten slot **skládá**,
+  vlastní rozměr si nedeklaruje.
+- **Prvky, které se přepínají mezi stavy, musí držet rozměr.** Položka pruhu (`navLink`)
+  i značka (`railBrand`) mají pevnou výšku: sbalený pruh má jen ikonu, rozbalený k ní přidá
+  popisek, a bez pevné výšky by se při rozbalení pod myší celé menu posunulo a kurzor by
+  skončil nad jinou položkou.
+- Kontrastní poměry v komentářích `theme/tokens.ts` jsou měřené vůči **povrchu panelu**
+  (bílá v light, `dark-7` v dark), ne vůči ploše stránky — obsah leží v panelech.
+  Při změně odstínu je přepočítej, nepřepisuj jen hodnotu.
+
 **Frontend konvence:**
 - Formátování: Prettier (`tabWidth: 4`, `printWidth: 100`)
 - Linting: ESLint 9 s pluginy (react, typescript, jest-dom, testing-library, vanilla-extract, tanstack-query)
 - CSS: soubory pojmenovány `*.css.ts`, **vždy** vanilla-extract — nikdy inline styly ani plain CSS
 - Testy: Vitest + React Testing Library, soubory colocated se zdrojovým kódem (`*.test.ts` / `*.test.tsx`), API mockované přes MSW
+- **`data-qa` atributy jsou kontrakt s E2E kroky** ([tests/ui_steps/](tests/ui_steps/)) — Selenium se drží jich, ne tříd ani struktury. Neodstraňuj je a needituj jejich hodnoty; při přestavbě UI je přenes na nový prvek. Totéž platí pro `data-qa-canceled` a `data-paid`.
+- Selektory v `style()` u vanilla-extract musí cílit na `&`; potomci (`thead th`, `::before`) jdou jen přes `globalStyle` — `tsc` ani ESLint to nezachytí, spadne to až za běhu (`npm run vitest`)
 
 **Pre-commit hooky (Husky + lint-staged):** automaticky spouštějí ESLint a Prettier na staged JS/TS souborech.
 
