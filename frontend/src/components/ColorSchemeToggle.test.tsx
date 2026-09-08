@@ -7,13 +7,13 @@ import ColorSchemeToggle from "./ColorSchemeToggle"
 
 // env="test" vypina transitions a hideDetached (v jsdom maji elementy nulove rozmery,
 // floating-ui by jinak dropdown menu skryl pres display: none);
-// defaultColorScheme="auto" + realny colorSchemeManager (stejny klic jako index.tsx) odpovida
+// defaultColorScheme="light" + realny colorSchemeManager (stejny klic jako index.tsx) odpovida
 // realne aplikaci a zaroven hlida kontrakt s FOUC init skriptem (color-scheme-init.js)
 const renderColorSchemeToggle = () =>
     render(
         <MantineProvider
             env="test"
-            defaultColorScheme="auto"
+            defaultColorScheme="light"
             colorSchemeManager={localStorageColorSchemeManager({
                 key: COLOR_SCHEME_STORAGE_KEY,
             })}>
@@ -38,9 +38,9 @@ test("shows a menu item per scheme with the active one checked", async () => {
     const items = await openMenu()
 
     expect(items.map((item) => item.textContent)).toEqual(["Systém", "Světlý", "Tmavý"])
-    // vychozi schema aplikace je auto (Systém) → prave jedna polozka je aria-checked
-    expect(screen.getByRole("menuitemradio", { name: "Systém" })).toBeChecked()
-    expect(screen.getByRole("menuitemradio", { name: "Světlý" })).not.toBeChecked()
+    // vychozi schema aplikace je light (Světlý) → prave jedna polozka je aria-checked
+    expect(screen.getByRole("menuitemradio", { name: "Systém" })).not.toBeChecked()
+    expect(screen.getByRole("menuitemradio", { name: "Světlý" })).toBeChecked()
     expect(screen.getByRole("menuitemradio", { name: "Tmavý" })).not.toBeChecked()
 })
 

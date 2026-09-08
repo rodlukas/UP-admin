@@ -40,7 +40,7 @@ const colorSchemeManager = localStorageColorSchemeManager({ key: COLOR_SCHEME_ST
 const App: React.FC = () => (
     <MantineProvider
         theme={theme}
-        defaultColorScheme="auto"
+        defaultColorScheme="light"
         colorSchemeManager={colorSchemeManager}>
         {/* position: `bottom-right`, ne `top-right`. Aplikace nemá horní lištu (navigace
             je v inkoustovém pruhu vlevo), takže hlavička stránky s akčními tlačítky sedí

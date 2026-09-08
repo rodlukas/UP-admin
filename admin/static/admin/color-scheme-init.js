@@ -19,10 +19,10 @@
 
     try {
         // povolene ulozene hodnoty — cokoliv jineho (poskozena/rucne prepsana hodnota
-        // v localStorage) musi spadnout na chovani "auto"
+        // v localStorage, nebo chybejici hodnota) musi spadnout na vychozi "light"
         var KNOWN_SCHEMES = ["light", "dark", "auto"];
         var stored = window.localStorage.getItem("mantine-color-scheme");
-        var scheme = KNOWN_SCHEMES.indexOf(stored) !== -1 ? stored : "auto";
+        var scheme = KNOWN_SCHEMES.indexOf(stored) !== -1 ? stored : "light";
 
         // "auto" = podle aktualniho systemoveho schematu
         var resolved =
