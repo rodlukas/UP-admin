@@ -97,7 +97,7 @@ def clear_input(element):
     lisi v tom, jake udalosti u toho posilaji - React onChange se nemusi spustit vubec
     a controlled input si pri dalsim renderu vrati puvodni hodnotu (nasledny send_keys
     pak pise ZA ni). Mazani BACK_SPACE je bezne uzivatelske chovani a chova se stejne
-    ve vsech prohlizecich (stejny duvod jako v `combobox_insert`).
+    ve vsech prohlizecich.
     """
     for _ in range(len(element.get_attribute("value") or "")):
         element.send_keys(Keys.BACK_SPACE)
@@ -181,8 +181,7 @@ def combobox_insert(driver, element, value):
         # prazdna hodnota = zamerne nevyplneny (povinny) select; smaz pripadny obsah
         # a zavri dropdown presunem fokusu (mazani ho mohlo otevrit a prazdny retezec
         # nefiltruje - klik na prvni volbu by omylem vybral platnou hodnotu)
-        for _ in range(len(element.get_attribute("value") or "")):
-            element.send_keys(Keys.BACK_SPACE)
+        clear_input(element)
         element.send_keys(Keys.TAB)
         return False
     # 2 pokusy: klik na volbu se muze "neujmout", kdyz React behem psani resetuje
@@ -191,10 +190,9 @@ def combobox_insert(driver, element, value):
     for _ in range(2):
         # U searchable selectu input obsahuje label aktualne vybrane volby (edit
         # formulare) - smaz ho cely po znacich, jinak by se hledany text pripojil
-        # za nej a filtr by nic nenasel. (react-select mazal celou volbu jednim
-        # BACK_SPACE, Mantine jen znak.)
-        for _ in range(len(element.get_attribute("value") or "")):
-            element.send_keys(Keys.BACK_SPACE)
+        # za nej a filtr by nic nenasel. Mantine maze jeden znak za BACK_SPACE,
+        # ne celou vybranou volbu.
+        clear_input(element)
         element.send_keys(value)
         try:
             options = wait_combobox_options(driver)

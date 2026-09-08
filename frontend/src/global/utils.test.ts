@@ -1,7 +1,7 @@
 import { CourseType, LectureType } from "../types/models"
 
 import { addDays } from "./funcDateTime"
-import { getDefaultValuesForLecture, GroupedObjectsByCourses } from "./utils"
+import { getDefaultValuesForLecture, GroupedObjectsByCourses, pluralizeCs } from "./utils"
 
 function createCourse(id: number, name: string): CourseType {
     return { id, name, color: "#000000", duration: 30, visible: true }
@@ -67,4 +67,15 @@ describe("getDefaultValuesForLecture", () => {
         expect(result.course).toBe(courseB)
         expect(result.start).toBe("")
     })
+})
+
+test.each([
+    [0, "členů"],
+    [1, "člen"],
+    [2, "členové"],
+    [4, "členové"],
+    [5, "členů"],
+    [11, "členů"],
+])("pluralizeCs picks the Czech form for %i", (count, expected) => {
+    expect(pluralizeCs(count, "člen", "členové", "členů")).toBe(expected)
 })

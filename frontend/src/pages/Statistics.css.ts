@@ -16,9 +16,9 @@ export const statCard = style([
 ])
 
 /**
- * Titulek statistické karty. Dřív verzálky s prostrkáním na 0,75 rem — zdrobnělý
- * verzálkový štítek nad každým číslem je nejčastější ozdoba generovaných dashboardů
- * a v aplikaci není text menší než 1 rem. Rozlišení nese váha a tlumená barva.
+ * Titulek statistické karty. Bez verzálek a prostrkání: zdrobnělý verzálkový štítek nad
+ * každým číslem je nejčastější ozdoba generovaných dashboardů a text v aplikaci nesmí být
+ * menší než 1 rem. Rozlišení nese váha a tlumená barva.
  */
 export const statCardTitle = style({
     marginBottom: "0.5rem",
@@ -142,8 +142,8 @@ export const breakdownLabel = style({
 
 /**
  * Barva puntíku před popiskem řádku – dynamická přes assignInlineVars, stejný vzor
- * jako `tooltipSeriesColor` v charts.css.ts. Puntík se dřív nesl barvou `badge bg-*`
- * (Bootstrap); tady jde jen o kategorii, ne o důraz, proto malá tečka místo pilulky.
+ * jako `tooltipSeriesColor` v charts.css.ts. Malá tečka, ne barevná pilulka: jde
+ * o označení kategorie, ne o důraz.
  */
 export const breakdownDotColor = createVar()
 

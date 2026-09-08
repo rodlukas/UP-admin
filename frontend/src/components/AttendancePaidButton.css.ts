@@ -38,13 +38,11 @@ export const attendancePaidButton = style({
 })
 
 /**
- * Zaplaceno je **zelené**, hover ztmavuje — stejně jako v masteru, kde barvu dávala
- * bootstrapí `text-success` a hover ji stahoval na tmavší odstín.
+ * Zaplaceno je **zelené**, hover ztmavuje.
  *
- * Zkoušel jsem z toho udělat tichý šedý obrys s tím, že pozornost patří spíš tomu, co
- * zaplacené NENÍ. Uživateli to nevyhovuje: bez najetí byla ikona šedá, takže stav platby
- * nešel přečíst na první pohled a musel se hádat z toho, že není červená. Stav se čte
- * barvou, ne její nepřítomností — tichost by tady byla na úkor informace.
+ * Ztlumit ikonu do šedého obrysu (s tím, že pozornost patří spíš tomu, co zaplacené NENÍ)
+ * nejde: stav platby pak není bez najetí čitelný a musí se hádat z toho, že ikona není
+ * červená. Stav se čte barvou, ne její nepřítomností.
  */
 export const attendancePaidButtonSuccess = style({
     color: vars.colors.success,

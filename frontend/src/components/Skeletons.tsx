@@ -10,9 +10,8 @@ import CustomButton from "./buttons/CustomButton"
 import * as styles from "./Skeletons.css"
 
 /**
- * Kostry načítání. Nahrazují dřívější spinner (`Loading`): kostra drží rozvržení obsahu,
- * který se teprve načítá, takže obsah po dotažení dat nenaskočí do prázdna a čekání
- * působí kratší.
+ * Kostry načítání. Kostra drží rozvržení obsahu, který se teprve načítá, takže obsah po
+ * dotažení dat nenaskočí do prázdna a čekání působí kratší.
  *
  * `data-qa="loading"` je kontrakt s E2E kroky (`wait_loading_cycle` a `wait_loading_ends`
  * v tests/ui_steps/helpers.py čekají na objevení a zmizení indikátoru) — drží ho `SkeletonShell`,
@@ -31,25 +30,81 @@ type CountProps = {
 }
 
 /**
+ * Registr právě vykreslených obalů kostry.
+ *
+ * Kostra bývá na stránce i vícekrát — diář má sloupec na každý den týdne, přehled ukazuje
+ * dnešní lekce vedle nejbližších. Upozornění na dlouhé načítání a `aria-live` oblast ale
+ * smí být na stránce **jedna**: pět totožných hlášení „načítání trvá příliš dlouho" s pěti
+ * tlačítky a pět souběžně předčítaných oblastí je šum, ne informace. Hlášení proto nese
+ * vždy jen obal, který se přihlásil první; ostatní vykreslí čistý tvar kostry.
+ *
+ * `data-qa="loading"` má naopak **každý** obal: `wait_loading_ends`
+ * v tests/ui_steps/helpers.py čeká, dokud nezmizí všechny výskyty, takže vynechat ho
+ * u ostatních obalů by testům dovolilo pokračovat nad sloupcem, který se ještě načítá.
+ */
+let nextShellId = 0
+const mountedShells = new Set<number>()
+const shellListeners = new Set<() => void>()
+
+const subscribeShells = (listener: () => void): (() => void) => {
+    shellListeners.add(listener)
+    return (): void => {
+        shellListeners.delete(listener)
+    }
+}
+
+const notifyShells = (): void => {
+    shellListeners.forEach((listener) => listener())
+}
+
+/** Nese tenhle obal upozornění na dlouhé načítání a `aria-live` oblast? */
+const useIsPrimaryShell = (id: number): boolean => {
+    const isPrimary = React.useSyncExternalStore(subscribeShells, () =>
+        mountedShells.size > 0 && Math.min(...mountedShells) === id,
+    )
+
+    React.useEffect(() => {
+        mountedShells.add(id)
+        notifyShells()
+        return (): void => {
+            mountedShells.delete(id)
+            notifyShells()
+        }
+    }, [id])
+
+    return isPrimary
+}
+
+/**
  * Společný obal kostry: nese `data-qa` a ARIA pro čtečky a po delší době přidá upozornění
- * s možností načíst stránku znovu. Tuhle pojistku měl původní spinner a kostra sama o sobě
- * by ji ztratila — nekonečně animovaná kostra vypadá stejně jako kostra u rozbitého požadavku.
+ * s možností načíst stránku znovu. Bez téhle pojistky vypadá nekonečně animovaná kostra
+ * stejně jako kostra u rozbitého požadavku.
  */
 export const SkeletonShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [isOverlong, setIsOverlong] = React.useState(false)
+    const idRef = React.useRef<number>(undefined)
+    idRef.current ??= nextShellId++
+    const isPrimary = useIsPrimaryShell(idRef.current)
 
     React.useEffect(() => {
+        if (!isPrimary) {
+            return
+        }
         const timeoutId = globalThis.setTimeout(
             () => setIsOverlong(true),
             OVERLONG_LOADING_THRESHOLD * 1000,
         )
         return (): void => globalThis.clearTimeout(timeoutId)
-    }, [])
+    }, [isPrimary])
 
     return (
-        <div data-qa="loading" role="status" aria-live="polite" aria-busy="true">
+        <div
+            data-qa="loading"
+            role={isPrimary ? "status" : undefined}
+            aria-live={isPrimary ? "polite" : undefined}
+            aria-busy="true">
             {children}
-            {isOverlong && (
+            {isOverlong && isPrimary && (
                 <Alert color="yellow" mt="md">
                     <p>
                         ⚠ Načítání trvá příliš dlouho, mohlo dojít k chybě. Zkuste stránku načíst
@@ -141,8 +196,8 @@ type ChartSkeletonProps = {
 
 /**
  * Kostra sekce s grafem — nadpis (s volitelným přepínačem metriky vedle), volitelný popisek
- * a plocha grafu. Samotný obdélník přes celou šířku (co tu bylo dřív) neříkal, že se načítá
- * graf, ani kde skončí jeho titulek.
+ * a plocha grafu. Rozpad na tyhle části je podstatný: jeden obdélník přes celou šířku
+ * neřekne, že se načítá graf, ani kde skončí jeho titulek.
  */
 export const ChartSkeleton: React.FC<ChartSkeletonProps> = ({
     height = 260,

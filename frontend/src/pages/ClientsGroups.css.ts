@@ -10,11 +10,10 @@ import { vars } from "../theme/tokens"
 export { tableSection } from "../global/surfaces.css"
 
 /**
- * Upozornění na klienty/skupiny bez lekce. Dřív sytý žlutý banner se stínem, pak
- * měkký notice s tlumeným podkladem a jen barevnou levou linkou — v dark módu z něj
- * ale žlutá zbyla jen na téhle 3px lince a upozornění splývalo s plochou. Dnes
- * `statusNoticeWarningStrong`: celý podklad je žlutý (v obou režimech), bez stínu —
- * stín patří jen tomu, co plave. Zarovnané doleva k obsahu, ne na střed.
+ * Upozornění na klienty/skupiny bez lekce. `statusNoticeWarningStrong` znamená žlutý
+ * podklad v celé ploše a v obou režimech: s tlumeným podkladem a jen barevnou levou
+ * linkou zbyde v dark módu ze žluté ta 3px linka a upozornění splyne s plochou.
+ * Bez stínu — stín patří jen tomu, co plave. Zarovnané doleva k obsahu, ne na střed.
  */
 export const staleAlert = style([
     statusNoticeWarningStrong,

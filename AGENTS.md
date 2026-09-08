@@ -128,9 +128,9 @@ React 19 SPA v [frontend/src/](frontend/src/). Webpack dev server na portu 3000 
 Aplikace má **jedno chrome: inkoustový pruh navigace vlevo** (`AppShell.Navbar`
 v `frontend/src/Main.tsx`). Nad breakpointem `md` žádná horní lišta neexistuje; pod ním
 se pruh chová jako drawer a zbývá slim hlavička s burgerem. **Pruh se nesbaluje** — je vždy
-široký `RAIL_WIDTH_LABELS` a popisky jsou vidět pořád. Dřív se sbaloval na ikony (podle šířky
-okna a na Diáři vždy), ale ovládací prvek navíc a měnící se šířka za to nestály; diář si
-šířku vyřešil sám stropem sloupce dne.
+široký `RAIL_WIDTH_LABELS` a popisky jsou vidět pořád. Sbalování na ikony sem nezaváděj:
+ovládací prvek navíc a měnící se šířka plochy za ušetřené místo nestojí a diář si šířku
+řeší sám stropem sloupce dne.
 
 **Označení prostředí** (testing / demo / vývojová verze) nesmí zmizet — nad reálně vypadajícími
 daty musí být poznat, že nejde o produkci. Nese ho `EnvBadge` v patičce pruhu a pod `md` navíc
@@ -139,8 +139,8 @@ ve slim hlavičce, protože tam je pruh zavřený drawer.
 Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, která platí napříč:
 
 - **Plocha stránky je tónovaná** (`vars.bg.page` = `#f4f7fb` / `dark-8`), obsah na ní stojí
-  v panelech na `vars.bg.surface` (bílá / `dark-7`). Dřív byla plocha i obsah bílé a bloky
-  na ní splývaly — nebylo poznat, kde blok začíná a končí.
+  v panelech na `vars.bg.surface` (bílá / `dark-7`). Bílá plocha pod bílým obsahem nedá
+  poznat, kde blok začíná a končí.
 - Panel dělá **`surfacePanel`** v `global/surfaces.css.ts` (rámeček + rádius + `bg.surface`).
   Je to jediný zdroj pravdy — skládá ho `surfaceCard`, `tableSection`, sloupec dne v diáři
   i sloupec kurzu na kartě. Vnořený `tableSection` uvnitř panelu si rámeček nekreslí
@@ -169,8 +169,8 @@ Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, kter�
 - **Text nikdy menší než `1rem`**, hierarchii nes vahou a barvou. Časy, peníze a počty
   mají `font-variant-numeric: tabular-nums`, aby se ve sloupci zarovnaly.
 
-  Mantine má u většiny prvků výchozí velikost `sm` (0,875 rem = 14 px), což je proti masteru
-  na Bootstrapu (1 rem) zmenšení, které uživatelce v provozu vadí. Textové prvky obsahu proto
+  Mantine má u většiny prvků výchozí velikost `sm` (0,875 rem = 14 px), což je pro provozní
+  čtení příliš malé. Textové prvky obsahu proto
   mají v `theme.ts` `defaultProps: { size: "md" }` (tlačítka, pole, tabulky, odznaky,
   stránkování, alerty) a **u volání se `size` nepřebíjí zpět na `sm`**. Výjimkou je
   `ActionIcon`, kde `size` znamená rozměr plochy, ne velikost písma. Segmentové přepínače

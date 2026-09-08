@@ -28,8 +28,8 @@ type Props = {
 
 /**
  * Komponenta pro jednotné zobrazení názvu kurzu napříč aplikací.
- * Dřív sytá pilulka v barvě kurzu; dnes obyčejný text, protože v plochém jazyce nese
- * barvu linka u lekce a pilulka na ploše zbytečně křičela.
+ * Název je obyčejný text, ne sytá pilulka v barvě kurzu: barvu kurzu nese linka u lekce
+ * a druhá barevná plocha na témže řádku by o pozornost jen soupeřila.
  */
 const CourseName: React.FC<Props> = ({ course, className, withDot = true, band = false }) => {
     if (band) {

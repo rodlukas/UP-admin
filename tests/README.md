@@ -10,9 +10,9 @@ integraci _behave_ s Djangem je použité [behave-django](https://github.com/beh
 Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/selenium), konkrétně
 [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html). Pro
 jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa` (ve
-výjimečných případech toto nelze a používá se přímo `id` elementu – např. komponenty s
-[React Select](https://github.com/JedWatson/react-select) používají React props `inputId` a
-`classNamePrefix`). Testuje se v prohlížeči [Mozilla Firefox](https://www.firefox.cz/) s využitím
+výjimečných případech toto nelze a používá se přímo `id` elementu – tak se hledají comboboxy
+Mantine `Select`/`MultiSelect`, do kterých se hodnota vkládá přes `helpers.combobox_insert`).
+Testuje se v prohlížeči [Mozilla Firefox](https://www.firefox.cz/) s využitím
 [geckodriver](https://github.com/mozilla/geckodriver).
 
 ## Struktura adresářů

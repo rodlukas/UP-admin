@@ -50,6 +50,7 @@ const FormClients: React.FC<Props> = (props) => {
             note: props.client.note,
             active: props.client.active,
         },
+        onValuesChange: () => props.setFormDirty(),
     })
 
     const onSubmit = React.useCallback(
@@ -143,7 +144,6 @@ const FormClients: React.FC<Props> = (props) => {
                                         onChange={(
                                             e: React.ChangeEvent<HTMLInputElement>,
                                         ): void => {
-                                            props.setFormDirty()
                                             form.setFieldValue(
                                                 "firstname",
                                                 capitalizeString(e.currentTarget.value),
@@ -164,7 +164,6 @@ const FormClients: React.FC<Props> = (props) => {
                                         onChange={(
                                             e: React.ChangeEvent<HTMLInputElement>,
                                         ): void => {
-                                            props.setFormDirty()
                                             form.setFieldValue(
                                                 "surname",
                                                 capitalizeString(e.currentTarget.value),
@@ -184,7 +183,6 @@ const FormClients: React.FC<Props> = (props) => {
                                     id="email"
                                     value={form.values.email}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                                        props.setFormDirty()
                                         form.setFieldValue("email", e.currentTarget.value)
                                     }}
                                     label="E-mail"
@@ -198,7 +196,6 @@ const FormClients: React.FC<Props> = (props) => {
                                     value={form.values.phone}
                                     maxLength={11}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                                        props.setFormDirty()
                                         // pri psani rozdeluj cislo na trojice
                                         const formatted = e.currentTarget.value
                                             .replace(/(\d{3})([^\s])/, "$1 $2")
@@ -219,7 +216,6 @@ const FormClients: React.FC<Props> = (props) => {
                                     id="note"
                                     value={form.values.note}
                                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-                                        props.setFormDirty()
                                         form.setFieldValue("note", e.currentTarget.value)
                                     }}
                                     label="Poznámka"
@@ -244,7 +240,6 @@ const FormClients: React.FC<Props> = (props) => {
                                         onChange={(
                                             e: React.ChangeEvent<HTMLInputElement>,
                                         ): void => {
-                                            props.setFormDirty()
                                             form.setFieldValue("active", e.currentTarget.checked)
                                         }}
                                         data-qa="client_checkbox_active"

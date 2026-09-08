@@ -35,9 +35,8 @@ export const dashboardDayDateToday = style({
 })
 
 /**
- * Nadpis dne bez oslavy. Dřív vycentrovaný s levým odsazením, které kompenzovalo
- * tlačítko vpravo; hlavička dne se dnes rovná doleva jako všechen ostatní obsah,
- * takže stačí, aby vyplnila zbylé místo.
+ * Nadpis dne bez oslavy. Rovná se doleva jako všechen ostatní obsah, takže mu stačí
+ * vyplnit místo, které v hlavičce zbude po tlačítku vpravo.
  */
 export const celebrationNone = style({
     flex: 1,

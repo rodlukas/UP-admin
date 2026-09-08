@@ -68,9 +68,9 @@ export const lecturePrepaid = style({
 })
 
 /**
- * Bloky s údaji o klientovi/skupině. Dřív každý blok `margin: 0 auto` a `max-width: 600px`,
- * takže kontakty stály vycentrované v úzkém sloupci a pod titulkem zůstávalo prázdné místo.
- * Dnes zabírají celou šířku svého sloupce a rovnají se doleva k ostatnímu obsahu.
+ * Bloky s údaji o klientovi/skupině. Zabírají celou šířku svého sloupce a rovnají se
+ * doleva k ostatnímu obsahu — se stropem šířky a `margin: 0 auto` by kontakty stály
+ * vycentrované v úzkém sloupci a pod titulkem by zůstávalo prázdné místo.
  */
 export const cardInfo = style({})
 
@@ -95,9 +95,9 @@ globalStyle(`${pastGroup} ${groupPlainName}::after`, {
 })
 
 /**
- * Panel s klíčovými fakty nad záložkami. Dřív svislý seznam v úzkém sloupci vlevo, vedle
- * kterého zbývala prázdná polovina obrazovky; dnes vodorovný pruh přes celou šířku,
- * popisek nad hodnotou. Sloupce se přizpůsobí šířce okna samy (`auto-fit`).
+ * Panel s klíčovými fakty nad záložkami — vodorovný pruh přes celou šířku, popisek nad
+ * hodnotou. Sloupce se přizpůsobí šířce okna samy (`auto-fit`); svislý seznam v úzkém
+ * sloupci vlevo by nechal prázdnou polovinu obrazovky.
  */
 export const summaryPanel = style([
     surfacePanel,
@@ -156,16 +156,15 @@ export const infoListItem = style({
 })
 
 /**
- * Sloupce lekcí po kurzech. Dřív flex s `justify-content: center` a procentními
- * `max-width`, takže dva kurzy stály vycentrované doprostřed plochy s obrovskými
- * okraji po stranách. Dnes mřížka, která sloupce rovná doleva a přidává je podle
- * dostupné šířky.
+ * Sloupce lekcí po kurzech — mřížka, která sloupce rovná doleva a přidává je podle
+ * dostupné šířky. Flex s `justify-content: center` by dva kurzy postavil doprostřed
+ * plochy s obrovskými okraji po stranách.
  *
  * Zlomy musí odpovídat kostře načítání (`<SimpleGrid cols={{ base: 1, md: 2, lg: 3 }}>`
- * v Card.tsx): Mantine `md`/`lg` jsou `62em`/`75em` (výchozí breakpointy, theme je
- * nepřepisuje — stejná konvence jako `MOBILE_QUERY` v Main.tsx). Dřívější natvrdo
- * dané `768px`/`1400px` se s tímhle rozcházely, takže kostra a skutečný obsah
- * přepínaly počet sloupců každá jinde a mřížka se po dotažení dat viditelně přerovnala.
+ * v Card.tsx) a proto se zapisují v `em`: Mantine `md`/`lg` jsou `62em`/`75em` (výchozí
+ * breakpointy, theme je nepřepisuje — stejná konvence jako `MOBILE_QUERY` v Main.tsx).
+ * Natvrdo dané pixelové zlomy se s nimi rozejdou, kostra a skutečný obsah pak přepínají
+ * počet sloupců každá jinde a mřížka se po dotažení dat viditelně přerovná.
  */
 export const lectureColumns = style({
     display: "grid",

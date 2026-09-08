@@ -186,7 +186,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                             <YAxis
                                 allowDecimals={false}
                                 tick={AXIS_TICK}
-                                width={44}
+                                width={52}
                                 label={{
                                     value: "Počet lekcí",
                                     angle: -90,

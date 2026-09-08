@@ -130,7 +130,7 @@ const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
     // segmentovy ovladac a jeden jeho vzhled (segmented.css.ts)
     <SegmentedControl
         value={value}
-        onChange={(next) => onChange(next as ChartMetric)}
+        onChange={(next) => onChange(next)}
         data={[
             { value: "lectures", label: CHART_METRIC_LABEL.lectures },
             { value: "hours", label: CHART_METRIC_LABEL.hours },
@@ -154,11 +154,10 @@ const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, total, rows, not
                 <div className={styles.totalLabel}>celkem</div>
             </>
         )}
-        {/* Dřív sytá pilulka na každém řádku bez ladu a skladu. Puntík se vrací jen
-            tam, kde stejnou barvu nese i něco jiného na stránce: stavy klientů/skupin
-            drží barvy `iconSuccess`/`iconWarning` odjinud z appky, řádky lekcí barvy
-            legendy grafů níže (`--up-chart-series-*`). Kde takový protějšek není
-            („odučeno"), zůstává řádek bez puntíku, ne s barvou jen do počtu. */}
+        {/* Puntík je jen tam, kde stejnou barvu nese i něco jiného na stránce: stavy
+            klientů/skupin drží barvy `iconSuccess`/`iconWarning` odjinud z appky, řádky
+            lekcí barvy legendy grafů níže (`--up-chart-series-*`). Kde takový protějšek
+            není („odučeno"), zůstává řádek bez puntíku, ne s barvou jen do počtu. */}
         {rows.map((row, i) => (
             <div
                 key={typeof row.label === "string" ? `${title}-${row.label}` : String(i)}
@@ -286,7 +285,7 @@ const CourseYAxisTick: React.FC<CourseYAxisTickProps> = ({ x = 0, y = 0, payload
                 dy={4}
                 textAnchor="end"
                 fill="var(--up-chart-tick-fill)"
-                fontSize={12}>
+                fontSize={AXIS_TICK.fontSize}>
                 {payload?.value}
             </text>
         </g>
@@ -448,7 +447,7 @@ const YearCourseLinesChart: React.FC<YearCourseLinesChartProps> = ({ byYearCours
                 />
                 <YAxis
                     allowDecimals={false}
-                    width={44}
+                    width={52}
                     tick={AXIS_TICK}
                     label={
                         compact
@@ -539,7 +538,7 @@ const HoursByYearChart: React.FC<HoursByYearChartProps> = ({ byYear, compact }) 
                     }
                 />
                 <YAxis
-                    width={44}
+                    width={52}
                     tick={AXIS_TICK}
                     tickFormatter={(v) =>
                         typeof v === "number"
@@ -675,7 +674,7 @@ const LecturesMonthSection: React.FC<LecturesMonthSectionProps> = ({
                     />
                     <YAxis
                         allowDecimals={chartMetric === "hours"}
-                        width={44}
+                        width={52}
                         tick={AXIS_TICK}
                         tickFormatter={(value) =>
                             chartMetric === "hours"
@@ -717,9 +716,11 @@ type LecturesCourseSectionProps = {
 
 /** Horizontální sloupcový graf proběhlých a zrušených lekcí podle kurzu. */
 const LecturesCourseSection: React.FC<LecturesCourseSectionProps> = ({ byCourse, compact }) => {
+    // 9,5 px na znak odpovida sirce prumerneho znaku popisku v `AXIS_TICK` (1rem);
+    // +20 px je odsazeni kroužku kurzu pred nazvem (viz `CourseYAxisTick`)
     const yAxisWidth = Math.min(
-        compact ? 132 : 260,
-        Math.max(80, Math.max(...byCourse.map((c) => c.course_name.length)) * 7 + 20),
+        compact ? 150 : 290,
+        Math.max(80, Math.max(...byCourse.map((c) => c.course_name.length)) * 9.5 + 20),
     )
     return (
         <ChartSection title="Proběhlé a zrušené lekce podle kurzu">
@@ -825,7 +826,7 @@ const LecturesYearSection: React.FC<LecturesYearSectionProps> = ({
                             />
                             <YAxis
                                 allowDecimals={false}
-                                width={44}
+                                width={52}
                                 tick={AXIS_TICK}
                                 label={
                                     compact

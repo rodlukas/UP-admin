@@ -4,8 +4,8 @@ import { vars } from "../../theme/tokens"
 
 /**
  * Jednotný vzhled segmentového přepínače (Aktivní/Neaktivní, metrika grafu, rozsah roků).
- * Dřív to byly tři různé `Button.Group` s ručním žonglováním `variant="filled" | "default"`;
- * Mantine na to má `SegmentedControl`, který řeší i klávesnici a ARIA (radiogroup).
+ * Staví na Mantine `SegmentedControl`, ne na `Button.Group` s přepínáním `variant`:
+ * `SegmentedControl` obsluhuje i klávesnici a ARIA (radiogroup).
  *
  * Vybraná půlka je **inkoustová, ne indigo** — indigo v aplikaci znamená „hlavní akce
  * a odkaz", a vedle tlačítka „Přidat klienta" si dvě indigo plochy konkurovaly o roli

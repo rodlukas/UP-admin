@@ -44,9 +44,9 @@ const Dashboard: React.FC = () => {
                     </div>
                     {/*
                      * Samostatná sekce, ne fallback uvnitř `DashboardDay`: nejbližší lekce
-                     * nejsou z dnešního dne, takže nepatří do jeho sloupce (dřív zdědily
-                     * jeho chrome — lepící se hlavičku dne i linku značící dnešek, která
-                     * pak trčela vedle nadpisu "Nejbližší lekce", ač se týkala celého sloupce).
+                     * nejsou z dnešního dne, takže nepatří do jeho sloupce — zdědily by
+                     * jeho chrome, tedy lepící se hlavičku dne i linku značící dnešek,
+                     * která se týká celého sloupce, ne nadpisu "Nejbližší lekce".
                      */}
                     {showUpcoming && (
                         <>

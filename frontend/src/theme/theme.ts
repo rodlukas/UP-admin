@@ -54,8 +54,8 @@ export const theme = createTheme({
      * proto sedí na 1 rem. Že tím tři stupně splynou, je záměr: menší písmo se v téhle
      * aplikaci nepoužívá, takže ty stupně nemají co rozlišovat.
      *
-     * Master stál na Bootstrapu s 1 rem; zmenšení na Mantine `sm` (0,875 rem = 14 px)
-     * uživatelce v provozu vadilo.
+     * Výchozí Mantine `sm` (0,875 rem = 14 px) je pro provozní použití aplikace příliš
+     * malé — uživatelka v ní čte údaje o klientech a lekcích celý den.
      */
     fontSizes: {
         xs: "1rem",
@@ -81,11 +81,8 @@ export const theme = createTheme({
         },
         /**
          * Textové prvky obsahu jedou na `md` (1 rem), ne na výchozím Mantine `sm`
-         * (0,875 rem = 14 px).
-         *
-         * Master stál na Bootstrapu, kde měla tlačítka, pole i tabulky 1 rem, a zmenšení
-         * na 14 px uživatelce v provozu vadí. Platí to zároveň jako obecné pravidlo
-         * aplikace: text v obsahu nesmí být menší než 1 rem.
+         * (0,875 rem = 14 px) — obecné pravidlo aplikace: text v obsahu nesmí být menší
+         * než 1 rem.
          *
          * `ActionIcon` tu schválně není — u ikonového tlačítka je `size` rozměr plochy,
          * ne velikost písma, a řídí ho výška řádku v tabulce (viz `DeleteIconButton`).

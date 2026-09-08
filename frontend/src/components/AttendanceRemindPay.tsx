@@ -20,8 +20,8 @@ const AttendanceRemindPay: React.FC<Props> = ({ attendance }) => {
     }
     return (
         <Tooltip label="Příště platit">
-            {/* stejný slot i velikost jako ikona platby — bez `transform`, který ikonu
-                dřív zvedal nad účaří a rozhazoval řádek */}
+            {/* stejný slot i velikost jako ikona platby; `transform` by ikonu zvedl nad
+                účaří a rozhodil řádek */}
             <span className={attendanceIconSlot}>
                 <FontAwesomeIcon icon={faExclamationCircle} size="lg" className={iconWarning} />
             </span>

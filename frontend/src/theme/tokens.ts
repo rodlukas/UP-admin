@@ -193,10 +193,10 @@ export const vars = {
         },
     },
     /**
-     * Stavové podbarvení lekcí (budoucí/předplacená/zrušená). Komentář k rozhodnutí:
-     * stav lekce musí být rozpoznatelný i bez rámečku a textu, proto podbarvení zůstává
-     * i v plochém jazyce — jen je slabší než dřív, protože stojí na bílé ploše a nese ho
-     * navíc textový štítek, takže význam nenese jen barva (WCAG 1.4.1).
+     * Stavové podbarvení lekcí (budoucí/předplacená/zrušená). Stav lekce musí být
+     * rozpoznatelný i bez rámečku a textu, takže podbarvení nese i plochý jazyk. Je
+     * záměrně tlumené: stojí na bílé ploše a význam vedle něj nese textový štítek, takže
+     * barva není jediný nositel informace (WCAG 1.4.1).
      * Dark varianty ztlumené přes color-mix s plochou: plná sytost by srazila kontrast
      * indigo odkazů na podbarvené lekci pod WCAG AA. S mixem drží odkaz (indigo-3)
      * 5.09:1 (warning), 5.43:1 (success) a 5.85:1 (danger), běžný text (dark-0) ≥9.8:1.

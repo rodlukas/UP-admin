@@ -19,12 +19,11 @@ const COMPLETE_ANIMATION_MS = 500
 /**
  * Globální indikátor dotahování dat (libovolný dotaz React Query, kdekoliv v appce) —
  * tenký pruh nahoře přes celou šířku okna, ve stylu YouTube/GitHub: plní se zleva a na
- * konci doskočí na 100 % a odfadeuje, místo aby jen zmizel uprostřed animace. Nahrazuje
- * dřívější tečky u nadpisu stránky: ty byly vázané na konkrétní `isFetching` jedné
- * stránky a jejich mount/unmount uvnitř `Title` měnil výšku nadpisu (Mantine `Loader`
- * typu "dots" je `display: flex`, tedy blokový box) — objevení/zmizení posunulo celý
- * obsah stránky pod ním. Tenhle pruh je `position: fixed`, mimo tok dokumentu, takže
- * k tomu dojít nemůže.
+ * konci doskočí na 100 % a odfadeuje, místo aby jen zmizel uprostřed animace.
+ *
+ * Je `position: fixed`, tedy mimo tok dokumentu: indikátor uvnitř nadpisu stránky by byl
+ * blokový box (Mantine `Loader` typu "dots" je `display: flex`), takže by jeho objevení
+ * a zmizení posouvalo celý obsah pod ním.
  *
  * `data-qa="global-loading"` je vlastní atribut, ne `data-qa="loading"` — ten kontrakt
  * (`wait_loading_cycle`/`wait_loading_ends` v tests/ui_steps/helpers.py) drží per-stránková
@@ -40,10 +39,14 @@ const TopProgressBar: React.FC = () => {
     const [progress, setProgress] = React.useState(START_PROGRESS)
     // true po dobu, co pruh dobíhá na 100 % a čeká na `COMPLETE_ANIMATION_MS` před odmountem
     const isCompletingRef = React.useRef(false)
+    // Zrcadlí `isVisible` pro efekt, který na něm nesmí záviset přes `deps`: se `isVisible`
+    // v závislostech by se po každém zobrazení pruhu znovu nasadil trickle interval.
+    const isVisibleRef = React.useRef(false)
 
     React.useEffect(() => {
         if (isFetching) {
             setIsVisible(true)
+            isVisibleRef.current = true
             // Další dotaz odstartoval dřív, než doběhla dokončovací animace toho
             // předchozího (pruh byl na 100 % a mizel) - skok zpátky na `START_PROGRESS` by
             // ho na okamžik nechal animovat pozpátku (šířka i barva by se 200ms/300ms
@@ -64,13 +67,23 @@ const TopProgressBar: React.FC = () => {
             return (): void => globalThis.clearInterval(intervalId)
         }
 
-        // fetch skončil (nebo žádný neběžel) - doskoč na 100 % a teprve po dobehnutí CSS
-        // přechodu (šířka, pak fade - viz TopProgressBar.css.ts) odmountuj
+        // Při prvním průchodu (mount) tady efekt skončí taky, protože žádný dotaz ještě
+        // neběží — pruh ale není vidět, takže není co dokončovat. Bez téhle podmínky by
+        // se nastavilo `progress` na 100 % a `isCompletingRef`, a dotaz odstartovaný
+        // hned po mountu by pruh zobrazil plný a nechal ho trickle intervalem sjíždět
+        // pozpátku ke stropu, místo aby se plnil od `START_PROGRESS`.
+        if (!isVisibleRef.current) {
+            return
+        }
+
+        // fetch skončil - doskoč na 100 % a teprve po dobehnutí CSS přechodu
+        // (šířka, pak fade - viz TopProgressBar.css.ts) odmountuj
         setProgress(100)
         setIsDone(true)
         isCompletingRef.current = true
         const hideTimeoutId = globalThis.setTimeout(() => {
             isCompletingRef.current = false
+            isVisibleRef.current = false
             setIsVisible(false)
         }, COMPLETE_ANIMATION_MS)
         return (): void => globalThis.clearTimeout(hideTimeoutId)

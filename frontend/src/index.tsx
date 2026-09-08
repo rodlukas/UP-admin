@@ -44,9 +44,8 @@ const App: React.FC = () => (
         colorSchemeManager={colorSchemeManager}>
         {/* position: `bottom-right`, ne `top-right`. Aplikace nemá horní lištu (navigace
             je v inkoustovém pruhu vlevo), takže hlavička stránky s akčními tlačítky sedí
-            u horní hrany okna — toasty vpravo nahoře ji zakrývaly. Dřív je odtlačoval
-            fixní navbar, dnes tam nic není. Projevilo se to i v E2E:
-            ElementClickInterceptedException na tlačítku v hlavičce stránky.
+            přímo u horní hrany okna a toasty vpravo nahoře by ji zakrývaly — v E2E se to
+            projeví jako ElementClickInterceptedException na tlačítku v hlavičce.
             zIndex: default 400 by toasty schoval pod modaly (1050); notifikace patří nad
             vše včetně tooltipů (1300) — jinak uživatel nevidí chybové hlášky z formulářů
             v modalech */}

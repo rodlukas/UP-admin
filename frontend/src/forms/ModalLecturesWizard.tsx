@@ -178,6 +178,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                             groupsActiveContext.groups.find((g) => g.id.toString() === val) ?? null
                         onSelectChange("group", found)
                     }}
+                    // select nemá viditelný label — přístupný název pro čtečky obrazovky
+                    aria-label="Skupina"
                     placeholder="Vyberte existující skupinu…"
                     searchable
                     nothingFoundMessage={TEXTS.NO_RESULTS}

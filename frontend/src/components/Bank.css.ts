@@ -101,11 +101,11 @@ export const bankDangerText = style({
  * Podřádek se zprávou pro příjemce na úzkém displeji. Sloupec „Zpráva pro příjemce" tam
  * kvůli šířce nemá vlastní sloupec (viz `showMessageColumn` v Bank.tsx) — bez podřádku by
  * transakce, jejíž jediný identifikující text nese právě zpráva, zůstala nedosažitelná.
- * Menší tišší písmo a nulový horní padding signalizují, že jde o doplněk řádku nad sebou,
- * ne o samostatnou transakci.
+ * Tišší barva a nulový horní padding signalizují, že jde o doplněk řádku nad sebou,
+ * ne o samostatnou transakci. Odlišit to zmenšeným písmem nejde — text v aplikaci nesmí
+ * být menší než 1 rem (viz `fontSizes` v theme/theme.ts).
  */
 export const bankMessageRow = style({
     paddingTop: 0,
     color: vars.text.subtleMuted,
-    fontSize: "0.85em",
 })

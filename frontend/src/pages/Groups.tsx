@@ -140,9 +140,9 @@ const Groups: React.FC = () => {
                                 {DAYS_WITHOUT_LECTURE_WARNING} dní.
                             </span>
                         </Group>
-                        {/* `default` varianta: sytě žluté tlačítko bylo na měkkém notice
+                        {/* `default` varianta: sytě žluté tlačítko by na žlutém notice bylo
                             nejhlasitější věcí stránky. Neutrální obrys drží akci čitelnou
-                            a `autoContrast` uz neni potreba (neresi se bily text na zlute). */}
+                            a nepotřebuje `autoContrast` (neřeší se bílý text na žluté). */}
                         <Button
                             variant="default"
                             disabled={deactivateGroups.isPending}

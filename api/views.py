@@ -8,7 +8,12 @@ from django.db.models import Max, Prefetch, Q, QuerySet
 from django.db.models.deletion import ProtectedError
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import OpenApiResponse, extend_schema, extend_schema_view
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -454,6 +459,21 @@ class LectureViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         summary="Seznam lekcí",
+        # `limit` se parsuje rucne v `list()`, takze ho spectacular sam neodvodi (na rozdil
+        # od parametru filtrsetu a `OrderingFilter`) a klient generovany ze schematu by ho
+        # nemel jak poslat
+        parameters=[
+            OpenApiParameter(
+                name="limit",
+                type=int,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description=(
+                    f"Omezí počet vrácených lekcí na 1 až {MAX_LIMIT} (uplatní se až po "
+                    "filtrech a řazení). Mimo rozsah nebo necelé číslo vrátí 400."
+                ),
+            )
+        ],
         description=(
             "Vrátí seznam všech lekcí (bez `limit` seřazených sestupně dle startu lekce) včetně "
             "vnořených informací o kurzu, účastech (a příslušných klientech), kurzu skupiny, "

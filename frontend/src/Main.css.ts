@@ -120,13 +120,12 @@ export const headerBrand = style([
 ])
 
 /**
- * „admin" sedí o kousek níž než „ÚP" — stejně jako v masteru, kde to zařizoval Bootstrap
- * reboot (`sub { position: relative; bottom: -0.25em }`).
+ * „admin" sedí o kousek níž než „ÚP".
  *
  * Posouvá se **relativním pozicováním, ne `vertical-align`**: `railBrand` je flex kontejner,
  * takže „ÚP" i `<sub>` jsou flex items a na těch se `vertical-align` (včetně výchozího
- * `sub` od prohlížeče) ignoruje — proto značka vypadala zarovnaná na jednu základnu.
- * Relativní posun se naproti tomu aplikuje až po rozvržení, takže na flex item platí.
+ * `sub` od prohlížeče) ignoruje — značka by se zarovnala na jednu základnu. Relativní
+ * posun se naproti tomu aplikuje až po rozvržení, takže na flex item platí.
  */
 globalStyle(`${railBrand} sub`, {
     position: "relative",

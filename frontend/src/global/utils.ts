@@ -16,9 +16,11 @@ import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
 /**
  * Jednoduché české skloňování podle počtu: vrátí `one` pro 1, `few` pro 2–4, jinak `many`.
  * Sjednocuje opakovaný count→tvar vzorec z přehledů klientů a skupin.
+ *
+ * Nula bere `many` („0 členů“), ne `few` — genitiv plurálu, stejně jako u pěti a víc.
  */
 export const pluralizeCs = (count: number, one: string, few: string, many: string): string =>
-    count === 1 ? one : count < 5 ? few : many
+    count === 1 ? one : count >= 2 && count < 5 ? few : many
 
 export type GroupedObjectsByCourses<O> = { course: CourseType; objects: O[] }[]
 
@@ -134,8 +136,8 @@ export function prettyAmount(amount: number): string {
 
 /**
  * Barva textu čitelná na zadaném podkladu. Barva kurzu je libovolný uživatelský hex, takže
- * napevno zvolená bílá (jako dřív u pilulky kurzu) na světlých odstínech zmizí — vybírá se
- * proto ta ze dvojice bílá / inkoust, která má proti podkladu vyšší kontrast.
+ * napevno zvolená bílá by na světlých odstínech zmizela — vybírá se proto ta ze dvojice
+ * bílá / inkoust, která má proti podkladu vyšší kontrast.
  *
  * Inkoust je `vars.text.primary` ze světlého motivu; jde o podklad v syté barvě kurzu,
  * který je v obou motivech stejný, takže text se schématem měnit nemá.

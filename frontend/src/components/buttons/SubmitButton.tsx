@@ -20,7 +20,6 @@ const SubmitButton: React.FC<Props> = ({
     ...props
 }) => (
     <Button
-        ml="auto"
         type="submit"
         loading={loading}
         aria-busy={loading}

@@ -7,7 +7,7 @@ import * as React from "react"
 import { useAuthContext } from "./auth/AuthContext"
 import AppSpotlight from "./components/AppSpotlight"
 import ColorSchemeSync from "./components/ColorSchemeSync"
-import EnvBadge from "./components/EnvBadge"
+import EnvBadge, { hasEnvBadge } from "./components/EnvBadge"
 import Menu from "./components/Menu"
 import { PageSkeleton } from "./components/Skeletons"
 import { RAIL_WIDTH_LABELS } from "./global/constants"
@@ -74,10 +74,9 @@ const Main: React.FC = () => {
                     collapsed: { mobile: !isMenuOpened },
                 }}>
                 {/* `collapsed` na AppShell.Header/Navbar jen posouvá obsah transformem
-                    (`translateY`/`translateX`) mimo viditelnou plochu — na rozdíl od
-                    dřívějších `display: none` pravidel (viz git historie Main.css.ts)
-                    zůstává skrytý obsah dosažitelný Tabem a čtečkám. `inert` ho vyřazuje
-                    z obojího, aniž by to muselo zasahovat do vzhledu/animace collapse. */}
+                    (`translateY`/`translateX`) mimo viditelnou plochu, takže skrytý obsah
+                    zůstává dosažitelný Tabem a čtečkám. `inert` ho z obojího vyřazuje,
+                    aniž by to muselo zasahovat do vzhledu/animace collapse. */}
                 <AppShell.Header className={styles.shellHeader} inert={!isMobile}>
                     <Burger
                         opened={isMenuOpened}
@@ -91,9 +90,11 @@ const Main: React.FC = () => {
                     </Link>
                     {/* Pod `md` je pruh zavřený drawer, takže označení prostředí by z něj
                         nebylo vidět na žádné trase — na mobilu ho proto nese hlavička. */}
-                    <div className={styles.headerEnv}>
-                        <EnvBadge />
-                    </div>
+                    {hasEnvBadge() && (
+                        <div className={styles.headerEnv}>
+                            <EnvBadge />
+                        </div>
+                    )}
                 </AppShell.Header>
                 <AppShell.Navbar
                     className={styles.rail}

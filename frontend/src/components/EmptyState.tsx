@@ -18,8 +18,8 @@ type Props = {
 /**
  * Jednotný prázdný stav seznamu.
  *
- * Nahrazuje nahé věty typu „Žádné lekce" rozeseté po aplikaci: prázdná obrazovka
- * je místo, kde uživatel neví, co dál, takže má vysvětlit proč a nabídnout akci.
+ * Prázdná obrazovka je místo, kde uživatel neví, co dál, takže musí vysvětlit proč
+ * a nabídnout akci — nahá věta typu „Žádné lekce" na to nestačí.
  */
 const EmptyState: React.FC<Props> = ({ icon = faInbox, title, description, action }) => (
     <div className={styles.emptyState}>

@@ -14,7 +14,6 @@ import {
     isUserCelebrating,
     prettyDateWithLongDayYearIfDiff,
     prettyTime,
-    toISODate,
 } from "../global/funcDateTime"
 import { inlineBlockNowrap, mb0, srOnly } from "../global/utility.css"
 import { contrastingTextColor, courseDuration } from "../global/utils"
@@ -48,11 +47,15 @@ const DashboardDay: React.FC<Props> = (props) => {
     /** Datum, pro které se má načíst data (může být zpožděno při rychlém překlikávání). */
     const delayedDate = useDelayedValue(props.date, DEFAULT_DELAY, props.withoutWaiting)
 
+    // Datum se do hooku předává tak, jak přišlo — je to už ISO datum. Průchod `new Date()`
+    // a zpátky přes `toISODate` by v pásmech se záporným posunem vrátil předchozí den
+    // (datum bez času se parsuje jako UTC, `toISODate` čte lokální složky) a rozešel by
+    // klíč dotazu s `Dashboard` a `Diary`, které posílají ISO datum přímo.
     const {
         data: lectures = [],
         isLoading,
         isFetching,
-    } = useLecturesFromDay(toISODate(new Date(delayedDate)), true)
+    } = useLecturesFromDay(delayedDate, true)
 
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())

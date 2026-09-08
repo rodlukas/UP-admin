@@ -42,7 +42,6 @@ export const chartTooltip = style([
         padding: "0.5rem 0.75rem",
         lineHeight: 1.5,
         color: vars.text.primary,
-        fontSize: "0.8rem",
     },
 ])
 

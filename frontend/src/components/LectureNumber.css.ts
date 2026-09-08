@@ -24,8 +24,8 @@ export const lectureNumber = style({
     whiteSpace: "nowrap",
     // `lecture.number` nemusí být číslo — serializer bez výchozího stavu účasti vrátí
     // varovnou větu ("⚠ není zvolen výchozí stav účasti…", viz LectureType). V nezalamovacím
-    // flex řádku hlavičky lekce (`lectureHeader`) by celá věta protrhla layout; strop šířky
-    // s elipsou drží odznak v rozumné velikosti stejně, jako to dřív dělal Mantine `Badge`.
+    // flex řádku hlavičky lekce (`lectureHeader`) by celá věta protrhla layout, proto strop
+    // šířky s elipsou.
     color: "inherit",
     fontSize: "1rem",
     fontWeight: 600,

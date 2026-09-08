@@ -24,9 +24,9 @@ export const attendances = style({
 /**
  * Účast v úzkém sloupci: řádek se jménem, poznámkou a odznaky, pod ním stav docházky.
  *
- * Dřív to byl jeden `flex-wrap` řádek, ve kterém si stav vynucoval celou šířku
- * (`flex: 1 0 100%`) a poznámka se zalamovala, kam zrovna vyšlo — u lekce s více účastníky
- * z toho byl rozsyp bez jediné svislé osy.
+ * Sloupec, ne jeden `flex-wrap` řádek: v zalamovaném řádku si stav vynutí celou šířku
+ * a poznámka se zalomí, kam zrovna vyjde, takže u lekce s víc účastníky nezůstane jediná
+ * svislá osa, o kterou by se dalo čtení opřít.
  */
 globalStyle(`${attendances} li`, {
     display: "flex",
@@ -76,10 +76,9 @@ export const attendanceMain = style({
 /**
  * Poznámka má **vlastní řádek pod jménem, odznaky i stavem** a jde přes celou šířku.
  *
- * Dřív stála vedle jména a soutěžila s ním o místo: delší text zalomil řádek, odznaky
- * spadly pod jméno a sousední klienti přestali lícovat — u skupinové lekce z toho byl
- * rozsyp. Je to uživatelský text libovolné délky, takže mu prostě patří vlastní řádek;
- * čí je, drží blízkost a linka mezi účastníky.
+ * Je to uživatelský text libovolné délky: vedle jména by o místo soupeřila, delší text by
+ * zalomil řádek, odznaky by spadly pod jméno a sousední účastníci by přestali lícovat.
+ * Čí poznámka to je, drží blízkost a linka mezi účastníky.
  */
 export const attendanceNote = style({
     minWidth: 0,
@@ -115,9 +114,8 @@ const ATTENDANCE_CONTROL_SIZE = "2.625rem"
 
 /**
  * Slot pro stavovou ikonu účasti. Platba i „příště platit" mají stejný rozměr a stejnou
- * osu — dřív byla jedna ikona v tlačítku 1,75 rem a druhá volně v textu s `transform="up-4"`,
- * takže se navzájem míjely a řádek poskakoval. Glyfy jsou navíc z jedné rodiny (kroužkované),
- * takže se liší významem a barvou, ne tvarem.
+ * osu — bez společného slotu se ikony navzájem míjejí a řádek při přepnutí stavu poskakuje.
+ * Glyfy jsou navíc z jedné rodiny (kroužkované), takže se liší významem a barvou, ne tvarem.
  */
 export const attendanceIconSlot = style({
     display: "inline-flex",
@@ -176,16 +174,12 @@ export const attendanceNumber = style({
 })
 
 /**
- * Jméno klienta. Dřív 1,25rem, tedy výrazněji než název kurzu i čas — v nové hierarchii
- * je kotvou bloku čas (1,3rem) a jméno nese váha písma, ne velikost.
- *
- * Bez `flex: 1` — odznaky odsouvá doprava vlastní `margin-left: auto`, takže hned za
- * jménem může stát jeho poznámka.
- */
-/**
  * Jméno klienta je v diáři i na přehledu **kotva celého řádku** — podle něj se v hustém
  * seznamu hledá, takže je o stupeň větší než zbytek účasti (poznámka a stav zůstávají
  * na 1 rem). Není to nadpis, jen nejdůležitější údaj řádku.
+ *
+ * Bez `flex: 1` — odznaky odsouvá doprava vlastní `margin-left: auto`, takže hned za
+ * jménem může stát jeho poznámka.
  */
 export const clientName = style({
     flexShrink: 1,

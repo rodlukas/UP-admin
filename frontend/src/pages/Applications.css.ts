@@ -97,9 +97,9 @@ export const createdDate = style({
 })
 
 /**
- * Poznámka zájemce — dřív tlumená stejně jako datum vedle ní, splývala s ním a byla
- * hůř čitelná. Je to obsah, který napsal uchazeč, ne metadata záznamu, proto tmavší
- * `text.muted` místo `text.subtleMuted`.
+ * Poznámka zájemce. Je to obsah, který napsal uchazeč, ne metadata záznamu, proto tmavší
+ * `text.muted` místo `text.subtleMuted` — se stejným tlumením jako datum vedle ní by
+ * s ním splývala a byla hůř čitelná.
  */
 export const applicationNote = style({
     color: vars.text.muted,
