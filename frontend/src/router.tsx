@@ -5,6 +5,7 @@ import { createQueryClient } from "./api/queryClient"
 import AppLayout from "./App"
 import APP_URLS from "./APP_URLS"
 import PrivateRoute from "./auth/PrivateRoute"
+import LoginSkeleton from "./components/LoginSkeleton"
 import Page from "./components/Page"
 import { PageSkeleton } from "./components/Skeletons"
 import lazySafe from "./global/lazySafe"
@@ -72,7 +73,12 @@ const loginRoute = createChildRoute({
     }),
     component: () => (
         <Page title={APP_URLS.prihlasit.title}>
-            <Login />
+            {/* Vlastní hranice, ne ta sdílená v Main.tsx (`PageSkeleton`) — tu si nadál
+                drží i `NotFound`, jehož tvar (`Container` + nadpis) kostře tabulky
+                odpovídá o dost líp než přihlašovací kartě. */}
+            <React.Suspense fallback={<LoginSkeleton />}>
+                <Login />
+            </React.Suspense>
         </Page>
     ),
 })

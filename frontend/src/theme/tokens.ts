@@ -200,12 +200,18 @@ export const vars = {
      * Dark varianty ztlumené přes color-mix s plochou: plná sytost by srazila kontrast
      * indigo odkazů na podbarvené lekci pod WCAG AA. S mixem drží odkaz (indigo-3)
      * 5.09:1 (warning), 5.43:1 (success) a 5.85:1 (danger), běžný text (dark-0) ≥9.8:1.
+     *
+     * Light `success` byl původně #eef7f1 — na bílé ploše (`bg.surface`) to vyšlo na
+     * kontrast jen ~1.09:1 vůči bílé, tedy prakticky neviditelné podbarvení (na rozdíl od
+     * `warning`/`danger`, které díky posunu v modrém/zeleném kanálu čitelně vypadají jako
+     * barva, ne jen odstín bílé). #d3ecdd drží stejnou roli jako u ostatních dvou stavů:
+     * indigo odkaz (indigo-9) na něm má 5.42:1, tmavý text (`text.heading`) ještě víc.
      */
     statusTint: {
         warning:
             "light-dark(#fdf8e7, color-mix(in srgb, var(--mantine-color-yellow-9) 22%, var(--mantine-color-dark-7)))",
         success:
-            "light-dark(#eef7f1, color-mix(in srgb, var(--mantine-color-green-8) 22%, var(--mantine-color-dark-7)))",
+            "light-dark(#d3ecdd, color-mix(in srgb, var(--mantine-color-green-8) 22%, var(--mantine-color-dark-7)))",
         danger: "light-dark(#fdf1f3, color-mix(in srgb, var(--mantine-color-red-9) 26%, var(--mantine-color-dark-7)))",
     },
 } as const

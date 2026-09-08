@@ -12,8 +12,12 @@ import AppCommit from "./AppCommit"
  */
 const ENVIRONMENTS = [
     {
+        // zkratka, ne "Testing": rail je jen 12rem široký a s připojeným hashem commitu
+        // (viz `withCommit`) se plné slovo do zbylé šířky (`RAIL_WIDTH_LABELS` minus
+        // `RAIL_ICON_INSET` a padding) vejde jen o pár px - stejná zkratka, jakou už
+        // pro titulek stránky vrací `getEnvNameShort()`.
         matches: isEnvTesting,
-        label: "Testing",
+        label: "TEST",
         color: "blue",
         variant: "filled",
         withCommit: true,
