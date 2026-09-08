@@ -48,6 +48,22 @@ export const headerEnv = style({
 })
 
 /**
+ * Odznak označení prostředí (`EnvBadge`) je vědomá výjimka z pravidla „žádný text
+ * pod 1rem" (viz `--badge-fz` v index.css.ts, kde má jinak KAŽDÝ odznak v aplikaci
+ * natvrdo 1rem): je to meta-informace pro vývojáře/testera o tom, na jaké verzi běží
+ * appka, ne obsah, který čte běžný uživatel při práci s klienty/lekcemi. V úzkém
+ * pruhu (`RAIL_WIDTH_LABELS`, 12rem) navíc i po zkrácení popisku („TEST", ne
+ * "Testing" — viz EnvBadge.tsx) působilo 1rem písmo v tak stísněném místě nepřiměřeně
+ * velké. Cílí se přes potomka, ne globální proměnnou — ta zůstává 1rem pro všechny
+ * ostatní odznaky v appce beze změny.
+ */
+globalStyle(`${headerEnv} .mantine-Badge-root`, {
+    vars: {
+        "--badge-fz": "0.8rem",
+    },
+})
+
+/**
  * Inkoustový pruh — jediné chrome aplikace.
  * `border.rail` na pravé hraně není dekorace: v tmavém režimu má pruh proti ploše jen
  * 1.2:1 (#0b0f16 vs #1a2230), takže bez té linky by hranice nebyla vidět. Ve světlém
@@ -149,6 +165,13 @@ export const railEnv = style({
     lineHeight: 1.3,
     color: "rgb(233 238 247 / 0.5)",
     fontSize: "1rem",
+})
+
+/** Stejná výjimka jako u `headerEnv` výše — viz komentář tam. */
+globalStyle(`${railEnv} .mantine-Badge-root`, {
+    vars: {
+        "--badge-fz": "0.8rem",
+    },
 })
 
 // Mantine žádný `[data-mantine-modal]` atribut nevykresluje — obsah modalu je
