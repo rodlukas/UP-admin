@@ -36,8 +36,33 @@ const AuthContext = React.createContext<AuthContextInterface>(undefined)
 // prevod na sekundy (decoded.exp je v sekundach)
 const getCurrentDate = (): number => Date.now() / 1000
 
+/**
+ * Počáteční `isAuth` synchronně z uloženého tokenu — stejná logika jako běžná větev
+ * `isAuthenticated(false)` níže, jen spuštěná už při prvním renderu, ne až v efektu po
+ * něm. `Token.get()`/`decodeToken()` nejsou async (localStorage, čisté dekódování JWT),
+ * takže na to není důvod čekat na efekt.
+ *
+ * Bez tohohle viděl `PrivateRoute` (a `Main.tsx`) na úplně prvním renderu vždycky
+ * `isAuth=false` (default `useState`), tedy i u platně přihlášeného uživatele — a než
+ * stihl proběhnout efekt, co token doopravdy ověří, `PrivateRoute` už stačil přesměrovat
+ * na `/prihlasit`. Při refreshi soukromé stránky se tak i přihlášenému uživateli na
+ * okamžik mihla přihlašovací trasa (a s ní kostra přihlášení, `LoginSkeleton`), než ho
+ * `Login.tsx` poslalo zpátky.
+ */
+function getInitialIsAuth(): boolean {
+    const token = Token.get()
+    if (token === null) {
+        return false
+    }
+    try {
+        return Token.decodeToken(token).exp >= getCurrentDate()
+    } catch {
+        return false
+    }
+}
+
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [isAuth, setIsAuth] = React.useState(false)
+    const [isAuth, setIsAuth] = React.useState(getInitialIsAuth)
     const loginMutation = useLogin()
     const navigate = useNavigate()
 
