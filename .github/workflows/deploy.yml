@@ -18,7 +18,7 @@ env:
 jobs:
     build_and_deploy:
         name: Build & Deploy
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-26.04
 
         # github token opravneni pro upload k releasum/do container registru
         permissions:
@@ -28,15 +28,15 @@ jobs:
         steps:
             # priprav prostredi
             - name: ☁️ Checkout repo
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: 🔧 Setup node
-              uses: actions/setup-node@v6
+              uses: actions/setup-node@v7
               with:
-                  node-version: "20"
+                  node-version: "26"
                   cache: "npm"
                   cache-dependency-path: "**/package-lock.json"
             - name: 🔧 Setup Python
-              uses: actions/setup-python@v6
+              uses: actions/setup-python@v7
               with:
                   python-version: "3.12"
                   cache: "pipenv"
