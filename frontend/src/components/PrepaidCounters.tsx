@@ -190,7 +190,6 @@ const PrepaidCounters: React.FC<Props> = (props) => {
         const beforeUnload = (e: BeforeUnloadEvent): void => {
             if (dirtyIdsRef.current.size > 0) {
                 e.preventDefault()
-                e.returnValue = ""
             }
         }
         globalThis.addEventListener("beforeunload", beforeUnload)

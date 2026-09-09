@@ -128,7 +128,7 @@ const FormLecturesSkeleton: React.FC<FormLecturesSkeletonProps> = ({
             <Title order={5} className={styles.sectionTitle}>
                 Účastníci
             </Title>
-            {[...Array(memberCount)].map((_, index) => (
+            {[...new Array(memberCount)].map((_, index) => (
                 <div key={index} className={styles.attendeeBlock}>
                     {withMemberNames && <Skeleton h={20} mb="sm" radius="sm" w="35%" />}
                     <Grid align="center" mb="sm" className={styles.formGroup}>

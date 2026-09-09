@@ -22,17 +22,17 @@
         // v localStorage, nebo chybejici hodnota) musi spadnout na vychozi "light"
         var KNOWN_SCHEMES = ["light", "dark", "auto"];
         var stored = window.localStorage.getItem("mantine-color-scheme");
-        var scheme = KNOWN_SCHEMES.indexOf(stored) !== -1 ? stored : "light";
+        var scheme = KNOWN_SCHEMES.includes(stored) ? stored : "light";
 
         // "auto" = podle aktualniho systemoveho schematu
-        var resolved =
-            scheme === "auto"
-                ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                    ? "dark"
-                    : "light"
-                : scheme;
+        var resolved = scheme;
+        if (scheme === "auto") {
+            resolved = window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+        }
 
-        document.documentElement.setAttribute("data-mantine-color-scheme", resolved);
+        document.documentElement.dataset.mantineColorScheme = resolved;
         document.documentElement.style.colorScheme = resolved;
 
         // drzi `theme-color` v kroku s `bg.rail` (viz komentar v head.html) - bez tohoto

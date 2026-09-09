@@ -56,7 +56,7 @@ jobs:
             # nainstaluj Python zavislosti
             - name: 🔧 Python - install deps
               run: |
-                  pip install pipenv
+                  pip install pipenv==2026.8.0 --only-binary :all:
                   pipenv install --deploy --dev
 
             # priprav Django aplikaci

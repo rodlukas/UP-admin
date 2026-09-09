@@ -58,7 +58,7 @@ const ApplicationRowSkeleton: React.FC = () => (
  */
 const ApplicationListSkeleton: React.FC = () => (
     <SkeletonShell>
-        {[...Array(3)].map((_, i) => (
+        {[...new Array(3)].map((_, i) => (
             <div key={i} className={classNames(styles.course, styles.listSection)}>
                 <div className={styles.courseHeadingItem}>
                     <Skeleton h={18} radius="sm" w="35%" />

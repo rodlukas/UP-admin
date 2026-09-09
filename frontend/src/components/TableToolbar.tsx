@@ -64,9 +64,9 @@ const TableToolbar: React.FC<Props> = ({
         />
         <div className={styles.toolbarRight}>
             {query && (
-                <span className={styles.count} role="status">
+                <output className={styles.count}>
                     {filteredCount} z {totalCount}
-                </span>
+                </output>
             )}
             {children}
         </div>

@@ -34,7 +34,9 @@ jobs:
 
             - name: 🔧 Install Python dependencies (only for python matrix)
               if: matrix.language == 'python'
-              run: pip install pipenv && pipenv install --deploy --dev
+              run: |
+                  pip install pipenv==2026.8.0 --only-binary :all:
+                  pipenv install --deploy --dev
 
             - name: Perform CodeQL Analysis
               uses: github/codeql-action/analyze@v4

@@ -480,7 +480,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                         <Skeleton h={20} mb="xs" radius="sm" w="80%" />
                         <Skeleton h={20} mb="xl" radius="sm" w="40%" />
                         <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
-                            {[...Array(3)].map((_, i) => (
+                            {[...new Array(3)].map((_, i) => (
                                 <Skeleton key={i} h={200} radius="md" />
                             ))}
                         </SimpleGrid>

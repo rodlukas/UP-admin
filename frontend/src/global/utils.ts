@@ -19,8 +19,15 @@ import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
  *
  * Nula bere `many` („0 členů“), ne `few` — genitiv plurálu, stejně jako u pěti a víc.
  */
-export const pluralizeCs = (count: number, one: string, few: string, many: string): string =>
-    count === 1 ? one : count >= 2 && count < 5 ? few : many
+export const pluralizeCs = (count: number, one: string, few: string, many: string): string => {
+    if (count === 1) {
+        return one
+    }
+    if (count >= 2 && count < 5) {
+        return few
+    }
+    return many
+}
 
 export type GroupedObjectsByCourses<O> = { course: CourseType; objects: O[] }[]
 

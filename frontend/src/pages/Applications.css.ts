@@ -1,7 +1,6 @@
 import { style } from "@vanilla-extract/css"
 
 import { courseBand } from "../components/CourseName.css"
-import { lectureNumber } from "../components/LectureNumber.css"
 import { surfaceCard } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
@@ -58,7 +57,7 @@ export const courseHeadingItem = style([
  * tlumený ordinál s podkladem odvozeným z `currentColor`, ne vlastní barva z palety, která by
  * na sytém hexu kurzu zmizela.
  */
-export const courseHeadingCount = lectureNumber
+export { lectureNumber as courseHeadingCount } from "../components/LectureNumber.css"
 
 export const courseHeading = style({
     marginBottom: 0,

@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1
 # copy pipenv files to container
 COPY Pipfile Pipfile.lock ./
 
-RUN pip install -U pipenv
+RUN pip install pipenv==2026.8.0 --only-binary :all:
 RUN pipenv install --deploy --system
 
 # copy all files and directories to container

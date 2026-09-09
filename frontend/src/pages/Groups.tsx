@@ -103,6 +103,140 @@ const Groups: React.FC = () => {
         "aktivních skupin nemá",
     )
 
+    let groupsContent: React.ReactNode
+    if (isLoading()) {
+        groupsContent = (
+            <SkeletonShell>
+                <TableSkeleton count={6} />
+            </SkeletonShell>
+        )
+    } else if (getGroupsData().length > 0) {
+        groupsContent = (
+            <>
+                <TableToolbar
+                    query={table.query}
+                    onQueryChange={table.search}
+                    label="skupinu"
+                    fields="název, kurz, člen"
+                    filteredCount={table.filteredCount}
+                    totalCount={getGroupsData().length}
+                />
+                {table.filteredCount === 0 ? (
+                    <EmptyState
+                        icon={faLayerGroup}
+                        title="Nic nenalezeno"
+                        description={`Hledání „${table.query}“ neodpovídá žádná skupina.`}
+                    />
+                ) : (
+                    <Table.ScrollContainer minWidth={400} className={styles.tableSection}>
+                        <Table className={tableFlat}>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <SortableTh
+                                        sortKey="name"
+                                        activeKey={table.sortKey}
+                                        direction={table.sortDirection}
+                                        onSort={table.toggleSort}>
+                                        Název
+                                    </SortableTh>
+                                    <SortableTh
+                                        sortKey="course"
+                                        activeKey={table.sortKey}
+                                        direction={table.sortDirection}
+                                        onSort={table.toggleSort}
+                                        className={styles.hiddenBelowSm}>
+                                        Kurz
+                                    </SortableTh>
+                                    <Table.Th>Členové</Table.Th>
+                                    <Table.Th ta="right">Akce</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {table.rowsOnPage.map((group) => (
+                                    <Table.Tr key={group.id} data-qa="group">
+                                        <Table.Td>
+                                            <GroupName group={group} link noWrap />
+                                            {group.active &&
+                                                (!areAllMembersActive(group.memberships) ||
+                                                    isStaleActive(group.last_lecture_date)) && (
+                                                    <Group
+                                                        gap={4}
+                                                        display="inline-flex"
+                                                        ml="0.25rem"
+                                                        className={middle}>
+                                                        {!areAllMembersActive(
+                                                            group.memberships,
+                                                        ) && (
+                                                            <InfoTooltip
+                                                                placement="right"
+                                                                size="1x"
+                                                                text={
+                                                                    TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
+                                                                }
+                                                            />
+                                                        )}
+                                                        {isStaleActive(
+                                                            group.last_lecture_date,
+                                                        ) && (
+                                                            <InfoTooltip
+                                                                placement="right"
+                                                                size="1x"
+                                                                icon={faCalendarTimes}
+                                                                text={TEXTS.WARNING_STALE_GROUP}
+                                                            />
+                                                        )}
+                                                    </Group>
+                                                )}
+                                        </Table.Td>
+                                        <Table.Td className={styles.hiddenBelowSm}>
+                                            <CourseName course={group.course} band />
+                                        </Table.Td>
+                                        <Table.Td>
+                                            <ClientsList memberships={group.memberships} />
+                                        </Table.Td>
+                                        <Table.Td ta="right">
+                                            <ModalGroups
+                                                currentGroup={group}
+                                                refresh={refreshFromModal}
+                                                source="groups_page"
+                                            />
+                                        </Table.Td>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                    </Table.ScrollContainer>
+                )}
+                {table.isPaginated && (
+                    // `data-qa="pagination"`: E2E kroky přes ni umí projít všechny
+                    // stránky, aby `[data-qa=group]` počítaly/hledaly nad celým
+                    // seznamem, ne jen nad aktuální stránkou (viz useDataTable)
+                    <div data-qa="pagination">
+                        <Pagination
+                            value={table.page}
+                            onChange={table.setPage}
+                            total={table.pageCount}
+                            getControlProps={paginationControlProps}
+                            className={styles.pagination}
+                        />
+                    </div>
+                )}
+            </>
+        )
+    } else {
+        groupsContent = (
+            <EmptyState
+                icon={faLayerGroup}
+                title={`Žádné ${active ? "aktivní" : "neaktivní"} skupiny`}
+                description={
+                    active
+                        ? "Vytvoř první skupinu a objeví se tady."
+                        : "Neaktivní jsou skupiny, které sem byly přesunuty ze seznamu aktivních."
+                }
+            />
+        )
+    }
+
     return (
         <Container>
             <Heading
@@ -160,132 +294,7 @@ const Groups: React.FC = () => {
                 </Alert>
             )}
 
-            {isLoading() ? (
-                <SkeletonShell>
-                    <TableSkeleton count={6} />
-                </SkeletonShell>
-            ) : getGroupsData().length > 0 ? (
-                <>
-                    <TableToolbar
-                        query={table.query}
-                        onQueryChange={table.search}
-                        label="skupinu"
-                        fields="název, kurz, člen"
-                        filteredCount={table.filteredCount}
-                        totalCount={getGroupsData().length}
-                    />
-                    {table.filteredCount === 0 ? (
-                        <EmptyState
-                            icon={faLayerGroup}
-                            title="Nic nenalezeno"
-                            description={`Hledání „${table.query}“ neodpovídá žádná skupina.`}
-                        />
-                    ) : (
-                        <Table.ScrollContainer minWidth={400} className={styles.tableSection}>
-                            <Table className={tableFlat}>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <SortableTh
-                                            sortKey="name"
-                                            activeKey={table.sortKey}
-                                            direction={table.sortDirection}
-                                            onSort={table.toggleSort}>
-                                            Název
-                                        </SortableTh>
-                                        <SortableTh
-                                            sortKey="course"
-                                            activeKey={table.sortKey}
-                                            direction={table.sortDirection}
-                                            onSort={table.toggleSort}
-                                            className={styles.hiddenBelowSm}>
-                                            Kurz
-                                        </SortableTh>
-                                        <Table.Th>Členové</Table.Th>
-                                        <Table.Th ta="right">Akce</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {table.rowsOnPage.map((group) => (
-                                        <Table.Tr key={group.id} data-qa="group">
-                                            <Table.Td>
-                                                <GroupName group={group} link noWrap />
-                                                {group.active &&
-                                                    (!areAllMembersActive(group.memberships) ||
-                                                        isStaleActive(group.last_lecture_date)) && (
-                                                        <Group
-                                                            gap={4}
-                                                            display="inline-flex"
-                                                            ml="0.25rem"
-                                                            className={middle}>
-                                                            {!areAllMembersActive(
-                                                                group.memberships,
-                                                            ) && (
-                                                                <InfoTooltip
-                                                                    placement="right"
-                                                                    size="1x"
-                                                                    text={
-                                                                        TEXTS.WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS
-                                                                    }
-                                                                />
-                                                            )}
-                                                            {isStaleActive(
-                                                                group.last_lecture_date,
-                                                            ) && (
-                                                                <InfoTooltip
-                                                                    placement="right"
-                                                                    size="1x"
-                                                                    icon={faCalendarTimes}
-                                                                    text={TEXTS.WARNING_STALE_GROUP}
-                                                                />
-                                                            )}
-                                                        </Group>
-                                                    )}
-                                            </Table.Td>
-                                            <Table.Td className={styles.hiddenBelowSm}>
-                                                <CourseName course={group.course} band />
-                                            </Table.Td>
-                                            <Table.Td>
-                                                <ClientsList memberships={group.memberships} />
-                                            </Table.Td>
-                                            <Table.Td ta="right">
-                                                <ModalGroups
-                                                    currentGroup={group}
-                                                    refresh={refreshFromModal}
-                                                    source="groups_page"
-                                                />
-                                            </Table.Td>
-                                        </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
-                        </Table.ScrollContainer>
-                    )}
-                    {table.isPaginated && (
-                        // `data-qa="pagination"`: E2E kroky přes ni umí projít všechny
-                        // stránky, aby `[data-qa=group]` počítaly/hledaly nad celým
-                        // seznamem, ne jen nad aktuální stránkou (viz useDataTable)
-                        <div data-qa="pagination">
-                            <Pagination
-                                value={table.page}
-                                onChange={table.setPage}
-                                total={table.pageCount}
-                                getControlProps={paginationControlProps}
-                                className={styles.pagination}
-                            />
-                        </div>
-                    )}
-                </>
-            ) : (
-                <EmptyState
-                    icon={faLayerGroup}
-                    title={`Žádné ${active ? "aktivní" : "neaktivní"} skupiny`}
-                    description={
-                        active
-                            ? "Vytvoř první skupinu a objeví se tady."
-                            : "Neaktivní jsou skupiny, které sem byly přesunuty ze seznamu aktivních."
-                    }
-                />
-            )}
+            {groupsContent}
         </Container>
     )
 }

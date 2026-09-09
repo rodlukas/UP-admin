@@ -37,11 +37,16 @@ const SortableTh: React.FC<Props> = ({
     children,
 }) => {
     const isActive = activeKey === sortKey
-    const icon = !isActive ? faSort : direction === "asc" ? faSortUp : faSortDown
+
+    let icon = faSort
+    let ariaSort: "ascending" | "descending" | "none" = "none"
+    if (isActive) {
+        icon = direction === "asc" ? faSortUp : faSortDown
+        ariaSort = direction === "asc" ? "ascending" : "descending"
+    }
+
     return (
-        <Table.Th
-            aria-sort={isActive ? (direction === "asc" ? "ascending" : "descending") : "none"}
-            className={className}>
+        <Table.Th aria-sort={ariaSort} className={className}>
             <UnstyledButton onClick={() => onSort(sortKey)} className={styles.button}>
                 {children}
                 <FontAwesomeIcon

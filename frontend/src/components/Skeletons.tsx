@@ -97,12 +97,10 @@ export const SkeletonShell: React.FC<{ children: React.ReactNode }> = ({ childre
         return (): void => globalThis.clearTimeout(timeoutId)
     }, [isPrimary])
 
+    const Wrapper: "output" | "div" = isPrimary ? "output" : "div"
+
     return (
-        <div
-            data-qa="loading"
-            role={isPrimary ? "status" : undefined}
-            aria-live={isPrimary ? "polite" : undefined}
-            aria-busy="true">
+        <Wrapper data-qa="loading" aria-live={isPrimary ? "polite" : undefined} aria-busy="true">
             {children}
             {isOverlong && isPrimary && (
                 <Alert color="yellow" mt="md">
@@ -123,7 +121,7 @@ export const SkeletonShell: React.FC<{ children: React.ReactNode }> = ({ childre
                     />
                 </Alert>
             )}
-        </div>
+        </Wrapper>
     )
 }
 

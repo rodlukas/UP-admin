@@ -105,6 +105,119 @@ const Clients: React.FC = () => {
         "aktivních klientů nemá",
     )
 
+    let clientsContent: React.ReactNode
+    if (isLoading()) {
+        clientsContent = (
+            <SkeletonShell>
+                <TableSkeleton />
+            </SkeletonShell>
+        )
+    } else if (getClientsData().length > 0) {
+        clientsContent = (
+            <>
+                <TableToolbar
+                    query={table.query}
+                    onQueryChange={table.search}
+                    label="klienta"
+                    fields="jméno, telefon, e-mail, poznámka"
+                    filteredCount={table.filteredCount}
+                    totalCount={getClientsData().length}
+                />
+                {table.filteredCount === 0 ? (
+                    <EmptyState
+                        icon={faUsers}
+                        title="Nic nenalezeno"
+                        description={`Hledání „${table.query}“ neodpovídá žádný klient.`}
+                    />
+                ) : (
+                    <Table.ScrollContainer minWidth={560} className={styles.tableSection}>
+                        <Table className={tableFlat}>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <SortableTh
+                                        sortKey="name"
+                                        activeKey={table.sortKey}
+                                        direction={table.sortDirection}
+                                        onSort={table.toggleSort}>
+                                        Příjmení a jméno
+                                    </SortableTh>
+                                    <Table.Th className={styles.hiddenBelowMd}>Telefon</Table.Th>
+                                    <Table.Th
+                                        className={`${styles.emailHeader} ${styles.hiddenBelowMd}`}>
+                                        E-mail
+                                    </Table.Th>
+                                    <Table.Th className={styles.hiddenBelowSm}>Poznámka</Table.Th>
+                                    <Table.Th ta="right">Akce</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {table.rowsOnPage.map((client) => (
+                                    <Table.Tr key={client.id} data-qa="client">
+                                        <Table.Td className={styles.nameCell}>
+                                            <ClientName client={client} link />{" "}
+                                            {client.active &&
+                                                isStaleActive(client.last_lecture_date) && (
+                                                    <InfoTooltip
+                                                        placement="right"
+                                                        size="1x"
+                                                        icon={faCalendarTimes}
+                                                        text={TEXTS.WARNING_STALE_CLIENT}
+                                                    />
+                                                )}
+                                        </Table.Td>
+                                        <Table.Td
+                                            className={`${styles.phoneCell} ${styles.hiddenBelowMd}`}>
+                                            <ClientPhone phone={client.phone} />
+                                        </Table.Td>
+                                        <Table.Td className={styles.hiddenBelowMd}>
+                                            <ClientEmail email={client.email} />
+                                        </Table.Td>
+                                        <Table.Td className={styles.hiddenBelowSm}>
+                                            <ClientNote note={client.note} />
+                                        </Table.Td>
+                                        <Table.Td ta="right">
+                                            <ModalClients
+                                                currentClient={client}
+                                                refresh={refreshFromModal}
+                                                source="clients_page"
+                                            />
+                                        </Table.Td>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                    </Table.ScrollContainer>
+                )}
+                {table.isPaginated && (
+                    // `data-qa="pagination"`: E2E kroky přes ni umí projít všechny
+                    // stránky, aby `[data-qa=client]` počítaly/hledaly nad celým
+                    // seznamem, ne jen nad aktuální stránkou (viz useDataTable)
+                    <div data-qa="pagination">
+                        <Pagination
+                            value={table.page}
+                            onChange={table.setPage}
+                            total={table.pageCount}
+                            getControlProps={paginationControlProps}
+                            className={styles.pagination}
+                        />
+                    </div>
+                )}
+            </>
+        )
+    } else {
+        clientsContent = (
+            <EmptyState
+                icon={faUsers}
+                title={`Žádní ${active ? "aktivní" : "neaktivní"} klienti`}
+                description={
+                    active
+                        ? "Přidej prvního klienta a objeví se tady."
+                        : "Neaktivní jsou klienti, kteří sem byli přesunuti ze seznamu aktivních."
+                }
+            />
+        )
+    }
+
     return (
         <Container>
             <Heading
@@ -160,115 +273,7 @@ const Clients: React.FC = () => {
                     </Group>
                 </Alert>
             )}
-            {isLoading() ? (
-                <SkeletonShell>
-                    <TableSkeleton />
-                </SkeletonShell>
-            ) : getClientsData().length > 0 ? (
-                <>
-                    <TableToolbar
-                        query={table.query}
-                        onQueryChange={table.search}
-                        label="klienta"
-                        fields="jméno, telefon, e-mail, poznámka"
-                        filteredCount={table.filteredCount}
-                        totalCount={getClientsData().length}
-                    />
-                    {table.filteredCount === 0 ? (
-                        <EmptyState
-                            icon={faUsers}
-                            title="Nic nenalezeno"
-                            description={`Hledání „${table.query}“ neodpovídá žádný klient.`}
-                        />
-                    ) : (
-                        <Table.ScrollContainer minWidth={560} className={styles.tableSection}>
-                            <Table className={tableFlat}>
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <SortableTh
-                                            sortKey="name"
-                                            activeKey={table.sortKey}
-                                            direction={table.sortDirection}
-                                            onSort={table.toggleSort}>
-                                            Příjmení a jméno
-                                        </SortableTh>
-                                        <Table.Th className={styles.hiddenBelowMd}>
-                                            Telefon
-                                        </Table.Th>
-                                        <Table.Th
-                                            className={`${styles.emailHeader} ${styles.hiddenBelowMd}`}>
-                                            E-mail
-                                        </Table.Th>
-                                        <Table.Th className={styles.hiddenBelowSm}>
-                                            Poznámka
-                                        </Table.Th>
-                                        <Table.Th ta="right">Akce</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
-                                    {table.rowsOnPage.map((client) => (
-                                        <Table.Tr key={client.id} data-qa="client">
-                                            <Table.Td className={styles.nameCell}>
-                                                <ClientName client={client} link />{" "}
-                                                {client.active &&
-                                                    isStaleActive(client.last_lecture_date) && (
-                                                        <InfoTooltip
-                                                            placement="right"
-                                                            size="1x"
-                                                            icon={faCalendarTimes}
-                                                            text={TEXTS.WARNING_STALE_CLIENT}
-                                                        />
-                                                    )}
-                                            </Table.Td>
-                                            <Table.Td
-                                                className={`${styles.phoneCell} ${styles.hiddenBelowMd}`}>
-                                                <ClientPhone phone={client.phone} />
-                                            </Table.Td>
-                                            <Table.Td className={styles.hiddenBelowMd}>
-                                                <ClientEmail email={client.email} />
-                                            </Table.Td>
-                                            <Table.Td className={styles.hiddenBelowSm}>
-                                                <ClientNote note={client.note} />
-                                            </Table.Td>
-                                            <Table.Td ta="right">
-                                                <ModalClients
-                                                    currentClient={client}
-                                                    refresh={refreshFromModal}
-                                                    source="clients_page"
-                                                />
-                                            </Table.Td>
-                                        </Table.Tr>
-                                    ))}
-                                </Table.Tbody>
-                            </Table>
-                        </Table.ScrollContainer>
-                    )}
-                    {table.isPaginated && (
-                        // `data-qa="pagination"`: E2E kroky přes ni umí projít všechny
-                        // stránky, aby `[data-qa=client]` počítaly/hledaly nad celým
-                        // seznamem, ne jen nad aktuální stránkou (viz useDataTable)
-                        <div data-qa="pagination">
-                            <Pagination
-                                value={table.page}
-                                onChange={table.setPage}
-                                total={table.pageCount}
-                                getControlProps={paginationControlProps}
-                                className={styles.pagination}
-                            />
-                        </div>
-                    )}
-                </>
-            ) : (
-                <EmptyState
-                    icon={faUsers}
-                    title={`Žádní ${active ? "aktivní" : "neaktivní"} klienti`}
-                    description={
-                        active
-                            ? "Přidej prvního klienta a objeví se tady."
-                            : "Neaktivní jsou klienti, kteří sem byli přesunuti ze seznamu aktivních."
-                    }
-                />
-            )}
+            {clientsContent}
         </Container>
     )
 }
