@@ -130,7 +130,10 @@ const Clients: React.FC = () => {
                         description={`Hledání „${table.query}“ neodpovídá žádný klient.`}
                     />
                 ) : (
-                    <Table.ScrollContainer minWidth={560} className={styles.tableSection}>
+                    <Table.ScrollContainer
+                        minWidth={560}
+                        type="native"
+                        className={styles.tableSection}>
                         <Table className={tableFlat}>
                             <Table.Thead>
                                 <Table.Tr>

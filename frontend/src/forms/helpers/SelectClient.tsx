@@ -18,6 +18,8 @@ type SelectClientProps = {
     autoFocus?: boolean
     /** Povinné pole (vizuální, validace probíhá v nadřazeném formuláři). */
     required?: boolean
+    /** Popisek pole (předán Mantine Select jako label). */
+    label?: string
     /** Chybová zpráva pod polem (validaci povinného pole řídí nadřazený formulář). */
     error?: React.ReactNode
     /**
@@ -34,6 +36,7 @@ const SelectClient: React.FC<SelectClientProps> = ({
     options = [],
     autoFocus = true,
     required,
+    label,
     error,
     id = "client",
 }) => {
@@ -61,8 +64,11 @@ const SelectClient: React.FC<SelectClientProps> = ({
                         : (options.find((c) => c.id.toString() === val) ?? null)
                 onChangeCallback("client", found)
             }}
-            // select nemá viditelný label — přístupný název pro čtečky obrazovky
-            aria-label="Klient"
+            label={label}
+            // bez viditelného labelu (volající, který `label` nepředal) by select neměl
+            // přístupný název; `aria-label` má v accessible name computation přednost
+            // před přiřazeným <label>, proto ho nastav jen když viditelný label chybí
+            aria-label={label ? undefined : "Klient"}
             placeholder="Vyberte existujícího klienta…"
             searchable
             nothingFoundMessage={TEXTS.NO_RESULTS}

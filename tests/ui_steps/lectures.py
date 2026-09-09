@@ -338,7 +338,7 @@ def choose_attendancestate(found_attendance, new_attendancestate):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na dobehnuti refetchu (Heading ukazuje loading pri isFetching) - hledani lekci
+    # pockej na dobehnuti refetchu (Card.tsx drzi data-qa=loading po dobu fetche seznamu lekci) - hledani lekci
     # pak bezi nad ustalenym DOM
     helpers.wait_loading_ends(context.browser)
     # pockej na pridani lekce; refetch po mutaci muze kartu prekreslit uprostred prochazeni
@@ -356,7 +356,7 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na dobehnuti refetchu (Heading ukazuje loading pri isFetching) - hledani lekci
+    # pockej na dobehnuti refetchu (Card.tsx drzi data-qa=loading po dobu fetche seznamu lekci) - hledani lekci
     # pak bezi nad ustalenym DOM
     helpers.wait_loading_ends(context.browser)
     # pockej na update lekci; refetch po mutaci muze kartu prekreslit uprostred prochazeni

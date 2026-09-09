@@ -576,6 +576,15 @@ const FormLectures: React.FC<Props> = (props) => {
                 formElement?.reportValidity()
                 return
             }
+            // pojistka: `getAttendancesSubmit` by na neuplna data (typicky nulti pocet
+            // nastavenych stavu ucasti — `atState` je pak pro kazdeho clena `undefined`)
+            // jinak reagovala nezachycenym `throw` primo v event handleru — bez spinneru,
+            // chyby ci notifikace by tlacitko jen tise "nic neudelalo" (viz Alert vyse
+            // a jeho `error` na Selectu stavu ucasti pro viditelnou zpetnou vazbu)
+            if (!isAtStateWithoutEmpty(atState)) {
+                setTriedSubmit(true)
+                return
+            }
 
             const start = `${date} ${time}`
             const courseId = course.id
@@ -647,6 +656,7 @@ const FormLectures: React.FC<Props> = (props) => {
             prepaid,
             prepaidCnt,
             props,
+            atState,
             getAttendancesSubmit,
             updateLecture,
             createLecture,
@@ -670,6 +680,16 @@ const FormLectures: React.FC<Props> = (props) => {
     )
 
     const isLoading = coursesVisibleContext.isLoading || attendanceStatesContext.isLoading
+    // bez alespon jednoho stavu ucasti nema Select stavu co nabidnout (viz getAttendanceStateOptions)
+    // a formular nelze odeslat (viz isAtStateWithoutEmpty pojistka v onSubmit) — dej to najevo
+    // uz v UI, at uzivatel nevidi jen "nefunkcni" tlacitko Pridat.
+    // Tyka se jen PRIDANI: pri uprave existujici lekce ma kazdy clen uz dosazeny (a v DB
+    // pres `PROTECT` porad platny) stav z `props.lecture.attendances`, takze i pri prazdnem
+    // `attendancestates` (napr. jen selhany refetch) `isAtStateWithoutEmpty` projde.
+    const noAttendanceStates =
+        !isLoading &&
+        !isLecture(props.lecture) &&
+        attendanceStatesContext.attendancestates.length === 0
 
     return (
         <form onSubmit={onSubmit} data-qa="form_lecture">
@@ -693,6 +713,15 @@ const FormLectures: React.FC<Props> = (props) => {
                     />
                 ) : (
                     <>
+                        {noAttendanceStates && (
+                            <Alert
+                                color="red"
+                                mb="sm"
+                                className={styles.warningNotice}
+                                data-qa="form_lecture_no_attendancestates_alert">
+                                {TEXTS.WARNING_NO_ATTENDANCE_STATES}
+                            </Alert>
+                        )}
                         <div className={styles.sectionCard}>
                             <Title order={5} className={styles.sectionTitle}>
                                 Parametry lekce
@@ -832,6 +861,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
                                     <SelectCourse
                                         required
+                                        label="Kurz"
                                         value={course}
                                         onChangeCallback={onSelectChange}
                                         options={coursesVisibleContext.courses}
@@ -921,6 +951,11 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 required
                                                 withAsterisk
                                                 allowDeselect={false}
+                                                error={
+                                                    triedSubmit && atState[member.id] === undefined
+                                                        ? "Vyberte stav účasti"
+                                                        : undefined
+                                                }
                                                 data-qa="lecture_select_attendance_attendancestate"
                                             />
                                         </Grid.Col>
@@ -1036,7 +1071,7 @@ const FormLectures: React.FC<Props> = (props) => {
                     loading={isSubmit}
                     content={isLecture(props.lecture) ? "Uložit" : "Přidat"}
                     data-qa="button_submit_lecture"
-                    disabled={coursesVisibleContext.isLoading}
+                    disabled={coursesVisibleContext.isLoading || noAttendanceStates}
                 />
                 {isLecture(props.lecture) &&
                     !isClient(props.object) &&
@@ -1052,7 +1087,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     id="FormLectures_SubmitWithClientChanges"
                                     variant="light"
                                     color="gray"
-                                    disabled={coursesVisibleContext.isLoading}
+                                    disabled={coursesVisibleContext.isLoading || noAttendanceStates}
                                     content="Uložit + projevit změny v klientech"
                                 />
                             </span>

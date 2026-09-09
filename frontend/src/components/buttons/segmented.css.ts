@@ -10,15 +10,18 @@ import { vars } from "../../theme/tokens"
  * Vybraná půlka je **inkoustová, ne indigo** — indigo v aplikaci znamená „hlavní akce
  * a odkaz", a vedle tlačítka „Přidat klienta" si dvě indigo plochy konkurovaly o roli
  * hlavní akce. Filtr není akce, je to stav. Barvy se mezi motivy obracejí, takže vybraná
- * půlka je vždy ta kontrastnější: light #16233a s bílým textem = 15.72:1,
- * dark #e7ecf4 s textem #1a2230 = 13.46:1.
+ * půlka je vždy ta kontrastnější — poměr je mezi indikátorem (`vars.text.primary`) a textem
+ * vybrané položky (`vars.bg.page`, viz `segmentedLabel` níže), NE mezi krajními odstíny
+ * palety: light #16233a s textem #f4f7fb = 14.63:1, dark #e7ecf4 s textem #141a24 = 14.72:1.
  */
 export const segmentedRoot = style({
     /**
-     * Mantine dává popiskům `--sc-font-size: var(--mantine-font-size-sm)`, tedy 0,875 rem.
-     * V aplikaci nesmí být text menší než 1 rem, takže se přebíjí proměnná (ne `font-size`
-     * na popisku — to by o vítězi rozhodovalo pořadí pravidel v bundlu) a s ní se dorovná
-     * i odsazení, aby text neseděl na hraně.
+     * `theme.ts` má `fontSizes.sm` natvrdo na 1rem (viz komentář tam, „žádný textový obsah
+     * nesmí být menší než 1 rem"), takže `--sc-font-size: var(--mantine-font-size-sm)`
+     * (Mantine default) dnes už 1rem sám vrací a tenhle override je no-op. Zůstává jako
+     * pojistka pro případ, že by se `fontSizes.sm` v budoucnu znovu snížilo — přebíjí se
+     * proměnná, ne `font-size` na popisku (to by o vítězi rozhodovalo pořadí pravidel
+     * v bundlu), a s ní se dorovná i odsazení, aby text neseděl na hraně.
      */
     border: vars.borderShort.strong,
     backgroundColor: "transparent",

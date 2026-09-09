@@ -221,11 +221,9 @@ const FormGroups: React.FC<Props> = (props) => {
                                     />
                                 </div>
                                 <div className={styles.fieldBlock}>
-                                    <label htmlFor="course" className={styles.fieldLabel}>
-                                        Kurz
-                                    </label>
                                     <SelectCourse
                                         required
+                                        label="Kurz"
                                         value={form.values.course}
                                         onChangeCallback={(_name, val) => {
                                             form.setFieldValue("course", val ?? null)

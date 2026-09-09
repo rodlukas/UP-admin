@@ -97,9 +97,14 @@ const createCardRoute = (path: string, isClientPage: boolean) => {
         path,
         component: () => {
             const { id } = route.useParams()
+            // `key={id}`: TanStack Router mění jen `useParams()` a stejnou instanci `Card`
+            // (žádný `remountDeps`/`defaultRemountDeps` v konfiguraci routeru) při přechodu
+            // mezi kartami recykluje, takže bez tohoto klíče by veškerý interní stav (vybraná
+            // záložka, jednorázově zapnuté dotazy…) přetekl z předchozí karty na další —
+            // viz `Card.tsx`, kde na to spoléhá výchozí záložka „Lekce" i lazy-enable Analýzy.
             return (
                 <PrivateRoute>
-                    <Card id={Number(id)} isClientPage={isClientPage} />
+                    <Card key={id} id={Number(id)} isClientPage={isClientPage} />
                 </PrivateRoute>
             )
         },

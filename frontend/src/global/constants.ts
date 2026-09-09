@@ -28,6 +28,24 @@ export const RAIL_WIDTH_LABELS = "12rem"
  */
 export const RAIL_ICON_INSET = "1.5rem"
 
+/**
+ * Breakpoint, pod kterým se inkoustový pruh chová jako mobilní drawer (viz `Main.tsx`,
+ * `navbar.breakpoint`). JEDINÝ zdroj pravdy pro tuhle hranici — `Main.tsx` ho posílá
+ * přímo do `AppShell`u (typ `breakpoint` u Mantine přijímá i syrový CSS rozměr, ne jen
+ * klíč `theme.breakpoints`, viz `AppShell.types.d.ts`), `Main.css.ts` ho použije
+ * v `@media` pro `plane` a `Main.tsx`'s vlastní `useMediaQuery` z něj postaví JS dotaz.
+ *
+ * Dřív byly tyhle tři na sobě nezávislé (`"(max-width: 61.99em)"` v JS/CSS vs. klíč
+ * `"md"` = `62em` v AppShellu) a neshodovaly se: Mantine navíc počítá DVĚ různé mezní
+ * hodnoty podle stavu drawer (otevřený: přesně breakpoint, zavřený: breakpoint − 0.1px,
+ * viz `assign-navbar-variables`), takže žádná jedna ručně vypsaná JS konstanta nemohla
+ * sedět na obojí. Řešení není napodobit Mantine výpočet (interní detail, může se změnit
+ * mezi verzemi), ale sdílet TUTO hodnotu jako breakpoint přímo — pak se JS dotaz shoduje
+ * aspoň s "otevřeným" stavem Mantine přesně, a rozdíl proti "zavřenému" stavu je jen
+ * 0.1px (neprakticky malé okno, ne celý em rozdíl jako dřív).
+ */
+export const NAVBAR_BREAKPOINT = "62em"
+
 /** Texty notifikací. */
 export enum NOTIFY_TEXT {
     ERROR = "Chyba při provádění požadavku",
@@ -53,6 +71,7 @@ export enum TEXTS {
     WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS = "Ve skupině jsou neaktivní klienti – přidáním nové lekce se změní na aktivní.",
     WARNING_STALE_CLIENT = "Klient je aktivní, ale naposledy měl lekci před více než 60 dny. Zvažte přesunutí do neaktivních.",
     WARNING_STALE_GROUP = "Skupina je aktivní, ale naposledy měla lekci před více než 60 dny. Zvažte přesunutí do neaktivních.",
+    WARNING_NO_ATTENDANCE_STATES = "Nejsou nastaveny žádné stavy účasti — lekci nelze uložit. Přidejte alespoň jeden stav v Nastavení.",
 }
 
 /** Počet dní bez lekce, po kterých se aktivní klient/skupina považuje za „stale" a zobrazí se varování. */

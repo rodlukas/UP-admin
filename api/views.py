@@ -488,8 +488,9 @@ class LectureViewSet(viewsets.ModelViewSet):
         limit = self._parse_limit(request)
         if limit is None:
             return super().list(request, *args, **kwargs)
+        base = self.get_queryset()
         # slice až za `filter_queryset` — na už oříznutý queryset by další filtr spadl
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.filter_queryset(base)
         # `limit` dává smysl jen pro „pár nejbližších lekcí" (viz `_parse_limit`). Bez
         # SKUTEČNĚ uplatněného `ordering` by zůstalo výchozí sestupné řazení querysetu
         # a `[:limit]` by vrátil N NEJVZDÁLENĚJŠÍCH lekcí — přesný opak účelu parametru.
@@ -497,8 +498,15 @@ class LectureViewSet(viewsets.ModelViewSet):
         # v `request.query_params`: chybějící, prázdný (`?ordering=`) i neplatný
         # (`?ordering=neexistujici_pole`) parametr `OrderingFilter.get_ordering` stejně
         # vyhodnotí jako „žádné řazení" a `filter_queryset` pak sestupné řazení nezmění.
-        if not OrderingFilter().get_ordering(request, self.get_queryset(), self):
+        if not OrderingFilter().get_ordering(request, base, self):
             queryset = queryset.order_by("start")
+        # `Lecture.start` je nullable (prázdné pro předplacené lekce bez termínu). Na
+        # PostgreSQL řadí `ORDER BY start DESC` NULL hodnoty JAKO PRVNÍ, takže explicitní
+        # `?ordering=-start&limit=N` by bez tohoto filtru vrátil N lekcí bez termínu místo
+        # N nejnovějších — přesný opak toho, co `limit` slibuje. Vzestupné řazení (větev výše)
+        # NULL hodnoty řadí jako poslední, takže by touto chybou netrpělo, ale filtr platí
+        # pro obě větve, aby `limit` nikdy nevracel dateless lekce jako „nejbližší"/„nejnovější".
+        queryset = queryset.filter(start__isnull=False)
         return Response(self.get_serializer(queryset[:limit], many=True).data)
 
     @extend_schema(summary="Detail lekce", description="Vrátí konkrétní lekci.")

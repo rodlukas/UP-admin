@@ -50,6 +50,18 @@ export function useDataTable<T>({ rows, searchIn, columns, initialSortKey }: Opt
     })
     const [page, setPage] = React.useState(1)
 
+    // Přepnutí aktivní/neaktivní (`ActiveSwitcher`) posílá úplně jinou `rows` — hledaný
+    // výraz i stránka z předchozího seznamu by jinak přežily na seznam, pro který nikdy
+    // nebyly napsané (a při shodě nuly by tabulka ukázala "Nic nenalezeno" nad neprázdným
+    // seznamem). Efekt cílí na REFERENCI `rows`, ne na její obsah/délku: React Query
+    // (`structuralSharing`) vrací stejnou referenci pro hluboce shodná data, takže obyčejný
+    // background refetch beze změny obsahu tenhle efekt nespustí a rozepsané hledání
+    // nezmizí jen kvůli refetchi na pozadí.
+    React.useEffect(() => {
+        setQuery("")
+        setPage(1)
+    }, [rows])
+
     const { key: sortKey, direction: sortDirection } = sort
 
     const filtered = React.useMemo(() => {

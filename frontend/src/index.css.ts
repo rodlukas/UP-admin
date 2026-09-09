@@ -25,6 +25,19 @@ globalStyle(".mantine-Badge-root", {
     },
 })
 
+/**
+ * Stejný důvod jako u odznaků výše — `Kbd` má vlastní škálu písma (`--kbd-fz-sm`,
+ * defaultně 0.75rem), nezávislou na `theme.fontSizes`, takže bez tohodle by ⌘K chipy
+ * v pruhu (Menu.tsx) i nápovědy v paletě (AppSpotlight.tsx) byly jediný text v appce pod
+ * 1 rem. `size` prop u `Kbd` tu nikde není použitý, takže na rozdíl od `Badge` (viz výš)
+ * to nikde nepřebíjí inline styl.
+ */
+globalStyle(".mantine-Kbd-root", {
+    vars: {
+        "--kbd-fz": "1rem",
+    },
+})
+
 globalStyle(".mantine-Badge-label", {
     paddingTop: "0.1rem",
     paddingBottom: "0.1rem",

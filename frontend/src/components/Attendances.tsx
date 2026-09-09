@@ -22,7 +22,17 @@ type AttendanceProps = {
 
 /** Komponenta zobrazující jednotlivou účast klienta na dané lekci. */
 const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false, source }) => {
-    const label = `${attendance.number}. lekce`
+    // `attendance.number` může být místo čísla i varovná VĚTA (chybějící výchozí stav
+    // účasti, viz `LectureNumberOrWarning`) — v tom případě se zobrazí beze změny, bez
+    // tečky a bez „lekce" navíc (jinak by výsledek byl „⚠ … nastavení. lekce").
+    // `String(...)`: `aria-label` musí být string, `attendance.number` (mimo `isOrdinal`
+    // větev) je ale pořád typovaný jako union — `isOrdinal` je samostatná proměnná, ne
+    // type guard přímo na `attendance.number`, takže TS ho tady nezúží automaticky.
+    const isOrdinal = typeof attendance.number === "number"
+    const label =
+        attendance.number === undefined
+            ? undefined
+            : String(isOrdinal ? `${attendance.number}. lekce` : attendance.number)
     return (
         <li data-qa="lecture_attendance">
             <div className={styles.attendanceMain}>
@@ -53,7 +63,7 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
                                 tooltipu musí být fokusovatelný, jinak je obsah jen pro myš
                                 (WAI-ARIA tooltip pattern) */}
                             <span className={styles.attendanceNumber} tabIndex={0} aria-label={label}>
-                                {attendance.number}.
+                                {isOrdinal ? `${attendance.number}.` : attendance.number}
                             </span>
                         </Tooltip>
                     )}

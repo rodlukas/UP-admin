@@ -275,11 +275,18 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
 
     // teprve tady je jasné, že `id` odpovídá skutečnému, úspěšně načtenému záznamu —
     // dokud dotaz běží nebo skončí chybou (smazaný/neexistující klient/skupina), se
-    // záznam do „naposledy otevřených" nezapisuje (viz useRememberRecentRecord)
+    // záznam do „naposledy otevřených" nezapisuje (viz useRememberRecentRecord).
+    // Nadto musí být záznam AKTIVNÍ: kontexty, ze kterých ⌘K paleta (AppSpotlight)
+    // záznamy vyhledává i následně maže ty nevyřešitelné, obsahují jen aktivní
+    // klienty/skupiny — bez tohoto filtru by karta neaktivního klienta zapsala záznam,
+    // který paleta nikdy nevyhledá, jen vytlačí z 5místné historie použitelné aktivní
+    // záznamy a při nejbližší prunovací příležitosti ho sama zase smaže.
+    const isActiveObject = isClientPageValue ? clientQuery.data?.active : groupQuery.data?.active
     useRememberRecentRecord(
         isClientPageValue ? "client" : "group",
         id,
-        isClientPageValue ? clientQuery.isSuccess : groupQuery.isSuccess,
+        (isClientPageValue ? clientQuery.isSuccess : groupQuery.isSuccess) &&
+            isActiveObject === true,
     )
     const groupsOfClientQuery = useGroupsFromClient(isClientPageValue ? id : undefined)
     const allGroupsEverQuery = useAllGroupsEverFromClient(isClientPageValue ? id : undefined)
@@ -355,6 +362,16 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         (isClientPageValue ? clientQueriesLoading : groupQueriesLoading) ||
         !!attendanceStatesContext.isLoading
 
+    // Background refetch seznamu lekcí (napr. po ulozeni/smazani lekce z modalu) — na rozdil
+    // od `isLoading` (jen prvotni nacteni, kryte skeletonem cele karty) toto E2E krokum
+    // (`wait_loading_ends` v tests/ui_steps/lectures.py) drzi `data-qa=loading` po dobu, kdy
+    // uz je stara data v DOM porad videt, ale prekresluji se na nova. Zamerne per-karta,
+    // ne globalni (`TopProgressBar` a jeho `data-qa=global-loading`) — sdileny marker by
+    // kroky cekajici na tuhle konkretni lekci nechal cekat i na nesouvisejici dotazy jinde.
+    const isLecturesFetching =
+        !isLoading &&
+        (isClientPageValue ? lecturesFromClientQuery.isFetching : lecturesFromGroupQuery.isFetching)
+
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
             if (data?.isDeleted) {
@@ -413,9 +430,11 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                 data-qa="lecture"
                 {...(lecture.canceled && { "data-qa-canceled": "true" })}>
                 <div className={lectureStyles.lectureHeading}>
-                    {/* order/size odděleně: h2 „Lekce" → h3 název kurzu → h4 datum lekce,
-                        vzhled zůstává h4 */}
-                    <Title order={4} className={lectureStyles.lectureTitle}>
+                    {/* order/size odděleně: h1 jméno klienta/skupiny (Card.tsx výše) → h2
+                        název kurzu → h3 datum lekce; „Lekce" (dřívější h2) je od záložek
+                        (Tabs.Tab) místo nadpisu, takže v hierarchii chybí — zbylé úrovně
+                        proto o jednu posunuté, vzhled zůstává h4 */}
+                    <Title order={3} className={lectureStyles.lectureTitle}>
                         <Tooltip label={courseDuration(lecture.duration)}>
                             <span data-qa="lecture_start">
                                 {isPrepaidLecture
@@ -545,6 +564,9 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                         )}
 
                         <Tabs.Panel value="lekce" pt="md">
+                            {isLecturesFetching && (
+                                <span data-qa="loading" aria-hidden="true" hidden />
+                            )}
                             <div className={styles.lectureColumns}>
                                 {lectures.map((courseLectures) => (
                                     <div
@@ -563,7 +585,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                                 {/* `.text` tohoto prvku cte E2E krok — tecka nesmi
                                             pridat zadny text, proto prazdny span */}
                                                 <Title
-                                                    order={3}
+                                                    order={2}
                                                     size="h4"
                                                     className={mb0}
                                                     data-qa="card_course_name">

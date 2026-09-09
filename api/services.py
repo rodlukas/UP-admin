@@ -30,7 +30,32 @@ FIO_TIMEOUT_SECONDS = (5, 15)
 # to, jestli je nektere z jeho vlaken zaseknute v synchronnim `requests.get`. Zaseknuty
 # pozadavek by tak nezabil ani worker, jen by natrvalo obsadil jedno z jeho vlaken (a pri
 # par soubeznych volanich klidne cely worker, tedy polovinu kapacity aplikace).
-FIO_WALL_CLOCK_TIMEOUT_SECONDS = 20
+#
+# MUSI byt vyrazne vetsi nez soucet `FIO_TIMEOUT_SECONDS` (5 + 15 = 20): connect a read
+# timeout se neuplatnuji soucasne, ale za sebou (nejdriv se ceka na spojeni, pak na kazdy
+# dalsi byte), takze legitimni - jen pomalejsi - odpoved muze soucet snadno presahnout
+# (TLS handshake + postupne streamovani telu). Kdyby byl wall-clock strop roven souctu
+# (bez rezervy), takova USPESNA odpoved by byla nahodile hlasena jako "API banky
+# nefunguje", i kdyz Fio vubec nic nezavinilo.
+FIO_WALL_CLOCK_TIMEOUT_SECONDS = 30
+
+# Sdileny, OHRANICENY pool vlaken pro volani Fio API - modulova uroven, ne per-request.
+#
+# Kdyby se `ThreadPoolExecutor` vytvarel znovu pro kazdy pozadavek (jak tomu bylo drive),
+# kazde zaseknute volani (viz komentar u `FIO_TIMEOUT_SECONDS` - pomalu odkapavajici
+# spojeni) by zalozilo VLASTNI, NIKDY neuzavrene vlakno drzici otevreny TLS socket: pool
+# threads v `concurrent.futures` nejsou daemon vlakna a `shutdown(wait=False)` je
+# neodstrani z `_threads_queues`, takze by se hromadila bez horni meze a pri ukonceni
+# procesu (atexit hook `_python_exit`) by se na jejich dokonceni cekalo VSECHNA najednou -
+# coz by prodlouzilo/zablokovalo i graceful shutdown workeru pri `--max-requests`
+# recyklaci nebo deploji az do SIGKILLu.
+#
+# Sdileny pool s `max_workers=2` dela z poctu soubezne zaseknutych vlaken/soketu
+# OHRANICENY, deklarovany zdroj: nejvyse 2 zaseknuta volani najednou, dalsi pozadavky na
+# banku cekaji ve fronte executoru (a jakmile vyprsi jejich vlastni
+# `FIO_WALL_CLOCK_TIMEOUT_SECONDS`, vrati chybu, aniz by musely cekat na uvolneni slotu).
+# Pool se pro tento use-case bezne neuzaviraji - zije po dobu zivota procesu.
+_bank_executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
 
 
 class Bank:
@@ -84,24 +109,19 @@ class Bank:
         """
         Provede požadavek na Fio API a zpracuje příchozí data nebo chybu.
 
-        `requests.get` se pouští v samostatném vlákně (`ThreadPoolExecutor`), na které
-        vlákno gunicornu obsluhující tenhle HTTP požadavek čeká nejvýš
-        `FIO_WALL_CLOCK_TIMEOUT_SECONDS` (`future.result(timeout=...)`) - déle ne, i kdyby
-        samotné `requests.get` ještě běželo dál. Bez tohohle by `FIO_TIMEOUT_SECONDS` u
-        pomalu odkapávajícího spojení vůbec nezasáhlo (viz komentář u konstanty) a vlákno
-        by zůstalo obsazené donekonečna.
+        `requests.get` se pouští ve vlákně sdíleného modulového `_bank_executor` (viz
+        komentář u něj), na které vlákno gunicornu obsluhující tenhle HTTP požadavek čeká
+        nejvýš `FIO_WALL_CLOCK_TIMEOUT_SECONDS` (`future.result(timeout=...)`) - déle ne,
+        i kdyby samotné `requests.get` ještě běželo dál. Bez tohohle by
+        `FIO_TIMEOUT_SECONDS` u pomalu odkapávajícího spojení vůbec nezasáhlo (viz
+        komentář u konstanty) a vlákno by zůstalo obsazené donekonečna.
 
-        `executor.shutdown(wait=False)` v `finally` schválně nečeká na dokončení vlákna na
-        pozadí - kdyby čekal, degradoval by celý mechanismus zpátky na blokující čekání.
-        Cena: dokud se zaseknuté volání na pozadí nedokončí (nebo mu Fio spojení samo
-        nespadne), zůstává otevřené - `concurrent.futures` ho navíc při ukončení procesu
-        (atexit) dojde, takže by o tolik prodloužilo i graceful shutdown workeru při
-        deploji. Gunicornovo `--graceful-timeout 30` ho pak i tak ukončí SIGKILLem, takže
-        jde nanejvýš o dodatečné zpoždění restartu, ne o trvalé zablokování.
+        Zaseknuté volání tím pádem natrvalo obsadí jeden ze sdílených, OHRANIČENÝCH slotů
+        `_bank_executor` (ne vlastní, nikdy neuvolněné vlákno navíc) - `future.cancel()` by
+        tu nepomohl, `ThreadPoolExecutor` neumí zrušit už běžící task.
         """
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+        future = _bank_executor.submit(requests.get, url_secret, timeout=FIO_TIMEOUT_SECONDS)
         try:
-            future = executor.submit(requests.get, url_secret, timeout=FIO_TIMEOUT_SECONDS)
             input_data = future.result(timeout=FIO_WALL_CLOCK_TIMEOUT_SECONDS)
             input_data.raise_for_status()
         except (concurrent.futures.TimeoutError, requests.exceptions.Timeout):
@@ -111,8 +131,6 @@ class Bank:
             return self.process_error(status_code)
         else:
             return self.process_data(input_data)
-        finally:
-            executor.shutdown(wait=False)
 
     def process_data(self, req: requests.Response) -> Tuple[dict, int]:
         """

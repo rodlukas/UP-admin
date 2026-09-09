@@ -128,7 +128,10 @@ const Groups: React.FC = () => {
                         description={`Hledání „${table.query}“ neodpovídá žádná skupina.`}
                     />
                 ) : (
-                    <Table.ScrollContainer minWidth={400} className={styles.tableSection}>
+                    <Table.ScrollContainer
+                        minWidth={400}
+                        type="native"
+                        className={styles.tableSection}>
                         <Table className={tableFlat}>
                             <Table.Thead>
                                 <Table.Tr>

@@ -178,6 +178,7 @@ const Settings: React.FC = () => {
                                 {attendanceStatesContext.attendancestates.length > 0 && (
                                     <Table.ScrollContainer
                                         minWidth={300}
+                                        type="native"
                                         className={styles.tableSection}>
                                         <Table className={tableFlat}>
                                             <Table.Thead>
@@ -308,6 +309,7 @@ const Settings: React.FC = () => {
                                 {courses.length > 0 && (
                                     <Table.ScrollContainer
                                         minWidth={300}
+                                        type="native"
                                         className={styles.tableSection}>
                                         <Table className={tableFlat}>
                                             <Table.Thead>

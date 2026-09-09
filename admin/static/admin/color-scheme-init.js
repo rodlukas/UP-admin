@@ -22,7 +22,11 @@
         // v localStorage, nebo chybejici hodnota) musi spadnout na vychozi "light"
         var KNOWN_SCHEMES = ["light", "dark", "auto"];
         var stored = window.localStorage.getItem("mantine-color-scheme");
-        var scheme = KNOWN_SCHEMES.includes(stored) ? stored : "light";
+        // `indexOf`, ne `Array.prototype.includes` (ES2016) — soubor musi zustat ES5,
+        // viz komentar v hlavicce; `includes` by na starsim enginu vyhodil TypeError,
+        // ktery by zachytil catch nize jako "ticha degradace" a cely tenhle FOUC-fix
+        // by se tak nenapadne prestal spoustet.
+        var scheme = KNOWN_SCHEMES.indexOf(stored) !== -1 ? stored : "light";
 
         // "auto" = podle aktualniho systemoveho schematu
         var resolved = scheme;

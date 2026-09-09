@@ -255,6 +255,35 @@ test("unmount flushes an edited value that never received blur", async () => {
     expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 7 })
 })
 
+// `min={0}` na inputu je jen napoveda pro spinner sipky - bez obalujiciho <form>
+// (commit je na blur, ne na submit) nativni HTML constraint validace nikdy neprobehne,
+// takze zaporna/neplatna hodnota by jinak dosla az na server jako PATCH
+test("a negative value is clamped to 0 before the PATCH", async () => {
+    patchMock.mockResolvedValue(createMembership(1, 0))
+    await renderPrepaidCounters([createMembership(1, 3)])
+    const input = screen.getByRole("spinbutton")
+
+    fireEvent.change(input, { target: { value: "-3" } })
+    fireEvent.blur(input)
+
+    await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
+    expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 0 })
+    expect(input).toHaveValue(0)
+})
+
+test("a non-finite value (Infinity) is clamped to 0 before the PATCH", async () => {
+    patchMock.mockResolvedValue(createMembership(1, 0))
+    await renderPrepaidCounters([createMembership(1, 3)])
+    const input = screen.getByRole("spinbutton")
+
+    fireEvent.change(input, { target: { value: "1e999" } })
+    fireEvent.blur(input)
+
+    await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
+    expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 0 })
+    expect(input).toHaveValue(0)
+})
+
 // Zavreni tabu blur ani unmount nezaruci - prohlizec musi varovat pres beforeunload
 test("beforeunload is prevented only while an edit is unsaved", async () => {
     patchMock.mockResolvedValue(createMembership(1, 7))

@@ -55,15 +55,39 @@ export const surfaceFloating = style({
 })
 
 /**
+ * Overflow chování `Table.ScrollContainer`u, který skutečně dovolí sticky hlavičku
+ * (`${tableFlat} thead th` níže) lepit se při rolování STRÁNKY, ne jen sebe sama.
+ *
+ * `overflowY: "clip"`, ne `"visible"` (výchozí) — podle CSS Overflow 3 se computed
+ * hodnota `overflow-y: visible` vedle `overflow-x: auto` mění na `auto` (obě osy musí
+ * mít shodně buď `visible`, nebo obě něco jiného), takže bez tohohle by tenhle blok byl
+ * SVÝM VLASTNÍM scroll kontejnerem s výškou rovnou obsahu — a `position: sticky` uvnitř
+ * by neměla kam "ujet". `clip` je z výjimky té samé spec-rule (na rozdíl od
+ * `auto`/`scroll`/`hidden` nevynucuje konverzi druhé osy) — stejný trik jako
+ * `Diary.css.ts` u sloupce dne, jen aplikovaný na druhou osu.
+ *
+ * Musí jít ruku v ruce s `Table.ScrollContainer type="native"` na volajících stránkách:
+ * defaultní `type="scrollarea"` obaluje obsah Mantine `ScrollArea`, jejíž root má
+ * `overflow: hidden` napevno v CSS bundlu (nezávisle na týhle třídě) — a byl by to
+ * SKUTEČNÝ blokující scroll kontejner (na rozdíl od `clip`), takže `position: sticky`
+ * uvnitř by se lepilo k NĚMU, ne ke stránce.
+ */
+export const tableScrollOverflow = style({
+    overflowX: "auto",
+    overflowY: "clip",
+})
+
+/**
  * Sekce s tabulkou/seznamem pod nadpisem. Jediný zdroj pravdy pro stránky Klienti,
- * Skupiny a Nastavení. Ohraničený panel jako `surfaceCard` + vodorovné rolování pro
- * úzká okna.
+ * Skupiny a Nastavení. Ohraničený panel jako `surfaceCard` + `tableScrollOverflow` výše.
+ * Bank a Statistiky mají tabulku bez obalujícího panelu — použij tam samotný
+ * `tableScrollOverflow` (spolu s `Table.ScrollContainer type="native"`), ne tuhle třídu.
  */
 export const tableSection = style([
     surfacePanel,
+    tableScrollOverflow,
     {
         marginTop: "0.25rem",
-        overflowX: "auto",
     },
 ])
 

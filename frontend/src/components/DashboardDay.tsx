@@ -8,7 +8,6 @@ import { useLecturesFromDay } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
-import { USER_CELEBRATION } from "../global/constants"
 import {
     isToday,
     isUserCelebrating,
@@ -158,13 +157,12 @@ const DashboardDay: React.FC<Props> = (props) => {
                 <Title
                     order={2}
                     size="h4"
-                    className={classNames(
-                        isUserCelebratingResult === USER_CELEBRATION.NOTHING
-                            ? styles.celebrationNone
-                            : "celebration",
-                        mb0,
-                        inlineBlockNowrap,
-                    )}>
+                    // `celebrationNone` (flex: 1; min-width: 0) platí bez ohledu na oslavu —
+                    // je to layout hlavičky dne, ne nic specifického pro "bez oslavy" (viz
+                    // DashboardDay.css.ts). Dřívější `"celebration"` byl literál bez
+                    // odpovídající třídy v bundlu (Celebration.css.ts exportuje jen hashované
+                    // jméno), takže ve svátečních dnech titulek ztrácel flex a přetékal.
+                    className={classNames(styles.celebrationNone, mb0, inlineBlockNowrap)}>
                     <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
                 </Title>
                 <ModalLecturesWizard

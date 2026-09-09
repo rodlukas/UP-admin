@@ -10,15 +10,16 @@ import ColorSchemeSync from "./components/ColorSchemeSync"
 import EnvBadge, { hasEnvBadge } from "./components/EnvBadge"
 import Menu from "./components/Menu"
 import { PageSkeleton } from "./components/Skeletons"
-import { RAIL_WIDTH_LABELS } from "./global/constants"
+import { NAVBAR_BREAKPOINT, RAIL_WIDTH_LABELS } from "./global/constants"
 import { getEnvName } from "./global/funcEnvironments"
 import * as styles from "./Main.css"
 
 /**
- * Musí odpovídat `navbar.breakpoint` níže (Mantine `md` = 62em). Pod ním se pruh
- * chová jako drawer a jediné, co z chrome zbyde, je slim hlavička s burgerem.
+ * Pod `NAVBAR_BREAKPOINT` se pruh chová jako drawer a jediné, co z chrome zbyde, je slim
+ * hlavička s burgerem — viz komentář u `NAVBAR_BREAKPOINT`, proč je to sdílená konstanta,
+ * ne ručně vypsaná hodnota.
  */
-const MOBILE_QUERY = "(max-width: 61.99em)"
+const MOBILE_QUERY = `(max-width: ${NAVBAR_BREAKPOINT})`
 
 /** Hlavní kostra aplikace. */
 const Main: React.FC = () => {
@@ -70,7 +71,7 @@ const Main: React.FC = () => {
                 header={{ height: styles.MOBILE_HEADER_HEIGHT, collapsed: !isMobile }}
                 navbar={{
                     width: RAIL_WIDTH_LABELS,
-                    breakpoint: "md",
+                    breakpoint: NAVBAR_BREAKPOINT,
                     collapsed: { mobile: !isMenuOpened },
                 }}>
                 {/* `collapsed` na AppShell.Header/Navbar jen posouvá obsah transformem

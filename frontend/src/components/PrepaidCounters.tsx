@@ -157,7 +157,21 @@ const PrepaidCounters: React.FC<Props> = (props) => {
     const onBlur = React.useCallback(
         (e: React.FocusEvent<HTMLInputElement>): void => {
             const target = e.currentTarget
-            commit(Number(target.dataset.id), Number(target.value))
+            const id = Number(target.dataset.id)
+            const rawValue = Number(target.value)
+            // `min={0}` na inputu je jen napoveda pro spinner šipky — bez obalujícího <form>
+            // (commit je na blur, ne na submit) nativní HTML constraint validace nikdy
+            // neproběhne, takže záporná nebo neplatná (Infinity/NaN, to druhé z `1e999`
+            // přes JSON.stringify jako `null`) hodnota by jinak došla až na server jako
+            // PATCH a skončila 400 (`prepaid_cnt` je `PositiveIntegerField`) — a kvůli
+            // dirty-tracking výše by tahle neplatná hodnota zůstala natrvalo zaseknutá
+            // v UI, protože žádný refetch by ji už nepřepsal. Ořízni na platnou hodnotu
+            // hned tady, ať uživatel vidí opravenou hodnotu místo červené notifikace.
+            const value = Number.isFinite(rawValue) ? Math.max(0, Math.round(rawValue)) : 0
+            if (value !== rawValue) {
+                setPrepaidCnts((prev) => ({ ...prev, [id]: value }))
+            }
+            commit(id, value)
         },
         [commit],
     )
@@ -206,7 +220,11 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                 {props.memberships.map((membership) => (
                     <Grid.Col span={{ base: 12, sm: 9, md: 3, lg: 3, xl: 2 }} key={membership.id}>
                         <div className={styles.memberCard}>
-                            <Title order={5} className={styles.memberHeading}>
+                            {/* order/size odděleně (viz `memberHeading`, který si font-size
+                                řídí sám) — sémanticky h2: PrepaidCounters se používá jen
+                                v záložce „Předplacené lekce" karty skupiny, přímo pod h1
+                                jménem skupiny (žádná mezilehlá úroveň mezi nimi není) */}
+                            <Title order={2} className={styles.memberHeading}>
                                 <ClientName client={membership.client} link />{" "}
                                 {props.isGroupActive && !membership.client.active && (
                                     <InfoTooltip

@@ -154,11 +154,9 @@ const FormApplications: React.FC<Props> = (props) => {
                             </Title>
                             <div className={baseStyles.fieldStack}>
                                 <div className={baseStyles.fieldBlock}>
-                                    <label htmlFor="client" className={baseStyles.fieldLabel}>
-                                        Klient
-                                    </label>
                                     <SelectClient
                                         required
+                                        label="Klient"
                                         autoFocus={false}
                                         value={form.values.client}
                                         options={clientsData}
@@ -180,11 +178,9 @@ const FormApplications: React.FC<Props> = (props) => {
                                     />
                                 </div>
                                 <div className={baseStyles.fieldBlock}>
-                                    <label htmlFor="course" className={baseStyles.fieldLabel}>
-                                        Kurz
-                                    </label>
                                     <SelectCourse
                                         required
+                                        label="Kurz"
                                         value={form.values.course}
                                         onChangeCallback={onSelectChange}
                                         options={coursesVisibleContext.courses}

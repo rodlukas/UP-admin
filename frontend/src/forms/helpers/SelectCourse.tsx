@@ -75,8 +75,10 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
                 onChangeCallback("course", found)
             }}
             label={label}
-            // bez viditelného labelu (většina formulářů) by select neměl přístupný název
-            aria-label={label ?? "Kurz"}
+            // `aria-label` má v accessible name computation přednost před přiřazeným
+            // <label> — nastav ho proto jen když viditelný label chybí (jinak zbytečně
+            // duplicitní, ale hlavně matoucí, kdyby se od sebe časem obsahově rozešly)
+            aria-label={label ? undefined : "Kurz"}
             placeholder="Vyberte kurz…"
             searchable
             nothingFoundMessage={TEXTS.NO_RESULTS}

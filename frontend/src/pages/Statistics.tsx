@@ -37,7 +37,7 @@ import {
     SkeletonShell,
     StatCardsSkeleton,
 } from "../components/Skeletons"
-import { tableFlat } from "../global/surfaces.css"
+import { tableFlat, tableScrollOverflow } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 import { StatisticsType } from "../types/models"
 
@@ -590,7 +590,7 @@ function TopRankingSection<T extends { id: number; lecture_count: number }>({
     return (
         <ChartSection title={title}>
             {items.length > 0 ? (
-                <Table.ScrollContainer minWidth={360}>
+                <Table.ScrollContainer minWidth={360} type="native" className={tableScrollOverflow}>
                     <Table className={tableFlat} mb={0}>
                         <Table.Thead>
                             <Table.Tr className={styles.rankingDivider}>

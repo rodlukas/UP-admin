@@ -2,10 +2,42 @@
 Filtry pro pokročilé filtrování ve views.
 """
 
+from django import forms
 from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
 
 from admin.models import Lecture, Group
+
+
+class StrictBooleanField(forms.Field):
+    """
+    Booleovské pole, které na rozdíl od výchozí `BooleanWidget`/`NullBooleanField` (co
+    používá `filters.BooleanFilter`) neznámý token NEPŘEVÁDÍ tiše na `None` (tj. „bez
+    filtru"). `BooleanWidget.value_from_datadict` mapuje jen `1/0/true/false`
+    (case-insensitive) a cokoliv jiného (`no`, `ano`, prázdný řetězec z rozbitého klienta…)
+    vrátí `None`, což `Filter.filter` bere jako prázdnou hodnotu a filtr beze stopy
+    přeskočí — endpoint pak vrátí 200 i s daty, která měl filtr vyloučit. Neplatná hodnota
+    tu naopak skončí chybou 400, stejná zásada jako u parametru `limit` (`views.py`).
+    """
+
+    widget = forms.TextInput
+
+    TRUE_VALUES = {"1", "true"}
+    FALSE_VALUES = {"0", "false"}
+
+    def to_python(self, value: str | None) -> bool | None:
+        if value in self.empty_values:
+            return None
+        lowered = str(value).strip().lower()
+        if lowered in self.TRUE_VALUES:
+            return True
+        if lowered in self.FALSE_VALUES:
+            return False
+        raise forms.ValidationError("Musí být „true“ nebo „false“.", code="invalid")
+
+
+class StrictBooleanFilter(filters.Filter):
+    field_class = StrictBooleanField
 
 
 class LectureFilter(filters.FilterSet):
@@ -23,7 +55,7 @@ class LectureFilter(filters.FilterSet):
 
     date = filters.DateFilter(field_name="start__date")
     dateFrom = filters.DateFilter(field_name="start__date", lookup_expr="gte")
-    canceled = filters.BooleanFilter(field_name="canceled")
+    canceled = StrictBooleanFilter(field_name="canceled")
     client = filters.NumberFilter(field_name="attendances__client", method="filter_client")
     includeGroup = filters.BooleanFilter(method="filter_include_group")
 

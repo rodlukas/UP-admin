@@ -13,7 +13,7 @@ import * as React from "react"
 import { useBank } from "../api/hooks"
 import { BANKING_URL } from "../global/constants"
 import { isToday, prettyDateWithDayYearIfDiff } from "../global/funcDateTime"
-import { tableFlat } from "../global/surfaces.css"
+import { tableFlat, tableScrollOverflow } from "../global/surfaces.css"
 import { bold, iconDanger, inlineBlockNowrap, nowrap } from "../global/utility.css"
 import { prettyAmount } from "../global/utils"
 import { BankType, BankSuccessType, BankErrorType } from "../types/models"
@@ -53,7 +53,7 @@ const TableInfo: React.FC<TableInfoProps> = ({ text, colSpan }) => (
 
 /** Komponenta zobrazující přehled transakcí z banky. */
 const Bank: React.FC = () => {
-    const { data: bankData, isLoading, refetch, isFetching } = useBank()
+    const { data: bankData, dataUpdatedAt, isLoading, refetch, isFetching } = useBank()
     // Na úzkých displejích (telefon) se skryje sloupec „Zpráva pro příjemce", aby zbyla
     // šířka na „Suma" — tu je bez horizontálního scrollu jinak vidět jen zpola. Stejný
     // princip jako skrývání vedlejších sloupců v tabulce klientů.
@@ -66,7 +66,12 @@ const Bank: React.FC = () => {
     const timeoutIdRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
     React.useEffect(() => {
-        // po zadanem poctu sekund povol tlacitko refresh
+        // po zadanem poctu sekund povol tlacitko refresh.
+        // Zavislost je zamerne `dataUpdatedAt` (timestamp posledniho uspesneho fetche/refetche
+        // z react-query), NE `bankData` — vychozi `structuralSharing` u hluboce shodnych dat
+        // (typicky opakovana chybova odpoved s konstantnim `error_info`, viz `useBankQuery.ts`)
+        // vraci PREDCHOZI referenci, takze efekt kliknuty na `bankData` by se po takovem
+        // refetchi vubec nespustil a tlacitko by zustalo `disabled` natrvalo.
         timeoutIdRef.current = globalThis.setTimeout(
             () => setIsRefreshDisabled(false),
             REFRESH_TIMEOUT * 1000,
@@ -76,7 +81,7 @@ const Bank: React.FC = () => {
                 globalThis.clearTimeout(timeoutIdRef.current)
             }
         }
-    }, [bankData])
+    }, [dataUpdatedAt])
 
     const onClick = React.useCallback((): void => {
         setIsRefreshDisabled(true)
@@ -171,7 +176,10 @@ const Bank: React.FC = () => {
     const renderMainContent = (): React.ReactNode => {
         if (isBankSuccess(bankData)) {
             return (
-                <Table.ScrollContainer minWidth={isNarrow ? 280 : 400}>
+                <Table.ScrollContainer
+                    minWidth={isNarrow ? 280 : 400}
+                    type="native"
+                    className={tableScrollOverflow}>
                     <Table className={tableFlat}>
                         <Table.Thead>
                             <Table.Tr>

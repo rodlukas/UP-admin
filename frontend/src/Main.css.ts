@@ -1,6 +1,6 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
-import { RAIL_ICON_INSET } from "./global/constants"
+import { NAVBAR_BREAKPOINT, RAIL_ICON_INSET } from "./global/constants"
 import { vars } from "./theme/tokens"
 
 /**
@@ -26,7 +26,7 @@ export const plane = style({
          * na plochu dopočítal z výšky hlavičky, takže bez tohohle by obsah (nadpis stránky)
          * mizel pod hlavičkou. Na mobilu proto k odsazení připočítáme výšku hlavičky.
          */
-        "(max-width: 61.99em)": {
+        [`(max-width: ${NAVBAR_BREAKPOINT})`]: {
             paddingTop: `calc(${MOBILE_HEADER_HEIGHT} + 0.5rem)`,
         },
     },
@@ -45,22 +45,6 @@ export const shellHeader = style({
 /** Označení prostředí ve slim hlavičce sedí u pravé hrany, mimo burger a značku. */
 export const headerEnv = style({
     marginInlineStart: "auto",
-})
-
-/**
- * Odznak označení prostředí (`EnvBadge`) je vědomá výjimka z pravidla „žádný text
- * pod 1rem" (viz `--badge-fz` v index.css.ts, kde má jinak KAŽDÝ odznak v aplikaci
- * natvrdo 1rem): je to meta-informace pro vývojáře/testera o tom, na jaké verzi běží
- * appka, ne obsah, který čte běžný uživatel při práci s klienty/lekcemi. V úzkém
- * pruhu (`RAIL_WIDTH_LABELS`, 12rem) navíc i po zkrácení popisku („TEST", ne
- * "Testing" — viz EnvBadge.tsx) působilo 1rem písmo v tak stísněném místě nepřiměřeně
- * velké. Cílí se přes potomka, ne globální proměnnou — ta zůstává 1rem pro všechny
- * ostatní odznaky v appce beze změny.
- */
-globalStyle(`${headerEnv} .mantine-Badge-root`, {
-    vars: {
-        "--badge-fz": "0.8rem",
-    },
 })
 
 /**
@@ -164,13 +148,6 @@ export const railEnv = style({
     lineHeight: 1.3,
     color: "rgb(233 238 247 / 0.5)",
     fontSize: "1rem",
-})
-
-/** Stejná výjimka jako u `headerEnv` výše — viz komentář tam. */
-globalStyle(`${railEnv} .mantine-Badge-root`, {
-    vars: {
-        "--badge-fz": "0.8rem",
-    },
 })
 
 // Mantine žádný `[data-mantine-modal]` atribut nevykresluje — obsah modalu je
