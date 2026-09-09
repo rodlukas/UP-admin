@@ -12,18 +12,24 @@ SCREEN_HEIGHT = 1080
 def before_all(context):
     browser_name = settings.TESTS_BROWSER.lower()
     headless = settings.TESTS_HEADLESS
-    
+
+    # prefers-reduced-motion vynucujeme explicitne: holy CI Linux runner (bez desktopu)
+    # ho hlasi sam od sebe, lokalni macOS ne - bez pripnuti se chovani UI s
+    # respectReducedMotion (theme.ts) lisi mezi lokalem a CI ("u me to prochazi");
+    # vypnute animace jsou navic pro Selenium deterministictejsi
     if browser_name == "chrome":
         options = ChromeOptions()
         if headless:
             options.add_argument("--headless=new")
+        options.add_argument("--force-prefers-reduced-motion")
         context.browser = webdriver.Chrome(options=options)
     else:
         options = FirefoxOptions()
         if headless:
             options.add_argument("--headless")
+        options.set_preference("ui.prefersReducedMotion", 1)
         context.browser = webdriver.Firefox(options=options)
-    
+
     context.browser.set_window_size(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 
@@ -35,6 +41,10 @@ def before_scenario(context, scenario):
     context.user = fixtures.user()
 
 
-def after_scenario(context, step):
+def after_scenario(context, scenario):
     # odhlaseni - je potreba, jinak testy obcas neprojdou
     context.browser.execute_script("window.localStorage.clear();")
+    # reload resetuje SPA (in-memory TanStack Query cache) - kazdy scenar bezi
+    # ve vlastni DB transakci s novymi radky/ID, stale nacachovana data z minuleho
+    # scenare by vedla na requesty s neexistujicimi ID (napr. PUT pri editaci)
+    context.browser.refresh()

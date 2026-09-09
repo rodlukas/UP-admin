@@ -1,21 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Checkbox, Group, Modal, TextInput, Title } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import { faHourglass } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
-import { useColor } from "react-color-palette"
-import { toast } from "react-toastify"
-import {
-    Alert,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Label,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-} from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import {
@@ -41,8 +28,8 @@ import {
 } from "../types/models"
 import { fEmptyVoid, Model } from "../types/types"
 
-import * as styles from "./FormSettings.css"
-import ColorPicker, { COLOR_PICKER_VALIDATION_TOAST_ID } from "./helpers/ColorPicker"
+import * as baseStyles from "./FormBase.css"
+import ColorPicker from "./helpers/ColorPicker"
 
 type Props = {
     /** Kurz/stav účasti. */
@@ -69,50 +56,42 @@ const FormSettings: React.FC<Props> = (props) => {
     const updateAttendanceState = useUpdateAttendanceState()
     const deleteAttendanceState = useDeleteAttendanceState()
 
-    /** Název kurzu/stavu účasti. */
-    const [name, setName] = React.useState(props.object.name)
-    /** Kurz/stav účasti je viditelný (true). */
-    const [visible, setVisible] = React.useState(props.object.visible)
-    /** Trvání kurzu. */
-    const [duration, setDuration] = React.useState<number | undefined>(
-        isCourse(props.object) ? props.object.duration : undefined,
-    )
-    /** Barva kurzu. */
-    const [color, setColor] = useColor(isCourse(props.object) ? props.object.color : "#000000")
-
-    const onChangeColor = React.useCallback(
-        (newColor: ReturnType<typeof useColor>[0]): void => {
-            props.setFormDirty()
-            setColor(newColor)
+    const form = useForm({
+        initialValues: {
+            name: props.object.name,
+            visible: props.object.visible,
+            duration: isCourse(props.object)
+                ? props.object.duration
+                : (undefined as number | undefined),
+            color: isCourse(props.object) ? props.object.color : "#000000",
         },
-        [props, setColor],
-    )
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        props.setFormDirty()
-        const target = e.currentTarget
-        const value = target.type === "checkbox" ? target.checked : target.value
-        if (target.id === "name") {
-            setName(value as string)
-        } else if (target.id === "visible") {
-            setVisible(value as boolean)
-        } else if (target.id === "duration") {
-            setDuration(value === "" ? undefined : Number(value))
-        }
-    }
+        validate: {
+            // ColorInput propaguje onChange i rozepsaný text ("#D2") — Enter uprostřed
+            // psaní by bez validace odeslal nevalidní hex, API ho odmítne 400 a modal
+            // by zůstal otevřený bez viditelné chyby; regex shodný s api/serializers.py
+            color: (value) =>
+                /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(value) ? null : "Barva není v HEX formátu",
+        },
+        onValuesChange: () => props.setFormDirty(),
+    })
 
     const onSubmit = React.useCallback(
-        (e: React.FormEvent<HTMLFormElement>): void => {
+        (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
+            if (form.validate().hasErrors) {
+                return
+            }
+            const { name, visible, duration, color } = form.getValues()
 
             if (isCourse(props.object)) {
-                const durationCourse = duration!
-                const colorCourse = color
+                if (duration === undefined) {
+                    return
+                }
                 const dataPost: CoursePostApi = {
                     name,
                     visible,
-                    duration: durationCourse,
-                    color: colorCourse.hex,
+                    duration,
+                    color,
                 }
                 if (isObject(props.object)) {
                     const dataPut: CoursePutApi = {
@@ -122,7 +101,6 @@ const FormSettings: React.FC<Props> = (props) => {
                     updateCourse.mutate(dataPut, {
                         onSuccess: () => {
                             trackEvent("course_updated", { source: "settings_page" })
-                            toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
                             props.funcForceClose()
                         },
                     })
@@ -130,7 +108,6 @@ const FormSettings: React.FC<Props> = (props) => {
                     createCourse.mutate(dataPost, {
                         onSuccess: () => {
                             trackEvent("course_created", { source: "settings_page" })
-                            toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
                             props.funcForceClose()
                         },
                     })
@@ -158,21 +135,10 @@ const FormSettings: React.FC<Props> = (props) => {
                 }
             }
         },
-        [
-            name,
-            visible,
-            duration,
-            color,
-            props,
-            createCourse,
-            updateCourse,
-            createAttendanceState,
-            updateAttendanceState,
-        ],
+        [props, form, createCourse, updateCourse, createAttendanceState, updateAttendanceState],
     )
 
     const close = (): void => {
-        toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
         props.funcClose()
     }
 
@@ -205,120 +171,128 @@ const FormSettings: React.FC<Props> = (props) => {
         updateAttendanceState.isPending
 
     return (
-        <Form onSubmit={onSubmit} data-qa="form_settings">
-            <ModalHeader toggle={close}>
-                {isObject(props.object) ? "Úprava" : "Přidání"} {type}u: {name}
-            </ModalHeader>
-            <ModalBody>
-                <FormGroup row className="form-group-required">
-                    <Label for="name" sm={3}>
-                        Název
-                    </Label>
-                    <Col sm={9}>
-                        <Input
-                            type="text"
-                            id="name"
-                            value={name}
-                            onChange={onChange}
-                            required
-                            autoFocus
-                            data-qa="settings_field_name"
-                            spellCheck
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row className="align-items-center">
-                    <Label for="visible" sm={3} data-qa="settings_label_visible">
-                        Viditelnost
-                    </Label>
-                    <Col sm={9}>
-                        <Input
-                            type="checkbox"
-                            id="visible"
-                            checked={visible}
-                            onChange={onChange}
-                            data-qa="settings_checkbox_visible"
-                        />
-                        <Label for="visible" check>
-                            Bude zobrazováno
-                        </Label>
-                    </Col>
-                </FormGroup>
-                {isCourse(props.object) && (
-                    <>
-                        <FormGroup row className="align-items-center form-group-required">
-                            <Label for="duration" sm={3} className={styles.labelDuration}>
-                                Trvání (min.){" "}
-                                <small className="text-secondary text-nowrap">
-                                    (pro jednotlivce)
-                                </small>
-                            </Label>
-                            <Col sm={9}>
-                                <InputGroup>
-                                    <InputGroupText>
-                                        <Label for="duration">
-                                            <FontAwesomeIcon icon={faHourglass} fixedWidth />
-                                        </Label>
-                                    </InputGroupText>
-                                    <Input
-                                        type="number"
-                                        id="duration"
-                                        value={duration ?? ""}
-                                        onChange={onChange}
-                                        required
-                                        min="1"
-                                        data-qa="settings_field_duration"
+        <form onSubmit={onSubmit} data-qa="form_settings">
+            <Modal.Header>
+                <Modal.Title>
+                    {isObject(props.object)
+                        ? `Úprava ${type}u: ${form.values.name}`
+                        : `Přidání ${type}u`}
+                </Modal.Title>
+                <Modal.CloseButton />
+            </Modal.Header>
+            <Modal.Body>
+                <div className={baseStyles.formContent}>
+                    <div className={baseStyles.formSection}>
+                        <Title order={6} className={baseStyles.formSectionTitle}>
+                            Základní údaje
+                        </Title>
+                        <div className={baseStyles.fieldStack}>
+                            <div className={baseStyles.fieldBlock}>
+                                <TextInput
+                                    id="name"
+                                    {...form.getInputProps("name")}
+                                    label="Název"
+                                    required
+                                    withAsterisk
+                                    data-autofocus
+                                    data-qa="settings_field_name"
+                                    spellCheck
+                                />
+                            </div>
+                            <div className={baseStyles.fieldBlock}>
+                                <label
+                                    htmlFor="visible"
+                                    data-qa="settings_label_visible"
+                                    className={baseStyles.fieldLabel}>
+                                    Viditelnost
+                                </label>
+                                <div className={baseStyles.inlineCheckboxRow}>
+                                    <Checkbox
+                                        id="visible"
+                                        checked={form.values.visible}
+                                        onChange={(e) =>
+                                            form.setFieldValue("visible", e.currentTarget.checked)
+                                        }
+                                        data-qa="settings_checkbox_visible"
+                                        label="Bude zobrazováno"
                                     />
-                                </InputGroup>
-                            </Col>
-                        </FormGroup>
-                        <ColorPicker color={color} onChange={onChangeColor} />
-                    </>
-                )}
-                {isObject(props.object) && (
-                    <>
-                        <hr />
-                        <FormGroup row>
-                            <Label sm={3} className="text-muted">
-                                Smazání
-                            </Label>
-                            <Col sm={9}>
-                                <Alert color="warning">
-                                    <p>
-                                        Lze smazat pouze pokud není příslušný {type} použit u žádné
-                                        lekce
-                                        {isCourse(props.object) &&
-                                            ", smažou se také všichni zájemci o tento kurz"}
-                                    </p>
-                                    <DeleteButton
-                                        content={type}
-                                        onClick={(): void => {
-                                            if (
-                                                isObject(props.object) &&
-                                                globalThis.confirm(
-                                                    `Opravdu chcete smazat ${type} ${name}?`,
+                                </div>
+                            </div>
+                            {isCourse(props.object) && (
+                                <>
+                                    <div className={baseStyles.fieldBlock}>
+                                        <TextInput
+                                            type="number"
+                                            id="duration"
+                                            value={form.values.duration ?? ""}
+                                            onChange={(e) => {
+                                                const v = e.currentTarget.value
+                                                form.setFieldValue(
+                                                    "duration",
+                                                    v === "" ? undefined : Number(v),
                                                 )
-                                            ) {
-                                                handleDelete(props.object.id)
+                                            }}
+                                            label="Trvání (min.)"
+                                            description="pro jednotlivce"
+                                            required
+                                            withAsterisk
+                                            min="1"
+                                            data-qa="settings_field_duration"
+                                            leftSection={
+                                                <FontAwesomeIcon icon={faHourglass} fixedWidth />
                                             }
-                                        }}
-                                        data-qa="settings_button_delete"
+                                        />
+                                    </div>
+                                    <ColorPicker
+                                        value={form.values.color}
+                                        onChange={(hex) => form.setFieldValue("color", hex)}
+                                        error={form.errors.color}
                                     />
-                                </Alert>
-                            </Col>
-                        </FormGroup>
-                    </>
-                )}
-            </ModalBody>
-            <ModalFooter>
-                <CancelButton onClick={close} />{" "}
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    {isObject(props.object) && (
+                        <div
+                            className={`${baseStyles.formSection} ${baseStyles.formSectionDanger}`}>
+                            <Title order={6} className={baseStyles.formSectionTitle}>
+                                Smazání
+                            </Title>
+                            <div className={baseStyles.deleteAlertText}>
+                                <p>
+                                    Lze smazat pouze pokud není příslušný {type} použit u žádné
+                                    lekce
+                                    {isCourse(props.object) &&
+                                        ", smažou se také všichni zájemci o tento kurz"}
+                                </p>
+                                <DeleteButton
+                                    content={type}
+                                    onClick={(): void => {
+                                        if (
+                                            isObject(props.object) &&
+                                            globalThis.confirm(
+                                                `Opravdu chcete smazat ${type} ${form.values.name}?`,
+                                            )
+                                        ) {
+                                            handleDelete(props.object.id)
+                                        }
+                                    }}
+                                    data-qa="settings_button_delete"
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </Modal.Body>
+            <Group justify="flex-end" px="md" pb="md" className={baseStyles.modalActions}>
+                <CancelButton onClick={close} />
                 <SubmitButton
                     loading={isSubmit}
                     data-qa="button_submit_settings"
                     content={isObject(props.object) ? "Uložit" : "Přidat"}
                 />
-            </ModalFooter>
-        </Form>
+            </Group>
+        </form>
     )
 }
 

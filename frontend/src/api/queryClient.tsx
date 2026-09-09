@@ -1,12 +1,12 @@
+import { notifications } from "@mantine/notifications"
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import * as React from "react"
-import { toast } from "react-toastify"
 
 import APP_URLS from "../APP_URLS"
 import Token from "../auth/Token"
-import Notification from "../components/Notification"
 import { NOTIFY_TEXT } from "../global/constants"
+import { bold, italic } from "../global/utility.css"
 
 import { parseDjangoError } from "./parseDjangoError"
 
@@ -37,8 +37,8 @@ function getErrorMessage(
             <ul>
                 {Object.keys(djangoError).map((field) => (
                     <li key={field}>
-                        <span className="fw-bold">{field}: </span>
-                        <span className="font-italic">{String(djangoError[field])}</span>
+                        <span className={bold}>{field}: </span>
+                        <span className={italic}>{String(djangoError[field])}</span>
                     </li>
                 ))}
             </ul>
@@ -93,7 +93,9 @@ function handleError(axiosError: AxiosError, getNavigate?: () => NavigateFn | un
     logErrorToConsole(axiosError, djangoError)
 
     const errorMessage = getErrorMessage(errorResponse, djangoError)
-    toast.error(<Notification text={errorMessage} />, {
+    notifications.show({
+        message: typeof errorMessage === "string" ? errorMessage : <>{errorMessage}</>,
+        color: "red",
         autoClose: 15000,
     })
 
@@ -121,6 +123,9 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
             queries: {
                 retry: 1,
                 refetchOnWindowFocus: false,
+                // 30s staleTime tlumí refetch při navigaci a remountu kontextových providerů;
+                // po mutaci se aktivní queries stejně refetchují přes mutationCache.onSuccess.
+                staleTime: 30_000,
             },
         },
         queryCache: new QueryCache({
@@ -141,7 +146,12 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                 // Invalidace pouze refetchuje aktivní queries a označí ostatní jako stale,
                 // takže se refetchují až když budou potřeba.
                 // Viz: https://tkdodo.eu/blog/automatic-query-invalidation-after-mutations
-                void queryClient.invalidateQueries()
+                // Výjimka: bankovní data (["bank"]) nezávisí na mutacích v aplikaci a dotazují
+                // se na externí rate-limited API (banka má vlastní manuální refresh s minutovým
+                // limitem), proto je z plošné invalidace vyjmeme.
+                void queryClient.invalidateQueries({
+                    predicate: (query) => query.queryKey[0] !== "bank",
+                })
 
                 // Notifikace potlačíme, pokud je v meta nastaveno skipSuccessNotification
                 if (mutation.options.meta?.skipSuccessNotification) {
@@ -151,7 +161,9 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                 // Získáme success zprávu z mutation meta, pokud je k dispozici
                 const successMessage = mutation.options.meta?.successMessage as string | undefined
 
-                toast.success(<Notification text={successMessage} />, {
+                notifications.show({
+                    message: successMessage ?? "Uloženo",
+                    color: "green",
                     autoClose: 4000,
                 })
             },

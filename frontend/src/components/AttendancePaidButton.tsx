@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faUsdCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Tooltip } from "@mantine/core"
+import { faCheckCircle, faUsdCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
 
@@ -7,7 +8,6 @@ import { AnalyticsSource, trackEvent } from "../analytics"
 import { usePatchAttendance } from "../api/hooks"
 
 import * as styles from "./AttendancePaidButton.css"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** Lekce je zaplacená (true). */
@@ -24,7 +24,12 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
         successMessage: "Stav platby za lekci uložen",
     })
 
+    const isPending = patchAttendance.isPending
+
     const onClick = React.useCallback((): void => {
+        if (isPending) {
+            return
+        }
         const newPaid = !props.paid
         const id = props.attendanceId
         const data = { id, paid: newPaid }
@@ -32,31 +37,39 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
             onSuccess: () =>
                 trackEvent("attendance_paid_toggled", { source: props.source, paid: newPaid }),
         })
-    }, [props.paid, props.attendanceId, props.source, patchAttendance])
+    }, [isPending, props.paid, props.attendanceId, props.source, patchAttendance])
 
     const className = classNames(styles.attendancePaidButton, {
         [styles.attendancePaidButtonSuccess]: props.paid,
         [styles.attendancePaidButtonDanger]: !props.paid,
-        "text-success": props.paid,
-        "text-danger": !props.paid,
     })
     const title = `Označit lekci jako ${props.paid ? "NE" : ""}ZAPLACENOU`
+    // focus: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13)
     return (
-        <>
-            <FontAwesomeIcon
-                id={`AttendancePaidButton_${props.attendanceId}`}
-                icon={faUsdCircle}
-                size="2x"
-                className={className}
-                onClick={onClick}
-                data-qa="lecture_attendance_paid"
-            />
-            <UncontrolledTooltipWrapper
-                placement="right"
-                target={`AttendancePaidButton_${props.attendanceId}`}>
-                {title}
-            </UncontrolledTooltipWrapper>
-        </>
+        <Tooltip label={title} position="right" events={{ hover: true, focus: true, touch: true }}>
+            {/* nativní <button>: aktivaci klávesnicí, focus i sémantiku řeší prohlížeč
+                (aria-disabled místo `disabled`, aby tooltip zůstal dosažitelný i během ukládání) */}
+            <button
+                type="button"
+                aria-label={title}
+                aria-busy={isPending}
+                aria-disabled={isPending}
+                className={styles.buttonWrap}
+                onClick={onClick}>
+                {/* Jiny glyf pro kazdy stav, ne jen jina barva: stav platby tak nenese
+                    pouze barva (WCAG 1.4.1) a zaplaceno smi byt tiche. `data-qa` a
+                    `data-paid` na ikone jsou kontrakt s E2E kroky — neodstranovat. */}
+                {/* kroužkovaný glyf pro oba stavy — stejná rodina jako „příště platit",
+                    aby se stavy lišily významem a barvou, ne tvarem a velikostí */}
+                <FontAwesomeIcon
+                    icon={props.paid ? faCheckCircle : faUsdCircle}
+                    size="lg"
+                    className={className}
+                    data-qa="lecture_attendance_paid"
+                    data-paid={props.paid}
+                />
+            </button>
+        </Tooltip>
     )
 }
 

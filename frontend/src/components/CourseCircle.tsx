@@ -1,8 +1,9 @@
+import { Tooltip } from "@mantine/core"
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 
 import * as styles from "./CourseCircle.css"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** Barva kolečka u kurzu. */
@@ -17,28 +18,18 @@ type Props = {
 
 /** Komponenta zobrazující barevné kolečko s různou barvou a velikostí pro zobrazení barvy kurzu. */
 const CourseCircle: React.FC<Props> = ({ color, size, showTitle = false, className }) => {
-    const sizeWithUnit = `${size}rem`
-    const colorWithoutHash = color.substring(1)
-
-    return (
-        <>
-            <span
-                data-qa="course_color"
-                className={classNames(styles.courseCircle, className)}
-                id={`CourseCircle_${colorWithoutHash}`}
-                style={{
-                    background: color,
-                    width: sizeWithUnit,
-                    height: sizeWithUnit,
-                }}
-            />
-            {showTitle && (
-                <UncontrolledTooltipWrapper target={`CourseCircle_${colorWithoutHash}`}>
-                    Kód barvy: {color}
-                </UncontrolledTooltipWrapper>
-            )}
-        </>
+    const circle = (
+        <span
+            data-qa="course_color"
+            className={classNames(styles.courseCircle, className)}
+            style={assignInlineVars({
+                [styles.circleColor]: color,
+                [styles.circleSize]: `${size}rem`,
+            })}
+        />
     )
+
+    return showTitle ? <Tooltip label={`Kód barvy: ${color}`}>{circle}</Tooltip> : circle
 }
 
 export default CourseCircle

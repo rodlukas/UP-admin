@@ -5,8 +5,9 @@ import { createQueryClient } from "./api/queryClient"
 import AppLayout from "./App"
 import APP_URLS from "./APP_URLS"
 import PrivateRoute from "./auth/PrivateRoute"
-import Loading from "./components/Loading"
+import LoginSkeleton from "./components/LoginSkeleton"
 import Page from "./components/Page"
+import { PageSkeleton } from "./components/Skeletons"
 import lazySafe from "./global/lazySafe"
 
 // lazy nacitani pro jednotlive stranky
@@ -25,7 +26,11 @@ const queryClient = createQueryClient()
 
 const rootRoute = createRootRoute({
     component: () => <AppLayout queryClient={queryClient} />,
-    notFoundComponent: () => <Page title={APP_URLS.nenalezeno.title}><NotFound /></Page>,
+    notFoundComponent: () => (
+        <Page title={APP_URLS.nenalezeno.title}>
+            <NotFound />
+        </Page>
+    ),
 })
 
 type ChildRouteConfig = {
@@ -55,7 +60,11 @@ const createPageRoute = (path: string, element: React.ReactElement, title: strin
         component: () => <Page title={title}>{element}</Page>,
     })
 
-const overviewRoute = createPrivateRoute(APP_URLS.prehled.url, <Dashboard />, APP_URLS.prehled.title)
+const overviewRoute = createPrivateRoute(
+    APP_URLS.prehled.url,
+    <Dashboard />,
+    APP_URLS.prehled.title,
+)
 
 const loginRoute = createChildRoute({
     path: APP_URLS.prihlasit.url,
@@ -64,17 +73,21 @@ const loginRoute = createChildRoute({
     }),
     component: () => (
         <Page title={APP_URLS.prihlasit.title}>
-            <Login />
+            {/* Vlastní hranice, ne ta sdílená v Main.tsx (`PageSkeleton`) — tu si nadál
+                drží i `NotFound`, jehož tvar (`Container` + nadpis) kostře tabulky
+                odpovídá o dost líp než přihlašovací kartě. */}
+            <React.Suspense fallback={<LoginSkeleton />}>
+                <Login />
+            </React.Suspense>
         </Page>
     ),
 })
 
 const groupsRoute = createPrivateRoute(APP_URLS.skupiny.url, <Groups />, APP_URLS.skupiny.title)
 
-const diaryRoutes = [
-    APP_URLS.diar.url,
-    `${APP_URLS.diar.url}/$year/$month/$day`,
-].map((path) => createPrivateRoute(path, <Diary />))
+const diaryRoutes = [APP_URLS.diar.url, `${APP_URLS.diar.url}/$year/$month/$day`].map((path) =>
+    createPrivateRoute(path, <Diary />),
+)
 
 const clientsRoute = createPrivateRoute(APP_URLS.klienti.url, <Clients />, APP_URLS.klienti.title)
 
@@ -84,9 +97,14 @@ const createCardRoute = (path: string, isClientPage: boolean) => {
         path,
         component: () => {
             const { id } = route.useParams()
+            // `key={id}`: TanStack Router mění jen `useParams()` a stejnou instanci `Card`
+            // (žádný `remountDeps`/`defaultRemountDeps` v konfiguraci routeru) při přechodu
+            // mezi kartami recykluje, takže bez tohoto klíče by veškerý interní stav (vybraná
+            // záložka, jednorázově zapnuté dotazy…) přetekl z předchozí karty na další —
+            // viz `Card.tsx`, kde na to spoléhá výchozí záložka „Lekce" i lazy-enable Analýzy.
             return (
                 <PrivateRoute>
-                    <Card id={Number(id)} isClientPage={isClientPage} />
+                    <Card key={id} id={Number(id)} isClientPage={isClientPage} />
                 </PrivateRoute>
             )
         },
@@ -101,9 +119,21 @@ const applicationsRoute = createPrivateRoute(
     <Applications />,
     APP_URLS.zajemci.title,
 )
-const settingsRoute = createPrivateRoute(APP_URLS.nastaveni.url, <Settings />, APP_URLS.nastaveni.title)
-const statisticsRoute = createPrivateRoute(APP_URLS.statistiky.url, <Statistics />, APP_URLS.statistiky.title)
-const notFoundRoute = createPageRoute(APP_URLS.nenalezeno.url, <NotFound />, APP_URLS.nenalezeno.title)
+const settingsRoute = createPrivateRoute(
+    APP_URLS.nastaveni.url,
+    <Settings />,
+    APP_URLS.nastaveni.title,
+)
+const statisticsRoute = createPrivateRoute(
+    APP_URLS.statistiky.url,
+    <Statistics />,
+    APP_URLS.statistiky.title,
+)
+const notFoundRoute = createPageRoute(
+    APP_URLS.nenalezeno.url,
+    <NotFound />,
+    APP_URLS.nenalezeno.title,
+)
 
 const routeTree = rootRoute.addChildren([
     overviewRoute,
@@ -121,7 +151,7 @@ const routeTree = rootRoute.addChildren([
 
 const router = createRouter({
     routeTree,
-    defaultPendingComponent: () => <Loading />,
+    defaultPendingComponent: () => <PageSkeleton />,
     defaultPendingMs: 0,
 })
 export { router }

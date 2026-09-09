@@ -1,9 +1,9 @@
+import { Tooltip } from "@mantine/core"
 import * as React from "react"
 
 import { USER_CELEBRATION } from "../global/constants"
 
 import * as styles from "./Celebration.css"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 type Props = {
     /** ID označující, co slaví lektorka (svátek/narozeniny/nic). */
@@ -15,17 +15,19 @@ const Celebration: React.FC<Props> = ({ isUserCelebratingResult }) => {
     if (isUserCelebratingResult === USER_CELEBRATION.NOTHING) {
         return null
     }
+    const label = `Oslava ${isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozenin" : "svátku"}`
     return (
-        <>
-            <UncontrolledTooltipWrapper placement="top" target="Celebration">
-                Všechno nejlepší k{" "}
-                {isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozeninám" : "svátku"}!
-                😍
-            </UncontrolledTooltipWrapper>
-            <span id="Celebration" role="img" aria-label="Konfety" className={styles.celebration}>
+        <Tooltip
+            label={`Všechno nejlepší k ${isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozeninám" : "svátku"}! 😍`}
+            position="top"
+            // focus + tabIndex: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13)
+            events={{ hover: true, focus: true, touch: true }}>
+            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- trigger tooltipu
+                musí být fokusovatelný, jinak je obsah jen pro myš (WAI-ARIA tooltip pattern) */}
+            <span role="img" aria-label={label} tabIndex={0} className={styles.celebration}>
                 🎉
             </span>
-        </>
+        </Tooltip>
     )
 }
 

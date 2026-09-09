@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faHourglassEnd, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Alert, Button, Container, Group, Pagination, Table } from "@mantine/core"
+import { faCalendarTimes, faSpinnerThird, faUsers } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
-import { Alert, Badge, Button, Container, Table } from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import { useDeactivateClients, useInactiveClients } from "../api/hooks"
@@ -11,15 +11,42 @@ import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
+import EmptyState from "../components/EmptyState"
 import Heading from "../components/Heading"
-import Loading from "../components/Loading"
-import Tooltip from "../components/Tooltip"
+import InfoTooltip from "../components/InfoTooltip"
+import { SkeletonShell, TableSkeleton } from "../components/Skeletons"
+import SortableTh from "../components/SortableTh"
+import TableToolbar from "../components/TableToolbar"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
 import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
-import { isStaleActive } from "../global/utils"
+import { tableFlat } from "../global/surfaces.css"
+import { iconAfterText } from "../global/utility.css"
+import { isStaleActive, pluralizeCs } from "../global/utils"
+import { DataTableColumn, paginationControlProps, useDataTable } from "../hooks/useDataTable"
 import { ModalClientsData } from "../types/components"
 import { ClientType } from "../types/models"
+
+import * as styles from "./Clients.css"
+
+/** V čem hledá vyhledávání nad tabulkou. */
+const SEARCH_IN = (client: ClientType): (string | null | undefined)[] => [
+    client.surname,
+    client.firstname,
+    client.phone,
+    client.email,
+    client.note,
+]
+
+/**
+ * Řaditelné sloupce. Záměrně jen jméno: řazení podle telefonu, e-mailu nebo poznámky
+ * nikdo nepoužije a šipka u každé hlavičky je jen šum (Carbon: řaditelné mají být
+ * sloupce, u kterých to dává smysl).
+ */
+const COLUMNS: DataTableColumn<ClientType>[] = [
+    { key: "name", value: (client) => `${client.surname} ${client.firstname}` },
+]
+
 /** Stránka s klienty. */
 const Clients: React.FC = () => {
     const clientsActiveContext = useClientsActiveContext()
@@ -30,8 +57,17 @@ const Clients: React.FC = () => {
 
     const isLoading = (): boolean => (active ? clientsActiveContext.isLoading : inactiveLoading)
 
-    const getClientsData = (): ClientType[] =>
-        active ? clientsActiveContext.clients : inactiveClients
+    const getClientsData = React.useCallback(
+        (): ClientType[] => (active ? clientsActiveContext.clients : inactiveClients),
+        [active, clientsActiveContext.clients, inactiveClients],
+    )
+
+    const table = useDataTable<ClientType>({
+        rows: getClientsData(),
+        searchIn: SEARCH_IN,
+        columns: COLUMNS,
+        initialSortKey: "name",
+    })
 
     const staleClients = React.useMemo(
         () => clientsActiveContext.clients.filter((c) => isStaleActive(c.last_lecture_date)),
@@ -50,7 +86,7 @@ const Clients: React.FC = () => {
 
     const handleDeactivateAll = (): void => {
         const count = staleClients.length
-        const label = count === 1 ? "klienta" : count < 5 ? "klienty" : "klientů"
+        const label = pluralizeCs(count, "klienta", "klienty", "klientů")
         if (globalThis.confirm(`Opravdu chcete přesunout ${count} ${label} do neaktivních?`)) {
             deactivateClients.mutate(
                 staleClients.map((c) => c.id),
@@ -62,6 +98,129 @@ const Clients: React.FC = () => {
         }
     }
 
+    const staleText = pluralizeCs(
+        staleClients.length,
+        "aktivní klient nemá",
+        "aktivní klienti nemají",
+        "aktivních klientů nemá",
+    )
+
+    let clientsContent: React.ReactNode
+    if (isLoading()) {
+        clientsContent = (
+            <SkeletonShell>
+                <TableSkeleton />
+            </SkeletonShell>
+        )
+    } else if (getClientsData().length > 0) {
+        clientsContent = (
+            <>
+                <TableToolbar
+                    query={table.query}
+                    onQueryChange={table.search}
+                    label="klienta"
+                    fields="jméno, telefon, e-mail, poznámka"
+                    filteredCount={table.filteredCount}
+                    totalCount={getClientsData().length}
+                />
+                {table.filteredCount === 0 ? (
+                    <EmptyState
+                        icon={faUsers}
+                        title="Nic nenalezeno"
+                        description={`Hledání „${table.query}“ neodpovídá žádný klient.`}
+                    />
+                ) : (
+                    <Table.ScrollContainer
+                        minWidth={560}
+                        type="native"
+                        className={styles.tableSection}>
+                        <Table className={tableFlat}>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <SortableTh
+                                        sortKey="name"
+                                        activeKey={table.sortKey}
+                                        direction={table.sortDirection}
+                                        onSort={table.toggleSort}>
+                                        Příjmení a jméno
+                                    </SortableTh>
+                                    <Table.Th className={styles.hiddenBelowMd}>Telefon</Table.Th>
+                                    <Table.Th
+                                        className={`${styles.emailHeader} ${styles.hiddenBelowMd}`}>
+                                        E-mail
+                                    </Table.Th>
+                                    <Table.Th className={styles.hiddenBelowSm}>Poznámka</Table.Th>
+                                    <Table.Th ta="right">Akce</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
+                                {table.rowsOnPage.map((client) => (
+                                    <Table.Tr key={client.id} data-qa="client">
+                                        <Table.Td className={styles.nameCell}>
+                                            <ClientName client={client} link />{" "}
+                                            {client.active &&
+                                                isStaleActive(client.last_lecture_date) && (
+                                                    <InfoTooltip
+                                                        placement="right"
+                                                        size="1x"
+                                                        icon={faCalendarTimes}
+                                                        text={TEXTS.WARNING_STALE_CLIENT}
+                                                    />
+                                                )}
+                                        </Table.Td>
+                                        <Table.Td
+                                            className={`${styles.phoneCell} ${styles.hiddenBelowMd}`}>
+                                            <ClientPhone phone={client.phone} />
+                                        </Table.Td>
+                                        <Table.Td className={styles.hiddenBelowMd}>
+                                            <ClientEmail email={client.email} />
+                                        </Table.Td>
+                                        <Table.Td className={styles.hiddenBelowSm}>
+                                            <ClientNote note={client.note} />
+                                        </Table.Td>
+                                        <Table.Td ta="right">
+                                            <ModalClients
+                                                currentClient={client}
+                                                refresh={refreshFromModal}
+                                                source="clients_page"
+                                            />
+                                        </Table.Td>
+                                    </Table.Tr>
+                                ))}
+                            </Table.Tbody>
+                        </Table>
+                    </Table.ScrollContainer>
+                )}
+                {table.isPaginated && (
+                    // `data-qa="pagination"`: E2E kroky přes ni umí projít všechny
+                    // stránky, aby `[data-qa=client]` počítaly/hledaly nad celým
+                    // seznamem, ne jen nad aktuální stránkou (viz useDataTable)
+                    <div data-qa="pagination">
+                        <Pagination
+                            value={table.page}
+                            onChange={table.setPage}
+                            total={table.pageCount}
+                            getControlProps={paginationControlProps}
+                            className={styles.pagination}
+                        />
+                    </div>
+                )}
+            </>
+        )
+    } else {
+        clientsContent = (
+            <EmptyState
+                icon={faUsers}
+                title={`Žádní ${active ? "aktivní" : "neaktivní"} klienti`}
+                description={
+                    active
+                        ? "Přidej prvního klienta a objeví se tady."
+                        : "Neaktivní jsou klienti, kteří sem byli přesunuti ze seznamu aktivních."
+                }
+            />
+        )
+    }
+
     return (
         <Container>
             <Heading
@@ -69,120 +228,55 @@ const Clients: React.FC = () => {
                     <>
                         {APP_URLS.klienti.title}{" "}
                         {!isLoading() && (
-                            <Badge color="secondary" pill>
-                                {getClientsData().length}
-                            </Badge>
+                            <span className={styles.titleCount}>{getClientsData().length}</span>
                         )}
                     </>
                 }
+                // ActiveSwitcher zustava vzdy vykreslovany (i behem nacitani): jinak by
+                // se pri prvnim prepnuti na neaktivni (studeny fetch) na chvili ztratil
+                // a uzivatel by se nemel jak prepnout zpatky
                 buttons={
                     <>
                         <ActiveSwitcher onChange={refresh} active={active} source="clients_page" />
                         <ModalClients refresh={refreshFromModal} source="clients_page" />
                     </>
                 }
-                isFetching={
-                    active
-                        ? clientsActiveContext.isFetching && clientsActiveContext.clients.length > 0
-                        : false
-                }
             />
             {active && !clientsActiveContext.isLoading && staleClients.length > 0 && (
                 <Alert
-                    color="warning"
-                    style={{ width: "fit-content" }}
-                    className="d-flex align-items-center gap-3 flex-wrap mx-auto">
-                    <FontAwesomeIcon icon={faHourglassEnd} />
-                    <span>
-                        {staleClients.length}{" "}
-                        {staleClients.length === 1
-                            ? "aktivní klient nemá"
-                            : staleClients.length < 5
-                              ? "aktivní klienti nemají"
-                              : "aktivních klientů nemá"}{" "}
-                        lekci déle než {DAYS_WITHOUT_LECTURE_WARNING} dní.
-                    </span>
-                    <Button
-                        color="warning"
-                        size="sm"
-                        disabled={deactivateClients.isPending}
-                        onClick={handleDeactivateAll}>
-                        Přesunout do neaktivních
-                        {deactivateClients.isPending && (
-                            <FontAwesomeIcon icon={faSpinnerThird} spin className="ms-2" />
-                        )}
-                    </Button>
+                    // pozadi i ramecek dodava `staleAlert` (statusNoticeWarning) — Mantine
+                    // `light` varianta by pres nej nakreslila svou sytou zlutou plochu
+                    variant="transparent"
+                    color="yellow"
+                    className={styles.staleAlert}>
+                    <Group justify="space-between" wrap="wrap" gap="sm">
+                        <Group gap="sm" wrap="nowrap">
+                            <FontAwesomeIcon icon={faCalendarTimes} />
+                            <span>
+                                {staleClients.length} {staleText} lekci déle než{" "}
+                                {DAYS_WITHOUT_LECTURE_WARNING} dní.
+                            </span>
+                        </Group>
+                        {/* `default` varianta: sytě žluté tlačítko by na žlutém notice bylo
+                            nejhlasitější věcí stránky. Neutrální obrys drží akci čitelnou
+                            a nepotřebuje `autoContrast` (neřeší se bílý text na žluté). */}
+                        <Button
+                            variant="default"
+                            disabled={deactivateClients.isPending}
+                            onClick={handleDeactivateAll}>
+                            Přesunout do neaktivních
+                            {deactivateClients.isPending && (
+                                <FontAwesomeIcon
+                                    icon={faSpinnerThird}
+                                    spin
+                                    className={iconAfterText}
+                                />
+                            )}
+                        </Button>
+                    </Group>
                 </Alert>
             )}
-            {getClientsData().length > 0 && (
-                <Table striped size="sm" responsive className="table-custom">
-                    <thead className="table-light">
-                        <tr>
-                            <th>Příjmení a jméno</th>
-                            <th className="d-none d-md-table-cell">Telefon</th>
-                            <th
-                                style={{ wordBreak: "keep-all" }}
-                                className="d-none d-md-table-cell">
-                                E-mail
-                            </th>
-                            <th className="d-none d-sm-table-cell">Poznámka</th>
-                            <th className="text-end text-md-end">Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {isLoading() ? (
-                            <tr>
-                                <td colSpan={5}>
-                                    <Loading />
-                                </td>
-                            </tr>
-                        ) : (
-                            <>
-                                {getClientsData().map((client) => (
-                                    <tr key={client.id} data-qa="client">
-                                        <td style={{ minWidth: "13em", width: "13em" }}>
-                                            <ClientName client={client} link />{" "}
-                                            {client.active &&
-                                                isStaleActive(client.last_lecture_date) && (
-                                                    <Tooltip
-                                                        postfix={`Client_StaleActive_${client.id}`}
-                                                        placement="right"
-                                                        size="1x"
-                                                        icon={faHourglassEnd}
-                                                        text={TEXTS.WARNING_STALE_CLIENT}
-                                                    />
-                                                )}
-                                        </td>
-                                        <td
-                                            style={{ minWidth: "7em" }}
-                                            className="d-none d-md-table-cell">
-                                            <ClientPhone phone={client.phone} />
-                                        </td>
-                                        <td className="d-none d-md-table-cell">
-                                            <ClientEmail email={client.email} />
-                                        </td>
-                                        <td className="d-none d-sm-table-cell">
-                                            <ClientNote note={client.note} />
-                                        </td>
-                                        <td className="text-end text-md-end">
-                                            <ModalClients
-                                                currentClient={client}
-                                                refresh={refreshFromModal}
-                                                source="clients_page"
-                                            />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </>
-                        )}
-                    </tbody>
-                </Table>
-            )}
-            {getClientsData().length === 0 && !isLoading() && (
-                <p className="text-muted text-center">
-                    Žádní {active ? "aktivní" : "neaktivní"} klienti
-                </p>
-            )}
+            {clientsContent}
         </Container>
     )
 }

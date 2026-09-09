@@ -1,10 +1,12 @@
+import { Select } from "@mantine/core"
 import * as React from "react"
 
 import { AnalyticsSource, trackEvent } from "../analytics"
 import { usePatchAttendance } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
-import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
 import { AttendanceStateType, AttendanceType } from "../types/models"
+
+import * as styles from "./AttendanceSelectAttendanceState.css"
 
 type Props = {
     /** ID účasti. */
@@ -23,35 +25,41 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
     })
 
     const onChange = React.useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>): void => {
-            const newValue = Number(e.currentTarget.value)
-            const id = props.attendanceId
-            const data = { id, attendancestate: newValue }
-            patchAttendance.mutate(data, {
-                onSuccess: () => trackEvent("attendance_state_changed", { source: props.source }),
-            })
+        (val: string | null): void => {
+            if (!val) {
+                return
+            }
+            patchAttendance.mutate(
+                { id: props.attendanceId, attendancestate: Number(val) },
+                {
+                    onSuccess: () =>
+                        trackEvent("attendance_state_changed", { source: props.source }),
+                },
+            )
         },
         [props.attendanceId, props.source, patchAttendance],
     )
 
+    const data = attendancestates
+        .filter((s) => s.visible || s.id === props.value)
+        .map((s) => ({ value: s.id.toString(), label: s.name }))
+
     return (
-        <CustomInputWrapper
-            type="select"
-            bsSize="sm"
-            onChange={onChange}
+        <Select
             id={`select${props.attendanceId}`}
-            value={props.value}
-            data-qa="lecture_select_attendance_attendancestate">
-            {attendancestates.map(
-                (attendancestate) =>
-                    // ukaz pouze viditelne, pokud ma klient neviditelny, ukaz ho take
-                    (attendancestate.visible || attendancestate.id === props.value) && (
-                        <option key={attendancestate.id} value={attendancestate.id}>
-                            {attendancestate.name}
-                        </option>
-                    ),
-            )}
-        </CustomInputWrapper>
+            data={data}
+            value={props.value.toString()}
+            onChange={onChange}
+            // md (1rem), ne sm (0.875rem) — v aplikaci není text menší než 1rem;
+            // vyšší řádek vyrovnává `variant="unstyled"`, který ubírá rámeček a pozadí
+            size="md"
+            variant="unstyled"
+            classNames={{ input: styles.ruledInput }}
+            allowDeselect={false}
+            // select nemá viditelný label — přístupný název pro čtečky obrazovky
+            aria-label="Výběr stavu účasti klienta na lekci"
+            data-qa="lecture_select_attendance_attendancestate"
+        />
     )
 }
 

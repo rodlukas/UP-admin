@@ -1,13 +1,14 @@
 import * as React from "react"
-import { Modal } from "reactstrap"
 
 import { AnalyticsSource } from "../analytics"
+import BaseModal from "../components/BaseModal"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
 import { ModalGroupsData } from "../types/components"
 import { GroupType } from "../types/models"
 
+import { modalContentClientGroup } from "./FormBase.css"
 import FormGroups from "./FormGroups"
 import { DummyGroup } from "./helpers/dummies"
 
@@ -52,16 +53,20 @@ const ModalGroups: React.FC<Props> = ({
                     data-qa="button_add_group"
                 />
             )}
-            <Modal
-                isOpen={isModal}
-                toggle={toggleModal}
-                autoFocus={false}
-                onClosed={(): void => {
-                    processOnModalClose(() => {
-                        if (refresh && tempData !== null) {
-                            refresh(tempData)
-                        }
-                    })
+            <BaseModal
+                opened={isModal}
+                onClose={toggleModal}
+                withCloseButton={false}
+                classNames={{ content: modalContentClientGroup }}
+                size="40rem"
+                transitionProps={{
+                    onExited: (): void => {
+                        processOnModalClose(() => {
+                            if (refresh && tempData !== null) {
+                                refresh(tempData)
+                            }
+                        })
+                    },
                 }}>
                 <FormGroups
                     group={currentGroup ?? DummyGroup}
@@ -71,7 +76,7 @@ const ModalGroups: React.FC<Props> = ({
                     funcProcessAdditionOfGroup={processAdditionOfGroup}
                     source={source}
                 />
-            </Modal>
+            </BaseModal>
         </>
     )
 }

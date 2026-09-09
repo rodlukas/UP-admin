@@ -1,5 +1,7 @@
+import re
+
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -22,8 +24,10 @@ def courses_cnt(driver):
     return len(get_courses(driver))
 
 
-def color_title(color):
-    return "Kód barvy: " + color
+def css_color_to_hex(css_color):
+    """Prevede `rgb(r, g, b)` z computed stylu na velkymi pismeny psany hex."""
+    numbers = re.findall(r"\d+", css_color)
+    return "#" + "".join(f"{int(n):02X}" for n in numbers[:3])
 
 
 def find_course(context, name, **data):
@@ -37,15 +41,19 @@ def find_course(context, name, **data):
                 By.CSS_SELECTOR, "[data-qa=course_visible]"
             ).get_attribute("class")
             found_duration = course.find_element(By.CSS_SELECTOR, "[data-qa=course_duration]").text
-            found_color = helpers.get_tooltip_text(
-                context.browser, course.find_element(By.CSS_SELECTOR, "[data-qa=course_color]")
+            # barvu ctem z vykreslene kolecka (computed background-color) - hodnota je
+            # v DOM primo, na rozdil od cteni tooltipu nezavisi na hoveru ani animacich
+            found_color = css_color_to_hex(
+                course.find_element(
+                    By.CSS_SELECTOR, "[data-qa=course_color]"
+                ).value_of_css_property("background-color")
             )
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             if not data or (
                 data
                 and helpers.check_fa_bool(data["visible"], found_visible_classes)
                 and found_duration == data["duration"]
-                and found_color == color_title(common_helpers.color_transform(data["color"]))
+                and found_color == common_helpers.color_transform(data["color"])
             ):
                 # uloz stara data do kontextu pro pripadne overeni spravnosti
                 context.old_name = found_name
@@ -66,11 +74,6 @@ def find_course_with_context(context):
     )
 
 
-def course_color_prepare(color_picker):
-    color_field = color_picker.find_element(By.CLASS_NAME, "rcp-field-input")
-    return color_field
-
-
 def insert_to_form(context, verify_current_data=False):
     # pockej az bude viditelny formular
     helpers.wait_form_settings_visible(context.browser)
@@ -85,10 +88,10 @@ def insert_to_form(context, verify_current_data=False):
     duration_field = context.browser.find_element(
         By.CSS_SELECTOR, "[data-qa=settings_field_duration]"
     )
-    color_picker_component = context.browser.find_element(
+    # Mantine ColorInput propaguje data-qa primo na vnitrni <input id="color">
+    color_field = context.browser.find_element(
         By.CSS_SELECTOR, "[data-qa=settings_color_picker]"
-    )  # cely widget s color pickerem
-    color_field = course_color_prepare(color_picker_component)  # pole se zvolenou barvou
+    )
     color_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=settings_label_color]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
@@ -96,12 +99,13 @@ def insert_to_form(context, verify_current_data=False):
             context.old_name == name_field.get_attribute("value")
             and context.old_visible == visible_checkbox.is_selected()
             and context.old_duration == duration_field.get_attribute("value")
-            and context.old_color == color_title(color_field.get_attribute("value"))
+            and context.old_color == common_helpers.color_transform(
+                color_field.get_attribute("value")
+            )
         )
     # smaz vsechny udaje
-    name_field.clear()
-    duration_field.clear()
-    color_field.clear()  # tohle kvuli vnitrni implementaci color pickeru nic nedela (resp. to tam da default hodnotu)
+    helpers.clear_input(name_field)
+    helpers.clear_input(duration_field)
     # vloz nove udaje
     if (context.visible and not visible_checkbox.is_selected()) or (
         not context.visible and visible_checkbox.is_selected()
@@ -109,9 +113,11 @@ def insert_to_form(context, verify_current_data=False):
         visible_label.click()
     name_field.send_keys(context.name)
     duration_field.send_keys(context.duration)
-    # klikni na label color pickeru aby se oznacil cela hodnota inputu a nasledne ji preplacni tou novou hodnotou,
-    # bylo by fajn to delat klasicky pres clear a send_keys, ale bohuzel si to se seleniem a default hodnotou z knihovny color pickeru nerozumi
-    color_label.click()
+    # ColorInput je taky controlled - maz po znacich, ne pres clear() ani pres oznaceni
+    # kliknutim na label (to obsah inputu vybere jen v nekterych prohlizecich, jinde
+    # zustane kurzor na konci a nova hodnota se pripoji za puvodni)
+    color_field.click()
+    helpers.clear_input(color_field)
     color_field.send_keys(context.color)
 
 
@@ -135,9 +141,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na pridani kurzu
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_course_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku (stale
+    # reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_course_with_context(context))
     # over, ze sedi pocet kurzu
     assert courses_cnt(context.browser) > context.old_courses_cnt
 
@@ -147,9 +157,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na update kurzu
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_course_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku (stale
+    # reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_course_with_context(context))
     # over, ze sedi pocet kurzu
     assert courses_cnt(context.browser) == context.old_courses_cnt
 

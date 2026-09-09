@@ -1,10 +1,13 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
@@ -51,9 +54,10 @@ def duration_title(duration):
     return "Trvání: " + duration + " min."
 
 
-def get_select_attendancestates(driver):
-    return Select(
-        driver.find_element(By.CSS_SELECTOR, "[data-qa=lecture_select_attendance_attendancestate]")
+def get_attendancestate_input(driver):
+    # Mantine Select propaguje data-qa primo na vnitrni <input> (combobox)
+    return driver.find_element(
+        By.CSS_SELECTOR, "[data-qa=lecture_select_attendance_attendancestate]"
     )
 
 
@@ -66,15 +70,19 @@ def find_lecture(context, date, time, validate_context=False):
         # najdi lekci s danym zacatkem
         for lecture in all_course_lectures:
             found_start = lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]").text
-            found_duration = helpers.get_tooltip_text(
-                context.browser, lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]")
-            )
             found_canceled = lecture.get_attribute("data-qa-canceled") == "true"
             # srovnej identifikatory
             start = common_helpers.prepare_start(date, time)
             start = f"{start.day}. {start.month}. {start.year} – {start.hour}:{start.minute:02}"
             # je to substring (v UI je pred datumem i nazev dne)?
             if start in found_start:
+                # trvani (tooltip) cti az u lekce se shodnym zacatkem - cteni tooltipu je drahe
+                # (klik + cekani) a u rozjetych prekreslovani po mutaci nachylne na souboj,
+                # zbytecne ho nedelej pro kazdou prochazenou lekci
+                found_duration = helpers.get_tooltip_text(
+                    context.browser,
+                    lecture.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]"),
+                )
                 # prohledej a zvaliduj attendances (jen kdyz jsou k dispozici)
                 found_attendances_cnt = 0
                 found_old_attendances = []
@@ -84,9 +92,13 @@ def find_lecture(context, date, time, validate_context=False):
                         found_attendance = find_attendance_in_card(
                             context, lecture, attendance["client"]
                         )
-                        found_note = found_attendance.find_element(
-                            By.CSS_SELECTOR, "[data-qa=lecture_attendance_note]"
-                        ).text
+                        try:
+                            found_note = found_attendance.find_element(
+                                By.CSS_SELECTOR, "[data-qa=lecture_attendance_note]"
+                            ).text
+                        except NoSuchElementException:
+                            # prazdnou poznamku LectureNote vubec nevyrenderuje (vraci null)
+                            found_note = ""
                         found_old_attendances.append(
                             attendance_dict(
                                 attendance["client"],
@@ -183,25 +195,27 @@ def insert_to_form(context, verify_current_data=False):
     course_field = context.browser.find_element(By.ID, "course")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne (krome attendancestates - viz nize)
     if verify_current_data:
-        # ziskej aktualni hodnoty z react-selectu
-        course_field_value = context.browser.find_element(
-            By.CSS_SELECTOR, ".course__single-value"
-        ).text
-        assert (
-            context.old_course == course_field_value
-            and context.old_date == date_field.get_attribute("value")
-            and context.old_time == time_field.get_attribute("value")
-            and context.old_duration == duration_title(duration_field.get_attribute("value"))
-            and context.old_canceled == canceled_checkbox.is_selected()
-        )
+        # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
+        course_field_value = course_field.get_attribute("value")
+        found_date = date_field.get_attribute("value")
+        found_time = time_field.get_attribute("value")
+        found_duration = duration_title(duration_field.get_attribute("value"))
+        found_canceled = canceled_checkbox.is_selected()
+        assert context.old_course == course_field_value, f"kurz: '{course_field_value}'"
+        assert context.old_date == found_date, f"datum: '{found_date}'"
+        assert context.old_time == found_time, f"cas: '{found_time}'"
+        assert context.old_duration == found_duration, f"trvani: '{found_duration}'"
+        assert context.old_canceled == found_canceled, f"zruseno: {found_canceled}"
     # pokud se nejedna o skupinu, vloz i kurz
     if not context.is_group:
         course_field.send_keys(Keys.BACK_SPACE)
-        helpers.react_select_insert(context.browser, course_field, context.course)
+        # kurz je povinny select a testovaci data lekci pouzivaji vzdy existujici kurz,
+        # vyber tedy musi uspet
+        assert helpers.combobox_insert(context.browser, course_field, context.course)
     # smaz vsechny udaje
-    date_field.clear()
-    time_field.clear()
-    duration_field.clear()
+    helpers.clear_input(date_field)
+    helpers.clear_input(time_field)
+    helpers.clear_input(duration_field)
     # vloz nove udaje
     date_field.send_keys(context.date)
     time_field.send_keys(context.time)
@@ -238,7 +252,7 @@ def insert_to_form(context, verify_current_data=False):
                 note_field.get_attribute("value"),
             )
         # smazani stavajicich udaju
-        note_field.clear()
+        helpers.clear_input(note_field)
         # vlozeni novych udaju
         if (attendance["paid"] and not paid_checkbox.is_selected()) or (
             not attendance["paid"] and paid_checkbox.is_selected()
@@ -280,18 +294,13 @@ def attendance_dict(client, attendancestate, paid, note):
 
 
 def get_paid_state(found_attendance):
-    return helpers.check_class_included(
-        get_paid_button(found_attendance).get_attribute("class"), "text-success"
-    )
+    # Stabilni data-paid atribut na ikone (true/false string)
+    return get_paid_button(found_attendance).get_attribute("data-paid") == "true"
 
 
 def get_attendancestate_state(found_attendance):
-    # uloz si nalezene atributy ucasti
-    found_attendancestate_selected_list = get_select_attendancestates(
-        found_attendance
-    ).all_selected_options
-    assert len(found_attendancestate_selected_list) == 1
-    return found_attendancestate_selected_list[0].text
+    # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
+    return get_attendancestate_input(found_attendance).get_attribute("value")
 
 
 def verify_paid(found_attendance, new_paid):
@@ -303,22 +312,42 @@ def verify_attendancestate(found_attendance, new_attendancestate):
 
 
 def choose_attendancestate(found_attendance, new_attendancestate):
-    attendancestate_select = Select(
-        found_attendance.find_element(
-            By.CSS_SELECTOR, "[data-qa=lecture_select_attendance_attendancestate"
+    # Mantine Select je combobox – klikni na input pro otevreni dropdownu,
+    # pak klikni na volbu s odpovidajicim textem
+    input_el = get_attendancestate_input(found_attendance)
+    input_el.click()
+    # pozn.: WebElement.parent neni rodicovsky element, ale WebDriver instance (Selenium API) -
+    # dropdown je portalovany mimo found_attendance, volby vraci helper z [role=listbox]
+    # 2 pokusy: dropdown se muze behem cteni textu voleb prekreslit (stale element)
+    for _ in range(2):
+        options = helpers.wait_combobox_options(
+            found_attendance.parent, timeout=helpers.WAIT_TIME
         )
-    )
-    attendancestate_select.select_by_visible_text(new_attendancestate)
+        try:
+            for option in options:
+                if option.text == new_attendancestate:
+                    option.click()
+                    return
+        except StaleElementReferenceException:
+            continue
+        break
+    raise AssertionError(f"Volba '{new_attendancestate}' nebyla nalezena v dropdownu")
 
 
 @then("the lecture is added")
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na pridani lekce
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_lecture_with_context(context)
-    )
+    # pockej na dobehnuti refetchu (Card.tsx drzi data-qa=loading po dobu fetche seznamu lekci) - hledani lekci
+    # pak bezi nad ustalenym DOM
+    helpers.wait_loading_ends(context.browser)
+    # pockej na pridani lekce; refetch po mutaci muze kartu prekreslit uprostred prochazeni
+    # lekci (stale reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_lecture_with_context(context))
     # over, ze sedi pocet lekci
     assert lectures_cnt(context.browser) > context.old_lectures_cnt
 
@@ -327,18 +356,30 @@ def step_impl(context):
 def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
-    # pockej na update lekci
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_lecture_with_context(context)
-    )
+    # pockej na dobehnuti refetchu (Card.tsx drzi data-qa=loading po dobu fetche seznamu lekci) - hledani lekci
+    # pak bezi nad ustalenym DOM
+    helpers.wait_loading_ends(context.browser)
+    # pockej na update lekci; refetch po mutaci muze kartu prekreslit uprostred prochazeni
+    # lekci (stale reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_lecture_with_context(context))
     # over, ze sedi pocet lekci
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
 
 
 @then("the paid state of the attendance is updated")
 def step_impl(context):
-    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji; refetch po mutaci
+    # muze kartu prekreslit uprostred prochazeni lekci (stale reference) nebo zavrit cteny
+    # tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(
         lambda driver: verify_paid(
             find_lecture(context, context.date, context.time), context.new_paid
         )
@@ -347,8 +388,14 @@ def step_impl(context):
 
 @then("the attendance state of the attendance is updated")
 def step_impl(context):
-    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji; refetch po mutaci
+    # muze kartu prekreslit uprostred prochazeni lekci (stale reference) nebo zavrit cteny
+    # tooltip (timeout) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(
         lambda driver: verify_attendancestate(
             find_lecture(context, context.date, context.time), context.new_attendancestate
         )
@@ -499,9 +546,7 @@ def step_impl(context, client, date, time, new_attendancestate):
     lecture_to_update = find_lecture(context, date, time)
     assert lecture_to_update
     # uloz ocekavany novy stav do kontextu
-    context.cur_attendancestate = (
-        get_select_attendancestates(lecture_to_update).all_selected_options[0].text
-    )
+    context.cur_attendancestate = get_attendancestate_state(lecture_to_update)
     context.new_attendancestate = new_attendancestate
     # uloz puvodni pocet lekci
     save_old_lectures_cnt_to_context(context)

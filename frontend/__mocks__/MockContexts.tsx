@@ -1,3 +1,4 @@
+import { MantineProvider } from "@mantine/core"
 import * as React from "react"
 
 import { AttendanceStatesContext } from "../src/contexts/AttendanceStatesContext"
@@ -7,28 +8,29 @@ import { GroupsActiveContext } from "../src/contexts/GroupsActiveContext"
 import * as data from "./data.json"
 
 const MockContexts: React.FC<{ children: React.ReactNode }> = (props) => (
-    <ClientsActiveContext.Provider
-        value={{
-            clients: data.clients,
-            isLoading: false,
-            isFetching: false,
-        }}>
-        <GroupsActiveContext.Provider
+    <MantineProvider>
+        <ClientsActiveContext.Provider
             value={{
-                groups: data.groups,
+                clients: data.clients,
                 isLoading: false,
-                isFetching: false,
+                isSuccess: true,
             }}>
-            <AttendanceStatesContext.Provider
+            <GroupsActiveContext.Provider
                 value={{
-                    attendancestates: data.attendancestates,
+                    groups: data.groups,
                     isLoading: false,
-                    isFetching: false,
+                    isSuccess: true,
                 }}>
-                {props.children}
-            </AttendanceStatesContext.Provider>
-        </GroupsActiveContext.Provider>
-    </ClientsActiveContext.Provider>
+                <AttendanceStatesContext.Provider
+                    value={{
+                        attendancestates: data.attendancestates,
+                        isLoading: false,
+                    }}>
+                    {props.children}
+                </AttendanceStatesContext.Provider>
+            </GroupsActiveContext.Provider>
+        </ClientsActiveContext.Provider>
+    </MantineProvider>
 )
 
 export default MockContexts

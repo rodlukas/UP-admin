@@ -1,23 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { TextInput, Title } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import { faLock, faUser } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { Navigate } from "@tanstack/react-router"
-import classNames from "classnames"
 import * as React from "react"
-import {
-    Card,
-    Container,
-    Form,
-    FormGroup,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Label,
-} from "reactstrap"
 
 import APP_URLS from "../APP_URLS"
 import { useAuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
-import useForm from "../hooks/useForm"
 import { AuthorizationType } from "../types/models"
 
 import * as styles from "./Login.css"
@@ -35,21 +25,20 @@ const Login: React.FC = () => {
     const usernameField = React.useRef<HTMLInputElement | null>(null)
     const passwordField = React.useRef<HTMLInputElement | null>(null)
 
-    const [values, handleChange, handleSubmit] = useForm<AuthorizationType>(
-        {
+    const form = useForm<AuthorizationType>({
+        initialValues: {
             username: "",
             password: "",
         },
-        login,
-    )
+    })
 
     function login(): void {
         // workaround kvuli https://github.com/facebook/react/issues/1159
         // - nefunkcni autocomplete v nekterych prohlizecich (predevsim mobily)
-        // - v idealnim svete zde bude jen: authContextLogin(values)
+        // - v idealnim svete zde bude jen: authContextLogin(form.values)
         const valuesCurrent: AuthorizationType = {
-            username: usernameField.current ? usernameField.current.value : values.username,
-            password: passwordField.current ? passwordField.current.value : values.password,
+            username: usernameField.current ? usernameField.current.value : form.values.username,
+            password: passwordField.current ? passwordField.current.value : form.values.password,
         }
         void authContextLogin(valuesCurrent)
     }
@@ -61,9 +50,7 @@ const Login: React.FC = () => {
     }, [authContextIsAuth, authContextIsAuthenticated])
 
     const redirectFromSearch = React.useMemo(
-        () =>
-            new URLSearchParams(globalThis.location?.search ?? "").get("redirect") ??
-            undefined,
+        () => new URLSearchParams(globalThis.location?.search ?? "").get("redirect") ?? undefined,
         [],
     )
     const redirectedFrom = redirectFromSearch ?? APP_URLS.prehled.url
@@ -71,8 +58,8 @@ const Login: React.FC = () => {
         return <Navigate to={redirectedFrom} replace />
     }
     return (
-        <Container className={styles.loginContainer}>
-            <Card className={styles.loginCard}>
+        <div className={styles.loginContainer}>
+            <div className={styles.loginCard}>
                 <div className={styles.logoContainer}>
                     <img
                         src="/static/admin/android-chrome-512x512.png"
@@ -80,62 +67,52 @@ const Login: React.FC = () => {
                         className={styles.logo}
                     />
                 </div>
-                <h1 className={styles.title}>
+                <Title order={1} className={styles.title}>
                     ÚP<sub>admin</sub>
-                </h1>
-                <p className={classNames(styles.subtitle, "text-muted")}>
-                    Přihlaste se do administračního systému
-                </p>
-                <Form onSubmit={handleSubmit} data-qa="form_login">
-                    <FormGroup>
-                        <InputGroup>
-                            <InputGroupText>
-                                <Label for="username">
-                                    <FontAwesomeIcon icon={faUser} fixedWidth />
-                                </Label>
-                            </InputGroupText>
-                            <Input
-                                type="text"
-                                id="username"
-                                value={values.username}
-                                innerRef={usernameField}
-                                onChange={handleChange}
-                                required
-                                autoCapitalize="none"
-                                autoFocus
-                                placeholder="Uživatelské jméno"
-                                data-qa="login_field_username"
-                            />
-                        </InputGroup>
-                    </FormGroup>
-                    <FormGroup>
-                        <InputGroup>
-                            <InputGroupText>
-                                <Label for="password">
-                                    <FontAwesomeIcon icon={faLock} fixedWidth />
-                                </Label>
-                            </InputGroupText>
-                            <Input
-                                type="password"
-                                id="password"
-                                value={values.password}
-                                innerRef={passwordField}
-                                onChange={handleChange}
-                                required
-                                placeholder="Heslo"
-                                data-qa="login_field_password"
-                            />
-                        </InputGroup>
-                    </FormGroup>
+                </Title>
+                <p className={styles.subtitle}>Přihlaste se do administračního systému</p>
+                <form onSubmit={form.onSubmit(login)} data-qa="form_login">
+                    <div className={styles.fieldWrapper}>
+                        <TextInput
+                            leftSection={<FontAwesomeIcon icon={faUser} fixedWidth />}
+                            type="text"
+                            id="username"
+                            name="username"
+                            {...form.getInputProps("username")}
+                            ref={usernameField}
+                            required
+                            autoCapitalize="none"
+                            autoComplete="username"
+                            autoFocus
+                            // viditelny popisek misto placeholderu: placeholder pri psani
+                            // zmizi, takze uzivatel uz nevidi, co do pole patri
+                            label="Uživatelské jméno"
+                            data-qa="login_field_username"
+                        />
+                    </div>
+                    <div className={styles.fieldWrapper}>
+                        <TextInput
+                            leftSection={<FontAwesomeIcon icon={faLock} fixedWidth />}
+                            type="password"
+                            id="password"
+                            name="password"
+                            {...form.getInputProps("password")}
+                            ref={passwordField}
+                            required
+                            autoComplete="current-password"
+                            label="Heslo"
+                            data-qa="login_field_password"
+                        />
+                    </div>
                     <SubmitButton
                         data-qa="button_submit_login"
                         content="Přihlásit"
                         className={styles.submitButton}
                         loading={authContextIsLoading}
                     />
-                </Form>
-            </Card>
-        </Container>
+                </form>
+            </div>
+        </div>
     )
 }
 

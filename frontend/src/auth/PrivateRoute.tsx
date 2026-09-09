@@ -22,6 +22,8 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ title, children }) => {
     const locationPathname = useRouterState({
         select: (state) => state.location.pathname,
     })
+    // Fallback na window.location.pathname kvůli stale routeru během neauth → login redirectu
+    // (symetricky s Login.tsx, kde stejně čteme `globalThis.location.search`).
     const rawPathname = globalThis.location?.pathname ?? locationPathname
     const redirectPath = rawPathname === APP_URLS.prihlasit.url ? undefined : rawPathname
 

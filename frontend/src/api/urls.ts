@@ -23,10 +23,14 @@ export const API_URLS = Object.freeze({
         url: `lectures${API_DELIM}`,
         filters: {
             date: "date",
+            dateFrom: "dateFrom",
+            canceled: "canceled",
             client: "client",
             group: "group",
             includeGroup: "includeGroup",
         },
+        /** Není filtr, ale omezení počtu vrácených lekcí (viz `LectureViewSet.list`). */
+        limit: "limit",
         ordering: {
             start: "start",
         },

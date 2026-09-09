@@ -9,6 +9,8 @@ import * as React from "react"
 
 type Options = {
     path?: string
+    /** Další cesty, na které se dá v testu odnavigovat. Samy nic nevykreslují. */
+    paths?: string[]
 }
 
 export async function createTestRouter(ui: React.ReactElement, options: Options = {}) {
@@ -21,7 +23,16 @@ export async function createTestRouter(ui: React.ReactElement, options: Options 
         path: "/",
         component: () => ui,
     })
-    const routeTree = rootRoute.addChildren([indexRoute])
+    // vykreslují totéž co index: testované UI bývá v aplikaci součástí layoutu, takže
+    // navigaci přežije — kdyby tu cíle vykreslovaly prázdno, odnavigování by ho odmountovalo
+    const extraRoutes = (options.paths ?? []).map((extraPath) =>
+        createRoute({
+            getParentRoute: () => rootRoute,
+            path: extraPath,
+            component: () => ui,
+        }),
+    )
+    const routeTree = rootRoute.addChildren([indexRoute, ...extraRoutes])
     const router = createRouter({
         routeTree,
         history: createMemoryHistory({

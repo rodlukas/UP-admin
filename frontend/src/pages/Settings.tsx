@@ -1,9 +1,18 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCheck, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import classNames from "classnames"
+import {
+    Alert,
+    Container,
+    Select,
+    SimpleGrid,
+    Skeleton,
+    Table,
+    Text,
+    Title,
+    Tooltip,
+} from "@mantine/core"
+import { faCheck, faLayerGroup, faTasks, faTimes } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
-import { Alert, Col, Container, Label, ListGroup, ListGroupItem, Row, Table } from "reactstrap"
 
 import { useCourses, usePatchAttendanceState } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
@@ -11,17 +20,74 @@ import AppCommit from "../components/AppCommit"
 import AppDate from "../components/AppDate"
 import AppRelease from "../components/AppRelease"
 import CourseCircle from "../components/CourseCircle"
+import EmptyState from "../components/EmptyState"
 import Heading from "../components/Heading"
-import Loading from "../components/Loading"
-import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
+import { SkeletonShell } from "../components/Skeletons"
+import * as skeletonStyles from "../components/Skeletons.css"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
-import CustomInputWrapper from "../forms/helpers/CustomInputWrapper"
 import ModalSettings from "../forms/ModalSettings"
-import { EDIT_TYPE } from "../global/constants"
+import { EDIT_TYPE, GITHUB_REPO_URL } from "../global/constants"
+import { tableFlat } from "../global/surfaces.css"
+import { bold, dimmedText, iconInlineX, iconSuccess, mb0, numericCell } from "../global/utility.css"
 import { AttendanceStateType } from "../types/models"
 import { QA } from "../types/types"
 
 import * as styles from "./Settings.css"
+
+/**
+ * Kostra tabulky stavů účasti — 3 sloupce jako reálná tabulka (Název / Viditelný / Akce),
+ * plus samostatný blok pro „Konfiguraci stavů účasti" pod ní (dvojice popisek + select),
+ * stejně jako to celé sedí v jedné kartě reálného obsahu.
+ */
+const AttendanceStatesSkeleton: React.FC = () => (
+    <div className={styles.settingsColumn}>
+        <Skeleton h={26} mb="sm" radius="sm" w="55%" />
+        <div className={skeletonStyles.panel}>
+            {[0, 1, 2].map((index) => (
+                <div key={index} className={skeletonStyles.row}>
+                    <Skeleton h={18} radius="sm" w="50%" />
+                    <Skeleton h={20} w={20} circle />
+                    <Skeleton h={28} w={28} circle />
+                </div>
+            ))}
+        </div>
+        <hr />
+        <Skeleton h={22} mb="sm" mt="xs" radius="sm" w="65%" />
+        <Skeleton h={14} mb="xs" radius="sm" />
+        <Skeleton h={14} mb="md" radius="sm" w="80%" />
+        {[0, 1].map((index) => (
+            <div key={index} className={styles.configListItem}>
+                <div className={styles.configRow}>
+                    <Skeleton h={16} radius="sm" className={styles.configRowLabel} />
+                    <div className={styles.configRowControl}>
+                        <Skeleton h={36} radius="sm" />
+                    </div>
+                </div>
+            </div>
+        ))}
+    </div>
+)
+
+/**
+ * Kostra tabulky kurzů — 5 sloupců jako reálná tabulka (Název / Viditelný / Barva / Trvání /
+ * Akce), barevný kroužek kurzu (`CourseCircle`) nahrazuje kolečko stejné velikosti.
+ */
+const CoursesSkeleton: React.FC = () => (
+    <div className={styles.settingsColumn}>
+        <Skeleton h={26} mb="sm" radius="sm" w="35%" />
+        <div className={skeletonStyles.panel}>
+            {[0, 1, 2, 3, 4, 5].map((index) => (
+                <div key={index} className={skeletonStyles.row}>
+                    <Skeleton h={18} radius="sm" w="30%" />
+                    <Skeleton h={20} w={20} circle />
+                    <Skeleton h={22} w={22} circle />
+                    <Skeleton h={16} radius="sm" w="12%" />
+                    <Skeleton h={28} w={28} circle />
+                </div>
+            ))}
+        </div>
+    </div>
+)
 
 type VisibleProps = QA & {
     /** Kurz/stav účasti je viditelný (true). */
@@ -34,21 +100,14 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
         icon={visible ? faCheck : faTimes}
         size="lg"
         {...props}
-        className={classNames({
-            "text-success": visible,
-            "text-secondary": !visible,
-        })}
+        className={visible ? iconSuccess : dimmedText}
     />
 )
 
 /** Stránka s nastavením – správa kurzů, stavů účasti, info o aplikaci. */
 const Settings: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
-    const {
-        data: courses = [],
-        isLoading: coursesLoading,
-        isFetching: coursesFetching,
-    } = useCourses()
+    const { data: courses = [], isLoading: coursesLoading } = useCourses()
 
     const patchAttendanceState = usePatchAttendanceState()
 
@@ -71,248 +130,276 @@ const Settings: React.FC = () => {
         }
     }, [attendanceStatesContext.isLoading, attendanceStatesContext.attendancestates])
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const target = e.currentTarget
-        const value = Number(target.value)
-        if (target.id === "state_default_id") {
-            setAttendanceStateDefaultId(value)
-        } else if (target.id === "state_excused_id") {
-            setAttendanceStateExcusedId(value)
+    const onChangeDefaultState = (val: string | null): void => {
+        if (!val) {
+            return
         }
-        const attrApi = target.dataset.attribute
-        if (attrApi) {
-            patchAttendanceState.mutate({ id: value, [attrApi]: true })
+        const numVal = Number(val)
+        setAttendanceStateDefaultId(numVal)
+        patchAttendanceState.mutate({ id: numVal, default: true })
+    }
+
+    const onChangeExcusedState = (val: string | null): void => {
+        if (!val) {
+            return
         }
+        const numVal = Number(val)
+        setAttendanceStateExcusedId(numVal)
+        patchAttendanceState.mutate({ id: numVal, excused: true })
     }
 
     const isLoading = coursesLoading || attendanceStatesContext.isLoading
-    const isFetching = coursesFetching || attendanceStatesContext.isFetching
 
     return (
-        <>
-            <Container>
-                <Heading
-                    title={APP_URLS.nastaveni.title}
-                    isFetching={isFetching}
-                    buttons={
-                        <>
-                            <ModalSettings TYPE={EDIT_TYPE.STATE} />
-                            <ModalSettings TYPE={EDIT_TYPE.COURSE} />
-                        </>
-                    }
-                />
-                {isLoading ? (
-                    <Loading />
-                ) : (
+        <Container>
+            <Heading
+                title={APP_URLS.nastaveni.title}
+                buttons={
                     <>
-                        <Row>
-                            <Col md={6}>
-                                <h2>Stavy účasti</h2>
+                        <ModalSettings TYPE={EDIT_TYPE.STATE} />
+                        <ModalSettings TYPE={EDIT_TYPE.COURSE} />
+                    </>
+                }
+            />
+            {isLoading ? (
+                <SkeletonShell>
+                    {/* dva sloupce vedle sebe, stejně jako skutečný obsah níže */}
+                    <SimpleGrid cols={{ base: 1, md: 2 }} className={styles.settingsColumnsRow}>
+                        <AttendanceStatesSkeleton />
+                        <CoursesSkeleton />
+                    </SimpleGrid>
+                </SkeletonShell>
+            ) : (
+                <>
+                    <SimpleGrid cols={{ base: 1, md: 2 }} className={styles.settingsColumnsRow}>
+                        <div>
+                            <div className={styles.settingsColumn}>
+                                <Title order={2}>Stavy účasti</Title>
                                 {attendanceStatesContext.attendancestates.length > 0 && (
-                                    <Table striped responsive size="sm" className="table-custom">
-                                        <thead className="table-light">
-                                            <tr>
-                                                <th>Název</th>
-                                                <th className="text-center">Viditelný</th>
-                                                <th className="text-end text-md-end">Akce</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {attendanceStatesContext.attendancestates.map(
-                                                (attendancestate) => (
-                                                    <tr
-                                                        key={attendancestate.id}
-                                                        data-qa="attendancestate">
-                                                        <td data-qa="attendancestate_name">
-                                                            {attendancestate.name}
-                                                        </td>
-                                                        <td className="text-center">
-                                                            <Visible
-                                                                visible={attendancestate.visible}
-                                                                data-qa="attendancestate_visible"
-                                                            />
-                                                        </td>
-                                                        <td className="text-end text-md-end">
-                                                            <ModalSettings
-                                                                TYPE={EDIT_TYPE.STATE}
-                                                                currentObject={attendancestate}
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                ),
-                                            )}
-                                        </tbody>
-                                    </Table>
+                                    <Table.ScrollContainer
+                                        minWidth={300}
+                                        type="native"
+                                        className={styles.tableSection}>
+                                        <Table className={tableFlat}>
+                                            <Table.Thead>
+                                                <Table.Tr>
+                                                    <Table.Th>Název</Table.Th>
+                                                    <Table.Th ta="center">Viditelný</Table.Th>
+                                                    <Table.Th ta="right">Akce</Table.Th>
+                                                </Table.Tr>
+                                            </Table.Thead>
+                                            <Table.Tbody>
+                                                {attendanceStatesContext.attendancestates.map(
+                                                    (attendancestate) => (
+                                                        <Table.Tr
+                                                            key={attendancestate.id}
+                                                            data-qa="attendancestate">
+                                                            <Table.Td data-qa="attendancestate_name">
+                                                                {attendancestate.name}
+                                                            </Table.Td>
+                                                            <Table.Td ta="center">
+                                                                <Visible
+                                                                    visible={
+                                                                        attendancestate.visible
+                                                                    }
+                                                                    data-qa="attendancestate_visible"
+                                                                />
+                                                            </Table.Td>
+                                                            <Table.Td ta="right">
+                                                                <ModalSettings
+                                                                    TYPE={EDIT_TYPE.STATE}
+                                                                    currentObject={attendancestate}
+                                                                />
+                                                            </Table.Td>
+                                                        </Table.Tr>
+                                                    ),
+                                                )}
+                                            </Table.Tbody>
+                                        </Table>
+                                    </Table.ScrollContainer>
                                 )}
                                 {attendanceStatesContext.attendancestates.length === 0 && (
-                                    <p className="text-muted text-center">Žádné stavy účasti</p>
+                                    <EmptyState
+                                        icon={faTasks}
+                                        title="Žádné stavy účasti"
+                                        description={`Stavy účasti se nabízejí u každého klienta v diáři — přidej alespoň „OK“ a „omluven“.`}
+                                    />
                                 )}
                                 <hr />
-                                <h3>Konfigurace stavů účasti</h3>
+                                <Title order={3}>Konfigurace stavů účasti</Title>
                                 {attendanceStateDefaultId === undefined && (
-                                    <Alert color="danger">
+                                    <Alert color="red">
                                         Není vybraný výchozí stav, aplikace nemůže správně fungovat!
                                     </Alert>
                                 )}
                                 {attendanceStateExcusedId === undefined && (
-                                    <Alert color="danger">
-                                        Není vybraný stav „omluven“, aplikace nemůže správně
-                                        fungovat!
+                                    <Alert color="red">
+                                        Není vybraný stav &bdquo;omluven&ldquo;, aplikace nemůže
+                                        správně fungovat!
                                     </Alert>
                                 )}
-                                <p className="mb-2">
+                                <p className={mb0}>
                                     Pro správné fungování aplikace je třeba některým (viditelným)
                                     stavům účasti přiřadit zvláštní vlastnosti podle jejich významu:
                                 </p>
-                                <ListGroup className="mt-2 mb-4">
-                                    <ListGroupItem>
-                                        <Row>
-                                            <Label for="state_default_id" sm={7}>
-                                                <span className="fw-bold">
-                                                    „klient se zúčastní“
-                                                </span>{" "}
+                                <div className={styles.configList}>
+                                    <div className={styles.configListItem}>
+                                        <div className={styles.configRow}>
+                                            <label
+                                                htmlFor="state_default_id"
+                                                className={styles.configRowLabel}>
+                                                <Text component="span" fw={700}>
+                                                    &bdquo;klient se zúčastní&ldquo;
+                                                </Text>{" "}
                                                 (výchozí stav)
-                                            </Label>
-                                            <Col sm={5}>
-                                                <CustomInputWrapper
-                                                    type="select"
+                                            </label>
+                                            <div className={styles.configRowControl}>
+                                                <Select
                                                     id="state_default_id"
-                                                    value={attendanceStateDefaultId ?? "default"}
-                                                    onChange={onChange}
-                                                    data-attribute="default">
-                                                    <option disabled value="default">
-                                                        Vyberte stav...
-                                                    </option>
-                                                    {attendanceStatesContext.attendancestates.map(
-                                                        (attendancestate) =>
-                                                            // ukaz jen viditelne stavy, neviditelne nemohou byt vychozi
-                                                            attendancestate.visible && (
-                                                                <option
-                                                                    key={attendancestate.id}
-                                                                    value={attendancestate.id}>
-                                                                    {attendancestate.name}
-                                                                </option>
-                                                            ),
-                                                    )}
-                                                </CustomInputWrapper>
-                                            </Col>
-                                        </Row>
-                                    </ListGroupItem>
-                                    <ListGroupItem>
-                                        <Row>
-                                            <Label for="state_excused_id" sm={7}>
-                                                <span className="fw-bold">„klient je omluven“</span>
-                                            </Label>
-                                            <Col sm={5}>
-                                                <CustomInputWrapper
-                                                    type="select"
+                                                    data={attendanceStatesContext.attendancestates
+                                                        .filter((s) => s.visible)
+                                                        .map((s) => ({
+                                                            value: s.id.toString(),
+                                                            label: s.name,
+                                                        }))}
+                                                    value={
+                                                        attendanceStateDefaultId?.toString() ?? null
+                                                    }
+                                                    onChange={onChangeDefaultState}
+                                                    placeholder="Vyberte stav…"
+                                                    allowDeselect={false}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={styles.configListItem}>
+                                        <div className={styles.configRow}>
+                                            <label
+                                                htmlFor="state_excused_id"
+                                                className={styles.configRowLabel}>
+                                                <Text component="span" fw={700}>
+                                                    &bdquo;klient je omluven&ldquo;
+                                                </Text>
+                                            </label>
+                                            <div className={styles.configRowControl}>
+                                                <Select
                                                     id="state_excused_id"
-                                                    value={attendanceStateExcusedId ?? "default"}
-                                                    onChange={onChange}
-                                                    data-attribute="excused">
-                                                    <option disabled value="default">
-                                                        Vyberte stav...
-                                                    </option>
-                                                    {attendanceStatesContext.attendancestates.map(
-                                                        (attendancestate) =>
-                                                            // ukaz jen viditelne stavy, neviditelne nemohou byt omluvene
-                                                            attendancestate.visible && (
-                                                                <option
-                                                                    key={attendancestate.id}
-                                                                    value={attendancestate.id}>
-                                                                    {attendancestate.name}
-                                                                </option>
-                                                            ),
-                                                    )}
-                                                </CustomInputWrapper>
-                                            </Col>
-                                        </Row>
-                                    </ListGroupItem>
-                                </ListGroup>
-                            </Col>
-                            <Col md={6}>
-                                <h2>Kurzy</h2>
+                                                    data={attendanceStatesContext.attendancestates
+                                                        .filter((s) => s.visible)
+                                                        .map((s) => ({
+                                                            value: s.id.toString(),
+                                                            label: s.name,
+                                                        }))}
+                                                    value={
+                                                        attendanceStateExcusedId?.toString() ?? null
+                                                    }
+                                                    onChange={onChangeExcusedState}
+                                                    placeholder="Vyberte stav…"
+                                                    allowDeselect={false}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div className={styles.settingsColumn}>
+                                <Title order={2}>Kurzy</Title>
                                 {courses.length > 0 && (
-                                    <Table striped responsive size="sm" className="table-custom">
-                                        <thead className="table-light">
-                                            <tr>
-                                                <th>Název</th>
-                                                <th className="text-center">Viditelný</th>
-                                                <th className="text-center">Barva</th>
-                                                <th className="text-center">Trvání (min.)</th>
-                                                <th className="text-end text-md-end">Akce</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {courses.map((course) => (
-                                                <tr key={course.id} data-qa="course">
-                                                    <td data-qa="course_name">{course.name}</td>
-                                                    <td className="text-center">
-                                                        <Visible
-                                                            visible={course.visible}
-                                                            data-qa="course_visible"
-                                                        />
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <CourseCircle
-                                                            color={course.color}
-                                                            size={1.7}
-                                                            showTitle
-                                                        />
-                                                    </td>
-                                                    <td
-                                                        data-qa="course_duration"
-                                                        className="text-center">
-                                                        {course.duration}
-                                                    </td>
-                                                    <td className="text-end text-md-end">
-                                                        <ModalSettings
-                                                            TYPE={EDIT_TYPE.COURSE}
-                                                            currentObject={course}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </Table>
+                                    <Table.ScrollContainer
+                                        minWidth={300}
+                                        type="native"
+                                        className={styles.tableSection}>
+                                        <Table className={tableFlat}>
+                                            <Table.Thead>
+                                                <Table.Tr>
+                                                    <Table.Th>Název</Table.Th>
+                                                    <Table.Th ta="center">Viditelný</Table.Th>
+                                                    <Table.Th ta="center">Barva</Table.Th>
+                                                    <Table.Th ta="right">Trvání (min.)</Table.Th>
+                                                    <Table.Th ta="right">Akce</Table.Th>
+                                                </Table.Tr>
+                                            </Table.Thead>
+                                            <Table.Tbody>
+                                                {courses.map((course) => (
+                                                    <Table.Tr key={course.id} data-qa="course">
+                                                        <Table.Td data-qa="course_name">
+                                                            {course.name}
+                                                        </Table.Td>
+                                                        <Table.Td ta="center">
+                                                            <Visible
+                                                                visible={course.visible}
+                                                                data-qa="course_visible"
+                                                            />
+                                                        </Table.Td>
+                                                        <Table.Td ta="center">
+                                                            <CourseCircle
+                                                                color={course.color}
+                                                                size={1.7}
+                                                                showTitle
+                                                            />
+                                                        </Table.Td>
+                                                        {/* cisla vpravo a tabulkovymi
+                                                            cislicemi, aby se ve sloupci
+                                                            srovnala pod sebe */}
+                                                        <Table.Td
+                                                            data-qa="course_duration"
+                                                            ta="right"
+                                                            className={numericCell}>
+                                                            {course.duration}
+                                                        </Table.Td>
+                                                        <Table.Td ta="right">
+                                                            <ModalSettings
+                                                                TYPE={EDIT_TYPE.COURSE}
+                                                                currentObject={course}
+                                                            />
+                                                        </Table.Td>
+                                                    </Table.Tr>
+                                                ))}
+                                            </Table.Tbody>
+                                        </Table>
+                                    </Table.ScrollContainer>
                                 )}
                                 {courses.length === 0 && (
-                                    <p className="text-muted text-center">Žádné kurzy</p>
+                                    <EmptyState
+                                        icon={faLayerGroup}
+                                        title="Žádné kurzy"
+                                        description="Kurz určuje barvu a délku lekce; bez něj nejde lekci založit."
+                                    />
                                 )}
-                            </Col>
-                        </Row>
-                        <hr />
-                        <p className={classNames("text-center", styles.footer)}>
-                            <span className="fw-bold">Verze aplikace:</span>{" "}
-                            <AppCommit pageId="Settings" />
+                            </div>
+                        </div>
+                    </SimpleGrid>
+                    <div className={styles.footerBlock}>
+                        <p className={`${styles.footer} ${styles.emptyMessage}`}>
+                            <span className={bold}>Verze aplikace:</span> <AppCommit />
                             {" ("}
                             <AppRelease />
                             {")"} – <AppDate />{" "}
-                            <a
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href="https://github.com/rodlukas/UP-admin"
-                                className="mx-1">
-                                <FontAwesomeIcon
-                                    id="Settings_GHRepo"
-                                    icon={faGithub}
-                                    size="lg"
-                                    data-qa="lecture_attendance_paid"
-                                />
-                                <UncontrolledTooltipWrapper target="Settings_GHRepo">
-                                    GitHub repozitář ÚPadmin
-                                </UncontrolledTooltipWrapper>
-                            </a>
+                            <Tooltip label="GitHub repozitář ÚPadmin">
+                                <a
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href={GITHUB_REPO_URL}
+                                    className={iconInlineX}>
+                                    <FontAwesomeIcon
+                                        icon={faGithub}
+                                        size="lg"
+                                        data-qa="link_github_repo"
+                                    />
+                                </a>
+                            </Tooltip>
                             {" • "}
                             <a
                                 target="_blank"
-                                className="mx-1"
+                                className={iconInlineX}
                                 rel="noopener noreferrer"
                                 href="/api/docs/">
                                 API dokumentace
                             </a>
                         </p>
-                        <p className={classNames("text-center", styles.footer)}>
+                        <p className={`${styles.footer} ${styles.emptyMessage}`}>
                             S láskou vytvořil{" "}
                             <a
                                 href="https://lukasrod.cz/"
@@ -320,12 +407,12 @@ const Settings: React.FC = () => {
                                 rel="noopener noreferrer">
                                 Lukáš Rod
                             </a>
-                            , 2018&ndash;%GIT_YEAR
+                            <span>, 2018&ndash;%GIT_YEAR</span>
                         </p>
-                    </>
-                )}
-            </Container>
-        </>
+                    </div>
+                </>
+            )}
+        </Container>
     )
 }
 

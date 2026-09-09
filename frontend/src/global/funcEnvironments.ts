@@ -23,17 +23,25 @@ export function getEnvName(): string {
     return isEnvTesting() ? "testing" : isEnvDemo() ? "demo" : (process.env.NODE_ENV ?? "local")
 }
 
-/** Zjistí, jestli aktuální aplikace běží na development prostředí. */
+/** Zjistí, jestli je aktuální aplikace nasazená. */
+export function isHosted(): boolean {
+    return isEnvTesting() || isEnvProduction() || isEnvDemo()
+}
+
+/**
+ * Zjistí, jestli aktuální aplikace běží na development prostředí.
+ *
+ * Doplněk `isHosted()`, ne porovnání s `getEnvName() === "local"` — to by nikdy nebylo
+ * pravda: `getEnvName()` mimo testing/demo vrací `process.env.NODE_ENV`, které je vždy
+ * `"development"` (`npm run dev`) nebo `"production"` (`npm run build`), nikdy doslova
+ * `"local"`. Odznak "Vývojová verze" (viz EnvBadge.tsx) proto na lokálním běhu nikdy
+ * nešel vidět.
+ */
 export function isEnvLocal(): boolean {
-    return getEnvName() === "local"
+    return !isHosted()
 }
 
 /** Zjistí krátký název prostředí, kde běží aktuální aplikace. */
 export function getEnvNameShort(): string {
     return isEnvTesting() ? "TEST" : isEnvDemo() ? "DEMO" : isEnvProduction() ? "PROD" : "LOCAL"
-}
-
-/** Zjistí, jestli je aktuální aplikace nasazená. */
-export function isHosted(): boolean {
-    return isEnvTesting() || isEnvProduction() || isEnvDemo()
 }

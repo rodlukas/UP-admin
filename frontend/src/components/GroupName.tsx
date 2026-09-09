@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
-import classNames from "classnames"
 import * as React from "react"
 
 import APP_URLS from "../APP_URLS"
+import { bold as boldStyle, nowrap } from "../global/utility.css"
 import { GroupType } from "../types/models"
 
 import ConditionalWrapper from "./ConditionalWrapper"
@@ -24,9 +24,7 @@ const PlainName: React.FC<PlainGroupNameProps> = ({ group, title, bold }) => (
     <span data-qa="group_name" className={styles.plainName}>
         <ConditionalWrapper
             condition={bold}
-            wrapper={(children): React.ReactNode => (
-                <span className="fw-bold">{children}</span>
-            )}>
+            wrapper={(children): React.ReactNode => <span className={boldStyle}>{children}</span>}>
             {title && "Skupina "}
             {group.name}
         </ConditionalWrapper>
@@ -57,14 +55,14 @@ const GroupName: React.FC<GroupNameProps> = ({
     bold = false,
     noWrap = false,
 }) => {
-    const PlainGroupNameComponent: React.FC = () => (
-        <PlainName group={group} title={title} bold={bold} />
-    )
+    // element, ne komponenta definovana v renderu — ta by mela pri kazdem renderu novy typ,
+    // takze by React podstrom odmountoval a znovu namountoval
+    const plainName = <PlainName group={group} title={title} bold={bold} />
     return (
         <span>
             {"id" in group && link ? (
                 <Link to={`${APP_URLS.skupiny.url}/${group.id}`}>
-                    <span className={classNames({ "text-nowrap": noWrap })}>
+                    <span className={noWrap ? nowrap : undefined}>
                         {showCircle && (
                             <CourseCircle
                                 color={group.course.color}
@@ -72,11 +70,11 @@ const GroupName: React.FC<GroupNameProps> = ({
                                 className={styles.courseCircle}
                             />
                         )}
-                        <PlainGroupNameComponent />
+                        {plainName}
                     </span>
                 </Link>
             ) : (
-                <PlainGroupNameComponent />
+                plainName
             )}
         </span>
     )

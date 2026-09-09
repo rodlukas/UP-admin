@@ -1,3 +1,4 @@
+import concurrent.futures
 from datetime import datetime, timedelta
 from typing import Any, Dict, Iterable, Mapping, Tuple, cast
 
@@ -15,6 +16,46 @@ from admin.models import Attendance, Client, Group, Lecture
 # Cache klíč a timeout pro výpis bankovních transakcí.
 FIO_CACHE_KEY = "fio_transactions"
 FIO_CACHE_TIMEOUT_SECONDS = 60
+# Timeout na Fio (connect, read) v sekundach - ale POZOR, ani soucet neni skutecny strop
+# na CELKOVOU dobu volani: read timeout se resetuje s kazdym prijatym bytem (viz "Neither
+# the connect nor read timeouts are wall clock timeouts" v dokumentaci `requests`), takze
+# pomalu odkapavajici spojeni (par bajtu kazdych ~10 s) by jim neprošlo vůbec a bezelo by
+# donekonečna.
+FIO_TIMEOUT_SECONDS = (5, 15)
+# Skutecny wall-clock strop na CELKOVE volani Fio API - viz `perform_api_request`.
+#
+# Nestaci se spolehnout na to, ze zaseknuty pozadavek zabije worker gunicornu a ten se
+# restartuje: worker bezi pod gthread (viz Dockerfile), kde `--timeout` hlida jen "srdecni
+# tep" workeru - `ThreadWorker.notify()` (gunicorn) se vola z accept smycky bez ohledu na
+# to, jestli je nektere z jeho vlaken zaseknute v synchronnim `requests.get`. Zaseknuty
+# pozadavek by tak nezabil ani worker, jen by natrvalo obsadil jedno z jeho vlaken (a pri
+# par soubeznych volanich klidne cely worker, tedy polovinu kapacity aplikace).
+#
+# MUSI byt vyrazne vetsi nez soucet `FIO_TIMEOUT_SECONDS` (5 + 15 = 20): connect a read
+# timeout se neuplatnuji soucasne, ale za sebou (nejdriv se ceka na spojeni, pak na kazdy
+# dalsi byte), takze legitimni - jen pomalejsi - odpoved muze soucet snadno presahnout
+# (TLS handshake + postupne streamovani telu). Kdyby byl wall-clock strop roven souctu
+# (bez rezervy), takova USPESNA odpoved by byla nahodile hlasena jako "API banky
+# nefunguje", i kdyz Fio vubec nic nezavinilo.
+FIO_WALL_CLOCK_TIMEOUT_SECONDS = 30
+
+# Sdileny, OHRANICENY pool vlaken pro volani Fio API - modulova uroven, ne per-request.
+#
+# Kdyby se `ThreadPoolExecutor` vytvarel znovu pro kazdy pozadavek (jak tomu bylo drive),
+# kazde zaseknute volani (viz komentar u `FIO_TIMEOUT_SECONDS` - pomalu odkapavajici
+# spojeni) by zalozilo VLASTNI, NIKDY neuzavrene vlakno drzici otevreny TLS socket: pool
+# threads v `concurrent.futures` nejsou daemon vlakna a `shutdown(wait=False)` je
+# neodstrani z `_threads_queues`, takze by se hromadila bez horni meze a pri ukonceni
+# procesu (atexit hook `_python_exit`) by se na jejich dokonceni cekalo VSECHNA najednou -
+# coz by prodlouzilo/zablokovalo i graceful shutdown workeru pri `--max-requests`
+# recyklaci nebo deploji az do SIGKILLu.
+#
+# Sdileny pool s `max_workers=2` dela z poctu soubezne zaseknutych vlaken/soketu
+# OHRANICENY, deklarovany zdroj: nejvyse 2 zaseknuta volani najednou, dalsi pozadavky na
+# banku cekaji ve fronte executoru (a jakmile vyprsi jejich vlastni
+# `FIO_WALL_CLOCK_TIMEOUT_SECONDS`, vrati chybu, aniz by musely cekat na uvolneni slotu).
+# Pool se pro tento use-case bezne neuzaviraji - zije po dobu zivota procesu.
+_bank_executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
 
 
 class Bank:
@@ -67,11 +108,23 @@ class Bank:
     def perform_api_request(self, url_secret: str) -> Tuple[dict, int]:
         """
         Provede požadavek na Fio API a zpracuje příchozí data nebo chybu.
+
+        `requests.get` se pouští ve vlákně sdíleného modulového `_bank_executor` (viz
+        komentář u něj), na které vlákno gunicornu obsluhující tenhle HTTP požadavek čeká
+        nejvýš `FIO_WALL_CLOCK_TIMEOUT_SECONDS` (`future.result(timeout=...)`) - déle ne,
+        i kdyby samotné `requests.get` ještě běželo dál. Bez tohohle by
+        `FIO_TIMEOUT_SECONDS` u pomalu odkapávajícího spojení vůbec nezasáhlo (viz
+        komentář u konstanty) a vlákno by zůstalo obsazené donekonečna.
+
+        Zaseknuté volání tím pádem natrvalo obsadí jeden ze sdílených, OHRANIČENÝCH slotů
+        `_bank_executor` (ne vlastní, nikdy neuvolněné vlákno navíc) - `future.cancel()` by
+        tu nepomohl, `ThreadPoolExecutor` neumí zrušit už běžící task.
         """
+        future = _bank_executor.submit(requests.get, url_secret, timeout=FIO_TIMEOUT_SECONDS)
         try:
-            input_data = requests.get(url_secret, timeout=25)
+            input_data = future.result(timeout=FIO_WALL_CLOCK_TIMEOUT_SECONDS)
             input_data.raise_for_status()
-        except requests.exceptions.Timeout:
+        except (concurrent.futures.TimeoutError, requests.exceptions.Timeout):
             return self.process_error(status.HTTP_503_SERVICE_UNAVAILABLE)
         except requests.exceptions.RequestException as e:
             status_code = getattr(e.response, "status_code", status.HTTP_500_INTERNAL_SERVER_ERROR)

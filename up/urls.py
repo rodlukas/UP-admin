@@ -2,6 +2,8 @@
 Definice mapování URL na jednotlivá view.
 """
 
+from typing import Any
+
 from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import include, path, re_path
@@ -36,11 +38,24 @@ swagger_csp["font-src"] = [
 ]
 
 
+class FaviconRedirectView(RedirectView):
+    """Presmerovani na faviconu ve statice (pro starsi prohlizece).
+
+    URL se sklada az pri pozadavku. Produkcni `STORAGES` pouziva manifestovy storage,
+    u ktereho `staticfiles_storage.url()` vyhodi `ValueError`, dokud neprobehl
+    `collectstatic`; slozit URL uz v tele modulu proto znamena, ze na tom spadne import
+    URLConf, a s nim kazdy management prikaz i request.
+    """
+
+    def get_redirect_url(self, *args: Any, **kwargs: Any) -> str:
+        return staticfiles_storage.url("admin/favicon.ico")
+
+
 urlpatterns = [
     # API mapovani
     path("api/v1/", include("api.urls")),
     # favicona pro starsi prohlizece
-    path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("admin/favicon.ico"))),
+    path("favicon.ico", FaviconRedirectView.as_view()),
     # OpenAPI schema
     path("api/open-api/", SpectacularAPIView.as_view(), name="schema"),
     # Swagger UI dokumentace API (CSP úprava jen pro tuto view)

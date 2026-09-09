@@ -1,3 +1,4 @@
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import * as React from "react"
 import {
     Bar,
@@ -55,14 +56,17 @@ const ChartTooltip: React.FC<TooltipContentProps> = ({ active, label, payload })
     const total = payload.reduce((sum, entry) => sum + entry.value, 0)
     return (
         <div className={styles.tooltip}>
-            <div className="fw-semibold mb-1">{label}</div>
+            <div className={styles.tooltipLabel}>{label}</div>
             {payload.map((entry) => (
-                <div key={entry.name} style={{ color: entry.color }}>
+                <div
+                    key={entry.name}
+                    className={styles.tooltipSeriesEntry}
+                    style={assignInlineVars({ [styles.tooltipSeriesColor]: entry.color })}>
                     {entry.name}: <strong>{entry.value}</strong>
                 </div>
             ))}
             {payload.length > 1 && (
-                <div className="mt-1 border-top pt-1">
+                <div className={styles.tooltipTotal}>
                     Celkem: <strong>{total}</strong>
                 </div>
             )}
@@ -138,30 +142,30 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
 
     return (
         <div className={styles.chartPanel}>
-            <div className="d-flex flex-wrap justify-content-around mb-3 gap-2 pt-1">
-                <div className="text-center">
-                    <div className="fw-bold h5 mb-0">{analysis.happened.length}</div>
-                    <div className="text-muted small">Proběhlé</div>
+            <div className={styles.summary}>
+                <div className={styles.summaryItem}>
+                    <div className={styles.summaryNumber}>{analysis.happened.length}</div>
+                    <div className={styles.summaryLabel}>Proběhlé</div>
                 </div>
-                <div className="text-center">
-                    <div className="fw-bold h5 mb-0">{analysis.excused.length}</div>
-                    <div className="text-muted small">Omluvené</div>
+                <div className={styles.summaryItem}>
+                    <div className={styles.summaryNumber}>{analysis.excused.length}</div>
+                    <div className={styles.summaryLabel}>Omluvené</div>
                 </div>
-                <div className="text-center">
-                    <div className="fw-bold h5 mb-0">
+                <div className={styles.summaryItem}>
+                    <div className={styles.summaryNumber}>
                         {analysis.notHappened.length - analysis.excused.length}
                     </div>
-                    <div className="text-muted small">Zrušené</div>
+                    <div className={styles.summaryLabel}>Zrušené</div>
                 </div>
-                <div className="text-center">
-                    <div className="fw-bold h5 mb-0">
+                <div className={styles.summaryItem}>
+                    <div className={styles.summaryNumber}>
                         {analysis.paid.length}/{analysis.happened.length}
                     </div>
-                    <div className="text-muted small">Zaplaceno</div>
+                    <div className={styles.summaryLabel}>Zaplaceno</div>
                 </div>
             </div>
             {analysis.monthlyData.length > 0 && (
-                <div className="border-top mt-2 pt-3">
+                <div className={styles.chartDivider}>
                     <ResponsiveContainer width="100%" height={190}>
                         <BarChart data={analysis.monthlyData} margin={CHART_MARGIN}>
                             <CartesianGrid
@@ -182,7 +186,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                             <YAxis
                                 allowDecimals={false}
                                 tick={AXIS_TICK}
-                                width={44}
+                                width={52}
                                 label={{
                                     value: "Počet lekcí",
                                     angle: -90,

@@ -1,22 +1,21 @@
+import { Box, Text, Title, Tooltip } from "@mantine/core"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { ListGroup, ListGroupItem, ListGroupItemHeading } from "reactstrap"
 
 import { AnalyticsSource } from "../analytics"
 import { useLecturesFromDay } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
-import { USER_CELEBRATION } from "../global/constants"
 import {
     isToday,
     isUserCelebrating,
     prettyDateWithLongDayYearIfDiff,
     prettyTime,
-    toISODate,
 } from "../global/funcDateTime"
-import { courseDuration } from "../global/utils"
+import { inlineBlockNowrap, mb0, srOnly } from "../global/utility.css"
+import { contrastingTextColor, courseDuration } from "../global/utils"
 import { DEFAULT_DELAY, useDelayedValue } from "../hooks/useDelayedValue"
 
 import Attendances from "./Attendances"
@@ -26,8 +25,8 @@ import * as styles from "./DashboardDay.css"
 import GroupName from "./GroupName"
 import * as lectureStyles from "./Lecture.css"
 import LectureNumber from "./LectureNumber"
-import Loading from "./Loading"
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
+import LectureTypeIcon from "./LectureTypeIcon"
+import { LectureListSkeleton } from "./Skeletons"
 
 type Props = {
     /** Při požadavcích na API nedělej prodlevu (true) - prodleva se hodí při rychlém překlikávání mezi dny v diáři. */
@@ -47,113 +46,137 @@ const DashboardDay: React.FC<Props> = (props) => {
     /** Datum, pro které se má načíst data (může být zpožděno při rychlém překlikávání). */
     const delayedDate = useDelayedValue(props.date, DEFAULT_DELAY, props.withoutWaiting)
 
+    // Datum se do hooku předává tak, jak přišlo — je to už ISO datum. Průchod `new Date()`
+    // a zpátky přes `toISODate` by v pásmech se záporným posunem vrátil předchozí den
+    // (datum bez času se parsuje jako UTC, `toISODate` čte lokální složky) a rozešel by
+    // klíč dotazu s `Dashboard` a `Diary`, které posílají ISO datum přímo.
     const {
         data: lectures = [],
         isLoading,
         isFetching,
-    } = useLecturesFromDay(toISODate(new Date(delayedDate)), true)
+    } = useLecturesFromDay(delayedDate, true)
 
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())
+    const isDayToday = isToday(getDate())
 
-    const showLoading = isLoading || attendanceStatesContext.isLoading
+    /**
+     * Než prodleva dojede, míří dotaz pořád na předchozí datum — a jeho odpověď bývá v cache,
+     * takže `isLoading` je false a sloupec by pod novým datem v hlavičce vykreslil lekce toho
+     * minulého (a „Upravit lekci“ by otevřela lekci z jiného týdne). Po dobu prodlevy se proto
+     * ukazuje kostra, tedy totéž, co ukazoval dotaz vystřelený okamžitě.
+     */
+    const isDatePending = delayedDate !== props.date
+
+    const showLoading = isDatePending || isLoading || attendanceStatesContext.isLoading
+    const hasLectures = lectures.length > 0
+    let content: React.ReactNode
+    if (showLoading) {
+        content = <LectureListSkeleton count={3} />
+    } else if (hasLectures) {
+        content = lectures.map((lecture) => {
+            return (
+                <div
+                    key={lecture.id}
+                    data-qa="lecture"
+                    className={classNames(styles.lectureBlock, styles.dashboardDayItem, {
+                        [lectureStyles.lectureCanceledStruck]: lecture.canceled,
+                    })}
+                    // barvu kurzu nese pruh hlavičky (`lectureHeader`); text v něm musí
+                    // zůstat čitelný i na světlém či tmavém uživatelském hexu
+                    style={assignInlineVars(lectureStyles.lectureVars, {
+                        courseColor: lecture.course.color,
+                        courseText: contrastingTextColor(lecture.course.color),
+                    })}
+                    {...(lecture.canceled && { "data-qa-canceled": "true" })}>
+                    <div
+                        className={classNames(styles.lectureHeader, {
+                            [styles.lectureHeaderCanceled]: lecture.canceled,
+                        })}>
+                        {/* order/size odděleně: úroveň nadpisu musí navazovat na nadpis
+                            dne (h2), vzhled zůstává h4 */}
+                        <Title order={3} size="h4" className={lectureStyles.lectureTitle}>
+                            <Tooltip label={courseDuration(lecture.duration)}>
+                                <strong>{prettyTime(new Date(lecture.start))}</strong>
+                            </Tooltip>
+                        </Title>
+                        <CourseName
+                            course={lecture.course}
+                            withDot={false}
+                            className={styles.lectureHeaderCourse}
+                        />
+                        <LectureTypeIcon lecture={lecture} />
+                        <LectureNumber lecture={lecture} />
+                        <ModalLectures
+                            object={lecture.group ?? lecture.attendances[0].client}
+                            currentLecture={lecture}
+                            source={source}
+                        />
+                    </div>
+                    <div
+                        className={classNames(styles.lectureBody, {
+                            [styles.lectureBodyCanceled]: lecture.canceled,
+                        })}>
+                        {/* přeškrtnutí je pro oko, tenhle text pro čtečku — bez něj by stav
+                            nesl jen vzhled (WCAG 1.4.1) */}
+                        {lecture.canceled && <span className={srOnly}>Zrušeno</span>}
+                        {lecture.group && (
+                            <Title order={4} size="h5" className={lectureStyles.lectureSubtitle}>
+                                <GroupName group={lecture.group} title link />
+                            </Title>
+                        )}
+                        <Attendances lecture={lecture} showClient source={source} />
+                    </div>
+                </div>
+            )
+        })
+    } else {
+        content = (
+            <div
+                className={classNames(
+                    lectureStyles.lecture,
+                    styles.lectureFree,
+                    styles.dashboardDayItem,
+                )}>
+                <Text c="dimmed" ta="center" fw={500}>
+                    Volno
+                </Text>
+            </div>
+        )
+    }
 
     return (
-        <ListGroup className={styles.dashboardDayWrapper}>
-            <ListGroupItem
-                color={isToday(getDate()) ? "primary" : ""}
-                className={classNames("text-center", styles.dashboardDayDate)}>
-                <h4
-                    className={classNames(
-                        "mb-0",
-                        "text-nowrap",
-                        "d-inline-block",
-                        isUserCelebratingResult === USER_CELEBRATION.NOTHING
-                            ? styles.celebrationNone
-                            : "celebration",
-                    )}>
+        <div
+            className={classNames(styles.dashboardDayWrapper, {
+                [styles.dashboardDayToday]: isDayToday,
+            })}>
+            <Box
+                className={classNames(styles.dashboardDayDate, {
+                    [styles.dashboardDayDateToday]: isDayToday,
+                })}>
+                <Title
+                    order={2}
+                    size="h4"
+                    // `celebrationNone` (flex: 1; min-width: 0) platí bez ohledu na oslavu —
+                    // je to layout hlavičky dne, ne nic specifického pro "bez oslavy" (viz
+                    // DashboardDay.css.ts). Dřívější `"celebration"` byl literál bez
+                    // odpovídající třídy v bundlu (Celebration.css.ts exportuje jen hashované
+                    // jméno), takže ve svátečních dnech titulek ztrácel flex a přetékal.
+                    className={classNames(styles.celebrationNone, mb0, inlineBlockNowrap)}>
                     <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
-                </h4>
+                </Title>
                 <ModalLecturesWizard
                     date={props.date}
-                    dropdownClassName="float-end"
+                    dropdownClassName={styles.dashboardDayDateAction}
                     dropdownSize="sm"
+                    dropdownVariant="subtle"
                     dropdownDirection="up"
                     isFetching={isFetching && !isLoading}
                     source={source}
                 />
-            </ListGroupItem>
-            {showLoading ? (
-                <ListGroupItem className={lectureStyles.lecture}>
-                    <Loading />
-                </ListGroupItem>
-            ) : lectures.length > 0 ? (
-                lectures.map((lecture) => {
-                    const className = classNames(lectureStyles.lecture, {
-                        [styles.lectureGroup]: lecture.group && !lecture.canceled,
-                        [lectureStyles.lectureCanceled]: lecture.canceled,
-                        [styles.lectureCanceledDashboardday]: lecture.canceled,
-                    })
-                    return (
-                        <ListGroupItem
-                            key={lecture.id}
-                            data-qa="lecture"
-                            className={className}
-                            {...(lecture.canceled && { "data-qa-canceled": "true" })}>
-                            <div
-                                className={classNames(
-                                    lectureStyles.lectureHeading,
-                                    styles.lectureHeading,
-                                )}
-                                style={assignInlineVars(styles.dashboardDayVars, {
-                                    courseBackground: lecture.course.color,
-                                })}>
-                                <h4>
-                                    <span
-                                        id={`Card_CourseDuration_${lecture.id}`}
-                                        className="fw-bold">
-                                        {prettyTime(new Date(lecture.start))}
-                                    </span>
-                                    <UncontrolledTooltipWrapper
-                                        target={`Card_CourseDuration_${lecture.id}`}>
-                                        {courseDuration(lecture.duration)}
-                                    </UncontrolledTooltipWrapper>
-                                </h4>
-                                <CourseName course={lecture.course} className={styles.courseName} />
-                                <LectureNumber
-                                    lecture={lecture}
-                                    colorize
-                                    className={classNames(
-                                        lectureStyles.lectureNumber,
-                                        styles.lectureNumber,
-                                    )}
-                                    color="light"
-                                />
-                                <ModalLectures
-                                    object={lecture.group ?? lecture.attendances[0].client}
-                                    currentLecture={lecture}
-                                    source={source}
-                                />
-                            </div>
-                            <div className={lectureStyles.lectureContent}>
-                                {lecture.group && (
-                                    <h5>
-                                        <GroupName group={lecture.group} title link />
-                                    </h5>
-                                )}
-                                <Attendances lecture={lecture} showClient source={source} />
-                            </div>
-                        </ListGroupItem>
-                    )
-                })
-            ) : (
-                <ListGroupItem className={classNames(lectureStyles.lecture, styles.lectureFree)}>
-                    <ListGroupItemHeading className="text-muted text-center">
-                        Volno
-                    </ListGroupItemHeading>
-                </ListGroupItem>
-            )}
-        </ListGroup>
+            </Box>
+            {content}
+        </div>
     )
 }
 

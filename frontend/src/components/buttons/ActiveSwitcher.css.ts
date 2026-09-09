@@ -1,7 +1,10 @@
-import { globalStyle, style } from "@vanilla-extract/css"
+import { style } from "@vanilla-extract/css"
 
-export const activeSwitcher = style({})
-
-globalStyle(`${activeSwitcher} .active`, {
-    cursor: "default !important",
+/** Šířka půlek: na mobilu ať přepínač zabere celý řádek, jinak drží čitelné minimum. */
+export const activeSwitcher = style({
+    "@media": {
+        "(max-width: 767.98px)": {
+            width: "100%",
+        },
+    },
 })

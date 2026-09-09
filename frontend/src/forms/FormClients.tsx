@@ -1,17 +1,6 @@
+import { Checkbox, Group, Modal, SimpleGrid, Textarea, TextInput, Title } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import * as React from "react"
-import {
-    Alert,
-    Col,
-    Form,
-    FormGroup,
-    Input,
-    InputGroup,
-    InputGroupText,
-    Label,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-} from "reactstrap"
 
 import { AnalyticsSource, trackEvent } from "../analytics"
 import { useCreateClient, useDeleteClient, useUpdateClient } from "../api/hooks"
@@ -19,12 +8,15 @@ import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import ClientName from "../components/ClientName"
-import Tooltip from "../components/Tooltip"
+import InfoTooltip from "../components/InfoTooltip"
 import { TEXTS } from "../global/constants"
 import { capitalizeString, prettyPhone } from "../global/utils"
 import { ModalClientsData } from "../types/components"
 import { ClientPostApiDummy, ClientType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
+
+import * as styles from "./FormBase.css"
+import * as phoneStyles from "./FormClients.css"
 
 type Props = {
     /** Klient. */
@@ -49,51 +41,24 @@ const FormClients: React.FC<Props> = (props) => {
     const updateClient = useUpdateClient()
     const deleteClient = useDeleteClient()
 
-    /** Křestní jméno klienta. */
-    const [firstname, setFirstname] = React.useState(props.client.firstname)
-    /** Příjmení klienta. */
-    const [surname, setSurname] = React.useState(props.client.surname)
-    /** E-mail klienta. */
-    const [email, setEmail] = React.useState(props.client.email)
-    /** Telefonní číslo klienta. */
-    const [phone, setPhone] = React.useState(prettyPhone(props.client.phone))
-    /** Poznámka ke klientovi. */
-    const [note, setNote] = React.useState(props.client.note)
-    /** Klient je aktivní (true). */
-    const [active, setActive] = React.useState(props.client.active)
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        props.setFormDirty()
-        const target = e.currentTarget
-        let value = target.type === "checkbox" ? target.checked : target.value
-        // pri psani rozdeluj cislo na trojice
-        if (target.id === "phone") {
-            value = (value as string)
-                .replace(/([0-9]{3})([^\s])/, "$1 $2")
-                .replace(/([0-9]{3}) ([0-9]{3})([^\s])/, "$1 $2 $3")
-            setPhone(value)
-        }
-        // nastav velke pocatecni pismeno ve jmenu i prijmeni klienta
-        else if (target.id === "firstname") {
-            value = capitalizeString(value as string)
-            setFirstname(value)
-        } else if (target.id === "surname") {
-            value = capitalizeString(value as string)
-            setSurname(value)
-        } else if (target.id === "email") {
-            setEmail(value as string)
-        } else if (target.id === "note") {
-            setNote(value as string)
-        } else if (target.id === "active") {
-            setActive(value as boolean)
-        }
-    }
+    const form = useForm({
+        initialValues: {
+            firstname: props.client.firstname,
+            surname: props.client.surname,
+            email: props.client.email,
+            phone: prettyPhone(props.client.phone),
+            note: props.client.note,
+            active: props.client.active,
+        },
+        onValuesChange: () => props.setFormDirty(),
+    })
 
     const onSubmit = React.useCallback(
-        (e: React.FormEvent<HTMLFormElement>): void => {
+        (e: React.SyntheticEvent<HTMLFormElement>): void => {
             // stopPropagation, aby nedoslo k propagaci submit na nadrazene formulare pri vnoreni modalnich oken
             e.stopPropagation()
             e.preventDefault()
+            const { firstname, surname, email, phone, note, active } = form.getValues()
             const dataPost = { firstname, surname, email, phone, note, active }
 
             if (isClient(props.client)) {
@@ -119,7 +84,7 @@ const FormClients: React.FC<Props> = (props) => {
                 })
             }
         },
-        [firstname, surname, email, phone, note, active, props, createClient, updateClient],
+        [form, props, createClient, updateClient],
     )
 
     const close = (): void => {
@@ -131,166 +96,200 @@ const FormClients: React.FC<Props> = (props) => {
             deleteClient.mutate(id, {
                 onSuccess: () => {
                     trackEvent("client_deleted", { source: props.source })
-                    props.funcForceClose(true, { active, isDeleted: true })
+                    props.funcForceClose(true, {
+                        active: form.getValues().active,
+                        isDeleted: true,
+                    })
                 },
             })
         },
-        [deleteClient, props, active],
+        [deleteClient, props, form],
     )
 
     const isSubmit = createClient.isPending || updateClient.isPending
+    const hasName = Boolean(form.values.firstname.trim() || form.values.surname.trim())
     return (
-        <Form onSubmit={onSubmit} data-qa="form_client">
-            <ModalHeader toggle={close}>
-                {isClient(props.client) ? "Úprava" : "Přidání"} klienta:{" "}
-                <ClientName client={{ firstname, surname }} bold />
-            </ModalHeader>
-            <ModalBody>
-                <FormGroup row className="form-group-required">
-                    <Label for="firstname" sm={2}>
-                        Jméno
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="text"
-                            id="firstname"
-                            value={firstname}
-                            onChange={onChange}
-                            required
-                            autoFocus
-                            data-qa="client_field_firstname"
-                            spellCheck
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row className="form-group-required">
-                    <Label for="surname" sm={2}>
-                        Příjmení
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="text"
-                            id="surname"
-                            value={surname}
-                            onChange={onChange}
-                            required
-                            data-qa="client_field_surname"
-                            spellCheck
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="email" sm={2}>
-                        Email
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={onChange}
-                            data-qa="client_field_email"
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="phone" sm={2}>
-                        Telefon
-                    </Label>
-                    <Col sm={10}>
-                        <InputGroup>
-                            <InputGroupText>
-                                <Label for="phone">+420</Label>
-                            </InputGroupText>
-                            <Input
-                                type="tel"
-                                id="phone"
-                                value={phone}
-                                maxLength={11}
-                                onChange={onChange}
-                                pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
-                                data-qa="client_field_phone"
+        <form onSubmit={onSubmit} data-qa="form_client">
+            <Modal.Header>
+                <Modal.Title>
+                    {isClient(props.client) ? "Úprava" : "Přidání"} klienta
+                    {/* dvojtečka až se jménem — u prázdného formuláře by za nadpisem visela */}
+                    {hasName && (
+                        <>
+                            {": "}
+                            <ClientName
+                                client={{
+                                    firstname: form.values.firstname,
+                                    surname: form.values.surname,
+                                }}
+                                bold
                             />
-                        </InputGroup>
-                    </Col>
-                </FormGroup>
-                <FormGroup row>
-                    <Label for="note" sm={2}>
-                        Poznámka
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="textarea"
-                            id="note"
-                            value={note}
-                            onChange={onChange}
-                            data-qa="client_field_note"
-                            spellCheck
-                        />
-                    </Col>
-                </FormGroup>
-                <FormGroup row className="align-items-center">
-                    <Label for="active" sm={2} data-qa="client_label_active">
-                        Aktivní
-                    </Label>
-                    <Col sm={10}>
-                        <Input
-                            type="checkbox"
-                            id="active"
-                            checked={active}
-                            onChange={onChange}
-                            data-qa="client_checkbox_active"
-                        />
-                        <Label for="active" check>
-                            Je aktivní
-                        </Label>{" "}
-                        {!active && (
-                            <Tooltip postfix="active" text={TEXTS.WARNING_INACTIVE_CLIENT_INFO} />
-                        )}
-                    </Col>
-                </FormGroup>
-                {isClient(props.client) && (
-                    <>
-                        <hr />
-                        <FormGroup row>
-                            <Label sm={2} className="text-muted">
-                                Smazání
-                            </Label>
-                            <Col sm={10}>
-                                <Alert color="warning">
-                                    <p>
-                                        Klienta lze smazat pouze pokud nemá žádné lekce, smažou se
-                                        také všechny jeho zájmy o kurzy a členství ve skupinách
-                                    </p>
-                                    <DeleteButton
-                                        content="klienta"
-                                        onClick={(): void => {
-                                            if (
-                                                isClient(props.client) &&
-                                                globalThis.confirm(
-                                                    `Opravdu chcete smazat klienta ${firstname} ${surname}?`,
-                                                )
-                                            ) {
-                                                handleDelete(props.client.id)
-                                            }
+                        </>
+                    )}
+                </Modal.Title>
+                <Modal.CloseButton />
+            </Modal.Header>
+            <Modal.Body>
+                <div className={styles.formContent}>
+                    <div className={styles.formSection}>
+                        <Title order={6} className={styles.formSectionTitle}>
+                            Základní údaje
+                        </Title>
+                        <div className={styles.fieldStack}>
+                            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
+                                <div className={styles.fieldBlock}>
+                                    <TextInput
+                                        id="firstname"
+                                        value={form.values.firstname}
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ): void => {
+                                            form.setFieldValue(
+                                                "firstname",
+                                                capitalizeString(e.currentTarget.value),
+                                            )
                                         }}
-                                        data-qa="button_delete_client"
+                                        label="Jméno"
+                                        required
+                                        withAsterisk
+                                        data-autofocus
+                                        data-qa="client_field_firstname"
+                                        spellCheck
                                     />
-                                </Alert>
-                            </Col>
-                        </FormGroup>
-                    </>
-                )}
-            </ModalBody>
-            <ModalFooter>
-                <CancelButton onClick={close} />{" "}
+                                </div>
+                                <div className={styles.fieldBlock}>
+                                    <TextInput
+                                        id="surname"
+                                        value={form.values.surname}
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ): void => {
+                                            form.setFieldValue(
+                                                "surname",
+                                                capitalizeString(e.currentTarget.value),
+                                            )
+                                        }}
+                                        label="Příjmení"
+                                        required
+                                        withAsterisk
+                                        data-qa="client_field_surname"
+                                        spellCheck
+                                    />
+                                </div>
+                            </SimpleGrid>
+                            <div className={styles.fieldBlock}>
+                                <TextInput
+                                    type="email"
+                                    id="email"
+                                    value={form.values.email}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                        form.setFieldValue("email", e.currentTarget.value)
+                                    }}
+                                    label="E-mail"
+                                    data-qa="client_field_email"
+                                />
+                            </div>
+                            <div className={styles.fieldBlock}>
+                                <TextInput
+                                    type="tel"
+                                    id="phone"
+                                    value={form.values.phone}
+                                    maxLength={11}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                                        // pri psani rozdeluj cislo na trojice
+                                        const formatted = e.currentTarget.value
+                                            .replace(/(\d{3})([^\s])/, "$1 $2")
+                                            .replace(/(\d{3}) (\d{3})([^\s])/, "$1 $2 $3")
+                                        form.setFieldValue("phone", formatted)
+                                    }}
+                                    label="Telefon"
+                                    pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
+                                    data-qa="client_field_phone"
+                                    className={phoneStyles.phoneInput}
+                                    leftSection={<span>+420</span>}
+                                    leftSectionWidth="3.1rem"
+                                    leftSectionProps={{ className: phoneStyles.phonePrefixSection }}
+                                />
+                            </div>
+                            <div className={styles.fieldBlock}>
+                                <Textarea
+                                    id="note"
+                                    value={form.values.note}
+                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+                                        form.setFieldValue("note", e.currentTarget.value)
+                                    }}
+                                    label="Poznámka"
+                                    data-qa="client_field_note"
+                                    spellCheck
+                                    autosize
+                                    minRows={3}
+                                    maxRows={8}
+                                />
+                            </div>
+                            <div className={styles.fieldBlock}>
+                                <label
+                                    htmlFor="active"
+                                    data-qa="client_label_active"
+                                    className={styles.fieldLabel}>
+                                    Stav klienta
+                                </label>
+                                <div className={styles.inlineCheckboxRow}>
+                                    <Checkbox
+                                        id="active"
+                                        checked={form.values.active}
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ): void => {
+                                            form.setFieldValue("active", e.currentTarget.checked)
+                                        }}
+                                        data-qa="client_checkbox_active"
+                                        label="Je aktivní"
+                                    />
+                                    {!form.values.active && (
+                                        <InfoTooltip text={TEXTS.WARNING_INACTIVE_CLIENT_INFO} />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {isClient(props.client) && (
+                        <div className={`${styles.formSection} ${styles.formSectionDanger}`}>
+                            <Title order={6} className={styles.formSectionTitle}>
+                                Smazání
+                            </Title>
+                            <div className={styles.deleteAlertText}>
+                                <p>
+                                    Klienta lze smazat pouze pokud nemá žádné lekce, smažou se také
+                                    všechny jeho zájmy o kurzy a členství ve skupinách.
+                                </p>
+                                <DeleteButton
+                                    content="klienta"
+                                    onClick={(): void => {
+                                        if (
+                                            isClient(props.client) &&
+                                            globalThis.confirm(
+                                                `Opravdu chcete smazat klienta ${form.values.firstname} ${form.values.surname}?`,
+                                            )
+                                        ) {
+                                            handleDelete(props.client.id)
+                                        }
+                                    }}
+                                    data-qa="button_delete_client"
+                                />
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </Modal.Body>
+            <Group justify="flex-end" px="md" pb="md" className={styles.modalActions}>
+                <CancelButton onClick={close} />
                 <SubmitButton
                     loading={isSubmit}
                     data-qa="button_submit_client"
                     content={isClient(props.client) ? "Uložit" : "Přidat"}
                 />
-            </ModalFooter>
-        </Form>
+            </Group>
+        </form>
     )
 }
 

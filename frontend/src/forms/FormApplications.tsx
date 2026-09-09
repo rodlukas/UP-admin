@@ -1,11 +1,12 @@
+import { Group, Modal, Textarea, Title } from "@mantine/core"
+import { useForm } from "@mantine/form"
 import * as React from "react"
-import { Col, Form, FormGroup, Input, Label, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import { useClients, useCreateApplication, useUpdateApplication } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
-import Loading from "../components/Loading"
+import { FormSkeleton } from "../components/Skeletons"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import {
     ApplicationPostApi,
@@ -17,6 +18,7 @@ import {
 } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
+import * as baseStyles from "./FormBase.css"
 import Or from "./helpers/Or"
 import SelectClient from "./helpers/SelectClient"
 import SelectCourse from "./helpers/SelectCourse"
@@ -43,49 +45,64 @@ const FormApplications: React.FC<Props> = (props) => {
     const createApplication = useCreateApplication()
     const updateApplication = useUpdateApplication()
 
-    /** Kurz zájemce. */
-    const [course, setCourse] = React.useState<ApplicationPostApiDummy["course"]>(
-        props.application.course,
-    )
-    /** Klient. */
-    const [client, setClient] = React.useState<ApplicationPostApiDummy["client"]>(
-        props.application.client,
-    )
-    /** Poznámka k zájemci o kurz. */
-    const [note, setNote] = React.useState<ApplicationPostApiDummy["note"]>(props.application.note)
+    const form = useForm<{
+        course: ApplicationPostApiDummy["course"]
+        client: ApplicationPostApiDummy["client"]
+        note: ApplicationPostApiDummy["note"]
+    }>({
+        initialValues: {
+            course: props.application.course,
+            client: props.application.client,
+            note: props.application.note,
+        },
+        onValuesChange: () => props.setFormDirty(),
+    })
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        props.setFormDirty()
-        const target = e.currentTarget
-        const value = target.type === "checkbox" ? target.checked : target.value
-        if (target.id === "note") {
-            setNote(value as string)
-        }
-    }
+    // Po pokusu o odeslání s prázdným povinným Selectem (skrytý input neumí constraint
+    // validaci, takže reportValidity je no-op) zobrazíme chybu přes `error` prop Selectů.
+    const [triedSubmit, setTriedSubmit] = React.useState(false)
 
     const onSelectChange = (
         name: "course" | "client",
         obj?: CourseType | ClientType | null,
     ): void => {
-        props.setFormDirty()
         if (obj === undefined) {
             obj = null
         }
         if (name === "course") {
-            setCourse(obj as CourseType | null)
+            form.setFieldValue("course", obj as CourseType | null)
+            // po doplnění obou povinných polí „odjisti" submit-validaci (counterpart bereme
+            // z aktuálních hodnot – mění se jen tento field), ať chyba znovu nenaskočí jen
+            // kvůli pozdějšímu smazání bez nového pokusu o odeslání
+            if (obj && form.values.client) {
+                setTriedSubmit(false)
+            }
         } else if (name === "client") {
-            setClient(obj as ClientType | null)
+            form.setFieldValue("client", obj as ClientType | null)
+            if (obj && form.values.course) {
+                setTriedSubmit(false)
+            }
         }
     }
 
     const isApplicationValue = isApplication(props.application)
 
     const onSubmit = React.useCallback(
-        (e: React.FormEvent<HTMLFormElement>): void => {
+        (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
-            const courseId = course!.id
-            const clientId = client!.id
-            const dataPost: ApplicationPostApi = { course_id: courseId, client_id: clientId, note }
+            const { course, client, note } = form.getValues()
+            // pojistka: bez vybraneho kurzu/klienta neodesilame a zobrazime chybu u Selectu
+            if (!course || !client) {
+                setTriedSubmit(true)
+                return
+            }
+            const courseId = course.id
+            const clientId = client.id
+            const dataPost: ApplicationPostApi = {
+                course_id: courseId,
+                client_id: clientId,
+                note,
+            }
 
             if (isApplication(props.application)) {
                 const dataPut: ApplicationPutApi = { ...dataPost, id: props.application.id }
@@ -104,7 +121,7 @@ const FormApplications: React.FC<Props> = (props) => {
                 })
             }
         },
-        [course, client, note, props, createApplication, updateApplication],
+        [form, props, createApplication, updateApplication],
     )
 
     const close = (): void => {
@@ -112,85 +129,95 @@ const FormApplications: React.FC<Props> = (props) => {
     }
 
     const processAdditionOfClient = (newClient: ClientType): void => {
-        props.setFormDirty()
-        setClient(newClient)
+        form.setFieldValue("client", newClient)
     }
 
     const isLoading = clientsLoading || coursesVisibleContext.isLoading
     const isSubmit = createApplication.isPending || updateApplication.isPending
 
     return (
-        <Form onSubmit={onSubmit} data-qa="form_application">
-            <ModalHeader toggle={close}>
-                {isApplicationValue ? "Úprava" : "Přidání"} zájemce o kurz
-            </ModalHeader>
-            <ModalBody>
+        <form onSubmit={onSubmit} data-qa="form_application">
+            <Modal.Header>
+                <Modal.Title>
+                    {isApplicationValue ? "Úprava" : "Přidání"} zájemce o kurz
+                </Modal.Title>
+                <Modal.CloseButton />
+            </Modal.Header>
+            <Modal.Body>
                 {isLoading ? (
-                    <Loading />
+                    <FormSkeleton count={3} />
                 ) : (
-                    <>
-                        <FormGroup row className="form-group-required">
-                            <Label for="client" sm={3}>
-                                Klient
-                            </Label>
-                            <Col sm={9}>
-                                <SelectClient
-                                    required
-                                    value={client}
-                                    options={clientsData}
-                                    onChangeCallback={onSelectChange}
-                                />
-                                <Or
-                                    content={
-                                        <ModalClients
-                                            processAdditionOfClient={processAdditionOfClient}
-                                            withOr
-                                            source="applications_form"
-                                        />
-                                    }
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row className="form-group-required">
-                            <Label for="course" sm={3}>
-                                Kurz
-                            </Label>
-                            <Col sm={9}>
-                                <SelectCourse
-                                    required
-                                    value={course}
-                                    onChangeCallback={onSelectChange}
-                                    options={coursesVisibleContext.courses}
-                                />
-                            </Col>
-                        </FormGroup>
-                        <FormGroup row>
-                            <Label for="note" sm={3}>
-                                Poznámka
-                            </Label>
-                            <Col sm={9}>
-                                <Input
-                                    type="textarea"
-                                    id="note"
-                                    value={note}
-                                    onChange={onChange}
-                                    data-qa="application_field_note"
-                                    spellCheck
-                                />
-                            </Col>
-                        </FormGroup>
-                    </>
+                    <div className={baseStyles.formContent}>
+                        <div className={baseStyles.formSection}>
+                            <Title order={6} className={baseStyles.formSectionTitle}>
+                                Základní údaje
+                            </Title>
+                            <div className={baseStyles.fieldStack}>
+                                <div className={baseStyles.fieldBlock}>
+                                    <SelectClient
+                                        required
+                                        label="Klient"
+                                        autoFocus={false}
+                                        value={form.values.client}
+                                        options={clientsData}
+                                        onChangeCallback={onSelectChange}
+                                        error={
+                                            triedSubmit && !form.values.client
+                                                ? "Vyberte klienta"
+                                                : undefined
+                                        }
+                                    />
+                                    <Or
+                                        content={
+                                            <ModalClients
+                                                processAdditionOfClient={processAdditionOfClient}
+                                                withOr
+                                                source="applications_form"
+                                            />
+                                        }
+                                    />
+                                </div>
+                                <div className={baseStyles.fieldBlock}>
+                                    <SelectCourse
+                                        required
+                                        label="Kurz"
+                                        value={form.values.course}
+                                        onChangeCallback={onSelectChange}
+                                        options={coursesVisibleContext.courses}
+                                        error={
+                                            triedSubmit && !form.values.course
+                                                ? "Vyberte kurz"
+                                                : undefined
+                                        }
+                                    />
+                                </div>
+                                <div className={baseStyles.fieldBlock}>
+                                    <Textarea
+                                        id="note"
+                                        {...form.getInputProps("note")}
+                                        label="Poznámka"
+                                        data-qa="application_field_note"
+                                        spellCheck
+                                        autosize
+                                        minRows={3}
+                                        maxRows={8}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 )}
-            </ModalBody>
-            <ModalFooter>
-                <CancelButton onClick={close} />{" "}
+            </Modal.Body>
+            <Group justify="flex-end" px="md" pb="md" className={baseStyles.modalActions}>
+                <CancelButton onClick={close} />
                 <SubmitButton
                     loading={isSubmit}
+                    disabled={isLoading}
                     data-qa="button_submit_application"
                     content={isApplicationValue ? "Uložit" : "Přidat"}
                 />
-            </ModalFooter>
-        </Form>
+            </Group>
+        </form>
     )
 }
 

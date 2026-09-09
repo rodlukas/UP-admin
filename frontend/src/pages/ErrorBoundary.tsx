@@ -1,14 +1,17 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { Alert, Container } from "@mantine/core"
 import { faPenNib } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as Sentry from "@sentry/browser"
 import { useRouterState } from "@tanstack/react-router"
 import * as React from "react"
-import { Alert, Container } from "reactstrap"
 
 import Token from "../auth/Token"
 import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"
+import { bold } from "../global/utility.css"
 import { TokenDecodedType } from "../types/models"
+
+import * as styles from "./ErrorBoundary.css"
 
 type Props = {
     children: React.ReactNode
@@ -45,9 +48,6 @@ class ErrorBoundary extends React.Component<Props, State> {
     }
 
     static getDerivedStateFromError(): Partial<State> {
-        // v pripade, ze doslo k chybe pri otvirani formulare, odstran tento priznak z body
-        // jinak bude pro body nastaveno overflow: hidden a nepujde scrollovat
-        document.body.classList.remove("modal-open")
         return { hasError: true }
     }
 
@@ -79,7 +79,7 @@ class ErrorBoundary extends React.Component<Props, State> {
             return (
                 <Container>
                     <Heading title="Chyba aplikace" />
-                    <p>
+                    <p className={styles.description}>
                         Nastala neočekávaná chyba v aplikaci. Zkuste tuto stránku{" "}
                         <CustomButton
                             content={"načíst znovu"}
@@ -87,39 +87,40 @@ class ErrorBoundary extends React.Component<Props, State> {
                         />
                         .
                     </p>
-                    <CustomButton
-                        onClick={(): void => {
-                            Sentry.showReportDialog({
-                                title: "Došlo k chybě v aplikaci",
-                                user: {
-                                    email: decodedToken.email,
-                                    name: decodedToken.username,
-                                },
-                                labelName: "Jméno",
-                                labelClose: "Zavřít",
-                                labelSubmit: "Odeslat",
-                                labelComments: "Co se stalo?",
-                                eventId: this.state.eventId,
-                                subtitle: "Administrátor byl upozorněn na chybu.",
-                                subtitle2: "Pokud chcete pomoct, níže napište, co se stalo.",
-                                successMessage: "Vaše zpětná vazba byla odeslána. Díky!",
-                                errorFormEntry:
-                                    "Některá pole nejsou validní. Opravte, prosím, chyby a odešlete formulář znovu.",
-                                errorGeneric:
-                                    "Při odesílání formuláře nastala neznámá chyba. Zkuste to znovu.",
-                            })
-                        }}
-                        content={
-                            <>
-                                Odeslat zpětnou vazbu{" "}
-                                <FontAwesomeIcon icon={faPenNib} transform="right-2" />
-                            </>
-                        }
-                    />
-                    <Alert color="danger" className="mt-4">
-                        <h4 className="alert-heading">Popis chyby</h4>
-                        <details className="text-start" style={{ whiteSpace: "pre-wrap" }}>
-                            <summary className="fw-bold">{this.state.error?.toString()}</summary>
+                    <div className={styles.actions}>
+                        <CustomButton
+                            onClick={(): void => {
+                                Sentry.showReportDialog({
+                                    title: "Došlo k chybě v aplikaci",
+                                    user: {
+                                        email: decodedToken.email,
+                                        name: decodedToken.username,
+                                    },
+                                    labelName: "Jméno",
+                                    labelClose: "Zavřít",
+                                    labelSubmit: "Odeslat",
+                                    labelComments: "Co se stalo?",
+                                    eventId: this.state.eventId,
+                                    subtitle: "Administrátor byl upozorněn na chybu.",
+                                    subtitle2: "Pokud chcete pomoct, níže napište, co se stalo.",
+                                    successMessage: "Vaše zpětná vazba byla odeslána. Díky!",
+                                    errorFormEntry:
+                                        "Některá pole nejsou validní. Opravte, prosím, chyby a odešlete formulář znovu.",
+                                    errorGeneric:
+                                        "Při odesílání formuláře nastala neznámá chyba. Zkuste to znovu.",
+                                })
+                            }}
+                            content={
+                                <>
+                                    Odeslat zpětnou vazbu{" "}
+                                    <FontAwesomeIcon icon={faPenNib} transform="right-2" />
+                                </>
+                            }
+                        />
+                    </div>
+                    <Alert color="red" mt="md" title="Popis chyby">
+                        <details className={styles.errorDetails}>
+                            <summary className={bold}>{this.state.error?.toString()}</summary>
                             <small>{this.state.errorInfo?.componentStack}</small>
                         </details>
                     </Alert>

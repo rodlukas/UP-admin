@@ -1,23 +1,16 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faPlus, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Button, Menu, Select, Skeleton, Tooltip } from "@mantine/core"
+import { notifications } from "@mantine/notifications"
+import { faChevronDown, faPlus, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
-import {
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
-    Modal,
-    ModalBody,
-    ModalHeader,
-    UncontrolledButtonDropdown,
-} from "reactstrap"
-import { Direction } from "reactstrap/types/lib/Dropdown"
 
 import { AnalyticsSource } from "../analytics"
-import Loading from "../components/Loading"
-import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
+import BaseModal from "../components/BaseModal"
+import { SkeletonShell } from "../components/Skeletons"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
+import { TEXTS } from "../global/constants"
 import { prettyDate } from "../global/funcDateTime"
 import {
     DefaultValuesForLecture,
@@ -27,9 +20,9 @@ import {
 } from "../global/utils"
 import { ClientType, GroupType } from "../types/models"
 
-import { reactSelectIds } from "./helpers/func"
+import { modalWizardContent } from "./FormBase.css"
 import Or from "./helpers/Or"
-import ReactSelectWrapper from "./helpers/ReactSelectWrapper"
+import { or as orStyles } from "./helpers/Or.css"
 import SelectClient from "./helpers/SelectClient"
 import ModalClients from "./ModalClients"
 import ModalGroups from "./ModalGroups"
@@ -42,9 +35,21 @@ type Props = {
     /** CSS třída pro dropdown pro výběr klient/skupina. */
     dropdownClassName?: string
     /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
-    dropdownSize?: string
+    dropdownSize?: "xs" | "sm" | "md" | "lg" | "xl"
+    /**
+     * Varianta tlačítka. Výchozí `filled` je pro hlavní akci stránky; opakované výskyty
+     * (tlačítko v hlavičce každého dne v diáři) posílej jako `subtle`, aby se z pěti
+     * sytých tlačítek nestala barevná mřížka.
+     */
+    dropdownVariant?: "filled" | "subtle"
+    /**
+     * Text vedle ikony. Bez něj je tlačítko jen „+" (název nese `aria-label`), což stačí
+     * v hlavičce dne, ale ne v prázdném stavu — tam je to jediná nabízená akce a musí
+     * být poznat, co udělá.
+     */
+    dropdownLabel?: string
     /** Směr otevírání dropdownu pro výběr klient/skupina. */
-    dropdownDirection?: Direction
+    dropdownDirection?: "up" | "down"
     /** Probíhá načítání dat (true) - zobrazí spinner na tlačítku. */
     isFetching?: boolean
     /** Identifikace místa, odkud bylo modální okno otevřeno (pro analytiku). */
@@ -59,26 +64,28 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
     const { source } = props
     const clientsActiveContext = useClientsActiveContext()
     const groupsActiveContext = useGroupsActiveContext()
-    /** Uživatel chce přidávat lekci pro klienta (true, jinak přidává pro skupinu). */
     const [isClient, setIsClientState] = React.useState<boolean | undefined>(undefined)
-    /** Objekt, který má přiřazenu danou lekci (klient/skupina). */
     const [object, setObject] = React.useState<ClientType | GroupType | null>(null)
-    /** Výběr objektu (klient/skupina) je hotový (true). */
     const [modalSelectDone, setModalSelectDone] = React.useState(false)
-    /** Výchozí hodnoty pro lekci. */
     const [defaultValuesForLecture, setDefaultValuesForLecture] =
         React.useState<DefaultValuesForLecture>(prepareDefaultValuesForLecture())
-    /** Probíhá načítání (true). */
     const [isLoading, setIsLoading] = React.useState(false)
+    // Pokud uživatel zavře výběrový modal během rozpracovaného requestu, tato hodnota
+    // se zvýší a stale .then() z requestu pak již neaplikuje výsledek (jinak by se
+    // hlavní lecture form modal otevřel i po zrušení).
+    const requestSeqRef = React.useRef(0)
 
     const setClient = React.useCallback((newIsClient: boolean): void => {
         setIsClientState(newIsClient)
     }, [])
 
-    const toggleModal = React.useCallback((): void => {
+    /** Zavře modální okna průvodce a vrátí ho do výchozího stavu. */
+    const resetWizard = React.useCallback((): void => {
+        requestSeqRef.current += 1
         setIsClientState(undefined)
         setModalSelectDone(false)
         setObject(null)
+        setIsLoading(false)
     }, [])
 
     const onSelectChange = React.useCallback(
@@ -86,30 +93,39 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
             if (!obj || isClient === undefined || isLoading) {
                 return
             }
-            // skupiny sice maji jasny kurz, ale lze u nich odhadovat datum a cas, proto zde pro ne neprizpusobujeme
-            // chovani
-            // nejdriv zobraz nacitani, behem ktereho pro vybraneho klienta/skupinu pripravis vychozi hodnoty kurzu, data a
-            // casu, pak klienta/skupinu (a tato data) teprve uloz (diky tomu se az pak zobrazi formular) a nacitani skryj
-            // pro priste
             setIsLoading(true)
 
+            const requestSeq = requestSeqRef.current
             const request = getLecturesgroupedByCourses(obj.id, isClient)
             void request
                 .then((lecturesGroupedByCourses) => {
+                    if (requestSeqRef.current !== requestSeq) {
+                        return
+                    }
                     setDefaultValuesForLecture(getDefaultValuesForLecture(lecturesGroupedByCourses))
                     setObject(obj)
                     setModalSelectDone(true)
                 })
+                .catch(() => {
+                    if (requestSeqRef.current !== requestSeq) {
+                        return
+                    }
+                    // požadavek jde mimo React Query (přímo přes service), takže globální
+                    // error handling se neuplatní – chybu musíme ohlásit ručně
+                    notifications.show({
+                        color: "red",
+                        message: "Nepodařilo se načíst data pro předvyplnění formuláře.",
+                    })
+                })
                 .finally(() => {
+                    if (requestSeqRef.current !== requestSeq) {
+                        return
+                    }
                     setIsLoading(false)
                 })
         },
         [isClient, isLoading],
     )
-
-    const toggleModalSelect = React.useCallback((): void => {
-        setIsClientState(undefined)
-    }, [])
 
     const processAdditionOfGroupOrClient = React.useCallback(
         (newObject: ClientType | GroupType): void => {
@@ -119,20 +135,13 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
     )
 
     const title = `Přidat lekci na ${props.date ? prettyDate(new Date(props.date)) : "nějaký den"}`
+    let selectedTargetLabel = ""
+    if (isClient === true) {
+        selectedTargetLabel = "klienta"
+    } else if (isClient === false) {
+        selectedTargetLabel = "skupiny"
+    }
 
-    /**
-     * Vrací text pro Loading komponentu při výpočtu optimálních hodnot.
-     * @returns Text pro zobrazení v Loading komponentě
-     */
-    const getLoadingText = React.useCallback((): string => {
-        const datePart = isClient ? ", čas a kurz" : " a čas"
-        const objectPart = isClient ? "klienta" : "skupinu"
-        return `Vypočítávám optimální datum${datePart} pro ${objectPart}`
-    }, [isClient])
-
-    /**
-     * Vrací komponentu pro výběr klienta nebo skupiny podle hodnoty isClient.
-     */
     const renderClientOrGroupSelect = React.useCallback((): React.ReactElement => {
         if (isClient) {
             return (
@@ -141,6 +150,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                         value={object as ClientType}
                         options={clientsActiveContext.clients}
                         onChangeCallback={onSelectChange}
+                        required
                     />
                     <Or
                         content={
@@ -156,15 +166,28 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         }
         return (
             <>
-                <ReactSelectWrapper<GroupType>
-                    {...reactSelectIds("group")}
-                    value={object as GroupType}
-                    getOptionLabel={(option): string => option.name}
-                    getOptionValue={(option): string => option.id.toString()}
-                    onChange={(newValue): void => onSelectChange("group", newValue)}
-                    options={groupsActiveContext.groups}
-                    placeholder={"Vyberte existující skupinu..."}
-                    required
+                <Select
+                    id="group"
+                    data={groupsActiveContext.groups.map((g) => ({
+                        value: g.id.toString(),
+                        label: g.name,
+                    }))}
+                    value={(object as GroupType | null)?.id.toString() ?? null}
+                    onChange={(val) => {
+                        const found =
+                            groupsActiveContext.groups.find((g) => g.id.toString() === val) ?? null
+                        onSelectChange("group", found)
+                    }}
+                    // select nemá viditelný label — přístupný název pro čtečky obrazovky
+                    aria-label="Skupina"
+                    placeholder="Vyberte existující skupinu…"
+                    searchable
+                    nothingFoundMessage={TEXTS.NO_RESULTS}
+                    // pole je vzdy povinne (bez neho nejde krok wizardu dokoncit) — bez
+                    // tohohle jde hodnotu vynulovat i preklinutim uz vybrane polozky
+                    // v otevrenem dropdownu (Mantine `allowDeselect` je jinak defaultne `true`)
+                    allowDeselect={false}
+                    withAsterisk
                     autoFocus
                 />
                 <Or
@@ -187,67 +210,95 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         processAdditionOfGroupOrClient,
     ])
 
+    const menuPosition = props.dropdownDirection === "up" ? "top-end" : "bottom-end"
+    const tooltipPosition = props.dropdownDirection === "up" ? "bottom" : "top"
+
     return (
         <>
             <div className={styles.modalLecturesWizard}>
-                <UncontrolledButtonDropdown
-                    direction={props.dropdownDirection}
-                    className={classNames(props.dropdownClassName, styles.dropdownToggle)}>
-                    <DropdownToggle
-                        caret
-                        size={props.dropdownSize}
-                        id={`ModalLecturesWizard_${props.date ?? ""}`}
-                        color="primary"
-                        disabled={props.isFetching}>
-                        <FontAwesomeIcon
-                            icon={props.isFetching ? faSpinnerThird : faPlus}
-                            size="lg"
-                            spin={props.isFetching}
-                            data-qa={props.isFetching ? "loading" : undefined}
-                        />
-                    </DropdownToggle>
-                    <UncontrolledTooltipWrapper
-                        placement={props.dropdownDirection === "up" ? "bottom" : "top"}
-                        target={`ModalLecturesWizard_${props.date ?? ""}`}>
-                        {title}
-                    </UncontrolledTooltipWrapper>
-                    <DropdownMenu end>
-                        <DropdownItem onClick={(): void => setClient(true)}>
-                            přidat lekci <strong>klienta</strong>...
-                        </DropdownItem>
-                        <DropdownItem onClick={(): void => setClient(false)}>
-                            přidat lekci <strong>skupiny</strong>...
-                        </DropdownItem>
-                    </DropdownMenu>
-                </UncontrolledButtonDropdown>
+                <Menu position={menuPosition}>
+                    {/* Tooltip musí obalovat Menu.Target (ne naopak): Menu.Target klonuje
+                        ARIA props (aria-haspopup/expanded/controls) na své přímé dítě a
+                        Tooltip by je rozprostřel na plovoucí tělo tooltipu místo na trigger */}
+                    <Tooltip
+                        label={title}
+                        position={tooltipPosition}
+                        withinPortal
+                        events={{ hover: true, focus: true, touch: true }}>
+                        <Menu.Target>
+                            <Button
+                                className={classNames(
+                                    props.dropdownClassName,
+                                    styles.dropdownToggle,
+                                )}
+                                size={props.dropdownSize}
+                                variant={props.dropdownVariant ?? "filled"}
+                                // `subtle` varianta je pro opakovane vyskyty, a tam ma byt
+                                // tlacitko tlumene — indigo glyf by z peti hlavicek dnu
+                                // udelal barevny pas. Hlavni akce stranky zustava indigo.
+                                color={props.dropdownVariant === "subtle" ? "gray" : undefined}
+                                disabled={props.isFetching}
+                                // tlacitko obsahuje jen ikony - jmeno pro ctecky z tooltipu
+                                aria-label={title}
+                                rightSection={
+                                    !props.isFetching && (
+                                        <FontAwesomeIcon icon={faChevronDown} size="sm" />
+                                    )
+                                }>
+                                <FontAwesomeIcon
+                                    icon={props.isFetching ? faSpinnerThird : faPlus}
+                                    spin={props.isFetching}
+                                    data-qa={props.isFetching ? "loading" : undefined}
+                                />
+                                {props.dropdownLabel && (
+                                    <span className={styles.dropdownToggleLabel}>
+                                        {props.dropdownLabel}
+                                    </span>
+                                )}
+                            </Button>
+                        </Menu.Target>
+                    </Tooltip>
+                    <Menu.Dropdown>
+                        <Menu.Item onClick={(): void => setClient(true)}>
+                            přidat lekci <strong>klienta</strong>…
+                        </Menu.Item>
+                        <Menu.Item onClick={(): void => setClient(false)}>
+                            přidat lekci <strong>skupiny</strong>…
+                        </Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
             </div>
-            <Modal
-                isOpen={isClient !== undefined && !modalSelectDone}
-                toggle={toggleModalSelect}
-                autoFocus={false}>
-                <ModalHeader toggle={toggleModalSelect}>
-                    Přidání lekce &ndash; výběr{" "}
-                    {isClient === true ? "klienta" : isClient === false ? "skupiny" : ""}
-                </ModalHeader>
-                <ModalBody>
-                    {isClient !== undefined && (
-                        <>
-                            {isLoading ||
-                            (isClient && clientsActiveContext.isLoading) ||
-                            (!isClient && groupsActiveContext.isLoading) ? (
-                                <Loading text={isLoading ? getLoadingText() : undefined} />
-                            ) : (
-                                renderClientOrGroupSelect()
-                            )}
-                        </>
-                    )}
-                </ModalBody>
-            </Modal>
+            {/* Mantine Modal balí children vždy do vlastního Modal.Body — hlavičku proto
+                renderuje sám přes prop `title` (viz kontrakt kompozice v BaseModal),
+                jinak by byla vnořená v paddingu těla a nešla přes celou šířku okna. */}
+            <BaseModal
+                opened={isClient !== undefined && !modalSelectDone}
+                onClose={resetWizard}
+                title={`Přidání lekce – výběr ${selectedTargetLabel}`}
+                size="xl"
+                classNames={{ content: modalWizardContent }}>
+                {isClient !== undefined && (
+                    <>
+                        {isLoading ||
+                        (isClient && clientsActiveContext.isLoading) ||
+                        (!isClient && groupsActiveContext.isLoading) ? (
+                            // jeden select (klient/skupina) + krátký odkaz "nebo přidat nového",
+                            // stejně jako skutečný obsah kroku (`renderClientOrGroupSelect`)
+                            <SkeletonShell>
+                                <Skeleton h={38} radius="sm" />
+                                <Skeleton h={18} radius="sm" w="40%" className={orStyles} />
+                            </SkeletonShell>
+                        ) : (
+                            renderClientOrGroupSelect()
+                        )}
+                    </>
+                )}
+            </BaseModal>
             <ModalLecturesCore
                 object={object}
                 defaultValuesForLecture={defaultValuesForLecture}
                 shouldModalOpen={modalSelectDone}
-                funcCloseCallback={toggleModal}
+                funcCloseCallback={resetWizard}
                 date={props.date ?? ""}
                 source={source}
             />

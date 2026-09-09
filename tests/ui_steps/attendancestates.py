@@ -1,5 +1,5 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -64,7 +64,7 @@ def insert_to_form(context, verify_current_data=False):
             and context.old_visible == visible_checkbox.is_selected()
         )
     # smaz vsechny udaje
-    name_field.clear()
+    helpers.clear_input(name_field)
     # vloz nove udaje
     if (context.visible and not visible_checkbox.is_selected()) or (
         not context.visible and visible_checkbox.is_selected()
@@ -91,9 +91,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na pridani stavu ucasti
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_attendancestate_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_attendancestate_with_context(context))
     # over, ze sedi pocet stavu ucasti
     assert attendancestates_cnt(context.browser) > context.old_attendancestates_cnt
 
@@ -103,9 +107,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na update stavu ucasti
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_attendancestate_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_attendancestate_with_context(context))
     # over, ze sedi pocet stavu ucasti
     assert attendancestates_cnt(context.browser) == context.old_attendancestates_cnt
 

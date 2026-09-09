@@ -1,5 +1,5 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -41,32 +41,46 @@ def insert_to_form(context, verify_current_data=False):
     active_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=group_label_active]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
-        # ziskej aktualni hodnoty z react-selectu
+        # Mantine MultiSelect renderuje vybrane cleny jako Pill elementy - jsou to jedine
+        # pilly ve formulari, hledej je proto pres data-qa wrapper formulare misto pres
+        # class names Mantine wrapperu
+        form_group = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=form_group]")
         members_field_values = [
             element.text
-            for element in context.browser.find_elements(By.CSS_SELECTOR, ".members__multi-value")
+            for element in form_group.find_elements(By.CSS_SELECTOR, ".mantine-Pill-label")
         ]
-        course_field_value = context.browser.find_element(
-            By.CSS_SELECTOR, ".course__single-value"
-        ).text
-        assert (
-            context.old_group_name == name_field.get_attribute("value")
-            and context.old_group_course == course_field_value
-            and set(context.old_group_members) == set(members_field_values)
-            and context.old_group_activity == active_checkbox.is_selected()
-        )
+        # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
+        course_field_value = course_field.get_attribute("value")
+        found_name = name_field.get_attribute("value")
+        found_active = active_checkbox.is_selected()
+        assert context.old_group_name == found_name, f"nazev: '{found_name}'"
+        assert context.old_group_course == course_field_value, f"kurz: '{course_field_value}'"
+        assert set(context.old_group_members) == set(
+            members_field_values
+        ), f"clenove: {members_field_values}"
+        assert context.old_group_activity == found_active, f"aktivita: {found_active}"
     # smaz vsechny udaje
-    name_field.clear()
+    helpers.clear_input(name_field)
     course_field.send_keys(Keys.BACK_SPACE)
     # v testech jsou max 2 clenove - odstran je
     members_field.send_keys(Keys.BACK_SPACE)
     members_field.send_keys(Keys.BACK_SPACE)
     # vloz nove udaje
     name_field.send_keys(context.name)
-    helpers.react_select_insert(context.browser, course_field, context.course)
+    # kurz je povinny select - scenare "is not added" zamerne pouzivaji prazdny/neexistujici/
+    # skryty kurz, u kterych vyber (zamerne) selze; uspesnost se proto overuje az v krocich,
+    # ktere ocekavaji uspesne ulozeni
+    context.course_select_success = helpers.combobox_insert(
+        context.browser, course_field, context.course
+    )
     for member in context.members:
-        if not helpers.react_select_insert(context.browser, members_field, member):
-            context.react_select_success = False
+        if not helpers.combobox_insert(context.browser, members_field, member):
+            context.member_select_success = False
+    # Mantine MultiSelect nechava po vyberu dropdown otevreny - zavri ho Tabem
+    # (presun fokusu), jinak by portalovany dropdown mohl prekryvat nasledne klikane
+    # elementy (active_label); Escape nelze pouzit - probubla do Modalu, ktery se pokusi
+    # zavrit a aplikace zobrazi confirm alert "zavrit formular bez ulozeni?"
+    members_field.send_keys(Keys.TAB)
     if (context.active and not active_checkbox.is_selected()) or (
         not context.active and active_checkbox.is_selected()
     ):
@@ -79,8 +93,8 @@ def load_data_to_context(context, name, course, active, *members):
     context.active = common_helpers.to_bool(active)
     # z members vyfiltruj prazdne stringy
     context.members = common_helpers.filter_empty_strings_from_list(members)
-    # pro indikaci neuspesneho zadani clenu do react-selectu (clen nebyl ve vyberu)
-    context.react_select_success = True
+    # pro indikaci neuspesneho zadani clenu do selectu (clen nebyl ve vyberu)
+    context.member_select_success = True
 
 
 def load_id_data_to_context(context, name):
@@ -93,26 +107,38 @@ def save_old_groups_cnt_to_context(context):
 
 @then("the group is added")
 def step_impl(context):
+    # povinny select kurzu musel byt uspesne vybran
+    assert context.course_select_success, "vyber kurzu v selectu selhal"
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na pridani skupiny
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_group_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_group_with_context(context))
     # over, ze sedi pocet skupin
-    assert groups_cnt(context.browser) > context.old_groups_cnt
+    assert groups_cnt(context.browser) > context.old_groups_cnt, "pocet skupin se nezvysil"
 
 
 @then("the group is updated")
 def step_impl(context):
+    # povinny select kurzu musel byt uspesne vybran
+    assert context.course_select_success, "vyber kurzu v selectu selhal"
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na update skupiny
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_group_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_group_with_context(context))
     # over, ze sedi pocet skupin
-    assert groups_cnt(context.browser) == context.old_groups_cnt
+    assert groups_cnt(context.browser) == context.old_groups_cnt, "pocet skupin se zmenil"
 
 
 @then("the group is deleted")
@@ -173,16 +199,16 @@ def step_impl(context):
     else:
         # alert se objevil, takze formular je stale videt
         form_group_visible = True
-    # pokud nedoslo k problemu pri zadavani clenu do react-selectu, vse prover
-    # pokud k problemu doslo, lekce se pridala, ale to neni chyba - prida se bez neexistujicich clenu
-    if context.react_select_success:
-        assert form_group_visible
+    # pokud nedoslo k problemu pri zadavani clenu do selectu, vse prover; pokud
+    # k problemu doslo, skupina se pridala, ale to neni chyba - prida se bez neexistujicich clenu
+    if context.member_select_success:
+        assert form_group_visible, "formular zmizel, skupina se zrejme pridala"
         # zavri formular
         helpers.close_modal(context.browser)
         # pockej az bude modalni okno kompletne zavrene
         helpers.wait_modal_closed(context.browser)
         # over, ze pocet skupin se nezmenil
-        assert groups_cnt(context.browser) == context.old_groups_cnt
+        assert groups_cnt(context.browser) == context.old_groups_cnt, "pocet skupin se zmenil"
 
 
 @when(

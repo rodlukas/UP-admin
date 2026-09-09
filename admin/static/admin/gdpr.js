@@ -47,20 +47,27 @@ function anonymize() {
         Array.from({ length: 3 }, () => String(Math.floor(Math.random() * 900) + 100)).join(" ")
 
     document.querySelectorAll('[data-qa="client_name"]').forEach((el) => {
-        const surnameSpan = el.querySelector("span")
-        if (!surnameSpan) return
+        // prijmeni i jmeno jsou `<strong>`, ne `<span>` (viz ClientName.tsx)
+        const surnameStrong = el.querySelector("strong")
+        if (!surnameStrong) return
 
-        const spans = el.querySelectorAll("span")
-        const firstnameSpan = spans.length > 1 ? spans[1] : null
-        const firstnameTextNode = !firstnameSpan
+        const strongs = el.querySelectorAll("strong")
+        const firstnameStrong = strongs.length > 1 ? strongs[1] : null
+        const firstnameTextNode = !firstnameStrong
             ? [...el.childNodes].find((n) => n.nodeType === Node.TEXT_NODE && n.textContent.trim())
             : null
 
-        surnameSpan.textContent = rand(surnames)
-        if (firstnameSpan) {
-            firstnameSpan.textContent = rand(firstnames)
+        surnameStrong.textContent = rand(surnames)
+        if (firstnameStrong) {
+            firstnameStrong.textContent = rand(firstnames)
         } else if (firstnameTextNode) {
-            firstnameTextNode.textContent = " " + rand(firstnames)
+            // pred jmenem casto sedi samostatny textovy uzel jen s mezerou (oddelovac
+            // `{" "}` v ClientName.tsx) - pokud existuje, mezeru uz nese on a pridani
+            // dalsi by zdvojilo mezeru mezi prijmenim a jmenem
+            const previous = firstnameTextNode.previousSibling
+            const hasSeparatorSpace =
+                previous?.nodeType === Node.TEXT_NODE && previous.textContent.trim() === ""
+            firstnameTextNode.textContent = (hasSeparatorSpace ? "" : " ") + rand(firstnames)
         }
     })
 
@@ -79,7 +86,8 @@ function anonymize() {
     })
 
     document.querySelectorAll('[data-qa="bank_account_owner"]').forEach((el) => {
-        if (el.textContent.trim() !== "---") {
+        // "—" je sentinel prazdne hodnoty (viz NoInfo.tsx) — prazdnou bunku nech prazdnou
+        if (el.textContent.trim() !== "—") {
             el.textContent = rand(surnames) + " " + rand(firstnames)
         }
     })
@@ -109,7 +117,8 @@ function anonymize() {
     const randLorem = () => rand(loremSentences)
 
     document.querySelectorAll('[data-qa="bank_transaction_message"]').forEach((el) => {
-        if (el.textContent.trim() !== "---") {
+        // "—" je sentinel prazdne hodnoty (viz NoInfo.tsx) — prazdnou bunku nech prazdnou
+        if (el.textContent.trim() !== "—") {
             el.textContent = randLorem()
         }
     })

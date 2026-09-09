@@ -20,7 +20,18 @@ if SENTRY_DSN:
         environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_COMMIT"
     )
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# Django >= 5.1 uz nastaveni STATICFILES_STORAGE ignoruje - konfigurace musi byt v STORAGES,
+# jinak by {% static %} generoval nehashovane URL bez cache bustingu (manifest vznika
+# pri collectstatic, viz scripts/shell/release_tasks.sh)
+STORAGES = {
+    # "default" zachovava vychozi Django file storage (base.py zadne STORAGES nedefinuje)
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Django konstanty pro bezpecnost
 SESSION_COOKIE_SECURE = True

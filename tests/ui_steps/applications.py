@@ -1,5 +1,5 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -102,13 +102,9 @@ def insert_to_form(context, verify_current_data=False):
     note_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=application_field_note]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
-        # ziskej aktualni hodnoty z react-selectu
-        client_field_value = context.browser.find_element(
-            By.CSS_SELECTOR, ".client__single-value"
-        ).text
-        course_field_value = context.browser.find_element(
-            By.CSS_SELECTOR, ".course__single-value"
-        ).text
+        # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
+        client_field_value = client_field.get_attribute("value")
+        course_field_value = course_field.get_attribute("value")
         assert (
             context.old_client == client_field_value
             and context.old_course == course_field_value
@@ -117,10 +113,14 @@ def insert_to_form(context, verify_current_data=False):
     # smaz vsechny udaje
     client_field.send_keys(Keys.BACK_SPACE)
     course_field.send_keys(Keys.BACK_SPACE)
-    note_field.clear()
+    helpers.clear_input(note_field)
     # vloz nove udaje
-    helpers.react_select_insert(context.browser, client_field, context.client)
-    helpers.react_select_insert(context.browser, course_field, context.course)
+    # klient a kurz jsou povinne selecty - scenare "is not added" zamerne pouzivaji
+    # prazdne/neexistujici/skryte hodnoty, u kterych vyber (zamerne) selze; uspesnost se
+    # proto overuje az v krocich, ktere ocekavaji uspesne ulozeni
+    client_selected = helpers.combobox_insert(context.browser, client_field, context.client)
+    course_selected = helpers.combobox_insert(context.browser, course_field, context.course)
+    context.client_course_select_success = client_selected and course_selected
     note_field.send_keys(context.note)
 
 
@@ -140,12 +140,18 @@ def save_old_applications_cnt_to_context(context):
 
 @then("the application is added")
 def step_impl(context):
+    # povinne selecty (klient, kurz) musely byt uspesne vybrany
+    assert context.client_course_select_success, "vyber klienta/kurzu v selectu selhal"
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na pridani zadosti
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_application_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_application_with_context(context))
     # over, ze sedi pocet zadosti
     assert applications_cnt(context.browser) > context.old_applications_cnt
     assert showed_applications_cnts_for_courses_matches(context.browser)
@@ -153,12 +159,18 @@ def step_impl(context):
 
 @then("the application is updated")
 def step_impl(context):
+    # povinne selecty (klient, kurz) musely byt uspesne vybrany
+    assert context.client_course_select_success, "vyber klienta/kurzu v selectu selhal"
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na update zadosti
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_application_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_application_with_context(context))
     # over, ze sedi pocet zadosti
     assert applications_cnt(context.browser) == context.old_applications_cnt
     assert showed_applications_cnts_for_courses_matches(context.browser)

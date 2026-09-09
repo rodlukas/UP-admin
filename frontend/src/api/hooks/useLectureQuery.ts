@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { ClientType, GroupType, LectureType, LectureTypeWithDate } from "../../types/models"
 import LectureService from "../services/LectureService"
@@ -64,6 +64,41 @@ export function useLecturesFromClientAll(clientId: ClientType["id"] | undefined,
             return LectureService.getAllFromClientIncludingGroups(clientId, asc)
         },
         enabled: !!clientId,
+    })
+}
+
+/**
+ * Hook pro získání nezrušených lekcí od daného dne včetně (nejbližší příští lekce
+ * na přehledu). `limit` je součástí klíče dotazu — jinak by se odpověď omezená na několik
+ * lekcí sdílela s dotazem bez omezení.
+ */
+export function useLecturesFromDate(dateFrom: string | undefined, limit?: number, asc = true) {
+    return useQuery<LectureTypeWithDate[]>({
+        queryKey: ["lectures", { dateFrom, limit, asc }],
+        queryFn: () => {
+            if (!dateFrom) {
+                throw new Error("Date is required")
+            }
+            return LectureService.getAllFromDateOrdered(dateFrom, asc, limit)
+        },
+        enabled: !!dateFrom,
+    })
+}
+
+/**
+ * Hook pro získání lekcí ve více dnech naráz (týden v diáři — potřebuje dopředu vědět,
+ * které dny jsou volné, aby je mohl vynechat).
+ *
+ * Klíč dotazu je záměrně shodný s `useLecturesFromDay`, takže se výsledek sdílí s dotazy
+ * jednotlivých dnů (`DashboardDay`) přes cache React Query — na server tedy nejde ani
+ * jeden požadavek navíc.
+ */
+export function useLecturesFromDays(dates: string[], asc = true) {
+    return useQueries({
+        queries: dates.map((date) => ({
+            queryKey: ["lectures", { day: date, asc }],
+            queryFn: () => LectureService.getAllFromDayOrdered(date, asc),
+        })),
     })
 }
 

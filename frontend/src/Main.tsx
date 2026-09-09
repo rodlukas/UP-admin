@@ -1,88 +1,41 @@
+import { AppShell, Burger } from "@mantine/core"
+import { useMediaQuery } from "@mantine/hooks"
 import { Link, Outlet, useRouterState } from "@tanstack/react-router"
 import classNames from "classnames"
-import Fuse, { IFuseOptions, FuseResult } from "fuse.js"
 import * as React from "react"
-import { Slide, ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import { Badge, Collapse, Navbar, NavbarBrand, NavbarToggler } from "reactstrap"
 
-import { trackEvent } from "./analytics"
 import { useAuthContext } from "./auth/AuthContext"
-import AppCommit from "./components/AppCommit"
-import Loading from "./components/Loading"
+import AppSpotlight from "./components/AppSpotlight"
+import ColorSchemeSync from "./components/ColorSchemeSync"
+import EnvBadge, { hasEnvBadge } from "./components/EnvBadge"
 import Menu from "./components/Menu"
-import Search from "./components/Search"
-import { useClientsActiveContext } from "./contexts/ClientsActiveContext"
-import { getEnvName, isEnvDemo, isEnvLocal, isEnvTesting } from "./global/funcEnvironments"
-import { isModalShown } from "./global/utils"
-import useKeyPress from "./hooks/useKeyPress"
+import { PageSkeleton } from "./components/Skeletons"
+import { NAVBAR_BREAKPOINT, RAIL_WIDTH_LABELS } from "./global/constants"
+import { getEnvName } from "./global/funcEnvironments"
 import * as styles from "./Main.css"
-import { ClientActiveType } from "./types/models"
 
-// konfigurace Fuse.js vyhledavani
-const searchOptions: IFuseOptions<ClientActiveType> = {
-    shouldSort: true,
-    ignoreDiacritics: true,
-    threshold: 0.5,
-    keys: ["firstname", "surname", "phone", "email", "normalized"],
-}
+/**
+ * Pod `NAVBAR_BREAKPOINT` se pruh chová jako drawer a jediné, co z chrome zbyde, je slim
+ * hlavička s burgerem — viz komentář u `NAVBAR_BREAKPOINT`, proč je to sdílená konstanta,
+ * ne ručně vypsaná hodnota.
+ */
+const MOBILE_QUERY = `(max-width: ${NAVBAR_BREAKPOINT})`
 
 /** Hlavní kostra aplikace. */
 const Main: React.FC = () => {
     const [isMenuOpened, setIsMenuOpened] = React.useState(false)
-    const [foundResults, setFoundResults] = React.useState<FuseResult<ClientActiveType>[]>([])
-    const [searchVal, setSearchVal] = React.useState("")
-    const searchSessionTrackedRef = React.useRef(false)
     const authContext = useAuthContext()
-    const clientsActiveContext = useClientsActiveContext()
     const locationPathname = useRouterState({
         select: (state) => state.location.pathname,
     })
-    const escPress = useKeyPress("Escape")
-
-    const fuse = React.useMemo(
-        () => new Fuse(clientsActiveContext.clients, searchOptions),
-        [clientsActiveContext.clients],
-    )
-
-    const search = React.useCallback(() => {
-        if (searchVal !== "" && !clientsActiveContext.isLoading) {
-            const results = fuse.search(searchVal)
-            setFoundResults(results)
-            if (!searchSessionTrackedRef.current) {
-                trackEvent("search_used", { has_results: results.length > 0 })
-                searchSessionTrackedRef.current = true
-            }
-        }
-    }, [searchVal, fuse, clientsActiveContext.isLoading])
-
-    function resetSearch(): void {
-        setFoundResults([])
-        setSearchVal("")
-        searchSessionTrackedRef.current = false
-    }
+    // `getInitialValueInEffect: false` — aplikace bezi jen CSR (zadny SSR/hydration),
+    // takze spravnou sirku pruhu potrebujeme uz pri prvnim renderu; jinak by pruh
+    // na prvni frame problikl v opacnem stavu.
+    const isMobile = useMediaQuery(MOBILE_QUERY, false, { getInitialValueInEffect: false })
 
     React.useEffect(() => {
-        resetSearch()
-        // pri odchodu z vyhledavani zavreme menu
         setIsMenuOpened(false)
     }, [locationPathname])
-
-    React.useEffect(() => {
-        if (!isModalShown()) {
-            resetSearch()
-        }
-    }, [escPress])
-
-    React.useEffect(() => {
-        search()
-    }, [search])
-
-    React.useEffect(() => {
-        if (!isMenuOpened) {
-            resetSearch()
-        }
-    }, [isMenuOpened])
 
     function toggleNavbar(): void {
         setIsMenuOpened((prevIsMenuOpened) => !prevIsMenuOpened)
@@ -92,49 +45,77 @@ const Main: React.FC = () => {
         setIsMenuOpened(false)
     }
 
-    function onSearchChange(newSearchVal: string): void {
-        setSearchVal(newSearchVal)
+    // Nepřihlášené stránky (přihlášení, 404) nemají navigaci, a tedy ani kostru —
+    // obsah se tak dá vycentrovat přes celou výšku viewportu.
+    if (!authContext.isAuth) {
+        return (
+            <div className={getEnvName()}>
+                <ColorSchemeSync />
+                <main className="main">
+                    <React.Suspense fallback={<PageSkeleton />}>
+                        <Outlet />
+                    </React.Suspense>
+                </main>
+            </div>
+        )
     }
 
     return (
         <div className={getEnvName()}>
-            {authContext.isAuth && (
-                <Navbar className="bg-dark" expand="lg" dark fixed="top" container={true}>
-                    <NavbarBrand tag={Link} to="/" onClick={closeNavbar}>
+            <ColorSchemeSync />
+            <AppShell
+                padding={0}
+                // rámečky sekcí si kreslíme sami (`border.rail`), Mantine by použil
+                // barvu z palety, která na inkoustu není vidět
+                withBorder={false}
+                header={{ height: styles.MOBILE_HEADER_HEIGHT, collapsed: !isMobile }}
+                navbar={{
+                    width: RAIL_WIDTH_LABELS,
+                    breakpoint: NAVBAR_BREAKPOINT,
+                    collapsed: { mobile: !isMenuOpened },
+                }}>
+                {/* `collapsed` na AppShell.Header/Navbar jen posouvá obsah transformem
+                    (`translateY`/`translateX`) mimo viditelnou plochu, takže skrytý obsah
+                    zůstává dosažitelný Tabem a čtečkám. `inert` ho z obojího vyřazuje,
+                    aniž by to muselo zasahovat do vzhledu/animace collapse. */}
+                <AppShell.Header className={styles.shellHeader} inert={!isMobile}>
+                    <Burger
+                        opened={isMenuOpened}
+                        onClick={toggleNavbar}
+                        size="sm"
+                        color="white"
+                        aria-label={isMenuOpened ? "Zavřít menu" : "Otevřít menu"}
+                    />
+                    <Link to="/" onClick={closeNavbar} className={styles.headerBrand}>
                         ÚP<sub>admin</sub>
-                    </NavbarBrand>
-                    {isEnvLocal() && <Badge color="light">Vývojová verze</Badge>}
-                    {isEnvTesting() && (
-                        <Badge color="primary">
-                            Testing <AppCommit pageId="Main" />
-                        </Badge>
+                    </Link>
+                    {/* Pod `md` je pruh zavřený drawer, takže označení prostředí by z něj
+                        nebylo vidět na žádné trase — na mobilu ho proto nese hlavička. */}
+                    {hasEnvBadge() && (
+                        <div className={styles.headerEnv}>
+                            <EnvBadge />
+                        </div>
                     )}
-                    {isEnvDemo() && <Badge color="secondary">DEMO</Badge>}
-                    <NavbarToggler onClick={toggleNavbar} />
-                    <Collapse isOpen={isMenuOpened} navbar>
-                        <Menu
-                            closeNavbar={closeNavbar}
-                            onSearchChange={onSearchChange}
-                            searchVal={searchVal}
-                        />
-                    </Collapse>
-                </Navbar>
-            )}
-            <main
-                className={classNames("main", "mb-4", {
-                    [styles.isAuthenticated]: authContext.isAuth,
-                })}>
-                <ToastContainer position="top-right" theme="colored" transition={Slide} />
-                <Search
-                    foundResults={foundResults}
-                    searchVal={searchVal}
-                    search={search}
-                    resetSearch={resetSearch}
-                />
-                <React.Suspense fallback={<Loading />}>
-                    <Outlet />
-                </React.Suspense>
-            </main>
+                </AppShell.Header>
+                <AppShell.Navbar
+                    className={styles.rail}
+                    aria-label="Hlavní navigace"
+                    inert={isMobile && !isMenuOpened}>
+                    {/* Ve slim hlavičce už značka je, v drawer režimu by byla dvakrát. */}
+                    {!isMobile && (
+                        <Link to="/" onClick={closeNavbar} className={styles.railBrand}>
+                            ÚP<sub>admin</sub>
+                        </Link>
+                    )}
+                    <Menu closeNavbar={closeNavbar} />
+                </AppShell.Navbar>
+                <AppShell.Main className={classNames("main", styles.plane)}>
+                    <AppSpotlight />
+                    <React.Suspense fallback={<PageSkeleton />}>
+                        <Outlet />
+                    </React.Suspense>
+                </AppShell.Main>
+            </AppShell>
         </div>
     )
 }

@@ -71,9 +71,10 @@ module.exports = {
                 ],
             },
             {
-                // Globální CSS - pro běžné .css soubory (Bootstrap, react-toastify, atd.)
+                // Globální CSS - Mantine atd. sideEffects: true zachová importy.
                 test: /\.css$/i,
                 exclude: /\.vanilla\.css$/i,
+                sideEffects: true,
                 use: [
                     isProduction ? MiniCssExtractPlugin.loader : "style-loader",
                     {
@@ -146,8 +147,29 @@ module.exports = {
         // pro povoleni pristupu odkudkoliv (a z Djanga)
         allowedHosts: ["0.0.0.0"],
         compress: true,
+        // servirovani Django statickych souboru (admin/static/admin/* -> /static/admin/*),
+        // jinak by napr. logo na login strance (/static/admin/android-chrome-512x512.png)
+        // na dev serveru vracelo 404 (v produkci je servuje Django/WhiteNoise)
+        static: {
+            directory: path.resolve(__dirname, "..", "admin", "static"),
+            publicPath: "/static",
+        },
         client: {
-            overlay: true,
+            overlay: {
+                errors: true,
+                warnings: false,
+                // Filtrovat benignni "ResizeObserver loop ..." warning, ktery Chrome/Firefox emituji
+                // pri rychlych layout zmenach (typicke pro Mantine popovery/modals/dropdowny pouzivajici
+                // ResizeObserver vnitrne). Neni to skutecna chyba, aplikace funguje korektne.
+                runtimeErrors: (error) => {
+                    const message = error?.message || ""
+                    return (
+                        !message.includes(
+                            "ResizeObserver loop completed with undelivered notifications",
+                        ) && !message.includes("ResizeObserver loop limit exceeded")
+                    )
+                },
+            },
         },
         devMiddleware: {
             index: htmlFile,

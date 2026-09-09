@@ -1,4 +1,4 @@
-import * as React from "react"
+import chroma from "chroma-js"
 
 import LectureService from "../api/services/LectureService"
 import {
@@ -12,6 +12,22 @@ import {
 import { DAYS_WITHOUT_LECTURE_WARNING, LOCALE_CZ } from "./constants"
 import { addDays } from "./funcDateTime"
 import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
+
+/**
+ * Jednoduché české skloňování podle počtu: vrátí `one` pro 1, `few` pro 2–4, jinak `many`.
+ * Sjednocuje opakovaný count→tvar vzorec z přehledů klientů a skupin.
+ *
+ * Nula bere `many` („0 členů“), ne `few` — genitiv plurálu, stejně jako u pěti a víc.
+ */
+export const pluralizeCs = (count: number, one: string, few: string, many: string): string => {
+    if (count === 1) {
+        return one
+    }
+    if (count >= 2 && count < 5) {
+        return few
+    }
+    return many
+}
 
 export type GroupedObjectsByCourses<O> = { course: CourseType; objects: O[] }[]
 
@@ -108,8 +124,9 @@ export function getDefaultValuesForLecture(
                 latestLecture = item
                 break
             }
-            // nejedna se o predplacene lekce, srovname a vratime tu pozdejsi
-            latestLecture = latestLecture > item ? latestLecture : item
+            // nejedna se o predplacene lekce, srovname ISO stringy `start` a vratime tu pozdejsi
+            // (start u latestLecture neni nikdy null - predplacena lekce by cyklus ukoncila vyse)
+            latestLecture = (latestLecture.start ?? "") > item.start ? latestLecture : item
         }
         return prepareDefaultValuesForLecture(latestLecture.course, latestLecture.start)
     }
@@ -122,6 +139,26 @@ export function prettyAmount(amount: number): string {
         currency: "CZK",
         maximumFractionDigits: 0,
     })
+}
+
+/**
+ * Barva textu čitelná na zadaném podkladu. Barva kurzu je libovolný uživatelský hex, takže
+ * napevno zvolená bílá by na světlých odstínech zmizela — vybírá se proto ta ze dvojice
+ * bílá / inkoust, která má proti podkladu vyšší kontrast.
+ *
+ * Inkoust je `vars.text.primary` ze světlého motivu; jde o podklad v syté barvě kurzu,
+ * který je v obou motivech stejný, takže text se schématem měnit nemá.
+ */
+export function contrastingTextColor(background: CourseType["color"]): string {
+    const ink = "#16233a"
+    try {
+        return chroma.contrast(background, "white") >= chroma.contrast(background, ink)
+            ? "#ffffff"
+            : ink
+    } catch {
+        // neplatný hex z API/DB nesmí shodit vykreslení lekce
+        return ink
+    }
 }
 
 /** Vrátí telefonní číslo ve srozumitelném formátu. */
@@ -153,14 +190,35 @@ export function makeIdFromString(string: string): string {
     return string.replace(/\s+/g, "-")
 }
 
-/** Zjistí, jestli je otevřené bootstrap modální okno. */
+/** Zjistí, jestli je otevřené modální okno. Mantine Modal i Spotlight nastavují aria-modal. */
 export function isModalShown(): boolean {
-    return document.querySelectorAll(".modal-open").length !== 0
+    return document.querySelectorAll('[aria-modal="true"]').length !== 0
+}
+
+/**
+ * Zjistí, jestli aplikace běží na Apple platformě (macOS/iOS) — klávesové zkratky
+ * se tam zobrazují s ⌘ místo Ctrl (`mod` v hotkeys odpovídá ⌘, jinde Ctrl).
+ */
+export function isApplePlatform(): boolean {
+    // `navigator.userAgentData` zatím chybí ve standardních TS typech (experimentální API),
+    // `navigator.platform` slouží jen jako fallback heuristika pro starší prohlížeče
+    const uaDataPlatform = (navigator as Navigator & { userAgentData?: { platform?: string } })
+        .userAgentData?.platform
+    return /mac|iphone|ipad|ipod/i.test(uaDataPlatform ?? navigator.platform)
 }
 
 /** Vrátí string s velkým počátečním písmenem. */
 export function capitalizeString(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+/**
+ * Odstraní diakritiku ("Němec" → "Nemec"), aby hledání fungovalo bez ohledu na to, jestli
+ * uživatel diakritiku napsal. Stejná technika jako v `admin/static/admin/gdpr.js`
+ * (`removeDiacritics`) — tam je vlastní kopie, protože ten skript je plain JS bez importů.
+ */
+export function removeDiacritics(value: string): string {
+    return value.normalize("NFD").replace(/\p{Diacritic}/gu, "")
 }
 
 /** Prázdná funkce. */
@@ -171,11 +229,6 @@ export const noop = (): void => {}
 export function pageTitle(title: string): string {
     const envTitle = !isEnvProduction() ? `${getEnvNameShort()} | ` : ""
     return `${envTitle + title} – ÚPadmin`
-}
-
-/** Vrátí jméno komponenty pro React Developer Tools. */
-export function getDisplayName<P>(Component: React.ComponentType<P>): string {
-    return Component.displayName ?? Component.name ?? "UnknownComponent"
 }
 
 /** Vrátí true pokud je aktivní klient/skupina „stale" – naposledy měl lekci před více než DAYS_WITHOUT_LECTURE_WARNING dny. Nová entita bez lekce (null) varování nedostane. */
