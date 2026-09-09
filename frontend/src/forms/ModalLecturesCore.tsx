@@ -9,7 +9,6 @@ import { fEmptyVoid } from "../types/types"
 
 import FormLectures from "./FormLectures"
 import { DummyLecture } from "./helpers/dummies"
-import * as styles from "./ModalLecturesCore.css"
 
 type Props = {
     /** Lekce. */
@@ -60,7 +59,6 @@ const ModalLecturesCore: React.FC<Props> = ({
             onClose={(): void => funcWrapper(toggleModal)}
             withCloseButton={false}
             size="74rem"
-            classNames={{ content: styles.modalFormLecture }}
             transitionProps={{ onExited: processOnModalClose }}>
             {object && (
                 <FormLectures
