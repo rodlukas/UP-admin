@@ -54,7 +54,7 @@ export const courseHeadingItem = style([
 
 /**
  * Počet zájemců u kurzu — stejný odznak jako pořadové číslo lekce v diáři (`LectureNumber`):
- * tlumený ordinál s podkladem odvozeným z `currentColor`, ne vlastní barva z palety, která by
+ * tlumený odznak s podkladem odvozeným z `currentColor`, ne vlastní barva z palety, která by
  * na sytém hexu kurzu zmizela.
  */
 export { lectureNumber as courseHeadingCount } from "../components/LectureNumber.css"

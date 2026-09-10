@@ -3,7 +3,7 @@ import { style } from "@vanilla-extract/css"
 import { vars } from "../theme/tokens"
 
 /**
- * Pořadové číslo lekce jako odznak. Samotný ordinál („35.") jen visel vedle času a nebylo
+ * Pořadové číslo lekce jako odznak. Samotné řadové číslo („35.") jen viselo vedle času a nebylo
  * poznat, že jde o údaj sám o sobě — odznak mu dá hranici.
  *
  * Podklad se odvozuje z `currentColor`, ne z pevné barvy: komponenta žije ve dvou různých

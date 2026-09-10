@@ -14,7 +14,7 @@ type Props = {
 }
 
 /**
- * Komponenta zobrazující pořadové číslo lekce — tlumený ordinál tabulkovými číslicemi.
+ * Komponenta zobrazující pořadové číslo lekce — tlumené řadové číslo tabulkovými číslicemi.
  * Tečka za číslem je podstatná: samotná „2" u času nic neříká, „2." se čte jako
  * „2. lekce" (plné znění nese tooltip a `aria-label`). Barvu kurzu drží linka lekce,
  * tady by druhá barevná plocha soupeřila o pozornost.

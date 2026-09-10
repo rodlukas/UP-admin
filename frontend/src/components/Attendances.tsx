@@ -50,7 +50,7 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
                         attendanceId={attendance.id}
                         source={source}
                     />
-                    {/* Poradove cislo ucasti klienta — tlumeny ordinal tabulkovymi cislicemi,
+                    {/* Poradove cislo ucasti klienta — tlumene radove cislo tabulkovymi cislicemi,
                         stejne jako cislo lekce (LectureNumber). Obarvena pilulka by u kazdeho
                         jmena v seznamu ucastniku pridala dalsi objekt navic. */}
                     {attendance.number && (
