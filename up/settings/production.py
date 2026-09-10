@@ -22,9 +22,9 @@ if SENTRY_DSN:
         release="%GIT_COMMIT",
     )
 
-# Django >= 5.1 uz nastaveni STATICFILES_STORAGE ignoruje - konfigurace musi byt v STORAGES,
-# jinak by {% static %} generoval nehashovane URL bez cache bustingu (manifest vznika
-# pri collectstatic, viz scripts/shell/release_tasks.sh)
+# staticfiles backend musi zustat manifest-based, jinak by {% static %} generoval
+# nehashovane URL bez cache bustingu (manifest vznika pri collectstatic,
+# viz scripts/shell/release_tasks.sh)
 STORAGES = {
     # "default" zachovava vychozi Django file storage (base.py zadne STORAGES nedefinuje)
     "default": {

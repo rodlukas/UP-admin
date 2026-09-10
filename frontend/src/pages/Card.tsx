@@ -389,8 +389,6 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         if (!globalThis.confirm(`Opravdu chcete přesunout ${label} do neaktivních?`)) {
             return
         }
-        // queryClient.invalidateQueries() je volano globalne v mutationCache.onSuccess
-        // (api/queryClient.tsx), takze tady stací mit jen analytics callback.
         if (isClientObject(object)) {
             deactivateClient.mutate([id], {
                 onSuccess: () => {
@@ -520,6 +518,12 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                         />
                     )}
                     {isGroupObject(object) && <GroupInfo group={object} />}
+                    {isGroupObject(object) && (
+                        <PrepaidCounters
+                            isGroupActive={object.active}
+                            memberships={object.memberships}
+                        />
+                    )}
                     {/* Zalozky misto jedne dlouhe stranky. „Lekce" musi zustat vychozi:
                         je to duvod, proc se karta otevira — a chytaji se jich E2E kroky
                         (`card_course`). */}
@@ -535,9 +539,6 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                         <Tabs.List>
                             <Tabs.Tab value="lekce">Lekce</Tabs.Tab>
                             {isClientObject(object) && <Tabs.Tab value="analyza">Analýza</Tabs.Tab>}
-                            {isGroupObject(object) && (
-                                <Tabs.Tab value="predplacene">Předplacené lekce</Tabs.Tab>
-                            )}
                         </Tabs.List>
 
                         {isClientObject(object) && (
@@ -550,14 +551,6 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                         lectures={lecturesFromClientAllQuery.data ?? []}
                                     />
                                 )}
-                            </Tabs.Panel>
-                        )}
-                        {isGroupObject(object) && (
-                            <Tabs.Panel value="predplacene" pt="md">
-                                <PrepaidCounters
-                                    isGroupActive={object.active}
-                                    memberships={object.memberships}
-                                />
                             </Tabs.Panel>
                         )}
 

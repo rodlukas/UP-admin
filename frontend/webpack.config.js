@@ -71,7 +71,11 @@ module.exports = {
                 ],
             },
             {
-                // Globální CSS - Mantine atd. sideEffects: true zachová importy.
+                // Globální CSS z node_modules (Mantine, FontAwesome...), importované jen kvůli
+                // vedlejšímu efektu (`import "@mantine/spotlight/styles.css"` v index.tsx nic
+                // neexportuje). Bez sideEffects: true by produkční tree-shaking mohl takový
+                // import tiše zahodit u balíčků, které mají v package.json "sideEffects": false
+                // (@mantine/spotlight ho tak má) — styl by v buildu zmizel, v devu ne.
                 test: /\.css$/i,
                 exclude: /\.vanilla\.css$/i,
                 sideEffects: true,
@@ -147,13 +151,6 @@ module.exports = {
         // pro povoleni pristupu odkudkoliv (a z Djanga)
         allowedHosts: ["0.0.0.0"],
         compress: true,
-        // servirovani Django statickych souboru (admin/static/admin/* -> /static/admin/*),
-        // jinak by napr. logo na login strance (/static/admin/android-chrome-512x512.png)
-        // na dev serveru vracelo 404 (v produkci je servuje Django/WhiteNoise)
-        static: {
-            directory: path.resolve(__dirname, "..", "admin", "static"),
-            publicPath: "/static",
-        },
         client: {
             overlay: {
                 errors: true,

@@ -12,187 +12,125 @@ import ClientName from "./ClientName"
 import InfoTooltip from "./InfoTooltip"
 import * as styles from "./PrepaidCounters.css"
 
-type Props = {
-    /** Pole se členstvími všech klientů. */
-    memberships: MembershipType[]
+type RowProps = {
+    /** Členství jednoho klienta ve skupině. */
+    membership: MembershipType
     /** Skupina je aktivní (true). */
     isGroupActive: boolean
 }
 
 /**
- * Objekt držící počty předplacených lekcí jednotlivých klientů.
- * ID členství: počet předplacených lekcí.
+ * Počítadlo předplacených lekcí jednoho člena skupiny. Vlastní `usePatchMembership()`
+ * instance na řádek — díky tomu nepotřebuje řešit, čí je která hodnota (na rozdíl od
+ * sdílení jedné mutace napříč všemi členy): zmizelý/vyměněný člen prostě unmountne
+ * i se svým stavem, žádný ruční úklid podle ID není potřeba.
+ *
+ * `mutateAsync().then()/.catch()` místo per-call `onSuccess`/`onError` je pořád nutné
+ * i v rámci jednoho řádku: TanStack Query v5 tyhle callbacky ukládá na instanci mutace,
+ * ne na konkrétní volání, takže při dvou rychlých editacích téhož pole (uloženo, pak
+ * hned přepsáno znovu) by callback druhého volání "ukradl" i vyřízení toho prvního.
+ * Promise z `mutateAsync` se naproti tomu váže na konkrétní volání a usadí se vždy
+ * pro to svoje.
  */
-type PrepaidCntObjectsType = Record<number, MembershipType["prepaid_cnt"]>
-
-/** Komponenta zobrazující počítadla předplacených lekcí pro členy skupiny. */
-const PrepaidCounters: React.FC<Props> = (props) => {
+const MembershipPrepaidInput: React.FC<RowProps> = ({ membership, isGroupActive }) => {
     const patchMembership = usePatchMembership()
 
-    const createPrepaidCntObjects = React.useCallback(() => {
-        const objects: PrepaidCntObjectsType = {}
-        props.memberships.forEach((membership) => (objects[membership.id] = membership.prepaid_cnt))
-        return objects
-    }, [props.memberships])
-
-    const [prepaidCnts, setPrepaidCnts] = React.useState(() => createPrepaidCntObjects())
-    // Posledni server-potvrzena hodnota (aktualizuje se pouze v onSuccess).
-    const serverPrepaidCntsRef = React.useRef<PrepaidCntObjectsType>(createPrepaidCntObjects())
-    // ID polozek, ktere uzivatel rozepsal (mezi onChange a uspesnym PATCH) — externi refetch
-    // jejich hodnotu neprepise (jinak by uzivatel prisel o rozepsany text).
-    const dirtyIdsRef = React.useRef<Set<number>>(new Set())
-    // Hodnoty, ktere jsou prave v letu na server (mezi mutate a settled). Deduplikujou se,
-    // takze rapid blur/refocus se stejnou hodnotou nevypustí druhy PATCH; a refetch ji
-    // pri merge nesmaze.
-    const inFlightRef = React.useRef<PrepaidCntObjectsType>({})
+    const [value, setValue] = React.useState(membership.prepaid_cnt)
+    // Server-potvrzena hodnota (aktualizuje se pouze po uspesnem PATCHi, ktery jeste
+    // nikdo novejsi nepredbehl).
+    const serverValueRef = React.useRef(membership.prepaid_cnt)
+    // Rozepsano mezi onChange a uspesnym PATCHem — externi refetch pak hodnotu nesmi prepsat.
+    const dirtyRef = React.useRef(false)
+    // Hodnota prave v letu na server (mezi mutate a settled), nebo undefined. Deduplikuje
+    // rapid blur/refocus se stejnou hodnotou a rika `.then()` nize, jestli mezitim
+    // neprisla novejsi editace, kterou by stara odpoved prepsala.
+    const inFlightRef = React.useRef<number | undefined>(undefined)
 
     React.useEffect(() => {
-        const fresh = createPrepaidCntObjects()
-        // Garbage-collect dirty/in-flight IDs, ktere uz nejsou ve fresh memberships
-        // (smazane / vymenene), at se neukotvi cizi data v ref/state.
-        for (const id of Array.from(dirtyIdsRef.current)) {
-            if (!(id in fresh)) {
-                dirtyIdsRef.current.delete(id)
-            }
+        // Dokud je pole rozepsane nebo ma PATCH v letu, fresh hodnotu z props ignoruj —
+        // jinak by refetch prepsal neulozenou editaci.
+        if (dirtyRef.current || inFlightRef.current !== undefined) {
+            return
         }
-        for (const id of Object.keys(inFlightRef.current).map(Number)) {
-            if (!(id in fresh)) {
-                delete inFlightRef.current[id]
-            }
-        }
-        // serverRef si drzi server-potvrzenou hodnotu kazdeho ID; pro in-flight nebo dirty
-        // nechame puvodne potvrzenou hodnotu (jinak by se ztratil "previous" pro revert).
-        const nextServer: PrepaidCntObjectsType = {}
-        for (const id of Object.keys(fresh).map(Number)) {
-            if (id in inFlightRef.current || dirtyIdsRef.current.has(id)) {
-                // refetch zachytil stary server state, ale my mame novejsi (in-flight nebo dirty);
-                // ponech predchozi server snapshot, fresh hodnota nas zajimat nesmi.
-                nextServer[id] = serverPrepaidCntsRef.current[id] ?? fresh[id]
-            } else {
-                nextServer[id] = fresh[id]
-            }
-        }
-        serverPrepaidCntsRef.current = nextServer
-        setPrepaidCnts((prev) => {
-            const merged: PrepaidCntObjectsType = { ...fresh }
-            // pro dirty / in-flight polozky zachovej rozpracovanou uzivatelskou hodnotu
-            for (const id of dirtyIdsRef.current) {
-                if (id in prev) {
-                    merged[id] = prev[id]
-                }
-            }
-            for (const id of Object.keys(inFlightRef.current).map(Number)) {
-                if (id in prev) {
-                    merged[id] = prev[id]
-                }
-            }
-            return merged
-        })
-    }, [createPrepaidCntObjects])
+        serverValueRef.current = membership.prepaid_cnt
+        setValue(membership.prepaid_cnt)
+    }, [membership.prepaid_cnt])
 
     // Pozn.: Number("") vrací 0, vymazané pole se tedy při bluru uloží jako 0 — díky
     // select-on-focus (viz onFocus) uživatel typicky přepisuje celou hodnotu, vědomě bez guardu.
     const onChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
-        const target = e.currentTarget
-        const value = Number(target.value)
-        const id = Number(target.dataset.id)
-        dirtyIdsRef.current.add(id)
-        setPrepaidCnts((prevPrepaidCnts) => {
-            const newPrepaidCnts = { ...prevPrepaidCnts }
-            newPrepaidCnts[id] = value
-            return newPrepaidCnts
-        })
+        dirtyRef.current = true
+        setValue(Number(e.currentTarget.value))
     }, [])
 
-    // Commit hodnotu na server az pri blur, ne pri kazdem keystroke.
-    // serverPrepaidCntsRef se aktualizuje az po uspechu (drzi server-potvrzenou hodnotu).
-    // inFlightRef se aktualizuje pred odeslanim a maze po dobehnuti (drzi prave odesilanou
-    // hodnotu) → rapid blur/refocus se stejnou hodnotou nepustí duplicitni PATCH a refetch
-    // ji nesmaze.
-    //
-    // Zamerne mutateAsync + vlastni .then/.catch misto per-mutate onSuccess/onError:
-    // TanStack Query v5 doruci per-mutate callbacky jen POSLEDNIMU mutate() na sdilene
-    // useMutation instanci — pri soubehu ulozeni dvou ruznych clenu by cleanup prvniho
-    // nikdy neprobehl (clen by zustal navzdy dirty a ignoroval dalsi refetche). Promise
-    // z mutateAsync se vaze na konkretni mutaci a usadi se vzdy.
     const commit = React.useCallback(
-        (id: number, value: number): void => {
-            const serverValue = serverPrepaidCntsRef.current[id]
-            const inFlightValue = inFlightRef.current[id]
-            const effectiveValue = inFlightValue ?? serverValue
-            if (effectiveValue === value) {
+        (next: number): void => {
+            const effectiveValue = inFlightRef.current ?? serverValueRef.current
+            if (effectiveValue === next) {
                 // bud se hodnota nezmenila, nebo uz je presne tato hodnota odeslana → ne-op
-                dirtyIdsRef.current.delete(id)
+                dirtyRef.current = false
                 return
             }
-            inFlightRef.current[id] = value
+            inFlightRef.current = next
             patchMembership
-                .mutateAsync({ id, prepaid_cnt: value })
+                .mutateAsync({ id: membership.id, prepaid_cnt: next })
                 .then(() => {
                     // Pokud uz je v letu novejsi PATCH (uzivatel mezitim zmenil hodnotu
                     // a znovu blurnul), necham vsechno na ten novejsi — jinak by
                     // out-of-order odpoved tohoto PATCHe stale prepsala serverRef i dirty.
-                    if (inFlightRef.current[id] !== value) {
+                    if (inFlightRef.current !== next) {
                         return
                     }
-                    serverPrepaidCntsRef.current = {
-                        ...serverPrepaidCntsRef.current,
-                        [id]: value,
-                    }
-                    dirtyIdsRef.current.delete(id)
-                    delete inFlightRef.current[id]
+                    serverValueRef.current = next
+                    dirtyRef.current = false
+                    inFlightRef.current = undefined
                 })
                 .catch(() => {
                     // Stejna ochrana: pokud uz je v letu novejsi PATCH, nech mu drzet inFlight.
-                    if (inFlightRef.current[id] === value) {
-                        delete inFlightRef.current[id]
+                    if (inFlightRef.current === next) {
+                        inFlightRef.current = undefined
                     }
                     // dirty zustava → efekt na refetchi UI neprepise a retry projde
                     // (chybovou notifikaci zobrazuje globalni onError v queryClient)
                 })
         },
-        [patchMembership],
+        [patchMembership, membership.id],
     )
 
     const onBlur = React.useCallback(
         (e: React.FocusEvent<HTMLInputElement>): void => {
-            const target = e.currentTarget
-            const id = Number(target.dataset.id)
-            const rawValue = Number(target.value)
+            const rawValue = Number(e.currentTarget.value)
             // `min={0}` na inputu je jen napoveda pro spinner šipky — bez obalujícího <form>
             // (commit je na blur, ne na submit) nativní HTML constraint validace nikdy
-            // neproběhne, takže záporná nebo neplatná (Infinity/NaN, to druhé z `1e999`
-            // přes JSON.stringify jako `null`) hodnota by jinak došla až na server jako
-            // PATCH a skončila 400 (`prepaid_cnt` je `PositiveIntegerField`) — a kvůli
-            // dirty-tracking výše by tahle neplatná hodnota zůstala natrvalo zaseknutá
-            // v UI, protože žádný refetch by ji už nepřepsal. Ořízni na platnou hodnotu
-            // hned tady, ať uživatel vidí opravenou hodnotu místo červené notifikace.
-            const value = Number.isFinite(rawValue) ? Math.max(0, Math.round(rawValue)) : 0
-            if (value !== rawValue) {
-                setPrepaidCnts((prev) => ({ ...prev, [id]: value }))
+            // neprobehne, takze zaporna nebo neplatna (Infinity/NaN, to druhe z `1e999`
+            // pres JSON.stringify jako `null`) hodnota by jinak dosla az na server jako
+            // PATCH a skoncila 400 (`prepaid_cnt` je `PositiveIntegerField`) — a kvuli
+            // dirty-tracking vyse by tahle neplatna hodnota zustala natrvalo zaseknuta
+            // v UI, protoze zadny refetch by ji uz neprepsal. Orizni na platnou hodnotu
+            // hned tady, at uzivatel vidi opravenou hodnotu misto cervene notifikace.
+            const clampedValue = Number.isFinite(rawValue) ? Math.max(0, Math.round(rawValue)) : 0
+            if (clampedValue !== rawValue) {
+                setValue(clampedValue)
             }
-            commit(id, value)
+            commit(clampedValue)
         },
         [commit],
     )
 
-    // Nejnovejsi hodnoty + commit pro flush pri unmountu — ulozene v ref, aby unmount
+    // Nejnovejsi hodnota + commit pro flush pri unmountu — ulozene v ref, aby unmount
     // efekt mohl mit prazdne deps (jinak by se cleanup spoustel pri kazde zmene a PATCHoval
     // uprostred psani).
-    const latestRef = React.useRef({ prepaidCnts, commit })
+    const latestRef = React.useRef({ value, commit })
     React.useEffect(() => {
-        latestRef.current = { prepaidCnts, commit }
+        latestRef.current = { value, commit }
     })
 
     // React unmount nevyvola blur — bez flushe by SPA navigace (zavreni karty skupiny apod.)
     // rozepsanou hodnotu tise zahodila. Mutace bezi v queryClient cache, unmount ji neprerusi.
     React.useEffect(
         () => (): void => {
-            const latest = latestRef.current
-            for (const id of Array.from(dirtyIdsRef.current)) {
-                if (id in latest.prepaidCnts) {
-                    latest.commit(id, latest.prepaidCnts[id])
-                }
+            if (dirtyRef.current) {
+                latestRef.current.commit(latestRef.current.value)
             }
         },
         [],
@@ -202,7 +140,7 @@ const PrepaidCounters: React.FC<Props> = (props) => {
     // zmene varuj nativnim dialogem (stejny vzor jako useModal).
     React.useEffect(() => {
         const beforeUnload = (e: BeforeUnloadEvent): void => {
-            if (dirtyIdsRef.current.size > 0) {
+            if (dirtyRef.current) {
                 e.preventDefault()
             }
         }
@@ -215,64 +153,67 @@ const PrepaidCounters: React.FC<Props> = (props) => {
     }
 
     return (
-        <Container fluid>
-            <Grid justify="center">
-                {props.memberships.map((membership) => (
-                    <Grid.Col span={{ base: 12, sm: 9, md: 3, lg: 3, xl: 2 }} key={membership.id}>
-                        <div className={styles.memberCard}>
-                            {/* order/size odděleně (viz `memberHeading`, který si font-size
-                                řídí sám) — sémanticky h2: PrepaidCounters se používá jen
-                                v záložce „Předplacené lekce" karty skupiny, přímo pod h1
-                                jménem skupiny (žádná mezilehlá úroveň mezi nimi není) */}
-                            <Title order={2} className={styles.memberHeading}>
-                                <ClientName client={membership.client} link />{" "}
-                                {props.isGroupActive && !membership.client.active && (
-                                    <InfoTooltip
-                                        text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP}
-                                        size="1x"
-                                    />
-                                )}
-                            </Title>
-                            <Tooltip label="Počet předplacených lekcí">
-                                <TextInput
-                                    type="number"
-                                    aria-label="Počet předplacených lekcí"
-                                    id={`prepaid_cnt${membership.id}`}
-                                    // fallback na membership: nove cleny z refetche stav jeste
-                                    // nezna (sync efekt bezi az po renderu) — bez fallbacku by
-                                    // input byl prvni render uncontrolled (value=undefined)
-                                    value={prepaidCnts[membership.id] ?? membership.prepaid_cnt}
-                                    min={0}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                    data-id={membership.id}
-                                    onFocus={onFocus}
-                                    className={styles.prepaidCountersInput}
-                                    leftSectionProps={{
-                                        className: classNames({
-                                            [styles.prepaidCountersInputGroupLabel]:
-                                                (prepaidCnts[membership.id] ??
-                                                    membership.prepaid_cnt) > 0,
-                                        }),
-                                    }}
-                                    leftSection={
-                                        <label htmlFor={`prepaid_cnt${membership.id}`}>
-                                            <FontAwesomeIcon icon={faSackDollar} fixedWidth />
-                                        </label>
-                                    }
-                                />
-                            </Tooltip>
-                        </div>
-                    </Grid.Col>
-                ))}
-                {props.memberships.length === 0 && (
-                    <Text c="dimmed" ta="center">
-                        Žádní účastníci
-                    </Text>
+        <div className={styles.memberCard}>
+            {/* order/size odděleně (viz `memberHeading`, který si font-size řídí sám) —
+                sémanticky h2: PrepaidCounters se používá jen na kartě skupiny, přímo pod
+                h1 jménem skupiny (GroupInfo mezi nimi je `dl`, žádná mezilehlá úroveň
+                nadpisu tam není) */}
+            <Title order={2} className={styles.memberHeading}>
+                <ClientName client={membership.client} link />{" "}
+                {isGroupActive && !membership.client.active && (
+                    <InfoTooltip text={TEXTS.WARNING_INACTIVE_CLIENT_GROUP} size="1x" />
                 )}
-            </Grid>
-        </Container>
+            </Title>
+            <Tooltip label="Počet předplacených lekcí">
+                <TextInput
+                    type="number"
+                    aria-label="Počet předplacených lekcí"
+                    id={`prepaid_cnt${membership.id}`}
+                    value={value}
+                    min={0}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    onFocus={onFocus}
+                    className={styles.prepaidCountersInput}
+                    leftSectionProps={{
+                        className: classNames({
+                            [styles.prepaidCountersInputGroupLabel]: value > 0,
+                        }),
+                    }}
+                    leftSection={
+                        <label htmlFor={`prepaid_cnt${membership.id}`}>
+                            <FontAwesomeIcon icon={faSackDollar} fixedWidth />
+                        </label>
+                    }
+                />
+            </Tooltip>
+        </div>
     )
 }
+
+type Props = {
+    /** Pole se členstvími všech klientů. */
+    memberships: MembershipType[]
+    /** Skupina je aktivní (true). */
+    isGroupActive: boolean
+}
+
+/** Komponenta zobrazující počítadla předplacených lekcí pro členy skupiny. */
+const PrepaidCounters: React.FC<Props> = ({ memberships, isGroupActive }) => (
+    <Container fluid>
+        <Grid justify="center">
+            {memberships.map((membership) => (
+                <Grid.Col span={{ base: 12, sm: 9, md: 3, lg: 3, xl: 2 }} key={membership.id}>
+                    <MembershipPrepaidInput membership={membership} isGroupActive={isGroupActive} />
+                </Grid.Col>
+            ))}
+            {memberships.length === 0 && (
+                <Text c="dimmed" ta="center">
+                    Žádní účastníci
+                </Text>
+            )}
+        </Grid>
+    </Container>
+)
 
 export default PrepaidCounters

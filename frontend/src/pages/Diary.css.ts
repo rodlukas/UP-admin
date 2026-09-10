@@ -80,13 +80,10 @@ const WEEK_GAP = "1rem"
  * přes celou obrazovku a jméno klienta skončí od stavu docházky přes tisíc pixelů daleko.
  * Sloupec proto roste jen po tuhle mez.
  *
- * 32 rem je měřená hodnota, ne odhad. Nejnáročnější je řádek účasti: jméno klienta (20 px,
- * 99. percentil ze 420 aktivních klientů = 221 px) plus nejširší sada odznaků (upozornění
- * na platbu, platba, dvojciferné pořadí = 132 px), stav docházky (100 px), mezery a odsazení
- * — dohromady 499 px. Hlavička lekce potřebuje méně (390 px), takže rozhoduje účast.
- *
- * Poznámka k účasti se do výpočtu nepočítá: je to uživatelský text libovolné délky a má
- * proto vlastní řádek (`attendanceNote` v Attendances.css.ts), takže o šířku nesoutěží.
+ * 32 rem je měřená hodnota, ne odhad — vychází z nejnáročnějšího řádku účasti (jméno klienta
+ * na 99. percentilu, nejširší sada odznaků, stav docházky), ne z hlavičky lekce, která
+ * potřebuje míň místa. Poznámka k účasti se do výpočtu nepočítá, má vlastní řádek
+ * (`attendanceNote` v Attendances.css.ts).
  *
  * Plný pětidenní týden to nijak neomezí: pět sloupců by při tomhle stropu potřebovalo přes
  * 2000 px, takže na běžném notebooku se dělí celá šířka jako dosud. Mez se projeví jen tam,
