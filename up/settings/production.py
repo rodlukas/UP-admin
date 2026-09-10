@@ -17,7 +17,9 @@ ALLOWED_HOSTS = [
 
 if SENTRY_DSN:
     sentry_sdk.init(
-        environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_COMMIT"
+        environment=ENVIRONMENT,
+        integrations=[DjangoIntegration()],
+        release="%GIT_COMMIT",
     )
 
 # Django >= 5.1 uz nastaveni STATICFILES_STORAGE ignoruje - konfigurace musi byt v STORAGES,
