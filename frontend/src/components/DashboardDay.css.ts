@@ -127,7 +127,10 @@ export const lectureHeader = style({
  * škrt na jedné z těch dvou ploch zmizel a musel by být dvoubarevný, což vypadalo rozbitě.
  */
 export const lectureHeaderCanceled = style({
-    background: `light-dark(#f0c9ce, color-mix(in srgb, var(--mantine-color-red-9) 46%, var(--mantine-color-dark-7)))`,
+    // `statusTint.danger` je jediný zdroj pravdy pro stavové podbarvení lekcí (viz jeho
+    // komentář v tokens.ts) — `lectureBodyCanceled` níže z něj vychází taky, díky čemuž
+    // drží pruh i tělo jednu světlost (viz komentář výše).
+    background: vars.statusTint.danger,
     color: "light-dark(#6d1414, #ffdcdc)",
 })
 
@@ -158,7 +161,9 @@ export const lectureHeaderCourse = style({
     minWidth: 0,
     overflowWrap: "anywhere",
     lineHeight: 1.25,
-    color: vars.text.heading,
+    // `currentColor`, ne pevná barva — uvnitř pruhu (`lectureHeader`) musí všechno
+    // dědit barvu pruhu, viz globalStyle níže a jeho komentář.
+    color: "inherit",
     fontWeight: 600,
 })
 

@@ -8,17 +8,10 @@ export const disabledLink = style({
 })
 
 /**
- * Výška šipky odpovídá `md` poli Mantine (`--button-height-md`, 42 px), na které aplikaci
- * přepíná `theme.ts` (výchozí `size` u `Button`) — jinak by šipky vedle tlačítek „Dnes"
- * a „+" v téže liště seděly o 6 px níž. Kdyby se výchozí velikost tlačítek v theme
- * změnila, musí se změnit i tady. Viz obdoba u `ATTENDANCE_CONTROL_SIZE`.
- */
-const ARROW_SIZE = "2.625rem"
-
-/**
  * Šipka pro přeskok týdne. Rámeček a rozměr drží odkaz (ne ikona uvnitř) — jinak se
  * velikost ovládacího prvku odvíjí od velikosti glyfu a prostý chevron je proti
- * kroužkovanému výrazně menší.
+ * kroužkovanému výrazně menší. Rozměr = `vars.size.controlMd`, jinak by šipky vedle
+ * tlačítek „Dnes" a „+" v téže liště seděly o 6 px níž.
  */
 export const arrowLink = style({
     display: "inline-flex",
@@ -27,8 +20,8 @@ export const arrowLink = style({
     transition: "background-color 0.15s ease-in-out, border-color 0.15s ease-in-out",
     border: vars.borderShort.default,
     borderRadius: vars.radius.sm,
-    width: ARROW_SIZE,
-    height: ARROW_SIZE,
+    width: vars.size.controlMd,
+    height: vars.size.controlMd,
     color: vars.text.muted,
     selectors: {
         "&:hover": {

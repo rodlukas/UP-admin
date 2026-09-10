@@ -108,3 +108,12 @@ class GroupActiveFilterTest(TestCase):
         response = self.api.get("/api/v1/groups/?active=false", secure=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(_ids(response.json()), {self.group_inactive.pk})
+
+    def test_active_invalid_value_returns_400(self) -> None:
+        response = self.api.get("/api/v1/groups/?active=no", secure=True)
+        self.assertEqual(response.status_code, 400)
+
+    def test_active_empty_value_returns_400(self) -> None:
+        # prazdny retezec (napr. rozbity klient) nesmi tise spadnout na "bez filtru"
+        response = self.api.get("/api/v1/groups/?active=", secure=True)
+        self.assertEqual(response.status_code, 400)

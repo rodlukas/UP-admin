@@ -16,7 +16,6 @@ import { ClientPostApiDummy, ClientType } from "../types/models"
 import { fEmptyVoid } from "../types/types"
 
 import * as styles from "./FormBase.css"
-import * as phoneStyles from "./FormClients.css"
 
 type Props = {
     /** Klient. */
@@ -50,6 +49,14 @@ const FormClients: React.FC<Props> = (props) => {
             note: props.client.note,
             active: props.client.active,
         },
+        validate: {
+            // prazdny telefon je v poradku (nepovinne pole) - validuje se jen vyplneny tvar;
+            // regex shodny s formatovanim v onChange nize (trojice cislic oddelene mezerou)
+            phone: (value) =>
+                value === "" || /^\d{3} \d{3} \d{3}$/.test(value)
+                    ? null
+                    : "Telefon musí mít 9 číslic (bez předvolby)",
+        },
         onValuesChange: () => props.setFormDirty(),
     })
 
@@ -58,6 +65,9 @@ const FormClients: React.FC<Props> = (props) => {
             // stopPropagation, aby nedoslo k propagaci submit na nadrazene formulare pri vnoreni modalnich oken
             e.stopPropagation()
             e.preventDefault()
+            if (form.validate().hasErrors) {
+                return
+            }
             const { firstname, surname, email, phone, note, active } = form.getValues()
             const dataPost = { firstname, surname, email, phone, note, active }
 
@@ -181,10 +191,7 @@ const FormClients: React.FC<Props> = (props) => {
                                 <TextInput
                                     type="email"
                                     id="email"
-                                    value={form.values.email}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                                        form.setFieldValue("email", e.currentTarget.value)
-                                    }}
+                                    {...form.getInputProps("email")}
                                     label="E-mail"
                                     data-qa="client_field_email"
                                 />
@@ -202,22 +209,15 @@ const FormClients: React.FC<Props> = (props) => {
                                             .replace(/(\d{3}) (\d{3})([^\s])/, "$1 $2 $3")
                                         form.setFieldValue("phone", formatted)
                                     }}
-                                    label="Telefon"
-                                    pattern="[0-9]{3} [0-9]{3} [0-9]{3}"
+                                    label="Telefon (bez předvolby)"
+                                    error={form.errors.phone}
                                     data-qa="client_field_phone"
-                                    className={phoneStyles.phoneInput}
-                                    leftSection={<span>+420</span>}
-                                    leftSectionWidth="3.1rem"
-                                    leftSectionProps={{ className: phoneStyles.phonePrefixSection }}
                                 />
                             </div>
                             <div className={styles.fieldBlock}>
                                 <Textarea
                                     id="note"
-                                    value={form.values.note}
-                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-                                        form.setFieldValue("note", e.currentTarget.value)
-                                    }}
+                                    {...form.getInputProps("note")}
                                     label="Poznámka"
                                     data-qa="client_field_note"
                                     spellCheck

@@ -18,6 +18,12 @@ export const prepaidLectureCnt = style({
  *
  * Samotné pole zůstává textové (`cursor: text`): je to editovatelný vstup po segmentech
  * a klik do něj musí umístit kurzor, ne otevřít kalendář přes celé pole.
+ *
+ * Schování nativního glyfu funguje jen ve Webkit/Blink (viz níže) — Firefox pro něj nemá
+ * žádnou CSS obdobu, takže by tam vlastní ikona byla druhá navíc vedle nativní. FormLectures.tsx
+ * proto `leftSection` s vlastní ikonou přidává jen tam, kde `CSS.supports("selector(...)")`
+ * potvrdí, že prohlížeč tohle schování umí (`supportsNativeDateTimeIconHiding`) — jinde nese
+ * afordanci výběru sama nativní ikona.
  */
 export const nativeDateTime = style({})
 

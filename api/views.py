@@ -64,7 +64,7 @@ class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
 
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
-    filterset_fields = ("active",)
+    filterset_class = custom_filters.ClientFilter
 
     def get_queryset(self) -> QuerySet[Client]:
         return Client.objects.annotate(
@@ -312,7 +312,7 @@ class CourseViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
 
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    filterset_fields = ("visible",)
+    filterset_class = custom_filters.CourseFilter
 
     @extend_schema(
         summary="Seznam kurzů",

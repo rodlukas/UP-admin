@@ -44,9 +44,8 @@ const AttendancePaidButton: React.FC<Props> = (props) => {
         [styles.attendancePaidButtonDanger]: !props.paid,
     })
     const title = `Označit lekci jako ${props.paid ? "NE" : ""}ZAPLACENOU`
-    // focus: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13)
     return (
-        <Tooltip label={title} position="right" events={{ hover: true, focus: true, touch: true }}>
+        <Tooltip label={title} position="right">
             {/* nativní <button>: aktivaci klávesnicí, focus i sémantiku řeší prohlížeč
                 (aria-disabled místo `disabled`, aby tooltip zůstal dosažitelný i během ukládání) */}
             <button

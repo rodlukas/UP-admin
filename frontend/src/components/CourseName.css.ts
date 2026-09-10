@@ -1,6 +1,6 @@
 import { createThemeContract, style } from "@vanilla-extract/css"
 
-import { vars } from "../theme/tokens"
+import { courseColorTint, vars } from "../theme/tokens"
 
 export const courseNameVars = createThemeContract({
     /** Barva kurzu (uživatelský hex z Nastavení). */
@@ -49,15 +49,15 @@ export const courseName = style({
 })
 
 /**
- * Tečka v barvě kurzu. `color-mix` proti inkoustu/světlé je tu proto, že barva kurzu je
- * uživatelský hex a bez srovnání světlosti zmizí na bílé nebo na tmavé ploše. Stejný
- * recept používá levá linka kurzu v Applications.css.ts.
+ * Tečka v barvě kurzu. `courseColorTint` je tu proto, že barva kurzu je uživatelský hex
+ * a bez srovnání světlosti zmizí na bílé nebo na tmavé ploše. Stejný recept používá
+ * `CourseCircle.css.ts` a `SelectCourse.css.ts`.
  */
 export const courseDot = style({
     display: "inline-block",
     marginRight: "0.4rem",
     borderRadius: vars.radius.pill,
-    background: `light-dark(color-mix(in oklab, ${courseNameVars.color} 92%, #16233a), color-mix(in oklab, ${courseNameVars.color} 72%, #e7ecf4))`,
+    background: courseColorTint(courseNameVars.color),
     width: "0.55rem",
     height: "0.55rem",
     verticalAlign: "baseline",

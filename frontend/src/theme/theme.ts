@@ -112,6 +112,13 @@ export const theme = createTheme({
             defaultProps: {
                 withinPortal: true,
                 zIndex: 1300,
+                // obsah tooltipu musí být dosažitelný i z klávesnice a dotyku, ne jen myší
+                // (WCAG 1.4.13) — jediné místo, jednotlivé Tooltipy to už nemusí opakovat.
+                // Výjimka: EditButton/DeleteIconButton si `events` přebíjejí zpátky na
+                // `focus: false, touch: false` schválně — tlačítko po zavření navazujícího
+                // dialogu (modal/`confirm()`) zůstává fokusované a tooltip by se jinak
+                // ukázal znovu bez myši nad ním.
+                events: { hover: true, focus: true, touch: true },
             },
         },
         Table: {

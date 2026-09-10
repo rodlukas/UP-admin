@@ -2,6 +2,7 @@ import { Skeleton } from "@mantine/core"
 import * as React from "react"
 
 import * as loginStyles from "../pages/Login.css"
+import { vars } from "../theme/tokens"
 
 import { SkeletonShell } from "./Skeletons"
 
@@ -31,15 +32,19 @@ const LoginSkeleton: React.FC = () => (
                 <Skeleton h={20} mb="xl" mx="auto" radius="sm" w="85%" />
                 <div className={loginStyles.fieldWrapper}>
                     <Skeleton h={16} mb="xs" radius="sm" w="40%" />
-                    {/* 42 px = `--input-height-md` (TextInput jede na `size="md"`, viz theme.ts) */}
-                    <Skeleton h={42} radius="sm" />
+                    {/* rozměr = `vars.size.controlMd` (TextInput jede na `size="md"`, viz theme.ts) */}
+                    <Skeleton h={vars.size.controlMd} radius="sm" />
                 </div>
                 <div className={loginStyles.fieldWrapper}>
                     <Skeleton h={16} mb="xs" radius="sm" w="25%" />
-                    <Skeleton h={42} radius="sm" />
+                    <Skeleton h={vars.size.controlMd} radius="sm" />
                 </div>
-                {/* stejná třída jako skutečné tlačítko (`width: 100%`), 42 px = `size="md"` */}
-                <Skeleton className={loginStyles.submitButton} h={42} radius="sm" />
+                {/* stejná třída jako skutečné tlačítko (`width: 100%`) */}
+                <Skeleton
+                    className={loginStyles.submitButton}
+                    h={vars.size.controlMd}
+                    radius="sm"
+                />
             </SkeletonShell>
         </div>
     </div>

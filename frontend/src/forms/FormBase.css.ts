@@ -4,15 +4,11 @@ import { statusNoticeDanger } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
 /**
- * Vzhled polí ve formulářích. Zbytek aplikace používá obrysová (bílá) pole, ale ta by na
- * jedné bílé ploše modalu splynula do vlasové linky. Pole proto v klidu nesou jemnou výplň,
- * aby se četla jako plný ovládací prvek, a při focusu se „zvednou" na `elevated` povrch
- * s primárním rámečkem a prstencem — tedy do stejného stavu, jaký má focus všude jinde.
- * (Sladěné s `index.css.ts`, kde focus přebarvuje rámeček na `primary`.)
+ * Vzhled polí ve formulářích: v klidu nesou jemnou výplň (`vars.bg.field`), aby se četla
+ * jako plný ovládací prvek, a při focusu se „zvednou" na `elevated` povrch s primárním
+ * rámečkem a prstencem — tedy do stejného stavu, jaký má focus všude jinde. (Sladěné
+ * s `index.css.ts`, kde focus přebarvuje rámeček na `primary`.)
  */
-const FIELD_BG = "light-dark(#f3f6fb, var(--mantine-color-dark-6))"
-const FIELD_BG_HOVER = "light-dark(#eaf0f8, var(--mantine-color-dark-5))"
-
 globalStyle("form[data-qa^='form_'] .mantine-Modal-header", {
     borderBottom: vars.borderShort.formDivider,
     backgroundColor: vars.bg.surface,
@@ -99,7 +95,7 @@ globalStyle(
         // neliší od polí na stránkách
         borderRadius: vars.radius.sm,
         borderColor: vars.border.default,
-        backgroundColor: FIELD_BG,
+        backgroundColor: vars.bg.field,
     },
 )
 
@@ -128,7 +124,7 @@ globalStyle(
     "form[data-qa^='form_'] .mantine-Input-input:hover, form[data-qa^='form_'] .mantine-Select-input:hover, form[data-qa^='form_'] .mantine-Textarea-input:hover",
     {
         borderColor: vars.border.strong,
-        backgroundColor: FIELD_BG_HOVER,
+        backgroundColor: vars.bg.fieldHover,
     },
 )
 

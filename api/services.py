@@ -260,7 +260,10 @@ class Statistics:
 
         # per-course doplnkove statistiky
         canceled_by_course = {
-            row["course__id"]: row
+            row["course__id"]: {
+                "total_all": row["total_all"],
+                "total_canceled": row["total_canceled"],
+            }
             for row in all_scoped_lectures.values("course__id").annotate(
                 total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
             )
@@ -371,7 +374,10 @@ class Statistics:
         by_year_course = None
         if year is None:
             canceled_by_year = {
-                row["start__year"]: row
+                row["start__year"]: {
+                    "total_all": row["total_all"],
+                    "total_canceled": row["total_canceled"],
+                }
                 for row in all_lectures.values("start__year").annotate(
                     total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
                 )

@@ -63,7 +63,9 @@ export type LectureType = Model & {
     course: CourseType
     start: string | null
     group: null | GroupType
-    number: LectureNumberOrWarning
+    // `null` pro předplacenou lekci (`start === null`) — `get_number` na backendu tam
+    // číslo nemá z čeho spočítat.
+    number: LectureNumberOrWarning | null
     canceled: boolean
     duration: number
     attendances: AttendanceType[]

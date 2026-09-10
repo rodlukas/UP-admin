@@ -125,7 +125,7 @@ const Groups: React.FC = () => {
                 {table.filteredCount === 0 ? (
                     <EmptyState
                         icon={faLayerGroup}
-                        title="Nic nenalezeno"
+                        title={TEXTS.NO_RESULTS}
                         description={`Hledání „${table.query}“ neodpovídá žádná skupina.`}
                     />
                 ) : (

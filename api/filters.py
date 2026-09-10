@@ -6,7 +6,7 @@ from django import forms
 from django.db.models.query import QuerySet
 from django_filters import rest_framework as filters
 
-from admin.models import Lecture, Group
+from admin.models import Client, Course, Lecture, Group
 
 
 class StrictBooleanField(forms.Field):
@@ -26,7 +26,10 @@ class StrictBooleanField(forms.Field):
     FALSE_VALUES = {"0", "false"}
 
     def to_python(self, value: str | None) -> bool | None:
-        if value in self.empty_values:
+        # jen chybejici parametr (None) je "bez filtru" — prazdny retezec (?active=) je
+        # podle dokumentace vyse jedna z neplatnych hodnot, `self.empty_values` by ho ale
+        # (spolu s None) tise promenil na "bez filtru" driv, nez se dostane k validaci
+        if value is None:
             return None
         lowered = str(value).strip().lower()
         if lowered in self.TRUE_VALUES:
@@ -85,7 +88,8 @@ class GroupFilter(filters.FilterSet):
     """
 
     client = filters.NumberFilter(method="filter_client")
-    onlyPast = filters.BooleanFilter(method="filter_only_past")
+    onlyPast = StrictBooleanFilter(method="filter_only_past")
+    active = StrictBooleanFilter(field_name="active")
 
     def filter_client(self, queryset: QuerySet, name: str, value: int) -> QuerySet:
         # parametr onlyPast se zpracovava spolecne s filtrem client
@@ -105,3 +109,27 @@ class GroupFilter(filters.FilterSet):
     class Meta:
         model = Group
         fields = "client", "onlyPast", "active"
+
+
+class ClientFilter(filters.FilterSet):
+    """
+    Filtr klientů podle aktivity (active).
+    """
+
+    active = StrictBooleanFilter(field_name="active")
+
+    class Meta:
+        model = Client
+        fields = ("active",)
+
+
+class CourseFilter(filters.FilterSet):
+    """
+    Filtr kurzů podle viditelnosti (visible).
+    """
+
+    visible = StrictBooleanFilter(field_name="visible")
+
+    class Meta:
+        model = Course
+        fields = ("visible",)

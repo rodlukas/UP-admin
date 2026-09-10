@@ -208,10 +208,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                 <div className={styles.fieldBlock}>
                                     <TextInput
                                         id="name"
-                                        value={form.values.name}
-                                        onChange={(e) =>
-                                            form.setFieldValue("name", e.currentTarget.value)
-                                        }
+                                        {...form.getInputProps("name")}
                                         label="Název skupiny"
                                         data-autofocus
                                         data-qa="group_field_name"

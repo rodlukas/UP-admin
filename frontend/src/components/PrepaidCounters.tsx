@@ -233,10 +233,7 @@ const PrepaidCounters: React.FC<Props> = (props) => {
                                     />
                                 )}
                             </Title>
-                            {/* focus: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13) */}
-                            <Tooltip
-                                label="Počet předplacených lekcí"
-                                events={{ hover: true, focus: true, touch: true }}>
+                            <Tooltip label="Počet předplacených lekcí">
                                 <TextInput
                                     type="number"
                                     aria-label="Počet předplacených lekcí"

@@ -220,11 +220,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     {/* Tooltip musí obalovat Menu.Target (ne naopak): Menu.Target klonuje
                         ARIA props (aria-haspopup/expanded/controls) na své přímé dítě a
                         Tooltip by je rozprostřel na plovoucí tělo tooltipu místo na trigger */}
-                    <Tooltip
-                        label={title}
-                        position={tooltipPosition}
-                        withinPortal
-                        events={{ hover: true, focus: true, touch: true }}>
+                    <Tooltip label={title} position={tooltipPosition} withinPortal>
                         <Menu.Target>
                             <Button
                                 className={classNames(

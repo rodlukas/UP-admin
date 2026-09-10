@@ -106,24 +106,19 @@ export const attendanceBadges = style({
 })
 
 /**
- * Výška ovládacích prvků v řádku účasti. Odpovídá `md` poli Mantine (`--input-height-md`,
- * 42 px), na které aplikaci přepíná `theme.ts` — vedle stavu docházky tak ikony nesedí
- * jako drobky. Kdyby se velikost polí v theme změnila, musí se změnit i tady.
- */
-const ATTENDANCE_CONTROL_SIZE = "2.625rem"
-
-/**
  * Slot pro stavovou ikonu účasti. Platba i „příště platit" mají stejný rozměr a stejnou
  * osu — bez společného slotu se ikony navzájem míjejí a řádek při přepnutí stavu poskakuje.
  * Glyfy jsou navíc z jedné rodiny (kroužkované), takže se liší významem a barvou, ne tvarem.
+ * Rozměr = `vars.size.controlMd`, ať vedle stavu docházky (skutečné Mantine pole) ikony
+ * nesedí jako drobky.
  */
 export const attendanceIconSlot = style({
     display: "inline-flex",
     flexShrink: 0,
     alignItems: "center",
     justifyContent: "center",
-    width: ATTENDANCE_CONTROL_SIZE,
-    height: ATTENDANCE_CONTROL_SIZE,
+    width: vars.size.controlMd,
+    height: vars.size.controlMd,
     // velikost glyfu řídí slot, ne prop u ikony: FontAwesome `size="lg"` je 1,25em,
     // takže se škáluje s písmem kontejneru a obě ikony zůstanou shodné bez dalšího zásahu
     fontSize: "1.3rem",

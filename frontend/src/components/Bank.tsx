@@ -221,10 +221,7 @@ const Bank: React.FC = () => {
                             {getBalanceText()}{" "}
                             {isLackOfMoney && (
                                 <Tooltip
-                                    label={`Na účtu není dostatek peněz (alespoň ${prettyAmount(bankData.rent_price)}) pro zaplacení nájmu!`}
-                                    // focus + tabIndex: obsah tooltipu musí být dosažitelný
-                                    // i z klávesnice (WCAG 1.4.13)
-                                    events={{ hover: true, focus: true, touch: true }}>
+                                    label={`Na účtu není dostatek peněz (alespoň ${prettyAmount(bankData.rent_price)}) pro zaplacení nájmu!`}>
                                     {/* eslint-disable jsx-a11y/no-noninteractive-tabindex --
                                     trigger tooltipu musí být fokusovatelný, jinak je obsah
                                     jen pro myš (WAI-ARIA tooltip pattern); bloková forma,

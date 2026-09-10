@@ -1,4 +1,5 @@
 import { Container, Skeleton, Title, Tooltip } from "@mantine/core"
+import { faHourglassHalf } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
@@ -10,11 +11,12 @@ import DeleteIconButton from "../components/buttons/DeleteIconButton"
 import ClientName from "../components/ClientName"
 import ClientPhone from "../components/ClientPhone"
 import { courseBandVars } from "../components/CourseName.css"
+import EmptyState from "../components/EmptyState"
 import Heading from "../components/Heading"
 import { SkeletonShell } from "../components/Skeletons"
 import ModalApplications from "../forms/ModalApplications"
 import { prettyDateWithYear } from "../global/funcDateTime"
-import { dimmedTextCenter, mb0 } from "../global/utility.css"
+import { mb0 } from "../global/utility.css"
 import {
     contrastingTextColor,
     GroupedObjectsByCourses,
@@ -196,7 +198,13 @@ const Applications: React.FC = () => {
                             </div>
                         )
                     })}
-                    {applications.length === 0 && <p className={dimmedTextCenter}>Žádní zájemci</p>}
+                    {applications.length === 0 && (
+                        <EmptyState
+                            icon={faHourglassHalf}
+                            title="Žádní zájemci"
+                            description="Až se přidá první zájemce o kurz, objeví se tady."
+                        />
+                    )}
                 </>
             )}
         </Container>

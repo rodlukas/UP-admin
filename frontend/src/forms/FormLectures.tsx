@@ -148,6 +148,18 @@ const FormLecturesSkeleton: React.FC<FormLecturesSkeletonProps> = ({
     </SkeletonShell>
 )
 
+/**
+ * Nativní glyf výběru u `type="date"`/`type="time"` jde schovat jen v prohlížečích,
+ * které znají `::-webkit-calendar-picker-indicator` (Chromium, Safari) — Firefox pro něj
+ * nemá žádnou CSS obdobu (viz `nativeDateTime` ve FormLectures.css.ts). Vlastní ikona
+ * v `leftSection` proto smysl dává jen tam, kde nahrazuje skrytý nativní glyf; jinde by
+ * šlo o druhou (nadbytečnou) ikonu vedle nativní, kterou nejde odstranit.
+ */
+const supportsNativeDateTimeIconHiding =
+    typeof CSS !== "undefined" &&
+    typeof CSS.supports === "function" &&
+    CSS.supports("selector(::-webkit-calendar-picker-indicator)")
+
 /** Formulář pro lekce. */
 const FormLectures: React.FC<Props> = (props) => {
     const attendanceStatesContext = useAttendanceStatesContext()
@@ -757,12 +769,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     )}
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
-                                    {/* focus: obsah tooltipu musí být dosažitelný i z klávesnice
-                                        (WCAG 1.4.13) — platí pro všechny tooltipy polí níže */}
-                                    <Tooltip
-                                        label="Datum"
-                                        withinPortal
-                                        events={{ hover: true, focus: true, touch: true }}>
+                                    <Tooltip label="Datum" withinPortal>
                                         <TextInput
                                             type="date"
                                             id="date"
@@ -778,28 +785,31 @@ const FormLectures: React.FC<Props> = (props) => {
                                             placeholder="yyyy-mm-dd"
                                             aria-label="Datum lekce"
                                             data-qa="lecture_field_date"
-                                            leftSectionPointerEvents="all"
+                                            leftSectionPointerEvents={
+                                                supportsNativeDateTimeIconHiding
+                                                    ? "all"
+                                                    : undefined
+                                            }
                                             leftSection={
-                                                <button
-                                                    type="button"
-                                                    className={styles.nativeDateTimeTrigger}
-                                                    disabled={prepaid}
-                                                    onClick={() => openNativePicker("date")}
-                                                    aria-label="Otevřít výběr data">
-                                                    <FontAwesomeIcon
-                                                        icon={faCalendarAlt}
-                                                        fixedWidth
-                                                    />
-                                                </button>
+                                                supportsNativeDateTimeIconHiding ? (
+                                                    <button
+                                                        type="button"
+                                                        className={styles.nativeDateTimeTrigger}
+                                                        disabled={prepaid}
+                                                        onClick={() => openNativePicker("date")}
+                                                        aria-label="Otevřít výběr data">
+                                                        <FontAwesomeIcon
+                                                            icon={faCalendarAlt}
+                                                            fixedWidth
+                                                        />
+                                                    </button>
+                                                ) : undefined
                                             }
                                         />
                                     </Tooltip>
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
-                                    <Tooltip
-                                        label="Čas začátku"
-                                        withinPortal
-                                        events={{ hover: true, focus: true, touch: true }}>
+                                    <Tooltip label="Čas začátku" withinPortal>
                                         <TextInput
                                             type="time"
                                             id="time"
@@ -812,16 +822,25 @@ const FormLectures: React.FC<Props> = (props) => {
                                             placeholder="hh:mm"
                                             aria-label="Čas lekce"
                                             data-qa="lecture_field_time"
-                                            leftSectionPointerEvents="all"
+                                            leftSectionPointerEvents={
+                                                supportsNativeDateTimeIconHiding
+                                                    ? "all"
+                                                    : undefined
+                                            }
                                             leftSection={
-                                                <button
-                                                    type="button"
-                                                    className={styles.nativeDateTimeTrigger}
-                                                    disabled={prepaid}
-                                                    onClick={() => openNativePicker("time")}
-                                                    aria-label="Otevřít výběr času">
-                                                    <FontAwesomeIcon icon={faClock} fixedWidth />
-                                                </button>
+                                                supportsNativeDateTimeIconHiding ? (
+                                                    <button
+                                                        type="button"
+                                                        className={styles.nativeDateTimeTrigger}
+                                                        disabled={prepaid}
+                                                        onClick={() => openNativePicker("time")}
+                                                        aria-label="Otevřít výběr času">
+                                                        <FontAwesomeIcon
+                                                            icon={faClock}
+                                                            fixedWidth
+                                                        />
+                                                    </button>
+                                                ) : undefined
                                             }
                                         />
                                     </Tooltip>
@@ -861,7 +880,6 @@ const FormLectures: React.FC<Props> = (props) => {
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
                                     <SelectCourse
                                         required
-                                        label="Kurz"
                                         value={course}
                                         onChangeCallback={onSelectChange}
                                         options={coursesVisibleContext.courses}
@@ -870,10 +888,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     />
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
-                                    <Tooltip
-                                        label="Trvání (min.)"
-                                        withinPortal
-                                        events={{ hover: true, focus: true, touch: true }}>
+                                    <Tooltip label="Trvání (min.)" withinPortal>
                                         <TextInput
                                             type="number"
                                             id="duration"
@@ -992,14 +1007,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             </Group>
                                         </Grid.Col>
                                         <Grid.Col span={{ base: 12, sm: 6 }}>
-                                            <Tooltip
-                                                label="Poznámka"
-                                                withinPortal
-                                                events={{
-                                                    hover: true,
-                                                    focus: true,
-                                                    touch: true,
-                                                }}>
+                                            <Tooltip label="Poznámka" withinPortal>
                                                 <TextInput
                                                     type="text"
                                                     name="atNote"
@@ -1078,8 +1086,7 @@ const FormLectures: React.FC<Props> = (props) => {
                     !areAttendantsEqualToMembers() && (
                         <Tooltip
                             label="Uloží informace a zároveň upraví účastníky této lekce tak, aby byli v souladu se členy skupiny"
-                            withinPortal
-                            events={{ hover: true, focus: true, touch: true }}>
+                            withinPortal>
                             <span>
                                 <SubmitButton
                                     loading={isSubmit}

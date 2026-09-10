@@ -25,7 +25,11 @@ type Props = Omit<ActionIconProps, "content" | "children"> & {
 const DeleteIconButton: React.FC<Props> = ({ onClick, content, ...props }) => {
     const label = `Smazat ${content}`
     return (
-        <Tooltip label={label}>
+        <Tooltip
+            label={label}
+            // stejny duvod jako u EditButton: po zavreni potvrzovaciho dialogu (window.confirm)
+            // muze tlacitko zustat fokusovane a tooltip by se jinak znovu ukazal bez mysi nad nim
+            events={{ hover: true, focus: false, touch: false }}>
             <ActionIcon
                 variant="subtle"
                 color="red"

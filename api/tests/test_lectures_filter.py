@@ -232,3 +232,8 @@ class LectureCanceledFilterTest(TestCase):
         # vcetne zrusenych misto chyby) - musi vratit 400, stejne jako `limit`
         response = self.api.get("/api/v1/lectures/?canceled=no", secure=True)
         self.assertEqual(response.status_code, 400)
+
+    def test_canceled_empty_value_returns_400(self) -> None:
+        # prazdny retezec (napr. rozbity klient) nesmi tise spadnout na "bez filtru"
+        response = self.api.get("/api/v1/lectures/?canceled=", secure=True)
+        self.assertEqual(response.status_code, 400)

@@ -232,8 +232,7 @@ const FormSettings: React.FC<Props> = (props) => {
                                                     v === "" ? undefined : Number(v),
                                                 )
                                             }}
-                                            label="Trvání (min.)"
-                                            description="pro jednotlivce"
+                                            label="Trvání (min., pro jednotlivce)"
                                             required
                                             withAsterisk
                                             min="1"

@@ -19,9 +19,7 @@ const Celebration: React.FC<Props> = ({ isUserCelebratingResult }) => {
     return (
         <Tooltip
             label={`Všechno nejlepší k ${isUserCelebratingResult === USER_CELEBRATION.BIRTHDAY ? "narozeninám" : "svátku"}! 😍`}
-            position="top"
-            // focus + tabIndex: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13)
-            events={{ hover: true, focus: true, touch: true }}>
+            position="top">
             {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- trigger tooltipu
                 musí být fokusovatelný, jinak je obsah jen pro myš (WAI-ARIA tooltip pattern) */}
             <span role="img" aria-label={label} tabIndex={0} className={styles.celebration}>

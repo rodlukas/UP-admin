@@ -253,10 +253,7 @@ const Diary: React.FC = () => {
                             {/* Navigace tydne je jeden shluk neutralnich ovladacu; jedina
                                 primarni (indigo) akce v hlavicce je pridani lekce. */}
                             <Group gap="0.25rem" wrap="nowrap" className={styles.weekNav}>
-                                {/* focus: obsah tooltipu musí být dosažitelný i z klávesnice (WCAG 1.4.13) */}
-                                <Tooltip
-                                    label="Předchozí týden"
-                                    events={{ hover: true, focus: true, touch: true }}>
+                                <Tooltip label="Předchozí týden">
                                     {/* odkaz obsahuje jen ikonu - jmeno pro ctecky */}
                                     <Link
                                         aria-label="Předchozí týden"
@@ -275,9 +272,7 @@ const Diary: React.FC = () => {
                                         />
                                     </Link>
                                 </Tooltip>{" "}
-                                <Tooltip
-                                    label="Další týden"
-                                    events={{ hover: true, focus: true, touch: true }}>
+                                <Tooltip label="Další týden">
                                     {/* odkaz obsahuje jen ikonu - jmeno pro ctecky */}
                                     <Link
                                         aria-label="Další týden"

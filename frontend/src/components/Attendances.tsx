@@ -54,15 +54,16 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
                         stejne jako cislo lekce (LectureNumber). Obarvena pilulka by u kazdeho
                         jmena v seznamu ucastniku pridala dalsi objekt navic. */}
                     {attendance.number && (
-                        <Tooltip
-                            label={label}
-                            // focus + tabIndex: obsah tooltipu musí být dosažitelný i z klávesnice
-                            // (WCAG 1.4.13)
-                            events={{ hover: true, focus: true, touch: true }}>
-                            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- trigger
+                        <Tooltip label={label}>
+                            {/* eslint-disable jsx-a11y/no-noninteractive-tabindex -- trigger
                                 tooltipu musí být fokusovatelný, jinak je obsah jen pro myš
-                                (WAI-ARIA tooltip pattern) */}
-                            <span className={styles.attendanceNumber} tabIndex={0} aria-label={label}>
+                                (WAI-ARIA tooltip pattern); bloková forma, protože -next-line
+                                nedosáhne na atribut o 2 řádky níž */}
+                            <span
+                                className={styles.attendanceNumber}
+                                tabIndex={0}
+                                aria-label={label}>
+                                {/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
                                 {isOrdinal ? `${attendance.number}.` : attendance.number}
                             </span>
                         </Tooltip>

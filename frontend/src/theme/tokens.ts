@@ -44,6 +44,17 @@ export const vars = {
         pill: "999px",
     },
     /**
+     * Rozměry ovládacích prvků, které se **musí** posadit vedle skutečného Mantine pole/
+     * tlačítka, ale samy jím nejsou (ikony, kostry) — `var(--input-height-md)` /
+     * `var(--button-height-md)` totiž nejdou použít mimo strom skutečného Mantine
+     * komponentu, kde je Mantine deklaruje (viz `Input`/`Button` CSS). Odpovídá `md`
+     * poli/tlačítku (`theme.ts` na něj aplikaci přepíná). Kdyby se výchozí velikost
+     * v `theme.ts` změnila, musí se ručně přepočítat i tady — jediné místo, ne tři.
+     */
+    size: {
+        controlMd: "2.625rem",
+    },
+    /**
      * Stíny patří jen plovoucím vrstvám. `elevated` zůstává v tokenech pro modaly
      * a dropdowny — na obsah stránky se nepoužívá, tam nese oddělení `border.default`.
      * box-shadow neumí light-dark() (jde jen o barvy), proto pure-black s vyšší opacitou —
@@ -94,6 +105,14 @@ export const vars = {
         hoverElevated: "light-dark(#f1f4f9, var(--mantine-color-dark-5))",
         /** Neutrální pozadí samostatných ovládacích prvků. */
         control: "light-dark(#eef1f6, var(--mantine-color-dark-5))",
+        /**
+         * Pole formulářů v klidu (`FormBase.css.ts`). Zbytek aplikace používá obrysová
+         * (bílá) pole, ale ta by na jedné bílé ploše modalu splynula do vlasové linky —
+         * pole proto nesou jemnou výplň, aby se četla jako plný ovládací prvek.
+         */
+        field: "light-dark(#f3f6fb, var(--mantine-color-dark-6))",
+        /** Hover pole formuláře — krok od `field` stejným směrem jako `hover` od `surface`. */
+        fieldHover: "light-dark(#eaf0f8, var(--mantine-color-dark-5))",
         /**
          * Inkoustový pruh navigace — jediné chrome aplikace. V obou schématech je to
          * nejtmavší plocha na obrazovce; v tmavém režimu je krok proti ploše jen 1.2:1,
@@ -203,3 +222,13 @@ export const vars = {
         danger: "light-dark(#fdf1f3, color-mix(in srgb, var(--mantine-color-red-9) 26%, var(--mantine-color-dark-7)))",
     },
 } as const
+
+/**
+ * Namíchá barvu kurzu (uživatelský hex z Nastavení) s inkoustem/bílou podle motivu —
+ * bez mixu tmavá barva v tmavém režimu na tmavém pozadí zmizí (a světlá zase na bílé).
+ * Jediný recept pro tečku/kolečko v barvě kurzu (`CourseName.css.ts`'s `courseDot`,
+ * `CourseCircle.css.ts`, `SelectCourse.css.ts`) — konstanty (92 %/72 %, `#16233a`/`#e7ecf4`)
+ * ať existují jen tady, ne zvlášť v každém spotřebiteli.
+ */
+export const courseColorTint = (color: string): string =>
+    `light-dark(color-mix(in oklab, ${color} 92%, #16233a), color-mix(in oklab, ${color} 72%, #e7ecf4))`
