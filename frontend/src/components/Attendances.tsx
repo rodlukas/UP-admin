@@ -29,10 +29,8 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
     // větev) je ale pořád typovaný jako union — `isOrdinal` je samostatná proměnná, ne
     // type guard přímo na `attendance.number`, takže TS ho tady nezúží automaticky.
     const isOrdinal = typeof attendance.number === "number"
-    const label =
-        attendance.number === undefined
-            ? undefined
-            : String(isOrdinal ? `${attendance.number}. lekce` : attendance.number)
+    const numberLabel = isOrdinal ? `${attendance.number}. lekce` : String(attendance.number)
+    const label = attendance.number === undefined ? undefined : numberLabel
     return (
         <li data-qa="lecture_attendance">
             <div className={styles.attendanceMain}>

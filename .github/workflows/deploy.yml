@@ -83,7 +83,7 @@ jobs:
 
             # pripravime fly.io klienta pro deploy
             - name: 🧹 Pre-deploy tasks Fly.io - client
-              uses: superfly/flyctl-actions/setup-flyctl@master
+              uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # master, 2026-04-08 (= v1 / 1.6)
 
             # nasazeni prod verze na Fly.io
             - name: 🚀 Deploy to prod Fly.io

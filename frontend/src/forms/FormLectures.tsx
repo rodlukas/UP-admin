@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome"
 import {
     Alert,
     Checkbox,
@@ -159,6 +159,56 @@ const supportsNativeDateTimeIconHiding =
     typeof CSS !== "undefined" &&
     typeof CSS.supports === "function" &&
     CSS.supports("selector(::-webkit-calendar-picker-indicator)")
+
+/** `leftSectionPointerEvents` pro pole data/času — viz `supportsNativeDateTimeIconHiding` a `NativePickerTrigger`. */
+const nativePickerPointerEvents = supportsNativeDateTimeIconHiding ? "all" : undefined
+
+type NativePickerTriggerProps = {
+    /** Pole, jehož nativní picker se má otevřít. */
+    fieldId: "date" | "time"
+    /** Ikona nahrazující skrytý nativní glyf. */
+    icon: FontAwesomeIconProps["icon"]
+    ariaLabel: string
+    disabled: boolean
+    onOpen: (fieldId: string) => void
+}
+
+/**
+ * Ikona v `leftSection` pole data/času, nahrazující skrytý nativní glyf výběru
+ * (viz `supportsNativeDateTimeIconHiding` výše) — jinde by šlo o druhou
+ * (nadbytečnou) ikonu vedle nativní, kterou nejde odstranit.
+ */
+const NativePickerTrigger: React.FC<NativePickerTriggerProps> = ({
+    fieldId,
+    icon,
+    ariaLabel,
+    disabled,
+    onOpen,
+}) =>
+    supportsNativeDateTimeIconHiding ? (
+        <button
+            type="button"
+            className={styles.nativeDateTimeTrigger}
+            disabled={disabled}
+            onClick={() => onOpen(fieldId)}
+            aria-label={ariaLabel}>
+            <FontAwesomeIcon icon={icon} fixedWidth />
+        </button>
+    ) : undefined
+
+/**
+ * Vytvoří pole `count` shodných dat lekce — pro odeslání více po sobě jdoucích
+ * předplacených lekcí najednou (viz použití v `onSubmit`).
+ */
+const buildPrepaidLecturesData = (data: LecturePostApi, count: number): LecturePostApi[] => {
+    const dataArray: LecturePostApi[] = []
+    let tmp = count
+    while (tmp) {
+        dataArray.push(data)
+        tmp--
+    }
+    return dataArray
+}
 
 /** Formulář pro lekce. */
 const FormLectures: React.FC<Props> = (props) => {
@@ -622,37 +672,20 @@ const FormLectures: React.FC<Props> = (props) => {
                 const attendances = getAttendancesSubmit<AttendancePostApi>()
                 const dataPost: LecturePostApi = { ...data, attendances }
 
-                // pokud je predplacena, vytvor pole s prislusnym poctem lekci a posli ho
-                if (prepaid) {
-                    const dataArray: LecturePostApi[] = []
-                    let tmp = prepaidCnt
-                    while (tmp) {
-                        dataArray.push(dataPost)
-                        tmp--
-                    }
-                    setIsSubmit(true)
-                    createLecture.mutate(dataArray, {
-                        onSuccess: () => {
-                            trackEvent("lecture_created", { source: props.source })
-                            props.funcForceClose()
-                        },
-                        onError: () => {
-                            setIsSubmit(false)
-                        },
-                    })
-                } else {
-                    // jinak posli pouze lekci
-                    setIsSubmit(true)
-                    createLecture.mutate(dataPost, {
-                        onSuccess: () => {
-                            trackEvent("lecture_created", { source: props.source })
-                            props.funcForceClose()
-                        },
-                        onError: () => {
-                            setIsSubmit(false)
-                        },
-                    })
-                }
+                // pokud je predplacena, posli pole se stejnym poctem lekci jako `prepaidCnt`, jinak jen jednu
+                const createPayload = prepaid
+                    ? buildPrepaidLecturesData(dataPost, prepaidCnt)
+                    : dataPost
+                setIsSubmit(true)
+                createLecture.mutate(createPayload, {
+                    onSuccess: () => {
+                        trackEvent("lecture_created", { source: props.source })
+                        props.funcForceClose()
+                    },
+                    onError: () => {
+                        setIsSubmit(false)
+                    },
+                })
             }
         },
         [
@@ -781,25 +814,15 @@ const FormLectures: React.FC<Props> = (props) => {
                                             placeholder="yyyy-mm-dd"
                                             aria-label="Datum lekce"
                                             data-qa="lecture_field_date"
-                                            leftSectionPointerEvents={
-                                                supportsNativeDateTimeIconHiding
-                                                    ? "all"
-                                                    : undefined
-                                            }
+                                            leftSectionPointerEvents={nativePickerPointerEvents}
                                             leftSection={
-                                                supportsNativeDateTimeIconHiding ? (
-                                                    <button
-                                                        type="button"
-                                                        className={styles.nativeDateTimeTrigger}
-                                                        disabled={prepaid}
-                                                        onClick={() => openNativePicker("date")}
-                                                        aria-label="Otevřít výběr data">
-                                                        <FontAwesomeIcon
-                                                            icon={faCalendarAlt}
-                                                            fixedWidth
-                                                        />
-                                                    </button>
-                                                ) : undefined
+                                                <NativePickerTrigger
+                                                    fieldId="date"
+                                                    icon={faCalendarAlt}
+                                                    ariaLabel="Otevřít výběr data"
+                                                    disabled={prepaid}
+                                                    onOpen={openNativePicker}
+                                                />
                                             }
                                         />
                                     </Tooltip>
@@ -818,25 +841,15 @@ const FormLectures: React.FC<Props> = (props) => {
                                             placeholder="hh:mm"
                                             aria-label="Čas lekce"
                                             data-qa="lecture_field_time"
-                                            leftSectionPointerEvents={
-                                                supportsNativeDateTimeIconHiding
-                                                    ? "all"
-                                                    : undefined
-                                            }
+                                            leftSectionPointerEvents={nativePickerPointerEvents}
                                             leftSection={
-                                                supportsNativeDateTimeIconHiding ? (
-                                                    <button
-                                                        type="button"
-                                                        className={styles.nativeDateTimeTrigger}
-                                                        disabled={prepaid}
-                                                        onClick={() => openNativePicker("time")}
-                                                        aria-label="Otevřít výběr času">
-                                                        <FontAwesomeIcon
-                                                            icon={faClock}
-                                                            fixedWidth
-                                                        />
-                                                    </button>
-                                                ) : undefined
+                                                <NativePickerTrigger
+                                                    fieldId="time"
+                                                    icon={faClock}
+                                                    ariaLabel="Otevřít výběr času"
+                                                    disabled={prepaid}
+                                                    onOpen={openNativePicker}
+                                                />
                                             }
                                         />
                                     </Tooltip>
