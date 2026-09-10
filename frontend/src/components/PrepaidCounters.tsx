@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Container, Grid, Text, TextInput, Title, Tooltip } from "@mantine/core"
+import { Container, Grid, NumberInput, Text, Title, Tooltip } from "@mantine/core"
 import { faSackDollar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
@@ -56,11 +56,13 @@ const MembershipPrepaidInput: React.FC<RowProps> = ({ membership, isGroupActive 
         setValue(membership.prepaid_cnt)
     }, [membership.prepaid_cnt])
 
-    // Pozn.: Number("") vrací 0, vymazané pole se tedy při bluru uloží jako 0 — díky
-    // select-on-focus (viz onFocus) uživatel typicky přepisuje celou hodnotu, vědomě bez guardu.
-    const onChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
+    // Pozn.: Number("") i Number("-") (rozepsany zapor bez cislice) davaji 0, resp. NaN —
+    // obojí se tu rovnou mapuje na 0, dík select-on-focus (viz onFocus) uživatel typicky
+    // přepisuje celou hodnotu, vědomě bez guardu.
+    const onChange = React.useCallback((val: number | string): void => {
         dirtyRef.current = true
-        setValue(Number(e.currentTarget.value))
+        const numeric = Number(val)
+        setValue(Number.isNaN(numeric) ? 0 : numeric)
     }, [])
 
     const commit = React.useCallback(
@@ -100,19 +102,37 @@ const MembershipPrepaidInput: React.FC<RowProps> = ({ membership, isGroupActive 
     const onBlur = React.useCallback(
         (e: React.FocusEvent<HTMLInputElement>): void => {
             const rawValue = Number(e.currentTarget.value)
-            // `min={0}` na inputu je jen napoveda pro spinner šipky — bez obalujícího <form>
-            // (commit je na blur, ne na submit) nativní HTML constraint validace nikdy
-            // neprobehne, takze zaporna nebo neplatna (Infinity/NaN, to druhe z `1e999`
-            // pres JSON.stringify jako `null`) hodnota by jinak dosla az na server jako
-            // PATCH a skoncila 400 (`prepaid_cnt` je `PositiveIntegerField`) — a kvuli
-            // dirty-tracking vyse by tahle neplatna hodnota zustala natrvalo zaseknuta
-            // v UI, protoze zadny refetch by ji uz neprepsal. Orizni na platnou hodnotu
-            // hned tady, at uzivatel vidi opravenou hodnotu misto cervene notifikace.
+            // `NumberInput` sam o sobe kladnou celociselnost nehlida (min={0} resi jen
+            // vlastni +/- tlacitka a klavesove sipky, desetinna cisla defaultne povoluje) —
+            // bez obalujiciho <form> (commit je na blur, ne na submit) nativni HTML
+            // constraint validace nikdy neprobehne, takze neplatna hodnota (napr. prazdne
+            // pole -> "") by jinak dosla az na server jako PATCH a skoncila 400
+            // (`prepaid_cnt` je `PositiveIntegerField`) — a kvuli dirty-tracking vyse by
+            // tahle neplatna hodnota zustala natrvalo zaseknuta v UI, protoze zadny refetch
+            // by ji uz neprepsal. Orizni na platnou hodnotu hned tady, at uzivatel vidi
+            // opravenou hodnotu misto cervene notifikace.
             const clampedValue = Number.isFinite(rawValue) ? Math.max(0, Math.round(rawValue)) : 0
             if (clampedValue !== rawValue) {
                 setValue(clampedValue)
             }
             commit(clampedValue)
+        },
+        [commit],
+    )
+
+    // `NumberInput` drzi focus v poli i po kliknuti na +/- (viz jeho `onPointerDown` +
+    // `event.preventDefault()`), takze po nich blur nikdy neprijde — bez tohohle by krok
+    // tlacitkem (i sipkou nahoru/dolu, jde stejnou cestou) zmenil zobrazenou hodnotu, ale
+    // needal se ulozit, dokud uzivatel pole neopusti. `source` rozlisuje krok od psani/vlozeni
+    // (to porad ceka na blur/Enter, jinak by se PATCHovalo za kazdy stisk klavesy).
+    const onValueChange = React.useCallback(
+        (values: { floatValue: number | undefined }, { source }: { source: string }): void => {
+            if (source !== "increment" && source !== "decrement") {
+                return
+            }
+            if (values.floatValue !== undefined) {
+                commit(values.floatValue)
+            }
         },
         [commit],
     )
@@ -152,12 +172,20 @@ const MembershipPrepaidInput: React.FC<RowProps> = ({ membership, isGroupActive 
         e.currentTarget.select()
     }
 
+    // Commit je jen na blur (viz vyse) — bez obalujiciho <form> by Enter jinak neudelal
+    // nic a uzivatel by nemel zadny zpusob, jak ulozit bez kliknuti/tabu mimo pole.
+    // Blur spusti existujici onBlur handler (vcetne clampu a globalni "Ulozeno" notifikace).
+    function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
+        if (e.key === "Enter") {
+            e.currentTarget.blur()
+        }
+    }
+
     return (
         <div className={styles.memberCard}>
             {/* order/size odděleně (viz `memberHeading`, který si font-size řídí sám) —
                 sémanticky h2: PrepaidCounters se používá jen na kartě skupiny, přímo pod
-                h1 jménem skupiny (GroupInfo mezi nimi je `dl`, žádná mezilehlá úroveň
-                nadpisu tam není) */}
+                h1 jménem skupiny, žádná mezilehlá úroveň nadpisu tam není */}
             <Title order={2} className={styles.memberHeading}>
                 <ClientName client={membership.client} link />{" "}
                 {isGroupActive && !membership.client.active && (
@@ -165,15 +193,16 @@ const MembershipPrepaidInput: React.FC<RowProps> = ({ membership, isGroupActive 
                 )}
             </Title>
             <Tooltip label="Počet předplacených lekcí">
-                <TextInput
-                    type="number"
+                <NumberInput
                     aria-label="Počet předplacených lekcí"
                     id={`prepaid_cnt${membership.id}`}
                     value={value}
                     min={0}
                     onChange={onChange}
+                    onValueChange={onValueChange}
                     onBlur={onBlur}
                     onFocus={onFocus}
+                    onKeyDown={onKeyDown}
                     className={styles.prepaidCountersInput}
                     leftSectionProps={{
                         className: classNames({

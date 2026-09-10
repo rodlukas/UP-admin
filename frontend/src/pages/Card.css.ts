@@ -175,6 +175,15 @@ export const lectureColumns = style({
     },
 })
 
+/**
+ * Skupina má vždy jen jeden kurz (na rozdíl od klienta, kde jich vedle sebe může
+ * stát víc) — jediný sloupec proto nemá cenu srážet na zlomy `lectureColumns` výše,
+ * ať využije celou dostupnou šířku panelu.
+ */
+export const lectureColumnsSingle = style({
+    gridTemplateColumns: "1fr",
+})
+
 /** Sloupec kurzu je ohraničený panel — bez něj by bílé bloky lekcí ležely přímo
  *  na tónované ploše stránky bez hranice. */
 export const lectureColumn = style([

@@ -36,9 +36,7 @@ import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
-import ClientsList from "../components/ClientsList"
 import ComponentsList from "../components/ComponentsList"
-import CourseName from "../components/CourseName"
 import { courseBandVars } from "../components/CourseName.css"
 import EmptyState from "../components/EmptyState"
 import GroupName from "../components/GroupName"
@@ -224,40 +222,6 @@ const ClientInfo: React.FC<ClientInfoProps> = ({ client, groupsOfClient, pastGro
             <dd className={styles.summaryValue}>
                 <ClientNote note={client.note} />
             </dd>
-        </div>
-    </dl>
-)
-
-type GroupInfoProps = {
-    group: GroupType
-}
-
-/**
- * Klíčová fakta o skupině nad záložkami — kurz a členy potřebuje uživatel vidět
- * vždycky, bez ohledu na to, kterou záložku má otevřenou (stejný princip jako
- * `ClientInfo`).
- */
-const GroupInfo: React.FC<GroupInfoProps> = ({ group }) => (
-    <dl className={styles.summaryPanel}>
-        <div className={styles.summaryItem}>
-            <dt className={styles.summaryLabel}>Kurz</dt>
-            <dd className={styles.summaryValue}>
-                <CourseName course={group.course} />
-            </dd>
-        </div>
-        <div className={styles.summaryItem}>
-            <dt className={styles.summaryLabel}>Členové ({group.memberships.length})</dt>
-            <dd className={styles.summaryValue}>
-                {group.memberships.length === 0 ? (
-                    <span className={dimmedText}>žádní členové</span>
-                ) : (
-                    <ClientsList memberships={group.memberships} />
-                )}
-            </dd>
-        </div>
-        <div className={styles.summaryItem}>
-            <dt className={styles.summaryLabel}>Stav</dt>
-            <dd className={styles.summaryValue}>{group.active ? "Aktivní" : "Neaktivní"}</dd>
         </div>
     </dl>
 )
@@ -517,7 +481,6 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                             pastGroups={pastGroups}
                         />
                     )}
-                    {isGroupObject(object) && <GroupInfo group={object} />}
                     {isGroupObject(object) && (
                         <PrepaidCounters
                             isGroupActive={object.active}
@@ -558,7 +521,10 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                             {isLecturesFetching && (
                                 <span data-qa="loading" aria-hidden="true" hidden />
                             )}
-                            <div className={styles.lectureColumns}>
+                            <div
+                                className={classNames(styles.lectureColumns, {
+                                    [styles.lectureColumnsSingle]: isGroupObject(object),
+                                })}>
                                 {lectures.map((courseLectures) => (
                                     <div
                                         key={courseLectures.course.id}

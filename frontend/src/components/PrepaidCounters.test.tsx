@@ -58,6 +58,7 @@ async function renderPrepaidCounters(memberships: MembershipType[]): Promise<{
     queryClient: QueryClient
     refetchMemberships: (next: MembershipType[]) => void
     unmount: () => void
+    container: HTMLElement
 }> {
     const queryClient = createQueryClient()
     let setMemberships: (next: MembershipType[]) => void = () => undefined
@@ -71,7 +72,7 @@ async function renderPrepaidCounters(memberships: MembershipType[]): Promise<{
             <Wrapper />
         </MantineProvider>,
     )
-    const { unmount } = render(
+    const { unmount, container } = render(
         <QueryClientProvider client={queryClient}>
             <RouterProvider router={router} />
         </QueryClientProvider>,
@@ -84,6 +85,7 @@ async function renderPrepaidCounters(memberships: MembershipType[]): Promise<{
             })
         },
         unmount,
+        container,
     }
 }
 
@@ -111,10 +113,10 @@ beforeEach(() => {
 test("renders a counter input with the initial value for each membership", async () => {
     await renderPrepaidCounters([createMembership(1, 3), createMembership(2, 0)])
 
-    const inputs = screen.getAllByRole("spinbutton")
+    const inputs = screen.getAllByRole("textbox")
     expect(inputs).toHaveLength(2)
-    expect(inputs[0]).toHaveValue(3)
-    expect(inputs[1]).toHaveValue(0)
+    expect(inputs[0]).toHaveValue("3")
+    expect(inputs[1]).toHaveValue("0")
     expect(screen.getByText("Prijmeni1")).toBeInTheDocument()
     expect(screen.getByText("Prijmeni2")).toBeInTheDocument()
 })
@@ -122,14 +124,14 @@ test("renders a counter input with the initial value for each membership", async
 test("shows a message when there are no memberships", async () => {
     await renderPrepaidCounters([])
 
-    expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument()
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument()
     expect(screen.getByText("Žádní účastníci")).toBeInTheDocument()
 })
 
 test("sends PATCH on blur and doesn't repeat it for an unchanged value", async () => {
     patchMock.mockResolvedValue(createMembership(1, 7))
     const { queryClient } = await renderPrepaidCounters([createMembership(1, 3)])
-    const input = screen.getByRole("spinbutton")
+    const input = screen.getByRole("textbox")
 
     // blur bez zmeny hodnoty -> zadny PATCH
     fireEvent.blur(input)
@@ -142,12 +144,47 @@ test("sends PATCH on blur and doesn't repeat it for an unchanged value", async (
     await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
     expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 7 })
     await waitForMutationsSettled(queryClient)
-    expect(input).toHaveValue(7)
+    expect(input).toHaveValue("7")
 
     // server hodnotu potvrdil -> dalsi blur se stejnou hodnotou neposila duplicitni PATCH
     fireEvent.blur(input)
     await flushAsync()
     expect(patchMock).toHaveBeenCalledTimes(1)
+})
+
+// bez obalujiciho <form> by Enter jinak neudelal nic a uzivatel by nemel zpusob,
+// jak zmenu ulozit bez kliknuti/tabu mimo pole
+test("pressing Enter commits the value the same way blur does", async () => {
+    patchMock.mockResolvedValue(createMembership(1, 7))
+    const { queryClient } = await renderPrepaidCounters([createMembership(1, 3)])
+    const input = screen.getByRole("textbox")
+
+    input.focus()
+    fireEvent.change(input, { target: { value: "7" } })
+    fireEvent.keyDown(input, { key: "Enter" })
+
+    await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
+    expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 7 })
+    await waitForMutationsSettled(queryClient)
+    expect(input).not.toHaveFocus()
+})
+
+// `NumberInput` drzi focus v poli i po kliknuti na +/- (viz PrepaidCounters.tsx), takze
+// blur po nich nikdy neprijde - bez explicitniho onValueChange handleru by krok tlacitkem
+// zmenil zobrazenou hodnotu, ale needal se ulozit, dokud uzivatel pole neopusti
+test("clicking the increment control commits the value without waiting for blur", async () => {
+    patchMock.mockResolvedValue(createMembership(1, 4))
+    const { queryClient, container } = await renderPrepaidCounters([createMembership(1, 3)])
+    const input = screen.getByRole("textbox")
+    const incrementButton = container.querySelector('button[data-direction="up"]')
+    expect(incrementButton).not.toBeNull()
+
+    fireEvent.pointerDown(incrementButton!)
+
+    expect(input).toHaveValue("4")
+    await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
+    expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 4 })
+    await waitForMutationsSettled(queryClient)
 })
 
 test("refetch with stale data doesn't clobber a newer local edit", async () => {
@@ -156,7 +193,7 @@ test("refetch with stale data doesn't clobber a newer local edit", async () => {
     const { queryClient, refetchMemberships } = await renderPrepaidCounters([
         createMembership(1, 3),
     ])
-    const input = screen.getByRole("spinbutton")
+    const input = screen.getByRole("textbox")
 
     // uzivatel ulozi 7 (PATCH zustava v letu) a hned rozepise novou hodnotu 9
     fireEvent.change(input, { target: { value: "7" } })
@@ -166,12 +203,12 @@ test("refetch with stale data doesn't clobber a newer local edit", async () => {
 
     // mezitim dorazi refetch se zastaralym server stavem (3) -> nesmi prepsat rozepsanou 9
     refetchMemberships([createMembership(1, 3)])
-    expect(input).toHaveValue(9)
+    expect(input).toHaveValue("9")
 
     // doraz odpovedi na PATCH (7) take nesmi prepsat novejsi lokalni hodnotu
     deferred.resolve(createMembership(1, 7))
     await waitForMutationsSettled(queryClient)
-    expect(input).toHaveValue(9)
+    expect(input).toHaveValue("9")
 })
 
 // TanStack Query v5 doruci per-mutate callbacky jen poslednimu mutate() (viz commit()
@@ -182,7 +219,7 @@ test("out-of-order PATCH responses don't overwrite the newer confirmed value", a
     const secondPatch = createDeferred()
     patchMock.mockReturnValueOnce(firstPatch.promise).mockReturnValueOnce(secondPatch.promise)
     const { queryClient } = await renderPrepaidCounters([createMembership(1, 3)])
-    const input = screen.getByRole("spinbutton")
+    const input = screen.getByRole("textbox")
 
     // uzivatel ulozi 7 a jeste pred dobehnutim PATCHe ulozi 9 (dva PATCHe v letu)
     fireEvent.change(input, { target: { value: "7" } })
@@ -199,7 +236,7 @@ test("out-of-order PATCH responses don't overwrite the newer confirmed value", a
     await waitFor(() => expect(queryClient.isMutating()).toBe(1))
     firstPatch.resolve(createMembership(1, 7))
     await waitForMutationsSettled(queryClient)
-    expect(input).toHaveValue(9)
+    expect(input).toHaveValue("9")
 
     // server-potvrzena hodnota je 9 (ne 7 ze starsi odpovedi)
     // -> blur se stejnou hodnotou nesmi vyvolat treti PATCH
@@ -218,7 +255,7 @@ test("concurrent saves of two different members both complete their cleanup", as
         createMembership(1, 3),
         createMembership(2, 5),
     ])
-    const [input1, input2] = screen.getAllByRole("spinbutton")
+    const [input1, input2] = screen.getAllByRole("textbox")
 
     // uzivatel ulozi clena 1 (PATCH v letu) a hned nato ulozi clena 2
     fireEvent.change(input1, { target: { value: "7" } })
@@ -235,15 +272,15 @@ test("concurrent saves of two different members both complete their cleanup", as
     // oba PATCHe dobehly -> zadny clen neni dirty a pozdejsi serverova zmena
     // (napr. dekrement po predplacene lekci) se musi propsat do UI
     refetchMemberships([createMembership(1, 4), createMembership(2, 8)])
-    expect(input1).toHaveValue(4)
-    expect(input2).toHaveValue(8)
+    expect(input1).toHaveValue("4")
+    expect(input2).toHaveValue("8")
 })
 
 // React unmount nevyvola blur - rozepsana hodnota by se pri SPA navigaci tise ztratila
 test("unmount flushes an edited value that never received blur", async () => {
     patchMock.mockResolvedValue(createMembership(1, 7))
     const { unmount } = await renderPrepaidCounters([createMembership(1, 3)])
-    const input = screen.getByRole("spinbutton")
+    const input = screen.getByRole("textbox")
 
     fireEvent.change(input, { target: { value: "7" } })
     unmount()
@@ -258,34 +295,37 @@ test("unmount flushes an edited value that never received blur", async () => {
 test("a negative value is clamped to 0 before the PATCH", async () => {
     patchMock.mockResolvedValue(createMembership(1, 0))
     await renderPrepaidCounters([createMembership(1, 3)])
-    const input = screen.getByRole("spinbutton")
+    const input = screen.getByRole("textbox")
 
     fireEvent.change(input, { target: { value: "-3" } })
     fireEvent.blur(input)
 
     await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
     expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 0 })
-    expect(input).toHaveValue(0)
+    expect(input).toHaveValue("0")
 })
 
-test("a non-finite value (Infinity) is clamped to 0 before the PATCH", async () => {
+// `NumberInput` filtruje znaky za psani, takze napr. "1e999" uz se do pole vubec
+// nedostane - jedina zbyvajici nevalidni-ale-pisatelna hodnota je osamoceny minus
+// (rozepsany zaporny zapis), Number("-") je NaN
+test("a non-finite value (lone minus sign) is clamped to 0 before the PATCH", async () => {
     patchMock.mockResolvedValue(createMembership(1, 0))
     await renderPrepaidCounters([createMembership(1, 3)])
-    const input = screen.getByRole("spinbutton")
+    const input = screen.getByRole("textbox")
 
-    fireEvent.change(input, { target: { value: "1e999" } })
+    fireEvent.change(input, { target: { value: "-" } })
     fireEvent.blur(input)
 
     await waitFor(() => expect(patchMock).toHaveBeenCalledTimes(1))
     expect(patchMock).toHaveBeenCalledWith({ id: 1, prepaid_cnt: 0 })
-    expect(input).toHaveValue(0)
+    expect(input).toHaveValue("0")
 })
 
 // Zavreni tabu blur ani unmount nezaruci - prohlizec musi varovat pres beforeunload
 test("beforeunload is prevented only while an edit is unsaved", async () => {
     patchMock.mockResolvedValue(createMembership(1, 7))
     const { queryClient } = await renderPrepaidCounters([createMembership(1, 3)])
-    const input = screen.getByRole("spinbutton")
+    const input = screen.getByRole("textbox")
 
     // bez rozepsane zmeny se zavreni tabu nesmi blokovat
     const eventBefore = new Event("beforeunload", { cancelable: true })
