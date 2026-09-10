@@ -89,9 +89,7 @@ def insert_to_form(context, verify_current_data=False):
         By.CSS_SELECTOR, "[data-qa=settings_field_duration]"
     )
     # Mantine ColorInput propaguje data-qa primo na vnitrni <input id="color">
-    color_field = context.browser.find_element(
-        By.CSS_SELECTOR, "[data-qa=settings_color_picker]"
-    )
+    color_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=settings_color_picker]")
     color_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=settings_label_color]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
@@ -99,9 +97,8 @@ def insert_to_form(context, verify_current_data=False):
             context.old_name == name_field.get_attribute("value")
             and context.old_visible == visible_checkbox.is_selected()
             and context.old_duration == duration_field.get_attribute("value")
-            and context.old_color == common_helpers.color_transform(
-                color_field.get_attribute("value")
-            )
+            and context.old_color
+            == common_helpers.color_transform(color_field.get_attribute("value"))
         )
     # smaz vsechny udaje
     helpers.clear_input(name_field)

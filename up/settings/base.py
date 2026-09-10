@@ -242,7 +242,12 @@ SECURE_CSP: dict[str, list[str]] = {
         CSPURL_GOOGLE_FONTS_STYLE,
     ],  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
     "connect-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_COLLECT],
-    "script-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_SCRIPT, CSP.UNSAFE_EVAL],  # 'unsafe-eval' kvuli gtag.js (GA4)
+    "script-src": [
+        CSP.SELF,
+        CSPURL_SENTRY,
+        CSPURL_GA4_SCRIPT,
+        CSP.UNSAFE_EVAL,
+    ],  # 'unsafe-eval' kvuli gtag.js (GA4)
     "font-src": [CSP.SELF, CSPURL_GOOGLE_FONTS_FONT],
     "img-src": [CSP.SELF, "data:", CSPURL_GA4_COLLECT],
     "frame-ancestors": [CSP.NONE],

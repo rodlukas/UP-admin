@@ -179,11 +179,12 @@ export const theme = createTheme({
          * Mantine defaultně kreslí pily vybraných položek variantou "default" — jen výplň
          * (gray-1 na bílém inputu, ~1.1:1 kontrast, prakticky nerozeznatelné; v tmavém
          * režimu dark-7 na dark-6 vychází o něco lépe, ale pořád jen samotnou výplní).
-         * Zkoušel jsem výplň nahradit `bg.control`, ale v tmavém režimu je to o barvu
-         * SVĚTLEJŠÍ než dark-7 default (dark-5 vs dark-6 okolí = 1.08:1), tedy regrese
-         * oproti současným 1.2:1. Řešení je stejné jako u `SegmentedControl`
-         * (`segmented.css.ts`) — viditelnost nedávat na výplň, ale na `border.strong`
-         * (light 1.51:1, dark 2.93:1 vůči okolí), který funguje v obou režimech.
+         * Výplň jako nositele kontrastu nejde snadno spravit univerzálně pro obě schémata:
+         * odstín, který zvýrazní pilu na bílém inputu, je v tmavém režimu naopak SVĚTLEJŠÍ
+         * než okolní povrch (`bg.control` na dark-7 okolí vychází jen 1.08:1). Řešení je
+         * stejné jako u `SegmentedControl` (`segmented.css.ts`) — viditelnost nedávat na
+         * výplň, ale na `border.strong` (light 1.51:1, dark 2.93:1 vůči okolí), který
+         * funguje v obou režimech.
          */
         Pill: {
             styles: { root: { border: vars.borderShort.strong } },

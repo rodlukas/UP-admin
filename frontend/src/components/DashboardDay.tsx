@@ -159,9 +159,10 @@ const DashboardDay: React.FC<Props> = (props) => {
                     size="h4"
                     // `celebrationNone` (flex: 1; min-width: 0) platí bez ohledu na oslavu —
                     // je to layout hlavičky dne, ne nic specifického pro "bez oslavy" (viz
-                    // DashboardDay.css.ts). Dřívější `"celebration"` byl literál bez
-                    // odpovídající třídy v bundlu (Celebration.css.ts exportuje jen hashované
-                    // jméno), takže ve svátečních dnech titulek ztrácel flex a přetékal.
+                    // DashboardDay.css.ts), proto se aplikuje vždy, i ve svátečních dnech.
+                    // Vlastní string literál sem nepatří: vanilla-extract exportuje jen
+                    // hashované třídy (viz Celebration.css.ts), žádná třída "celebration"
+                    // v bundlu neexistuje.
                     className={classNames(styles.celebrationNone, mb0, inlineBlockNowrap)}>
                     <Celebration isUserCelebratingResult={isUserCelebratingResult} /> {title}
                 </Title>

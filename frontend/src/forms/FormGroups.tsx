@@ -64,7 +64,7 @@ const FormGroups: React.FC<Props> = (props) => {
     const updateGroup = useUpdateGroup()
     const deleteGroup = useDeleteGroup()
 
-    // přepraví pole se členy ve správném formátu
+    // připraví pole se členy ve správném formátu
     const getMembersOfGroup = React.useCallback((members: MembershipType[]): ClientType[] => {
         return members.map((member) => member.client)
     }, [])

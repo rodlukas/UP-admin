@@ -63,9 +63,7 @@ class GroupClientFilterTest(TestCase):
         Membership.objects.create(client=self.client_other, group=self.group_unrelated)
 
     def test_client_filter_returns_current_memberships(self) -> None:
-        response = self.api.get(
-            f"/api/v1/groups/?client={self.client_target.pk}", secure=True
-        )
+        response = self.api.get(f"/api/v1/groups/?client={self.client_target.pk}", secure=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(_ids(response.json()), {self.group_current.pk})
 

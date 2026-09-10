@@ -74,9 +74,7 @@ class LectureClientFilterTest(TestCase):
         )
 
     def test_client_filter_returns_only_individual_lectures(self) -> None:
-        response = self.api.get(
-            f"/api/v1/lectures/?client={self.client_target.pk}", secure=True
-        )
+        response = self.api.get(f"/api/v1/lectures/?client={self.client_target.pk}", secure=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(_ids(response.json()), {self.lecture_individual.pk})
 
@@ -85,9 +83,7 @@ class LectureClientFilterTest(TestCase):
             f"/api/v1/lectures/?client={self.client_target.pk}&includeGroup=true", secure=True
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            _ids(response.json()), {self.lecture_individual.pk, self.lecture_group.pk}
-        )
+        self.assertEqual(_ids(response.json()), {self.lecture_individual.pk, self.lecture_group.pk})
 
     def test_include_group_without_client_is_noop(self) -> None:
         response = self.api.get("/api/v1/lectures/?includeGroup=true", secure=True)

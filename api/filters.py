@@ -57,7 +57,7 @@ class LectureFilter(filters.FilterSet):
     dateFrom = filters.DateFilter(field_name="start__date", lookup_expr="gte")
     canceled = StrictBooleanFilter(field_name="canceled")
     client = filters.NumberFilter(field_name="attendances__client", method="filter_client")
-    includeGroup = filters.BooleanFilter(method="filter_include_group")
+    includeGroup = StrictBooleanFilter(method="filter_include_group")
 
     def filter_client(self, queryset: QuerySet, name: str, value: int) -> QuerySet:
         # parametr includeGroup se zpracovava spolecne s filtrem client

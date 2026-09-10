@@ -23,6 +23,13 @@ type Options<T> = {
     columns: DataTableColumn<T>[]
     /** Sloupec, podle kterého je tabulka seřazená na začátku. */
     initialSortKey: string
+    /**
+     * Hodnota, jejíž změna má vynulovat hledání a stránku — typicky přepínač
+     * aktivní/neaktivní (`ActiveSwitcher`). Musí to být hodnota nezávislá na obsahu
+     * `rows`, ne `rows` samotné: refetch po uložení editace vrátí nové pole, i když
+     * uživatel jen upravil jeden řádek téhož seznamu, a hledání by se tím tiše smazalo.
+     */
+    resetKey: unknown
 }
 
 /**
@@ -35,7 +42,13 @@ type Options<T> = {
  * stránkovat nemá. E2E kroky (`tests/ui_steps/helpers.py`, `_paginated_elements`)
  * počítají a hledají přes všechny stránky, ne jen tu aktuální.
  */
-export function useDataTable<T>({ rows, searchIn, columns, initialSortKey }: Options<T>) {
+export function useDataTable<T>({
+    rows,
+    searchIn,
+    columns,
+    initialSortKey,
+    resetKey,
+}: Options<T>) {
     const [query, setQuery] = React.useState("")
     /**
      * Klíč a směr drží **jeden stav**, ne dva. Přepnutí směru vychází z právě řazeného
@@ -50,17 +63,16 @@ export function useDataTable<T>({ rows, searchIn, columns, initialSortKey }: Opt
     })
     const [page, setPage] = React.useState(1)
 
-    // Přepnutí aktivní/neaktivní (`ActiveSwitcher`) posílá úplně jinou `rows` — hledaný
-    // výraz i stránka z předchozího seznamu by jinak přežily na seznam, pro který nikdy
-    // nebyly napsané (a při shodě nuly by tabulka ukázala "Nic nenalezeno" nad neprázdným
-    // seznamem). Efekt cílí na REFERENCI `rows`, ne na její obsah/délku: React Query
-    // (`structuralSharing`) vrací stejnou referenci pro hluboce shodná data, takže obyčejný
-    // background refetch beze změny obsahu tenhle efekt nespustí a rozepsané hledání
-    // nezmizí jen kvůli refetchi na pozadí.
+    // Přepnutí aktivní/neaktivní (`resetKey`) posílá úplně jinou `rows` — hledaný výraz
+    // i stránka z předchozího seznamu by jinak přežily na seznam, pro který nikdy nebyly
+    // napsané (a při shodě nuly by tabulka ukázala "Nic nenalezeno" nad neprázdným
+    // seznamem). Efekt cílí na `resetKey`, ne na `rows`: uložení editace vrátí nové pole
+    // (jiná reference i po `structuralSharing`, protože se obsah skutečně změnil), takže
+    // reset na `rows` by při každé úpravě řádku smazal rozepsané hledání.
     React.useEffect(() => {
         setQuery("")
         setPage(1)
-    }, [rows])
+    }, [resetKey])
 
     const { key: sortKey, direction: sortDirection } = sort
 

@@ -19,7 +19,7 @@ export const dashboardDayDate = style({
     borderBottom: vars.borderShort.default,
     backgroundColor: vars.bg.surface,
     padding: "0.55rem 0.85rem",
-    color: vars.text.headingSoft,
+    color: vars.text.heading,
 })
 
 /**

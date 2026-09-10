@@ -2,6 +2,7 @@
 """
 Django CLI utilita pro správu up aplikace.
 """
+
 import os
 import sys
 

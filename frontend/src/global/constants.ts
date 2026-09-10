@@ -35,14 +35,12 @@ export const RAIL_ICON_INSET = "1.5rem"
  * klíč `theme.breakpoints`, viz `AppShell.types.d.ts`), `Main.css.ts` ho použije
  * v `@media` pro `plane` a `Main.tsx`'s vlastní `useMediaQuery` z něj postaví JS dotaz.
  *
- * Dřív byly tyhle tři na sobě nezávislé (`"(max-width: 61.99em)"` v JS/CSS vs. klíč
- * `"md"` = `62em` v AppShellu) a neshodovaly se: Mantine navíc počítá DVĚ různé mezní
- * hodnoty podle stavu drawer (otevřený: přesně breakpoint, zavřený: breakpoint − 0.1px,
- * viz `assign-navbar-variables`), takže žádná jedna ručně vypsaná JS konstanta nemohla
- * sedět na obojí. Řešení není napodobit Mantine výpočet (interní detail, může se změnit
- * mezi verzemi), ale sdílet TUTO hodnotu jako breakpoint přímo — pak se JS dotaz shoduje
- * aspoň s "otevřeným" stavem Mantine přesně, a rozdíl proti "zavřenému" stavu je jen
- * 0.1px (neprakticky malé okno, ne celý em rozdíl jako dřív).
+ * Mantine počítá DVĚ různé mezní hodnoty podle stavu drawer (otevřený: přesně
+ * breakpoint, zavřený: breakpoint − 0.1px, viz `assign-navbar-variables`), takže žádná
+ * ručně vypsaná JS konstanta nemůže sedět na obojí. Řešení není napodobit Mantine výpočet
+ * (interní detail, může se změnit mezi verzemi), ale sdílet TUTO hodnotu jako breakpoint
+ * přímo — JS dotaz pak přesně sedí na „otevřeném" stavu Mantine a od „zavřeného" se liší
+ * jen o 0.1px (neprakticky malé okno).
  */
 export const NAVBAR_BREAKPOINT = "62em"
 

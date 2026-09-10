@@ -65,6 +65,7 @@ const Groups: React.FC = () => {
         searchIn: SEARCH_IN,
         columns: COLUMNS,
         initialSortKey: "name",
+        resetKey: active,
     })
 
     const staleGroups = React.useMemo(

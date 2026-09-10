@@ -182,7 +182,7 @@ type ClientInfoProps = {
 /**
  * Klíčová fakta o klientovi nad záložkami — obdoba „highlights panelu" z record pages:
  * to, co uživatel potřebuje vidět vždycky, bez ohledu na to, kterou záložku má otevřenou.
- * Graf a rozpad docházky se přesunuly do záložky Analýza, protože to je průzkum, ne fakt.
+ * Graf a rozpad docházky patří do záložky Analýza, ne sem — to je průzkum, ne fakt.
  */
 const ClientInfo: React.FC<ClientInfoProps> = ({ client, groupsOfClient, pastGroups }) => (
     <dl className={styles.summaryPanel}>
@@ -233,8 +233,9 @@ type GroupInfoProps = {
 }
 
 /**
- * Klíčová fakta o skupině nad záložkami. Karta skupiny je dosud žádná neměla, i když
- * klient ano — kurz a členy přitom potřebuješ vidět bez ohledu na otevřenou záložku.
+ * Klíčová fakta o skupině nad záložkami — kurz a členy potřebuje uživatel vidět
+ * vždycky, bez ohledu na to, kterou záložku má otevřenou (stejný princip jako
+ * `ClientInfo`).
  */
 const GroupInfo: React.FC<GroupInfoProps> = ({ group }) => (
     <dl className={styles.summaryPanel}>
@@ -431,9 +432,9 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                 {...(lecture.canceled && { "data-qa-canceled": "true" })}>
                 <div className={lectureStyles.lectureHeading}>
                     {/* order/size odděleně: h1 jméno klienta/skupiny (Card.tsx výše) → h2
-                        název kurzu → h3 datum lekce; „Lekce" (dřívější h2) je od záložek
-                        (Tabs.Tab) místo nadpisu, takže v hierarchii chybí — zbylé úrovně
-                        proto o jednu posunuté, vzhled zůstává h4 */}
+                        název kurzu → h3 datum lekce; „Lekce" je záhlaví záložky
+                        (Tabs.Tab), ne nadpis, takže v hierarchii úrovní chybí — zbylé
+                        úrovně jsou proto o jednu posunuté, vzhled zůstává h4 */}
                     <Title order={3} className={lectureStyles.lectureTitle}>
                         <Tooltip label={courseDuration(lecture.duration)}>
                             <span data-qa="lecture_start">
@@ -523,7 +524,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                     )}
                     {isGroupObject(object) && <GroupInfo group={object} />}
                     {/* Zalozky misto jedne dlouhe stranky. „Lekce" musi zustat vychozi:
-                        je to duvod, proc se karta oteviraq — a chytaji se jich E2E kroky
+                        je to duvod, proc se karta otevira — a chytaji se jich E2E kroky
                         (`card_course`). */}
                     <Tabs
                         defaultValue="lekce"

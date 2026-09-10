@@ -67,6 +67,7 @@ const Clients: React.FC = () => {
         searchIn: SEARCH_IN,
         columns: COLUMNS,
         initialSortKey: "name",
+        resetKey: active,
     })
 
     const staleClients = React.useMemo(

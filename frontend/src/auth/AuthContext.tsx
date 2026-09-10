@@ -42,12 +42,12 @@ const getCurrentDate = (): number => Date.now() / 1000
  * něm. `Token.get()`/`decodeToken()` nejsou async (localStorage, čisté dekódování JWT),
  * takže na to není důvod čekat na efekt.
  *
- * Bez tohohle viděl `PrivateRoute` (a `Main.tsx`) na úplně prvním renderu vždycky
- * `isAuth=false` (default `useState`), tedy i u platně přihlášeného uživatele — a než
- * stihl proběhnout efekt, co token doopravdy ověří, `PrivateRoute` už stačil přesměrovat
- * na `/prihlasit`. Při refreshi soukromé stránky se tak i přihlášenému uživateli na
- * okamžik mihla přihlašovací trasa (a s ní kostra přihlášení, `LoginSkeleton`), než ho
- * `Login.tsx` poslalo zpátky.
+ * Bez tohohle by `PrivateRoute` (a `Main.tsx`) na úplně prvním renderu viděl vždycky
+ * `isAuth=false` (default `useState`), tedy i u platně přihlášeného uživatele — a než by
+ * stihl proběhnout efekt, co token doopravdy ověří, `PrivateRoute` by už stačil
+ * přesměrovat na `/prihlasit`. Při refreshi soukromé stránky by se tak i přihlášenému
+ * uživateli na okamžik mihla přihlašovací trasa (a s ní kostra přihlášení,
+ * `LoginSkeleton`), než by ho `Login.tsx` poslalo zpátky.
  */
 function getInitialIsAuth(): boolean {
     const token = Token.get()

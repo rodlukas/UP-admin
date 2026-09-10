@@ -81,9 +81,7 @@ def get_tooltip_text(driver, element):
             if attempt == 1:
                 raise
             # odsun kurzor mimo element, aby dalsi klik vyvolal novy mouseenter
-            ActionChains(driver).move_to_element(
-                driver.find_element(By.TAG_NAME, "body")
-            ).perform()
+            ActionChains(driver).move_to_element(driver.find_element(By.TAG_NAME, "body")).perform()
     # odstran mys z elementu, aby se tooltip skryl
     ActionChains(driver).move_to_element(driver.find_element(By.TAG_NAME, "body")).perform()
     # vrat text tooltipu
@@ -205,9 +203,7 @@ def combobox_insert(driver, element, value):
         # klikni na volbu s presne odpovidajicim textem - NE slepe na prvni; pri
         # resetu inputu filtr neplati a prvni volba by byla nahodna
         try:
-            matched_option = next(
-                (option for option in options if option.text == value), None
-            )
+            matched_option = next((option for option in options if option.text == value), None)
         except StaleElementReferenceException:
             # dropdown se behem cteni textu voleb prekreslil - zopakuj cely pokus
             continue

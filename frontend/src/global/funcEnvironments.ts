@@ -34,8 +34,8 @@ export function isHosted(): boolean {
  * Doplněk `isHosted()`, ne porovnání s `getEnvName() === "local"` — to by nikdy nebylo
  * pravda: `getEnvName()` mimo testing/demo vrací `process.env.NODE_ENV`, které je vždy
  * `"development"` (`npm run dev`) nebo `"production"` (`npm run build`), nikdy doslova
- * `"local"`. Odznak "Vývojová verze" (viz EnvBadge.tsx) proto na lokálním běhu nikdy
- * nešel vidět.
+ * `"local"`. Odznak "Vývojová verze" (viz EnvBadge.tsx) se na lokálním běhu spoléhá právě
+ * na tuhle funkci, ne na porovnání s `getEnvName()`.
  */
 export function isEnvLocal(): boolean {
     return !isHosted()

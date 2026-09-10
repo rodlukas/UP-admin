@@ -556,7 +556,6 @@ class BankView(APIView):
         return Bank().get_transactions()
 
 
-
 class StatisticsView(APIView):
     """
     View pro získání statistik aplikace.

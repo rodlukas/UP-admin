@@ -70,6 +70,10 @@ jobs:
             - name: 🔍 Python - run tests
               run: pipenv run mypy .
 
+            # zkontroluj formatovani v backendu pres black
+            - name: 🔍 Python - check formatting (Black)
+              run: pipenv run black --check .
+
             # PostgreSQL
             # - build custom PSQL container image with CZ locale
             # - and then start the PSQL service (tcp port 5432 on service container is mapped to the host)

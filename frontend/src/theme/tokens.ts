@@ -41,20 +41,16 @@ export const vars = {
     radius: {
         sm: "var(--mantine-radius-sm)",
         md: "var(--mantine-radius-md)",
-        lg: "var(--mantine-radius-lg)",
         pill: "999px",
     },
     /**
-     * Stíny patří jen plovoucím vrstvám. `card` a `elevated` zůstávají v tokenech pro
-     * modaly a dropdowny — na obsah stránky se nepoužívají, tam nese oddělení
-     * `border.default`. box-shadow neumí light-dark() (jde jen o barvy), proto pure-black
-     * s vyšší opacitou — černé stíny jsou viditelné v obou barevných schématech.
+     * Stíny patří jen plovoucím vrstvám. `elevated` zůstává v tokenech pro modaly
+     * a dropdowny — na obsah stránky se nepoužívá, tam nese oddělení `border.default`.
+     * box-shadow neumí light-dark() (jde jen o barvy), proto pure-black s vyšší opacitou —
+     * černé stíny jsou viditelné v obou barevných schématech.
      */
     shadow: {
-        card: "0 14px 30px rgb(0 0 0 / 0.12), 0 4px 12px rgb(0 0 0 / 0.08)",
         elevated: "0 24px 60px rgb(0 0 0 / 0.22), 0 4px 12px rgb(0 0 0 / 0.1)",
-        /** Jemný stín samostatných ovládacích prvků. */
-        control: "0 4px 10px rgb(0 0 0 / 0.1)",
         focusRing: "0 0 0 0.18rem rgb(76 110 245 / 0.16)",
     },
     // Adaptivní hodnoty (light-dark)
@@ -76,8 +72,6 @@ export const vars = {
         surface: "light-dark(#ffffff, var(--mantine-color-dark-7))",
         /** Povrch plovoucích vrstev (modal, dropdown) — o stupeň nad plochou. */
         elevated: "light-dark(#ffffff, var(--mantine-color-dark-6))",
-        subtle: "light-dark(#f7f9fc, var(--mantine-color-dark-8))",
-        muted: "light-dark(#f1f4f9, var(--mantine-color-dark-6))",
         /** Jemné podbarvení řádku/položky při hoveru na ploše. */
         hover: "light-dark(#f4f6fb, var(--mantine-color-dark-6))",
         /**
@@ -98,11 +92,8 @@ export const vars = {
         tableRowHover: "light-dark(#eaeff7, #242e3c)",
         /** Hover ovládacích prvků na `elevated` povrchu formulářů. */
         hoverElevated: "light-dark(#f1f4f9, var(--mantine-color-dark-5))",
-        /** Jemně tónovaná vnořená plocha na `elevated` povrchu (bloky uvnitř formulářů). */
-        subtleElevated: "light-dark(#f8fafc, var(--mantine-color-dark-5))",
         /** Neutrální pozadí samostatných ovládacích prvků. */
         control: "light-dark(#eef1f6, var(--mantine-color-dark-5))",
-        controlHover: "light-dark(#e2e7ef, var(--mantine-color-dark-4))",
         /**
          * Inkoustový pruh navigace — jediné chrome aplikace. V obou schématech je to
          * nejtmavší plocha na obrazovce; v tmavém režimu je krok proti ploše jen 1.2:1,
@@ -120,8 +111,6 @@ export const vars = {
         muted: "light-dark(#46536a, var(--mantine-color-dark-1))",
         /** #101a2c = 17.41:1 na bílé ploše. */
         heading: "light-dark(#101a2c, var(--mantine-color-dark-0))",
-        /** Tlumený nadpis (lehce světlejší než `heading` v dark módu). */
-        headingSoft: "light-dark(#101a2c, var(--mantine-color-dark-0))",
         /** Sekundární text – chladnější slate, používá se mj. v rámečcích formulářů. */
         slate: "light-dark(#334155, var(--mantine-color-dark-1))",
         /**
@@ -149,8 +138,6 @@ export const vars = {
         strong: "1px solid light-dark(#ccd3de, var(--mantine-color-dark-3))",
         /** Tlumený oddělovač sekcí formuláře. */
         formDivider: "1px solid light-dark(#edf1f6, var(--mantine-color-dark-4))",
-        /** Měkká žlutá hraniční čára pro varovné/zastaralé alerty. */
-        warningSoft: "1px solid light-dark(#f3d38a, var(--mantine-color-yellow-7))",
     },
     /**
      * Bledá statusová podbarvení infoboxů a sekcí formulářů — `bg` pozadí,
@@ -201,11 +188,12 @@ export const vars = {
      * indigo odkazů na podbarvené lekci pod WCAG AA. S mixem drží odkaz (indigo-3)
      * 5.09:1 (warning), 5.43:1 (success) a 5.85:1 (danger), běžný text (dark-0) ≥9.8:1.
      *
-     * Light `success` byl původně #eef7f1 — na bílé ploše (`bg.surface`) to vyšlo na
-     * kontrast jen ~1.09:1 vůči bílé, tedy prakticky neviditelné podbarvení (na rozdíl od
-     * `warning`/`danger`, které díky posunu v modrém/zeleném kanálu čitelně vypadají jako
-     * barva, ne jen odstín bílé). #d3ecdd drží stejnou roli jako u ostatních dvou stavů:
-     * indigo odkaz (indigo-9) na něm má 5.42:1, tmavý text (`text.heading`) ještě víc.
+     * Light `success` (#d3ecdd) musí mít proti `bg.surface` výraznější posun v zeleném
+     * kanálu než jen jemný pastel — moc slabý odstín vychází proti bílé na kontrast jen
+     * ~1.09:1, tedy prakticky neviditelné podbarvení (na rozdíl od `warning`/`danger`,
+     * které díky posunu v modrém/zeleném kanálu čitelně vypadají jako barva, ne jen
+     * odstín bílé). #d3ecdd drží stejnou roli jako u ostatních dvou stavů: indigo odkaz
+     * (indigo-9) na něm má 5.42:1, tmavý text (`text.heading`) ještě víc.
      */
     statusTint: {
         warning:

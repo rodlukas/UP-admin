@@ -9,9 +9,7 @@ def step_impl(context):
 
 @given("the logged user")
 def step_impl(context):
-    context.execute_steps(
-        """
+    context.execute_steps("""
     When user logs into app with correct credentials
     Then user is logged into app
-    """
-    )
+    """)

@@ -39,20 +39,15 @@ FIO_TIMEOUT_SECONDS = (5, 15)
 # nefunguje", i kdyz Fio vubec nic nezavinilo.
 FIO_WALL_CLOCK_TIMEOUT_SECONDS = 30
 
-# Sdileny, OHRANICENY pool vlaken pro volani Fio API - modulova uroven, ne per-request.
+# Sdileny, OHRANICENY pool vlaken pro volani Fio API - modulova uroven, ne per-request:
+# `ThreadPoolExecutor` vytvareny znovu pro kazdy pozadavek by pri zaseknutem volani (viz
+# komentar u `FIO_TIMEOUT_SECONDS` - pomalu odkapavajici spojeni) zalozil VLASTNI, NIKDY
+# neuzavrene vlakno drzici otevreny TLS socket (pool threads v `concurrent.futures`
+# nejsou daemon vlakna a `shutdown(wait=False)` je neodstrani z `_threads_queues`).
 #
-# Kdyby se `ThreadPoolExecutor` vytvarel znovu pro kazdy pozadavek (jak tomu bylo drive),
-# kazde zaseknute volani (viz komentar u `FIO_TIMEOUT_SECONDS` - pomalu odkapavajici
-# spojeni) by zalozilo VLASTNI, NIKDY neuzavrene vlakno drzici otevreny TLS socket: pool
-# threads v `concurrent.futures` nejsou daemon vlakna a `shutdown(wait=False)` je
-# neodstrani z `_threads_queues`, takze by se hromadila bez horni meze a pri ukonceni
-# procesu (atexit hook `_python_exit`) by se na jejich dokonceni cekalo VSECHNA najednou -
-# coz by prodlouzilo/zablokovalo i graceful shutdown workeru pri `--max-requests`
-# recyklaci nebo deploji az do SIGKILLu.
-#
-# Sdileny pool s `max_workers=2` dela z poctu soubezne zaseknutych vlaken/soketu
-# OHRANICENY, deklarovany zdroj: nejvyse 2 zaseknuta volani najednou, dalsi pozadavky na
-# banku cekaji ve fronte executoru (a jakmile vyprsi jejich vlastni
+# Sdileny pool s `max_workers=2` drzi pocet soubezne zaseknutych vlaken/soketu na
+# OHRANICENEM, deklarovanem poctu: nejvyse 2 zaseknuta volani najednou, dalsi pozadavky
+# na banku cekaji ve fronte executoru (a jakmile vyprsi jejich vlastni
 # `FIO_WALL_CLOCK_TIMEOUT_SECONDS`, vrati chybu, aniz by musely cekat na uvolneni slotu).
 # Pool se pro tento use-case bezne neuzaviraji - zije po dobu zivota procesu.
 _bank_executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)

@@ -35,8 +35,10 @@ export const surfacePanel = style({
 })
 
 /**
- * Blok obsahu na ploše. Název zůstal z doby, kdy to nebyla karta, ale blok s horní linkou —
- * dnes je to zase ohraničený panel, aby se odlišil od tónované plochy stránky.
+ * Blok obsahu na ploše (Bank, Statistiky, sloupce Nastavení). Vizuálně stejný jako
+ * `surfacePanel` — samostatný export drží samostatný sémantický název pro „kartu", aby
+ * volající míst nemusela cílit přímo na strukturální primitivum, kdyby se karty časem
+ * odlišily (např. vlastním paddingem).
  */
 export const surfaceCard = style([surfacePanel])
 

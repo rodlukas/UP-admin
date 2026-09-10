@@ -320,9 +320,7 @@ def choose_attendancestate(found_attendance, new_attendancestate):
     # dropdown je portalovany mimo found_attendance, volby vraci helper z [role=listbox]
     # 2 pokusy: dropdown se muze behem cteni textu voleb prekreslit (stale element)
     for _ in range(2):
-        options = helpers.wait_combobox_options(
-            found_attendance.parent, timeout=helpers.WAIT_TIME
-        )
+        options = helpers.wait_combobox_options(found_attendance.parent, timeout=helpers.WAIT_TIME)
         try:
             for option in options:
                 if option.text == new_attendancestate:
