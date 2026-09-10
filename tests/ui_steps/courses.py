@@ -1,5 +1,3 @@
-import re
-
 from behave import when, then, use_step_matcher
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
@@ -24,12 +22,6 @@ def courses_cnt(driver):
     return len(get_courses(driver))
 
 
-def css_color_to_hex(css_color):
-    """Prevede `rgb(r, g, b)` z computed stylu na velkymi pismeny psany hex."""
-    numbers = re.findall(r"\d+", css_color)
-    return "#" + "".join(f"{int(n):02X}" for n in numbers[:3])
-
-
 def find_course(context, name, **data):
     all_courses = get_courses(context.browser)
     # najdi kurz s udaji v parametrech
@@ -41,12 +33,14 @@ def find_course(context, name, **data):
                 By.CSS_SELECTOR, "[data-qa=course_visible]"
             ).get_attribute("class")
             found_duration = course.find_element(By.CSS_SELECTOR, "[data-qa=course_duration]").text
-            # barvu ctem z vykreslene kolecka (computed background-color) - hodnota je
-            # v DOM primo, na rozdil od cteni tooltipu nezavisi na hoveru ani animacich
-            found_color = css_color_to_hex(
-                course.find_element(
-                    By.CSS_SELECTOR, "[data-qa=course_color]"
-                ).value_of_css_property("background-color")
+            # barvu ctem z `data-color` atributu, ne z computed background-color - ta je
+            # po `courseColorTint` prolnuta s podkladem (citelnost na tmave/svetle plose),
+            # takze uz neodpovida puvodnimu hexu; `data-color` na rozdil od cteni tooltipu
+            # nezavisi na hoveru ani animacich
+            found_color = common_helpers.color_transform(
+                course.find_element(By.CSS_SELECTOR, "[data-qa=course_color]").get_attribute(
+                    "data-color"
+                )
             )
             # identifikatory sedi, otestuj pripadna dalsi zaslana data nebo rovnou vrat nalezeny prvek
             if not data or (

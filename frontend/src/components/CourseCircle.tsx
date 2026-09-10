@@ -21,6 +21,10 @@ const CourseCircle: React.FC<Props> = ({ color, size, showTitle = false, classNa
     const circle = (
         <span
             data-qa="course_color"
+            // E2E cte skutecnou nakonfigurovanou barvu odsud, ne z computed background-color —
+            // ten po `courseColorTint` (viz CourseCircle.css.ts) uz neni puvodni hex, ale
+            // prolnuty s podkladem kvuli citelnosti na tmave/svetle plose
+            data-color={color}
             className={classNames(styles.courseCircle, className)}
             style={assignInlineVars({
                 [styles.circleColor]: color,
