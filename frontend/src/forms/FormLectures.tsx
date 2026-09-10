@@ -148,25 +148,9 @@ const FormLecturesSkeleton: React.FC<FormLecturesSkeletonProps> = ({
     </SkeletonShell>
 )
 
-/**
- * Nativní glyf výběru u `type="date"`/`type="time"` jde schovat jen v prohlížečích,
- * které znají `::-webkit-calendar-picker-indicator` (Chromium, Safari) — Firefox pro něj
- * nemá žádnou CSS obdobu (viz `nativeDateTime` ve FormLectures.css.ts). Vlastní ikona
- * v `leftSection` proto smysl dává jen tam, kde nahrazuje skrytý nativní glyf; jinde by
- * šlo o druhou (nadbytečnou) ikonu vedle nativní, kterou nejde odstranit.
- */
-const supportsNativeDateTimeIconHiding =
-    typeof CSS !== "undefined" &&
-    typeof CSS.supports === "function" &&
-    CSS.supports("selector(::-webkit-calendar-picker-indicator)")
-
-/** `leftSectionPointerEvents` pro pole data/času — viz `supportsNativeDateTimeIconHiding` a `NativePickerTrigger`. */
-const nativePickerPointerEvents = supportsNativeDateTimeIconHiding ? "all" : undefined
-
 type NativePickerTriggerProps = {
     /** Pole, jehož nativní picker se má otevřít. */
     fieldId: "date" | "time"
-    /** Ikona nahrazující skrytý nativní glyf. */
     icon: FontAwesomeIconProps["icon"]
     ariaLabel: string
     disabled: boolean
@@ -174,9 +158,11 @@ type NativePickerTriggerProps = {
 }
 
 /**
- * Ikona v `leftSection` pole data/času, nahrazující skrytý nativní glyf výběru
- * (viz `supportsNativeDateTimeIconHiding` výše) — jinde by šlo o druhou
- * (nadbytečnou) ikonu vedle nativní, kterou nejde odstranit.
+ * Ikona v `leftSection` pole data/času, spouštěč nativního pickeru — viz `nativeDateTime`
+ * ve FormLectures.css.ts. Ve Firefoxu (na rozdíl od Chromium/Safari) zůstává vedle ní i
+ * nativní glyf výběru, protože ten se tam schovat nedá — ikona se ale nechává v obou
+ * prohlížečích stejně: bez ní by ve Firefoxu po `leftSection` zbyla jen prázdná mezera,
+ * což je horší než zdvojená ikona.
  */
 const NativePickerTrigger: React.FC<NativePickerTriggerProps> = ({
     fieldId,
@@ -184,17 +170,16 @@ const NativePickerTrigger: React.FC<NativePickerTriggerProps> = ({
     ariaLabel,
     disabled,
     onOpen,
-}) =>
-    supportsNativeDateTimeIconHiding ? (
-        <button
-            type="button"
-            className={styles.nativeDateTimeTrigger}
-            disabled={disabled}
-            onClick={() => onOpen(fieldId)}
-            aria-label={ariaLabel}>
-            <FontAwesomeIcon icon={icon} fixedWidth />
-        </button>
-    ) : undefined
+}) => (
+    <button
+        type="button"
+        className={styles.nativeDateTimeTrigger}
+        disabled={disabled}
+        onClick={() => onOpen(fieldId)}
+        aria-label={ariaLabel}>
+        <FontAwesomeIcon icon={icon} fixedWidth />
+    </button>
+)
 
 /**
  * Vytvoří pole `count` shodných dat lekce — pro odeslání více po sobě jdoucích
@@ -507,8 +492,8 @@ const FormLectures: React.FC<Props> = (props) => {
 
     /**
      * Otevře nativní picker data/času. Ikona v `leftSection` je klikatelná díky
-     * `leftSectionPointerEvents="all"` (výchozí `none`) — nese afordanci výběru místo
-     * skrytého nativního glyfu (viz `supportsNativeDateTimeIconHiding` výše).
+     * `leftSectionPointerEvents="all"` (výchozí `none`) — nese afordanci výběru
+     * (viz `NativePickerTrigger` výše).
      *
      * **Nesmí viset na celém poli.** Klik do rozepsaného data má umístit kurzor do segmentu;
      * picker ho místo toho překryje a vezme si focus, takže překlep v roce by pak nešlo
@@ -814,7 +799,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             placeholder="yyyy-mm-dd"
                                             aria-label="Datum lekce"
                                             data-qa="lecture_field_date"
-                                            leftSectionPointerEvents={nativePickerPointerEvents}
+                                            leftSectionPointerEvents="all"
                                             leftSection={
                                                 <NativePickerTrigger
                                                     fieldId="date"
@@ -841,7 +826,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             placeholder="hh:mm"
                                             aria-label="Čas lekce"
                                             data-qa="lecture_field_time"
-                                            leftSectionPointerEvents={nativePickerPointerEvents}
+                                            leftSectionPointerEvents="all"
                                             leftSection={
                                                 <NativePickerTrigger
                                                     fieldId="time"

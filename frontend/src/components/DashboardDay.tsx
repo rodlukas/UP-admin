@@ -146,10 +146,7 @@ const DashboardDay: React.FC<Props> = (props) => {
     }
 
     return (
-        <div
-            className={classNames(styles.dashboardDayWrapper, {
-                [styles.dashboardDayToday]: isDayToday,
-            })}>
+        <div className={styles.dashboardDayWrapper}>
             <Box
                 className={classNames(styles.dashboardDayDate, {
                     [styles.dashboardDayDateToday]: isDayToday,

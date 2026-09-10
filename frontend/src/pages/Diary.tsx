@@ -314,7 +314,7 @@ const Diary: React.FC = () => {
                                     )}
                                 </Tooltip>
                             </Group>
-                            <ModalLecturesWizard source="diary" />
+                            <ModalLecturesWizard source="diary" dropdownLabel="Přidat lekci" />
                         </>
                     }
                 />

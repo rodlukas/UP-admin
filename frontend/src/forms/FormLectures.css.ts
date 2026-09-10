@@ -20,10 +20,10 @@ export const prepaidLectureCnt = style({
  * a klik do něj musí umístit kurzor, ne otevřít kalendář přes celé pole.
  *
  * Schování nativního glyfu funguje jen ve Webkit/Blink (viz níže) — Firefox pro něj nemá
- * žádnou CSS obdobu, takže by tam vlastní ikona byla druhá navíc vedle nativní. FormLectures.tsx
- * proto `leftSection` s vlastní ikonou přidává jen tam, kde `CSS.supports("selector(...)")`
- * potvrdí, že prohlížeč tohle schování umí (`supportsNativeDateTimeIconHiding`) — jinde nese
- * afordanci výběru sama nativní ikona.
+ * žádnou CSS obdobu, takže tam vlastní ikona zůstává druhá navíc vedle nativní. Ikona
+ * v `leftSection` se přesto nechává v obou prohlížečích stejně (viz `NativePickerTrigger`
+ * ve FormLectures.tsx) — bez ní by ve Firefoxu po `leftSection` zbyla jen prázdná mezera,
+ * což je horší než zdvojená ikona.
  */
 export const nativeDateTime = style({})
 

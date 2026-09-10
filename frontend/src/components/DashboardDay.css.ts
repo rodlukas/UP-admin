@@ -26,11 +26,13 @@ export const dashboardDayDate = style({
  * Hlavička dnešního dne. Přebíjí `dashboardDayDate` výše — stejná specificita, vyhrává
  * pozdější pořadí v tomto souboru.
  *
- * Nese jen váhu písma; vlastní značku dne kreslí linka na hraně sloupce
- * (`dashboardDayToday` níže). Váha tu zůstává proto, aby stav neurčovala jen barevná
- * linka (WCAG 1.4.1).
+ * Dnešek značí modré podbarvení hlavičky (horní části dne), ne linka na hraně sloupce
+ * ani podtržení data — na rozdíl od linky přes celou výšku sloupce jde o signál jen
+ * v místě, kde se skutečně čte "který je dnes den". Váha písma zůstává navíc, aby stav
+ * neurčovala jen barva (WCAG 1.4.1).
  */
 export const dashboardDayDateToday = style({
+    backgroundColor: vars.statusSoft.info.bg,
     fontWeight: 700,
 })
 
@@ -53,31 +55,10 @@ export const lectureFree = style({
     paddingTop: "1rem !important",
 })
 
-/** Šířka linky, kterou se značí dnešní den. */
-const TODAY_MARK_WIDTH = "3px"
-
 /** Den je plocha, ne karta — obsah drží pohromadě jen linky mezi lekcemi. */
 export const dashboardDayWrapper = style({
     position: "relative",
     backgroundColor: vars.bg.surface,
-})
-
-/**
- * Dnešek značí **linka na levé hraně sloupce**, ne podbarvení hlavičky ani podtržení data.
- * Je to tentýž zápis, jakým pruh navigace značí aktivní položku (`navLinkActive`
- * v Menu.css.ts): linka a váha písma, žádná další barevná plocha. Na rozdíl od značky
- * v hlavičce je vidět z celé výšky sloupce, tedy i když je hlavička odrolovaná.
- *
- * Kreslí ji **vnitřní stín, ne `border`**. Border zabírá místo v boxu, takže sloty lekcí
- * uvnitř končily 3 px od kraje a při hoveru zůstal vlevo nepodbarvený proužek v barvě
- * povrchu. Aby dny v mřížce lícovaly, musely by tu linku mít průhlednou i ostatní dny —
- * a ten proužek by pak nesvítil jen dnes, ale všude. Stín se do rozvržení nepočítá, takže
- * odpadá obojí: sloty jdou přes celou šířku a ostatní dny nepotřebují nic.
- *
- * Deklarováno až za `dashboardDayWrapper` — při shodné specificitě rozhoduje pořadí.
- */
-export const dashboardDayToday = style({
-    boxShadow: `inset ${TODAY_MARK_WIDTH} 0 0 ${vars.text.primary}`,
 })
 
 export const dashboardDayItem = style({
