@@ -111,9 +111,9 @@ class Bank:
         `FIO_TIMEOUT_SECONDS` u pomalu odkapávajícího spojení vůbec nezasáhlo (viz
         komentář u konstanty) a vlákno by zůstalo obsazené donekonečna.
 
-        Zaseknuté volání tím pádem natrvalo obsadí jeden ze sdílených, OHRANIČENÝCH slotů
-        `_bank_executor` (ne vlastní, nikdy neuvolněné vlákno navíc) - `future.cancel()` by
-        tu nepomohl, `ThreadPoolExecutor` neumí zrušit už běžící task.
+        Zaseknuté volání tím pádem natrvalo obsadí jeden ze slotů `_bank_executor` (viz
+        komentář u něj) - `future.cancel()` by tu nepomohl, `ThreadPoolExecutor` neumí
+        zrušit už běžící task.
         """
         future = _bank_executor.submit(requests.get, url_secret, timeout=FIO_TIMEOUT_SECONDS)
         try:

@@ -456,9 +456,9 @@ const FormLectures: React.FC<Props> = (props) => {
     )
 
     /**
-     * Otevře nativní picker data/času. Nativní glyf výběru je skrytý (viz `nativeDateTime`
-     * v FormLectures.css.ts), takže afordanci nese značková ikona v `leftSection` — proto
-     * má pole `leftSectionPointerEvents="all"` (výchozí je `none`, tedy neklikatelná).
+     * Otevře nativní picker data/času. Ikona v `leftSection` je klikatelná díky
+     * `leftSectionPointerEvents="all"` (výchozí `none`) — nese afordanci výběru místo
+     * skrytého nativního glyfu (viz `supportsNativeDateTimeIconHiding` výše).
      *
      * **Nesmí viset na celém poli.** Klik do rozepsaného data má umístit kurzor do segmentu;
      * picker ho místo toho překryje a vezme si focus, takže překlep v roce by pak nešlo
@@ -471,8 +471,7 @@ const FormLectures: React.FC<Props> = (props) => {
             try {
                 input.showPicker()
             } catch {
-                // showPicker může vyhodit (mimo user gesto / nepodporováno / disabled pole)
-                // — pole pak zůstane běžně editovatelné, jen se neotevře kalendář
+                // nejde otevřít (mimo user gesto / disabled pole) — pole zůstane editovatelné
             }
         }
     }, [])
@@ -484,8 +483,7 @@ const FormLectures: React.FC<Props> = (props) => {
             setCourse(courseValue)
             if (courseValue) {
                 setDuration(courseValue.duration)
-                // doplnění kurzu „odjistí" submit-validaci, ať chyba znovu nenaskočí
-                // jen kvůli pozdějšímu smazání bez nového pokusu o odeslání
+                // zruš chybu po výběru kurzu (stejný důvod jako u FormApplications)
                 setTriedSubmit(false)
             }
         },
@@ -579,10 +577,8 @@ const FormLectures: React.FC<Props> = (props) => {
             if (formElement && !formElement.reportValidity()) {
                 return
             }
-            // skryty input SelectCourse constraint validaci neumi (reportValidity ho nezachyti),
-            // proto vyber kurzu (a dosud nevyplnene trvani) overujeme jeste zvlast;
-            // triedSubmit zobrazi chybu "Vyberte kurz" — samotne reportValidity projde,
-            // kdyz ma searchable input jen napsany (nevybrany) text
+            // kurz (viz komentář u triedSubmit výše) a trvání ověřujeme ještě zvlášť —
+            // reportValidity je pro ně samo o sobě nespolehlivé
             if (!course || duration === undefined) {
                 setTriedSubmit(true)
                 formElement?.reportValidity()

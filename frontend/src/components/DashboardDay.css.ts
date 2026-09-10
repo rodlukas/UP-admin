@@ -105,10 +105,10 @@ export const lectureBlock = style({
 })
 
 /**
- * Pruh v syté barvě kurzu — barva kurzu má být na první pohled poznat, stejně jako ji
- * nesla plnobarevná pilulka v předchozím vydání. Odstín se nijak neředí; čitelnost drží
- * barva textu, kterou podle kontrastu dopočítá `contrastingTextColor` (bílá, nebo inkoust)
- * a předá sem přes `lectureVars.courseText`. Proto je odstín i text v obou motivech stejný.
+ * Pruh v syté barvě kurzu — barva kurzu má být na první pohled poznat. Odstín se nijak
+ * neředí; čitelnost drží barva textu, kterou podle kontrastu dopočítá `contrastingTextColor`
+ * (bílá, nebo inkoust) a předá sem přes `lectureVars.courseText`. Proto je odstín i text
+ * v obou motivech stejný.
  */
 export const lectureHeader = style({
     display: "flex",

@@ -77,10 +77,7 @@ const Attendance: React.FC<AttendanceProps> = ({ attendance, showClient = false,
                     source={source}
                 />
             </div>
-            {/* Poznámka má vlastní řádek pod jménem, ikonami i stavem: vedle nich by o šířku
-                soutěžila a delší text by rozhodil celý slot — jméno by zůstalo nahoře, ikony
-                by spadly pod něj a řádky sousedních klientů by přestaly lícovat. Přes celou
-                šířku se vejde v klidu a nic kolem se nehne. */}
+            {/* vlastní řádek přes celou šířku — důvod viz `attendanceNote` v Attendances.css.ts */}
             <LectureNote attendance={attendance} className={styles.attendanceNote} />
         </li>
     )

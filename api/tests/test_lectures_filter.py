@@ -144,10 +144,9 @@ class LectureLimitTest(TestCase):
         self.assertEqual(_ids(response.json()), {self.lecture_middle.pk, self.lecture_latest.pk})
 
     def test_limit_with_descending_ordering_excludes_dateless_lectures(self) -> None:
-        # `start` je nullable (predplacene lekce bez terminu) a PostgreSQL radi NULL
-        # hodnoty u `ORDER BY start DESC` JAKO PRVNI — bez explicitniho filtru by
-        # `?limit=N&ordering=-start` vratil N predplacenych lekci bez data misto
-        # N nejnovejsich (presny opak ucelu parametru `limit`).
+        # Postgres radi NULL (`start`) jako prvni u `ORDER BY ... DESC` (viz filtr
+        # v LectureViewSet.list) - bez nej by limit vratil predplacene lekce bez terminu
+        # misto nejnovejsich
         Lecture.objects.create(
             start=None,
             canceled=False,
@@ -228,8 +227,6 @@ class LectureCanceledFilterTest(TestCase):
         self.assertEqual(_ids(response.json()), {self.lecture_canceled.pk})
 
     def test_canceled_invalid_value_returns_400(self) -> None:
-        # drivejsi `BooleanFilter` neznamy token tise preskocil (vratil vsechny lekce
-        # vcetne zrusenych misto chyby) - musi vratit 400, stejne jako `limit`
         response = self.api.get("/api/v1/lectures/?canceled=no", secure=True)
         self.assertEqual(response.status_code, 400)
 

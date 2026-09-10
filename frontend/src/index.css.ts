@@ -151,7 +151,6 @@ globalStyle(
     },
 )
 
-// omezeni max sirky kontejneru
 globalStyle(".mantine-Container-root", {
     maxWidth: "1500px",
 })

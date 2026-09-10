@@ -80,9 +80,7 @@ export const theme = createTheme({
             },
         },
         /**
-         * Textové prvky obsahu jedou na `md` (1 rem), ne na výchozím Mantine `sm`
-         * (0,875 rem = 14 px) — obecné pravidlo aplikace: text v obsahu nesmí být menší
-         * než 1 rem.
+         * `md` (1 rem) kvůli pravidlu „žádný text pod 1 rem" (viz `fontSizes` výše).
          *
          * `ActionIcon` tu schválně není — u ikonového tlačítka je `size` rozměr plochy,
          * ne velikost písma, a řídí ho výška řádku v tabulce (viz `DeleteIconButton`).

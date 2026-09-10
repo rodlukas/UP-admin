@@ -136,10 +136,7 @@ export const railFoot = style({
     paddingTop: "0.7rem",
 })
 
-/**
- * Označení prostředí (vývojová verze / testing s commitem / demo) na dně pruhu.
- * Odsazení zleva je `RAIL_ICON_INSET`, tedy tentýž sloupec jako značka a ikony položek.
- */
+/** Označení prostředí (vývojová verze / testing s commitem / demo) na dně pruhu. */
 export const railEnv = style({
     display: "flex",
     alignItems: "center",

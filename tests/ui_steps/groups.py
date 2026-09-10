@@ -76,10 +76,9 @@ def insert_to_form(context, verify_current_data=False):
     for member in context.members:
         if not helpers.combobox_insert(context.browser, members_field, member):
             context.member_select_success = False
-    # Mantine MultiSelect nechava po vyberu dropdown otevreny - zavri ho Tabem
-    # (presun fokusu), jinak by portalovany dropdown mohl prekryvat nasledne klikane
-    # elementy (active_label); Escape nelze pouzit - probubla do Modalu, ktery se pokusi
-    # zavrit a aplikace zobrazi confirm alert "zavrit formular bez ulozeni?"
+    # Mantine MultiSelect nechava po vyberu dropdown otevreny - zavri ho Tabem (presun
+    # fokusu), jinak by portalovany dropdown mohl prekryvat nasledne klikane elementy
+    # (active_label); Escape nelze pouzit (viz combobox_insert v helpers.py)
     members_field.send_keys(Keys.TAB)
     if (context.active and not active_checkbox.is_selected()) or (
         not context.active and active_checkbox.is_selected()

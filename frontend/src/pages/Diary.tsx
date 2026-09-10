@@ -254,7 +254,6 @@ const Diary: React.FC = () => {
                                 primarni (indigo) akce v hlavicce je pridani lekce. */}
                             <Group gap="0.25rem" wrap="nowrap" className={styles.weekNav}>
                                 <Tooltip label="Předchozí týden">
-                                    {/* odkaz obsahuje jen ikonu - jmeno pro ctecky */}
                                     <Link
                                         aria-label="Předchozí týden"
                                         to="/diar/$year/$month/$day"
@@ -273,7 +272,6 @@ const Diary: React.FC = () => {
                                     </Link>
                                 </Tooltip>{" "}
                                 <Tooltip label="Další týden">
-                                    {/* odkaz obsahuje jen ikonu - jmeno pro ctecky */}
                                     <Link
                                         aria-label="Další týden"
                                         to="/diar/$year/$month/$day"
@@ -342,17 +340,13 @@ const Diary: React.FC = () => {
                 </div>
                 {freeDays.length > 0 && (
                     <div className={styles.freeDaysBar}>
-                        {/* Nepotvrzený odhad netvrdí "Volno" (den může mít lekce, až
-                            doběhne skutečná odpověď) - jen drží tlačítko pro přidání
-                            lekce dosažitelné, dokud se den buď potvrdí, nebo vrátí
-                            zpátky do mřížky. */}
+                        {/* popisek viz `freeDays` výše: odhad nesmí tvrdit "Volno" */}
                         <span className={styles.freeDaysLabel}>
                             {isWeekSettled ? "Volno" : "Načítání…"}
                         </span>
                         {freeDays.map((day) => (
                             <span key={day} className={styles.freeDayItem}>
                                 {prettyDateWithLongDayYearIfDiff(new Date(day))}
-                                {/* přidání lekce musí zůstat dosažitelné i pro skrytý den */}
                                 <ModalLecturesWizard
                                     date={day}
                                     source="diary"

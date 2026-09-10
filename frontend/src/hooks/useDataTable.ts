@@ -66,9 +66,7 @@ export function useDataTable<T>({
     // Přepnutí aktivní/neaktivní (`resetKey`) posílá úplně jinou `rows` — hledaný výraz
     // i stránka z předchozího seznamu by jinak přežily na seznam, pro který nikdy nebyly
     // napsané (a při shodě nuly by tabulka ukázala "Nic nenalezeno" nad neprázdným
-    // seznamem). Efekt cílí na `resetKey`, ne na `rows`: uložení editace vrátí nové pole
-    // (jiná reference i po `structuralSharing`, protože se obsah skutečně změnil), takže
-    // reset na `rows` by při každé úpravě řádku smazal rozepsané hledání.
+    // seznamem). Proč efekt cílí na `resetKey`, ne na `rows`: viz `Options.resetKey` výše.
     React.useEffect(() => {
         setQuery("")
         setPage(1)

@@ -52,9 +52,8 @@ test("fills from the start value, never from a full bar running backwards", asyn
     renderWithFetch(() => deferred.promise)
     const bar = await screen.findByTestId("loading-bar", {}, { timeout: 100 })
 
-    // Pri mountu jeste zadny dotaz nebezi, takze efekt projde vetvi "fetch skoncil".
-    // Nesmi z ni ale nastavit 100 % a dokoncovaci prizak: dotaz odstartovany hned po
-    // mountu by pak pruh vykreslil plny a trickle interval by ho vezl POZPATKU ke stropu.
+    // mount bez beziciho dotazu projde vetvi "fetch skoncil" v efektu (viz TopProgressBar.tsx)
+    // - bez guardu by pruh vykreslil plny misto od START_PROGRESS
     expect(bar).toHaveStyle({ [PROGRESS_VAR_NAME]: "15%" })
 
     deferred.resolve()

@@ -55,8 +55,7 @@ const GroupName: React.FC<GroupNameProps> = ({
     bold = false,
     noWrap = false,
 }) => {
-    // element, ne komponenta definovana v renderu — ta by mela pri kazdem renderu novy typ,
-    // takze by React podstrom odmountoval a znovu namountoval
+    // element, ne komponenta definovana v renderu — stejny duvod jako v ClientName.tsx
     const plainName = <PlainName group={group} title={title} bold={bold} />
     return (
         <span>

@@ -183,9 +183,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     placeholder="Vyberte existující skupinu…"
                     searchable
                     nothingFoundMessage={TEXTS.NO_RESULTS}
-                    // pole je vzdy povinne (bez neho nejde krok wizardu dokoncit) — bez
-                    // tohohle jde hodnotu vynulovat i preklinutim uz vybrane polozky
-                    // v otevrenem dropdownu (Mantine `allowDeselect` je jinak defaultne `true`)
+                    // pole je vždy povinné (bez něj nejde krok wizardu dokončit) — proč
+                    // false, viz allowDeselect u SelectClient
                     allowDeselect={false}
                     withAsterisk
                     autoFocus
@@ -229,9 +228,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                 )}
                                 size={props.dropdownSize}
                                 variant={props.dropdownVariant ?? "filled"}
-                                // `subtle` varianta je pro opakovane vyskyty, a tam ma byt
-                                // tlacitko tlumene — indigo glyf by z peti hlavicek dnu
-                                // udelal barevny pas. Hlavni akce stranky zustava indigo.
+                                // šedá pro `subtle` (viz dropdownVariant výše), indigo zůstává jen hlavní akci
                                 color={props.dropdownVariant === "subtle" ? "gray" : undefined}
                                 disabled={props.isFetching}
                                 // tlacitko obsahuje jen ikony - jmeno pro ctecky z tooltipu

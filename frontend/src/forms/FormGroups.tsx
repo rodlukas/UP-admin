@@ -64,7 +64,6 @@ const FormGroups: React.FC<Props> = (props) => {
     const updateGroup = useUpdateGroup()
     const deleteGroup = useDeleteGroup()
 
-    // připraví pole se členy ve správném formátu
     const getMembersOfGroup = React.useCallback((members: MembershipType[]): ClientType[] => {
         return members.map((member) => member.client)
     }, [])
@@ -87,15 +86,14 @@ const FormGroups: React.FC<Props> = (props) => {
         onValuesChange: () => props.setFormDirty(),
     })
 
-    // Po pokusu o odeslání s prázdným povinným kurzem (skrytý input Selectu neumí constraint
-    // validaci, reportValidity je no-op) zobrazíme chybu přes `error` prop SelectCourse.
+    // stejný důvod jako u FormApplications: skrytý input Selectu neumí constraint
+    // validaci, chybu proto řešíme přes `error` prop SelectCourse.
     const [triedSubmit, setTriedSubmit] = React.useState(false)
 
     const onSubmit = React.useCallback(
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
             const { name, active, course, members } = form.getValues()
-            // pojistka: bez vybraneho kurzu neodesilame a zobrazime chybu u SelectCourse
             if (!course) {
                 setTriedSubmit(true)
                 return
@@ -224,9 +222,7 @@ const FormGroups: React.FC<Props> = (props) => {
                                         value={form.values.course}
                                         onChangeCallback={(_name, val) => {
                                             form.setFieldValue("course", val ?? null)
-                                            // doplnění kurzu „odjistí" submit-validaci, ať chyba
-                                            // znovu nenaskočí jen kvůli pozdějšímu smazání bez
-                                            // nového pokusu o odeslání
+                                            // zruš chybu po výběru kurzu (stejný důvod jako u FormApplications)
                                             if (val) {
                                                 setTriedSubmit(false)
                                             }

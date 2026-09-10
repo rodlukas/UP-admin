@@ -14,9 +14,7 @@ import { addDays } from "./funcDateTime"
 import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
 
 /**
- * Jednoduché české skloňování podle počtu: vrátí `one` pro 1, `few` pro 2–4, jinak `many`.
  * Sjednocuje opakovaný count→tvar vzorec z přehledů klientů a skupin.
- *
  * Nula bere `many` („0 členů“), ne `few` — genitiv plurálu, stejně jako u pěti a víc.
  */
 export const pluralizeCs = (count: number, one: string, few: string, many: string): string => {

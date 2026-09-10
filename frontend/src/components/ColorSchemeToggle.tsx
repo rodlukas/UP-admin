@@ -35,10 +35,7 @@ const ColorSchemeToggle: React.FC = () => {
     // ktery je namountovany vzdy — tato komponenta resi jen UI prepinace.)
     const computedColorScheme = useComputedColorScheme("light", { getInitialValueInEffect: false })
 
-    // theme-color meta se PER SCHEME meni — rail (chrome aplikace) ma v kazdem motivu
-    // jinou barvu (vars.bg.rail: light-dark(#16233a, dark-9)), takze i mobile Chrome/PWA
-    // status bar musi motiv sledovat, aby nevznikl viditelny sev mezi status barem
-    // a hlavickou. Resynchronizace bezi v ColorSchemeSync (namountovany vzdy, ne jen tady).
+    // theme-color meta se taky meni per schema — resynchronizace bezi v ColorSchemeSync (viz tam).
 
     // V „auto" režimu ukazuj v navbaru ikonu aktuálně aplikovaného schématu
     // (sun/moon), aby bylo na první pohled vidět, co je právě zobrazeno.

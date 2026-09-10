@@ -83,7 +83,6 @@ export const navLabel = style({
     flexShrink: 0,
 })
 
-/** Klávesová zkratka u vyhledávání. */
 export const navShortcut = style({
     flexShrink: 0,
 })

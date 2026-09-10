@@ -22,8 +22,7 @@ import { vars } from "../theme/tokens"
 
 /**
  * Panel obsahu — ohraničený blok na tónované ploše (`vars.bg.page`). Bez rámečku splýval
- * bílý obsah s bílým pozadím a nebylo poznat, kde blok začíná a končí; stín ale nemá,
- * ten zůstává jen plovoucím vrstvám (`surfaceFloating`).
+ * bílý obsah s bílým pozadím a nebylo poznat, kde blok začíná a končí.
  *
  * Jediný zdroj pravdy pro ohraničení bloků — skládají ho `surfaceCard`, `tableSection`
  * i sloupec dne v diáři.

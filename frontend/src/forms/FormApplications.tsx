@@ -91,7 +91,6 @@ const FormApplications: React.FC<Props> = (props) => {
         (e: React.SyntheticEvent<HTMLFormElement>): void => {
             e.preventDefault()
             const { course, client, note } = form.getValues()
-            // pojistka: bez vybraneho kurzu/klienta neodesilame a zobrazime chybu u Selectu
             if (!course || !client) {
                 setTriedSubmit(true)
                 return

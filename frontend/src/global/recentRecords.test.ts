@@ -85,9 +85,7 @@ describe("pruneUnresolvableRecentRecords", () => {
     })
 
     test("reads storage fresh instead of trusting a stale caller-held list", () => {
-        // simuluje pripad, kdy paleta drzi zastaraly stav (naposledy nacteny pri
-        // otevreni) a mezitim nekde jinde (otevrena karta) pribyl novejsi zaznam,
-        // o kterem stav palety jeste nevi — presto ho pruning nesmi ztratit
+        // scenar popsany v komentari u pruneUnresolvableRecentRecords v recentRecords.ts
         rememberRecentRecord({ kind: "client", id: 1 })
         rememberRecentRecord({ kind: "client", id: 2 })
 

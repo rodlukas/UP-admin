@@ -13,10 +13,9 @@ export const dashboardSection = style({
  * v Bank.css.ts), seznam lekcí ne — bez toho by bílé bloky lekcí ležely přímo
  * na tónované ploše bez hranice.
  *
- * `overflow: clip` (ne `hidden`): bez ořezu vyplní hranaté rohy lekcí zaoblené rohy panelu
- * a ten pak vypadá, že má jiný rádius než banka vedle (ta ořez má). `hidden` použít nejde —
- * udělalo by z panelu scroll kontejner a rozbilo `position: sticky` u hlavičky dne;
- * `clip` scroll kontejner nevytváří, takže lepení zůstává.
+ * `overflow: clip`, ne `hidden` — stejný důvod jako `weekDayCol` v Diary.css.ts: jinak by
+ * panel vypadal, že má jiný rádius než banka vedle, a `hidden` by navíc rozbilo
+ * `position: sticky` u hlavičky dne.
  */
 export const lecturesPanel = style([
     surfacePanel,

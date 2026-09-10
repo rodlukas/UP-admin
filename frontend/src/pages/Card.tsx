@@ -274,14 +274,11 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const clientQuery = useClient(isClientPageValue ? id : undefined)
     const groupQuery = useGroup(isClientPageValue ? undefined : id)
 
-    // teprve tady je jasné, že `id` odpovídá skutečnému, úspěšně načtenému záznamu —
-    // dokud dotaz běží nebo skončí chybou (smazaný/neexistující klient/skupina), se
-    // záznam do „naposledy otevřených" nezapisuje (viz useRememberRecentRecord).
-    // Nadto musí být záznam AKTIVNÍ: kontexty, ze kterých ⌘K paleta (AppSpotlight)
-    // záznamy vyhledává i následně maže ty nevyřešitelné, obsahují jen aktivní
-    // klienty/skupiny — bez tohoto filtru by karta neaktivního klienta zapsala záznam,
-    // který paleta nikdy nevyhledá, jen vytlačí z 5místné historie použitelné aktivní
-    // záznamy a při nejbližší prunovací příležitosti ho sama zase smaže.
+    // `enabled` (viz useRememberRecentRecord) musí navíc žádat záznam AKTIVNÍ, ne jen
+    // úspěšně načtený: kontexty, ze kterých ⌘K paleta (AppSpotlight) záznamy vyhledává
+    // i následně maže ty nevyřešitelné, obsahují jen aktivní klienty/skupiny — bez tohoto
+    // filtru by karta neaktivního klienta vytlačila z 5místné historie použitelné aktivní
+    // záznamy, které paleta stejně nikdy nenajde.
     const isActiveObject = isClientPageValue ? clientQuery.data?.active : groupQuery.data?.active
     useRememberRecentRecord(
         isClientPageValue ? "client" : "group",
@@ -583,8 +580,6 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                                         courseLectures.course.color,
                                                     ),
                                                 })}>
-                                                {/* `.text` tohoto prvku cte E2E krok — tecka nesmi
-                                            pridat zadny text, proto prazdny span */}
                                                 <Title
                                                     order={2}
                                                     size="h4"

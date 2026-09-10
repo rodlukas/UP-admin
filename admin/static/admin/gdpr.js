@@ -117,7 +117,7 @@ function anonymize() {
     const randLorem = () => rand(loremSentences)
 
     document.querySelectorAll('[data-qa="bank_transaction_message"]').forEach((el) => {
-        // "—" je sentinel prazdne hodnoty (viz NoInfo.tsx) — prazdnou bunku nech prazdnou
+        // stejny sentinel jako vyse
         if (el.textContent.trim() !== "—") {
             el.textContent = randLorem()
         }

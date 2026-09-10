@@ -66,8 +66,7 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
             data={data}
             value={value?.id.toString() ?? null}
             onChange={(val) => {
-                // i skrytý kurz (mimo `options`, viz `data` memo) musí jít znovu vybrat –
-                // když `val` odpovídá aktuální hodnotě, vrať ji přímo
+                // i skrytý kurz musí jít znovu vybrat (stejná logika jako u SelectClient)
                 const found =
                     value?.id.toString() === val
                         ? value
@@ -75,16 +74,14 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
                 onChangeCallback("course", found)
             }}
             label={label}
-            // `aria-label` má v accessible name computation přednost před přiřazeným
-            // <label> — nastav ho proto jen když viditelný label chybí (jinak zbytečně
-            // duplicitní, ale hlavně matoucí, kdyby se od sebe časem obsahově rozešly)
+            // aria-label jen když chybí viditelný label (viz SelectClient) — souběh obou
+            // by byl matoucí, kdyby se od sebe časem obsahově rozešly
             aria-label={label ? undefined : "Kurz"}
             placeholder="Vyberte kurz…"
             searchable
             nothingFoundMessage={TEXTS.NO_RESULTS}
             clearable={!required}
-            // bez tohohle jde povinnou hodnotu vynulovat i překliknutím už vybrané položky
-            // v otevřeném dropdownu (Mantine `allowDeselect` je jinak defaultně `true`)
+            // allowDeselect: stejný důvod jako u SelectClient
             allowDeselect={!required}
             withAsterisk={required}
             required={required}

@@ -39,7 +39,7 @@
         document.documentElement.dataset.mantineColorScheme = resolved;
         document.documentElement.style.colorScheme = resolved;
 
-        // drzi `theme-color` v kroku s `bg.rail` (viz komentar v head.html) - bez tohoto
+        // drzi `theme-color` v kroku s `bg.rail` (viz RAIL_COLOR_* vyse) - bez tohoto
         // kroku by v tmavem motivu zustal staticky `content` z <head> (svetla hodnota)
         // a vznikl by viditelny sev mezi status barem a hlavickou aplikace
         var themeColorMeta = document.getElementById("theme-color-meta");

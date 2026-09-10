@@ -174,11 +174,9 @@ test("refetch with stale data doesn't clobber a newer local edit", async () => {
     expect(input).toHaveValue(9)
 })
 
-// Pozn.: cast ochrany proti out-of-order odpovedim zajistuje uz TanStack Query v5 -
-// per-mutate onSuccess/onError callbacky vystreli jen pro POSLEDNI mutate() na dane
-// useMutation instanci, starsi (prekonana) mutace zadny callback nedostane. Test pres
-// realny useMutation proto overuje vysledny pozorovatelny kontrakt komponenty, nikoli
-// jen jeji vnitrni guard v onSuccess (ten je timto seamem nedosazitelny).
+// TanStack Query v5 doruci per-mutate callbacky jen poslednimu mutate() (viz commit()
+// v PrepaidCounters.tsx) - test proto overuje kontrakt pres realny useMutation, ne jen
+// vnitrni guard v onSuccess.
 test("out-of-order PATCH responses don't overwrite the newer confirmed value", async () => {
     const firstPatch = createDeferred()
     const secondPatch = createDeferred()
@@ -210,9 +208,8 @@ test("out-of-order PATCH responses don't overwrite the newer confirmed value", a
     expect(patchMock).toHaveBeenCalledTimes(2)
 })
 
-// TanStack Query v5 dorucuje per-mutate callbacky jen POSLEDNIMU mutate() na instanci -
-// pri soubehu PATCHu dvou ruznych clenu se cleanup prvniho nesmi ztratit (jinak zustane
-// prvni clen navzdy "dirty" a ignoruje vsechny dalsi refetche).
+// stejny TanStack Query v5 seam jako u predchoziho testu (viz PrepaidCounters.tsx) - tady
+// overuje, ze soubeh PATCHu DVOU ruznych clenu dokonci cleanup obou.
 test("concurrent saves of two different members both complete their cleanup", async () => {
     const firstPatch = createDeferred()
     const secondPatch = createDeferred()

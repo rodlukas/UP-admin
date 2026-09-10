@@ -252,9 +252,8 @@ const Groups: React.FC = () => {
                         )}
                     </>
                 }
-                // ActiveSwitcher zustava vzdy vykreslovany (i behem nacitani): jinak by
-                // se pri prvnim prepnuti na neaktivni (studeny fetch) na chvili ztratil
-                // a uzivatel by se nemel jak prepnout zpatky
+                // ActiveSwitcher zůstává vždy vykreslovaný i během načítání — stejný důvod
+                // jako na Klientech (Clients.tsx)
                 buttons={
                     <>
                         <ActiveSwitcher onChange={refresh} active={active} source="groups_page" />
@@ -265,8 +264,7 @@ const Groups: React.FC = () => {
 
             {active && !groupsActiveContext.isLoading && staleGroups.length > 0 && (
                 <Alert
-                    // pozadi i ramecek dodava `staleAlert` (statusNoticeWarning) — Mantine
-                    // `light` varianta by pres nej nakreslila svou sytou zlutou plochu
+                    // pozadi i ramecek dodava `staleAlert` — stejny duvod jako na Klientech
                     variant="transparent"
                     color="yellow"
                     className={styles.staleAlert}>
@@ -278,9 +276,7 @@ const Groups: React.FC = () => {
                                 {DAYS_WITHOUT_LECTURE_WARNING} dní.
                             </span>
                         </Group>
-                        {/* `default` varianta: sytě žluté tlačítko by na žlutém notice bylo
-                            nejhlasitější věcí stránky. Neutrální obrys drží akci čitelnou
-                            a nepotřebuje `autoContrast` (neřeší se bílý text na žluté). */}
+                        {/* `default` varianta: stejný důvod jako na Klientech (Clients.tsx) */}
                         <Button
                             variant="default"
                             disabled={deactivateGroups.isPending}

@@ -351,7 +351,6 @@ def wait_modal_closed(driver):
 
 
 def _find_group_with_activity(activity, context, name, open_card=False, validate_context=False):
-    # nastav pozadovanou ne/aktivitu (stejne jako driv delal get_groups)
     toggle_switcher_active(context.browser, activity)
     wait_loading_cycle(context.browser)
 
@@ -408,7 +407,6 @@ def find_group(context, name, open_card=False, validate_context=False):
 
 
 def _find_client_with_activity(activity, context, full_name, open_card, **data):
-    # nastav pozadovanou ne/aktivitu (stejne jako driv delal get_clients)
     toggle_switcher_active(context.browser, activity)
     wait_loading_cycle(context.browser)
 

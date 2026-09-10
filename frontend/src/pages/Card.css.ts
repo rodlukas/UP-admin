@@ -126,7 +126,6 @@ export const summaryValue = style({
     color: vars.text.primary,
 })
 
-/** Záložky karty — odsazení od panelu s klíčovými fakty nad nimi. */
 export const tabs = style({
     marginTop: "0.5rem",
 })
