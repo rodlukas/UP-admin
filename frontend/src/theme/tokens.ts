@@ -122,6 +122,15 @@ export const vars = {
         /** Hover a aktivní položka v pruhu — průsvitná bílá funguje na obou odstínech pruhu. */
         railHover: "rgb(255 255 255 / 0.09)",
         railActive: "rgb(255 255 255 / 0.13)",
+        /**
+         * Podbarvení hlavičky dnešního dne v diáři/přehledu (`dashboardDayDateToday`
+         * v DashboardDay.css.ts). Sytější než `statusSoft.info.bg` — ten je navržený
+         * jako doplněk k rámečku a accent lince (viz komentář u `statusSoft` níže),
+         * tady žádná z nich není, takže rozpoznatelnost musí unést podbarvení samo.
+         * Text na něm zůstává `text.heading`: light 12.25:1 na #bfdbfe, dark 8.75:1
+         * na namíchané ploše (obojí nad WCAG AAA).
+         */
+        today: "light-dark(#bfdbfe, color-mix(in srgb, var(--mantine-color-blue-6) 30%, var(--mantine-color-dark-7)))",
     },
     text: {
         /** #16233a = 15.72:1 na bílé ploše; dark-0 = 13.46:1 na tmavé ploše. */

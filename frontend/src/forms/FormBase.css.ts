@@ -53,7 +53,14 @@ globalStyle(".mantine-Modal-content:has(form[data-qa^='form_']) form[data-qa^='f
     minHeight: 0,
 })
 
-globalStyle("form[data-qa^='form_'] .mantine-Modal-title", {
+/**
+ * Nadpis modalu. Neomezeno na `form[data-qa^='form_']` jako pravidla výše — ta se váží
+ * na rozvržení skutečného formuláře (sticky header/body v rámci `<form>`), tohle je čistě
+ * typografie a musí platit i pro modaly bez `<form>` (např. krok výběru klienta/skupiny
+ * v `ModalLecturesWizard`), jinak jim zůstane Mantine výchozí nadpis — stejné řezy jako
+ * běžný text, nerozeznatelný od obsahu.
+ */
+globalStyle(".mantine-Modal-title", {
     lineHeight: 1.35,
     letterSpacing: "-0.015em",
     color: vars.text.primary,

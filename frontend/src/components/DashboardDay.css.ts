@@ -32,7 +32,7 @@ export const dashboardDayDate = style({
  * neurčovala jen barva (WCAG 1.4.1).
  */
 export const dashboardDayDateToday = style({
-    backgroundColor: vars.statusSoft.info.bg,
+    backgroundColor: vars.bg.today,
     fontWeight: 700,
 })
 
