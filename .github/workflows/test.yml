@@ -58,28 +58,20 @@ jobs:
                   pipenv install --deploy --dev
 
             # spust audit frontendu
-            # DOCASNE VYPNUTO kvuli rychlemu testovani deploye, vrat pred mergem
             - name: 🔍 JS - run audit
-              if: false
               continue-on-error: true
               run: npm run frontend:audit
 
             # otestuj frontend (typy, linting, jest)
-            # DOCASNE VYPNUTO kvuli rychlemu testovani deploye, vrat pred mergem
             - name: 🔍 JS - run tests
-              if: false
               run: npm run frontend:test
 
             # zkontroluj formatovani v backendu pres black (rychla kontrola, spustit pred pomalejsim mypy)
-            # DOCASNE VYPNUTO kvuli rychlemu testovani deploye, vrat pred mergem
             - name: 🔍 Python - check formatting (Black)
-              if: false
               run: pipenv run black --check .
 
             # otestuj typy v backendu pres mypy
-            # DOCASNE VYPNUTO kvuli rychlemu testovani deploye, vrat pred mergem
             - name: 🔍 Python - run tests
-              if: false
               run: pipenv run mypy .
 
             # PostgreSQL
@@ -94,9 +86,7 @@ jobs:
               run: ./scripts/shell/release_tasks.sh
 
             # spust Django deployment checklist
-            # DOCASNE VYPNUTO kvuli rychlemu testovani deploye, vrat pred mergem
             - name: 🔍 Python - run Django deployment checklist
-              if: false
               env:
                   MANUAL_PRODUCTION: False
               run: pipenv run python manage.py check --deploy --fail-level WARNING
@@ -114,23 +104,17 @@ jobs:
                   docker exec postgresql_cz pg_config --version
 
             # proved testy, spocitej pokryti kodu a posli ho do cloudu
-            # DOCASNE VYPNUTO (cely blok az po upload coverage) kvuli rychlemu testovani deploye, vrat pred mergem
             - name: 🔍 Python - run tests
-              if: false
               run: pipenv run coverage run -a manage.py test
             - name: 🔍 Run E2E API tests
-              if: false
               run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
             - name: 🔍 Run E2E UI tests
-              if: false
               run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
             - name: 📝 Generate test reports
-              if: false
               run: |
                   pipenv run coverage report
                   pipenv run coverage xml
             - name: ☁️ Upload code coverage
-              if: false
               uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}

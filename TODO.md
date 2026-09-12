@@ -174,10 +174,11 @@ Fly proxy a kapacitou gunicornu.**
 
 - [Dockerfile:25](Dockerfile) → `--workers 2 --threads 4` = **8** souběžně
   zpracovávaných requestů na stroj.
-- [fly.test.toml:38-41](fly.test.toml) i [fly.prod.toml:38-41](fly.prod.toml) →
-  `[services.concurrency]` s `hard_limit = 25`, `soft_limit = 20` – Fly proxy tedy
-  pustí na ten samý stroj až 25 souběžných spojení, tj. **3× víc, než gunicorn zvládne
-  rozpracovat**.
+- `fly.test.toml` i `fly.prod.toml` měly (v době diagnózy) `[services.concurrency]`
+  s `hard_limit = 25`, `soft_limit = 20` – Fly proxy tedy pouštěla na ten samý stroj až
+  25 souběžných spojení, tj. **3× víc, než gunicorn zvládal rozpracovat**. Aktuální stav
+  po opravě je [fly.test.toml:42-44](fly.test.toml#L42-L44) a
+  [fly.prod.toml:42-44](fly.prod.toml#L42-L44).
 
 Přebytek se nefrontuje u proxy (ten už si myslí, že je pod soft_limitem), ale visí
 uvnitř gunicornu na blokujícím I/O – přesně scénář z bodu výše se slow-client DoS.
@@ -186,14 +187,22 @@ těch 8 slotů; zbytek requestů pak buď narazí na 60s timeout (`--timeout 60`
 Dockerfile), nebo nakumulovaná paměť spustí OOM killer. To se navenek projevuje přesně
 jako hlášeno – „nejde se přihlásit", „nenačte se web", nedeterministicky.
 
-**`fly.prod.toml` má identickou konfiguraci** (256 MB, hard_limit 25/soft_limit 20) –
-není důvod čekat, že se produkce chová jinak, jen se to možná zatím nepozorovalo /
-nehlásilo.
+**Rychlá, bezplatná oprava ✅ nasazena (12. 9. 2026), neověřena pod zátěží:**
+`hard_limit`/`soft_limit` v obou `fly*.toml` snížen na reálnou kapacitu gunicornu (8/6) –
+proxy pak přebytek buď zafrontuje, nebo rovnou odmítne, místo aby se hromadil uvnitř appky
+a vytáhl ji do timeoutu/OOM.
 
-**Rychlá, bezplatná oprava:** snížit `hard_limit`/`soft_limit` v obou `fly*.toml` na
-reálnou kapacitu gunicornu (~8, s rezervou třeba 8/6) – proxy pak přebytek buď zafrontuje,
-nebo rovnou odmítne, místo aby se hromadil uvnitř appky a vytáhl ji do timeoutu/OOM.
-Nic to nestojí, je to čistě konfigurační změna.
+**Doplňkově ✅ nasazeno (12. 9. 2026), neověřeno pod zátěží:** přidán `[[statics]]` blok –
+nejdřív na `fly.test.toml`, teď zrcadlený i do `fly.prod.toml`. Fly proxy pak servíruje
+`/static/*` přímo z `guest_path` (`/usr/src/up-admin/staticfiles`, shodné se `STATIC_ROOT`
+v `up/settings/base.py`), takže požadavky na statiku už vůbec nezabírají žádný z gunicorn
+workerů/vláken – ke konfliktu z diagnózy výše tak dochází jen mezi requesty na dynamické
+view, ne ještě navíc se statickými assety stránky. WhiteNoise middleware zůstává v Django
+nakonfigurované (lokální běh bez Fly proxy), na testu a produkci ho ale `[[statics]]`
+obchází.
+
+Obě změny zatím nejsou ověřené pod reálnou zátěží (na rozdíl od bodu 1) – další krok je
+zopakovat pozorování z `fly logs` po nasazení a potvrdit, že OOM/timeout eventy ustaly.
 
 **Navýšení `memory_mb` není k dispozici** – v rámci současného Fly.io billingu je
 256 MB strop, škálovat výš nejde. Jediná cesta k větší rezervě je tedy bod 1
