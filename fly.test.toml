@@ -36,8 +36,8 @@ port = 80
 handlers = ["tls", "http"]
 port = 443
 [services.concurrency]
-hard_limit = 25
-soft_limit = 20
+hard_limit = 8
+soft_limit = 6
 type = "connections"
 
 [[services.tcp_checks]]
