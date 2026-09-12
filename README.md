@@ -43,7 +43,8 @@
 
 ## Table of Contents
 
-- [Basic description of the app](#basic-description-of-the-app)
+- [Table of Contents](#table-of-contents)
+- [Basic description of this app](#basic-description-of-this-app)
     - [Key features](#key-features)
     - [Used technologies](#used-technologies)
         - [Backend](#backend)
@@ -52,11 +53,26 @@
 - [Repository structure](#repository-structure)
 - [Run the app](#run-the-app)
     - [Requirements](#requirements)
-    - [Installation & Run](#installation-&-run)
+    - [Installation \& Run](#installation--run)
     - [Advanced installation without Docker Compose](#advanced-installation-without-docker-compose)
+    - [Run](#run)
     - [Testing](#testing)
 - [Screenshots](#screenshots)
+    - [Diary](#diary)
+    - [Dashboard (main page)](#dashboard-main-page)
+    - [Client / Group card](#client--group-card)
+    - [Applications for courses](#applications-for-courses)
+    - [Settings](#settings)
+    - [Search](#search)
+    - [Lists](#lists)
+    - [Forms](#forms)
+        - [Edit group lecture](#edit-group-lecture)
+        - [Edit group](#edit-group)
 - [History](#history)
+    - [CI](#ci)
+    - [Code analysis](#code-analysis)
+    - [PaaS](#paas)
+    - [Containerization](#containerization)
 - [License](#license)
 
 ## Basic description of this app
@@ -114,7 +130,7 @@ database.
 Includes all the logic and exposes a **REST API** for a client, built on these technologies:
 
 - [Python 3.12](https://www.python.org/),
-- [Django 5](https://www.djangoproject.com/),
+- [Django 6](https://www.djangoproject.com/),
 - [Django REST framework 3](https://www.django-rest-framework.org/),
 - [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
 - [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
