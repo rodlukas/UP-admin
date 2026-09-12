@@ -11,10 +11,18 @@ export function parseDjangoError(error: AxiosError): null | Record<string, any> 
         // rozparsuj JSON objekt
         let json = JSON.parse(result)
         // pokud se pridava (neupdatuje) a chyba se vztahuje ke konkretnimu field
-        // (napr. pridavani vice preplacenych lekci jednotlivci), vraci se pole,
-        // vsechny prvky jsou stejne, vezmi z nej tedy prvni prvek s info o chybe
+        // (napr. pridavani vice preplacenych lekci jednotlivci), DRF vraci chybu
+        // pro kazdou polozku - od DRF 3.18 objekt indexovany poradim ("0", "1", ...
+        // jen pro nevalidni polozky), driv pole (i s prazdnymi objekty za validni
+        // polozky) - vsechny prvky jsou stejne, vezmi z nej tedy prvni prvek s info
+        // o chybe
         if (Array.isArray(json)) {
             json = json[0]
+        } else if (
+            Object.keys(json).length > 0 &&
+            Object.keys(json).every((key) => /^\d+$/.test(key))
+        ) {
+            json = json[Object.keys(json)[0]]
         }
         // obecna chyba nevztazena ke konkretnimu field,
         // nebo chyba muze obsahovat detailni informace (napr. metoda PUT neni povolena)
