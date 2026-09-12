@@ -19,20 +19,34 @@ Naměřené limity app stroje (`shared-cpu-1x:256MB`), ze kterých to vychází:
 Čísla se čtou přes `fly ssh console -a uspesnyprvnacek`; `ps` v slim image není,
 takže RSS jde z `/proc/[pid]/status`.
 
-## 1. Gunicorn `--preload`
+## 1. Gunicorn `--preload` ✅ hotovo a ověřeno (12. 9. 2026)
 
 Největší dostupná výhra v paměti – odhadem 30–40 MB. Bez preloadu má každý worker
 vlastní kopii kódu Djanga; s ním se naimportuje jednou v masteru a forkne, takže se
 kódové stránky sdílejí přes copy-on-write. Ušetřená paměť by šla do page cache, které
 je teď 27 MB, a zrychlila by servírování statiky (jde přes WhiteNoise ve stejném procesu).
 
-**Proč to není hotové:** `up/settings/production.py` volá `sentry_sdk.init()` při importu.
-S `--preload` to proběhne v masteru **před** forkem a vlákna se přes fork nedědí, takže
-je potřeba ověřit, že sentry-sdk 2.59 si background transport po forku korektně obnoví
-(má na to `os.register_at_fork`, ale chce to doložit, ne předpokládat).
+Fork-safety ověřena předem: žádný `AppConfig.ready()` hook, žádný scheduler, žádné
+eager DB/cache spojení při importu. `_bank_executor` (`ThreadPoolExecutor`) nespouští
+vlákna při konstrukci, jen lazy při prvním requestu. `sentry_sdk.init()`
+(`up/settings/production.py`, verze 2.69.1) má explicitní per-pid check-and-restart
+na background workeru/session flusheru (`worker.py`, `client.py`) – bezpečné před forkem.
 
-**Jak to ověřit:** změřit RSS workerů před a po (`/proc/[pid]/status`) a potvrdit, že se
-z aplikace pořád propisují eventy do Sentry.
+**Nasazeno do `Dockerfile` (`--preload` u gunicorn CMD) a změřeno na
+`uspesnyprvnacek-test`:**
+
+- `mem_used` kleslo o ~30 MB (přesně odhad výše)
+- PSI memory pressure spadl z `full avg300=38%` na `full avg300=0%` – appka předtím
+  trávila třetinu času blokovaná na memory reclaimu, teď vůbec
+- crash loop (WORKER TIMEOUT → SIGKILL v cyklu ob pár minut, viz bod 4) přestal
+- master RSS vzrostl z ~21–26 MB na ~56 MB (drží sdílenou kopii importu), workery
+  zůstaly na podobné velikosti (~74–76 MB) – to je čekané, sdílí se přes workery,
+  ne že by se zmenšily jednotlivě
+
+Mimochodem se potvrdilo i vedlejší zjištění: bisekce verzí (`gunicorn` 26.2.0→25.3.0,
+případně dál Python 3.14→3.12) by tohle nevyřešila – zabitý worker měl v době OOM jen
+běžných ~70 MB RSS, není to o nafouklém procesu, ale o součtu přes všechny procesy na
+stroji. `--preload` je jediná ze zvažovaných změn, co ten součet skutečně snižuje.
 
 ## 2. Databáze na legacy Postgresu
 
@@ -119,16 +133,27 @@ půjde o ještě větší skok (14 → 18), takže automatický import zkoušet 
 7. Starou `uspesnyprvnacek-db` nech běžet ještě pár dní jako rollback pojistku, pak
    ručně (nikdy neautomatizovat) `fly postgres destroy uspesnyprvnacek-db`.
 
-## 3. Cache Fio transakcí je per-proces
+## 3. Cache Fio transakcí je per-proces ✅ opraveno (12. 9. 2026)
 
-`CACHES` je `LocMemCache`, takže `FIO_CACHE_TIMEOUT_SECONDS = 60` platí zvlášť v každém
-procesu. Fio se proto dotazuje častěji, než by muselo, a snadno narazí na svůj limit
-intervalu – `409 překročení intervalu pro dotazování` je kvůli tomu v `FIO_API_ERRORS`
-v [api/services.py](api/services.py).
+`CACHES` byla `LocMemCache`, takže `FIO_CACHE_TIMEOUT_SECONDS = 60` platila zvlášť
+v každém procesu. Fio se proto dotazovalo častěji, než by muselo, a snadno narazilo
+na svůj limit intervalu – `409 překročení intervalu pro dotazování` je kvůli tomu
+v `FIO_API_ERRORS` v [api/services.py](api/services.py). V praxi se to projevilo jako
+"Data se nepodařilo stáhnout – překročení intervalu pro dotazování." při opakovaném
+refreshi přehledu (souběh dvou workerů, každý s vlastní 60s cache).
 
-S `gthread` je to méně bolestivé, protože vlákna jednoho workeru cache sdílejí, ale
-mezi dvěma worker procesy pořád ne. Úplné řešení je cache table v DB
-(`django.core.cache.backends.db.DatabaseCache` + `manage.py createcachetable`).
+S `gthread` to bylo méně bolestivé, protože vlákna jednoho workeru cache sdílejí, ale
+mezi dvěma worker procesy pořád ne. `--preload` (bod 1) na tomhle nic nemění – cache
+dict je po forku sice zdílený přes copy-on-write, ale první zápis v kterémkoliv
+workeru ho oddělí (COW), takže zůstávají 2 nezávislé cache stejně jako předtím.
+
+**Oprava:** `CACHES` v `up/settings/production.py` přepnuto na
+`django.core.cache.backends.db.DatabaseCache` (sdílené přes DB, tedy mezi všemi
+worker procesy i mezi deployi). Tabulku `django_cache` zakládá
+`manage.py createcachetable` – idempotentní (viz zdrojak Django `createcachetable.py`:
+kontroluje existenci tabulky přes `connection.introspection.table_names()` a beze
+změny přeskočí, takže je bezpečné pouštět ho při každém release), přidáno do
+`scripts/shell/release_tasks.sh` (CI) a `release_command` v obou `fly*.toml` (deploy).
 
 ## 4. Appka na testu (a s velkou pravděpodobností i na prod) pořád padá pod souběžnými requesty
 

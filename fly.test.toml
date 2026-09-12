@@ -12,7 +12,7 @@ primary_region = "arn"
 auto_rollback = true
 
 [deploy]
-release_command = "python manage.py migrate --noinput"
+release_command = "sh -c 'python manage.py migrate --noinput && python manage.py createcachetable'"
 
 [env]
 BANK_ACTIVE = "True"

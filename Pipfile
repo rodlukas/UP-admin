@@ -4,12 +4,12 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-django = "~=6.0.8"
+django = "~=6.1.1"
 django-environ = "~=0.14.0"
 django-filter = "~=26.1.0"
 djangorestframework = "~=3.18.1"
 djangorestframework-simplejwt = "~=5.5.1"
-gunicorn = "~=25.3.0"
+gunicorn = "~=26.2.0"
 "psycopg2-binary" = "~=2.9.13"
 requests = "~=2.34.2"
 sentry-sdk = {extras = ["django"], version = "~=2.69.1"}
@@ -20,7 +20,7 @@ drf-spectacular = "~=0.30.0"
 
 [dev-packages]
 vulture = "~=2.16.0"
-behave-django = "~=1.9.0"
+behave-django = "~=2.0.0"
 black = "~=26.5.1"
 coverage = "~=7.16.0"
 django-debug-toolbar = "~=6.3.0"
