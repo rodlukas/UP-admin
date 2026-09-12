@@ -170,7 +170,7 @@ reálnou kapacitu gunicornu (~8, s rezervou třeba 8/6) – proxy pak přebytek 
 nebo rovnou odmítne, místo aby se hromadil uvnitř appky a vytáhl ji do timeoutu/OOM.
 Nic to nestojí, je to čistě konfigurační změna.
 
-**Robustnější oprava:** buď navýšit `memory_mb` (256 → 512) alespoň na testu, nebo
-konečně vyřešit bod 1 (`--preload`) – obojí zvětší reálnou rezervu, ale `--preload`
-vyžaduje napřed ověřit chování `sentry_sdk` po forku (viz bod 1), navýšení paměti je
-okamžité a bez rizika, jen stojí navíc.
+**Navýšení `memory_mb` není k dispozici** – v rámci současného Fly.io billingu je
+256 MB strop, škálovat výš nejde. Jediná cesta k větší rezervě je tedy bod 1
+(`--preload`), který ale napřed vyžaduje ověřit chování `sentry_sdk` po forku
+(viz bod 1) – bez placeného navýšení není zkratka.
