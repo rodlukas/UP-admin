@@ -43,7 +43,8 @@
 
 ## Obsah
 
-- [Základní informace o aplikaci](#základní-informace-o-aplikaci)
+- [Obsah](#obsah)
+- [Základní informace o této aplikaci](#základní-informace-o-této-aplikaci)
     - [Klíčové funkce](#klíčové-funkce)
     - [Použité technologie](#použité-technologie)
         - [Backend](#backend)
@@ -52,11 +53,26 @@
 - [Struktura repozitáře](#struktura-repozitáře)
 - [Spuštění aplikace](#spuštění-aplikace)
     - [Požadavky](#požadavky)
-    - [Instalace & spuštění](#instalace-&-spuštění)
+    - [Instalace \& spuštění](#instalace--spuštění)
     - [Pokročilá instalace bez Docker Compose](#pokročilá-instalace-bez-docker-compose)
+    - [Spuštění](#spuštění)
     - [Testování](#testování)
 - [Screenshoty](#screenshoty)
+    - [Diář](#diář)
+    - [Přehled (hlavní stránka)](#přehled-hlavní-stránka)
+    - [Karta klienta / skupiny](#karta-klienta--skupiny)
+    - [Zájemci o kurzy](#zájemci-o-kurzy)
+    - [Nastavení](#nastavení)
+    - [Vyhledávání](#vyhledávání)
+    - [Výpisy](#výpisy)
+    - [Formuláře](#formuláře)
+        - [Úprava skupinové lekce](#úprava-skupinové-lekce)
+        - [Úprava údajů o skupině](#úprava-údajů-o-skupině)
 - [Historie](#historie)
+    - [CI](#ci)
+    - [Analýza kódu](#analýza-kódu)
+    - [PaaS](#paas)
+    - [Kontejnerizace](#kontejnerizace)
 - [Licence](#licence)
 
 ## Základní informace o této aplikaci
@@ -109,7 +125,7 @@ Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **R
 Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
 
 - [Python 3.12](https://www.python.org/),
-- [Django 5](https://www.djangoproject.com/),
+- [Django 6](https://www.djangoproject.com/),
 - [Django REST framework 3](https://www.django-rest-framework.org/),
 - [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
 - [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
