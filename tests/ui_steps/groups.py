@@ -44,9 +44,7 @@ def insert_to_form(context, verify_current_data=False):
         form_group = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=form_group]")
         members_field_values = [
             element.text
-            for element in form_group.find_elements(
-                By.CSS_SELECTOR, "[data-qa=multiselect_pill]"
-            )
+            for element in form_group.find_elements(By.CSS_SELECTOR, "[data-qa=multiselect_pill]")
         ]
         # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
         course_field_value = course_field.get_attribute("value")
