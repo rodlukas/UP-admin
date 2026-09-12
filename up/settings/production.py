@@ -17,10 +17,23 @@ ALLOWED_HOSTS = [
 
 if SENTRY_DSN:
     sentry_sdk.init(
-        environment=ENVIRONMENT, integrations=[DjangoIntegration()], release="%GIT_COMMIT"
+        environment=ENVIRONMENT,
+        integrations=[DjangoIntegration()],
+        release="%GIT_COMMIT",
     )
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# staticfiles backend musi zustat manifest-based, jinak by {% static %} generoval
+# nehashovane URL bez cache bustingu (manifest vznika pri collectstatic,
+# viz scripts/shell/release_tasks.sh)
+STORAGES = {
+    # "default" zachovava vychozi Django file storage (base.py zadne STORAGES nedefinuje)
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Django konstanty pro bezpecnost
 SESSION_COOKIE_SECURE = True

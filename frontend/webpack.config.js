@@ -46,7 +46,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(ts|js)x?$/,
-                exclude: [/node_modules/, /\.css\.ts$/],
+                exclude: /node_modules/,
                 loader: "babel-loader",
                 options: {
                     cacheDirectory: true,
@@ -71,9 +71,14 @@ module.exports = {
                 ],
             },
             {
-                // Globální CSS - pro běžné .css soubory (Bootstrap, react-toastify, atd.)
+                // Globální CSS z node_modules (Mantine, FontAwesome...), importované jen kvůli
+                // vedlejšímu efektu (`import "@mantine/spotlight/styles.css"` v index.tsx nic
+                // neexportuje). Bez sideEffects: true by produkční tree-shaking mohl takový
+                // import tiše zahodit u balíčků, které mají v package.json "sideEffects": false
+                // (@mantine/spotlight ho tak má) — styl by v buildu zmizel, v devu ne.
                 test: /\.css$/i,
                 exclude: /\.vanilla\.css$/i,
+                sideEffects: true,
                 use: [
                     isProduction ? MiniCssExtractPlugin.loader : "style-loader",
                     {
@@ -147,7 +152,21 @@ module.exports = {
         allowedHosts: ["0.0.0.0"],
         compress: true,
         client: {
-            overlay: true,
+            overlay: {
+                errors: true,
+                warnings: false,
+                // Filtrovat benignni "ResizeObserver loop ..." warning, ktery Chrome/Firefox emituji
+                // pri rychlych layout zmenach (typicke pro Mantine popovery/modals/dropdowny pouzivajici
+                // ResizeObserver vnitrne). Neni to skutecna chyba, aplikace funguje korektne.
+                runtimeErrors: (error) => {
+                    const message = error?.message || ""
+                    return (
+                        !message.includes(
+                            "ResizeObserver loop completed with undelivered notifications",
+                        ) && !message.includes("ResizeObserver loop limit exceeded")
+                    )
+                },
+            },
         },
         devMiddleware: {
             index: htmlFile,

@@ -1,6 +1,49 @@
 /** ULR adresa API. */
 export const API_URL = "/api/v1/"
 
+/**
+ * localStorage klíč pro uložené barevné schéma (Mantine `localStorageColorSchemeManager`).
+ * POZOR: stejný literál musí používat i FOUC init skript `admin/static/admin/color-scheme-init.js`,
+ * který schéma čte ještě před startem Reactu (je to plain ES5 skript a nemůže tento modul importovat).
+ * Jde o explicitní override – Mantine má jinak výchozí klíč „mantine-color-scheme-value".
+ */
+export const COLOR_SCHEME_STORAGE_KEY = "mantine-color-scheme"
+
+/** localStorage klíč pro naposledy otevřené karty, které nabízí paleta příkazů (⌘K). */
+export const RECENT_RECORDS_STORAGE_KEY = "upadmin-recent-records"
+
+/**
+ * Šířka inkoustového pruhu navigace. Pruh je vždy takhle široký — nesbaluje se.
+ * Žije tady, a ne v `.css.ts`: ten soubor prochází child kompilací vanilla-extractu
+ * a na export hodnot pro `.tsx` se nehodí.
+ */
+export const RAIL_WIDTH_LABELS = "12rem"
+
+/**
+ * Levý okraj sloupce ikon, měřeno od hrany pruhu. Drží ho značka i položky navigace,
+ * takže ikony a text stojí na jedné svislé ose.
+ *
+ * Schválně v `rem`, ne `em` — značka má jinou velikost písma než položky a v `em`
+ * by jí vyšel jiný sloupec.
+ */
+export const RAIL_ICON_INSET = "1.5rem"
+
+/**
+ * Breakpoint, pod kterým se inkoustový pruh chová jako mobilní drawer (viz `Main.tsx`,
+ * `navbar.breakpoint`). JEDINÝ zdroj pravdy pro tuhle hranici — `Main.tsx` ho posílá
+ * přímo do `AppShell`u (typ `breakpoint` u Mantine přijímá i syrový CSS rozměr, ne jen
+ * klíč `theme.breakpoints`, viz `AppShell.types.d.ts`), `Main.css.ts` ho použije
+ * v `@media` pro `plane` a `Main.tsx`'s vlastní `useMediaQuery` z něj postaví JS dotaz.
+ *
+ * Mantine počítá DVĚ různé mezní hodnoty podle stavu drawer (otevřený: přesně
+ * breakpoint, zavřený: breakpoint − 0.1px, viz `assign-navbar-variables`), takže žádná
+ * ručně vypsaná JS konstanta nemůže sedět na obojí. Řešení není napodobit Mantine výpočet
+ * (interní detail, může se změnit mezi verzemi), ale sdílet TUTO hodnotu jako breakpoint
+ * přímo — JS dotaz pak přesně sedí na „otevřeném" stavu Mantine a od „zavřeného" se liší
+ * jen o 0.1px (neprakticky malé okno).
+ */
+export const NAVBAR_BREAKPOINT = "62em"
+
 /** Texty notifikací. */
 export enum NOTIFY_TEXT {
     ERROR = "Chyba při provádění požadavku",
@@ -26,6 +69,11 @@ export enum TEXTS {
     WARNING_ACTIVE_GROUP_WITH_INACTIVE_CLIENTS = "Ve skupině jsou neaktivní klienti – přidáním nové lekce se změní na aktivní.",
     WARNING_STALE_CLIENT = "Klient je aktivní, ale naposledy měl lekci před více než 60 dny. Zvažte přesunutí do neaktivních.",
     WARNING_STALE_GROUP = "Skupina je aktivní, ale naposledy měla lekci před více než 60 dny. Zvažte přesunutí do neaktivních.",
+    WARNING_NO_ATTENDANCE_STATES = "Nejsou nastaveny žádné stavy účasti — lekci nelze uložit. Přidejte alespoň jeden stav v Nastavení.",
+    ERROR_ATTENDANCE_STATES_LOAD = "Nepodařilo se načíst stavy účasti — lekci nelze uložit. Zkuste to prosím znovu.",
+    ERROR_ATTENDANCE_STATES_LOAD_EDIT = "Nepodařilo se načíst stavy účasti — u členů je teď nelze změnit. Ostatní údaje lekce uložit jdou.",
+    ERROR_COURSES_LOAD = "Nepodařilo se načíst kurzy — zkuste to prosím znovu.",
+    ERROR_CLIENTS_LOAD = "Nepodařilo se načíst klienty — nabídka členů je neúplná. Zkuste to prosím znovu.",
 }
 
 /** Počet dní bez lekce, po kterých se aktivní klient/skupina považuje za „stale" a zobrazí se varování. */

@@ -50,12 +50,22 @@ export type LectureTypeWithDate = LectureType & {
     start: string
 }
 
+/**
+ * Pořadové číslo lekce/účasti, jak ho vrací API — MŮŽE to být i varovná věta
+ * (`LectureHelpers.DEFAULT_STATE_MISSING` na backendu), pokud v nastavení chybí výchozí
+ * stav účasti a serializer nemá z čeho pořadí spočítat. Konzumenti (`LectureNumber`,
+ * `Attendances`) na to musí brát ohled a hodnotu nesmí bez rozlišení formátovat jako číslo.
+ */
+export type LectureNumberOrWarning = number | string
+
 /** Lekce (GET) - předplacená i nepředplacená. */
 export type LectureType = Model & {
     course: CourseType
     start: string | null
     group: null | GroupType
-    number: number
+    // `null` pro předplacenou lekci (`start === null`) — `get_number` na backendu tam
+    // číslo nemá z čeho spočítat.
+    number: LectureNumberOrWarning | null
     canceled: boolean
     duration: number
     attendances: AttendanceType[]
@@ -67,7 +77,7 @@ export type AttendanceType = Model & {
     remind_pay: boolean
     note: string
     paid: boolean
-    number?: number
+    number?: LectureNumberOrWarning
     // !! bez vnoreni
     attendancestate: AttendanceStateType["id"]
 }

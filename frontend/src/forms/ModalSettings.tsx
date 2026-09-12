@@ -1,6 +1,6 @@
 import * as React from "react"
-import { Modal } from "reactstrap"
 
+import BaseModal from "../components/BaseModal"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import { EDIT_TYPE } from "../global/constants"
@@ -27,7 +27,6 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE }) => {
         <>
             {currentObject ? (
                 <EditButton
-                    contentId={`${typeQa}${currentObject.id}`}
                     content={`Upravit ${typeButtons}`}
                     onClick={toggleModal}
                     data-qa={`button_edit_${typeQa}`}
@@ -39,11 +38,12 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE }) => {
                     data-qa={`button_add_${typeQa}`}
                 />
             )}
-            <Modal
-                isOpen={isModal}
-                toggle={toggleModal}
-                autoFocus={false}
-                onClosed={processOnModalClose}>
+            <BaseModal
+                opened={isModal}
+                onClose={toggleModal}
+                withCloseButton={false}
+                size="lg"
+                transitionProps={{ onExited: processOnModalClose }}>
                 <FormSettings
                     object={
                         currentObject ??
@@ -53,7 +53,7 @@ const ModalSettings: React.FC<Props> = ({ currentObject, TYPE }) => {
                     funcForceClose={toggleModalForce}
                     setFormDirty={setFormDirty}
                 />
-            </Modal>
+            </BaseModal>
         </>
     )
 }

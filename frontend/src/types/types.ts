@@ -49,3 +49,16 @@ export declare type fArgReturn = (...args: any[]) => any
 
 /** Funkce bez bližšího určení parametrů a návratové hodnoty. */
 export declare type fFunction = fEmptyVoid | fEmptyReturn | fArgVoid | fArgReturn
+
+/* *************************************************************************************************
+Typy pro tlačítka.
+************************************************************************************************* */
+
+/**
+ * `onClick` pro tlačítkové wrappery v `components/buttons/`. Mantine `ButtonProps`/
+ * `ActionIconProps` ho nemají — je součástí až polymorfního typu komponenty samotné,
+ * ne exportovaného props interface, který tyto wrappery přes `Omit<...>` staví.
+ */
+export type ClickableButtonProps = {
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+}

@@ -8,6 +8,11 @@ import LoginService from "../services/LoginService"
 export function useLogin() {
     return useMutation<TokenApiType, unknown, AuthorizationType>({
         mutationFn: (credentials) => LoginService.authenticate(credentials),
+        // Bez `"always"` TanStack Query mutaci offline POZASTAVI a promise z `mutateAsync`
+        // se nikdy neusadi (overeno sondou) — prihlasovaci tlacitko by tocilo donekonecna,
+        // globalni `mutationCache.onError` by se nespustil a uzivatel by se na vstupni
+        // obrazovce aplikace nedozvedel vubec nic. S "always" pokus rovnou selze.
+        networkMode: "always",
         onSuccess: (data) => {
             Token.save(data.token)
         },

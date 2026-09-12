@@ -1,22 +1,30 @@
 import { style } from "@vanilla-extract/css"
 
+import { surfaceFloating } from "../global/surfaces.css"
+import { vars } from "../theme/tokens"
+
 export const loginContainer = style({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: "2rem 1rem",
-    minHeight: "calc(100vh - 3.5rem)",
+    // přihlašovací stránka běží bez navbaru (Main.tsx ho renderuje jen pro přihlášené),
+    // karta se proto centruje přes celou výšku viewportu
+    minHeight: "100dvh",
 })
 
-export const loginCard = style({
-    border: "1px solid #e9ecef",
-    borderRadius: "0.375rem",
-    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
-    backgroundColor: "white",
-    padding: "2.5rem",
-    width: "100%",
-    maxWidth: "420px",
-})
+/**
+ * Přihlašovací karta je jediný prvek na stránce a stránka nemá navigaci ani obsah kolem —
+ * proto smí být skutečný plovoucí panel se stínem, i když je jinak v aplikaci obsah plochý.
+ */
+export const loginCard = style([
+    surfaceFloating,
+    {
+        padding: "2.25rem",
+        width: "100%",
+        maxWidth: "420px",
+    },
+])
 
 export const logoContainer = style({
     display: "flex",
@@ -34,17 +42,23 @@ export const logo = style({
 export const title = style({
     marginBottom: "0.5rem",
     textAlign: "center",
-    fontSize: "2rem",
+    color: vars.text.primary,
+    fontSize: "2.05rem",
     fontWeight: 700,
 })
 
 export const subtitle = style({
     marginBottom: "2rem",
     textAlign: "center",
-    fontSize: "0.95rem",
+    color: vars.text.muted,
+    fontSize: "1rem",
     fontWeight: 400,
 })
 
 export const submitButton = style({
     width: "100%",
+})
+
+export const fieldWrapper = style({
+    marginBottom: "1rem",
 })

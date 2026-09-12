@@ -1,8 +1,5 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import classNames from "classnames"
+import { Group, Title } from "@mantine/core"
 import * as React from "react"
-import { Col, Row } from "reactstrap"
 
 import * as styles from "./Heading.css"
 
@@ -11,35 +8,29 @@ type Props = {
     title: React.ReactNode
     /** Jakýkoliv uzel JSX tvořící tlačítka. */
     buttons?: React.ReactNode
-    /** Indikátor nadpisu v kontejneru fluid (pro jiné zarovnání). */
-    fluid?: boolean
-    /** Probíhá načítání dat na pozadí (true) - zobrazí spinner v nadpisu. */
-    isFetching?: boolean
+    /** HTML úroveň nadpisu (h1–h6). Defaultně 1; používej 2 u sekundárních sekcí. */
+    order?: 1 | 2 | 3 | 4 | 5 | 6
+    /**
+     * Vizuální velikost nezávislá na sémantické úrovni (`order`) — např. hlavní nadpis
+     * stránky (h1), který má vypadat jako h2, aby ladil se sousedními sekcemi.
+     */
+    size?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
 }
 
 /** Komponenta pro jednotné zobrazení nadpisu stránky napříč aplikací. */
-const Heading: React.FC<Props> = ({ title, buttons, fluid = false, isFetching = false }) => (
-    <Row className={classNames("justify-content-sm-end", "my-3", "align-items-center")}>
-        <Col md={6} className={classNames({ "text-md-end": fluid })}>
-            <h1 className="mb-0">
-                {title}
-                {isFetching && (
-                    <FontAwesomeIcon
-                        icon={faSpinnerThird}
-                        spin
-                        size="sm"
-                        className="ms-2 text-muted"
-                        data-qa="loading"
-                    />
-                )}
-            </h1>
-        </Col>
-        <Col
-            md={6}
-            className={classNames({ "text-md-start": fluid }, styles.headingButtons, "text-end")}>
-            {buttons}
-        </Col>
-    </Row>
+const Heading: React.FC<Props> = ({ title, buttons, order = 1, size }) => (
+    <Group
+        justify="space-between"
+        align="center"
+        mt="md"
+        mb="lg"
+        gap="sm"
+        className={buttons ? undefined : styles.headingWithoutButtons}>
+        <Title order={order} size={size} className={styles.headingTitle}>
+            {title}
+        </Title>
+        {buttons ? <div className={styles.headingButtons}>{buttons}</div> : null}
+    </Group>
 )
 
 export default Heading

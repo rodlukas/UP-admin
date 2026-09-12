@@ -1,3 +1,4 @@
+import concurrent.futures
 from datetime import datetime, timedelta
 from typing import Any, Dict, Iterable, Mapping, Tuple, cast
 
@@ -15,6 +16,20 @@ from admin.models import Attendance, Client, Group, Lecture
 # Cache klíč a timeout pro výpis bankovních transakcí.
 FIO_CACHE_KEY = "fio_transactions"
 FIO_CACHE_TIMEOUT_SECONDS = 60
+# (connect, read) timeout na Fio - POZOR: soucet neni strop na CELKOVOU dobu volani,
+# protoze read timeout se resetuje s kazdym prijatym bytem. Skutecny strop viz
+# FIO_WALL_CLOCK_TIMEOUT_SECONDS.
+FIO_TIMEOUT_SECONDS = (5, 15)
+
+# Skutecny wall-clock strop na CELE volani (viz `perform_api_request`) - gunicornu pod
+# gthread totiz "timeoutuje" jen cely proces, ne jedno zaseknute vlakno v nem. Musi byt
+# vetsi nez soucet FIO_TIMEOUT_SECONDS (connect a read se scitaji, ne prekryvaji).
+FIO_WALL_CLOCK_TIMEOUT_SECONDS = 30
+
+# Sdileny, ohraniceny pool (max_workers=2): per-request `ThreadPoolExecutor` by pri
+# zaseknutem volani zalozil vlastni, nikdy neuvolnene vlakno navic. Sdileny pool drzi
+# pocet soucasne zaseknutych vlaken na pevnem stropu.
+_bank_executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
 
 
 class Bank:
@@ -67,11 +82,16 @@ class Bank:
     def perform_api_request(self, url_secret: str) -> Tuple[dict, int]:
         """
         Provede požadavek na Fio API a zpracuje příchozí data nebo chybu.
+
+        Běží v `_bank_executor` s wall-clock stropem `FIO_WALL_CLOCK_TIMEOUT_SECONDS` (viz
+        komentáře u obou) - zaseknuté volání tak neobsadí vlákno gunicornu, jen jeden ze
+        sdílených slotů executoru.
         """
+        future = _bank_executor.submit(requests.get, url_secret, timeout=FIO_TIMEOUT_SECONDS)
         try:
-            input_data = requests.get(url_secret, timeout=25)
+            input_data = future.result(timeout=FIO_WALL_CLOCK_TIMEOUT_SECONDS)
             input_data.raise_for_status()
-        except requests.exceptions.Timeout:
+        except (concurrent.futures.TimeoutError, requests.exceptions.Timeout):
             return self.process_error(status.HTTP_503_SERVICE_UNAVAILABLE)
         except requests.exceptions.RequestException as e:
             status_code = getattr(e.response, "status_code", status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -212,7 +232,10 @@ class Statistics:
 
         # per-course doplnkove statistiky
         canceled_by_course = {
-            row["course__id"]: row
+            row["course__id"]: {
+                "total_all": row["total_all"],
+                "total_canceled": row["total_canceled"],
+            }
             for row in all_scoped_lectures.values("course__id").annotate(
                 total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
             )
@@ -323,7 +346,10 @@ class Statistics:
         by_year_course = None
         if year is None:
             canceled_by_year = {
-                row["start__year"]: row
+                row["start__year"]: {
+                    "total_all": row["total_all"],
+                    "total_canceled": row["total_canceled"],
+                }
                 for row in all_lectures.values("start__year").annotate(
                     total_all=Count("id"), total_canceled=Count("id", filter=Q(canceled=True))
                 )

@@ -55,4 +55,3 @@ class OpenAPIDocumentationTest(SimpleTestCase):
         response = self.client.get("/api/docs/", secure=True)
         self.assertEqual(response.status_code, 200)
         self.assertIn("text/html", response["Content-Type"])
-

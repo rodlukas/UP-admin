@@ -205,6 +205,7 @@ class GroupSerializer(ValidateCourseIdMixin, serializers.ModelSerializer[Group])
                     Membership.objects.create(client=client, group=instance, **membership_data)
         return instance
 
+
 class AttendanceStateSerializer(serializers.ModelSerializer[AttendanceState]):
     """
     Serializer stavu účasti klienta na lekci.
@@ -259,6 +260,7 @@ class ApplicationSerializer(ValidateCourseIdMixin, serializers.ModelSerializer[A
                 message="Zájem klienta o zadaný kurz je již evidován.",
             )  # OMEZENÍ O17
         ]
+
 
 class AttendanceSerializer(serializers.ModelSerializer[Attendance]):
     """

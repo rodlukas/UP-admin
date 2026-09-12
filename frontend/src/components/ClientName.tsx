@@ -17,12 +17,10 @@ type PlainClientNameProps = {
 
 const PlainClientName: React.FC<PlainClientNameProps> = ({ client, bold }) => (
     <span data-qa="client_name" data-gdpr>
-        <span className="fw-bold">{client.surname}</span>{" "}
+        <strong>{client.surname}</strong>{" "}
         <ConditionalWrapper
             condition={bold}
-            wrapper={(children): React.ReactNode => (
-                <span className="fw-bold">{children}</span>
-            )}>
+            wrapper={(children): React.ReactNode => <strong>{children}</strong>}>
             {client.firstname}
         </ConditionalWrapper>
     </span>
@@ -46,15 +44,15 @@ const ClientName: React.FC<ClientNameProps> = ({
     bold = false,
     className,
 }) => {
-    const PlainClientNameComponent: React.FC = () => <PlainClientName client={client} bold={bold} />
+    // element, ne komponenta definovana v renderu — ta by mela pri kazdem renderu novy typ,
+    // takze by React podstrom odmountoval a znovu namountoval
+    const plainName = <PlainClientName client={client} bold={bold} />
     return (
         <span className={className}>
             {"id" in client && link ? (
-                <Link to={`${APP_URLS.klienti.url}/${client.id}`}>
-                    <PlainClientNameComponent />
-                </Link>
+                <Link to={`${APP_URLS.klienti.url}/${client.id}`}>{plainName}</Link>
             ) : (
-                <PlainClientNameComponent />
+                plainName
             )}
         </span>
     )

@@ -33,7 +33,7 @@ class AttendanceState(models.Model):
         Má na starost OMEZENÍ O12.
         """
         if value:
-            # vyber ostatni polozky s attr=True a zamkni je (zabraneni race condition) - 
+            # vyber ostatni polozky s attr=True a zamkni je (zabraneni race condition) -
             # vola se uvnitr transaction.atomic() v save()
             qs = AttendanceState.objects.select_for_update().filter(**{attr: True})
             # krome self (pokud self existuje)

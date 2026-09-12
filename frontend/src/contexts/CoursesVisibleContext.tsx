@@ -7,8 +7,13 @@ import { CourseType } from "../types/models"
 type Context = {
     /** Probíhá první načítání dat (true) - data ještě nejsou načtená. */
     isLoading: boolean
-    /** Probíhá načítání dat na pozadí (true). */
-    isFetching: boolean
+    /**
+     * Data už někdy dorazila ze serveru — i prázdná. `false` znamená „zatím nenačteno"
+     * (první načítání, chyba, offline), takže prázdné pole v takovém případě NENÍ prázdný
+     * seznam. Na rozdíl od `status === "success"` přežije selhaný refetch: TanStack Query si při něm
+     * data z cache nechá, jen překlopí `status` na „error".
+     */
+    hasData: boolean
     /** Pole s viditelnými kurzy. */
     courses: CourseType[]
 }
@@ -20,14 +25,17 @@ const CoursesVisibleContext = React.createContext<CoursesVisibleContextInterface
 
 /** Provider kontextu s viditelnými kurzy. */
 export const CoursesVisibleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { data: courses = [], isLoading, isFetching } = useVisibleCourses()
+    const { data, isLoading } = useVisibleCourses()
+    // `useMemo`: bez nej je `data ?? []` pri kazdem renderu NOVE pole, takze memoizace
+    // u konzumentu (`data` memo v SelectCourse) nikdy netrefi
+    const courses = React.useMemo(() => data ?? [], [data])
 
     return (
         <CoursesVisibleContext.Provider
             value={{
                 courses,
                 isLoading,
-                isFetching,
+                hasData: data !== undefined,
             }}>
             {children}
         </CoursesVisibleContext.Provider>

@@ -1,69 +1,74 @@
+import { Alert, ColorInput } from "@mantine/core"
 import chroma from "chroma-js"
 import * as React from "react"
-import { ColorPicker as ReactColorPicker, type IColor } from "react-color-palette"
-import "react-color-palette/css"
-import { toast } from "react-toastify"
-import { Col, FormGroup, Label } from "reactstrap"
-
-import Notification from "../../components/Notification"
 
 import * as styles from "./ColorPicker.css"
 
-export const COLOR_PICKER_VALIDATION_TOAST_ID = "ColorPickerValidation"
+const COLOR_SWATCHES = [
+    "#868e96",
+    "#fa5252",
+    "#e64980",
+    "#be4bdb",
+    "#7950f2",
+    "#4c6ef5",
+    "#228be6",
+    "#15aabf",
+    "#12b886",
+    "#40c057",
+    "#82c91e",
+    "#fab005",
+]
 
 type Props = {
-    /** Barva kurzu. */
-    color: IColor
+    /** Aktuální barva kurzu jako hex řetězec. */
+    value: string
     /** Funkce, která se zavolá při změně barvy kurzu. */
-    onChange: (color: IColor) => void
+    onChange: (hex: string) => void
+    /** Chybová zpráva pod polem (validaci hex formátu řídí nadřazený formulář). */
+    error?: React.ReactNode
+}
+
+const hasLowContrast = (hex: string): boolean => {
+    try {
+        return chroma.contrast(chroma(hex), "white") < 2
+    } catch {
+        return false
+    }
 }
 
 /** Komponenta pro pole s výběrem barvy kurzu. */
-const ColorPicker: React.FC<Props> = (props) => {
-    const validateColor = React.useCallback((color: string): void => {
-        // pokud barvy nejsou dostatecne kontrastni a jeste neni zobrazene upozorneni, zobraz ho
-        if (chroma.contrast(chroma(color), "white") < 2) {
-            toast.warning(
-                <Notification text="Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět, zvolte více kontrastnější." />,
-                {
-                    toastId: COLOR_PICKER_VALIDATION_TOAST_ID,
-                    autoClose: false,
-                },
-            )
-        } else {
-            toast.dismiss(COLOR_PICKER_VALIDATION_TOAST_ID)
-        }
-    }, [])
+const ColorPicker: React.FC<Props> = ({ value, onChange, error }) => {
+    // čistá derivace z props — počítá se přímo při renderu, žádný stav/efekt není potřeba
+    const showContrastWarning = hasLowContrast(value)
 
     const handleChange = React.useCallback(
-        (newColor: IColor): void => {
-            validateColor(newColor.hex)
-            // prevedeme hex na uppercase, at jsme konzistentni se zbytkem UI
-            props.onChange({
-                ...newColor,
-                hex: newColor.hex.toUpperCase(),
-            })
+        (newHex: string): void => {
+            onChange(newHex.toUpperCase())
         },
-        [props, validateColor],
+        [onChange],
     )
 
     return (
-        <FormGroup row className="align-items-start form-group-required">
-            <Label for="hex" sm={3} data-qa="settings_label_color">
-                Barva
-            </Label>
-            <Col sm={9}>
-                <div className={styles.colorPickerContainer} data-qa="settings_color_picker">
-                    <ReactColorPicker
-                        height={130}
-                        hideAlpha
-                        hideInput={["rgb", "hsv"]}
-                        color={props.color}
-                        onChange={handleChange}
-                    />
-                </div>
-            </Col>
-        </FormGroup>
+        <div className={styles.colorInputWrapper}>
+            <ColorInput
+                id="color"
+                label="Barva"
+                labelProps={{ "data-qa": "settings_label_color" }}
+                withAsterisk
+                format="hex"
+                value={value}
+                onChange={handleChange}
+                swatches={COLOR_SWATCHES}
+                error={error}
+                data-qa="settings_color_picker"
+            />
+            {showContrastWarning && (
+                <Alert color="yellow" mt="xs">
+                    Zvolená barva je málo kontrastní k&nbsp;bílé a&nbsp;byla by špatně vidět, zvolte
+                    kontrastnější.
+                </Alert>
+            )}
+        </div>
     )
 }
 

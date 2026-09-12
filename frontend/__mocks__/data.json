@@ -1,4 +1,13 @@
 {
+    "courses": [
+        {
+            "id": 5,
+            "name": "Rozvoj grafomotoriky",
+            "color": "#F39C12",
+            "duration": 30,
+            "visible": true
+        }
+    ],
     "lectures": [
         {
             "id": 88,

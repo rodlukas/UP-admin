@@ -1,5 +1,5 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -70,11 +70,11 @@ def insert_to_form(context, verify_current_data=False):
             and context.old_client_activity == active_checkbox.is_selected()
         )
     # smaz vsechny udaje
-    firstname_field.clear()
-    surname_field.clear()
-    phone_field.clear()
-    email_field.clear()
-    note_field.clear()
+    helpers.clear_input(firstname_field)
+    helpers.clear_input(surname_field)
+    helpers.clear_input(phone_field)
+    helpers.clear_input(email_field)
+    helpers.clear_input(note_field)
     # vloz nove udaje
     firstname_field.send_keys(context.firstname)
     surname_field.send_keys(context.surname)
@@ -105,9 +105,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na pridani klienta
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_client_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_client_with_context(context))
     # over, ze sedi pocet klientu
     assert clients_cnt(context.browser) > context.old_clients_cnt
 
@@ -117,9 +121,13 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na update klientu
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: find_client_with_context(context)
-    )
+    # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
+    # (stale reference) - dalsi poll to zopakuje
+    WebDriverWait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException,),
+    ).until(lambda driver: find_client_with_context(context))
     # over, ze sedi pocet klientu
     assert clients_cnt(context.browser) == context.old_clients_cnt
 

@@ -1,3 +1,5 @@
+import { faChartBar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { assignInlineVars } from "@vanilla-extract/dynamic"
 import * as React from "react"
 import {
     Bar,
@@ -22,6 +24,8 @@ import {
     MONTH_LABELS,
 } from "./charts"
 import * as styles from "./ClientAnalysis.css"
+import EmptyState from "./EmptyState"
+import NoInfo from "./NoInfo"
 
 type Props = {
     clientId: ClientType["id"]
@@ -55,14 +59,17 @@ const ChartTooltip: React.FC<TooltipContentProps> = ({ active, label, payload })
     const total = payload.reduce((sum, entry) => sum + entry.value, 0)
     return (
         <div className={styles.tooltip}>
-            <div className="fw-semibold mb-1">{label}</div>
+            <div className={styles.tooltipLabel}>{label}</div>
             {payload.map((entry) => (
-                <div key={entry.name} style={{ color: entry.color }}>
+                <div
+                    key={entry.name}
+                    className={styles.tooltipSeriesEntry}
+                    style={assignInlineVars({ [styles.tooltipSeriesColor]: entry.color })}>
                     {entry.name}: <strong>{entry.value}</strong>
                 </div>
             ))}
             {payload.length > 1 && (
-                <div className="mt-1 border-top pt-1">
+                <div className={styles.tooltipTotal}>
                     Celkem: <strong>{total}</strong>
                 </div>
             )}
@@ -72,7 +79,16 @@ const ChartTooltip: React.FC<TooltipContentProps> = ({ active, label, payload })
 
 /** Analýza docházky klienta — souhrn a graf proběhlých lekcí po měsících s rozlišením kurzů. */
 const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
-    const { attendancestates } = useAttendanceStatesContext()
+    // `hasData`, ne `isSuccess`: při SELHANÉM REFETCHI si TanStack Query data z cache nechá,
+    // takže `excused` se pořád spočítá správně — schovat čísla za `NoInfo` by zahodilo platné
+    // údaje. Opačně (`|| length > 0`) by zas skutečně prázdná konfigurace stavů vypadala jako
+    // chyba a správné nuly by se změnily na pomlčky.
+    //
+    // `!isLoading` tu naopak (na rozdíl od AttendanceSelectAttendanceState.tsx) nepotřebujeme:
+    // Card.tsx drží celou kartu pod kostrou, dokud `attendanceStatesContext.isLoading` neskončí,
+    // takže tahle komponenta se během načítání vůbec nevykreslí — a kdyby ano, pomlčka je při
+    // nedostupných datech správnější než spočítaná nula, která by si vymýšlela.
+    const { attendancestates, hasData: attendanceStatesLoaded } = useAttendanceStatesContext()
 
     const analysis = React.useMemo(() => {
         const scheduled = lectures.filter((l): l is LectureTypeWithDate => l.start !== null)
@@ -132,36 +148,56 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
         return { scheduled, happened, notHappened, excused, paid, courses, monthlyData }
     }, [lectures, clientId, attendancestates])
 
+    // Bez jediné lekce s termínem není z čeho počítat souhrn ani graf. `null` by tu nechalo
+    // celou záložku prázdnou, což vypadá stejně jako rozbité načtení (viz Card.tsx).
     if (analysis.scheduled.length === 0) {
-        return null
+        return (
+            <EmptyState
+                icon={faChartBar}
+                title="Není co analyzovat"
+                description={
+                    lectures.length === 0
+                        ? "Klient zatím nemá žádnou lekci."
+                        : "Žádná z lekcí klienta nemá termín — analýza počítá jen s naplánovanými."
+                }
+            />
+        )
     }
 
     return (
         <div className={styles.chartPanel}>
-            <div className="d-flex flex-wrap justify-content-around mb-3 gap-2 pt-1">
-                <div className="text-center">
-                    <div className="fw-bold h5 mb-0">{analysis.happened.length}</div>
-                    <div className="text-muted small">Proběhlé</div>
+            <div className={styles.summary}>
+                <div className={styles.summaryItem}>
+                    <div className={styles.summaryNumber}>{analysis.happened.length}</div>
+                    <div className={styles.summaryLabel}>Proběhlé</div>
                 </div>
-                <div className="text-center">
-                    <div className="fw-bold h5 mb-0">{analysis.excused.length}</div>
-                    <div className="text-muted small">Omluvené</div>
-                </div>
-                <div className="text-center">
-                    <div className="fw-bold h5 mb-0">
-                        {analysis.notHappened.length - analysis.excused.length}
+                <div className={styles.summaryItem}>
+                    <div className={styles.summaryNumber}>
+                        {/* bez načtených stavů účasti nejde poznat, které zrušené lekce byly
+                            omluvené — ukázat 0 by vypadalo jako spočtená hodnota, ne chybějící */}
+                        {attendanceStatesLoaded ? analysis.excused.length : <NoInfo />}
                     </div>
-                    <div className="text-muted small">Zrušené</div>
+                    <div className={styles.summaryLabel}>Omluvené</div>
                 </div>
-                <div className="text-center">
-                    <div className="fw-bold h5 mb-0">
+                <div className={styles.summaryItem}>
+                    <div className={styles.summaryNumber}>
+                        {attendanceStatesLoaded ? (
+                            analysis.notHappened.length - analysis.excused.length
+                        ) : (
+                            <NoInfo />
+                        )}
+                    </div>
+                    <div className={styles.summaryLabel}>Zrušené</div>
+                </div>
+                <div className={styles.summaryItem}>
+                    <div className={styles.summaryNumber}>
                         {analysis.paid.length}/{analysis.happened.length}
                     </div>
-                    <div className="text-muted small">Zaplaceno</div>
+                    <div className={styles.summaryLabel}>Zaplaceno</div>
                 </div>
             </div>
             {analysis.monthlyData.length > 0 && (
-                <div className="border-top mt-2 pt-3">
+                <div className={styles.chartDivider}>
                     <ResponsiveContainer width="100%" height={190}>
                         <BarChart data={analysis.monthlyData} margin={CHART_MARGIN}>
                             <CartesianGrid
@@ -182,7 +218,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                             <YAxis
                                 allowDecimals={false}
                                 tick={AXIS_TICK}
-                                width={44}
+                                width={52}
                                 label={{
                                     value: "Počet lekcí",
                                     angle: -90,

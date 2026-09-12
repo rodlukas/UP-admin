@@ -1,8 +1,7 @@
+import { Tooltip } from "@mantine/core"
 import * as React from "react"
 
 import { GITHUB_REPO_URL } from "../global/constants"
-
-import UncontrolledTooltipWrapper from "./UncontrolledTooltipWrapper"
 
 /** Komponenta zobrazující číslo verze aplikace. */
 const AppRelease: React.FC = () => {
@@ -18,20 +17,19 @@ const AppRelease: React.FC = () => {
     return (
         <>
             {!isTaggedCommit() && "větev "}
-            <a
-                href={
-                    GITHUB_REPO_URL +
-                    (isTaggedCommit() ? "/releases/tag/" : "/tree/") +
-                    branchOrVersion
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                id="AppRelease">
-                {branchOrVersion}
-            </a>
-            <UncontrolledTooltipWrapper target="AppRelease">
-                {isTaggedCommit() ? "Poznámky k verzi" : "Přejít na větev"} (GitHub)
-            </UncontrolledTooltipWrapper>
+            <Tooltip
+                label={`${isTaggedCommit() ? "Poznámky k verzi" : "Přejít na větev"} (GitHub)`}>
+                <a
+                    href={
+                        GITHUB_REPO_URL +
+                        (isTaggedCommit() ? "/releases/tag/" : "/tree/") +
+                        branchOrVersion
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    {branchOrVersion}
+                </a>
+            </Tooltip>
         </>
     )
 }

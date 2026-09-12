@@ -1,14 +1,17 @@
+import { Button, ButtonProps } from "@mantine/core"
 import * as React from "react"
-import { Button, ButtonProps } from "reactstrap"
 
-type Props = ButtonProps & {
-    /** Text v tlačítku. */
-    content?: string
-}
+import { ClickableButtonProps } from "../../types/types"
+
+type Props = Omit<ButtonProps, "content" | "children"> &
+    ClickableButtonProps & {
+        /** Text v tlačítku. */
+        content?: string
+    }
 
 /** Tlačítko pro smazání objektu v aplikaci. */
 const DeleteButton: React.FC<Props> = ({ onClick, content = "", ...props }) => (
-    <Button color="danger" onClick={onClick} {...props}>
+    <Button color="red" variant="light" onClick={onClick} {...props}>
         Smazat {content}
     </Button>
 )

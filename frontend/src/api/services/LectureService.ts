@@ -69,6 +69,31 @@ function getAllFromDayOrdered(date: string, asc: boolean): Promise<ListWithDate>
     })
 }
 
+/**
+ * Získá nezrušené lekce od daného dne včetně (umožňuje definovat řazení a počet).
+ * Používá filtr `dateFrom` (api/filters.py) — na rozdíl od `date` je to rozsah,
+ * takže se dá zjistit „co je nejbližší příští", ne jen „co je v tenhle den".
+ *
+ * `canceled=false` je součástí dotazu, ne až filtr ve komponentě: zrušená lekce se nekoná,
+ * takže se nesmí nabídnout jako nejbližší příští. `limit` je nutný proto, že rozsah je
+ * otevřený a endpoint není stránkovaný — bez něj se stáhne celý zbytek kalendáře.
+ */
+function getAllFromDateOrdered(
+    dateFrom: string,
+    asc: boolean,
+    limit?: number,
+): Promise<ListWithDate> {
+    const limitParam =
+        limit === undefined ? "" : `&${API_URLS.lectures.limit}=${encodeURIComponent(limit)}`
+    const url =
+        `${baseUrl}?${API_URLS.lectures.filters.dateFrom}=${dateFrom}` +
+        `&${API_URLS.lectures.filters.canceled}=false${limitParam}${ordering(asc)}`
+    return axiosRequestData<ListWithDate>({
+        url: url,
+        method: API_METHODS.get,
+    })
+}
+
 /** Aktualizuje (PUT) lekci. */
 function update(context: LecturePutApi): Promise<Item> {
     return axiosRequestData<Item>({
@@ -100,6 +125,7 @@ const LectureService = {
     create,
     update,
     remove,
+    getAllFromDateOrdered,
     getAllFromDayOrdered,
     getAllFromGroupOrdered,
     getAllFromClientOrdered,

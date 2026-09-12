@@ -1,5 +1,5 @@
+import { Container } from "@mantine/core"
 import * as React from "react"
-import { Container } from "reactstrap"
 
 import APP_URLS from "../APP_URLS"
 import Heading from "../components/Heading"

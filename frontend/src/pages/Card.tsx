@@ -1,11 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import { useQueryClient } from "@tanstack/react-query"
-import { useNavigate } from "@tanstack/react-router"
+import {
+    Alert,
+    Breadcrumbs,
+    Button,
+    Container,
+    Group,
+    SimpleGrid,
+    Skeleton,
+    Tabs,
+    Title,
+    Tooltip,
+} from "@mantine/core"
+import { faCalendar, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
-import { Alert, Button, Col, Container, ListGroup, ListGroupItem, Row } from "reactstrap"
 
 import { trackEvent } from "../analytics"
 import {
@@ -21,28 +31,31 @@ import {
 } from "../api/hooks"
 import APP_URLS from "../APP_URLS"
 import Attendances from "../components/Attendances"
-import BackButton from "../components/buttons/BackButton"
 import ClientAnalysis from "../components/ClientAnalysis"
 import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
 import ComponentsList from "../components/ComponentsList"
+import { courseBandVars } from "../components/CourseName.css"
+import EmptyState, { LoadErrorEmptyState } from "../components/EmptyState"
 import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import * as lectureStyles from "../components/Lecture.css"
 import LectureNumber from "../components/LectureNumber"
-import Loading from "../components/Loading"
+import LectureTypeIcon from "../components/LectureTypeIcon"
 import PrepaidCounters from "../components/PrepaidCounters"
-import UncontrolledTooltipWrapper from "../components/UncontrolledTooltipWrapper"
+import { SkeletonShell } from "../components/Skeletons"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalClients from "../forms/ModalClients"
 import ModalGroups from "../forms/ModalGroups"
 import ModalLectures from "../forms/ModalLectures"
 import { TEXTS } from "../global/constants"
 import { prettyDateWithDayYear, prettyTime } from "../global/funcDateTime"
+import { dimmedText, iconAfterText, mb0, srOnly } from "../global/utility.css"
 import {
     clientName,
+    contrastingTextColor,
     courseDuration,
     DefaultValuesForLecture,
     getDefaultValuesForLecture,
@@ -51,6 +64,7 @@ import {
     isStaleActive,
     pageTitle,
 } from "../global/utils"
+import { useRememberRecentRecord } from "../hooks/useRememberRecentRecord"
 import { ModalClientsGroupsData } from "../types/components"
 import { ClientType, GroupType, LectureType } from "../types/models"
 import { Model } from "../types/types"
@@ -64,29 +78,190 @@ type CardProps = {
     isClientPage: boolean
 }
 
+const isClientObject = (object: ClientOrGroup): object is ClientType =>
+    Boolean(object && "phone" in object)
+
+const isGroupObject = (object: ClientOrGroup): object is GroupType =>
+    Boolean(object && "name" in object)
+
+type HeaderActionsProps = {
+    object: ClientOrGroup
+    cardSource: "client_card" | "group_card"
+    defaultValuesForLecture: DefaultValuesForLecture | undefined
+    onRefreshFromModal: (data: ModalClientsGroupsData) => void
+}
+
+const HeaderActions: React.FC<HeaderActionsProps> = ({
+    object,
+    cardSource,
+    defaultValuesForLecture,
+    onRefreshFromModal,
+}) => (
+    <>
+        {/* ModalClientsData i ModalGroupsData jsou zúžením ModalClientsGroupsData,
+            callback s širším parametrem je proto přiřaditelný přímo (bez `as`). */}
+        {isClientObject(object) ? (
+            <ModalClients
+                currentClient={object}
+                refresh={onRefreshFromModal}
+                source="client_card"
+            />
+        ) : (
+            object && (
+                <ModalGroups
+                    currentGroup={object}
+                    refresh={onRefreshFromModal}
+                    source="group_card"
+                />
+            )
+        )}
+        <ModalLectures
+            defaultValuesForLecture={defaultValuesForLecture}
+            object={object}
+            source={cardSource}
+        />
+    </>
+)
+
+type AlertsProps = {
+    object: ClientOrGroup
+    isDeactivatePending: boolean
+    onDeactivate: () => void
+}
+
+const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactivate }) => {
+    if (!object) {
+        return null
+    }
+    if (!object.active) {
+        return (
+            <Alert
+                // pozadi i ramecek dodava `staleAlert`, viz ClientsGroups.css.ts
+                variant="transparent"
+                color="yellow"
+                mt={0}
+                className={styles.cardNotice}>
+                {isClientObject(object)
+                    ? TEXTS.WARNING_INACTIVE_CLIENT
+                    : TEXTS.WARNING_INACTIVE_GROUP}
+            </Alert>
+        )
+    }
+    if (!isStaleActive(object.last_lecture_date)) {
+        return null
+    }
+    return (
+        <Alert variant="transparent" color="yellow" mt={0} className={styles.cardNotice}>
+            <Group justify="space-between" wrap="wrap">
+                <span>
+                    {isClientObject(object)
+                        ? TEXTS.WARNING_STALE_CLIENT
+                        : TEXTS.WARNING_STALE_GROUP}
+                </span>
+                {/* `default` varianta: syte zlute tlacitko bylo na mekkem notice
+                    nejhlasitejsi veci stranky, stejne jako na Klientech */}
+                <Button variant="default" disabled={isDeactivatePending} onClick={onDeactivate}>
+                    Přesunout do neaktivních
+                    {isDeactivatePending && (
+                        <FontAwesomeIcon icon={faSpinnerThird} spin className={iconAfterText} />
+                    )}
+                </Button>
+            </Group>
+        </Alert>
+    )
+}
+
+type ClientInfoProps = {
+    client: ClientType
+    groupsOfClient: GroupType[]
+    pastGroups: GroupType[]
+}
+
+/**
+ * Klíčová fakta o klientovi nad záložkami — obdoba „highlights panelu" z record pages:
+ * to, co uživatel potřebuje vidět vždycky, bez ohledu na to, kterou záložku má otevřenou.
+ * Graf a rozpad docházky patří do záložky Analýza, ne sem — to je průzkum, ne fakt.
+ */
+const ClientInfo: React.FC<ClientInfoProps> = ({ client, groupsOfClient, pastGroups }) => (
+    <dl className={styles.summaryPanel}>
+        <div className={styles.summaryItem}>
+            <dt className={styles.summaryLabel}>Telefon</dt>
+            <dd className={styles.summaryValue}>
+                <ClientPhone phone={client.phone} />
+            </dd>
+        </div>
+        <div className={styles.summaryItem}>
+            <dt className={styles.summaryLabel}>E-mail</dt>
+            <dd className={styles.summaryValue}>
+                <ClientEmail email={client.email} />
+            </dd>
+        </div>
+        <div className={styles.summaryItem}>
+            <dt className={styles.summaryLabel}>Skupiny</dt>
+            <dd className={styles.summaryValue}>
+                {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
+                    <span className={dimmedText}>žádné skupiny</span>
+                ) : (
+                    <ComponentsList
+                        components={[
+                            ...groupsOfClient.map((g) => (
+                                <GroupName key={g.id} group={g} link showCircle noWrap />
+                            )),
+                            ...pastGroups.map((g) => (
+                                <span key={g.id} className={styles.pastGroup}>
+                                    <GroupName group={g} link showCircle noWrap />
+                                </span>
+                            )),
+                        ]}
+                    />
+                )}
+            </dd>
+        </div>
+        <div className={styles.summaryItem}>
+            <dt className={styles.summaryLabel}>Poznámka</dt>
+            <dd className={styles.summaryValue}>
+                <ClientNote note={client.note} />
+            </dd>
+        </div>
+    </dl>
+)
+
 /** Stránka s kartou klienta nebo skupiny. */
 const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
-    const queryClient = useQueryClient()
     const isClientPageValue = isClientPage
-
-    const isClient = (object: ClientOrGroup): object is ClientType =>
-        Boolean(object && "phone" in object)
-
-    const isGroup = (object: ClientOrGroup): object is GroupType =>
-        Boolean(object && "name" in object)
 
     const deactivateClient = useDeactivateClients()
     const deactivateGroup = useDeactivateGroups()
 
     const clientQuery = useClient(isClientPageValue ? id : undefined)
     const groupQuery = useGroup(isClientPageValue ? undefined : id)
+
+    // `enabled` (viz useRememberRecentRecord) musí navíc žádat záznam AKTIVNÍ, ne jen
+    // úspěšně načtený: kontexty, ze kterých ⌘K paleta (AppSpotlight) záznamy vyhledává
+    // i následně maže ty nevyřešitelné, obsahují jen aktivní klienty/skupiny — bez tohoto
+    // filtru by karta neaktivního klienta vytlačila z 5místné historie použitelné aktivní
+    // záznamy, které paleta stejně nikdy nenajde.
+    const isActiveObject = isClientPageValue ? clientQuery.data?.active : groupQuery.data?.active
+    useRememberRecentRecord(
+        isClientPageValue ? "client" : "group",
+        id,
+        (isClientPageValue ? clientQuery.isSuccess : groupQuery.isSuccess) &&
+            isActiveObject === true,
+    )
     const groupsOfClientQuery = useGroupsFromClient(isClientPageValue ? id : undefined)
     const allGroupsEverQuery = useAllGroupsEverFromClient(isClientPageValue ? id : undefined)
     const lecturesFromClientQuery = useLecturesFromClient(isClientPageValue ? id : undefined, false)
+    /**
+     * Analýza je jediný konzument všech lekcí klienta včetně skupinových a `keepMounted={false}`
+     * ji defaultně vůbec nenamountuje. Dotaz se proto zapíná až prvním otevřením záložky:
+     * jinak by každé otevření karty stahovalo celý kalendář klienta i s vnořenými účastmi
+     * a klienty — kvůli datům, která výchozí záložka „Lekce" nezobrazuje.
+     */
+    const [wasAnalysisOpened, setWasAnalysisOpened] = React.useState(false)
     const lecturesFromClientAllQuery = useLecturesFromClientAll(
-        isClientPageValue ? id : undefined,
+        isClientPageValue && wasAnalysisOpened ? id : undefined,
         false,
     )
     const lecturesFromGroupQuery = useLecturesFromGroup(isClientPageValue ? undefined : id, false)
@@ -127,19 +302,20 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
     // aktualizace title
     React.useEffect(() => {
         if (object) {
-            const titleName = isClient(object) ? clientName(object) : object.name
-            const pageName = isClient(object)
+            const titleName = isClientObject(object) ? clientName(object) : object.name
+            const pageName = isClientObject(object)
                 ? APP_URLS.klienti_karta.title
                 : APP_URLS.skupiny_karta.title
             document.title = pageTitle(`${titleName} – ${pageName}`)
         }
     }, [object])
 
+    // bez `lecturesFromClientAllQuery`: ta patri jen zalozce Analyza (viz vyse) a nesmi
+    // drzet skeleton cele karty kvuli datum, ktera vychozi zalozka nezobrazuje
     const clientQueriesLoading =
         clientQuery.isLoading ||
         groupsOfClientQuery.isLoading ||
         allGroupsEverQuery.isLoading ||
-        !!lecturesFromClientAllQuery.isLoading ||
         lecturesFromClientQuery.isLoading
 
     const groupQueriesLoading = groupQuery.isLoading || lecturesFromGroupQuery.isLoading
@@ -148,18 +324,28 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         (isClientPageValue ? clientQueriesLoading : groupQueriesLoading) ||
         !!attendanceStatesContext.isLoading
 
-    const clientQueriesFetching =
-        clientQuery.isFetching ||
-        groupsOfClientQuery.isFetching ||
-        allGroupsEverQuery.isFetching ||
-        !!lecturesFromClientAllQuery.isFetching ||
-        lecturesFromClientQuery.isFetching
+    /**
+     * Klient/skupina se vůbec nenačetl (chyba serveru, offline) — `object` je pak `null`
+     * a `lectures` prázdné, takže bez téhle větve by karta vypadala jako úspěšně načtený
+     * záznam bez jediné lekce: prázdný nadpis a „Žádné lekce". Klient s plnou historií
+     * k nerozeznání od rozbitého načtení, tedy přesně to, co řeší `LoadErrorEmptyState`
+     * na Klientech/Skupinách i v záložce Analýza níž.
+     *
+     * Test je na `data`, ne na `isError`: při SELHANÉM REFETCHI si TanStack Query data
+     * z cache nechá a karta funguje dál (401/404 řeší globální handler přesměrováním).
+     */
+    const objectUnavailable =
+        !isLoading && (isClientPageValue ? clientQuery.data : groupQuery.data) === undefined
 
-    const groupQueriesFetching = groupQuery.isFetching || lecturesFromGroupQuery.isFetching
-
-    const isFetching =
-        (isClientPageValue ? clientQueriesFetching : groupQueriesFetching) ||
-        !!attendanceStatesContext.isLoading
+    // Background refetch seznamu lekcí (napr. po ulozeni/smazani lekce z modalu) — na rozdil
+    // od `isLoading` (jen prvotni nacteni, kryte skeletonem cele karty) toto E2E krokum
+    // (`wait_loading_ends` v tests/ui_steps/lectures.py) drzi `data-qa=loading` po dobu, kdy
+    // uz je stara data v DOM porad videt, ale prekresluji se na nova. Zamerne per-karta,
+    // ne globalni (`TopProgressBar` a jeho `data-qa=global-loading`) — sdileny marker by
+    // kroky cekajici na tuhle konkretni lekci nechal cekat i na nesouvisejici dotazy jinde.
+    const isLecturesFetching =
+        !isLoading &&
+        (isClientPageValue ? lecturesFromClientQuery.isFetching : lecturesFromGroupQuery.isFetching)
 
     const refreshObjectFromModal = React.useCallback(
         (data: ModalClientsGroupsData): void => {
@@ -172,259 +358,260 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         [isClientPageValue, navigate],
     )
 
-    const goBack = (): void => {
-        globalThis.history.back()
-    }
-
     const handleDeactivate = (): void => {
         if (!object) {
             return
         }
-        const label = isClient(object) ? "klienta" : "skupinu"
+        const label = isClientObject(object) ? "klienta" : "skupinu"
         if (!globalThis.confirm(`Opravdu chcete přesunout ${label} do neaktivních?`)) {
             return
         }
-        if (isClient(object)) {
+        if (isClientObject(object)) {
             deactivateClient.mutate([id], {
                 onSuccess: () => {
                     trackEvent("client_deactivated", { source: "client_card" })
-                    void queryClient.invalidateQueries({ queryKey: ["clients", id] })
                 },
             })
         } else {
             deactivateGroup.mutate([id], {
                 onSuccess: () => {
                     trackEvent("group_deactivated", { source: "group_card" })
-                    void queryClient.invalidateQueries({ queryKey: ["groups", id] })
                 },
             })
         }
     }
 
     const cardSource = isClientPageValue ? ("client_card" as const) : ("group_card" as const)
+    const isDeactivatePending = isClientObject(object)
+        ? deactivateClient.isPending
+        : deactivateGroup.isPending
 
     const renderLecture = (lecture: LectureType): React.ReactElement => {
         // ziskej datetime zacatku lekce, kdyz neni tak 01/01/1970
         const date = new Date(lecture.start ?? 0)
+        const isPrepaidLecture = lecture.start === null
         const className = classNames(lectureStyles.lecture, styles.lectureCard, {
             [lectureStyles.lectureCanceled]: lecture.canceled,
+            [lectureStyles.lectureCanceledStruck]: lecture.canceled,
             [styles.lectureFuture]: date > new Date(Date.now()),
-            [styles.lecturePrepaid]: lecture.start === null,
+            [styles.lecturePrepaid]: isPrepaidLecture,
         })
         return (
-            <ListGroupItem
+            <div
                 key={lecture.id}
-                className={className}
+                className={classNames(styles.infoListItem, className)}
                 data-qa="lecture"
                 {...(lecture.canceled && { "data-qa-canceled": "true" })}>
                 <div className={lectureStyles.lectureHeading}>
-                    <h4>
-                        <span data-qa="lecture_start" id={`Card_CourseDuration_${lecture.id}`}>
-                            {lecture.start !== null
-                                ? `${prettyDateWithDayYear(date)} – ${prettyTime(date)}`
-                                : "Předplacená lekce"}
-                        </span>
-                        <UncontrolledTooltipWrapper target={`Card_CourseDuration_${lecture.id}`}>
-                            {courseDuration(lecture.duration)}
-                        </UncontrolledTooltipWrapper>
-                    </h4>
+                    {/* order/size odděleně: h1 jméno klienta/skupiny (Card.tsx výše) → h2
+                        název kurzu → h3 datum lekce; „Lekce" je záhlaví záložky
+                        (Tabs.Tab), ne nadpis, takže v hierarchii úrovní chybí — zbylé
+                        úrovně jsou proto o jednu posunuté, vzhled zůstává h4 */}
+                    <Title order={3} className={lectureStyles.lectureTitle}>
+                        <Tooltip label={courseDuration(lecture.duration)}>
+                            <span data-qa="lecture_start">
+                                {isPrepaidLecture
+                                    ? "Předplacená lekce"
+                                    : `${prettyDateWithDayYear(date)} – ${prettyTime(date)}`}
+                            </span>
+                        </Tooltip>
+                    </Title>
+                    <LectureTypeIcon lecture={lecture} />
                     <LectureNumber lecture={lecture} className={lectureStyles.lectureNumber} />
                     <ModalLectures object={object} currentLecture={lecture} source={cardSource} />
                 </div>
+                {/* přeškrtnutí je pro oko, tenhle text pro čtečku (WCAG 1.4.1) */}
+                {lecture.canceled && <span className={srOnly}>Zrušeno</span>}
                 <div className={lectureStyles.lectureContent}>
                     <Attendances
                         lecture={lecture}
-                        showClient={isGroup(object)}
+                        showClient={isGroupObject(object)}
                         source={cardSource}
                     />
                 </div>
-            </ListGroupItem>
+            </div>
+        )
+    }
+
+    let analysisTabContent: React.ReactElement
+    if (lecturesFromClientAllQuery.isLoading) {
+        // `SkeletonShell`, ne holý `Skeleton`: obal nese
+        // `data-qa="loading"` (kontrakt s E2E kroky) a
+        // `aria-busy`/`aria-live` — viz Skeletons.tsx, podle
+        // kterého ho má mít KAŽDÁ kostra v aplikaci
+        analysisTabContent = (
+            <SkeletonShell>
+                <Skeleton h={320} radius="md" />
+            </SkeletonShell>
+        )
+    } else if (lecturesFromClientAllQuery.data === undefined) {
+        // bez téhle větve by se `ClientAnalysis` dostalo prázdné pole
+        // a klient s plnou historií by vypadal stejně jako klient bez
+        // jediné lekce.
+        // Test je na `data`, ne na `isError`: při SELHANÉM REFETCHI si
+        // TanStack Query data z cache nechá (`isError` by tedy plně
+        // načtenou analýzu zbytečně nahradilo chybou) a naopak
+        // nedokončený dotaz bez chyby (offline) data taky nemá.
+        analysisTabContent = <LoadErrorEmptyState resource="Analýzu" />
+    } else {
+        analysisTabContent = (
+            <ClientAnalysis clientId={id} lectures={lecturesFromClientAllQuery.data} />
+        )
+    }
+
+    let cardBody: React.ReactElement
+    if (isLoading) {
+        cardBody = (
+            <Container>
+                <SkeletonShell>
+                    <Skeleton h={28} mb="sm" radius="sm" w="60%" />
+                    <Skeleton h={20} mb="xs" radius="sm" />
+                    <Skeleton h={20} mb="xs" radius="sm" w="80%" />
+                    <Skeleton h={20} mb="xl" radius="sm" w="40%" />
+                    <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
+                        {[...new Array(3)].map((_, i) => (
+                            <Skeleton key={i} h={200} radius="md" />
+                        ))}
+                    </SimpleGrid>
+                </SkeletonShell>
+            </Container>
+        )
+    } else if (objectUnavailable) {
+        cardBody = (
+            <Container>
+                <LoadErrorEmptyState resource={isClientPageValue ? "Klienta" : "Skupinu"} />
+            </Container>
+        )
+    } else {
+        cardBody = (
+            <Container>
+                <div className={styles.cardInfo}>
+                    <Alerts
+                        object={object}
+                        isDeactivatePending={isDeactivatePending}
+                        onDeactivate={handleDeactivate}
+                    />
+                </div>
+                {isClientObject(object) && (
+                    <ClientInfo
+                        client={object}
+                        groupsOfClient={groupsOfClient}
+                        pastGroups={pastGroups}
+                    />
+                )}
+                {isGroupObject(object) && (
+                    <PrepaidCounters
+                        isGroupActive={object.active}
+                        memberships={object.memberships}
+                    />
+                )}
+                {/* Zalozky misto jedne dlouhe stranky. „Lekce" musi zustat vychozi:
+                    je to duvod, proc se karta otevira — a chytaji se jich E2E kroky
+                    (`card_course`). */}
+                <Tabs
+                    defaultValue="lekce"
+                    keepMounted={false}
+                    onChange={(value) => {
+                        if (value === "analyza") {
+                            setWasAnalysisOpened(true)
+                        }
+                    }}
+                    className={styles.tabs}>
+                    <Tabs.List>
+                        <Tabs.Tab value="lekce">Lekce</Tabs.Tab>
+                        {isClientObject(object) && <Tabs.Tab value="analyza">Analýza</Tabs.Tab>}
+                    </Tabs.List>
+
+                    {isClientObject(object) && (
+                        <Tabs.Panel value="analyza" pt="md">
+                            {/* `isLoading`, ne `isPending`: offline je dotaz `pending`
+                                s `fetchStatus: "paused"`, takže by tu kostra zůstala
+                                napořád a chybová větev níž by byla nedosažitelná
+                                (stejný důvod jako na Klientech, viz Clients.tsx) */}
+                            {analysisTabContent}
+                        </Tabs.Panel>
+                    )}
+
+                    <Tabs.Panel value="lekce" pt="md">
+                        {isLecturesFetching && <span data-qa="loading" aria-hidden="true" hidden />}
+                        <div
+                            className={classNames(styles.lectureColumns, {
+                                [styles.lectureColumnsSingle]: isGroupObject(object),
+                            })}>
+                            {lectures.map((courseLectures) => (
+                                <div
+                                    key={courseLectures.course.id}
+                                    className={styles.lectureColumn}
+                                    data-qa="card_course">
+                                    <div className={styles.infoList}>
+                                        <div
+                                            className={styles.courseHeadingItem}
+                                            style={assignInlineVars(courseBandVars, {
+                                                color: courseLectures.course.color,
+                                                text: contrastingTextColor(
+                                                    courseLectures.course.color,
+                                                ),
+                                            })}>
+                                            <Title
+                                                order={2}
+                                                size="h4"
+                                                className={mb0}
+                                                data-qa="card_course_name">
+                                                {courseLectures.course.name}
+                                            </Title>
+                                        </div>
+                                        {courseLectures.objects.map(renderLecture)}
+                                    </div>
+                                </div>
+                            ))}
+                            {lectures.length === 0 && (
+                                <div className={styles.lectureEmptyState}>
+                                    <EmptyState
+                                        icon={faCalendar}
+                                        title="Žádné lekce"
+                                        description="Až se přidá první lekce, objeví se tady seřazená po kurzech."
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </Tabs.Panel>
+                </Tabs>
+            </Container>
         )
     }
 
     return (
         <>
             <Container>
+                {/* Drobeckova navigace misto tlacitka „Jit zpet": rika, kde uzivatel je,
+                    ne jen kam se vratit — a titulek pak nemusi opakovat „Karta klienta". */}
+                <Breadcrumbs className={styles.breadcrumbs}>
+                    <Link to={isClientPageValue ? APP_URLS.klienti.url : APP_URLS.skupiny.url}>
+                        {isClientPageValue ? APP_URLS.klienti.title : APP_URLS.skupiny.title}
+                    </Link>
+                    <span className={styles.breadcrumbCurrent}>
+                        {isClientObject(object) ? clientName(object) : (object?.name ?? "")}
+                    </span>
+                </Breadcrumbs>
                 <Heading
                     title={
-                        <>
-                            {`Karta ${isClientPageValue ? "klienta" : "skupiny"}`}:{" "}
-                            {isClient(object) ? (
-                                <ClientName client={object} bold />
-                            ) : (
-                                object && <GroupName group={object} bold />
-                            )}
-                        </>
+                        isClientObject(object) ? (
+                            <ClientName client={object} bold />
+                        ) : (
+                            object && <GroupName group={object} bold />
+                        )
                     }
-                    isFetching={isFetching}
                     buttons={
-                        <>
-                            <BackButton onClick={goBack} />
-                            {isClient(object) ? (
-                                <ModalClients
-                                    currentClient={object}
-                                    refresh={(data) =>
-                                        refreshObjectFromModal(data as ModalClientsGroupsData)
-                                    }
-                                    source="client_card"
-                                />
-                            ) : (
-                                object && (
-                                    <ModalGroups
-                                        currentGroup={object}
-                                        refresh={(data) =>
-                                            refreshObjectFromModal(data as ModalClientsGroupsData)
-                                        }
-                                        source="group_card"
-                                    />
-                                )
-                            )}
-                            <ModalLectures
-                                defaultValuesForLecture={defaultValuesForLecture}
-                                object={object}
-                                source={cardSource}
-                            />
-                        </>
+                        <HeaderActions
+                            object={object}
+                            cardSource={cardSource}
+                            defaultValuesForLecture={defaultValuesForLecture}
+                            onRefreshFromModal={refreshObjectFromModal}
+                        />
                     }
                 />
             </Container>
-            {isLoading ? (
-                <Loading />
-            ) : (
-                <Container>
-                    <div className={styles.cardInfo}>
-                        {object && !object.active && (
-                            <Alert color="warning" className="mt-0">
-                                {isClient(object)
-                                    ? TEXTS.WARNING_INACTIVE_CLIENT
-                                    : TEXTS.WARNING_INACTIVE_GROUP}
-                            </Alert>
-                        )}
-                        {object && object.active && isStaleActive(object.last_lecture_date) && (
-                            <Alert
-                                color="warning"
-                                className="mt-0 d-flex align-items-center justify-content-between gap-3 flex-wrap">
-                                <span>
-                                    {isClient(object)
-                                        ? TEXTS.WARNING_STALE_CLIENT
-                                        : TEXTS.WARNING_STALE_GROUP}
-                                </span>
-                                <Button
-                                    color="warning"
-                                    size="sm"
-                                    disabled={
-                                        isClient(object)
-                                            ? deactivateClient.isPending
-                                            : deactivateGroup.isPending
-                                    }
-                                    onClick={handleDeactivate}>
-                                    Přesunout do neaktivních
-                                    {(isClient(object)
-                                        ? deactivateClient.isPending
-                                        : deactivateGroup.isPending) && (
-                                        <FontAwesomeIcon
-                                            icon={faSpinnerThird}
-                                            spin
-                                            className="ms-2"
-                                        />
-                                    )}
-                                </Button>
-                            </Alert>
-                        )}
-                    </div>
-                    {isClient(object) && (
-                        <div className="d-flex gap-3 align-items-start mb-3 flex-wrap">
-                            <ListGroup style={{ flex: "0 0 auto", minWidth: 220 }}>
-                                <ListGroupItem>
-                                    <b>Telefon:</b> <ClientPhone phone={object.phone} />
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>E-mail:</b> <ClientEmail email={object.email} />
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>Skupiny:</b>{" "}
-                                    {groupsOfClient.length === 0 && pastGroups.length === 0 ? (
-                                        <span className="text-muted">žádné skupiny</span>
-                                    ) : (
-                                        <ComponentsList
-                                            components={[
-                                                ...groupsOfClient.map((g) => (
-                                                    <GroupName
-                                                        key={g.id}
-                                                        group={g}
-                                                        link
-                                                        showCircle
-                                                        noWrap
-                                                    />
-                                                )),
-                                                ...pastGroups.map((g) => (
-                                                    <span key={g.id} className={styles.pastGroup}>
-                                                        <GroupName
-                                                            group={g}
-                                                            link
-                                                            showCircle
-                                                            noWrap
-                                                        />
-                                                    </span>
-                                                )),
-                                            ]}
-                                        />
-                                    )}
-                                </ListGroupItem>
-                                <ListGroupItem>
-                                    <b>Poznámka:</b> <ClientNote note={object.note} />
-                                </ListGroupItem>
-                            </ListGroup>
-                            <div className="flex-grow-1" style={{ minWidth: 0 }}>
-                                <ClientAnalysis
-                                    clientId={id}
-                                    lectures={lecturesFromClientAllQuery.data ?? []}
-                                />
-                            </div>
-                        </div>
-                    )}
-                    {isGroup(object) && (
-                        <PrepaidCounters
-                            isGroupActive={object.active}
-                            memberships={object.memberships}
-                        />
-                    )}
-                    <h2>Lekce</h2>
-                    <Row className="justify-content-center">
-                        {lectures.map((courseLectures) => (
-                            <Col
-                                key={courseLectures.course.id}
-                                sm="10"
-                                md="8"
-                                lg="6"
-                                xl={isGroup(object) ? 5 : 4}
-                                data-qa="card_course">
-                                <ListGroup>
-                                    <ListGroupItem
-                                        className={styles.courseHeadingItem}
-                                        style={assignInlineVars(styles.cardVars, {
-                                            courseBackground: courseLectures.course.color,
-                                        })}>
-                                        <h4
-                                            className={classNames(
-                                                "text-center",
-                                                "mb-0",
-                                                styles.courseHeading,
-                                            )}
-                                            data-qa="card_course_name">
-                                            {courseLectures.course.name}
-                                        </h4>
-                                    </ListGroupItem>
-                                    {courseLectures.objects.map(renderLecture)}
-                                </ListGroup>
-                            </Col>
-                        ))}
-                        {lectures.length === 0 && (
-                            <p className="text-muted text-center">Žádné lekce</p>
-                        )}
-                    </Row>
-                </Container>
-            )}
+            {cardBody}
         </>
     )
 }

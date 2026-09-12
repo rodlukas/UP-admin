@@ -71,7 +71,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "django_filters",
 ]
-if not TESTS_RUNNING:
+if not TESTS_RUNNING and not DEPLOYED:
     INSTALLED_APPS.append("debug_toolbar")
 if not DEPLOYED:
     INSTALLED_APPS.append("behave_django")
@@ -159,7 +159,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if not TESTS_RUNNING:
+if not TESTS_RUNNING and not DEPLOYED:
     MIDDLEWARE.insert(3, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
 ROOT_URLCONF = "up.urls"
@@ -242,7 +242,12 @@ SECURE_CSP: dict[str, list[str]] = {
         CSPURL_GOOGLE_FONTS_STYLE,
     ],  # 'unsafe-inline' kvuli inline CSS v Sentry feedback formulari a Swagger UI
     "connect-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_COLLECT],
-    "script-src": [CSP.SELF, CSPURL_SENTRY, CSPURL_GA4_SCRIPT, CSP.UNSAFE_EVAL],  # 'unsafe-eval' kvuli gtag.js (GA4)
+    "script-src": [
+        CSP.SELF,
+        CSPURL_SENTRY,
+        CSPURL_GA4_SCRIPT,
+        CSP.UNSAFE_EVAL,
+    ],  # 'unsafe-eval' kvuli gtag.js (GA4)
     "font-src": [CSP.SELF, CSPURL_GOOGLE_FONTS_FONT],
     "img-src": [CSP.SELF, "data:", CSPURL_GA4_COLLECT],
     "frame-ancestors": [CSP.NONE],
