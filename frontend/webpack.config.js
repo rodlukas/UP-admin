@@ -46,7 +46,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(ts|js)x?$/,
-                exclude: [/node_modules/, /\.css\.ts$/],
+                exclude: /node_modules/,
                 loader: "babel-loader",
                 options: {
                     cacheDirectory: true,
