@@ -66,13 +66,13 @@ jobs:
             - name: 🔍 JS - run tests
               run: npm run frontend:test
 
+            # zkontroluj formatovani v backendu pres black (rychla kontrola, spustit pred pomalejsim mypy)
+            - name: 🔍 Python - check formatting (Black)
+              run: pipenv run black --check .
+
             # otestuj typy v backendu pres mypy
             - name: 🔍 Python - run tests
               run: pipenv run mypy .
-
-            # zkontroluj formatovani v backendu pres black
-            - name: 🔍 Python - check formatting (Black)
-              run: pipenv run black --check .
 
             # PostgreSQL
             # - build custom PSQL container image with CZ locale

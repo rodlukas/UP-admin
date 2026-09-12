@@ -70,6 +70,10 @@ export enum TEXTS {
     WARNING_STALE_CLIENT = "Klient je aktivní, ale naposledy měl lekci před více než 60 dny. Zvažte přesunutí do neaktivních.",
     WARNING_STALE_GROUP = "Skupina je aktivní, ale naposledy měla lekci před více než 60 dny. Zvažte přesunutí do neaktivních.",
     WARNING_NO_ATTENDANCE_STATES = "Nejsou nastaveny žádné stavy účasti — lekci nelze uložit. Přidejte alespoň jeden stav v Nastavení.",
+    ERROR_ATTENDANCE_STATES_LOAD = "Nepodařilo se načíst stavy účasti — lekci nelze uložit. Zkuste to prosím znovu.",
+    ERROR_ATTENDANCE_STATES_LOAD_EDIT = "Nepodařilo se načíst stavy účasti — u členů je teď nelze změnit. Ostatní údaje lekce uložit jdou.",
+    ERROR_COURSES_LOAD = "Nepodařilo se načíst kurzy — zkuste to prosím znovu.",
+    ERROR_CLIENTS_LOAD = "Nepodařilo se načíst klienty — nabídka členů je neúplná. Zkuste to prosím znovu.",
 }
 
 /** Počet dní bez lekce, po kterých se aktivní klient/skupina považuje za „stale" a zobrazí se varování. */

@@ -2,7 +2,7 @@ import { Select } from "@mantine/core"
 import * as React from "react"
 
 import { TEXTS } from "../../global/constants"
-import { clientName } from "../../global/utils"
+import { clientName, withSelectedOptions } from "../../global/utils"
 import { ClientType } from "../../types/models"
 
 import * as styles from "./SelectClient.css"
@@ -14,14 +14,19 @@ type SelectClientProps = {
     options?: readonly ClientType[]
     /** Funkce volaná při výběru klienta. */
     onChangeCallback: (name: "client", newValue?: ClientType | null) => void
-    /** Automaticky zaměřit vstup (defaultně true). */
-    autoFocus?: boolean
     /** Povinné pole (vizuální, validace probíhá v nadřazeném formuláři). */
     required?: boolean
     /** Popisek pole (předán Mantine Select jako label). */
     label?: string
     /** Chybová zpráva pod polem (validaci povinného pole řídí nadřazený formulář). */
     error?: React.ReactNode
+    /**
+     * Klienty se nepodařilo načíst (`true`) — prázdný seznam pak NENÍ „žádní klienti
+     * neexistují" a nesmí tak vypadat, jinak uživatel založí přihlášku/lekci v domnění,
+     * že hledaný klient v systému není. Zdroj klientů se liší podle volajícího (všichni
+     * vs. jen aktivní z kontextu), takže si to komponenta sama odvodit nemůže.
+     */
+    optionsUnavailable?: boolean
     /**
      * DOM id selectu — výchozí hodnotu "client" hledají E2E testy (`By.ID "client"`),
      * vlastní id zasílej jen pokud by mohly být současně namountované dvě instance.
@@ -34,21 +39,22 @@ const SelectClient: React.FC<SelectClientProps> = ({
     value,
     onChangeCallback,
     options = [],
-    autoFocus = true,
     required,
     label,
     error,
+    optionsUnavailable = false,
     id = "client",
 }) => {
     // Čerstvě vytvořený klient (přes "přidat nového") se do `value` dostane dřív, než ho
     // asynchronní refetch přidá do `options`; bez doplnění by Select zobrazil prázdno.
-    const data = React.useMemo(() => {
-        const items = options.map((c) => ({ value: c.id.toString(), label: clientName(c) }))
-        if (value && !options.some((c) => c.id === value.id)) {
-            items.push({ value: value.id.toString(), label: clientName(value) })
-        }
-        return items
-    }, [options, value])
+    const data = React.useMemo(
+        () =>
+            withSelectedOptions(options, value ? [value] : []).map((c) => ({
+                value: c.id.toString(),
+                label: clientName(c),
+            })),
+        [options, value],
+    )
 
     return (
         <Select
@@ -71,12 +77,17 @@ const SelectClient: React.FC<SelectClientProps> = ({
             aria-label={label ? undefined : "Klient"}
             placeholder="Vyberte existujícího klienta…"
             searchable
-            nothingFoundMessage={TEXTS.NO_RESULTS}
+            nothingFoundMessage={
+                optionsUnavailable ? "Klienty se nepodařilo načíst" : TEXTS.NO_RESULTS
+            }
             clearable={!required}
             // bez tohohle jde povinnou hodnotu vynulovat i překliknutím už vybrané položky
             // v otevřeném dropdownu (Mantine `allowDeselect` je jinak defaultně `true`)
             allowDeselect={!required}
-            autoFocus={autoFocus}
+            // Žádný `autoFocus`: uvnitř modalu (jediné místo, kde se komponenta používá)
+            // se o počáteční focus stará Mantine `FocusTrap` sám — bez explicitní značky
+            // ho dá na modalovou hlavičku (zavírací křížek), ne na pole. Autofocus na
+            // `searchable` Select by navíc hned otevřel dropdown nad zbytkem formuláře.
             withAsterisk={required}
             required={required}
             error={error}

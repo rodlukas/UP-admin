@@ -8,8 +8,15 @@ import { ClientActiveType } from "../types/models"
 type Context = {
     /** Probíhá první načítání dat (true) - data ještě nejsou načtená. */
     isLoading: boolean
-    /** Data se úspěšně načetla. Prázdné pole při `false` znamená chybu, ne prázdný seznam. */
+    /** Data se úspěšně načetla (`status === "success"`). */
     isSuccess: boolean
+    /**
+     * Data už někdy dorazila ze serveru — i prázdná. `false` znamená „zatím nenačteno"
+     * (první načítání, chyba, offline), takže prázdné pole v takovém případě NENÍ prázdný
+     * seznam. Na rozdíl od `isSuccess` přežije selhaný refetch: TanStack Query si při něm
+     * data z cache nechá, jen překlopí `status` na „error".
+     */
+    hasData: boolean
     /** Pole s aktivními klienty. */
     clients: ClientActiveType[]
 }
@@ -22,7 +29,10 @@ const ClientsActiveContext = React.createContext<ClientsActiveContextInterface>(
 /** Provider kontextu s aktivními klienty. */
 export const ClientsActiveProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { isAuth } = useAuthContext()
-    const { data: clients = [], isLoading, isSuccess } = useActiveClients(isAuth)
+    const { data, isLoading, isSuccess } = useActiveClients(isAuth)
+    // `useMemo`: bez nej je `data ?? []` pri kazdem renderu NOVE pole, takze memoizace
+    // u konzumentu (`useDataTable` na stránce Klienti a `data` memo v SelectClient) nikdy netrefi
+    const clients = React.useMemo(() => data ?? [], [data])
 
     return (
         <ClientsActiveContext.Provider
@@ -30,6 +40,7 @@ export const ClientsActiveProvider: React.FC<{ children: React.ReactNode }> = ({
                 clients,
                 isLoading,
                 isSuccess,
+                hasData: data !== undefined,
             }}>
             {children}
         </ClientsActiveContext.Provider>

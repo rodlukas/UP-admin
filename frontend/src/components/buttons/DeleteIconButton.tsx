@@ -3,13 +3,15 @@ import { ActionIcon, ActionIconProps, Tooltip } from "@mantine/core"
 import { faTrash } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
+import { ClickableButtonProps } from "../../types/types"
+
 import * as styles from "./DeleteIconButton.css"
 
-type Props = Omit<ActionIconProps, "content" | "children"> & {
-    /** Co se maže — doplní se do tooltipu a přístupného názvu. */
-    content: string
-    onClick?: React.MouseEventHandler<HTMLButtonElement>
-}
+type Props = Omit<ActionIconProps, "content" | "children"> &
+    ClickableButtonProps & {
+        /** Co se maže — doplní se do tooltipu a přístupného názvu. */
+        content: string
+    }
 
 /**
  * Ikonové tlačítko pro smazání položky ze seznamu.

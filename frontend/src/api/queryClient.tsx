@@ -94,7 +94,7 @@ function handleError(axiosError: AxiosError, getNavigate?: () => NavigateFn | un
 
     const errorMessage = getErrorMessage(errorResponse, djangoError)
     notifications.show({
-        message: typeof errorMessage === "string" ? errorMessage : <>{errorMessage}</>,
+        message: errorMessage,
         color: "red",
         autoClose: 15000,
     })

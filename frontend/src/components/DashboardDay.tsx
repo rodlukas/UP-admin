@@ -50,11 +50,8 @@ const DashboardDay: React.FC<Props> = (props) => {
     // a zpátky přes `toISODate` by v pásmech se záporným posunem vrátil předchozí den
     // (datum bez času se parsuje jako UTC, `toISODate` čte lokální složky) a rozešel by
     // klíč dotazu s `Dashboard` a `Diary`, které posílají ISO datum přímo.
-    const {
-        data: lectures = [],
-        isLoading,
-        isFetching,
-    } = useLecturesFromDay(delayedDate, true)
+    const { data, isLoading, isFetching } = useLecturesFromDay(delayedDate, true)
+    const lectures = data ?? []
 
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())
@@ -70,6 +67,12 @@ const DashboardDay: React.FC<Props> = (props) => {
 
     const showLoading = isDatePending || isLoading || attendanceStatesContext.isLoading
     const hasLectures = lectures.length > 0
+    // Prázdné `lectures` znamená „volno" JEN když dotaz opravdu doběhl. Bez tohohle by při
+    // výpadku API (nebo offline, kdy je dotaz `pending`/`paused`, tedy ani `isLoading`, ani
+    // chyba) celý diář sebevědomě tvrdil, že je celý týden volný — a je to tvrzení, podle
+    // kterého se plánuje. Test na `data`, ne na `isError`: stejné pravidlo jako v Card.tsx
+    // a v `hasData` kontextů.
+    const lecturesUnavailable = data === undefined
     let content: React.ReactNode
     if (showLoading) {
         content = <LectureListSkeleton count={3} />
@@ -130,6 +133,19 @@ const DashboardDay: React.FC<Props> = (props) => {
                 </div>
             )
         })
+    } else if (lecturesUnavailable) {
+        content = (
+            <div
+                className={classNames(
+                    lectureStyles.lecture,
+                    styles.lectureFree,
+                    styles.dashboardDayItem,
+                )}>
+                <Text c="dimmed" ta="center" fw={500}>
+                    Nepodařilo se načíst
+                </Text>
+            </div>
+        )
     } else {
         content = (
             <div

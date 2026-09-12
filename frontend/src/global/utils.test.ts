@@ -1,7 +1,13 @@
 import { CourseType, LectureType } from "../types/models"
 
+import { TEXTS } from "./constants"
 import { addDays } from "./funcDateTime"
-import { getDefaultValuesForLecture, GroupedObjectsByCourses, pluralizeCs } from "./utils"
+import {
+    courseSelectError,
+    getDefaultValuesForLecture,
+    GroupedObjectsByCourses,
+    pluralizeCs,
+} from "./utils"
 
 function createCourse(id: number, name: string): CourseType {
     return { id, name, color: "#000000", duration: 30, visible: true }
@@ -78,4 +84,26 @@ test.each([
     [11, "členů"],
 ])("pluralizeCs picks the Czech form for %i", (count, expected) => {
     expect(pluralizeCs(count, "člen", "členové", "členů")).toBe(expected)
+})
+
+// Rozdíl "kurzy se nenačetly" vs "kurzy jsou načtené, jen jich je nula" je jediný důvod,
+// proč tahle funkce existuje - prázdný Select by jinak v obou případech hlásil "Vyberte kurz"
+describe("courseSelectError", () => {
+    test("stays silent until the user tries to submit", () => {
+        expect(courseSelectError(false, false, { hasData: false })).toBeUndefined()
+    })
+
+    test("stays silent when a course is selected", () => {
+        expect(courseSelectError(true, true, { hasData: false })).toBeUndefined()
+    })
+
+    test("asks for a course when the list loaded (even if it's empty)", () => {
+        expect(courseSelectError(true, false, { hasData: true })).toBe("Vyberte kurz")
+    })
+
+    // `hasData`, ne `isSuccess`: při SELHANÉM REFETCHI si TanStack Query data z cache nechá,
+    // takže Select je pořád plný - poslat uživatele řešit síť by bylo zavádějící
+    test("reports a load failure only when no courses ever arrived", () => {
+        expect(courseSelectError(true, false, { hasData: false })).toBe(TEXTS.ERROR_COURSES_LOAD)
+    })
 })

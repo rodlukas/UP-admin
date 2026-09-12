@@ -59,8 +59,9 @@ const notifyShells = (): void => {
 
 /** Nese tenhle obal upozornění na dlouhé načítání a `aria-live` oblast? */
 const useIsPrimaryShell = (id: number): boolean => {
-    const isPrimary = React.useSyncExternalStore(subscribeShells, () =>
-        mountedShells.size > 0 && Math.min(...mountedShells) === id,
+    const isPrimary = React.useSyncExternalStore(
+        subscribeShells,
+        () => mountedShells.size > 0 && Math.min(...mountedShells) === id,
     )
 
     React.useEffect(() => {
@@ -85,15 +86,26 @@ export const SkeletonShell: React.FC<{ children: React.ReactNode }> = ({ childre
     const idRef = React.useRef<number>(undefined)
     idRef.current ??= nextShellId++
     const isPrimary = useIsPrimaryShell(idRef.current)
+    // Vlastní čas mountu, aby časovač níž mohl počítat od NĚJ, ne od chvíle, kdy se obal
+    // stal primárním.
+    const mountTimeRef = React.useRef(Date.now())
 
+    // Naplánuje se jen pro aktuálně primární obal (ostatních N-1 by časovač i state update
+    // po 25 s spustilo zbytečně — hlášení jde beztak zobrazit jen primárnímu, viz
+    // `isOverlong && isPrimary` níže). Zbývající čas se ale počítá od VLASTNÍHO mountu
+    // (`mountTimeRef`), ne od právě teď — jinak by převzetí primárního po jiném obalu (ten
+    // mezitím doběhl a odmountoval se) odstartovalo odpočet od nuly, přestože tenhle obal
+    // se načítá stejně dlouho jako ten předchozí.
     React.useEffect(() => {
         if (!isPrimary) {
             return
         }
-        const timeoutId = globalThis.setTimeout(
-            () => setIsOverlong(true),
-            OVERLONG_LOADING_THRESHOLD * 1000,
-        )
+        const remainingMs = OVERLONG_LOADING_THRESHOLD * 1000 - (Date.now() - mountTimeRef.current)
+        if (remainingMs <= 0) {
+            setIsOverlong(true)
+            return
+        }
+        const timeoutId = globalThis.setTimeout(() => setIsOverlong(true), remainingMs)
         return (): void => globalThis.clearTimeout(timeoutId)
     }, [isPrimary])
 
@@ -208,12 +220,7 @@ export const ChartSkeleton: React.FC<ChartSkeletonProps> = ({
             {withToggle && <Skeleton h={30} radius="sm" w={140} />}
         </div>
         {withCaption && <Skeleton h={14} mb="md" mt="xs" radius="sm" w="55%" />}
-        <Skeleton
-            className={styles.chartArea}
-            h={height}
-            mt={withCaption ? 0 : "md"}
-            radius="sm"
-        />
+        <Skeleton className={styles.chartArea} h={height} mt={withCaption ? 0 : "md"} radius="sm" />
     </div>
 )
 

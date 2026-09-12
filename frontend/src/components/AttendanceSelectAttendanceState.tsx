@@ -19,7 +19,7 @@ type Props = {
 
 /** Komponenta zobrazující box pro výběr stavu účasti klienta na dané lekci. */
 const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
-    const { attendancestates } = useAttendanceStatesContext()
+    const { attendancestates, isLoading, hasData } = useAttendanceStatesContext()
     const patchAttendance = usePatchAttendance({
         successMessage: "Stav účasti klienta uložen",
     })
@@ -40,13 +40,36 @@ const AttendanceSelectAttendanceState: React.FC<Props> = (props) => {
         [props.attendanceId, props.source, patchAttendance],
     )
 
-    const data = attendancestates
-        .filter((s) => s.visible || s.id === props.value)
-        .map((s) => ({ value: s.id.toString(), label: s.name }))
+    const data = React.useMemo(
+        () =>
+            attendancestates
+                .filter((s) => s.visible || s.id === props.value)
+                .map((s) => ({ value: s.id.toString(), label: s.name })),
+        [attendancestates, props.value],
+    )
+
+    // Stavy se nenačetly (chyba, offline) — název toho aktuálního znát nejde, známe jen jeho
+    // ID, takže Select místo tichého prázdna/chybné hodnoty raději zablokujeme a dáme najevo,
+    // že se stav nepodařilo načíst. `!isLoading` je tu nutné: dokud první dotaz běží, `hasData`
+    // je taky `false` — bez tý podmínky by blok naskočil na každém běžném načtení.
+    if (!isLoading && !hasData) {
+        return (
+            <Select
+                data={[]}
+                value={null}
+                placeholder="Nepodařilo se načíst"
+                disabled
+                size="md"
+                variant="unstyled"
+                classNames={{ input: styles.ruledInput }}
+                aria-label="Stav účasti se nepodařilo načíst"
+                data-qa="lecture_select_attendance_attendancestate"
+            />
+        )
+    }
 
     return (
         <Select
-            id={`select${props.attendanceId}`}
             data={data}
             value={props.value.toString()}
             onChange={onChange}

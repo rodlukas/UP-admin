@@ -171,9 +171,12 @@ Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, kter�
 
   Mantine má u většiny prvků výchozí velikost `sm` (0,875 rem = 14 px), což je pro provozní
   čtení příliš malé. Textové prvky obsahu proto
-  mají v `theme.ts` `defaultProps: { size: "md" }` (tlačítka, pole, tabulky, odznaky,
-  stránkování, alerty) a **u volání se `size` nepřebíjí zpět na `sm`**. Výjimkou je
-  `ActionIcon`, kde `size` znamená rozměr plochy, ne velikost písma. Segmentové přepínače
+  mají v `theme.ts` `defaultProps: { size: "md" }` (tlačítka, pole, tabulky,
+  stránkování). `Alert` mezi nimi schválně není — `AlertProps` žádné `size` nemá, 1rem
+  má přes `fontSizes.sm` remap výše. **U volání se `size` nepřebíjí zpět na `sm`.**
+  Výjimkou je `ActionIcon`, kde `size` znamená rozměr plochy, ne velikost písma, a stejně
+  tak ikonové tlačítko bez viditelného textu (`ModalLecturesWizard` bez `dropdownLabel`) —
+  se skutečným popiskem vedle ikony `md` platí jako všude jinde. Segmentové přepínače
   jedou přes `--sc-font-size` v `buttons/segmented.css.ts`.
 - **Stavy nesmí nést jen barva** (WCAG 1.4.1): zrušená lekce má k podbarvení textový
   štítek, stav platby jiný glyf pro každý stav. Glyfy platby a „příště platit“ jsou z jedné
@@ -193,7 +196,7 @@ Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, kter�
 - Linting: ESLint 9 s pluginy (react, typescript, jest-dom, testing-library, vanilla-extract, tanstack-query)
 - CSS: soubory pojmenovány `*.css.ts`, **vždy** vanilla-extract — nikdy inline styly ani plain CSS
 - Testy: Vitest + React Testing Library, soubory colocated se zdrojovým kódem (`*.test.ts` / `*.test.tsx`), API mockované přes MSW
-- **`data-qa` atributy jsou kontrakt s E2E kroky** ([tests/ui_steps/](tests/ui_steps/)) — Selenium se drží jich, ne tříd ani struktury. Neodstraňuj je a needituj jejich hodnoty; při přestavbě UI je přenes na nový prvek. Totéž platí pro `data-qa-canceled` a `data-paid`.
+- **`data-qa` atributy jsou kontrakt s E2E kroky** ([tests/ui_steps/](tests/ui_steps/)) — Selenium se drží jich, ne tříd ani struktury. Neodstraňuj je a needituj jejich hodnoty; při přestavbě UI je přenes na nový prvek. Totéž platí pro `data-qa-canceled` a `data-paid`. Zdokumentované výjimky (kde přes `data-qa` z principu nejde) viz [tests/README.md](tests/README.md).
 - Selektory v `style()` u vanilla-extract musí cílit na `&`; potomci (`thead th`, `::before`) jdou jen přes `globalStyle` — `tsc` ani ESLint to nezachytí, spadne to až za běhu (`npm run vitest`)
 
 **Pre-commit hooky (Husky + lint-staged):** automaticky spouštějí ESLint a Prettier na staged JS/TS souborech.

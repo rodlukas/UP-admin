@@ -178,7 +178,13 @@ const AppSpotlight: React.FC = () => {
             (record) => resolveRecentRecord(record) !== undefined,
         )
         setRecentRecords((prev) => {
-            if (prev.length === resolvable.length && prev.every((r, i) => r === resolvable[i])) {
+            // hodnotové porovnání, ne referenční — `resolvable` je z čerstvého
+            // `JSON.parse`, takže `===` by nikdy neplatilo ani při identickém obsahu
+            // (viz `readRecentRecords`) a guard by tak byl vždy mrtvý kód
+            if (
+                prev.length === resolvable.length &&
+                prev.every((r, i) => r.kind === resolvable[i].kind && r.id === resolvable[i].id)
+            ) {
                 return prev
             }
             return resolvable

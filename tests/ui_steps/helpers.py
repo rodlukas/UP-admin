@@ -165,7 +165,7 @@ def _combobox_selection_applied(element, value):
         return (element.get_attribute("value") or "") == value
     return any(
         pill.text == value
-        for pill in multiselect_root.find_elements(By.CSS_SELECTOR, ".mantine-Pill-label")
+        for pill in multiselect_root.find_elements(By.CSS_SELECTOR, "[data-qa=multiselect_pill]")
     )
 
 
@@ -330,8 +330,7 @@ def get_groups(driver, active):
 
 
 def close_modal(driver):
-    # zavri modalni okno; Mantine Modal pouziva .mantine-Modal-close class na tlacitku
-    driver.find_element(By.CSS_SELECTOR, ".mantine-Modal-close").click()
+    driver.find_element(By.CSS_SELECTOR, "[data-qa=modal_close]").click()
     # pokud se zobrazi alert s upozornenim na neulozene zmeny, zavri ho
     try:
         wait_for_alert_and_accept(driver)

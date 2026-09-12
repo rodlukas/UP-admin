@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button, Menu, Select, Skeleton, Tooltip } from "@mantine/core"
-import { notifications } from "@mantine/notifications"
 import { faChevronDown, faPlus, faSpinnerThird } from "@rodlukas/fontawesome-pro-solid-svg-icons"
+import { useQueryClient } from "@tanstack/react-query"
 import classNames from "classnames"
 import * as React from "react"
 
@@ -17,6 +17,7 @@ import {
     getDefaultValuesForLecture,
     getLecturesgroupedByCourses,
     prepareDefaultValuesForLecture,
+    withSelectedOptions,
 } from "../global/utils"
 import { ClientType, GroupType } from "../types/models"
 
@@ -34,7 +35,13 @@ type Props = {
     date?: string
     /** CSS třída pro dropdown pro výběr klient/skupina. */
     dropdownClassName?: string
-    /** Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina. */
+    /**
+     * Velikost tlačítka pro otevření dropdownu pro výběr klient/skupina.
+     *
+     * Smí jít pod `md` jen bez `dropdownLabel` (viz níž) — pak `size` řídí rozměr ikonové
+     * plochy, ne velikost čitelného textu, stejná výjimka jako `ActionIcon` v `theme.ts`.
+     * S `dropdownLabel` (viditelný text vedle ikony) je `md` závazné jako všude jinde.
+     */
     dropdownSize?: "xs" | "sm" | "md" | "lg" | "xl"
     /**
      * Varianta tlačítka. Výchozí `filled` je pro hlavní akci stránky; opakované výskyty
@@ -62,6 +69,7 @@ type Props = {
  */
 const ModalLecturesWizard: React.FC<Props> = (props) => {
     const { source } = props
+    const queryClient = useQueryClient()
     const clientsActiveContext = useClientsActiveContext()
     const groupsActiveContext = useGroupsActiveContext()
     const [isClient, setIsClientState] = React.useState<boolean | undefined>(undefined)
@@ -96,7 +104,28 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
             setIsLoading(true)
 
             const requestSeq = requestSeqRef.current
-            const request = getLecturesgroupedByCourses(obj.id, isClient)
+            // `fetchQuery`, ne přímo `getLecturesgroupedByCourses` — jde tak přes stejný
+            // globální error handling (401 odhlásí, 404 přesměruje, chybu ohlásí notifikací)
+            // jako každý jiný dotaz v appce (`queryCache.onError` v queryClient.tsx).
+            // `useMutation` by ho taky zajistilo, ale navíc by po KAŽDÉM výběru klienta/skupiny
+            // spustilo plošnou invalidaci všech dotazů (mutationCache.onSuccess) — tohle je
+            // čtení, ne zápis, a `fetchQuery` tenhle vedlejší efekt nemá.
+            // `staleTime: 0` přebíjí globální 30s default (queryClient.tsx) — výběr téhož
+            // klienta/skupiny podruhé musí vždy vidět čerstvý stav (výchozí hodnoty pro
+            // předvyplnění se odvíjí od poslední lekce), ne data z jiného otevření wizardu
+            // před chvílí, která mezitím mohla zastarat mimo tenhle QueryClient (jiná
+            // karta/session).
+            // `networkMode: "always"` je nutny: pri vychozim "online" TanStack Query dotaz
+            // offline POZASTAVI a vraceny promise se NIKDY neusadi — `.catch()` ani
+            // `.finally()` niz by nedobehly a wizard by tocil spinnerem donekonecna bez
+            // jakekoli hlasky. S "always" se pokus provede a rovnou selze, takze uzivatel
+            // dostane notifikaci a spinner zhasne (stejne jako pred prechodem na fetchQuery).
+            const request = queryClient.fetchQuery({
+                queryKey: ["lecturesGroupedByCourses", { id: obj.id, isClient }],
+                queryFn: () => getLecturesgroupedByCourses(obj.id, isClient),
+                staleTime: 0,
+                networkMode: "always",
+            })
             void request
                 .then((lecturesGroupedByCourses) => {
                     if (requestSeqRef.current !== requestSeq) {
@@ -107,15 +136,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     setModalSelectDone(true)
                 })
                 .catch(() => {
-                    if (requestSeqRef.current !== requestSeq) {
-                        return
-                    }
-                    // požadavek jde mimo React Query (přímo přes service), takže globální
-                    // error handling se neuplatní – chybu musíme ohlásit ručně
-                    notifications.show({
-                        color: "red",
-                        message: "Nepodařilo se načíst data pro předvyplnění formuláře.",
-                    })
+                    // chybu už ohlásil globální handler (queryCache.onError) — tady jen
+                    // ať nezůstane unhandled rejection, žádnou vlastní notifikaci netřeba
                 })
                 .finally(() => {
                     if (requestSeqRef.current !== requestSeq) {
@@ -124,7 +146,7 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     setIsLoading(false)
                 })
         },
-        [isClient, isLoading],
+        [isClient, isLoading, queryClient],
     )
 
     const processAdditionOfGroupOrClient = React.useCallback(
@@ -149,7 +171,9 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                     <SelectClient
                         value={object as ClientType}
                         options={clientsActiveContext.clients}
+                        optionsUnavailable={!clientsActiveContext.hasData}
                         onChangeCallback={onSelectChange}
+                        label="Klient"
                         required
                     />
                     <Or
@@ -164,30 +188,42 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                 </>
             )
         }
+        // Čerstvě vytvořená skupina (přes "přidat novou", viz processAdditionOfGroupOrClient)
+        // se do `object` dostane dřív, než ji asynchronní refetch přidá do
+        // `groupsActiveContext.groups`; bez doplnění by Select zobrazil prázdno (stejný
+        // vzor jako SelectClient/SelectCourse).
+        const groupValue = object as GroupType | null
+        const mergedGroups = withSelectedOptions(
+            groupsActiveContext.groups,
+            groupValue ? [groupValue] : [],
+        )
         return (
             <>
                 <Select
                     id="group"
-                    data={groupsActiveContext.groups.map((g) => ({
+                    data={mergedGroups.map((g) => ({
                         value: g.id.toString(),
                         label: g.name,
                     }))}
-                    value={(object as GroupType | null)?.id.toString() ?? null}
+                    value={groupValue?.id.toString() ?? null}
                     onChange={(val) => {
-                        const found =
-                            groupsActiveContext.groups.find((g) => g.id.toString() === val) ?? null
+                        const found = mergedGroups.find((g) => g.id.toString() === val) ?? null
                         onSelectChange("group", found)
                     }}
-                    // select nemá viditelný label — přístupný název pro čtečky obrazovky
-                    aria-label="Skupina"
+                    label="Skupina"
                     placeholder="Vyberte existující skupinu…"
                     searchable
-                    nothingFoundMessage={TEXTS.NO_RESULTS}
+                    nothingFoundMessage={
+                        groupsActiveContext.hasData
+                            ? TEXTS.NO_RESULTS
+                            : "Skupiny se nepodařilo načíst"
+                    }
                     // pole je vždy povinné (bez něj nejde krok wizardu dokončit) — proč
                     // false, viz allowDeselect u SelectClient
                     allowDeselect={false}
                     withAsterisk
-                    autoFocus
+                    // Žádný `autoFocus` schválně — stejný důvod jako u `SelectClient`
+                    // (searchable Select by autofocusem hned otevřel dropdown).
                 />
                 <Or
                     content={
@@ -204,7 +240,9 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
         isClient,
         object,
         clientsActiveContext.clients,
+        clientsActiveContext.hasData,
         groupsActiveContext.groups,
+        groupsActiveContext.hasData,
         onSelectChange,
         processAdditionOfGroupOrClient,
     ])
@@ -269,7 +307,11 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                 onClose={resetWizard}
                 title={`Přidání lekce – výběr ${selectedTargetLabel}`}
                 size="xl"
-                classNames={{ content: modalWizardContent }}>
+                classNames={{ content: modalWizardContent }}
+                // ostatní modaly maji `data-qa="modal_close"` na vlastnim Modal.CloseButton
+                // (viz FormBase kontrakt); tenhle vyuziva Mantine defaultni krizek pres `title`,
+                // proto se stejny atribut posila jako closeButtonProps
+                closeButtonProps={{ "data-qa": "modal_close" } as React.ComponentProps<"button">}>
                 {isClient !== undefined && (
                     <>
                         {isLoading ||

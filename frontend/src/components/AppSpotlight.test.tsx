@@ -63,8 +63,10 @@ type TestRouter = Awaited<ReturnType<typeof createTestRouter>>
 async function renderAppSpotlight(): Promise<{ router: TestRouter }> {
     const router = await createTestRouter(
         <MantineProvider env="test">
-            <ClientsActiveContext.Provider value={{ clients, isLoading: false, isSuccess: true }}>
-                <GroupsActiveContext.Provider value={{ groups, isLoading: false, isSuccess: true }}>
+            <ClientsActiveContext.Provider
+                value={{ clients, isLoading: false, isSuccess: true, hasData: true }}>
+                <GroupsActiveContext.Provider
+                    value={{ groups, isLoading: false, isSuccess: true, hasData: true }}>
                     <AppSpotlight />
                 </GroupsActiveContext.Provider>
             </ClientsActiveContext.Provider>

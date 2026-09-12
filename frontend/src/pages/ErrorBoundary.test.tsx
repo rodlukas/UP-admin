@@ -86,9 +86,7 @@ describe("ErrorBoundary", () => {
 
         await renderErrorBoundary()
 
-        fireEvent.click(
-            await screen.findByRole("button", { name: /Odeslat zpětnou vazbu/i }),
-        )
+        fireEvent.click(await screen.findByRole("button", { name: /Odeslat zpětnou vazbu/i }))
 
         expect(showReportDialogMock).toHaveBeenCalledWith(
             expect.objectContaining({

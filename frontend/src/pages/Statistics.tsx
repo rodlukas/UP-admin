@@ -38,6 +38,7 @@ import {
     StatCardsSkeleton,
 } from "../components/Skeletons"
 import { tableFlat, tableScrollOverflow } from "../global/surfaces.css"
+import { numericCell } from "../global/utility.css"
 import { vars } from "../theme/tokens"
 import { StatisticsType } from "../types/models"
 
@@ -608,9 +609,11 @@ function TopRankingSection<T extends { id: number; lecture_count: number }>({
                         <Table.Tbody>
                             {items.map((row, index) => (
                                 <Table.Tr key={row.id}>
-                                    <Table.Td c="dimmed">{index + 1}</Table.Td>
+                                    <Table.Td c="dimmed" className={numericCell}>
+                                        {index + 1}
+                                    </Table.Td>
                                     <Table.Td>{renderName(row)}</Table.Td>
-                                    <Table.Td ta="right" fw={600}>
+                                    <Table.Td ta="right" fw={600} className={numericCell}>
                                         {row.lecture_count}
                                     </Table.Td>
                                 </Table.Tr>

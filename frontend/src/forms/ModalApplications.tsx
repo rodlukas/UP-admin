@@ -22,7 +22,6 @@ const ModalApplications: React.FC<Props> = ({ currentApplication }) => {
         <>
             {currentApplication ? (
                 <EditButton
-                    contentId={currentApplication.id}
                     content="Upravit zájemce"
                     onClick={toggleModal}
                     data-qa="button_edit_application"

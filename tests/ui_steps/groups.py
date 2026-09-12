@@ -41,13 +41,12 @@ def insert_to_form(context, verify_current_data=False):
     active_label = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=group_label_active]")
     # over, ze aktualne zobrazene udaje ve formulari jsou spravne
     if verify_current_data:
-        # Mantine MultiSelect renderuje vybrane cleny jako Pill elementy - jsou to jedine
-        # pilly ve formulari, hledej je proto pres data-qa wrapper formulare misto pres
-        # class names Mantine wrapperu
         form_group = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=form_group]")
         members_field_values = [
             element.text
-            for element in form_group.find_elements(By.CSS_SELECTOR, ".mantine-Pill-label")
+            for element in form_group.find_elements(
+                By.CSS_SELECTOR, "[data-qa=multiselect_pill]"
+            )
         ]
         # Mantine Select zobrazuje label vybrane volby uvnitr <input value="...">
         course_field_value = course_field.get_attribute("value")

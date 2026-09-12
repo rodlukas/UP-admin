@@ -1,11 +1,13 @@
 import { Group, Select } from "@mantine/core"
-import { assignInlineVars } from "@vanilla-extract/dynamic"
 import * as React from "react"
 
+import CourseCircle from "../../components/CourseCircle"
 import { TEXTS } from "../../global/constants"
+import { withSelectedOptions } from "../../global/utils"
 import { CourseType } from "../../types/models"
 
-import * as styles from "./SelectCourse.css"
+/** Velikost tečky u kurzu v options – stejný recept na barvu jako všude jinde (`CourseCircle`). */
+const COURSE_DOT_SIZE = 0.875
 
 type SelectCourseProps = {
     /** Vybraný kurz. */
@@ -29,14 +31,6 @@ type SelectCourseProps = {
     id?: string
 }
 
-/** Pomocná komponenta – barevné kolečko kurzu v option. */
-const CourseDot: React.FC<{ color: string }> = ({ color }) => (
-    <div
-        className={styles.courseDot}
-        style={assignInlineVars({ [styles.courseDotColor]: color })}
-    />
-)
-
 /** Komponenta s Mantine Select pro výběr kurzu (zobrazuje barevné kolečko u každé položky). */
 const SelectCourse: React.FC<SelectCourseProps> = ({
     value,
@@ -52,13 +46,14 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
     // (visible=false u editované skupiny/lekce/zájemce) by v options chyběl a Select by
     // zobrazil prázdno; povinný input by pak nativní validací blokoval celé uložení.
     // Stejný vzor jako v SelectClient.
-    const data = React.useMemo(() => {
-        const items = options.map((c) => ({ value: c.id.toString(), label: c.name }))
-        if (value && !options.some((c) => c.id === value.id)) {
-            items.push({ value: value.id.toString(), label: value.name })
-        }
-        return items
-    }, [options, value])
+    const data = React.useMemo(
+        () =>
+            withSelectedOptions(options, value ? [value] : []).map((c) => ({
+                value: c.id.toString(),
+                label: c.name,
+            })),
+        [options, value],
+    )
 
     return (
         <Select
@@ -93,14 +88,14 @@ const SelectCourse: React.FC<SelectCourseProps> = ({
                     (value?.id.toString() === option.value ? value : undefined)
                 return (
                     <Group gap="xs" wrap="nowrap">
-                        {course && <CourseDot color={course.color} />}
+                        {course && <CourseCircle color={course.color} size={COURSE_DOT_SIZE} />}
                         {/* název kurzu není osobní údaj — bez data-gdpr (GDPR režim by
                             volby začernil a kurz by nešlo vybrat) */}
                         <span>{option.label}</span>
                     </Group>
                 )
             }}
-            leftSection={value && <CourseDot color={value.color} />}
+            leftSection={value && <CourseCircle color={value.color} size={COURSE_DOT_SIZE} />}
         />
     )
 }

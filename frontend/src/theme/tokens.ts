@@ -236,8 +236,8 @@ export const vars = {
  * Namíchá barvu kurzu (uživatelský hex z Nastavení) s inkoustem/bílou podle motivu —
  * bez mixu tmavá barva v tmavém režimu na tmavém pozadí zmizí (a světlá zase na bílé).
  * Jediný recept pro tečku/kolečko v barvě kurzu (`CourseName.css.ts`'s `courseDot`,
- * `CourseCircle.css.ts`, `SelectCourse.css.ts`) — konstanty (92 %/72 %, `#16233a`/`#e7ecf4`)
- * ať existují jen tady, ne zvlášť v každém spotřebiteli.
+ * `CourseCircle.css.ts` — ten používá i `SelectCourse` pro tečku v options) — konstanty
+ * (92 %/72 %, `#16233a`/`#e7ecf4`) ať existují jen tady, ne zvlášť v každém spotřebiteli.
  */
 export const courseColorTint = (color: string): string =>
     `light-dark(color-mix(in oklab, ${color} 92%, #16233a), color-mix(in oklab, ${color} 72%, #e7ecf4))`

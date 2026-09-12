@@ -1,5 +1,7 @@
 import { style } from "@vanilla-extract/css"
 
+import { numericCell } from "../global/utility.css"
+
 // Styly sdílené se stránkou Skupiny (záměrně paralelní UI) žijí v ClientsGroups.css.ts
 export {
     hiddenBelowSm,
@@ -19,9 +21,13 @@ export const nameCell = style({
     fontWeight: 600,
 })
 
-export const phoneCell = style({
-    minWidth: "7em",
-})
+// tabulkové číslice jako `numericCell` jinde — telefon je taky sloupec čísel, sjednotí se pod sebou
+export const phoneCell = style([
+    numericCell,
+    {
+        minWidth: "7em",
+    },
+])
 
 export const hiddenBelowMd = style({
     "@media": {

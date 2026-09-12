@@ -137,7 +137,7 @@ const FormClients: React.FC<Props> = (props) => {
                         </>
                     )}
                 </Modal.Title>
-                <Modal.CloseButton />
+                <Modal.CloseButton data-qa="modal_close" />
             </Modal.Header>
             <Modal.Body>
                 <div className={styles.formContent}>

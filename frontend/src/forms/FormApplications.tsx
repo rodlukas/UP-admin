@@ -8,6 +8,7 @@ import CancelButton from "../components/buttons/CancelButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import { FormSkeleton } from "../components/Skeletons"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
+import { courseSelectError } from "../global/utils"
 import {
     ApplicationPostApi,
     ApplicationPostApiDummy,
@@ -41,7 +42,7 @@ const FormApplications: React.FC<Props> = (props) => {
     const isApplication = (application: Props["application"]): application is ApplicationType =>
         "id" in application
 
-    const { data: clientsData = [], isLoading: clientsLoading } = useClients()
+    const { data: clientsData, isLoading: clientsLoading } = useClients()
     const createApplication = useCreateApplication()
     const updateApplication = useUpdateApplication()
 
@@ -140,7 +141,7 @@ const FormApplications: React.FC<Props> = (props) => {
                 <Modal.Title>
                     {isApplicationValue ? "Úprava" : "Přidání"} zájemce o kurz
                 </Modal.Title>
-                <Modal.CloseButton />
+                <Modal.CloseButton data-qa="modal_close" />
             </Modal.Header>
             <Modal.Body>
                 {isLoading ? (
@@ -156,9 +157,9 @@ const FormApplications: React.FC<Props> = (props) => {
                                     <SelectClient
                                         required
                                         label="Klient"
-                                        autoFocus={false}
                                         value={form.values.client}
                                         options={clientsData}
+                                        optionsUnavailable={clientsData === undefined}
                                         onChangeCallback={onSelectChange}
                                         error={
                                             triedSubmit && !form.values.client
@@ -183,11 +184,11 @@ const FormApplications: React.FC<Props> = (props) => {
                                         value={form.values.course}
                                         onChangeCallback={onSelectChange}
                                         options={coursesVisibleContext.courses}
-                                        error={
-                                            triedSubmit && !form.values.course
-                                                ? "Vyberte kurz"
-                                                : undefined
-                                        }
+                                        error={courseSelectError(
+                                            triedSubmit,
+                                            Boolean(form.values.course),
+                                            coursesVisibleContext,
+                                        )}
                                     />
                                 </div>
                                 <div className={baseStyles.fieldBlock}>

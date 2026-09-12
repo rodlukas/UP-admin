@@ -34,7 +34,6 @@ const ModalLectures: React.FC<Props> = ({
         <>
             {currentLecture ? (
                 <EditButton
-                    contentId={currentLecture.id}
                     content="Upravit lekci"
                     onClick={(): void => setShouldModalOpen(true)}
                     data-qa="button_edit_lecture"

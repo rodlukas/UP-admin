@@ -1,3 +1,4 @@
+import { faChartBar } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import * as React from "react"
 import {
@@ -23,6 +24,8 @@ import {
     MONTH_LABELS,
 } from "./charts"
 import * as styles from "./ClientAnalysis.css"
+import EmptyState from "./EmptyState"
+import NoInfo from "./NoInfo"
 
 type Props = {
     clientId: ClientType["id"]
@@ -76,7 +79,16 @@ const ChartTooltip: React.FC<TooltipContentProps> = ({ active, label, payload })
 
 /** Analýza docházky klienta — souhrn a graf proběhlých lekcí po měsících s rozlišením kurzů. */
 const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
-    const { attendancestates } = useAttendanceStatesContext()
+    // `hasData`, ne `isSuccess`: při SELHANÉM REFETCHI si TanStack Query data z cache nechá,
+    // takže `excused` se pořád spočítá správně — schovat čísla za `NoInfo` by zahodilo platné
+    // údaje. Opačně (`|| length > 0`) by zas skutečně prázdná konfigurace stavů vypadala jako
+    // chyba a správné nuly by se změnily na pomlčky.
+    //
+    // `!isLoading` tu naopak (na rozdíl od AttendanceSelectAttendanceState.tsx) nepotřebujeme:
+    // Card.tsx drží celou kartu pod kostrou, dokud `attendanceStatesContext.isLoading` neskončí,
+    // takže tahle komponenta se během načítání vůbec nevykreslí — a kdyby ano, pomlčka je při
+    // nedostupných datech správnější než spočítaná nula, která by si vymýšlela.
+    const { attendancestates, hasData: attendanceStatesLoaded } = useAttendanceStatesContext()
 
     const analysis = React.useMemo(() => {
         const scheduled = lectures.filter((l): l is LectureTypeWithDate => l.start !== null)
@@ -136,8 +148,20 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
         return { scheduled, happened, notHappened, excused, paid, courses, monthlyData }
     }, [lectures, clientId, attendancestates])
 
+    // Bez jediné lekce s termínem není z čeho počítat souhrn ani graf. `null` by tu nechalo
+    // celou záložku prázdnou, což vypadá stejně jako rozbité načtení (viz Card.tsx).
     if (analysis.scheduled.length === 0) {
-        return null
+        return (
+            <EmptyState
+                icon={faChartBar}
+                title="Není co analyzovat"
+                description={
+                    lectures.length === 0
+                        ? "Klient zatím nemá žádnou lekci."
+                        : "Žádná z lekcí klienta nemá termín — analýza počítá jen s naplánovanými."
+                }
+            />
+        )
     }
 
     return (
@@ -148,12 +172,20 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                     <div className={styles.summaryLabel}>Proběhlé</div>
                 </div>
                 <div className={styles.summaryItem}>
-                    <div className={styles.summaryNumber}>{analysis.excused.length}</div>
+                    <div className={styles.summaryNumber}>
+                        {/* bez načtených stavů účasti nejde poznat, které zrušené lekce byly
+                            omluvené — ukázat 0 by vypadalo jako spočtená hodnota, ne chybějící */}
+                        {attendanceStatesLoaded ? analysis.excused.length : <NoInfo />}
+                    </div>
                     <div className={styles.summaryLabel}>Omluvené</div>
                 </div>
                 <div className={styles.summaryItem}>
                     <div className={styles.summaryNumber}>
-                        {analysis.notHappened.length - analysis.excused.length}
+                        {attendanceStatesLoaded ? (
+                            analysis.notHappened.length - analysis.excused.length
+                        ) : (
+                            <NoInfo />
+                        )}
                     </div>
                     <div className={styles.summaryLabel}>Zrušené</div>
                 </div>

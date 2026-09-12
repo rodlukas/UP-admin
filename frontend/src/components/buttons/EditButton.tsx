@@ -3,15 +3,13 @@ import { ActionIcon, ActionIconProps, Tooltip } from "@mantine/core"
 import { faPencil } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
-import { makeIdFromString } from "../../global/utils"
+import { ClickableButtonProps } from "../../types/types"
 
-type Props = Omit<ActionIconProps, "content" | "children"> & {
-    /** Text v tlačítku. */
-    content?: string
-    /** ID objektu, pro který se zobrazuje tlačítko. */
-    contentId: number | string
-    onClick?: React.MouseEventHandler<HTMLButtonElement>
-}
+type Props = Omit<ActionIconProps, "content" | "children"> &
+    ClickableButtonProps & {
+        /** Text v tlačítku. */
+        content?: string
+    }
 
 /**
  * Tlačítko pro úpravu objektu v aplikaci.
@@ -20,7 +18,7 @@ type Props = Omit<ActionIconProps, "content" | "children"> & {
  * vlastní komponentu, která řeší poměr stran, velikosti a stavy sama — `Button` se na to
  * musel dorovnávat vlastním CSS.
  */
-const EditButton: React.FC<Props> = ({ content = "Upravit", onClick, contentId, ...props }) => (
+const EditButton: React.FC<Props> = ({ content = "Upravit", onClick, ...props }) => (
     <Tooltip
         label={content}
         // aby se tooltip po zavreni modalu nezobrazoval
@@ -34,7 +32,6 @@ const EditButton: React.FC<Props> = ({ content = "Upravit", onClick, contentId, 
             color="gray"
             // `md`, ne `lg`: v tabulce s ~400 radky urcuje vysku radku prave ikona
             size="md"
-            id={`EditButton_${makeIdFromString(content)}_${contentId}`}
             onClick={onClick}
             aria-label={content}
             {...props}>

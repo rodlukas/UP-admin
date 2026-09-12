@@ -40,7 +40,6 @@ const ModalClients: React.FC<Props> = ({
         <>
             {currentClient ? (
                 <EditButton
-                    contentId={currentClient.id}
                     content="Upravit klienta"
                     onClick={toggleModal}
                     data-qa="button_edit_client"

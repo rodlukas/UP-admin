@@ -4,6 +4,21 @@ import { statusNoticeDanger } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
 /**
+ * Obsah modalu bez `<form>` (krok výběru klienta/skupiny v `ModalLecturesWizard`) —
+ * definováno tu nahoře, protože ho níže potřebují selektory pro vzhled polí, ať pole
+ * v modalu vypadají stejně jako pole ve formuláři, ne podle Mantine výchozích barev.
+ */
+export const modalWizardContent = style({})
+
+/**
+ * Selektor pro pole uvnitř formuláře (`<form data-qa^='form_'>`) i uvnitř
+ * `modalWizardContent` — obě místa mají mít stejný vzhled polí, proto sdílejí
+ * jeden zdroj pravdy pro dvojici selektorů místo dvou ručně psaných seznamů.
+ */
+const formField = (suffix: string): string =>
+    `form[data-qa^='form_'] ${suffix}, ${modalWizardContent} ${suffix}`
+
+/**
  * Vzhled polí ve formulářích: v klidu nesou jemnou výplň (`vars.bg.field`), aby se četla
  * jako plný ovládací prvek, a při focusu se „zvednou" na `elevated` povrch s primárním
  * rámečkem a prstencem — tedy do stejného stavu, jaký má focus všude jinde. (Sladěné
@@ -94,7 +109,11 @@ globalStyle("form[data-qa^='form_'] .mantine-Modal-body hr", {
 })
 
 globalStyle(
-    "form[data-qa^='form_'] .mantine-Input-input, form[data-qa^='form_'] .mantine-Select-input, form[data-qa^='form_'] .mantine-Textarea-input",
+    [
+        formField(".mantine-Input-input"),
+        formField(".mantine-Select-input"),
+        formField(".mantine-Textarea-input"),
+    ].join(", "),
     {
         transition:
             "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, background-color 0.15s ease-in-out",
@@ -107,7 +126,7 @@ globalStyle(
 )
 
 globalStyle(
-    "form[data-qa^='form_'] .mantine-InputWrapper-label, form[data-qa^='form_'] .mantine-Textarea-label",
+    [formField(".mantine-InputWrapper-label"), formField(".mantine-Textarea-label")].join(", "),
     {
         marginBottom: "0.4rem",
         lineHeight: 1.35,
@@ -128,7 +147,11 @@ globalStyle(
 )
 
 globalStyle(
-    "form[data-qa^='form_'] .mantine-Input-input:hover, form[data-qa^='form_'] .mantine-Select-input:hover, form[data-qa^='form_'] .mantine-Textarea-input:hover",
+    [
+        formField(".mantine-Input-input:hover"),
+        formField(".mantine-Select-input:hover"),
+        formField(".mantine-Textarea-input:hover"),
+    ].join(", "),
     {
         borderColor: vars.border.strong,
         backgroundColor: vars.bg.fieldHover,
@@ -136,7 +159,11 @@ globalStyle(
 )
 
 globalStyle(
-    "form[data-qa^='form_'] .mantine-Input-input:focus, form[data-qa^='form_'] .mantine-Select-input:focus, form[data-qa^='form_'] .mantine-Textarea-input:focus",
+    [
+        formField(".mantine-Input-input:focus"),
+        formField(".mantine-Select-input:focus"),
+        formField(".mantine-Textarea-input:focus"),
+    ].join(", "),
     {
         borderColor: vars.colors.primary,
         boxShadow: vars.shadow.focusRing,
@@ -148,8 +175,6 @@ globalStyle("form[data-qa^='form_'] .mantine-Checkbox-label", {
     color: vars.text.primary,
     fontWeight: 500,
 })
-
-export const modalWizardContent = style({})
 
 globalStyle(`${modalWizardContent} .mantine-Modal-header`, {
     borderBottom: vars.borderShort.formDivider,

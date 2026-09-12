@@ -40,7 +40,6 @@ const ModalGroups: React.FC<Props> = ({
         <>
             {currentGroup ? (
                 <EditButton
-                    contentId={currentGroup.id}
                     content="Upravit skupinu"
                     onClick={toggleModal}
                     data-qa="button_edit_group"

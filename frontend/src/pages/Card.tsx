@@ -38,7 +38,7 @@ import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
 import ComponentsList from "../components/ComponentsList"
 import { courseBandVars } from "../components/CourseName.css"
-import EmptyState from "../components/EmptyState"
+import EmptyState, { LoadErrorEmptyState } from "../components/EmptyState"
 import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import * as lectureStyles from "../components/Lecture.css"
@@ -324,6 +324,19 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         (isClientPageValue ? clientQueriesLoading : groupQueriesLoading) ||
         !!attendanceStatesContext.isLoading
 
+    /**
+     * Klient/skupina se vůbec nenačetl (chyba serveru, offline) — `object` je pak `null`
+     * a `lectures` prázdné, takže bez téhle větve by karta vypadala jako úspěšně načtený
+     * záznam bez jediné lekce: prázdný nadpis a „Žádné lekce". Klient s plnou historií
+     * k nerozeznání od rozbitého načtení, tedy přesně to, co řeší `LoadErrorEmptyState`
+     * na Klientech/Skupinách i v záložce Analýza níž.
+     *
+     * Test je na `data`, ne na `isError`: při SELHANÉM REFETCHI si TanStack Query data
+     * z cache nechá a karta funguje dál (401/404 řeší globální handler přesměrováním).
+     */
+    const objectUnavailable =
+        !isLoading && (isClientPageValue ? clientQuery.data : groupQuery.data) === undefined
+
     // Background refetch seznamu lekcí (napr. po ulozeni/smazani lekce z modalu) — na rozdil
     // od `isLoading` (jen prvotni nacteni, kryte skeletonem cele karty) toto E2E krokum
     // (`wait_loading_ends` v tests/ui_steps/lectures.py) drzi `data-qa=loading` po dobu, kdy
@@ -465,6 +478,10 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                         </SimpleGrid>
                     </SkeletonShell>
                 </Container>
+            ) : objectUnavailable ? (
+                <Container>
+                    <LoadErrorEmptyState resource={isClientPageValue ? "Klienta" : "Skupinu"} />
+                </Container>
             ) : (
                 <Container>
                     <div className={styles.cardInfo}>
@@ -506,12 +523,31 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
 
                         {isClientObject(object) && (
                             <Tabs.Panel value="analyza" pt="md">
-                                {lecturesFromClientAllQuery.isPending ? (
-                                    <Skeleton h={320} radius="md" />
+                                {/* `isLoading`, ne `isPending`: offline je dotaz `pending`
+                                    s `fetchStatus: "paused"`, takže by tu kostra zůstala
+                                    napořád a chybová větev níž by byla nedosažitelná
+                                    (stejný důvod jako na Klientech, viz Clients.tsx) */}
+                                {lecturesFromClientAllQuery.isLoading ? (
+                                    // `SkeletonShell`, ne holý `Skeleton`: obal nese
+                                    // `data-qa="loading"` (kontrakt s E2E kroky) a
+                                    // `aria-busy`/`aria-live` — viz Skeletons.tsx, podle
+                                    // kterého ho má mít KAŽDÁ kostra v aplikaci
+                                    <SkeletonShell>
+                                        <Skeleton h={320} radius="md" />
+                                    </SkeletonShell>
+                                ) : lecturesFromClientAllQuery.data === undefined ? (
+                                    // bez téhle větve by se `ClientAnalysis` dostalo prázdné pole
+                                    // a klient s plnou historií by vypadal stejně jako klient bez
+                                    // jediné lekce.
+                                    // Test je na `data`, ne na `isError`: při SELHANÉM REFETCHI si
+                                    // TanStack Query data z cache nechá (`isError` by tedy plně
+                                    // načtenou analýzu zbytečně nahradilo chybou) a naopak
+                                    // nedokončený dotaz bez chyby (offline) data taky nemá.
+                                    <LoadErrorEmptyState resource="Analýzu" />
                                 ) : (
                                     <ClientAnalysis
                                         clientId={id}
-                                        lectures={lecturesFromClientAllQuery.data ?? []}
+                                        lectures={lecturesFromClientAllQuery.data}
                                     />
                                 )}
                             </Tabs.Panel>
@@ -552,11 +588,13 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                                     </div>
                                 ))}
                                 {lectures.length === 0 && (
-                                    <EmptyState
-                                        icon={faCalendar}
-                                        title="Žádné lekce"
-                                        description="Až se přidá první lekce, objeví se tady seřazená po kurzech."
-                                    />
+                                    <div className={styles.lectureEmptyState}>
+                                        <EmptyState
+                                            icon={faCalendar}
+                                            title="Žádné lekce"
+                                            description="Až se přidá první lekce, objeví se tady seřazená po kurzech."
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </Tabs.Panel>

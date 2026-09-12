@@ -11,7 +11,9 @@ export const nowrap = style({
     whiteSpace: "nowrap",
 })
 
-export const inlineBlock = style({
+// bez exportu — nikde jinde se nepoužívá samotné, jen jako stavební kámen pro
+// `inlineBlockNowrap` níž
+const inlineBlock = style({
     display: "inline-block",
 })
 
@@ -29,20 +31,18 @@ export const mb1 = style({
     marginBottom: "1rem",
 })
 
-export const ml05 = style({
+// bez exportu — nikde jinde se nepoužívá samotné, jen jako stavební kámen pro
+// `iconAfterText`/`iconBeforeText` níž
+const ml05 = style({
     marginLeft: "0.5rem",
 })
 
-export const mr025 = style({
+const mr025 = style({
     marginRight: "0.25rem",
 })
 
 export const middle = style({
     verticalAlign: "middle",
-})
-
-export const top = style({
-    verticalAlign: "top",
 })
 
 export const dimmedText = style({
@@ -57,7 +57,9 @@ export const italic = style({
     fontStyle: "italic",
 })
 
-export const textCenter = style({
+// bez exportu — nikde jinde se nepoužívá samotné, jen jako stavební kámen pro
+// `dimmedTextCenter` níž
+const textCenter = style({
     textAlign: "center",
 })
 

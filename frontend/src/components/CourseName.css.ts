@@ -51,7 +51,7 @@ export const courseName = style({
 /**
  * Tečka v barvě kurzu. `courseColorTint` je tu proto, že barva kurzu je uživatelský hex
  * a bez srovnání světlosti zmizí na bílé nebo na tmavé ploše. Stejný recept používá
- * `CourseCircle.css.ts` a `SelectCourse.css.ts`.
+ * `CourseCircle.css.ts` (tu tečku používá i `SelectCourse` v options, viz tokens.ts).
  */
 export const courseDot = style({
     display: "inline-block",

@@ -39,11 +39,6 @@ export const arrowLink = style({
     },
 })
 
-/** Shluk navigace týdne — šipky a „Dnes" drží u sebe, oddělené od primární akce. */
-export const weekNav = style({
-    alignItems: "center",
-})
-
 /** Samotný glyf uvnitř šipky — rozměr a rámeček řeší `arrowLink` výše. */
 export const arrowBtn = style({
     fontSize: "1rem",

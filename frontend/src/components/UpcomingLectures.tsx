@@ -13,7 +13,7 @@ import { contrastingTextColor } from "../global/utils"
 import ClientName from "./ClientName"
 import CourseName from "./CourseName"
 import * as dayStyles from "./DashboardDay.css"
-import EmptyState from "./EmptyState"
+import EmptyState, { LoadErrorEmptyState } from "./EmptyState"
 import GroupName from "./GroupName"
 import * as lectureStyles from "./Lecture.css"
 import LectureTypeIcon from "./LectureTypeIcon"
@@ -45,19 +45,19 @@ const UpcomingLectures: React.FC = () => {
     // omezení počtu i vyfiltrování zrušených řeší API (viz `getAllFromDateOrdered`):
     // rozsah `dateFrom` je otevřený, takže bez `limit` by přehled stahoval celý kalendář,
     // a zrušená lekce se nesmí nabídnout jako nejbližší příští, protože se nekoná
-    const {
-        data: lectures = [],
-        isLoading,
-        isError,
-    } = useLecturesFromDate(tomorrow, UPCOMING_COUNT)
+    const { data, isLoading } = useLecturesFromDate(tomorrow, UPCOMING_COUNT)
+    const lectures = data ?? []
 
     if (isLoading) {
         return <LectureListSkeleton count={2} bodyLines={1} />
     }
 
-    // selhaný dotaz nesmí tvrdit, že nic naplánováno není — `lectures` je při chybě
-    // prázdné stejně jako když opravdu nic není (viz stejná past v Diary.tsx u `isSuccess`)
-    if (lectures.length === 0 && !isError) {
+    // Nenačtený dotaz nesmí tvrdit, že nic naplánováno není — `lectures` je pak prázdné
+    // stejně jako když opravdu nic není. Test na `data`, ne na `isError`: offline je dotaz
+    // `pending` s `fetchStatus: "paused"`, tedy BEZ chyby a bez dat — chybová větev níž
+    // by pak byla nedosažitelná právě v případě, kvůli kterému vznikla (stejné pravidlo
+    // jako v Card.tsx a v `hasData` kontextů).
+    if (lectures.length === 0 && data !== undefined) {
         return (
             <EmptyState
                 icon={faCalendar}
@@ -68,14 +68,8 @@ const UpcomingLectures: React.FC = () => {
         )
     }
 
-    if (lectures.length === 0 && isError) {
-        return (
-            <EmptyState
-                icon={faCalendar}
-                title="Nejbližší lekce se nepodařilo načíst"
-                description="Zkuste to prosím znovu později."
-            />
-        )
+    if (lectures.length === 0) {
+        return <LoadErrorEmptyState resource="Nejbližší lekce" />
     }
 
     return (

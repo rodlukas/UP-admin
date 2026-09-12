@@ -23,7 +23,6 @@ import {
     prettyDateWithLongDayYearIfDiff,
     prettyDateWithYearIfDiff,
 } from "../global/funcDateTime"
-import { top } from "../global/utility.css"
 import { isModalShown, pageTitle } from "../global/utils"
 import { DEFAULT_DELAY, useDelayedValue } from "../hooks/useDelayedValue"
 
@@ -168,9 +167,7 @@ const Diary: React.FC = () => {
      * pořád nesmí tvrdit, že se v daném dni nic nekoná, jen musí nechat dosažitelné
      * tlačítko na přidání lekce, dokud se buď potvrdí, nebo se den vrátí zpátky do mřížky.
      */
-    const freeDays = hideEmptyDays
-        ? week.filter((_, index) => hiddenWeekdays.includes(index))
-        : []
+    const freeDays = hideEmptyDays ? week.filter((_, index) => hiddenWeekdays.includes(index)) : []
 
     const prevMondayParams = React.useMemo(
         () => getDateParams(addDays(getRequiredMonday(), -DAYS_IN_WEEK)),
@@ -252,7 +249,7 @@ const Diary: React.FC = () => {
                         <>
                             {/* Navigace tydne je jeden shluk neutralnich ovladacu; jedina
                                 primarni (indigo) akce v hlavicce je pridani lekce. */}
-                            <Group gap="0.25rem" wrap="nowrap" className={styles.weekNav}>
+                            <Group gap="0.25rem" wrap="nowrap">
                                 <Tooltip label="Předchozí týden">
                                     <Link
                                         aria-label="Předchozí týden"
@@ -292,7 +289,7 @@ const Diary: React.FC = () => {
                                 <Tooltip label={prettyDateWithLongDayYear(new Date())}>
                                     {isEqualDate(getCurrentMonday(), getRequiredMonday()) ? (
                                         <span className={styles.disabledLink}>
-                                            <Button variant="default" disabled className={top}>
+                                            <Button variant="default" disabled>
                                                 Dnes
                                             </Button>
                                         </span>
@@ -306,8 +303,7 @@ const Diary: React.FC = () => {
                                                         direction: "today",
                                                         method: "click",
                                                     })
-                                                }}
-                                                className={top}>
+                                                }}>
                                                 Dnes
                                             </Button>
                                         </Link>
@@ -319,8 +315,8 @@ const Diary: React.FC = () => {
                     }
                 />
             </Container>
-            {/* proměnná sedí na obalu, ne na mřížce: strop šířky ji čte `weekGrid`
-                a vlastní mřížka pod ním ji podědí */}
+            {/* proměnná sedí na obalu, ne na mřížce: strop šířky ji čte `weekRow`
+                a jako CSS custom property ji od obalu podědí */}
             <div
                 className={styles.weekGrid}
                 style={assignInlineVars({

@@ -11,7 +11,7 @@ import ClientEmail from "../components/ClientEmail"
 import ClientName from "../components/ClientName"
 import ClientNote from "../components/ClientNote"
 import ClientPhone from "../components/ClientPhone"
-import EmptyState from "../components/EmptyState"
+import EmptyState, { LoadErrorEmptyState } from "../components/EmptyState"
 import Heading from "../components/Heading"
 import InfoTooltip from "../components/InfoTooltip"
 import { SkeletonShell, TableSkeleton } from "../components/Skeletons"
@@ -52,18 +52,29 @@ const Clients: React.FC = () => {
     const clientsActiveContext = useClientsActiveContext()
     /** Je vybráno zobrazení aktivních klientů (true). */
     const [active, setActive] = React.useState(true)
-    const { data: inactiveClients = [], isLoading: inactiveLoading } = useInactiveClients(!active)
+    const {
+        data: inactiveClientsData,
+        // `isLoading` (= `isPending && isFetching`), ne `isPending`: dotaz je podmíněně
+        // `enabled` (jen na záložce Neaktivní), ale na renderu, kdy se `enabled` překlopí,
+        // hlásí TanStack Query `isLoading: true` už během renderu (`getOptimisticResult`
+        // aplikuje `fetchState()`), takže žádné okno „ani loading, ani success" nevzniká.
+        // Samotné `isPending` by navíc offline (`fetchStatus: "paused"`) zůstalo `true`
+        // natrvalo a stránka by místo chybového stavu ukazovala nekonečnou kostru.
+        isLoading: inactiveLoading,
+    } = useInactiveClients(!active)
+    const inactiveClients = inactiveClientsData ?? []
     const deactivateClients = useDeactivateClients()
 
     const isLoading = (): boolean => (active ? clientsActiveContext.isLoading : inactiveLoading)
-
-    const getClientsData = React.useCallback(
-        (): ClientType[] => (active ? clientsActiveContext.clients : inactiveClients),
-        [active, clientsActiveContext.clients, inactiveClients],
-    )
+    // „data už dorazila (třeba prázdná)", ne `isSuccess` — rozlišuje skutečně prázdný seznam
+    // od nenačteného (chyba/offline) a na rozdíl od `isSuccess` přežije selhaný refetch, při
+    // kterém si TanStack Query data z cache nechá (viz `hasData` v kontextech)
+    const hasData = active ? clientsActiveContext.hasData : inactiveClientsData !== undefined
+    // volá se jen synchronně inline v rámci téhož renderu, memoizace tu nic nešetří
+    const clientsData: ClientType[] = active ? clientsActiveContext.clients : inactiveClients
 
     const table = useDataTable<ClientType>({
-        rows: getClientsData(),
+        rows: clientsData,
         searchIn: SEARCH_IN,
         columns: COLUMNS,
         initialSortKey: "name",
@@ -113,7 +124,7 @@ const Clients: React.FC = () => {
                 <TableSkeleton />
             </SkeletonShell>
         )
-    } else if (getClientsData().length > 0) {
+    } else if (clientsData.length > 0) {
         clientsContent = (
             <>
                 <TableToolbar
@@ -122,7 +133,7 @@ const Clients: React.FC = () => {
                     label="klienta"
                     fields="jméno, telefon, e-mail, poznámka"
                     filteredCount={table.filteredCount}
-                    totalCount={getClientsData().length}
+                    totalCount={clientsData.length}
                 />
                 {table.filteredCount === 0 ? (
                     <EmptyState
@@ -208,7 +219,7 @@ const Clients: React.FC = () => {
                 )}
             </>
         )
-    } else {
+    } else if (hasData) {
         clientsContent = (
             <EmptyState
                 icon={faUsers}
@@ -220,6 +231,10 @@ const Clients: React.FC = () => {
                 }
             />
         )
+    } else {
+        // prázdné pole bez načtených dat znamená chybu při načítání (nebo offline), ne
+        // skutečně žádné klienty — jinak by výpadek API vypadal jako čistý stav
+        clientsContent = <LoadErrorEmptyState resource="Klienty" />
     }
 
     return (
@@ -228,8 +243,11 @@ const Clients: React.FC = () => {
                 title={
                     <>
                         {APP_URLS.klienti.title}{" "}
-                        {!isLoading() && (
-                            <span className={styles.titleCount}>{getClientsData().length}</span>
+                        {/* Po selhaném načtení je `clientsData` prázdné a samotné `!isLoading()`
+                            by do titulku napsalo „0" nad hlášku, že se klienty nepodařilo načíst —
+                            spočítaná nula a chybějící údaj nejsou totéž. */}
+                        {!isLoading() && hasData && (
+                            <span className={styles.titleCount}>{clientsData.length}</span>
                         )}
                     </>
                 }

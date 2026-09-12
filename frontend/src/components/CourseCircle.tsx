@@ -33,7 +33,17 @@ const CourseCircle: React.FC<Props> = ({ color, size, showTitle = false, classNa
         />
     )
 
-    return showTitle ? <Tooltip label={`Kód barvy: ${color}`}>{circle}</Tooltip> : circle
+    return showTitle ? (
+        <Tooltip label={`Kód barvy: ${color}`}>
+            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- trigger tooltipu
+                musí být fokusovatelný, jinak je obsah jen pro myš (WAI-ARIA tooltip pattern) */}
+            <span tabIndex={0} role="img" aria-label={`Kód barvy: ${color}`}>
+                {circle}
+            </span>
+        </Tooltip>
+    ) : (
+        circle
+    )
 }
 
 export default CourseCircle

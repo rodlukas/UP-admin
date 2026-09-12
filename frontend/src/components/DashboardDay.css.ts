@@ -50,9 +50,16 @@ export const dashboardDayDateAction = style({
 })
 
 export const lectureFree = style({
-    // !important: přebíjí padding shorthand třídy `lecture` (Lecture.css.ts) — stejná
-    // specificita a pořadí tříd napříč soubory není v bundlu garantované
-    paddingTop: "1rem !important",
+    // `&&`: přebíjí padding shorthand třídy `lecture` (Lecture.css.ts) — stejná specificita
+    // a pořadí tříd napříč soubory není v bundlu garantované. Zdvojená třída zvedá specificitu
+    // na 0,2,0 a vyhrává napevno bez ohledu na pořadí — na rozdíl od `!important` se tak
+    // nezamkne sama, kdyby o padding tady soupeřila i nějaká další třída (stejný pattern
+    // jako `Bank.css.ts`/`AppSpotlight.css.ts`).
+    selectors: {
+        "&&": {
+            paddingTop: "1rem",
+        },
+    },
 })
 
 /** Den je plocha, ne karta — obsah drží pohromadě jen linky mezi lekcemi. */
@@ -133,6 +140,18 @@ globalStyle(`${lectureHeader} .mantine-ActionIcon-root:hover`, {
 })
 
 /**
+ * Tužka na pruhu zrušené lekce má vlastní hover overlay — stejná specificita jako pravidlo
+ * výše (dvě třídy + `:hover`), vyhrává pozdější pořadí v tomto souboru (stejná technika jako
+ * `dashboardDayDateToday` výše). `lectureHeaderCanceled` je světlý pastel (`statusTint.danger`
+ * v light módu skoro bílý, viz tokens.ts), takže bílý 22% overlay z obecného pravidla je na
+ * něm prakticky neviditelný — tady proto tmavší.
+ */
+globalStyle(`${lectureHeaderCanceled} .mantine-ActionIcon-root:hover`, {
+    backgroundColor: "light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.22))",
+    color: "inherit",
+})
+
+/**
  * Název kurzu v pruhu vyplní zbylé místo a odsune ikonu, pořadí a tužku doprava.
  * Zalamuje se (ne ellipsis) — v pěti sloupcích diáře se delší názvy nevejdou na řádek
  * a useknuté „Bilaterální integr…" už kurz nepojmenuje; radši vyšší pruh než ztráta údaje.
@@ -158,6 +177,12 @@ export const lectureBodyCanceled = style({
     backgroundColor: vars.statusTint.danger,
 })
 
-globalStyle(`${dashboardDayItem}:hover ${lectureBody}`, {
+/**
+ * `:not()` (ne jen pozdější pořadí v souboru): `.dashboardDayItem:hover .lectureBody` má vyšší
+ * specificitu (tři úrovně) než samotné `.lectureBodyCanceled` (jedna), takže by hover červené
+ * podbarvení zrušené lekce přebil zpátky na šedou bez ohledu na pořadí v souboru — vyloučení
+ * je proto jediný spolehlivý způsob, jak zrušené lekci hover nesahat na barvu vůbec.
+ */
+globalStyle(`${dashboardDayItem}:hover ${lectureBody}:not(${lectureBodyCanceled})`, {
     backgroundColor: vars.bg.hover,
 })

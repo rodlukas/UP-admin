@@ -2,7 +2,12 @@ import { globalStyle, style } from "@vanilla-extract/css"
 
 import { courseBand } from "../components/CourseName.css"
 import { plainName as groupPlainName } from "../components/GroupName.css"
-import { lectureContent, lectureHeading, lectureTitle } from "../components/Lecture.css"
+import {
+    lectureCanceled,
+    lectureContent,
+    lectureHeading,
+    lectureTitle,
+} from "../components/Lecture.css"
 import { statusNoticeWarningStrong, surfacePanel } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
 
@@ -28,20 +33,27 @@ export const courseHeadingItem = style([
 ])
 
 // nadpis uvnitř pruhu píše barvou pruhu — tlumený odstín z palety by na barvě kurzu zmizel
-globalStyle(`${courseHeadingItem} h3`, {
+// (`Title order={2}` v Card.tsx renderuje `h2`, ne `h3` — `order` je sémantická úroveň,
+// vzhled řeší `size` zvlášť)
+globalStyle(`${courseHeadingItem} h2`, {
     color: "inherit",
 })
 
 export const lectureCard = style({
-    // Řádek lekce nese zároveň `infoListItem` (kvůli oddělovači `& + &`) i `lecture`
+    // `&&`: Řádek lekce nese zároveň `infoListItem` (kvůli oddělovači `& + &`) i `lecture`
     // (Lecture.css.ts) — oba definují `padding` se shodnou specificitou a pořadí tříd napříč
-    // soubory není v bundlu garantované. Padding proto určíme explicitně (!important, stejný
-    // pattern jako DashboardDay.css.ts).
+    // soubory není v bundlu garantované. Zdvojená třída zvedá specificitu na 0,2,0 a vyhrává
+    // napevno bez ohledu na pořadí — na rozdíl od `!important` (viz `lectureFuture`/
+    // `lecturePrepaid` níž, ten samý problém, `!important` tam schválně není).
     //
     // Vodorovně nula schválně: podbarvení stavu (`lectureFuture`, `lecturePrepaid`,
     // `lectureCanceled`) i šrafování zrušené lekky mají jít přes celou šířku panelu, stejně
     // jako tělo lekce v diáři. Odsazení proto nese až obsah, viz pravidlo níže.
-    padding: "0.5rem 0 0.75rem !important",
+    selectors: {
+        "&&": {
+            padding: "0.5rem 0 0.75rem",
+        },
+    },
 })
 
 /**
@@ -65,6 +77,20 @@ export const lectureFuture = style({
 
 export const lecturePrepaid = style({
     backgroundColor: vars.statusTint.success,
+})
+
+/**
+ * Lekce může být zároveň zrušená i budoucí/předplacená (`Card.tsx` skládá `classNames`
+ * z obou) — bez zásahu by šlo o nedeterministickou remízu (tři samostatné třídy, každá
+ * specificity 0,1,0, cross-file pořadí v bundlu není garantované). Sloučený selektor
+ * (obě třídy na jednom elementu) má vyšší specificitu než kterákoli samotná třída,
+ * takže vyhrává napevno bez ohledu na pořadí — na rozdíl od `!important` tu nejde
+ * o řešení, které by se samo zamklo, kdyby později přibyla další soupeřící třída.
+ * Stav musí vyhrát vždy: je důležitější než příslušnost (viz `lectureHeaderCanceled`
+ * v DashboardDay.css.ts).
+ */
+globalStyle(`${lectureFuture}${lectureCanceled}, ${lecturePrepaid}${lectureCanceled}`, {
+    backgroundColor: vars.statusTint.danger,
 })
 
 /**
@@ -182,6 +208,15 @@ export const lectureColumns = style({
  */
 export const lectureColumnsSingle = style({
     gridTemplateColumns: "1fr",
+})
+
+/**
+ * Prázdný stav „Žádné lekce" je jediné dítě `lectureColumns` mřížky výše — bez rozpětí přes
+ * všechny sloupce by se vešel jen do jedné (nejužší) buňky mřížky, místo aby stál na celou
+ * šířku panelu jako všude jinde v appce.
+ */
+export const lectureEmptyState = style({
+    gridColumn: "1 / -1",
 })
 
 /** Sloupec kurzu je ohraničený panel — bez něj by bílé bloky lekcí ležely přímo

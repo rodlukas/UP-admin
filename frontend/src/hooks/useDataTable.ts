@@ -42,13 +42,7 @@ type Options<T> = {
  * stránkovat nemá. E2E kroky (`tests/ui_steps/helpers.py`, `_paginated_elements`)
  * počítají a hledají přes všechny stránky, ne jen tu aktuální.
  */
-export function useDataTable<T>({
-    rows,
-    searchIn,
-    columns,
-    initialSortKey,
-    resetKey,
-}: Options<T>) {
+export function useDataTable<T>({ rows, searchIn, columns, initialSortKey, resetKey }: Options<T>) {
     const [query, setQuery] = React.useState("")
     /**
      * Klíč a směr drží **jeden stav**, ne dva. Přepnutí směru vychází z právě řazeného
@@ -66,11 +60,19 @@ export function useDataTable<T>({
     // Přepnutí aktivní/neaktivní (`resetKey`) posílá úplně jinou `rows` — hledaný výraz
     // i stránka z předchozího seznamu by jinak přežily na seznam, pro který nikdy nebyly
     // napsané (a při shodě nuly by tabulka ukázala "Nic nenalezeno" nad neprázdným
-    // seznamem). Proč efekt cílí na `resetKey`, ne na `rows`: viz `Options.resetKey` výše.
-    React.useEffect(() => {
+    // seznamem). Proč cílí na `resetKey`, ne na `rows`: viz `Options.resetKey` výše.
+    //
+    // Reset běží přímo v renderu (ne v `useEffect`), podle oficiálního Reactího vzoru pro
+    // "adjusting state when a prop changes". `useEffect` totiž běží až PO commitu — o jeden
+    // render později by se `filtered` níže na jeden snímek spočítalo z nových `rows`, ale
+    // pořád se starým `query` (přepnutí Aktivní/Neaktivní by na okamžik ukázalo nesouvisející
+    // výsledky přefiltrované starým hledaným výrazem).
+    const [prevResetKey, setPrevResetKey] = React.useState(resetKey)
+    if (prevResetKey !== resetKey) {
+        setPrevResetKey(resetKey)
         setQuery("")
         setPage(1)
-    }, [resetKey])
+    }
 
     const { key: sortKey, direction: sortDirection } = sort
 

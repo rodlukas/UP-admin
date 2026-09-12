@@ -1,13 +1,4 @@
-import {
-    Checkbox,
-    Group,
-    Modal,
-    MultiSelect,
-    Pill,
-    SimpleGrid,
-    TextInput,
-    Title,
-} from "@mantine/core"
+import { Checkbox, Group, Modal, MultiSelect, Pill, TextInput, Title } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import * as React from "react"
 
@@ -21,7 +12,7 @@ import InfoTooltip from "../components/InfoTooltip"
 import { FormSkeleton } from "../components/Skeletons"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { TEXTS } from "../global/constants"
-import { clientName } from "../global/utils"
+import { clientName, courseSelectError, withSelectedOptions } from "../global/utils"
 import { ModalGroupsData } from "../types/components"
 import {
     ClientType,
@@ -59,7 +50,10 @@ const FormGroups: React.FC<Props> = (props) => {
     const coursesVisibleContext = useCoursesVisibleContext()
     const isGroup = (group: Props["group"]): group is GroupType => "id" in group
 
-    const { data: clientsData = [], isLoading: clientsLoading } = useClients()
+    const { data: clientsData, isLoading: clientsLoading } = useClients()
+    // `data === undefined`, ne `!isSuccess`: selhaný REFETCH nechá data z cache (nabídka je
+    // pořád plná a použitelná), zatímco úspěšně načtený prázdný seznam chyba není
+    const clientsUnavailable = clientsData === undefined
     const createGroup = useCreateGroup()
     const updateGroup = useUpdateGroup()
     const deleteGroup = useDeleteGroup()
@@ -163,17 +157,20 @@ const FormGroups: React.FC<Props> = (props) => {
     // kvůli asynchronnímu refetchi. Bez něj by MultiSelect vykreslil pill nad neznámým
     // id (Mantine pošle do renderPill option: undefined → pád) a onChange by člena tiše
     // zahodil. Sjednocením má každé vybrané id vždy odpovídající položku.
-    const clientsById = React.useMemo(() => {
-        const byId = new Map<string, ClientType>()
-        clientsData.forEach((c) => byId.set(c.id.toString(), c))
-        form.values.members.forEach((m) => {
-            const id = m.id.toString()
-            if (!byId.has(id)) {
-                byId.set(id, m)
-            }
-        })
-        return byId
-    }, [clientsData, form.values.members])
+    const mergedClients = React.useMemo(
+        () => withSelectedOptions(clientsData ?? [], form.values.members),
+        [clientsData, form.values.members],
+    )
+    const mergedClientsData = React.useMemo(
+        () => mergedClients.map((c) => ({ value: c.id.toString(), label: clientName(c) })),
+        [mergedClients],
+    )
+    // lookup podle id pro `onChange` níž — s ~stovkami klientů by lineární `find()` pro každý
+    // vybraný pill znamenal k×n porovnání při každé změně výběru
+    const mergedClientsById = React.useMemo(
+        () => new Map(mergedClients.map((c) => [c.id.toString(), c])),
+        [mergedClients],
+    )
 
     const isLoading = clientsLoading || coursesVisibleContext.isLoading
     const isSubmit = createGroup.isPending || updateGroup.isPending
@@ -191,7 +188,7 @@ const FormGroups: React.FC<Props> = (props) => {
                         </>
                     )}
                 </Modal.Title>
-                <Modal.CloseButton />
+                <Modal.CloseButton data-qa="modal_close" />
             </Modal.Header>
             <Modal.Body>
                 {isLoading ? (
@@ -228,11 +225,11 @@ const FormGroups: React.FC<Props> = (props) => {
                                             }
                                         }}
                                         options={coursesVisibleContext.courses}
-                                        error={
-                                            triedSubmit && !form.values.course
-                                                ? "Vyberte kurz"
-                                                : undefined
-                                        }
+                                        error={courseSelectError(
+                                            triedSubmit,
+                                            Boolean(form.values.course),
+                                            coursesVisibleContext,
+                                        )}
                                     />
                                 </div>
                                 <div className={styles.fieldBlock}>
@@ -241,20 +238,33 @@ const FormGroups: React.FC<Props> = (props) => {
                                     </label>
                                     <MultiSelect
                                         id="members"
-                                        data={[...clientsById.values()].map((c) => ({
-                                            value: c.id.toString(),
-                                            label: clientName(c),
-                                        }))}
+                                        data={mergedClientsData}
                                         value={form.values.members.map((m) => m.id.toString())}
                                         onChange={(vals) => {
                                             const found = vals
-                                                .map((v) => clientsById.get(v))
+                                                .map((v) => mergedClientsById.get(v))
                                                 .filter((c): c is ClientType => c !== undefined)
                                             form.setFieldValue("members", found)
                                         }}
                                         placeholder="Vyberte členy z existujících klientů…"
                                         searchable
-                                        nothingFoundMessage={TEXTS.NO_RESULTS}
+                                        // Prázdný seznam po selhaném načtení není totéž jako
+                                        // „žádní klienti nejsou" — bez rozlišení by admin založil
+                                        // skupinu bez členů v domnění, že žádní klienti neexistují.
+                                        // Samotná hláška v dropdownu na to nestačí: při ÚPRAVĚ
+                                        // skupiny drží nabídku neprázdnou stávající členové
+                                        // (viz `mergedClientsData`), takže by se nikdy neukázala —
+                                        // proto i trvalá chyba pod polem.
+                                        nothingFoundMessage={
+                                            clientsUnavailable
+                                                ? "Klienty se nepodařilo načíst"
+                                                : TEXTS.NO_RESULTS
+                                        }
+                                        error={
+                                            clientsUnavailable
+                                                ? TEXTS.ERROR_CLIENTS_LOAD
+                                                : undefined
+                                        }
                                         // Mantine MultiSelect ma `input` (PillsInput wrapper s pills)
                                         // a `inputField` (vnitrni <input> kam uzivatel pise) jako 2 sloty.
                                         // V GDPR rezimu musime maskovat oba – pily uz mask maji pres renderPill,
@@ -264,7 +274,10 @@ const FormGroups: React.FC<Props> = (props) => {
                                             <span data-gdpr>{option.label}</span>
                                         )}
                                         renderPill={({ option, onRemove }) => (
-                                            <Pill withRemoveButton onRemove={onRemove}>
+                                            <Pill
+                                                withRemoveButton
+                                                onRemove={onRemove}
+                                                data-qa="multiselect_pill">
                                                 <span data-gdpr>{option.label}</span>
                                             </Pill>
                                         )}
@@ -279,33 +292,31 @@ const FormGroups: React.FC<Props> = (props) => {
                                         }
                                     />
                                 </div>
-                                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="sm">
-                                    <div className={styles.fieldBlock}>
-                                        <label
-                                            htmlFor="active"
-                                            data-qa="group_label_active"
-                                            className={styles.fieldLabel}>
-                                            Stav skupiny
-                                        </label>
-                                        <div className={styles.inlineCheckboxRow}>
-                                            <Checkbox
-                                                id="active"
-                                                checked={form.values.active}
-                                                onChange={(e) =>
-                                                    form.setFieldValue(
-                                                        "active",
-                                                        e.currentTarget.checked,
-                                                    )
-                                                }
-                                                data-qa="group_checkbox_active"
-                                                label="Je aktivní"
-                                            />
-                                            {!form.values.active && (
-                                                <InfoTooltip text="Neaktivním skupinám nelze vytvořit lekci." />
-                                            )}
-                                        </div>
+                                <div className={styles.fieldBlock}>
+                                    <label
+                                        htmlFor="active"
+                                        data-qa="group_label_active"
+                                        className={styles.fieldLabel}>
+                                        Stav skupiny
+                                    </label>
+                                    <div className={styles.inlineCheckboxRow}>
+                                        <Checkbox
+                                            id="active"
+                                            checked={form.values.active}
+                                            onChange={(e) =>
+                                                form.setFieldValue(
+                                                    "active",
+                                                    e.currentTarget.checked,
+                                                )
+                                            }
+                                            data-qa="group_checkbox_active"
+                                            label="Je aktivní"
+                                        />
+                                        {!form.values.active && (
+                                            <InfoTooltip text="Neaktivním skupinám nelze vytvořit lekci." />
+                                        )}
                                     </div>
-                                </SimpleGrid>
+                                </div>
                             </div>
                         </div>
                         {isGroup(props.group) && (

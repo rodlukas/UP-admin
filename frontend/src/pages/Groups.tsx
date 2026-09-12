@@ -13,7 +13,7 @@ import APP_URLS from "../APP_URLS"
 import ActiveSwitcher from "../components/buttons/ActiveSwitcher"
 import ClientsList from "../components/ClientsList"
 import CourseName from "../components/CourseName"
-import EmptyState from "../components/EmptyState"
+import EmptyState, { LoadErrorEmptyState } from "../components/EmptyState"
 import GroupName from "../components/GroupName"
 import Heading from "../components/Heading"
 import InfoTooltip from "../components/InfoTooltip"
@@ -50,18 +50,24 @@ const Groups: React.FC = () => {
     const groupsActiveContext = useGroupsActiveContext()
     /** Je vybráno zobrazení aktivních skupin (true). */
     const [active, setActive] = React.useState(true)
-    const { data: inactiveGroups = [], isLoading: inactiveLoading } = useInactiveGroups(!active)
+    const {
+        data: inactiveGroupsData,
+        // `isLoading`, ne `isPending` — stejný důvod jako u `useInactiveClients` v Clients.tsx
+        isLoading: inactiveLoading,
+    } = useInactiveGroups(!active)
+    const inactiveGroups = inactiveGroupsData ?? []
     const deactivateGroups = useDeactivateGroups()
 
     const isLoading = (): boolean => (active ? groupsActiveContext.isLoading : inactiveLoading)
-
-    const getGroupsData = React.useCallback(
-        (): GroupType[] => (active ? groupsActiveContext.groups : inactiveGroups),
-        [active, groupsActiveContext.groups, inactiveGroups],
-    )
+    // „data už dorazila (třeba prázdná)", ne `isSuccess` — rozlišuje skutečně prázdný seznam
+    // od nenačteného (chyba/offline) a na rozdíl od `isSuccess` přežije selhaný refetch, při
+    // kterém si TanStack Query data z cache nechá (viz `hasData` v kontextech)
+    const hasData = active ? groupsActiveContext.hasData : inactiveGroupsData !== undefined
+    // volá se jen synchronně inline v rámci téhož renderu, memoizace tu nic nešetří
+    const groupsData: GroupType[] = active ? groupsActiveContext.groups : inactiveGroups
 
     const table = useDataTable<GroupType>({
-        rows: getGroupsData(),
+        rows: groupsData,
         searchIn: SEARCH_IN,
         columns: COLUMNS,
         initialSortKey: "name",
@@ -111,7 +117,7 @@ const Groups: React.FC = () => {
                 <TableSkeleton count={6} />
             </SkeletonShell>
         )
-    } else if (getGroupsData().length > 0) {
+    } else if (groupsData.length > 0) {
         groupsContent = (
             <>
                 <TableToolbar
@@ -120,7 +126,7 @@ const Groups: React.FC = () => {
                     label="skupinu"
                     fields="název, kurz, člen"
                     filteredCount={table.filteredCount}
-                    totalCount={getGroupsData().length}
+                    totalCount={groupsData.length}
                 />
                 {table.filteredCount === 0 ? (
                     <EmptyState
@@ -179,9 +185,7 @@ const Groups: React.FC = () => {
                                                                 }
                                                             />
                                                         )}
-                                                        {isStaleActive(
-                                                            group.last_lecture_date,
-                                                        ) && (
+                                                        {isStaleActive(group.last_lecture_date) && (
                                                             <InfoTooltip
                                                                 placement="right"
                                                                 size="1x"
@@ -227,7 +231,7 @@ const Groups: React.FC = () => {
                 )}
             </>
         )
-    } else {
+    } else if (hasData) {
         groupsContent = (
             <EmptyState
                 icon={faLayerGroup}
@@ -239,6 +243,10 @@ const Groups: React.FC = () => {
                 }
             />
         )
+    } else {
+        // prázdné pole bez načtených dat znamená chybu při načítání (nebo offline), ne
+        // skutečně žádné skupiny — jinak by výpadek API vypadal jako čistý stav
+        groupsContent = <LoadErrorEmptyState resource="Skupiny" />
     }
 
     return (
@@ -247,8 +255,9 @@ const Groups: React.FC = () => {
                 title={
                     <>
                         {APP_URLS.skupiny.title}{" "}
-                        {!isLoading() && (
-                            <span className={styles.titleCount}>{getGroupsData().length}</span>
+                        {/* `hasData` — stejný důvod jako u Klientů (Clients.tsx) */}
+                        {!isLoading() && hasData && (
+                            <span className={styles.titleCount}>{groupsData.length}</span>
                         )}
                     </>
                 }

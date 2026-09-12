@@ -2,6 +2,7 @@ import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontaw
 import {
     Alert,
     Checkbox,
+    ComboboxItem,
     Grid,
     Group,
     Modal,
@@ -28,7 +29,11 @@ import ClientName from "../components/ClientName"
 import GroupName from "../components/GroupName"
 import InfoTooltip from "../components/InfoTooltip"
 import { SkeletonShell } from "../components/Skeletons"
-import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
+import {
+    useAttendanceStatesContext,
+    useVisibleAttendanceStateOptions,
+    withCurrentAttendanceState,
+} from "../contexts/AttendanceStatesContext"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import {
     DEFAULT_LECTURE_DURATION_GROUP,
@@ -37,7 +42,7 @@ import {
 } from "../global/constants"
 import { prettyDateWithLongDayYear, toISODate, toISOTime } from "../global/funcDateTime"
 import { dimmedTextCenter } from "../global/utility.css"
-import { DefaultValuesForLecture } from "../global/utils"
+import { courseSelectError, DefaultValuesForLecture } from "../global/utils"
 import {
     AttendancePostApi,
     AttendancePutApi,
@@ -385,8 +390,11 @@ const FormLectures: React.FC<Props> = (props) => {
     )
     /** Zrušení lekce není možné upravit (true). */
     const [canceledDisabled, setCanceledDisabled] = React.useState(false)
-    /** Formulář byl odeslán (true). */
-    const [isSubmit, setIsSubmit] = React.useState(false)
+    // Odvozeno z mutací, ne vlastní `useState` + ruční `setIsSubmit()`: ručně držená kopie
+    // stavu, který si knihovna stejně vede sama, se může rozejít (stačí přibýt cesta, která
+    // ho nevrátí zpět, a tlačítko zůstane točit navždy). Stejně jako FormGroups /
+    // FormApplications / FormClients.
+    const isSubmit = createLecture.isPending || updateLecture.isPending
 
     // pokus o odeslání bez vybraného kurzu — řídí zobrazení chyby u SelectCourse
     // (searchable input s napsaným textem projde nativní validací required, takže by
@@ -518,11 +526,16 @@ const FormLectures: React.FC<Props> = (props) => {
             setCourse(courseValue)
             if (courseValue) {
                 setDuration(courseValue.duration)
-                // zruš chybu po výběru kurzu (stejný důvod jako u FormApplications)
-                setTriedSubmit(false)
+                // zruš chybu jen když je splněné i zbylé povinné pole (stav účasti u všech
+                // členů) — na rozdíl od FormApplications tu totiž kurz není jediná podmínka
+                // (viz isAtStateWithoutEmpty pojistka v onSubmit); jinak by po výběru kurzu
+                // zmizela i chyba „Vyberte stav účasti", přestože formulář pořád nejde odeslat
+                if (isAtStateWithoutEmpty(atState)) {
+                    setTriedSubmit(false)
+                }
             }
         },
-        [props],
+        [props, atState],
     )
 
     const onChangePrepaid = React.useCallback((): void => {
@@ -569,32 +582,27 @@ const FormLectures: React.FC<Props> = (props) => {
         return attendances
     }, [atState, atPaid, atNote, members, props.lecture])
 
-    // Viditelné stavy účasti jako Select options – spočítají se jednou (ne ve `.filter().map()`
-    // pro každého účastníka při každém renderu); skrytý, ale aktuálně zvolený stav se doplní níže.
-    const visibleAttendanceStateOptions = React.useMemo(
-        () =>
-            attendanceStatesContext.attendancestates
-                .filter((s) => s.visible)
-                .map((s) => ({ value: s.id.toString(), label: s.name })),
-        [attendanceStatesContext.attendancestates],
-    )
+    // sdílené se Settings.tsx (viz AttendanceStatesContext.tsx); skrytý, ale aktuálně
+    // zvolený stav doplňuje withCurrentAttendanceState níž
+    const visibleAttendanceStateOptions = useVisibleAttendanceStateOptions()
 
     const attendanceStatesById = React.useMemo(
         () => new Map(attendanceStatesContext.attendancestates.map((s) => [s.id, s])),
         [attendanceStatesContext.attendancestates],
     )
 
-    /** Options pro Select stavu účasti člena: viditelné stavy + jeho aktuálně zvolený (i skrytý) stav. */
-    const getAttendanceStateOptions = (memberId: number): { value: string; label: string }[] => {
+    /**
+     * Options pro Select stavu účasti člena: viditelné stavy + jeho aktuálně zvolený (i skrytý)
+     * stav. `selectable: true` — viz withCurrentAttendanceState: na rozdíl od konfigurace
+     * v Nastavení se sem uživatel musí mít jak vrátit, když omylem přepne na jiný stav.
+     */
+    const getAttendanceStateOptions = (memberId: number): ComboboxItem[] => {
         const currentStateId = atState[memberId]
-        const currentState =
-            currentStateId !== undefined ? attendanceStatesById.get(currentStateId) : undefined
-        return currentState && !currentState.visible
-            ? [
-                  ...visibleAttendanceStateOptions,
-                  { value: currentState.id.toString(), label: currentState.name },
-              ]
-            : visibleAttendanceStateOptions
+        return withCurrentAttendanceState(
+            visibleAttendanceStateOptions,
+            currentStateId !== undefined ? attendanceStatesById.get(currentStateId) : undefined,
+            { selectable: true },
+        )
     }
 
     const onSubmit = React.useCallback(
@@ -612,11 +620,12 @@ const FormLectures: React.FC<Props> = (props) => {
             if (formElement && !formElement.reportValidity()) {
                 return
             }
-            // kurz (viz komentář u triedSubmit výše) a trvání ověřujeme ještě zvlášť —
-            // reportValidity je pro ně samo o sobě nespolehlivé
+            // kurz (viz komentář u triedSubmit výše) ověřujeme ještě zvlášť — je to custom
+            // Select bez nativního `required` inputu, takže na něj reportValidity výše
+            // nestačí. `duration` už native `required min="1"` má a řádek výše by na
+            // prázdné/neplatné hodnotě zastavil dřív — zbylá podmínka je tu jen pro jistotu.
             if (!course || duration === undefined) {
                 setTriedSubmit(true)
-                formElement?.reportValidity()
                 return
             }
             // pojistka: `getAttendancesSubmit` by na neuplna data (typicky nulti pocet
@@ -642,14 +651,10 @@ const FormLectures: React.FC<Props> = (props) => {
             if (isLecture(props.lecture)) {
                 const attendances = getAttendancesSubmit<AttendancePutApi>()
                 const dataPut: LecturePutApi = { ...data, attendances, id: props.lecture.id }
-                setIsSubmit(true)
                 updateLecture.mutate(dataPut, {
                     onSuccess: () => {
                         trackEvent("lecture_updated", { source: props.source })
                         props.funcForceClose()
-                    },
-                    onError: () => {
-                        setIsSubmit(false)
                     },
                 })
             } else {
@@ -661,14 +666,10 @@ const FormLectures: React.FC<Props> = (props) => {
                 const createPayload = prepaid
                     ? buildPrepaidLecturesData(dataPost, prepaidCnt)
                     : dataPost
-                setIsSubmit(true)
                 createLecture.mutate(createPayload, {
                     onSuccess: () => {
                         trackEvent("lecture_created", { source: props.source })
                         props.funcForceClose()
-                    },
-                    onError: () => {
-                        setIsSubmit(false)
                     },
                 })
             }
@@ -710,12 +711,44 @@ const FormLectures: React.FC<Props> = (props) => {
     // a formular nelze odeslat (viz isAtStateWithoutEmpty pojistka v onSubmit) — dej to najevo
     // uz v UI, at uzivatel nevidi jen "nefunkcni" tlacitko Pridat.
     // Tyka se jen PRIDANI: pri uprave existujici lekce ma kazdy clen uz dosazeny (a v DB
-    // pres `PROTECT` porad platny) stav z `props.lecture.attendances`, takze i pri prazdnem
-    // `attendancestates` (napr. jen selhany refetch) `isAtStateWithoutEmpty` projde.
+    // pres `PROTECT` porad platny) stav z `props.lecture.attendances`, takze prazdny
+    // `attendancestates` (napr. selhany refetch) `isAtStateWithoutEmpty` nevadi.
+    // `hasData` rozliší, jestli je prázdno proto, že nejsou nakonfigurované žádné stavy
+    // (WARNING_NO_ATTENDANCE_STATES – uživatel má jít do Nastavení), nebo proto, že se je
+    // nepodařilo natáhnout (ERROR_ATTENDANCE_STATES_LOAD – přechodná chyba, ne konfigurace).
     const noAttendanceStates =
         !isLoading &&
         !isLecture(props.lecture) &&
         attendanceStatesContext.attendancestates.length === 0
+            ? attendanceStatesContext.hasData
+                ? "not-configured"
+                : "load-error"
+            : undefined
+
+    // Na rozdíl od `noAttendanceStates` výše se týká i ÚPRAVY existující lekce: každý člen
+    // tam má už dosazený (a v DB pořád platný) stav, ale bez načteného seznamu stavů ho
+    // `getAttendanceStateOptions`/`attendanceStatesById` nemá jak pojmenovat — Select by
+    // pak vypadal prázdně, přestože reálná hodnota existuje. Radši zablokovat s hláškou
+    // než tiše ukázat prázdný povinný Select.
+    const attendanceStatesLoadFailed = !isLoading && !attendanceStatesContext.hasData
+
+    /**
+     * Hláška nad formulářem.
+     *
+     * Při ÚPRAVĚ je `noAttendanceStates` vždy `undefined` (viz výš), takže bez téhle větve
+     * zůstaly Selecty členů zablokované a prázdné BEZ jakéhokoli vysvětlení na stránce —
+     * povinné pole, které vypadá, že ho uživatel vymazal. Vlastní znění potřebuje proto,
+     * že na rozdíl od přidání se tu uložit dá: stavy členů se pošlou beze změny takové,
+     * jaké v DB už jsou, takže blokovat kvůli tomu i změnu termínu by bylo přehnané.
+     */
+    const attendanceStatesNotice =
+        noAttendanceStates === "not-configured"
+            ? TEXTS.WARNING_NO_ATTENDANCE_STATES
+            : noAttendanceStates === "load-error"
+              ? TEXTS.ERROR_ATTENDANCE_STATES_LOAD
+              : attendanceStatesLoadFailed
+                ? TEXTS.ERROR_ATTENDANCE_STATES_LOAD_EDIT
+                : undefined
 
     return (
         <form onSubmit={onSubmit} data-qa="form_lecture">
@@ -729,7 +762,7 @@ const FormLectures: React.FC<Props> = (props) => {
                         <GroupName group={props.object} bold />
                     )}
                 </Modal.Title>
-                <Modal.CloseButton />
+                <Modal.CloseButton data-qa="modal_close" />
             </Modal.Header>
             <Modal.Body>
                 {isLoading ? (
@@ -739,13 +772,13 @@ const FormLectures: React.FC<Props> = (props) => {
                     />
                 ) : (
                     <>
-                        {noAttendanceStates && (
+                        {attendanceStatesNotice && (
                             <Alert
                                 color="red"
                                 mb="sm"
                                 className={styles.warningNotice}
                                 data-qa="form_lecture_no_attendancestates_alert">
-                                {TEXTS.WARNING_NO_ATTENDANCE_STATES}
+                                {attendanceStatesNotice}
                             </Alert>
                         )}
                         <div className={styles.sectionCard}>
@@ -866,6 +899,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                         jeden klient.
                                                     </>
                                                 }
+                                                ariaLabel="Na tuto lekci nemá nikdo přijít, proto je automaticky zrušená. Toto lze změnit jen když má přijít alespoň jeden klient."
                                                 tone="info"
                                             />
                                         )}
@@ -878,7 +912,11 @@ const FormLectures: React.FC<Props> = (props) => {
                                         onChangeCallback={onSelectChange}
                                         options={coursesVisibleContext.courses}
                                         isDisabled={!isClient(props.object)}
-                                        error={triedSubmit && !course ? "Vyberte kurz" : undefined}
+                                        error={courseSelectError(
+                                            triedSubmit,
+                                            Boolean(course),
+                                            coursesVisibleContext,
+                                        )}
                                     />
                                 </Grid.Col>
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
@@ -944,9 +982,27 @@ const FormLectures: React.FC<Props> = (props) => {
                                         <Grid.Col span={{ base: 12, sm: 4 }}>
                                             <Select
                                                 id={`atState${member.id}`}
-                                                aria-label="Stav účasti"
-                                                data={getAttendanceStateOptions(member.id)}
-                                                value={atState[member.id]?.toString() ?? null}
+                                                aria-label={
+                                                    attendanceStatesLoadFailed
+                                                        ? "Stav účasti se nepodařilo načíst"
+                                                        : "Stav účasti"
+                                                }
+                                                data={
+                                                    attendanceStatesLoadFailed
+                                                        ? []
+                                                        : getAttendanceStateOptions(member.id)
+                                                }
+                                                value={
+                                                    attendanceStatesLoadFailed
+                                                        ? null
+                                                        : (atState[member.id]?.toString() ?? null)
+                                                }
+                                                placeholder={
+                                                    attendanceStatesLoadFailed
+                                                        ? "Nepodařilo se načíst"
+                                                        : undefined
+                                                }
+                                                disabled={attendanceStatesLoadFailed}
                                                 onChange={(val) => {
                                                     if (!val) {
                                                         return
@@ -1073,7 +1129,7 @@ const FormLectures: React.FC<Props> = (props) => {
                     loading={isSubmit}
                     content={isLecture(props.lecture) ? "Uložit" : "Přidat"}
                     data-qa="button_submit_lecture"
-                    disabled={coursesVisibleContext.isLoading || noAttendanceStates}
+                    disabled={coursesVisibleContext.isLoading || Boolean(noAttendanceStates)}
                 />
                 {isLecture(props.lecture) &&
                     !isClient(props.object) &&
@@ -1088,7 +1144,10 @@ const FormLectures: React.FC<Props> = (props) => {
                                     id="FormLectures_SubmitWithClientChanges"
                                     variant="light"
                                     color="gray"
-                                    disabled={coursesVisibleContext.isLoading || noAttendanceStates}
+                                    disabled={
+                                        coursesVisibleContext.isLoading ||
+                                        Boolean(noAttendanceStates)
+                                    }
                                     content="Uložit + projevit změny v klientech"
                                 />
                             </span>

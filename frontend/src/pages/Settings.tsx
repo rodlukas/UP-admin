@@ -2,6 +2,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
     Alert,
+    ComboboxItem,
     Container,
     Select,
     SimpleGrid,
@@ -20,11 +21,15 @@ import AppCommit from "../components/AppCommit"
 import AppDate from "../components/AppDate"
 import AppRelease from "../components/AppRelease"
 import CourseCircle from "../components/CourseCircle"
-import EmptyState from "../components/EmptyState"
+import EmptyState, { LoadErrorEmptyState } from "../components/EmptyState"
 import Heading from "../components/Heading"
 import { SkeletonShell } from "../components/Skeletons"
 import * as skeletonStyles from "../components/Skeletons.css"
-import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
+import {
+    useAttendanceStatesContext,
+    useVisibleAttendanceStateOptions,
+    withCurrentAttendanceState,
+} from "../contexts/AttendanceStatesContext"
 import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE, GITHUB_REPO_URL } from "../global/constants"
 import { tableFlat } from "../global/surfaces.css"
@@ -107,7 +112,12 @@ const Visible: React.FC<VisibleProps> = ({ visible, ...props }) => (
 /** Stránka s nastavením – správa kurzů, stavů účasti, info o aplikaci. */
 const Settings: React.FC = () => {
     const attendanceStatesContext = useAttendanceStatesContext()
-    const { data: courses = [], isLoading: coursesLoading } = useCourses()
+    const { data: coursesData, isLoading: coursesLoading } = useCourses()
+    const courses = coursesData ?? []
+    // `data !== undefined`, ne `isSuccess`: rozlišuje „načteno, ale prázdné" od „nenačteno"
+    // (chyba/offline) — a na rozdíl od `isSuccess` přežije selhaný refetch, při kterém si
+    // TanStack Query data z cache nechá. Stejný důvod jako `hasData` v kontextech.
+    const coursesHasData = coursesData !== undefined
 
     const patchAttendanceState = usePatchAttendanceState()
 
@@ -129,6 +139,26 @@ const Settings: React.FC = () => {
             setAttendanceStateExcusedId(excusedElem?.id)
         }
     }, [attendanceStatesContext.isLoading, attendanceStatesContext.attendancestates])
+
+    // sdílené oběma Selecty níž i FormLectures.tsx (viz AttendanceStatesContext.tsx)
+    const visibleAttendanceStateOptions = useVisibleAttendanceStateOptions()
+
+    // `hasData` (viz AttendanceStatesContext.tsx), ne `!isSuccess`: TanStack Query při
+    // SELHANÉM REFETCHI překlopí `status` na „error", ale data z cache si nechá — samotné
+    // `!isSuccess` by pak zablokovalo Selecty, které mají plný seznam stavů a fungovaly by
+    // dál (a Settings si takový refetch spouští samo: uložení výchozího stavu invaliduje
+    // všechny dotazy).
+    const attendanceStatesUnavailable = !attendanceStatesContext.hasData
+
+    // `selectable: false` — viz withCurrentAttendanceState; skrytý stav tady nastavit nejde
+    const stateOptionsWithCurrent = (
+        currentId: AttendanceStateType["id"] | undefined,
+    ): ComboboxItem[] =>
+        withCurrentAttendanceState(
+            visibleAttendanceStateOptions,
+            attendanceStatesContext.attendancestates.find((s) => s.id === currentId),
+            { selectable: false },
+        )
 
     const onChangeDefaultState = (val: string | null): void => {
         if (!val) {
@@ -172,203 +202,209 @@ const Settings: React.FC = () => {
             ) : (
                 <>
                     <SimpleGrid cols={{ base: 1, md: 2 }} className={styles.settingsColumnsRow}>
-                        <div>
-                            <div className={styles.settingsColumn}>
-                                <Title order={2}>Stavy účasti</Title>
-                                {attendanceStatesContext.attendancestates.length > 0 && (
-                                    <Table.ScrollContainer
-                                        minWidth={300}
-                                        type="native"
-                                        className={styles.tableSection}>
-                                        <Table className={tableFlat}>
-                                            <Table.Thead>
-                                                <Table.Tr>
-                                                    <Table.Th>Název</Table.Th>
-                                                    <Table.Th ta="center">Viditelný</Table.Th>
-                                                    <Table.Th ta="right">Akce</Table.Th>
-                                                </Table.Tr>
-                                            </Table.Thead>
-                                            <Table.Tbody>
-                                                {attendanceStatesContext.attendancestates.map(
-                                                    (attendancestate) => (
-                                                        <Table.Tr
-                                                            key={attendancestate.id}
-                                                            data-qa="attendancestate">
-                                                            <Table.Td data-qa="attendancestate_name">
-                                                                {attendancestate.name}
-                                                            </Table.Td>
-                                                            <Table.Td ta="center">
-                                                                <Visible
-                                                                    visible={
-                                                                        attendancestate.visible
-                                                                    }
-                                                                    data-qa="attendancestate_visible"
-                                                                />
-                                                            </Table.Td>
-                                                            <Table.Td ta="right">
-                                                                <ModalSettings
-                                                                    TYPE={EDIT_TYPE.STATE}
-                                                                    currentObject={attendancestate}
-                                                                />
-                                                            </Table.Td>
-                                                        </Table.Tr>
-                                                    ),
-                                                )}
-                                            </Table.Tbody>
-                                        </Table>
-                                    </Table.ScrollContainer>
-                                )}
-                                {attendanceStatesContext.attendancestates.length === 0 && (
+                        <div className={styles.settingsColumn}>
+                            <Title order={2}>Stavy účasti</Title>
+                            {attendanceStatesContext.attendancestates.length > 0 && (
+                                <Table.ScrollContainer
+                                    minWidth={300}
+                                    type="native"
+                                    className={styles.tableSection}>
+                                    <Table className={tableFlat}>
+                                        <Table.Thead>
+                                            <Table.Tr>
+                                                <Table.Th>Název</Table.Th>
+                                                <Table.Th ta="center">Viditelný</Table.Th>
+                                                <Table.Th ta="right">Akce</Table.Th>
+                                            </Table.Tr>
+                                        </Table.Thead>
+                                        <Table.Tbody>
+                                            {attendanceStatesContext.attendancestates.map(
+                                                (attendancestate) => (
+                                                    <Table.Tr
+                                                        key={attendancestate.id}
+                                                        data-qa="attendancestate">
+                                                        <Table.Td data-qa="attendancestate_name">
+                                                            {attendancestate.name}
+                                                        </Table.Td>
+                                                        <Table.Td ta="center">
+                                                            <Visible
+                                                                visible={attendancestate.visible}
+                                                                data-qa="attendancestate_visible"
+                                                            />
+                                                        </Table.Td>
+                                                        <Table.Td ta="right">
+                                                            <ModalSettings
+                                                                TYPE={EDIT_TYPE.STATE}
+                                                                currentObject={attendancestate}
+                                                            />
+                                                        </Table.Td>
+                                                    </Table.Tr>
+                                                ),
+                                            )}
+                                        </Table.Tbody>
+                                    </Table>
+                                </Table.ScrollContainer>
+                            )}
+                            {attendanceStatesContext.attendancestates.length === 0 &&
+                                (attendanceStatesContext.hasData ? (
                                     <EmptyState
                                         icon={faTasks}
                                         title="Žádné stavy účasti"
                                         description={`Stavy účasti se nabízejí u každého klienta v diáři — přidej alespoň „OK“ a „omluven“.`}
                                     />
-                                )}
-                                <hr />
-                                <Title order={3}>Konfigurace stavů účasti</Title>
-                                {attendanceStateDefaultId === undefined && (
+                                ) : (
+                                    <LoadErrorEmptyState resource="Stavy účasti" />
+                                ))}
+                            <hr />
+                            <Title order={3}>Konfigurace stavů účasti</Title>
+                            {/* Jen když stavy opravdu známe: bez nich je `attendanceStateDefaultId`
+                                `undefined` taky, ale to je chyba načtení (viz LoadErrorEmptyState
+                                výš), ne chybějící konfigurace — tvrdit tady „aplikace nemůže
+                                správně fungovat" by poslalo uživatele řešit neexistující problém. */}
+                            {!attendanceStatesUnavailable &&
+                                attendanceStateDefaultId === undefined && (
                                     <Alert color="red">
                                         Není vybraný výchozí stav, aplikace nemůže správně fungovat!
                                     </Alert>
                                 )}
-                                {attendanceStateExcusedId === undefined && (
+                            {!attendanceStatesUnavailable &&
+                                attendanceStateExcusedId === undefined && (
                                     <Alert color="red">
                                         Není vybraný stav &bdquo;omluven&ldquo;, aplikace nemůže
                                         správně fungovat!
                                     </Alert>
                                 )}
-                                <p className={mb0}>
-                                    Pro správné fungování aplikace je třeba některým (viditelným)
-                                    stavům účasti přiřadit zvláštní vlastnosti podle jejich významu:
-                                </p>
-                                <div className={styles.configList}>
-                                    <div className={styles.configListItem}>
-                                        <div className={styles.configRow}>
-                                            <label
-                                                htmlFor="state_default_id"
-                                                className={styles.configRowLabel}>
-                                                <Text component="span" fw={700}>
-                                                    &bdquo;klient se zúčastní&ldquo;
-                                                </Text>{" "}
-                                                (výchozí stav)
-                                            </label>
-                                            <div className={styles.configRowControl}>
-                                                <Select
-                                                    id="state_default_id"
-                                                    data={attendanceStatesContext.attendancestates
-                                                        .filter((s) => s.visible)
-                                                        .map((s) => ({
-                                                            value: s.id.toString(),
-                                                            label: s.name,
-                                                        }))}
-                                                    value={
-                                                        attendanceStateDefaultId?.toString() ?? null
-                                                    }
-                                                    onChange={onChangeDefaultState}
-                                                    placeholder="Vyberte stav…"
-                                                    allowDeselect={false}
-                                                />
-                                            </div>
+                            <p className={mb0}>
+                                Pro správné fungování aplikace je třeba některým (viditelným) stavům
+                                účasti přiřadit zvláštní vlastnosti podle jejich významu:
+                            </p>
+                            <div className={styles.configList}>
+                                <div className={styles.configListItem}>
+                                    <div className={styles.configRow}>
+                                        <label
+                                            htmlFor="state_default_id"
+                                            className={styles.configRowLabel}>
+                                            <Text component="span" fw={700}>
+                                                &bdquo;klient se zúčastní&ldquo;
+                                            </Text>{" "}
+                                            (výchozí stav)
+                                        </label>
+                                        <div className={styles.configRowControl}>
+                                            <Select
+                                                id="state_default_id"
+                                                data={stateOptionsWithCurrent(
+                                                    attendanceStateDefaultId,
+                                                )}
+                                                value={attendanceStateDefaultId?.toString() ?? null}
+                                                onChange={onChangeDefaultState}
+                                                placeholder={
+                                                    attendanceStatesUnavailable
+                                                        ? "Nepodařilo se načíst"
+                                                        : "Vyberte stav…"
+                                                }
+                                                disabled={attendanceStatesUnavailable}
+                                                allowDeselect={false}
+                                            />
                                         </div>
                                     </div>
-                                    <div className={styles.configListItem}>
-                                        <div className={styles.configRow}>
-                                            <label
-                                                htmlFor="state_excused_id"
-                                                className={styles.configRowLabel}>
-                                                <Text component="span" fw={700}>
-                                                    &bdquo;klient je omluven&ldquo;
-                                                </Text>
-                                            </label>
-                                            <div className={styles.configRowControl}>
-                                                <Select
-                                                    id="state_excused_id"
-                                                    data={attendanceStatesContext.attendancestates
-                                                        .filter((s) => s.visible)
-                                                        .map((s) => ({
-                                                            value: s.id.toString(),
-                                                            label: s.name,
-                                                        }))}
-                                                    value={
-                                                        attendanceStateExcusedId?.toString() ?? null
-                                                    }
-                                                    onChange={onChangeExcusedState}
-                                                    placeholder="Vyberte stav…"
-                                                    allowDeselect={false}
-                                                />
-                                            </div>
+                                </div>
+                                <div className={styles.configListItem}>
+                                    <div className={styles.configRow}>
+                                        <label
+                                            htmlFor="state_excused_id"
+                                            className={styles.configRowLabel}>
+                                            <Text component="span" fw={700}>
+                                                &bdquo;klient je omluven&ldquo;
+                                            </Text>
+                                        </label>
+                                        <div className={styles.configRowControl}>
+                                            <Select
+                                                id="state_excused_id"
+                                                data={stateOptionsWithCurrent(
+                                                    attendanceStateExcusedId,
+                                                )}
+                                                value={attendanceStateExcusedId?.toString() ?? null}
+                                                onChange={onChangeExcusedState}
+                                                placeholder={
+                                                    attendanceStatesUnavailable
+                                                        ? "Nepodařilo se načíst"
+                                                        : "Vyberte stav…"
+                                                }
+                                                disabled={attendanceStatesUnavailable}
+                                                allowDeselect={false}
+                                            />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <div className={styles.settingsColumn}>
-                                <Title order={2}>Kurzy</Title>
-                                {courses.length > 0 && (
-                                    <Table.ScrollContainer
-                                        minWidth={300}
-                                        type="native"
-                                        className={styles.tableSection}>
-                                        <Table className={tableFlat}>
-                                            <Table.Thead>
-                                                <Table.Tr>
-                                                    <Table.Th>Název</Table.Th>
-                                                    <Table.Th ta="center">Viditelný</Table.Th>
-                                                    <Table.Th ta="center">Barva</Table.Th>
-                                                    <Table.Th ta="right">Trvání (min.)</Table.Th>
-                                                    <Table.Th ta="right">Akce</Table.Th>
-                                                </Table.Tr>
-                                            </Table.Thead>
-                                            <Table.Tbody>
-                                                {courses.map((course) => (
-                                                    <Table.Tr key={course.id} data-qa="course">
-                                                        <Table.Td data-qa="course_name">
-                                                            {course.name}
-                                                        </Table.Td>
-                                                        <Table.Td ta="center">
-                                                            <Visible
-                                                                visible={course.visible}
-                                                                data-qa="course_visible"
-                                                            />
-                                                        </Table.Td>
-                                                        <Table.Td ta="center">
-                                                            <CourseCircle
-                                                                color={course.color}
-                                                                size={1.7}
-                                                                showTitle
-                                                            />
-                                                        </Table.Td>
-                                                        {/* cisla vpravo a tabulkovymi
+                        <div className={styles.settingsColumn}>
+                            <Title order={2}>Kurzy</Title>
+                            {courses.length > 0 && (
+                                <Table.ScrollContainer
+                                    minWidth={300}
+                                    type="native"
+                                    className={styles.tableSection}>
+                                    <Table className={tableFlat}>
+                                        <Table.Thead>
+                                            <Table.Tr>
+                                                <Table.Th>Název</Table.Th>
+                                                <Table.Th ta="center">Viditelný</Table.Th>
+                                                <Table.Th ta="center">Barva</Table.Th>
+                                                <Table.Th ta="right">Trvání (min.)</Table.Th>
+                                                <Table.Th ta="right">Akce</Table.Th>
+                                            </Table.Tr>
+                                        </Table.Thead>
+                                        <Table.Tbody>
+                                            {courses.map((course) => (
+                                                <Table.Tr key={course.id} data-qa="course">
+                                                    <Table.Td data-qa="course_name">
+                                                        {course.name}
+                                                    </Table.Td>
+                                                    <Table.Td ta="center">
+                                                        <Visible
+                                                            visible={course.visible}
+                                                            data-qa="course_visible"
+                                                        />
+                                                    </Table.Td>
+                                                    <Table.Td ta="center">
+                                                        <CourseCircle
+                                                            color={course.color}
+                                                            size={1.7}
+                                                            showTitle
+                                                        />
+                                                    </Table.Td>
+                                                    {/* cisla vpravo a tabulkovymi
                                                             cislicemi, aby se ve sloupci
                                                             srovnala pod sebe */}
-                                                        <Table.Td
-                                                            data-qa="course_duration"
-                                                            ta="right"
-                                                            className={numericCell}>
-                                                            {course.duration}
-                                                        </Table.Td>
-                                                        <Table.Td ta="right">
-                                                            <ModalSettings
-                                                                TYPE={EDIT_TYPE.COURSE}
-                                                                currentObject={course}
-                                                            />
-                                                        </Table.Td>
-                                                    </Table.Tr>
-                                                ))}
-                                            </Table.Tbody>
-                                        </Table>
-                                    </Table.ScrollContainer>
-                                )}
-                                {courses.length === 0 && (
+                                                    <Table.Td
+                                                        data-qa="course_duration"
+                                                        ta="right"
+                                                        className={numericCell}>
+                                                        {course.duration}
+                                                    </Table.Td>
+                                                    <Table.Td ta="right">
+                                                        <ModalSettings
+                                                            TYPE={EDIT_TYPE.COURSE}
+                                                            currentObject={course}
+                                                        />
+                                                    </Table.Td>
+                                                </Table.Tr>
+                                            ))}
+                                        </Table.Tbody>
+                                    </Table>
+                                </Table.ScrollContainer>
+                            )}
+                            {courses.length === 0 &&
+                                (coursesHasData ? (
                                     <EmptyState
                                         icon={faLayerGroup}
                                         title="Žádné kurzy"
                                         description="Kurz určuje barvu a délku lekce; bez něj nejde lekci založit."
                                     />
-                                )}
-                            </div>
+                                ) : (
+                                    <LoadErrorEmptyState resource="Kurzy" />
+                                ))}
                         </div>
                     </SimpleGrid>
                     <div className={styles.footerBlock}>

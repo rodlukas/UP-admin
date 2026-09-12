@@ -84,6 +84,10 @@ export const theme = createTheme({
          *
          * `ActionIcon` tu schválně není — u ikonového tlačítka je `size` rozměr plochy,
          * ne velikost písma, a řídí ho výška řádku v tabulce (viz `DeleteIconButton`).
+         *
+         * `Alert` tu schválně není taky, ale z jiného důvodu — `AlertProps` žádné `size`
+         * vůbec nemá (natvrdo `var(--mantine-font-size-sm)`), takže by šlo o mrtvý default.
+         * 1rem má i tak, protože ho vynucuje `fontSizes.sm` remap výše.
          */
         Button: {
             defaultProps: { size: "md" },
@@ -94,6 +98,12 @@ export const theme = createTheme({
         TextInput: {
             defaultProps: { size: "md" },
         },
+        // Jediný `NumberInput` v aplikaci (počítadlo předplacených lekcí) jinak jede na
+        // Mantine defaultu `sm` — text je sice 1 rem i tak (díky `fontSizes` remapu výš),
+        // ale výška a vnitřní odsazení pole se rozcházely se všemi ostatními vstupy.
+        NumberInput: {
+            defaultProps: { size: "md" },
+        },
         Textarea: {
             defaultProps: { size: "md" },
         },
@@ -101,9 +111,6 @@ export const theme = createTheme({
             defaultProps: { size: "md" },
         },
         Pagination: {
-            defaultProps: { size: "md" },
-        },
-        Alert: {
             defaultProps: { size: "md" },
         },
         Tooltip: {
@@ -157,8 +164,10 @@ export const theme = createTheme({
                 root: { letterSpacing: "-0.005em" },
             },
         },
-        // Comboboxy v Mantine 9 (Select, MultiSelect, Autocomplete, …) sdílí Popover
-        // přes comboboxProps. V modalu (zIndex 1050) by jinak dropdown mizel pod overlayem.
+        // Comboboxy v Mantine 9 (Select, MultiSelect, Autocomplete, …) vykreslují svůj dropdown
+        // přes vnitřní `Combobox` komponentu a `comboboxProps` na ně jen prostupují (viz
+        // `Combobox` defaultProps níže — to je ten jediný zdroj pravdy, nenastavuj tu
+        // `comboboxProps` znovu). V modalu (zIndex 1050) by jinak dropdown mizel pod overlayem.
         // `keepMounted: false`: zavřený dropdown se odpojí z DOM — jinak každý Select
         // nechává v dokumentu skrytou sadu [role="option"], což nafukuje DOM a rozbíjí
         // Selenium E2E kroky čekající na viditelnost první nalezené volby.
@@ -169,16 +178,10 @@ export const theme = createTheme({
             },
         },
         Select: {
-            defaultProps: {
-                size: "md",
-                comboboxProps: { withinPortal: true, zIndex: 1100, keepMounted: false },
-            },
+            defaultProps: { size: "md" },
         },
         MultiSelect: {
-            defaultProps: {
-                size: "md",
-                comboboxProps: { withinPortal: true, zIndex: 1100, keepMounted: false },
-            },
+            defaultProps: { size: "md" },
         },
         /**
          * Mantine defaultně kreslí pily vybraných položek variantou "default" — jen výplň
@@ -195,16 +198,10 @@ export const theme = createTheme({
             styles: { root: { border: vars.borderShort.strong } },
         },
         Autocomplete: {
-            defaultProps: {
-                size: "md",
-                comboboxProps: { withinPortal: true, zIndex: 1100, keepMounted: false },
-            },
+            defaultProps: { size: "md" },
         },
         TagsInput: {
-            defaultProps: {
-                size: "md",
-                comboboxProps: { withinPortal: true, zIndex: 1100, keepMounted: false },
-            },
+            defaultProps: { size: "md" },
         },
         Combobox: {
             defaultProps: {

@@ -1,16 +1,18 @@
 import { Button, ButtonProps } from "@mantine/core"
 import * as React from "react"
 
-type Props = Omit<ButtonProps, "content" | "children"> & {
-    /** Text v tlačítku. */
-    content?: string
-    /** Zobraz načítací animaci v tlačítku (true). */
-    loading?: boolean
-    /** Tlačítko není aktivní (true). */
-    disabled?: boolean
-    onClick?: React.MouseEventHandler<HTMLButtonElement>
-    id?: string
-}
+import { ClickableButtonProps } from "../../types/types"
+
+type Props = Omit<ButtonProps, "content" | "children"> &
+    ClickableButtonProps & {
+        /** Text v tlačítku. */
+        content?: string
+        /** Zobraz načítací animaci v tlačítku (true). */
+        loading?: boolean
+        /** Tlačítko není aktivní (true). */
+        disabled?: boolean
+        id?: string
+    }
 
 /** Tlačítko pro odeslání formuláře v aplikaci. */
 const SubmitButton: React.FC<Props> = ({

@@ -178,7 +178,7 @@ const FormSettings: React.FC<Props> = (props) => {
                         ? `Úprava ${type}u: ${form.values.name}`
                         : `Přidání ${type}u`}
                 </Modal.Title>
-                <Modal.CloseButton />
+                <Modal.CloseButton data-qa="modal_close" />
             </Modal.Header>
             <Modal.Body>
                 <div className={baseStyles.formContent}>

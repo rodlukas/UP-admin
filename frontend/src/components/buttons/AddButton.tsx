@@ -4,16 +4,17 @@ import { faPlus } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
 
+import { ClickableButtonProps } from "../../types/types"
+
 import * as styles from "./buttons.css"
 
-type Props = Omit<ButtonProps, "content"> & {
-    /** Text v tlačítku. */
-    content: string
-    /** Tlačítko je malé (true). */
-    small?: boolean
-    onClick?: React.MouseEventHandler<HTMLButtonElement>
-    className?: string
-}
+type Props = Omit<ButtonProps, "content"> &
+    ClickableButtonProps & {
+        /** Text v tlačítku. */
+        content: string
+        /** Tlačítko je malé (true). */
+        small?: boolean
+    }
 
 /** Tlačítko pro přidání objektu v aplikaci. */
 const AddButton: React.FC<Props> = ({ content, onClick, small = false, className, ...props }) => {

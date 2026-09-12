@@ -9,7 +9,7 @@ import {
     MembershipType,
 } from "../types/models"
 
-import { DAYS_WITHOUT_LECTURE_WARNING, LOCALE_CZ } from "./constants"
+import { DAYS_WITHOUT_LECTURE_WARNING, LOCALE_CZ, TEXTS } from "./constants"
 import { addDays } from "./funcDateTime"
 import { getEnvNameShort, isEnvProduction } from "./funcEnvironments"
 
@@ -183,9 +183,45 @@ export function areAllMembersActive(memberships: MembershipType[]): boolean {
     return memberships.every((membership) => membership.client.active)
 }
 
-/** Vrátí string validní pro použití jako ID elementu. */
-export function makeIdFromString(string: string): string {
-    return string.replace(/\s+/g, "-")
+/**
+ * Doplní do `options` položky ze `selected`, které v nich chybí — typicky čerstvě
+ * vytvořený/skrytý záznam, který ještě nedorazil asynchronním refetchem `options`.
+ * Bez doplnění by Select/MultiSelect vybranou hodnotu vykreslil jako prázdno (a u MultiSelectu
+ * navíc `onChange` takový výběr tiše zahodí, viz Mantine `renderPill`).
+ * Pořadí `options` se zachová, chybějící položky se připojí na konec.
+ */
+export function withSelectedOptions<T extends { id: number }>(
+    options: readonly T[],
+    selected: readonly T[],
+): T[] {
+    const byId = new Map(options.map((option) => [option.id, option]))
+    selected.forEach((item) => {
+        if (!byId.has(item.id)) {
+            byId.set(item.id, item)
+        }
+    })
+    return [...byId.values()]
+}
+
+/**
+ * Chybová hláška pod povinným `SelectCourse` po neúspěšném pokusu o odeslání — sdílené
+ * FormApplications.tsx, FormGroups.tsx a FormLectures.tsx. Rozlišuje, jestli je pole prázdné
+ * proto, že uživatel kurz nevybral (`"Vyberte kurz"`), nebo proto, že se kurzy vůbec
+ * nepodařilo načíst (`ERROR_COURSES_LOAD`) — druhý případ by jinak vypadal jako totéž,
+ * přestože žádný kurz k výběru není.
+ */
+export function courseSelectError(
+    triedSubmit: boolean,
+    hasCourse: boolean,
+    // `hasData`, ne `isSuccess`: při SELHANÉM REFETCHI nechá TanStack Query data v cache,
+    // takže Select je pořád plný a použitelný — hlásit tam „nepodařilo se načíst kurzy"
+    // by uživatele poslalo řešit síť místo toho, že prostě nevybral kurz
+    coursesContext: { hasData: boolean },
+): string | undefined {
+    if (!triedSubmit || hasCourse) {
+        return undefined
+    }
+    return coursesContext.hasData ? "Vyberte kurz" : TEXTS.ERROR_COURSES_LOAD
 }
 
 /** Zjistí, jestli je otevřené modální okno. Mantine Modal i Spotlight nastavují aria-modal. */

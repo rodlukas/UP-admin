@@ -94,6 +94,92 @@ class LectureClientFilterTest(TestCase):
         )
 
 
+class LectureDateFromFilterTest(TestCase):
+    """
+    Filtr `dateFrom` vrací lekce od daného dne VČETNĚ (`start__date >= hodnota`) — používá
+    ho přehled pro „nejbližší příští lekce" (`UpcomingLectures.tsx`, `dateFrom=zítřek`),
+    typicky spolu s `canceled=false` a `limit` (vzestupné řazení bez explicitního `ordering`,
+    viz `LectureLimitTest`).
+    """
+
+    def setUp(self) -> None:
+        user = get_user_model().objects.create_user(
+            username="lectures-datefrom-filter-test",
+            email="lectures-datefrom-filter-test@test.cz",
+            password="test-password",
+        )
+        self.api = APIClient()
+        self.api.force_authenticate(user=user)
+
+        course = Course.objects.create(name="Test", duration=60)
+        self.date_from = datetime(2026, 1, 10).date()
+
+        # den pred hranici — musi byt vyrazena
+        self.lecture_before = Lecture.objects.create(
+            start=make_aware(datetime(2026, 1, 9, 23, 59)),
+            canceled=False,
+            duration=60,
+            course=course,
+            group=None,
+        )
+        # presne na hranici (dateFrom „vcetne") — musi zustat, i kdyz je casove drive
+        # nez `lecture_before` v ramci dne neni relevantni, testuje se jen datum
+        self.lecture_on_boundary = Lecture.objects.create(
+            start=make_aware(datetime(2026, 1, 10, 0, 0)),
+            canceled=False,
+            duration=60,
+            course=course,
+            group=None,
+        )
+        self.lecture_after = Lecture.objects.create(
+            start=make_aware(datetime(2026, 1, 11, 10, 0)),
+            canceled=False,
+            duration=60,
+            course=course,
+            group=None,
+        )
+        # zrusena lekce na hranici — s canceled=false nesmi prijit jako "nejblizsi pristi"
+        self.lecture_on_boundary_canceled = Lecture.objects.create(
+            start=make_aware(datetime(2026, 1, 10, 12, 0)),
+            canceled=True,
+            duration=60,
+            course=course,
+            group=None,
+        )
+
+    def test_date_from_excludes_lectures_before_the_boundary(self) -> None:
+        response = self.api.get(f"/api/v1/lectures/?dateFrom={self.date_from}", secure=True)
+        self.assertEqual(response.status_code, 200)
+        ids = _ids(response.json())
+        self.assertNotIn(self.lecture_before.pk, ids)
+
+    def test_date_from_includes_the_boundary_day_itself(self) -> None:
+        response = self.api.get(f"/api/v1/lectures/?dateFrom={self.date_from}", secure=True)
+        self.assertEqual(response.status_code, 200)
+        ids = _ids(response.json())
+        self.assertIn(self.lecture_on_boundary.pk, ids)
+        self.assertIn(self.lecture_after.pk, ids)
+
+    def test_date_from_with_canceled_false_excludes_canceled_lecture_on_boundary(self) -> None:
+        # presna kombinace pouzita UpcomingLectures.tsx pro "nejblizsi pristi lekci"
+        response = self.api.get(
+            f"/api/v1/lectures/?dateFrom={self.date_from}&canceled=false", secure=True
+        )
+        self.assertEqual(response.status_code, 200)
+        ids = _ids(response.json())
+        self.assertNotIn(self.lecture_on_boundary_canceled.pk, ids)
+        self.assertIn(self.lecture_on_boundary.pk, ids)
+
+    def test_date_from_with_limit_returns_nearest_upcoming_first(self) -> None:
+        # bez explicitniho ordering: vzestupne razeni (nejblizsi prvni), stejny fallback
+        # jako LectureLimitTest, tady navic v kombinaci s dateFrom
+        response = self.api.get(
+            f"/api/v1/lectures/?dateFrom={self.date_from}&canceled=false&limit=1", secure=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(_ids(response.json()), {self.lecture_on_boundary.pk})
+
+
 class LectureLimitTest(TestCase):
     """
     Parametr `limit` bez explicitního `ordering` musí vracet N NEJBLIŽŠÍCH lekcí (vzestupně
