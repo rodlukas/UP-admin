@@ -716,14 +716,16 @@ const FormLectures: React.FC<Props> = (props) => {
     // `hasData` rozliší, jestli je prázdno proto, že nejsou nakonfigurované žádné stavy
     // (WARNING_NO_ATTENDANCE_STATES – uživatel má jít do Nastavení), nebo proto, že se je
     // nepodařilo natáhnout (ERROR_ATTENDANCE_STATES_LOAD – přechodná chyba, ne konfigurace).
-    const noAttendanceStates =
+    let noAttendanceStates: "not-configured" | "load-error" | undefined
+    if (
         !isLoading &&
         !isLecture(props.lecture) &&
         attendanceStatesContext.attendancestates.length === 0
-            ? attendanceStatesContext.hasData
-                ? "not-configured"
-                : "load-error"
-            : undefined
+    ) {
+        noAttendanceStates = attendanceStatesContext.hasData ? "not-configured" : "load-error"
+    } else {
+        noAttendanceStates = undefined
+    }
 
     // Na rozdíl od `noAttendanceStates` výše se týká i ÚPRAVY existující lekce: každý člen
     // tam má už dosazený (a v DB pořád platný) stav, ale bez načteného seznamu stavů ho
@@ -741,14 +743,16 @@ const FormLectures: React.FC<Props> = (props) => {
      * že na rozdíl od přidání se tu uložit dá: stavy členů se pošlou beze změny takové,
      * jaké v DB už jsou, takže blokovat kvůli tomu i změnu termínu by bylo přehnané.
      */
-    const attendanceStatesNotice =
-        noAttendanceStates === "not-configured"
-            ? TEXTS.WARNING_NO_ATTENDANCE_STATES
-            : noAttendanceStates === "load-error"
-              ? TEXTS.ERROR_ATTENDANCE_STATES_LOAD
-              : attendanceStatesLoadFailed
-                ? TEXTS.ERROR_ATTENDANCE_STATES_LOAD_EDIT
-                : undefined
+    let attendanceStatesNotice: TEXTS | undefined
+    if (noAttendanceStates === "not-configured") {
+        attendanceStatesNotice = TEXTS.WARNING_NO_ATTENDANCE_STATES
+    } else if (noAttendanceStates === "load-error") {
+        attendanceStatesNotice = TEXTS.ERROR_ATTENDANCE_STATES_LOAD
+    } else if (attendanceStatesLoadFailed) {
+        attendanceStatesNotice = TEXTS.ERROR_ATTENDANCE_STATES_LOAD_EDIT
+    } else {
+        attendanceStatesNotice = undefined
+    }
 
     return (
         <form onSubmit={onSubmit} data-qa="form_lecture">

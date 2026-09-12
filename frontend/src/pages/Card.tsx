@@ -433,6 +433,153 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
         )
     }
 
+    let analysisTabContent: React.ReactElement
+    if (lecturesFromClientAllQuery.isLoading) {
+        // `SkeletonShell`, ne holý `Skeleton`: obal nese
+        // `data-qa="loading"` (kontrakt s E2E kroky) a
+        // `aria-busy`/`aria-live` — viz Skeletons.tsx, podle
+        // kterého ho má mít KAŽDÁ kostra v aplikaci
+        analysisTabContent = (
+            <SkeletonShell>
+                <Skeleton h={320} radius="md" />
+            </SkeletonShell>
+        )
+    } else if (lecturesFromClientAllQuery.data === undefined) {
+        // bez téhle větve by se `ClientAnalysis` dostalo prázdné pole
+        // a klient s plnou historií by vypadal stejně jako klient bez
+        // jediné lekce.
+        // Test je na `data`, ne na `isError`: při SELHANÉM REFETCHI si
+        // TanStack Query data z cache nechá (`isError` by tedy plně
+        // načtenou analýzu zbytečně nahradilo chybou) a naopak
+        // nedokončený dotaz bez chyby (offline) data taky nemá.
+        analysisTabContent = <LoadErrorEmptyState resource="Analýzu" />
+    } else {
+        analysisTabContent = (
+            <ClientAnalysis clientId={id} lectures={lecturesFromClientAllQuery.data} />
+        )
+    }
+
+    let cardBody: React.ReactElement
+    if (isLoading) {
+        cardBody = (
+            <Container>
+                <SkeletonShell>
+                    <Skeleton h={28} mb="sm" radius="sm" w="60%" />
+                    <Skeleton h={20} mb="xs" radius="sm" />
+                    <Skeleton h={20} mb="xs" radius="sm" w="80%" />
+                    <Skeleton h={20} mb="xl" radius="sm" w="40%" />
+                    <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
+                        {[...new Array(3)].map((_, i) => (
+                            <Skeleton key={i} h={200} radius="md" />
+                        ))}
+                    </SimpleGrid>
+                </SkeletonShell>
+            </Container>
+        )
+    } else if (objectUnavailable) {
+        cardBody = (
+            <Container>
+                <LoadErrorEmptyState resource={isClientPageValue ? "Klienta" : "Skupinu"} />
+            </Container>
+        )
+    } else {
+        cardBody = (
+            <Container>
+                <div className={styles.cardInfo}>
+                    <Alerts
+                        object={object}
+                        isDeactivatePending={isDeactivatePending}
+                        onDeactivate={handleDeactivate}
+                    />
+                </div>
+                {isClientObject(object) && (
+                    <ClientInfo
+                        client={object}
+                        groupsOfClient={groupsOfClient}
+                        pastGroups={pastGroups}
+                    />
+                )}
+                {isGroupObject(object) && (
+                    <PrepaidCounters
+                        isGroupActive={object.active}
+                        memberships={object.memberships}
+                    />
+                )}
+                {/* Zalozky misto jedne dlouhe stranky. „Lekce" musi zustat vychozi:
+                    je to duvod, proc se karta otevira — a chytaji se jich E2E kroky
+                    (`card_course`). */}
+                <Tabs
+                    defaultValue="lekce"
+                    keepMounted={false}
+                    onChange={(value) => {
+                        if (value === "analyza") {
+                            setWasAnalysisOpened(true)
+                        }
+                    }}
+                    className={styles.tabs}>
+                    <Tabs.List>
+                        <Tabs.Tab value="lekce">Lekce</Tabs.Tab>
+                        {isClientObject(object) && <Tabs.Tab value="analyza">Analýza</Tabs.Tab>}
+                    </Tabs.List>
+
+                    {isClientObject(object) && (
+                        <Tabs.Panel value="analyza" pt="md">
+                            {/* `isLoading`, ne `isPending`: offline je dotaz `pending`
+                                s `fetchStatus: "paused"`, takže by tu kostra zůstala
+                                napořád a chybová větev níž by byla nedosažitelná
+                                (stejný důvod jako na Klientech, viz Clients.tsx) */}
+                            {analysisTabContent}
+                        </Tabs.Panel>
+                    )}
+
+                    <Tabs.Panel value="lekce" pt="md">
+                        {isLecturesFetching && <span data-qa="loading" aria-hidden="true" hidden />}
+                        <div
+                            className={classNames(styles.lectureColumns, {
+                                [styles.lectureColumnsSingle]: isGroupObject(object),
+                            })}>
+                            {lectures.map((courseLectures) => (
+                                <div
+                                    key={courseLectures.course.id}
+                                    className={styles.lectureColumn}
+                                    data-qa="card_course">
+                                    <div className={styles.infoList}>
+                                        <div
+                                            className={styles.courseHeadingItem}
+                                            style={assignInlineVars(courseBandVars, {
+                                                color: courseLectures.course.color,
+                                                text: contrastingTextColor(
+                                                    courseLectures.course.color,
+                                                ),
+                                            })}>
+                                            <Title
+                                                order={2}
+                                                size="h4"
+                                                className={mb0}
+                                                data-qa="card_course_name">
+                                                {courseLectures.course.name}
+                                            </Title>
+                                        </div>
+                                        {courseLectures.objects.map(renderLecture)}
+                                    </div>
+                                </div>
+                            ))}
+                            {lectures.length === 0 && (
+                                <div className={styles.lectureEmptyState}>
+                                    <EmptyState
+                                        icon={faCalendar}
+                                        title="Žádné lekce"
+                                        description="Až se přidá první lekce, objeví se tady seřazená po kurzech."
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </Tabs.Panel>
+                </Tabs>
+            </Container>
+        )
+    }
+
     return (
         <>
             <Container>
@@ -464,143 +611,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                     }
                 />
             </Container>
-            {isLoading ? (
-                <Container>
-                    <SkeletonShell>
-                        <Skeleton h={28} mb="sm" radius="sm" w="60%" />
-                        <Skeleton h={20} mb="xs" radius="sm" />
-                        <Skeleton h={20} mb="xs" radius="sm" w="80%" />
-                        <Skeleton h={20} mb="xl" radius="sm" w="40%" />
-                        <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
-                            {[...new Array(3)].map((_, i) => (
-                                <Skeleton key={i} h={200} radius="md" />
-                            ))}
-                        </SimpleGrid>
-                    </SkeletonShell>
-                </Container>
-            ) : objectUnavailable ? (
-                <Container>
-                    <LoadErrorEmptyState resource={isClientPageValue ? "Klienta" : "Skupinu"} />
-                </Container>
-            ) : (
-                <Container>
-                    <div className={styles.cardInfo}>
-                        <Alerts
-                            object={object}
-                            isDeactivatePending={isDeactivatePending}
-                            onDeactivate={handleDeactivate}
-                        />
-                    </div>
-                    {isClientObject(object) && (
-                        <ClientInfo
-                            client={object}
-                            groupsOfClient={groupsOfClient}
-                            pastGroups={pastGroups}
-                        />
-                    )}
-                    {isGroupObject(object) && (
-                        <PrepaidCounters
-                            isGroupActive={object.active}
-                            memberships={object.memberships}
-                        />
-                    )}
-                    {/* Zalozky misto jedne dlouhe stranky. „Lekce" musi zustat vychozi:
-                        je to duvod, proc se karta otevira — a chytaji se jich E2E kroky
-                        (`card_course`). */}
-                    <Tabs
-                        defaultValue="lekce"
-                        keepMounted={false}
-                        onChange={(value) => {
-                            if (value === "analyza") {
-                                setWasAnalysisOpened(true)
-                            }
-                        }}
-                        className={styles.tabs}>
-                        <Tabs.List>
-                            <Tabs.Tab value="lekce">Lekce</Tabs.Tab>
-                            {isClientObject(object) && <Tabs.Tab value="analyza">Analýza</Tabs.Tab>}
-                        </Tabs.List>
-
-                        {isClientObject(object) && (
-                            <Tabs.Panel value="analyza" pt="md">
-                                {/* `isLoading`, ne `isPending`: offline je dotaz `pending`
-                                    s `fetchStatus: "paused"`, takže by tu kostra zůstala
-                                    napořád a chybová větev níž by byla nedosažitelná
-                                    (stejný důvod jako na Klientech, viz Clients.tsx) */}
-                                {lecturesFromClientAllQuery.isLoading ? (
-                                    // `SkeletonShell`, ne holý `Skeleton`: obal nese
-                                    // `data-qa="loading"` (kontrakt s E2E kroky) a
-                                    // `aria-busy`/`aria-live` — viz Skeletons.tsx, podle
-                                    // kterého ho má mít KAŽDÁ kostra v aplikaci
-                                    <SkeletonShell>
-                                        <Skeleton h={320} radius="md" />
-                                    </SkeletonShell>
-                                ) : lecturesFromClientAllQuery.data === undefined ? (
-                                    // bez téhle větve by se `ClientAnalysis` dostalo prázdné pole
-                                    // a klient s plnou historií by vypadal stejně jako klient bez
-                                    // jediné lekce.
-                                    // Test je na `data`, ne na `isError`: při SELHANÉM REFETCHI si
-                                    // TanStack Query data z cache nechá (`isError` by tedy plně
-                                    // načtenou analýzu zbytečně nahradilo chybou) a naopak
-                                    // nedokončený dotaz bez chyby (offline) data taky nemá.
-                                    <LoadErrorEmptyState resource="Analýzu" />
-                                ) : (
-                                    <ClientAnalysis
-                                        clientId={id}
-                                        lectures={lecturesFromClientAllQuery.data}
-                                    />
-                                )}
-                            </Tabs.Panel>
-                        )}
-
-                        <Tabs.Panel value="lekce" pt="md">
-                            {isLecturesFetching && (
-                                <span data-qa="loading" aria-hidden="true" hidden />
-                            )}
-                            <div
-                                className={classNames(styles.lectureColumns, {
-                                    [styles.lectureColumnsSingle]: isGroupObject(object),
-                                })}>
-                                {lectures.map((courseLectures) => (
-                                    <div
-                                        key={courseLectures.course.id}
-                                        className={styles.lectureColumn}
-                                        data-qa="card_course">
-                                        <div className={styles.infoList}>
-                                            <div
-                                                className={styles.courseHeadingItem}
-                                                style={assignInlineVars(courseBandVars, {
-                                                    color: courseLectures.course.color,
-                                                    text: contrastingTextColor(
-                                                        courseLectures.course.color,
-                                                    ),
-                                                })}>
-                                                <Title
-                                                    order={2}
-                                                    size="h4"
-                                                    className={mb0}
-                                                    data-qa="card_course_name">
-                                                    {courseLectures.course.name}
-                                                </Title>
-                                            </div>
-                                            {courseLectures.objects.map(renderLecture)}
-                                        </div>
-                                    </div>
-                                ))}
-                                {lectures.length === 0 && (
-                                    <div className={styles.lectureEmptyState}>
-                                        <EmptyState
-                                            icon={faCalendar}
-                                            title="Žádné lekce"
-                                            description="Až se přidá první lekce, objeví se tady seřazená po kurzech."
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                        </Tabs.Panel>
-                    </Tabs>
-                </Container>
-            )}
+            {cardBody}
         </>
     )
 }
