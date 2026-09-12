@@ -35,6 +35,19 @@ STORAGES = {
     },
 }
 
+# LocMemCache z base.py je per-proces - se 2 gunicorn workery (viz Dockerfile) tak
+# kazdy drzi vlastni cache pro FIO_CACHE_KEY (api/services.py), takze se Fio API
+# dotazuje az 2x castji, nez FIO_CACHE_TIMEOUT_SECONDS predpoklada, a snadno narazi
+# na vlastni limit intervalu dotazovani (409). DatabaseCache je sdileny mezi procesy.
+# Tabulka se zaklada pres `manage.py createcachetable`
+# (scripts/shell/release_tasks.sh, release_command ve fly*.toml).
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "django_cache",
+    }
+}
+
 # Django konstanty pro bezpecnost
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

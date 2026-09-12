@@ -12,7 +12,7 @@ primary_region = "arn"
 auto_rollback = true
 
 [deploy]
-release_command = "python manage.py migrate --noinput"
+release_command = "sh -c 'python manage.py migrate --noinput && python manage.py createcachetable'"
 
 [env]
 BANK_ACTIVE = "True"
@@ -21,6 +21,10 @@ DEPLOYED = "True"
 DJANGO_SETTINGS_MODULE = "up.settings.production"
 ENVIRONMENT = "test-fly"
 PORT = "8000"
+
+[[statics]]
+guest_path = "/usr/src/up-admin/staticfiles"
+url_prefix = "/static"
 
 [[services]]
 internal_port = 8000
@@ -36,8 +40,8 @@ port = 80
 handlers = ["tls", "http"]
 port = 443
 [services.concurrency]
-hard_limit = 25
-soft_limit = 20
+hard_limit = 8
+soft_limit = 6
 type = "connections"
 
 [[services.tcp_checks]]

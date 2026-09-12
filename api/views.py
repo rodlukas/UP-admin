@@ -114,7 +114,7 @@ class ClientViewSet(viewsets.ModelViewSet, ProtectedErrorMixin):
     )
     @action(detail=False, methods=["patch"], url_path="deactivate-bulk")
     def deactivate_bulk(self, request: Request) -> Response:
-        ids = request.data.get("ids")
+        ids = request.data.get("ids") if isinstance(request.data, dict) else None
         if not isinstance(ids, list):
             return Response({"ids": "Musí být seznam."}, status=status.HTTP_400_BAD_REQUEST)
         Client.objects.filter(pk__in=ids).update(active=False)
@@ -290,7 +290,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     )
     @action(detail=False, methods=["patch"], url_path="deactivate-bulk")
     def deactivate_bulk(self, request: Request) -> Response:
-        ids = request.data.get("ids")
+        ids = request.data.get("ids") if isinstance(request.data, dict) else None
         if not isinstance(ids, list):
             return Response({"ids": "Musí být seznam."}, status=status.HTTP_400_BAD_REQUEST)
         Group.objects.filter(pk__in=ids).update(active=False)

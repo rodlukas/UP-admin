@@ -32,6 +32,13 @@ jobs:
               with:
                   languages: ${{ matrix.language }}
 
+            - name: 🔧 Setup Python (only for python matrix)
+              if: matrix.language == 'python'
+              uses: actions/setup-python@v7
+              with:
+                  python-version: "3.14"
+                  cache: "pipenv"
+
             - name: 🔧 Install Python dependencies (only for python matrix)
               if: matrix.language == 'python'
               run: |
