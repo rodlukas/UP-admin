@@ -36,5 +36,5 @@ CMD ["gunicorn", "--bind", ":8000", \
      "--timeout", "60", "--graceful-timeout", "30", \
      "--max-requests", "500", "--max-requests-jitter", "50", \
      "--access-logfile", "-", \
-     "--access-logformat", "%(m)s %(U)s%(q)s %(s)s %(b)sB %(M)sms", \
+     "--access-logformat", "%(m)s %(U)s%(q)s %(s)s %(b)s %(M)sms", \
      "up.wsgi"]

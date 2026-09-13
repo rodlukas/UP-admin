@@ -150,6 +150,8 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.csp.ContentSecurityPolicyMiddleware",
+    # statiku musi vydavat WhiteNoise, ne Fly proxy (sekce statics ve fly.*.toml):
+    # jen tak dostanou hashovana aktiva Cache-Control: immutable
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

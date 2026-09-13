@@ -139,9 +139,12 @@ module.exports = {
             outputPath: htmlTarget,
         }),
         // upload map do Sentry, aby zustaly stack trace citelne i bez verejnych map;
-        // bez tokenu (lokalni build) se plugin preskoci
+        // bez kompletni trojice promennych (lokalni build) se plugin preskoci - s chybejicim
+        // org/project by se totiz sestavil a spadl az pri uploadu uprostred buildu
         isProduction &&
             process.env.SENTRY_AUTH_TOKEN &&
+            process.env.SENTRY_ORG &&
+            process.env.SENTRY_PROJECT &&
             sentryWebpackPlugin({
                 org: process.env.SENTRY_ORG,
                 project: process.env.SENTRY_PROJECT,
