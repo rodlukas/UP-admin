@@ -17,17 +17,20 @@ COPY . .
 # expose the port
 EXPOSE 8000
 
-# Fly proxy odpovedi nebufferuje, takze pomaly klient drzi spojeni az do timeoutu.
-# Sync worker by u nej stal zablokovany v recv/sendall a obsadil jeden ze dvou procesu,
-# proto gthread - pomale spojeni zabere jedno vlakno, ne cely worker.
-# max-requests recykluje workery, aby jim na 256MB stroji nerostlo RSS bez omezeni.
-# preload naimportuje Django app registry + WhiteNoise staticky index jednou v masteru
-# misto 2x (jednou za kazdy worker) - sdileni pres copy-on-write snizuje soucet RSS
-# na stroji, kde je to na hrane 256MB. Overeno fork-safety: zadny ready() hook,
-# zadne eager DB/cache spojeni, _bank_executor i sentry-sdk se chovaji bezpecne po forku.
+# Fly proxy odpovedi nebufferuje, takze pomaly klient drzi spojeni az do timeoutu -
+# proto gthread: takove spojeni zabere jedno vlakno, ne cely worker.
+# Jediny worker: stroj ma 1 sdilene vCPU, takze druhy proces nepridava zadnou CPU
+# paralelizaci, jen dalsi kopii interpretru a Djanga - a ta je na 256MB stroji
+# nejvetsi jednotlivou polozkou. Kapacitu drzi 4 vlakna, coz pokryje paralelni
+# requesty jednoho nacteni stranky i s rezervou na pomaleho klienta.
+# preload sdili Django app registry a WhiteNoise staticky index s workerem pres
+# copy-on-write a dela z recyklace rychly fork misto plneho importu. Fork-safety
+# overena: zadny ready() hook, zadne eager DB/cache spojeni, _bank_executor
+# i sentry-sdk se po forku chovaji bezpecne.
+# max-requests je pojistka proti rustu RSS.
 CMD ["gunicorn", "--bind", ":8000", \
      "--preload", \
-     "--worker-class", "gthread", "--workers", "2", "--threads", "4", \
+     "--worker-class", "gthread", "--workers", "1", "--threads", "4", \
      "--timeout", "60", "--graceful-timeout", "30", \
      "--max-requests", "500", "--max-requests-jitter", "50", \
      "up.wsgi"]
