@@ -20,10 +20,6 @@ DJANGO_SETTINGS_MODULE = "up.settings.production"
 ENVIRONMENT = "prod-fly"
 PORT = "8000"
 
-[[statics]]
-guest_path = "/usr/src/up-admin/staticfiles"
-url_prefix = "/static"
-
 [[services]]
 internal_port = 8000
 processes = ["app"]

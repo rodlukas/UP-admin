@@ -150,6 +150,9 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.csp.ContentSecurityPolicyMiddleware",
+    # statiku musi vydavat WhiteNoise, ne Fly proxy (sekce statics ve fly.*.toml):
+    # jen tak dostanou hashovana aktiva Cache-Control: immutable (viz
+    # WHITENOISE_IMMUTABLE_FILE_TEST nize)
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -211,6 +214,11 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # Static files
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
+# WhiteNoise sam pozna jen 12mistny hash z manifestu Djanga, jenze HtmlWebpackPlugin
+# odkazuje bundly webpackovym 8mistnym hashem - ty by misto immutable dostavaly
+# max-age=60 a revalidovaly se kazdou minutu. Hash se hleda kdekoliv v nazvu, protoze
+# u chunku neni na konci (nazev.<hash>.chunk.js).
+WHITENOISE_IMMUTABLE_FILE_TEST = r"\.[0-9a-f]{8,}\."
 
 # debug toolbar
 DEBUG_TOOLBAR_CONFIG = {

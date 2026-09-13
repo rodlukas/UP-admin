@@ -28,9 +28,13 @@ EXPOSE 8000
 # overena: zadny ready() hook, zadne eager DB/cache spojeni, _bank_executor
 # i sentry-sdk se po forku chovaji bezpecne.
 # max-requests je pojistka proti rustu RSS.
+# access log jde na stdout, tedy do `fly logs` - bez nej neni u incidentu videt, jake
+# requesty byly v letu.
 CMD ["gunicorn", "--bind", ":8000", \
      "--preload", \
      "--worker-class", "gthread", "--workers", "1", "--threads", "4", \
      "--timeout", "60", "--graceful-timeout", "30", \
      "--max-requests", "500", "--max-requests-jitter", "50", \
+     "--access-logfile", "-", \
+     "--access-logformat", "%(m)s %(U)s%(q)s %(s)s %(b)s %(M)sms", \
      "up.wsgi"]

@@ -49,19 +49,39 @@ jobs:
             - name: 📝 Create dummy .env file
               run: touch .env
 
-            # nainstaluj JS zavislosti
+            # Sentry musi mapy priradit ke stejnemu release, jaky hlasi aplikace -
+            # string_substitution.sh dosazuje za %GIT_COMMIT kratky SHA
+            - name: 📝 Export Sentry release
+              run: echo "SENTRY_RELEASE=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+
+            # nainstaluj JS zavislosti (postinstall hook buildne frontend a nahraje mapy do Sentry)
             - name: 🔧 JS - install deps & build frontend app
               run: npm ci
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+
+            # mapy frontendu uz jsou v Sentry a na verejnou URL nepatri. Maze se jen tahle
+            # slozka: mapy tretich stran musi zustat, protoze jejich CSS na ne odkazuje
+            # (napr. rest_framework/css/bootstrap.min.css) a collectstatic by jinak selhal
+            - name: 🧹 Remove frontend source maps
+              run: rm -f frontend/build/assets/*.map
 
             # nainstaluj Python zavislosti
+            # bez --dev: deploy job krome collectstatic zadny vyvojovy nastroj nespousti
             - name: 🔧 Python - install deps
               run: |
                   pip install pipenv==2026.8.0 --only-binary :all:
-                  pipenv install --deploy --dev
+                  pipenv install --deploy
 
             # priprav Django aplikaci
+            # DEPLOYED drzi debug_toolbar mimo INSTALLED_APPS, jinak se do image sesbira
+            # i jeho statika
             - name: 🔧 Python - build Django app (staticfiles)
               run: pipenv run python manage.py collectstatic --noinput
+              env:
+                  DEPLOYED: True
 
             # zabal frontend do zipu pro GH a nahraj
             - name: ✨ Pre-deploy tasks Github Releases
