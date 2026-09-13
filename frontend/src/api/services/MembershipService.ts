@@ -1,4 +1,4 @@
-import { MembershipPatchApi, MembershipType } from "../../types/models"
+import { type MembershipPatchApi, type MembershipType } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 

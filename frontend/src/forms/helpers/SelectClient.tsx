@@ -3,7 +3,7 @@ import * as React from "react"
 
 import { TEXTS } from "../../global/constants"
 import { clientName, withSelectedOptions } from "../../global/utils"
-import { ClientType } from "../../types/models"
+import { type ClientType } from "../../types/models"
 
 import * as styles from "./SelectClient.css"
 

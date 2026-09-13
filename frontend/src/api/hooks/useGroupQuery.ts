@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { ClientType, GroupType } from "../../types/models"
+import { type ClientType, type GroupType } from "../../types/models"
 import GroupService from "../services/GroupService"
 
 /** Hook pro získání všech skupin. */

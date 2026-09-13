@@ -1,4 +1,4 @@
-import { AttendancePatchApi, AttendanceType } from "../../types/models"
+import { type AttendancePatchApi, type AttendanceType } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 

@@ -24,7 +24,7 @@ import * as segmented from "../components/buttons/segmented.css"
 import {
     AXIS_LABEL,
     AXIS_TICK,
-    ChartMargin,
+    type ChartMargin,
     GRID_STROKE,
     LEGEND_FONT,
     MONTH_LABELS,
@@ -40,7 +40,7 @@ import {
 import { tableFlat, tableScrollOverflow } from "../global/surfaces.css"
 import { numericCell } from "../global/utility.css"
 import { vars } from "../theme/tokens"
-import { StatisticsType } from "../types/models"
+import { type StatisticsType } from "../types/models"
 
 import * as styles from "./Statistics.css"
 

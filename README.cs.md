@@ -115,7 +115,7 @@ V následujícím seznamu jsou nejdůležitější funkce, která aplikace posky
 
 Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **REST API** zabezpečené
 **[JWT](https://jwt.io/) autentizací**. Jako databáze se používá
-[PostgreSQL 14](https://www.postgresql.org/).
+[PostgreSQL 18](https://www.postgresql.org/).
 
 > **ℹ️ Poznámka:** součástí repozitáře je také diagram nasazení a logický datový model – viz
 > [`docs/README.md`](docs).
@@ -124,7 +124,7 @@ Aplikace je rozdělena na **frontend a backend**, ty spolu komunikují přes **R
 
 Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těchto technologiích:
 
-- [Python 3.12](https://www.python.org/),
+- [Python 3.14](https://www.python.org/),
 - [Django 6](https://www.djangoproject.com/),
 - [Django REST framework 3](https://www.django-rest-framework.org/),
 - [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
@@ -150,10 +150,10 @@ Responzivní JS _([TypeScript](https://www.typescriptlang.org/))_ webová aplika
 technologiích:
 
 - [React 19](https://react.dev/),
-- [TypeScript 5](https://www.typescriptlang.org/),
-- [Bootstrap 5](https://getbootstrap.com/) (s [Reactstrap 9](https://reactstrap.github.io/)em),
+- [TypeScript 6](https://www.typescriptlang.org/),
+- [Mantine 9](https://mantine.dev/),
 - [FontAwesome 5 PRO](https://fontawesome.com/) (publikované do privátních Github Package Registry),
-- [Tanstack Router 5](https://tanstack.com/router/),
+- [Tanstack Router](https://tanstack.com/router/),
 - [Tanstack Query (dříve React Query)](https://tanstack.com/query/)
 - [a další...](/frontend/package.json)
 
@@ -161,10 +161,10 @@ Vývoj frontendu je postaven především na:
 
 - [Webpack 5](https://webpack.js.org/) s vlastní konfigurací (lokální i produkční) +
   [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
-- [Typescript 5](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
+- [Typescript 6](https://www.typescriptlang.org/) – pro statickou typovou kontrolu,
 - [vanilla-extract](https://vanilla-extract.style/) - typově bezpečná statická CSS,
 - [ESlint 9](https://eslint.org/) – linter pro statickou analýzu kódu,
-- [Babel 7](https://babeljs.io/),
+- [Babel 8](https://babeljs.io/),
 - [husky](https://github.com/typicode/husky) a [lint-staged](https://github.com/okonet/lint-staged)
   – pre-commit kontroly (ESlint, Prettier)
 - a [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – pro

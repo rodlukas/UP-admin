@@ -1,4 +1,4 @@
-import { Modal, ModalProps } from "@mantine/core"
+import { Modal, type ModalProps } from "@mantine/core"
 import * as React from "react"
 
 import { MODAL_TRANSITION_PROPS } from "../theme/theme"

@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { GroupPostApi, GroupPutApi, GroupType } from "../../types/models"
+import { type GroupPostApi, type GroupPutApi, type GroupType } from "../../types/models"
 import GroupService from "../services/GroupService"
 
 /** Hook pro vytvoření skupiny. */

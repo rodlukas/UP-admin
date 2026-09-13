@@ -1,4 +1,4 @@
-import { ClientType, GroupPostApi, GroupPutApi, GroupType } from "../../types/models"
+import { type ClientType, type GroupPostApi, type GroupPutApi, type GroupType } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 

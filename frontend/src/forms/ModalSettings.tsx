@@ -5,7 +5,7 @@ import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import { EDIT_TYPE } from "../global/constants"
 import useModal from "../hooks/useModal"
-import { AttendanceStateType, CourseType } from "../types/models"
+import { type AttendanceStateType, type CourseType } from "../types/models"
 
 import FormSettings from "./FormSettings"
 import { DummyAttendanceState, DummyCourse } from "./helpers/dummies"

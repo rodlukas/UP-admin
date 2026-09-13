@@ -1,8 +1,8 @@
 import {
-    AttendanceStatePatchApi,
-    AttendanceStatePostApi,
-    AttendanceStatePutApi,
-    AttendanceStateType,
+    type AttendanceStatePatchApi,
+    type AttendanceStatePostApi,
+    type AttendanceStatePutApi,
+    type AttendanceStateType,
 } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"

@@ -1,6 +1,6 @@
 import { notifications } from "@mantine/notifications"
 import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
-import { AxiosError } from "axios"
+import { type AxiosError } from "axios"
 import * as React from "react"
 
 import APP_URLS from "../APP_URLS"

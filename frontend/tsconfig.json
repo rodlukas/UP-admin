@@ -24,6 +24,9 @@
 
         // aktivace isolatedModules pro zamezeni nekompatibilite s Babel, viz https://devblogs.microsoft.com/typescript/typescript-and-babel-7/
         "isolatedModules": true,
+        // vynucuje explicitni "import type"/"export type" pro type-only symboly - Babel 8
+        // uz bez toho spolehlive nepozna, co ma z importu/exportu odstranit (viz babel.config.js)
+        "verbatimModuleSyntax": true,
 
         "types": ["vitest/globals", "node"]
     },

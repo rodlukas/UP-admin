@@ -1,7 +1,7 @@
 import { MantineProvider } from "@mantine/core"
 import { render, screen } from "@testing-library/react"
 
-import { ClientType } from "../../types/models"
+import { type ClientType } from "../../types/models"
 
 import SelectClient from "./SelectClient"
 

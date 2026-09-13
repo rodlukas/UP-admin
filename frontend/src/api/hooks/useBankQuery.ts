@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
-import { BankErrorType, BankType } from "../../types/models"
+import { type BankErrorType, type BankType } from "../../types/models"
 import BankService from "../services/BankService"
 
 /** Hook pro získání výpisů z banky. */

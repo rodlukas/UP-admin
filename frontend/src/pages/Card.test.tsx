@@ -1,5 +1,5 @@
 import { MantineProvider } from "@mantine/core"
-import { onlineManager, QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { onlineManager, type QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { RouterProvider } from "@tanstack/react-router"
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 
@@ -9,7 +9,7 @@ import GroupService from "../api/services/GroupService"
 import LectureService from "../api/services/LectureService"
 import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import { createTestRouter } from "../testUtils/createTestRouter"
-import { ClientType, LectureType } from "../types/models"
+import { type ClientType, type LectureType } from "../types/models"
 
 import Card from "./Card"
 

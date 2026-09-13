@@ -1,10 +1,10 @@
 import {
-    ClientType,
-    GroupType,
-    LecturePostApi,
-    LecturePutApi,
-    LectureType,
-    LectureTypeWithDate,
+    type ClientType,
+    type GroupType,
+    type LecturePostApi,
+    type LecturePutApi,
+    type LectureType,
+    type LectureTypeWithDate,
 } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_ORDERING, API_URLS } from "../urls"

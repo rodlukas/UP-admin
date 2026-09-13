@@ -1,8 +1,8 @@
 import { Tooltip } from "@mantine/core"
 import * as React from "react"
 
-import { AnalyticsSource } from "../analytics"
-import { AttendanceType, LectureType } from "../types/models"
+import { type AnalyticsSource } from "../analytics"
+import { type AttendanceType, type LectureType } from "../types/models"
 
 import AttendancePaidButton from "./AttendancePaidButton"
 import AttendanceRemindPay from "./AttendanceRemindPay"

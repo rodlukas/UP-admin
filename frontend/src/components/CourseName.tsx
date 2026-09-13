@@ -3,7 +3,7 @@ import classNames from "classnames"
 import * as React from "react"
 
 import { contrastingTextColor } from "../global/utils"
-import { CourseType } from "../types/models"
+import { type CourseType } from "../types/models"
 
 import * as styles from "./CourseName.css"
 

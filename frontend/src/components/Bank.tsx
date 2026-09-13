@@ -16,7 +16,7 @@ import { isToday, prettyDateWithDayYearIfDiff } from "../global/funcDateTime"
 import { tableFlat, tableScrollOverflow } from "../global/surfaces.css"
 import { bold, iconDanger, inlineBlockNowrap, nowrap } from "../global/utility.css"
 import { prettyAmount } from "../global/utils"
-import { BankType, BankSuccessType, BankErrorType } from "../types/models"
+import { type BankType, type BankSuccessType, type BankErrorType } from "../types/models"
 
 import * as styles from "./Bank.css"
 import CustomButton from "./buttons/CustomButton"

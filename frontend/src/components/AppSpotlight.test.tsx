@@ -8,7 +8,7 @@ import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { rememberRecentRecord } from "../global/recentRecords"
 import { createTestRouter } from "../testUtils/createTestRouter"
-import { ClientActiveType, GroupType } from "../types/models"
+import { type ClientActiveType, type GroupType } from "../types/models"
 
 import AppSpotlight from "./AppSpotlight"
 import { courseBandVars } from "./CourseName.css"

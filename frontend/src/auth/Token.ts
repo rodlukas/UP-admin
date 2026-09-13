@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode"
 
 import { prettyDateTime } from "../global/funcDateTime"
-import { TokenCodedType, TokenDecodedType } from "../types/models"
+import { type TokenCodedType, type TokenDecodedType } from "../types/models"
 
 /** Klíč pro uložení tokenu do LocalStorage. */
 const AUTH_STORAGE_KEY = "jwt"

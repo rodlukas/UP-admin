@@ -1,11 +1,11 @@
-import { CourseType, LectureType } from "../types/models"
+import { type CourseType, type LectureType } from "../types/models"
 
 import { TEXTS } from "./constants"
 import { addDays } from "./funcDateTime"
 import {
     courseSelectError,
     getDefaultValuesForLecture,
-    GroupedObjectsByCourses,
+    type GroupedObjectsByCourses,
     pluralizeCs,
 } from "./utils"
 

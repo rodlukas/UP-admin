@@ -3,7 +3,7 @@ import { Table, UnstyledButton } from "@mantine/core"
 import { faSort, faSortDown, faSortUp } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
-import { SortDirection } from "../hooks/useDataTable"
+import { type SortDirection } from "../hooks/useDataTable"
 
 import * as styles from "./SortableTh.css"
 

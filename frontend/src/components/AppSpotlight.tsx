@@ -3,13 +3,13 @@ import { Kbd } from "@mantine/core"
 import { useHotkeys } from "@mantine/hooks"
 import {
     Spotlight,
-    SpotlightActionData,
-    SpotlightActionGroupData,
+    type SpotlightActionData,
+    type SpotlightActionGroupData,
     spotlight,
 } from "@mantine/spotlight"
 import { faSearch, faUser, faUsers } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import { useNavigate } from "@tanstack/react-router"
-import Fuse, { IFuseOptions } from "fuse.js"
+import Fuse, { type IFuseOptions } from "fuse.js"
 import * as React from "react"
 
 import { trackEvent } from "../analytics"
@@ -18,10 +18,10 @@ import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import {
     pruneUnresolvableRecentRecords,
     readRecentRecords,
-    RecentRecord,
+    type RecentRecord,
 } from "../global/recentRecords"
 import { clientName, isModalShown, pluralizeCs, prettyPhone } from "../global/utils"
-import { ClientActiveType, GroupType } from "../types/models"
+import { type ClientActiveType, type GroupType } from "../types/models"
 
 import * as styles from "./AppSpotlight.css"
 import CourseName from "./CourseName"

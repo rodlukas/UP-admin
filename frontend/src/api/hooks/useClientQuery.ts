@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { ClientType } from "../../types/models"
-import ClientService, { ListWithActiveClients } from "../services/ClientService"
+import { type ClientType } from "../../types/models"
+import ClientService, { type ListWithActiveClients } from "../services/ClientService"
 
 /** Hook pro získání všech klientů. */
 export function useClients() {

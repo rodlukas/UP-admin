@@ -1,4 +1,4 @@
-import { Method } from "axios"
+import { type Method } from "axios"
 
 /** Oddělovač v URL na API. */
 export const API_DELIM = "/"

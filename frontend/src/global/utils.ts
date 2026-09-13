@@ -2,11 +2,11 @@ import chroma from "chroma-js"
 
 import LectureService from "../api/services/LectureService"
 import {
-    ApplicationType,
-    ClientType,
-    CourseType,
-    LectureType,
-    MembershipType,
+    type ApplicationType,
+    type ClientType,
+    type CourseType,
+    type LectureType,
+    type MembershipType,
 } from "../types/models"
 
 import { DAYS_WITHOUT_LECTURE_WARNING, LOCALE_CZ, TEXTS } from "./constants"

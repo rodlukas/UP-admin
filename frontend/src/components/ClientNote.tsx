@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { ClientType } from "../types/models"
+import { type ClientType } from "../types/models"
 
 import NoInfo from "./NoInfo"
 

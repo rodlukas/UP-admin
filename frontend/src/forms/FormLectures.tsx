@@ -1,8 +1,8 @@
-import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome"
+import { FontAwesomeIcon, type FontAwesomeIconProps } from "@fortawesome/react-fontawesome"
 import {
     Alert,
     Checkbox,
-    ComboboxItem,
+    type ComboboxItem,
     Grid,
     Group,
     Modal,
@@ -20,7 +20,7 @@ import {
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
-import { AnalyticsSource, trackEvent } from "../analytics"
+import { type AnalyticsSource, trackEvent } from "../analytics"
 import { useCreateLecture, useDeleteLecture, useUpdateLecture } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -42,22 +42,22 @@ import {
 } from "../global/constants"
 import { prettyDateWithLongDayYear, toISODate, toISOTime } from "../global/funcDateTime"
 import { dimmedTextCenter } from "../global/utility.css"
-import { courseSelectError, DefaultValuesForLecture } from "../global/utils"
+import { courseSelectError, type DefaultValuesForLecture } from "../global/utils"
 import {
-    AttendancePostApi,
-    AttendancePutApi,
-    AttendanceStateType,
-    AttendanceType,
-    ClientType,
-    CourseType,
-    GroupType,
-    LecturePostApi,
-    LecturePostApiDummy,
-    LecturePutApi,
-    LectureType,
-    LectureTypeWithDate,
+    type AttendancePostApi,
+    type AttendancePutApi,
+    type AttendanceStateType,
+    type AttendanceType,
+    type ClientType,
+    type CourseType,
+    type GroupType,
+    type LecturePostApi,
+    type LecturePostApiDummy,
+    type LecturePutApi,
+    type LectureType,
+    type LectureTypeWithDate,
 } from "../types/models"
-import { fEmptyVoid } from "../types/types"
+import { type fEmptyVoid } from "../types/types"
 
 import * as baseStyles from "./FormBase.css"
 import * as styles from "./FormLectures.css"

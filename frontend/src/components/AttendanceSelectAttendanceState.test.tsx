@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react"
 
 import { createQueryClient } from "../api/queryClient"
 import { AttendanceStatesContext } from "../contexts/AttendanceStatesContext"
-import { AttendanceStateType } from "../types/models"
+import { type AttendanceStateType } from "../types/models"
 
 import AttendanceSelectAttendanceState from "./AttendanceSelectAttendanceState"
 

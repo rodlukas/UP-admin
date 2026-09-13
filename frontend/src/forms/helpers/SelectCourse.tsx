@@ -4,7 +4,7 @@ import * as React from "react"
 import CourseCircle from "../../components/CourseCircle"
 import { TEXTS } from "../../global/constants"
 import { withSelectedOptions } from "../../global/utils"
-import { CourseType } from "../../types/models"
+import { type CourseType } from "../../types/models"
 
 /** Velikost tečky u kurzu v options – stejný recept na barvu jako všude jinde (`CourseCircle`). */
 const COURSE_DOT_SIZE = 0.875

@@ -1,4 +1,4 @@
-import * as React from "react"
+import type * as React from "react"
 
 /**
  * Pokud se nenajde chunk na serveru, proved PRAVE jednou reload cele aplikace -

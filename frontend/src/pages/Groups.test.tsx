@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/react"
 import { createQueryClient } from "../api/queryClient"
 import { GroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { createTestRouter } from "../testUtils/createTestRouter"
-import { GroupType } from "../types/models"
+import { type GroupType } from "../types/models"
 
 import Groups from "./Groups"
 

@@ -1,9 +1,9 @@
-import { ComboboxItem } from "@mantine/core"
+import { type ComboboxItem } from "@mantine/core"
 import * as React from "react"
 
 import { useAttendanceStates } from "../api/hooks"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
-import { AttendanceStateType } from "../types/models"
+import { type AttendanceStateType } from "../types/models"
 
 type Context = {
     /** Probíhá první načítání dat (true) - data ještě nejsou načtená. */

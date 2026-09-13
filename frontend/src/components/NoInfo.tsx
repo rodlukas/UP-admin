@@ -1,7 +1,7 @@
 import { Text } from "@mantine/core"
 import * as React from "react"
 
-import { QA } from "../types/types"
+import { type QA } from "../types/types"
 
 type Props = QA
 

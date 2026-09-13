@@ -3,7 +3,7 @@ import * as React from "react"
 
 import APP_URLS from "../APP_URLS"
 import { bold as boldStyle, nowrap } from "../global/utility.css"
-import { GroupType } from "../types/models"
+import { type GroupType } from "../types/models"
 
 import ConditionalWrapper from "./ConditionalWrapper"
 import CourseCircle from "./CourseCircle"

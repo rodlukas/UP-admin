@@ -1,7 +1,7 @@
-import { Button, ButtonProps } from "@mantine/core"
+import { Button, type ButtonProps } from "@mantine/core"
 import * as React from "react"
 
-import { ClickableButtonProps } from "../../types/types"
+import { type ClickableButtonProps } from "../../types/types"
 
 type Props = Omit<ButtonProps, "content"> &
     ClickableButtonProps & {

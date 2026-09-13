@@ -125,6 +125,16 @@ export default [
 
             "@typescript-eslint/no-shadow": ["error"],
             "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+            // vyzadovano "verbatimModuleSyntax" v tsconfig.json (a Babel 8, viz babel.config.js) -
+            // type-only importy/exporty musi byt oznacene explicitne
+            "@typescript-eslint/consistent-type-imports": [
+                "error",
+                { fixStyle: "inline-type-imports" },
+            ],
+            "@typescript-eslint/consistent-type-exports": [
+                "error",
+                { fixMixedExportsWithInlineTypeSpecifier: true },
+            ],
             "@typescript-eslint/no-explicit-any": 0,
             "@typescript-eslint/no-floating-promises": ["error", { ignoreVoid: true }],
             "@typescript-eslint/no-unsafe-assignment": 0,

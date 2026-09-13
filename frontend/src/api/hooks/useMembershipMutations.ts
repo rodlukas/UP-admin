@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { MembershipPatchApi, MembershipType } from "../../types/models"
+import { type MembershipPatchApi, type MembershipType } from "../../types/models"
 import MembershipService from "../services/MembershipService"
 
 /**

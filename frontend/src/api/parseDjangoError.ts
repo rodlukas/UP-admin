@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { AxiosError } from "axios"
+import { type AxiosError } from "axios"
 
 /** Rozparsuje pro frontend chybu vrácenou z API. */
 export function parseDjangoError(error: AxiosError): null | Record<string, any> | string {

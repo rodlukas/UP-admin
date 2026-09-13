@@ -4,7 +4,7 @@ import { faExclamationCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
 import { iconWarning } from "../global/utility.css"
-import { AttendanceType } from "../types/models"
+import { type AttendanceType } from "../types/models"
 
 import { attendanceIconSlot } from "./Attendances.css"
 

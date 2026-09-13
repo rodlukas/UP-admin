@@ -1,8 +1,8 @@
 import * as React from "react"
 
 import { noop } from "../global/utils"
-import { ModalTempData } from "../types/components"
-import { fEmptyVoid } from "../types/types"
+import { type ModalTempData } from "../types/components"
+import { type fEmptyVoid } from "../types/types"
 
 const DIRTY_INDICATORS = {
     CLEAN: 1,

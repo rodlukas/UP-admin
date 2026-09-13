@@ -1,6 +1,6 @@
 import { useQueries, useQuery } from "@tanstack/react-query"
 
-import { ClientType, GroupType, LectureType, LectureTypeWithDate } from "../../types/models"
+import { type ClientType, type GroupType, type LectureType, type LectureTypeWithDate } from "../../types/models"
 import LectureService from "../services/LectureService"
 
 /** Hook pro získání všech lekcí. */

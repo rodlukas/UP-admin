@@ -57,17 +57,17 @@ import {
     clientName,
     contrastingTextColor,
     courseDuration,
-    DefaultValuesForLecture,
+    type DefaultValuesForLecture,
     getDefaultValuesForLecture,
     groupObjectsByCourses,
-    GroupedObjectsByCourses,
+    type GroupedObjectsByCourses,
     isStaleActive,
     pageTitle,
 } from "../global/utils"
 import { useRememberRecentRecord } from "../hooks/useRememberRecentRecord"
-import { ModalClientsGroupsData } from "../types/components"
-import { ClientType, GroupType, LectureType } from "../types/models"
-import { Model } from "../types/types"
+import { type ModalClientsGroupsData } from "../types/components"
+import { type ClientType, type GroupType, type LectureType } from "../types/models"
+import { type Model } from "../types/types"
 
 import * as styles from "./Card.css"
 

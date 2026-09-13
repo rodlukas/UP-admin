@@ -1,4 +1,4 @@
-import { StatisticsFilters, StatisticsType } from "../../types/models"
+import { type StatisticsFilters, type StatisticsType } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_METHODS, API_URLS } from "../urls"
 

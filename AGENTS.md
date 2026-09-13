@@ -215,11 +215,11 @@ Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, kter�
 ### Build a nasazení
 
 **CI** ([`.github/workflows/test.yml`](.github/workflows/test.yml)) se spouští na každý push/PR do `master`:
-1. Nainstaluje Node 20 + Python 3.12 + závislosti
+1. Nainstaluje Node 26 + Python 3.14 + závislosti
 2. Vytvoří `.npmrc` pro FontAwesome PRO z private GitHub Package Registry (token `GPR_TOKEN`)
 3. Spustí frontend testy (typy + lint + vitest)
 4. Spustí mypy
-5. Nastartuje PostgreSQL 14 s českou locale v Dockeru
+5. Nastartuje PostgreSQL 18 s českou locale v Dockeru
 6. Buildne Django (migrace + staticfiles) přes `scripts/shell/release_tasks.sh`
 7. Django deployment checklist
 8. Django unit testy + E2E API testy + E2E UI testy (behave + Selenium/Firefox)

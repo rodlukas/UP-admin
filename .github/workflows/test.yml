@@ -99,7 +99,7 @@ jobs:
                   pipenv --version
                   firefox --version
                   geckodriver --version
-                  docker exec postgresql_cz psql -U postgres -c "SHOW LC_COLLATE;"
+                  docker exec postgresql_cz psql -U postgres -c "SELECT datcollate, datctype FROM pg_database WHERE datname = current_database();"
                   docker exec postgresql_cz psql --version
                   docker exec postgresql_cz pg_config --version
 

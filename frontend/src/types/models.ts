@@ -1,4 +1,4 @@
-import { Model, PatchType } from "./types"
+import { type Model, type PatchType } from "./types"
 
 /* *************************************************************************************************
 Modely pro GET požadavky na API.

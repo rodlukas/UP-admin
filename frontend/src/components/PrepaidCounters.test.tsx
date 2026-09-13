@@ -1,5 +1,5 @@
 import { MantineProvider } from "@mantine/core"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { type QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { RouterProvider } from "@tanstack/react-router"
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import * as React from "react"
@@ -7,7 +7,7 @@ import * as React from "react"
 import { createQueryClient } from "../api/queryClient"
 import MembershipService from "../api/services/MembershipService"
 import { createTestRouter } from "../testUtils/createTestRouter"
-import { MembershipType } from "../types/models"
+import { type MembershipType } from "../types/models"
 
 import PrepaidCounters from "./PrepaidCounters"
 

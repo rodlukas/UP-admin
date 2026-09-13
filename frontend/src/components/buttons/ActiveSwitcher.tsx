@@ -1,7 +1,7 @@
 import { SegmentedControl } from "@mantine/core"
 import * as React from "react"
 
-import { AnalyticsSource, trackEvent } from "../../analytics"
+import { type AnalyticsSource, trackEvent } from "../../analytics"
 
 import * as styles from "./ActiveSwitcher.css"
 import * as segmented from "./segmented.css"
