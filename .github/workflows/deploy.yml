@@ -69,10 +69,11 @@ jobs:
               run: rm -f frontend/build/assets/*.map
 
             # nainstaluj Python zavislosti
+            # bez --dev: deploy job krome collectstatic zadny vyvojovy nastroj nespousti
             - name: 🔧 Python - install deps
               run: |
                   pip install pipenv==2026.8.0 --only-binary :all:
-                  pipenv install --deploy --dev
+                  pipenv install --deploy
 
             # priprav Django aplikaci
             # DEPLOYED drzi debug_toolbar mimo INSTALLED_APPS, jinak se do image sesbira

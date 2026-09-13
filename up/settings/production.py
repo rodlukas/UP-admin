@@ -6,6 +6,7 @@ Rozšiřuje základní konfiguraci ze souboru base.py.
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import ignore_logger
 import os
 
 from .base import *
@@ -21,6 +22,9 @@ if SENTRY_DSN:
         integrations=[DjangoIntegration()],
         release="%GIT_COMMIT",
     )
+    # gunicorn propaguje access log do rootu, odkud ho SDK bere jako breadcrumbs - radky
+    # o stahovani statiky by pri stropu 100 breadcrumbu vytlacily to, co uzivatel delal
+    ignore_logger("gunicorn.access")
 
 # staticfiles backend musi zustat manifest-based, jinak by {% static %} generoval
 # nehashovane URL bez cache bustingu (manifest vznika pri collectstatic,
