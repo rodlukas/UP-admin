@@ -8,6 +8,7 @@ const TerserPlugin = require("terser-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const ESLintPlugin = require("eslint-webpack-plugin")
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin")
+const { sentryWebpackPlugin } = require("@sentry/webpack-plugin")
 const { VanillaExtractPlugin } = require("@vanilla-extract/webpack-plugin")
 
 const port = 3000
@@ -137,6 +138,17 @@ module.exports = {
         new HtmlWebpackHarddiskPlugin({
             outputPath: htmlTarget,
         }),
+        // upload map do Sentry, aby zustaly stack trace citelne i bez verejnych map;
+        // bez tokenu (lokalni build) se plugin preskoci
+        isProduction &&
+            process.env.SENTRY_AUTH_TOKEN &&
+            sentryWebpackPlugin({
+                org: process.env.SENTRY_ORG,
+                project: process.env.SENTRY_PROJECT,
+                authToken: process.env.SENTRY_AUTH_TOKEN,
+                // musi sedet s release, ktery hlasi aplikace (%GIT_COMMIT v index.tsx)
+                release: { name: process.env.SENTRY_RELEASE },
+            }),
     ].filter(Boolean), // odstraneni false hodnot
 
     output: {
@@ -181,7 +193,9 @@ module.exports = {
         port: port,
     },
     stats: { children: false, modules: false },
-    devtool: isProduction ? "source-map" : "cheap-module-source-map",
+    // hidden-source-map mapy vytvori, ale nenecha na ne v bundlu odkaz sourceMappingURL -
+    // prohlizec je tedy nehleda a Sentry je dostane uploadem (viz sentryWebpackPlugin)
+    devtool: isProduction ? "hidden-source-map" : "cheap-module-source-map",
     optimization: {
         minimize: isProduction,
         splitChunks: {

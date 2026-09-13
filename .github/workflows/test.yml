@@ -47,9 +47,18 @@ jobs:
             - name: 📝 Create dummy .env file
               run: touch .env
 
-            # nainstaluj JS zavislosti
+            # Sentry musi mapy priradit ke stejnemu release, jaky hlasi aplikace -
+            # string_substitution.sh dosazuje za %GIT_COMMIT kratky SHA
+            - name: 📝 Export Sentry release
+              run: echo "SENTRY_RELEASE=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+
+            # nainstaluj JS zavislosti (postinstall hook buildne frontend a nahraje mapy do Sentry)
             - name: 🔧 JS - install deps & build frontend app
               run: npm ci
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
             # nainstaluj Python zavislosti
             - name: 🔧 Python - install deps

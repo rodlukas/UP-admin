@@ -49,9 +49,18 @@ jobs:
             - name: 📝 Create dummy .env file
               run: touch .env
 
-            # nainstaluj JS zavislosti
+            # Sentry musi mapy priradit ke stejnemu release, jaky hlasi aplikace -
+            # string_substitution.sh dosazuje za %GIT_COMMIT kratky SHA
+            - name: 📝 Export Sentry release
+              run: echo "SENTRY_RELEASE=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+
+            # nainstaluj JS zavislosti (postinstall hook buildne frontend a nahraje mapy do Sentry)
             - name: 🔧 JS - install deps & build frontend app
               run: npm ci
+              env:
+                  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+                  SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+                  SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
             # nainstaluj Python zavislosti
             - name: 🔧 Python - install deps
@@ -60,8 +69,13 @@ jobs:
                   pipenv install --deploy --dev
 
             # priprav Django aplikaci
+            # DEPLOYED drzi debug_toolbar mimo INSTALLED_APPS, jinak se do image sesbira
+            # i jeho statika; --ignore vynecha source mapy, ktere patri do Sentry, ne na
+            # verejnou URL (webpack je stale generuje, viz hidden-source-map)
             - name: 🔧 Python - build Django app (staticfiles)
-              run: pipenv run python manage.py collectstatic --noinput
+              run: pipenv run python manage.py collectstatic --noinput --ignore="*.map"
+              env:
+                  DEPLOYED: True
 
             # zabal frontend do zipu pro GH a nahraj
             - name: ✨ Pre-deploy tasks Github Releases

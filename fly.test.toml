@@ -20,9 +20,9 @@ DJANGO_SETTINGS_MODULE = "up.settings.production"
 ENVIRONMENT = "test-fly"
 PORT = "8000"
 
-[[statics]]
-guest_path = "/usr/src/up-admin/staticfiles"
-url_prefix = "/static"
+# Statiku vydava WhiteNoise uvnitr aplikace, ne sekce [[statics]]: Fly proxy neumi
+# vlastni Cache-Control a hashovana aktiva by tim prisla o immutable, tedy o to, ze je
+# prohlizec po prvnim nacteni uz vubec nezada.
 
 [[services]]
 internal_port = 8000
