@@ -32,4 +32,5 @@ registries:
     npm-github:
         type: npm-registry
         url: https://npm.pkg.github.com
+        scope: "@rodlukas"
         token: ${{ secrets.GPR_TOKEN }}
