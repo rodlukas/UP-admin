@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { iconBeforeText } from "../global/utility.css"
 import { prettyPhone } from "../global/utils"
-import { ClientType } from "../types/models"
+import { type ClientType } from "../types/models"
 
 import * as styles from "./ClientPhone.css"
 import NoInfo from "./NoInfo"

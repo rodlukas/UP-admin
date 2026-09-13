@@ -4,7 +4,7 @@ import { faCheckCircle, faUsdCircle } from "@rodlukas/fontawesome-pro-solid-svg-
 import classNames from "classnames"
 import * as React from "react"
 
-import { AnalyticsSource, trackEvent } from "../analytics"
+import { type AnalyticsSource, trackEvent } from "../analytics"
 import { usePatchAttendance } from "../api/hooks"
 
 import * as styles from "./AttendancePaidButton.css"

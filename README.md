@@ -119,7 +119,7 @@ exhaustive)_:
 ### Used technologies
 
 The app is composed of the **frontend and backend** connected via a **REST API** secured using
-**[JWT](https://jwt.io/) authentication**. [PostgreSQL 14](https://www.postgresql.org/) is used as a
+**[JWT](https://jwt.io/) authentication**. [PostgreSQL 18](https://www.postgresql.org/) is used as a
 database.
 
 > **ℹ️ Note:** a part of this repo is dedicated to a deployment diagram and logical data model – see
@@ -129,7 +129,7 @@ database.
 
 Includes all the logic and exposes a **REST API** for a client, built on these technologies:
 
-- [Python 3.12](https://www.python.org/),
+- [Python 3.14](https://www.python.org/),
 - [Django 6](https://www.djangoproject.com/),
 - [Django REST framework 3](https://www.django-rest-framework.org/),
 - [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
@@ -155,8 +155,8 @@ Responsive JS _([TypeScript](https://www.typescriptlang.org/))_ web app, specifi
 technologies:
 
 - [React 19](https://react.dev/),
-- [TypeScript 5](https://www.typescriptlang.org/),
-- [Bootstrap 5](https://getbootstrap.com/) (with [Reactstrap 9](https://reactstrap.github.io/)),
+- [TypeScript 6](https://www.typescriptlang.org/),
+- [Mantine 9](https://mantine.dev/),
 - [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry),
 - [Tanstack Router](https://tanstack.com/router/),
 - [Tanstack Query (formerly React Query)](https://tanstack.com/query/)
@@ -166,10 +166,10 @@ Main tools used for the frontend development:
 
 - [Webpack 5](https://webpack.js.org/) with custom configuration (local and production) +
   [Webpack DevServer](https://webpack.js.org/configuration/dev-server/),
-- [Typescript 5](https://www.typescriptlang.org/) – static type checking,
+- [Typescript 6](https://www.typescriptlang.org/) – static type checking,
 - [vanilla-extract](https://vanilla-extract.style/) - type-safe static CSS,
 - [ESlint 9](https://eslint.org/) – linter for static code analysis,
-- [Babel 7](https://babeljs.io/),
+- [Babel 8](https://babeljs.io/),
 - [husky](https://github.com/typicode/husky) and
   [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (ESlint, Prettier)
 - and [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – for

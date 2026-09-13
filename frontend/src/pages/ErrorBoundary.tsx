@@ -9,7 +9,7 @@ import Token from "../auth/Token"
 import CustomButton from "../components/buttons/CustomButton"
 import Heading from "../components/Heading"
 import { bold } from "../global/utility.css"
-import { TokenDecodedType } from "../types/models"
+import { type TokenDecodedType } from "../types/models"
 
 import * as styles from "./ErrorBoundary.css"
 

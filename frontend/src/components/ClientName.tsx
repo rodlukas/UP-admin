@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 import * as React from "react"
 
 import APP_URLS from "../APP_URLS"
-import { ClientType } from "../types/models"
+import { type ClientType } from "../types/models"
 
 import ConditionalWrapper from "./ConditionalWrapper"
 

@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { useVisibleCourses } from "../api/hooks"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
-import { CourseType } from "../types/models"
+import { type CourseType } from "../types/models"
 
 type Context = {
     /** Probíhá první načítání dat (true) - data ještě nejsou načtená. */

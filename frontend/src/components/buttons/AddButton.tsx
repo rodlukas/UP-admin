@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Button, ButtonProps } from "@mantine/core"
+import { Button, type ButtonProps } from "@mantine/core"
 import { faPlus } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
 
-import { ClickableButtonProps } from "../../types/types"
+import { type ClickableButtonProps } from "../../types/types"
 
 import * as styles from "./buttons.css"
 

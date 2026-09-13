@@ -26,9 +26,9 @@ import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
 import { tableFlat } from "../global/surfaces.css"
 import { iconAfterText, middle } from "../global/utility.css"
 import { areAllMembersActive, isStaleActive, pluralizeCs } from "../global/utils"
-import { DataTableColumn, paginationControlProps, useDataTable } from "../hooks/useDataTable"
-import { ModalGroupsData } from "../types/components"
-import { GroupType } from "../types/models"
+import { type DataTableColumn, paginationControlProps, useDataTable } from "../hooks/useDataTable"
+import { type ModalGroupsData } from "../types/components"
+import { type GroupType } from "../types/models"
 
 import * as styles from "./ClientsGroups.css"
 

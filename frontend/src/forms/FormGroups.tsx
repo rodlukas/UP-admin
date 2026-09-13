@@ -2,7 +2,7 @@ import { Checkbox, Group, Modal, MultiSelect, Pill, TextInput, Title } from "@ma
 import { useForm } from "@mantine/form"
 import * as React from "react"
 
-import { AnalyticsSource, trackEvent } from "../analytics"
+import { type AnalyticsSource, trackEvent } from "../analytics"
 import { useClients, useCreateGroup, useDeleteGroup, useUpdateGroup } from "../api/hooks"
 import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
@@ -13,16 +13,16 @@ import { FormSkeleton } from "../components/Skeletons"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { TEXTS } from "../global/constants"
 import { clientName, courseSelectError, withSelectedOptions } from "../global/utils"
-import { ModalGroupsData } from "../types/components"
+import { type ModalGroupsData } from "../types/components"
 import {
-    ClientType,
-    GroupPostApi,
-    GroupPostApiDummy,
-    GroupPutApi,
-    GroupType,
-    MembershipType,
+    type ClientType,
+    type GroupPostApi,
+    type GroupPostApiDummy,
+    type GroupPutApi,
+    type GroupType,
+    type MembershipType,
 } from "../types/models"
-import { fEmptyVoid } from "../types/types"
+import { type fEmptyVoid } from "../types/types"
 
 import * as styles from "./FormBase.css"
 import Or from "./helpers/Or"

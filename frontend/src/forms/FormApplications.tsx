@@ -10,14 +10,14 @@ import { FormSkeleton } from "../components/Skeletons"
 import { useCoursesVisibleContext } from "../contexts/CoursesVisibleContext"
 import { courseSelectError } from "../global/utils"
 import {
-    ApplicationPostApi,
-    ApplicationPostApiDummy,
-    ApplicationPutApi,
-    ApplicationType,
-    ClientType,
-    CourseType,
+    type ApplicationPostApi,
+    type ApplicationPostApiDummy,
+    type ApplicationPutApi,
+    type ApplicationType,
+    type ClientType,
+    type CourseType,
 } from "../types/models"
-import { fEmptyVoid } from "../types/types"
+import { type fEmptyVoid } from "../types/types"
 
 import * as baseStyles from "./FormBase.css"
 import Or from "./helpers/Or"

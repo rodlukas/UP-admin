@@ -1,4 +1,4 @@
-import { ApplicationPostApi, ApplicationPutApi, ApplicationType } from "../../types/models"
+import { type ApplicationPostApi, type ApplicationPutApi, type ApplicationType } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 

@@ -3,7 +3,7 @@ import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
 
-import { AnalyticsSource } from "../analytics"
+import { type AnalyticsSource } from "../analytics"
 import { useLecturesFromDay } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"

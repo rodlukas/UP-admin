@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { dimmedText } from "../global/utility.css"
-import { MembershipType } from "../types/models"
+import { type MembershipType } from "../types/models"
 
 import ClientName from "./ClientName"
 import ComponentsList from "./ComponentsList"

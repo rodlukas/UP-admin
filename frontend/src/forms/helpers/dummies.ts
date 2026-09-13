@@ -3,12 +3,12 @@ Dummy objekty použité pro výchozí hodnoty ve formulářích, když se prová
 ************************************************************************************************* */
 import { DEFAULT_COLOR, DEFAULT_LECTURE_DURATION_SINGLE } from "../../global/constants"
 import {
-    ApplicationPostApiDummy,
-    AttendanceStatePostApiDummy,
-    ClientPostApiDummy,
-    CoursePostApiDummy,
-    GroupPostApiDummy,
-    LecturePostApiDummy,
+    type ApplicationPostApiDummy,
+    type AttendanceStatePostApiDummy,
+    type ClientPostApiDummy,
+    type CoursePostApiDummy,
+    type GroupPostApiDummy,
+    type LecturePostApiDummy,
 } from "../../types/models"
 
 /** Dummy klient. */

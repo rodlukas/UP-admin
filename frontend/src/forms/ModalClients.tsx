@@ -1,12 +1,12 @@
 import * as React from "react"
 
-import { AnalyticsSource } from "../analytics"
+import { type AnalyticsSource } from "../analytics"
 import BaseModal from "../components/BaseModal"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
-import { ModalClientsData } from "../types/components"
-import { ClientType } from "../types/models"
+import { type ModalClientsData } from "../types/components"
+import { type ClientType } from "../types/models"
 
 import { modalContentClientGroup } from "./FormBase.css"
 import FormClients from "./FormClients"

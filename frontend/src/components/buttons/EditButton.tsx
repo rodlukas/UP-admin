@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { ActionIcon, ActionIconProps, Tooltip } from "@mantine/core"
+import { ActionIcon, type ActionIconProps, Tooltip } from "@mantine/core"
 import { faPencil } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 
-import { ClickableButtonProps } from "../../types/types"
+import { type ClickableButtonProps } from "../../types/types"
 
 type Props = Omit<ActionIconProps, "content" | "children"> &
     ClickableButtonProps & {

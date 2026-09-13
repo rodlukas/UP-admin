@@ -1,4 +1,4 @@
-import { CoursePostApi, CoursePutApi, CourseType } from "../../types/models"
+import { type CoursePostApi, type CoursePutApi, type CourseType } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 

@@ -1,10 +1,10 @@
 import { Select } from "@mantine/core"
 import * as React from "react"
 
-import { AnalyticsSource, trackEvent } from "../analytics"
+import { type AnalyticsSource, trackEvent } from "../analytics"
 import { usePatchAttendance } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
-import { AttendanceStateType, AttendanceType } from "../types/models"
+import { type AttendanceStateType, type AttendanceType } from "../types/models"
 
 import * as styles from "./AttendanceSelectAttendanceState.css"
 

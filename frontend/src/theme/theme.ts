@@ -1,4 +1,4 @@
-import { createTheme, MantineColorsTuple } from "@mantine/core"
+import { createTheme, type MantineColorsTuple } from "@mantine/core"
 
 import { vars } from "./tokens"
 

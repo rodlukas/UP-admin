@@ -1,10 +1,10 @@
 import * as React from "react"
 
-import { AnalyticsSource } from "../analytics"
+import { type AnalyticsSource } from "../analytics"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
-import { DefaultValuesForLecture } from "../global/utils"
-import { ClientType, GroupType, LectureType } from "../types/models"
+import { type DefaultValuesForLecture } from "../global/utils"
+import { type ClientType, type GroupType, type LectureType } from "../types/models"
 
 import ModalLecturesCore from "./ModalLecturesCore"
 

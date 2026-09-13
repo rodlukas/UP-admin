@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { CoursePostApi, CoursePutApi, CourseType } from "../../types/models"
+import { type CoursePostApi, type CoursePutApi, type CourseType } from "../../types/models"
 import CourseService from "../services/CourseService"
 
 /** Hook pro vytvoření kurzu. */

@@ -1,5 +1,5 @@
-import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome"
-import { Tooltip as MantineTooltip, TooltipProps } from "@mantine/core"
+import { FontAwesomeIcon, type FontAwesomeIconProps } from "@fortawesome/react-fontawesome"
+import { Tooltip as MantineTooltip, type TooltipProps } from "@mantine/core"
 import { faInfoCircle } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import * as React from "react"
 

@@ -3,7 +3,7 @@ import * as React from "react"
 import { useActiveGroups } from "../api/hooks"
 import { useAuthContext } from "../auth/AuthContext"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
-import { GroupType } from "../types/models"
+import { type GroupType } from "../types/models"
 
 type Context = {
     /** Probíhá první načítání dat (true) - data ještě nejsou načtená. */

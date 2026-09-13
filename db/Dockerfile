@@ -1,4 +1,4 @@
-FROM postgres:14
+FROM postgres:18
 
 RUN localedef -i cs_CZ -c -f UTF-8 -A /usr/share/locale/locale.alias cs_CZ.UTF-8
 

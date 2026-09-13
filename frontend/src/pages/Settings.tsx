@@ -2,7 +2,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
     Alert,
-    ComboboxItem,
+    type ComboboxItem,
     Container,
     Select,
     SimpleGrid,
@@ -34,8 +34,8 @@ import ModalSettings from "../forms/ModalSettings"
 import { EDIT_TYPE, GITHUB_REPO_URL } from "../global/constants"
 import { tableFlat } from "../global/surfaces.css"
 import { bold, dimmedText, iconInlineX, iconSuccess, mb0, numericCell } from "../global/utility.css"
-import { AttendanceStateType } from "../types/models"
-import { QA } from "../types/types"
+import { type AttendanceStateType } from "../types/models"
+import { type QA } from "../types/types"
 
 import * as styles from "./Settings.css"
 

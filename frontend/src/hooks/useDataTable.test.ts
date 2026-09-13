@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react"
 
-import { DataTableColumn, useDataTable } from "./useDataTable"
+import { type DataTableColumn, useDataTable } from "./useDataTable"
 
 type Row = { id: number; name: string | null; count: number }
 

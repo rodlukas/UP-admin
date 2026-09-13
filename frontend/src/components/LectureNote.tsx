@@ -2,7 +2,7 @@ import { Badge } from "@mantine/core"
 import classNames from "classnames"
 import * as React from "react"
 
-import { AttendanceType } from "../types/models"
+import { type AttendanceType } from "../types/models"
 
 import * as styles from "./LectureNote.css"
 

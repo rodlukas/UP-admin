@@ -1,11 +1,11 @@
 import * as React from "react"
 
-import { AnalyticsSource } from "../analytics"
+import { type AnalyticsSource } from "../analytics"
 import BaseModal from "../components/BaseModal"
-import { DefaultValuesForLecture } from "../global/utils"
+import { type DefaultValuesForLecture } from "../global/utils"
 import useModal from "../hooks/useModal"
-import { ClientType, GroupType, LectureType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
+import { type ClientType, type GroupType, type LectureType } from "../types/models"
+import { type fEmptyVoid } from "../types/types"
 
 import FormLectures from "./FormLectures"
 import { DummyLecture } from "./helpers/dummies"

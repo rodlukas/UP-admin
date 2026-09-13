@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query"
 
 import {
-    AttendanceStatePatchApi,
-    AttendanceStatePostApi,
-    AttendanceStatePutApi,
-    AttendanceStateType,
+    type AttendanceStatePatchApi,
+    type AttendanceStatePostApi,
+    type AttendanceStatePutApi,
+    type AttendanceStateType,
 } from "../../types/models"
 import AttendanceStateService from "../services/AttendanceStateService"
 

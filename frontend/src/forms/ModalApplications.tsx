@@ -4,7 +4,7 @@ import BaseModal from "../components/BaseModal"
 import AddButton from "../components/buttons/AddButton"
 import EditButton from "../components/buttons/EditButton"
 import useModal from "../hooks/useModal"
-import { ApplicationType } from "../types/models"
+import { type ApplicationType } from "../types/models"
 
 import FormApplications from "./FormApplications"
 import { DummyApplication } from "./helpers/dummies"

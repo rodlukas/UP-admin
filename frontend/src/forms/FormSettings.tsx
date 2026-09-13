@@ -17,16 +17,16 @@ import CancelButton from "../components/buttons/CancelButton"
 import DeleteButton from "../components/buttons/DeleteButton"
 import SubmitButton from "../components/buttons/SubmitButton"
 import {
-    AttendanceStatePostApi,
-    AttendanceStatePostApiDummy,
-    AttendanceStatePutApi,
-    AttendanceStateType,
-    CoursePostApi,
-    CoursePostApiDummy,
-    CoursePutApi,
-    CourseType,
+    type AttendanceStatePostApi,
+    type AttendanceStatePostApiDummy,
+    type AttendanceStatePutApi,
+    type AttendanceStateType,
+    type CoursePostApi,
+    type CoursePostApiDummy,
+    type CoursePutApi,
+    type CourseType,
 } from "../types/models"
-import { fEmptyVoid, Model } from "../types/types"
+import { type fEmptyVoid, type Model } from "../types/types"
 
 import * as baseStyles from "./FormBase.css"
 import ColorPicker from "./helpers/ColorPicker"

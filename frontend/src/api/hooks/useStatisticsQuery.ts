@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
-import { StatisticsFilters, StatisticsType } from "../../types/models"
+import { type StatisticsFilters, type StatisticsType } from "../../types/models"
 import StatisticsService from "../services/StatisticsService"
 
 /** Hook pro získání statistik aplikace. Při změně filtrů automaticky refetchuje.

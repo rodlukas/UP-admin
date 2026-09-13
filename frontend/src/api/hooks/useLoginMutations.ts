@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 
 import Token from "../../auth/Token"
-import { AuthorizationType, TokenApiType } from "../../types/models"
+import { type AuthorizationType, type TokenApiType } from "../../types/models"
 import LoginService from "../services/LoginService"
 
 /** Hook pro přihlášení uživatele. */

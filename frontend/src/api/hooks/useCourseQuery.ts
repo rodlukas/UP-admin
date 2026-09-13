@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { CourseType } from "../../types/models"
+import { type CourseType } from "../../types/models"
 import CourseService from "../services/CourseService"
 
 /** Hook pro získání všech kurzů. */

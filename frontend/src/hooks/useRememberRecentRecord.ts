@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { RecentRecord, rememberRecentRecord } from "../global/recentRecords"
+import { type RecentRecord, rememberRecentRecord } from "../global/recentRecords"
 
 /**
  * Zapamatuje otevřenou kartu pro paletu příkazů (⌘K), která ji pak nabídne

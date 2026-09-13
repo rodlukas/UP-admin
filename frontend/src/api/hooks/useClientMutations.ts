@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 
-import { ClientPostApi, ClientPutApi, ClientType } from "../../types/models"
+import { type ClientPostApi, type ClientPutApi, type ClientType } from "../../types/models"
 import ClientService from "../services/ClientService"
 
 /** Hook pro vytvoření klienta. */

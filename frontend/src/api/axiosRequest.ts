@@ -1,4 +1,4 @@
-import axios, { AxiosPromise, AxiosRequestConfig } from "axios"
+import axios, { type AxiosPromise, type AxiosRequestConfig } from "axios"
 
 import Token from "../auth/Token"
 import { API_URL, JWT_HEADER_PREFIX } from "../global/constants"
@@ -19,7 +19,7 @@ const setAuthHeader = (): void => {
 }
 
 /** Wrapper pro axios používaný pro HTTP požadavky na API. */
-const axiosRequest = <T>(options: AxiosRequestConfig): AxiosPromise<T> => {
+const axiosRequest = <T,>(options: AxiosRequestConfig): AxiosPromise<T> => {
     setAuthHeader()
     // pri simulaci dlouheho pozadavku:
     // return sleep(7000).then(() => axiosInstance(options))

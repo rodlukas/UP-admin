@@ -1,4 +1,4 @@
-import * as React from "react"
+import type * as React from "react"
 
 /** Obecný model, ze kterého vychází všechny entity/modely (mají ID). */
 export type Model = {

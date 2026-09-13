@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import classNames from "classnames"
 import * as React from "react"
 
-import { AnalyticsSource } from "../analytics"
+import { type AnalyticsSource } from "../analytics"
 import BaseModal from "../components/BaseModal"
 import { SkeletonShell } from "../components/Skeletons"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
@@ -13,13 +13,13 @@ import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import { TEXTS } from "../global/constants"
 import { prettyDate } from "../global/funcDateTime"
 import {
-    DefaultValuesForLecture,
+    type DefaultValuesForLecture,
     getDefaultValuesForLecture,
     getLecturesgroupedByCourses,
     prepareDefaultValuesForLecture,
     withSelectedOptions,
 } from "../global/utils"
-import { ClientType, GroupType } from "../types/models"
+import { type ClientType, type GroupType } from "../types/models"
 
 import { modalWizardContent } from "./FormBase.css"
 import Or from "./helpers/Or"

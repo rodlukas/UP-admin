@@ -6,7 +6,7 @@ import * as React from "react"
 
 import { usePatchMembership } from "../api/hooks"
 import { TEXTS } from "../global/constants"
-import { MembershipType } from "../types/models"
+import { type MembershipType } from "../types/models"
 
 import ClientName from "./ClientName"
 import InfoTooltip from "./InfoTooltip"

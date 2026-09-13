@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/react"
 import { createQueryClient } from "../api/queryClient"
 import { ClientsActiveContext } from "../contexts/ClientsActiveContext"
 import { createTestRouter } from "../testUtils/createTestRouter"
-import { ClientActiveType } from "../types/models"
+import { type ClientActiveType } from "../types/models"
 
 import Clients from "./Clients"
 

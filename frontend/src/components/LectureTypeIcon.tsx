@@ -4,7 +4,7 @@ import { faUser, faUsers } from "@rodlukas/fontawesome-pro-solid-svg-icons"
 import classNames from "classnames"
 import * as React from "react"
 
-import { LectureType } from "../types/models"
+import { type LectureType } from "../types/models"
 
 import * as styles from "./LectureTypeIcon.css"
 

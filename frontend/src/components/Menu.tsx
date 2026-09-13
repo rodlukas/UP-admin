@@ -13,7 +13,7 @@ import {
     faUser,
     faUsers,
 } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import { Link, LinkProps } from "@tanstack/react-router"
+import { Link, type LinkProps } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
 
@@ -22,7 +22,7 @@ import AuthChecking from "../auth/AuthChecking"
 import { useAuthContext } from "../auth/AuthContext"
 import { isApplePlatform } from "../global/utils"
 import * as mainStyles from "../Main.css"
-import { fEmptyVoid, QA } from "../types/types"
+import { type fEmptyVoid, type QA } from "../types/types"
 
 import ColorSchemeToggle from "./ColorSchemeToggle"
 import EnvBadge, { hasEnvBadge } from "./EnvBadge"

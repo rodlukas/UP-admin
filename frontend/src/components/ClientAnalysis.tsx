@@ -13,12 +13,12 @@ import {
 } from "recharts"
 
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
-import { ClientType, CourseType, LectureType, LectureTypeWithDate } from "../types/models"
+import { type ClientType, type CourseType, type LectureType, type LectureTypeWithDate } from "../types/models"
 
 import {
     AXIS_LABEL,
     AXIS_TICK,
-    ChartMargin,
+    type ChartMargin,
     GRID_STROKE,
     LEGEND_FONT,
     MONTH_LABELS,

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { AttendanceStateType } from "../../types/models"
+import { type AttendanceStateType } from "../../types/models"
 import AttendanceStateService from "../services/AttendanceStateService"
 
 /** Hook pro získání všech stavů účasti. */

@@ -2,7 +2,7 @@ import { Tooltip } from "@mantine/core"
 import classNames from "classnames"
 import * as React from "react"
 
-import { LectureType } from "../types/models"
+import { type LectureType } from "../types/models"
 
 import * as styles from "./LectureNumber.css"
 

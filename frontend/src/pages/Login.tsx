@@ -8,7 +8,7 @@ import * as React from "react"
 import APP_URLS from "../APP_URLS"
 import { useAuthContext } from "../auth/AuthContext"
 import SubmitButton from "../components/buttons/SubmitButton"
-import { AuthorizationType } from "../types/models"
+import { type AuthorizationType } from "../types/models"
 
 import * as styles from "./Login.css"
 

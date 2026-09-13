@@ -19,11 +19,11 @@ import { prettyDateWithYear } from "../global/funcDateTime"
 import { mb0 } from "../global/utility.css"
 import {
     contrastingTextColor,
-    GroupedObjectsByCourses,
+    type GroupedObjectsByCourses,
     groupObjectsByCourses,
     pluralizeCs,
 } from "../global/utils"
-import { ApplicationType } from "../types/models"
+import { type ApplicationType } from "../types/models"
 
 import * as styles from "./Applications.css"
 

@@ -7,8 +7,8 @@ import { useLogin } from "../api/hooks"
 import LoginService from "../api/services/LoginService"
 import APP_URLS from "../APP_URLS"
 import { useContextWithProvider } from "../hooks/useContextWithProvider"
-import { AuthorizationType } from "../types/models"
-import { fEmptyVoid } from "../types/types"
+import { type AuthorizationType } from "../types/models"
+import { type fEmptyVoid } from "../types/types"
 
 import Token from "./Token"
 

@@ -1,4 +1,4 @@
-import { ClientActiveType, ClientPostApi, ClientPutApi, ClientType } from "../../types/models"
+import { type ClientActiveType, type ClientPostApi, type ClientPutApi, type ClientType } from "../../types/models"
 import { axiosRequestData } from "../axiosRequest"
 import { API_DELIM, API_METHODS, API_URLS } from "../urls"
 
