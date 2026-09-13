@@ -62,6 +62,12 @@ jobs:
                   SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
                   SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
+            # mapy frontendu uz jsou v Sentry a na verejnou URL nepatri. Maze se jen tahle
+            # slozka: mapy tretich stran musi zustat, protoze jejich CSS na ne odkazuje
+            # (napr. rest_framework/css/bootstrap.min.css) a collectstatic by jinak selhal
+            - name: 🧹 Remove frontend source maps
+              run: rm -f frontend/build/assets/*.map
+
             # nainstaluj Python zavislosti
             - name: 🔧 Python - install deps
               run: |
@@ -70,10 +76,9 @@ jobs:
 
             # priprav Django aplikaci
             # DEPLOYED drzi debug_toolbar mimo INSTALLED_APPS, jinak se do image sesbira
-            # i jeho statika; --ignore vynecha source mapy, ktere patri do Sentry, ne na
-            # verejnou URL (webpack je stale generuje, viz hidden-source-map)
+            # i jeho statika
             - name: 🔧 Python - build Django app (staticfiles)
-              run: pipenv run python manage.py collectstatic --noinput --ignore="*.map"
+              run: pipenv run python manage.py collectstatic --noinput
               env:
                   DEPLOYED: True
 
