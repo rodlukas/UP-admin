@@ -2,6 +2,9 @@ app = "uspesnyprvnacek-test"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
 primary_region = "arn"
+# Stroj jede blizko stropu 256 MB a nema swap, takze prechodna spicka konci OOM killem
+# misto zpomaleni. Swap je pojistka, ne misto pro bezny provoz - bere se z rootfs.
+swap_size_mb = 512
 
 [experimental]
 auto_rollback = true
