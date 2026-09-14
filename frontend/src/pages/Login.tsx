@@ -36,8 +36,12 @@ const Login: React.FC = () => {
         // workaround kvuli https://github.com/facebook/react/issues/1159
         // - nefunkcni autocomplete v nekterych prohlizecich (predevsim mobily)
         // - v idealnim svete zde bude jen: authContextLogin(form.values)
+        const username = usernameField.current ? usernameField.current.value : form.values.username
         const valuesCurrent: AuthorizationType = {
-            username: usernameField.current ? usernameField.current.value : form.values.username,
+            // nektere mobilni klavesnice kapitalizuji prvni pismeno i pres autoCapitalize="none"
+            // na inputu - backend navic porovnava case-insensitive (viz api/auth_backends.py),
+            // ale lowercase i tady, aby se username v UI/tokenu choval predvidatelne
+            username: username.toLowerCase(),
             password: passwordField.current ? passwordField.current.value : form.values.password,
         }
         void authContextLogin(valuesCurrent)
