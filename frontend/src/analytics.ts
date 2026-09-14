@@ -46,6 +46,7 @@ export type AnalyticsSource =
 export type EventParams = Record<string, string | number | boolean>
 
 let initialized = false
+let lastPagePath: string | undefined
 
 /** Odešle GA4 custom event. Na neprodukčních prostředích je volání ignorováno (ReactGA není inicializováno). */
 export function trackEvent(name: EventName, params?: EventParams): void {
@@ -74,10 +75,15 @@ export function initAnalytics(
         gaOptions: { send_page_view: false, cookie_domain: globalThis.location.hostname },
     })
     initialized = true
-    onRouteResolved(() =>
-        ReactGA.send({
-            hitType: "pageview",
-            page_path: globalThis.location.pathname + globalThis.location.search,
-        }),
-    )
+    onRouteResolved(() => {
+        const pagePath = globalThis.location.pathname + globalThis.location.search
+        // `onResolved` se spustí i po `popstate`, který beze změny URL jen zavře mobilní
+        // menu (viz historický záznam v `Main.tsx`) — bez dedupe by to GA4 počítalo
+        // jako další zobrazení stejné stránky.
+        if (pagePath === lastPagePath) {
+            return
+        }
+        lastPagePath = pagePath
+        ReactGA.send({ hitType: "pageview", page_path: pagePath })
+    })
 }

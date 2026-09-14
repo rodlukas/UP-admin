@@ -61,15 +61,6 @@ globalStyle(`${formGroup} > div:not(:last-child)`, {
     },
 })
 
-export const attendancePaidCol = style({
-    textAlign: "center",
-    "@media": {
-        "(max-width: 575.98px)": {
-            textAlign: "left",
-        },
-    },
-})
-
 /**
  * Sekce lekce v plochém jazyce aplikace (bez karet) — shodně s `formSection` ve FormBase.
  * Sousední sekce dělí vlasová linka + bílé místo, ne rámeček.
