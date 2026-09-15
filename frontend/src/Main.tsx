@@ -1,6 +1,6 @@
 import { AppShell, Burger } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
-import { Link, Outlet, useRouter, useRouterState } from "@tanstack/react-router"
+import { Link, Outlet, useRouterState } from "@tanstack/react-router"
 import classNames from "classnames"
 import * as React from "react"
 
@@ -25,7 +25,6 @@ const MOBILE_QUERY = `(max-width: ${NAVBAR_BREAKPOINT})`
 const Main: React.FC = () => {
     const [isMenuOpened, setIsMenuOpened] = React.useState(false)
     const authContext = useAuthContext()
-    const router = useRouter()
     const locationPathname = useRouterState({
         select: (state) => state.location.pathname,
     })
@@ -38,29 +37,13 @@ const Main: React.FC = () => {
         setIsMenuOpened(false)
     }, [locationPathname])
 
-    // Bez vlastního záznamu v historii nemá systémové/gesto tlačítko zpět co zavřít —
-    // rovnou by odnavigovalo na předchozí stránku (menu by se zavřelo, ale až jako
-    // vedlejší efekt odchodu ze stránky, viz efekt výše). Push na stejnou URL dá tlačítku
-    // zpět co „spotřebovat": prohlížeč se vrátí na tentýž záznam, k navigaci nedojde
-    // a `popstate` níž jen zavře menu. Jde přes `router.history`, ne přímo přes
-    // `window.history.pushState` — TanStack Router si `pushState` interně přepisuje
-    // a čeká vlastní tvar `state` (index pro `canGoBack`/delta výpočet u dalších popstate).
+    // Nad breakpointem drawer neexistuje a burger je `inert` (viz níž), takže otevřené menu
+    // by po otočení nebo zvětšení okna nešlo zavřít a zůstalo by viset ve stavu.
     React.useEffect(() => {
-        if (!isMenuOpened) {
-            return undefined
-        }
-
-        router.history.push(router.history.location.href)
-
-        function handlePopState(): void {
+        if (!isMobile) {
             setIsMenuOpened(false)
         }
-
-        window.addEventListener("popstate", handlePopState)
-        return () => {
-            window.removeEventListener("popstate", handlePopState)
-        }
-    }, [isMenuOpened, router])
+    }, [isMobile])
 
     function toggleNavbar(): void {
         setIsMenuOpened((prevIsMenuOpened) => !prevIsMenuOpened)

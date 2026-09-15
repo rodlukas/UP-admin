@@ -208,12 +208,12 @@ const FormLectures: React.FC<Props> = (props) => {
     const createLecture = useCreateLecture()
     const updateLecture = useUpdateLecture()
     const deleteLecture = useDeleteLecture()
-    // `Group justify="center"` u checkboxu platby (viz níž) je žádoucí, jen dokud je sloupec
-    // vedle sebe s ostatními (Grid.Col `sm: 2`) — pod `sm` se sloupce zabalí pod sebe na celou
-    // šířku a centrování by ho odtrhlo od popisku (na rozdíl od zarovnání vlevo jako u ostatních
-    // polí). `text-align` na obalu tohle neřeší (viz FormLectures.css.ts historie) — `Group`
-    // centruje přes flex `justify-content`, na které `text-align` nemá vliv.
-    const isPaidColumnNarrow = useMediaQuery("(min-width: 48em)", false, {
+    // `Group justify="center"` u checkboxu platby (viz níž) je žádoucí, jen dokud sloupec stojí
+    // vedle ostatních (Grid.Col `sm: 2`, tedy od `48em` výš) — pod `sm` se sloupce zabalí pod
+    // sebe na celou šířku a centrování by checkbox odtrhlo od popisku (na rozdíl od zarovnání
+    // vlevo jako u ostatních polí). `text-align` na obalu tohle neřeší — `Group` centruje přes
+    // flex `justify-content`, na které `text-align` nemá vliv.
+    const isPaidColumnInline = useMediaQuery("(min-width: 48em)", false, {
         getInitialValueInEffect: false,
     })
 
@@ -1040,8 +1040,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                         <Grid.Col span={{ base: 12, sm: 2 }}>
                                             <Group
                                                 gap="xs"
-                                                align="center"
-                                                justify={isPaidColumnNarrow ? "center" : undefined}>
+                                                justify={isPaidColumnInline ? "center" : undefined}>
                                                 <Checkbox
                                                     id={`atPaid${member.id}`}
                                                     name="atPaid"

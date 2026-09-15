@@ -39,6 +39,7 @@ type ChildRouteConfig = {
     component: () => React.ReactElement
     validateSearch?: (search: Record<string, unknown>) => {
         redirect?: string
+        lecture?: number
     }
 }
 
@@ -48,9 +49,15 @@ const createChildRoute = (routeConfig: ChildRouteConfig) =>
         getParentRoute: () => rootRoute,
     })
 
-const createPrivateRoute = (path: string, element: React.ReactElement, title?: string) =>
+const createPrivateRoute = (
+    path: string,
+    element: React.ReactElement,
+    title?: string,
+    validateSearch?: ChildRouteConfig["validateSearch"],
+) =>
     createChildRoute({
         path,
+        validateSearch,
         component: () => <PrivateRoute title={title}>{element}</PrivateRoute>,
     })
 
@@ -85,8 +92,13 @@ const loginRoute = createChildRoute({
 
 const groupsRoute = createPrivateRoute(APP_URLS.skupiny.url, <Groups />, APP_URLS.skupiny.title)
 
+/** Lekce, na kterou se má diář po příchodu z "Nejbližší lekce" zarolovat a zvýraznit ji. */
+const validateDiarySearch = (search: Record<string, unknown>): { lecture?: number } => ({
+    lecture: typeof search.lecture === "number" ? search.lecture : undefined,
+})
+
 const diaryRoutes = [APP_URLS.diar.url, `${APP_URLS.diar.url}/$year/$month/$day`].map((path) =>
-    createPrivateRoute(path, <Diary />),
+    createPrivateRoute(path, <Diary />, undefined, validateDiarySearch),
 )
 
 const clientsRoute = createPrivateRoute(APP_URLS.klienti.url, <Clients />, APP_URLS.klienti.title)

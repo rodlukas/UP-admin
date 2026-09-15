@@ -93,6 +93,15 @@ export const lectureBlock = style({
 })
 
 /**
+ * Zvýraznění lekce po příchodu z "Nejbližší lekce" (`DashboardDay.tsx`) — žlutá
+ * `bg.highlight` (naměřené kontrasty jsou u tokenu). Sama třída nic nekreslí — cílí na ni
+ * `lectureHeader` a `lectureBody` níže, protože `lectureBlock` nemá vlastní odsazení
+ * a ty dva ho beze zbytku překrývají (`box-shadow` přímo na něm, i `inset` varianta, bylo
+ * v prohlížeči ověřeno jako neviditelné — schované pod nimi).
+ */
+export const lectureHighlighted = style({})
+
+/**
  * Pruh v syté barvě kurzu — barva kurzu má být na první pohled poznat. Odstín se nijak
  * neředí; čitelnost drží barva textu, kterou podle kontrastu dopočítá `contrastingTextColor`
  * (bílá, nebo inkoust) a předá sem přes `lectureVars.courseText`. Proto je odstín i text
@@ -102,6 +111,12 @@ export const lectureHeader = style({
     display: "flex",
     alignItems: "center",
     gap: "0.5rem",
+    // ŽÁDNÝ `transition`, a to schválně: podklad a barva textu jsou tady svázaná dvojice
+    // (`courseText` je dopočítaná právě k `courseColor`) a prohlížeč je interpoluje každou
+    // zvlášť. Při rozsvícení i zhasnutí zvýraznění, kde se mění obojí naráz, tak text cestou
+    // míjí svůj podklad — změřeno až 1,00:1 v polovině přechodu, tedy úplně neviditelný
+    // text. Nepomůže ani animovat jen podklad (1,12:1 hned na začátku); jediné bezpečné je
+    // obojí přepnout skokem, aby existovaly jen krajní, změřené stavy.
     background: lectureVars.courseColor,
     padding: "0.4rem 0.85rem",
     color: lectureVars.courseText,
@@ -168,9 +183,18 @@ export const lectureHeaderCourse = style({
 })
 
 export const lectureBody = style({
+    // Jen `background-color`, nikdy `color`: v těle si text nese vlastní barvy z palety
+    // a ty se zvýrazněním nemění, takže tu žádná svázaná dvojice jako v hlavičce není.
+    // Tenhle přechod obsluhuje hover i rozsvícení/zhasnutí zvýraznění — prohlížeč ho bere
+    // ze stavu PO změně třídy, takže pravidlo na zvýraznění by na zhasínání stejně nedosáhlo.
     transition: "background-color 0.15s ease-in-out",
     backgroundColor: vars.bg.surface,
     padding: "0.6rem 0.85rem",
+    "@media": {
+        "(prefers-reduced-motion: reduce)": {
+            transition: "none",
+        },
+    },
 })
 
 export const lectureBodyCanceled = style({
@@ -178,11 +202,59 @@ export const lectureBodyCanceled = style({
 })
 
 /**
- * `:not()` (ne jen pozdější pořadí v souboru): `.dashboardDayItem:hover .lectureBody` má vyšší
- * specificitu (tři úrovně) než samotné `.lectureBodyCanceled` (jedna), takže by hover červené
- * podbarvení zrušené lekce přebil zpátky na šedou bez ohledu na pořadí v souboru — vyloučení
- * je proto jediný spolehlivý způsob, jak zrušené lekci hover nesahat na barvu vůbec.
+ * Podbarvení hlavičky i těla při zvýraznění. Dvě třídy ve spojeném selektoru
+ * (specificita 0,2,0) úmyslně přebíjejí barvu zrušené lekce
+ * (`lectureHeaderCanceled`/`lectureBodyCanceled`, obě jen 0,1,0) — zvýraznění má po dobu
+ * doznívání přednost. Na hover to ale nestačí: `.dashboardDayItem:hover .lectureBody:not(...)`
+ * má 0,4,0, takže by u lekce pod kurzorem přebil tělo zpátky na šedou a zvýraznění by
+ * zůstalo jen na hlavičce. Hoverové pravidlo proto zvýrazněnou lekci vylučuje `:not()`
+ * (viz jeho komentář níž).
+ *
+ * Barva je `bg.highlight`, ne `statusSoft.warningStrong` — ten je určený jen pro plochy
+ * s automatickou černou/bílou Mantine `Alert`u a v dark módu je to neprůhledná ambra, na
+ * které by odkaz i docházka v těle spadly pod WCAG AA. Naměřené hodnoty jsou u tokenu.
+ *
+ * `color` na hlavičce navíc: děti pruhu dědí `currentColor` (viz globalStyle u
+ * `lectureHeader` výše), který by jinak zůstal spočítaný proti PŮVODNÍ barvě kurzu
+ * (`lectureVars.courseText`) — u tmavého kurzu tedy bílý text na světlém podkladu, pod
+ * WCAG. Tělo vlastní `color` nemá (odkazy a časy si nesou barvu samy), proto ho nepotřebuje
+ * — a právě proto na něj musí podklad brát ohled.
+ *
+ * Přechody tu schválně NEJSOU: prohlížeč je bere ze stavu PO změně třídy, takže pravidlo
+ * odsud by platilo jen na rozsvícení a na zhasínání už ne. Řídí je proto vlastní pravidla
+ * obou prvků — tělo krátkým přechodem podkladu, hlavička vůbec (viz její komentář).
  */
-globalStyle(`${dashboardDayItem}:hover ${lectureBody}:not(${lectureBodyCanceled})`, {
-    backgroundColor: vars.bg.hover,
+globalStyle(`${lectureHighlighted} ${lectureHeader}`, {
+    backgroundColor: vars.bg.highlight,
+    color: "light-dark(#000, #fff)",
 })
+globalStyle(`${lectureHighlighted} ${lectureBody}`, {
+    backgroundColor: vars.bg.highlight,
+})
+
+/**
+ * Tužka na zvýrazněné hlavičce potřebuje vlastní hover overlay ze stejného důvodu jako
+ * u zrušené lekce výš: v light módu je zvýraznění světlý pastel (#fff3bf) a bílý 22%
+ * overlay z obecného pravidla je na něm neviditelný (1,03:1 proti podkladu). Specificita
+ * 0,4,0 přebíjí obecné pravidlo i variantu pro zrušenou lekci (obě 0,3,0), takže
+ * zvýrazněná zrušená lekce dostane tuhle.
+ */
+globalStyle(`${lectureHighlighted} ${lectureHeader} .mantine-ActionIcon-root:hover`, {
+    backgroundColor: "light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.22))",
+    color: "inherit",
+})
+
+/**
+ * `:not()` (ne jen pozdější pořadí v souboru): `.dashboardDayItem:hover .lectureBody` má vyšší
+ * specificitu (tři úrovně) než samotné `.lectureBodyCanceled` (jedna) i než zvýraznění
+ * `.lectureHighlighted .lectureBody` (dvě), takže by hover obě barvy přebil zpátky na šedou
+ * bez ohledu na pořadí v souboru — vyloučení je proto jediný spolehlivý způsob, jak těmhle
+ * dvěma stavům hover nesahat na barvu vůbec. U zrušené lekce sedí `:not()` na těle, u
+ * zvýraznění na obalu, protože `lectureHighlighted` nese celý blok lekce.
+ */
+globalStyle(
+    `${dashboardDayItem}:not(${lectureHighlighted}):hover ${lectureBody}:not(${lectureBodyCanceled})`,
+    {
+        backgroundColor: vars.bg.hover,
+    },
+)

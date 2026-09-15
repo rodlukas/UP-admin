@@ -1,4 +1,6 @@
 import { Box, Text, Title, Tooltip } from "@mantine/core"
+import { useReducedMotion } from "@mantine/hooks"
+import { useNavigate, useSearch } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
@@ -28,6 +30,9 @@ import LectureNumber from "./LectureNumber"
 import LectureTypeIcon from "./LectureTypeIcon"
 import { LectureListSkeleton } from "./Skeletons"
 
+/** Jak dlouho zůstane po příchodu z "Nejbližší lekce" vidět zvýraznění cílové lekce. */
+export const HIGHLIGHT_DURATION_MS = 2500
+
 type Props = {
     /** Při požadavcích na API nedělej prodlevu (true) - prodleva se hodí při rychlém překlikávání mezi dny v diáři. */
     withoutWaiting?: boolean
@@ -41,6 +46,12 @@ type Props = {
 const DashboardDay: React.FC<Props> = (props) => {
     const { source } = props
     const attendanceStatesContext = useAttendanceStatesContext()
+    const navigate = useNavigate()
+    const { lecture: highlightLectureId } = useSearch({ strict: false })
+    const [highlightedId, setHighlightedId] = React.useState<number | null>(null)
+    // `getInitialValueInEffect: false` ze stejného důvodu jako v `Main.tsx` — aplikace běží jen
+    // CSR a efekt níž může doskrolovat hned na prvním commitu, takže hodnotu potřebujeme rovnou.
+    const prefersReducedMotion = useReducedMotion(false, { getInitialValueInEffect: false })
     const getDate = (): Date => new Date(props.date)
 
     /** Datum, pro které se má načíst data (může být zpožděno při rychlém překlikávání). */
@@ -51,7 +62,10 @@ const DashboardDay: React.FC<Props> = (props) => {
     // (datum bez času se parsuje jako UTC, `toISODate` čte lokální složky) a rozešel by
     // klíč dotazu s `Dashboard` a `Diary`, které posílají ISO datum přímo.
     const { data, isLoading, isFetching } = useLecturesFromDay(delayedDate, true)
-    const lectures = data ?? []
+    // `useMemo`, ne prosté `data ?? []`: beze zpevněné reference by zvýrazňovací efekt níže
+    // (závislý na `lectures`) běžel při každém renderu, dokud `data` chybí, místo jen tehdy,
+    // když se skutečně změní.
+    const lectures = React.useMemo(() => data ?? [], [data])
 
     const title = prettyDateWithLongDayYearIfDiff(getDate())
     const isUserCelebratingResult = isUserCelebrating(getDate())
@@ -67,6 +81,49 @@ const DashboardDay: React.FC<Props> = (props) => {
 
     const showLoading = isDatePending || isLoading || attendanceStatesContext.isLoading
     const hasLectures = lectures.length > 0
+
+    /**
+     * Doskrolování a zvýraznění lekce, na kterou uživatel klikl v "Nejbližší lekce"
+     * (`UpcomingLectures.tsx`) — ten odkaz míří jen na týden, ne na konkrétní lekci v mřížce.
+     * Beží až po doběhnutí dotazu (`!showLoading`), jinak by `lecture-${id}` ještě nebyl
+     * v DOMu. Hledaná lekce nemusí patřit tomuto dni (sloupec pro každý den má vlastní
+     * instanci), proto se nejdřív ověří shoda a teprve pak se search parametr smaže —
+     * jinak by ho smazal první sloupec, který doběhne, bez ohledu na to, jestli lekci má.
+     */
+    React.useEffect(() => {
+        if (showLoading || highlightLectureId == null) {
+            return
+        }
+        const matchedLecture = lectures.find((lecture) => lecture.id === highlightLectureId)
+        if (matchedLecture == null) {
+            return
+        }
+        // `behavior` podle `prefers-reduced-motion`: plynulé doskrolování o stovky pixelů je
+        // přesně ten pohyb, kvůli kterému si tu preferenci lidé zapínají, a `"smooth"` ji sám
+        // nerespektuje (na rozdíl od CSS přechodů, kde stačí media query — viz DashboardDay.css.ts).
+        document.getElementById(`lecture-${matchedLecture.id}`)?.scrollIntoView({
+            behavior: prefersReducedMotion ? "auto" : "smooth",
+            block: "center",
+        })
+        setHighlightedId(matchedLecture.id)
+        // `search: {}`, ne reducer nad `prev`: diář žádný jiný search parametr nemá,
+        // takže není co zachovávat, a `{}` se obejde bez typování neznámého `prev`.
+        // `resetScroll: false` je nutné: tanstack router jinak po KAŽDÉ navigaci (i jen
+        // změně search parametru) sám vynuluje scroll na 0 (`resetScroll` má default `true`),
+        // což by doskrolování o pár řádků výš smazalo — na mobilu, kde dny stojí pod sebou
+        // a scroll bývá o stovky pixelů delší než na desktopu, to bylo vidět pokaždé.
+        void navigate({ to: ".", search: {}, replace: true, resetScroll: false })
+    }, [showLoading, highlightLectureId, lectures, navigate, prefersReducedMotion])
+
+    /** Zvýraznění samo zhasne — nemá zůstat viset, jakmile splnilo svůj účel (ukázat "tady"). */
+    React.useEffect(() => {
+        if (highlightedId == null) {
+            return
+        }
+        const timeout = setTimeout(() => setHighlightedId(null), HIGHLIGHT_DURATION_MS)
+        return () => clearTimeout(timeout)
+    }, [highlightedId])
+
     // Prázdné `lectures` znamená „volno" JEN když dotaz opravdu doběhl. Bez tohohle by při
     // výpadku API (nebo offline, kdy je dotaz `pending`/`paused`, tedy ani `isLoading`, ani
     // chyba) celý diář sebevědomě tvrdil, že je celý týden volný — a je to tvrzení, podle
@@ -81,9 +138,11 @@ const DashboardDay: React.FC<Props> = (props) => {
             return (
                 <div
                     key={lecture.id}
+                    id={`lecture-${lecture.id}`}
                     data-qa="lecture"
                     className={classNames(styles.lectureBlock, styles.dashboardDayItem, {
                         [lectureStyles.lectureCanceledStruck]: lecture.canceled,
+                        [styles.lectureHighlighted]: lecture.id === highlightedId,
                     })}
                     // barvu kurzu nese pruh hlavičky (`lectureHeader`); text v něm musí
                     // zůstat čitelný i na světlém či tmavém uživatelském hexu

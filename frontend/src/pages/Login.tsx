@@ -38,10 +38,15 @@ const Login: React.FC = () => {
         // - v idealnim svete zde bude jen: authContextLogin(form.values)
         const username = usernameField.current ? usernameField.current.value : form.values.username
         const valuesCurrent: AuthorizationType = {
-            // nektere mobilni klavesnice kapitalizuji prvni pismeno i pres autoCapitalize="none"
-            // na inputu - backend navic porovnava case-insensitive (viz api/auth_backends.py),
-            // ale lowercase i tady, aby se username v UI/tokenu choval predvidatelne
-            username: username.toLowerCase(),
+            // Zadne .toLowerCase() ani .trim() tady: kapitalizaci od mobilnich klavesnic
+            // (ktere ji delaji i pres autoCapitalize="none") resi case-insensitive
+            // porovnani na backendu - api/auth_backends.py. Lowercase na klientovi by nic
+            // nepridal (na username v tokenu ani v UI vliv nema, claim se bere z
+            // `user.username`, tedy z DB - viz api/tokens.py) a jednu vec by aktivne
+            // rozbil: kdyz v DB existuji dve jmena lisici se jen velikosti pismen, backend
+            // zamerne padne zpatky na PRESNOU shodu - a tu by uz nemel z ceho udelat,
+            // protoze presny retezec zahodime driv, nez k nemu dorazi.
+            username,
             password: passwordField.current ? passwordField.current.value : form.values.password,
         }
         void authContextLogin(valuesCurrent)

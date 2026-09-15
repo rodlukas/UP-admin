@@ -131,6 +131,30 @@ export const vars = {
          * na namíchané ploše (obojí nad WCAG AAA).
          */
         today: "light-dark(#bfdbfe, color-mix(in srgb, var(--mantine-color-blue-6) 30%, var(--mantine-color-dark-7)))",
+        /**
+         * Dočasné zvýraznění lekce, na kterou uživatel přišel z „Nejbližších lekcí"
+         * (`DashboardDay.css.ts`). Na rozdíl od `statusSoft.warningStrong` musí unést text,
+         * který si nese vlastní barvy z palety, ne automatickou černou/bílou — proto dark
+         * varianta jde stejným receptem jako `statusTint` níž, tedy mixem s plochou.
+         * V dark je tím pádem shodná se `statusTint.warning`; liší se jen light, kde
+         * záblesk potřebuje být sytější než stavové podbarvení.
+         *
+         * Změřeno NA TOMHLE PODBARVENÍ, a to pro všechno, co na něm opravdu leží (pozor,
+         * `text.muted` mezi to nepatří — `attendanceNumber` si nese vlastní `bg.control`):
+         *
+         * | | light #fff3bf | dark rgb(71,53,37) |
+         * |---|---|---|
+         * | odkaz (jméno klienta/skupiny) | 6,07 | 5,09 |
+         * | `text.primary` (výběr docházky) | 14,09 | 9,81 |
+         * | ikona zaplaceno (`colors.success`) | 4,77 | 6,67 |
+         * | ikona nezaplaceno (`colors.danger`) | 4,89 | 5,03 |
+         * | text hlavičky (černá/bílá) | 18,82 | 11,64 |
+         *
+         * Mix je schválně tak nízký, jak to jde: sytější podklad ubírá odkazu rezervu nad
+         * AA, a 25 % od 22 % přitom nikdo nerozezná (ΔE00 2,3).
+         */
+        highlight:
+            "light-dark(#fff3bf, color-mix(in srgb, var(--mantine-color-yellow-9) 22%, var(--mantine-color-dark-7)))",
     },
     text: {
         /** #16233a = 15.72:1 na bílé ploše; dark-0 = 13.46:1 na tmavé ploše. */
@@ -191,9 +215,16 @@ export const vars = {
          * Sytější varianta pro bannery, kde barva nese hlavní signál (neaktivní klient/skupina)
          * a text pod ní je automatická barva Mantine `Alert` (černá/bílá), ne `text.slate` —
          * proto může mít sytější podklad než `warning` výše, aniž by to srazilo kontrast textu
-         * pod WCAG AA (změřeno: černá na `yellow-light` v light módu 9,3:1, bílá na `yellow-light`
-         * v dark módu 8,9:1). `warning` zůstává měkčí, protože ho používá i `warningNotice`
-         * (FormLectures) s `text.slate` — tak syté pozadí by mu kontrast srazilo pod 4,5:1.
+         * pod WCAG AA (změřeno: černá na `yellow-light` v light módu 18,8:1, bílá na
+         * `yellow-light` v dark módu 8,8:1). `warning` zůstává měkčí, protože ho používá i
+         * `warningNotice` (FormLectures) s `text.slate` — tak syté pozadí by mu kontrast
+         * srazilo pod 4,5:1.
+         *
+         * **Jen pro plochy, kde je text automatická černá/bílá.** `--mantine-color-yellow-light`
+         * NENÍ poloprůhledný odstín: v light je to `yellow-1` (#fff3bf), v dark neprůhledná
+         * tmavá ambra `rgb(115, 60, 0)`. Na ní spadne indigo odkaz (indigo-3) na 3,86:1
+         * a `text.muted` na 3,95:1, tedy pod AA — na podbarvení lekce, kde si text nese
+         * vlastní barvy, se proto použít nesmí. Od toho je `bg.highlight` výš.
          */
         warningStrong: {
             bg: "var(--mantine-color-yellow-light)",
