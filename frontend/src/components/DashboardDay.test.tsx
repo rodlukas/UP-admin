@@ -17,7 +17,12 @@ async function renderWithHighlightedLecture() {
     const queryClient = createQueryClient()
     const router = await createTestRouter(
         <MockContexts>
-            <DashboardDay date="2020-09-09" withoutWaiting={true} source="diary" />
+            <DashboardDay
+                date="2020-09-09"
+                withoutWaiting={true}
+                source="diary"
+                highlightLectureId={88}
+            />
         </MockContexts>,
         { path: "/?lecture=88" },
     )
@@ -48,7 +53,12 @@ test("dashboard day shows lectures for a specific date", async () => {
     const queryClient = createQueryClient()
     const router = await createTestRouter(
         <MockContexts>
-            <DashboardDay date="2020-09-09" withoutWaiting={true} source="dashboard" />
+            <DashboardDay
+                date="2020-09-09"
+                withoutWaiting={true}
+                source="dashboard"
+                highlightLectureId={undefined}
+            />
         </MockContexts>,
     )
     render(
@@ -75,8 +85,8 @@ test("a lecture matching the ?lecture= search param scrolls into view, highlight
             expect.objectContaining({ behavior: "smooth", block: "center" }),
         )
 
-        // "search: {}" po nalezení lekce (`DashboardDay.tsx`) — jinak by refresh/proklik týdnů
-        // zvýraznění pořád dokola spouštěl znovu.
+        // úklid parametru po nalezení lekce (`clearLectureHighlight`) — jinak by
+        // refresh/proklik týdnů zvýraznění pořád dokola spouštěl znovu
         await waitFor(() => {
             expect(router.state.location.search).toEqual({})
         })
@@ -100,5 +110,48 @@ test("the highlight fades out on its own after HIGHLIGHT_DURATION_MS", async () 
         expect(lecture).not.toHaveClass(styles.lectureHighlighted)
     } finally {
         vi.useRealTimers()
+    }
+})
+
+test("a column outside the diary ignores the ?lecture= param entirely", async () => {
+    // Parametr je v URL, ale sloupec dostal `highlightLectureId={undefined}` — a nesmí si ho
+    // vzít z routeru sám. Že by na něj dosáhl, je doložené: routa bez `validateSearch` (jako
+    // Přehled) propustí `?lecture=` až do `useSearch({ strict: false })`. Žádné rolování,
+    // žádné zvýraznění a hlavně žádný přepis URL na stránce, které se zvýrazňování netýká.
+    const scrollIntoViewSpy = vi.spyOn(window.HTMLElement.prototype, "scrollIntoView")
+    try {
+        const queryClient = createQueryClient()
+        const router = await createTestRouter(
+            <MockContexts>
+                <DashboardDay
+                    date="2020-09-09"
+                    withoutWaiting={true}
+                    source="dashboard"
+                    highlightLectureId={undefined}
+                />
+            </MockContexts>,
+            { path: "/?lecture=88" },
+        )
+        render(
+            <QueryClientProvider client={queryClient}>
+                <RouterProvider router={router} />
+            </QueryClientProvider>,
+        )
+        const items = await screen.findAllByTestId("lecture")
+        const lecture = items.find((item) => item.id === "lecture-88")
+        expect(lecture, "lekce s id 88 mezi vykreslenymi lekcemi neni").toBeDefined()
+
+        // Sesterský test výš dokazuje, že v tomhle bodě už zvýrazňovací efekt proběhl (je tam
+        // tou dobou zavolané `scrollIntoView`), takže nepřítomnost níž se tvrdí o okamžiku, kdy
+        // efekt slovo dostal. Flush navíc pokrývá i odložení o jeden průchod renderem.
+        await act(async () => {
+            await Promise.resolve()
+        })
+
+        expect(lecture).not.toHaveClass(styles.lectureHighlighted)
+        expect(scrollIntoViewSpy).not.toHaveBeenCalled()
+        expect(router.state.location.search).toEqual({ lecture: 88 })
+    } finally {
+        scrollIntoViewSpy.mockRestore()
     }
 })

@@ -135,9 +135,12 @@ export const vars = {
          * Dočasné zvýraznění lekce, na kterou uživatel přišel z „Nejbližších lekcí"
          * (`DashboardDay.css.ts`). Na rozdíl od `statusSoft.warningStrong` musí unést text,
          * který si nese vlastní barvy z palety, ne automatickou černou/bílou — proto dark
-         * varianta jde stejným receptem jako `statusTint` níž, tedy mixem s plochou.
-         * V dark je tím pádem shodná se `statusTint.warning`; liší se jen light, kde
-         * záblesk potřebuje být sytější než stavové podbarvení.
+         * varianta jde stejným receptem jako `statusTint` níž, tedy mixem s plochou, a dnes
+         * z něj vychází shodná hodnota jako u `statusTint.warning`. Shoda se ale záměrně
+         * nedrží přes sdílenou konstantu: `statusTint.warning` nese i dnešní řádek v
+         * `Bank.css.ts` a budoucí lekci v `Card.css.ts`, které mají kontrasty naměřené
+         * samostatně, takže doladění jednoho odstínu nesmí přebarvit ten druhý. Light se liší
+         * vždy — záblesk potřebuje být sytější než stavové podbarvení.
          *
          * Změřeno NA TOMHLE PODBARVENÍ, a to pro všechno, co na něm opravdu leží (pozor,
          * `text.muted` mezi to nepatří — `attendanceNumber` si nese vlastní `bg.control`):

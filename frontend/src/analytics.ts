@@ -51,7 +51,8 @@ let lastPagePath: string | undefined
 /**
  * Search parametry, které neidentifikují stránku, ale nesou jednorázový pokyn pro UI —
  * do `page_path` nepatří. `lecture` říká diáři, na kterou lekci se má zarolovat
- * (`UpcomingLectures.tsx`), a ten si ho hned po použití z URL smaže (`DashboardDay.tsx`).
+ * (`UpcomingLectures.tsx`), a ten si ho hned po použití z URL smaže
+ * (`global/clearLectureHighlight.ts`).
  * Bez tohohle odfiltrování by každá lekce vyrobila v GA4 vlastní URL (a poslala do ní
  * interní id) a jeden proklik by se napočítal dvakrát: jednou s parametrem, podruhé po
  * jeho úklidu. Dedupe níž to sám neodchytí — porovnává celou cestu, a ta se liší.
@@ -99,7 +100,7 @@ export function initAnalytics(
         const pagePath = getPagePath()
         // Proklik z „Nejbližší lekce" vyrobí DVĚ vyřešení trasy na jedné stránce: router
         // nejdřív vyřeší adresu s `?lecture=`, a teprve po doběhnutí dotazu si ji diář
-        // uklidí (`DashboardDay.tsx`). Po odfiltrování výše mají obě shodnou cestu, takže
+        // uklidí (`clearLectureHighlight`). Po odfiltrování výše mají obě shodnou cestu, takže
         // je tenhle dedupe sloučí do jednoho zobrazení — bez něj by se každý takový proklik
         // počítal dvakrát.
         if (pagePath === lastPagePath) {

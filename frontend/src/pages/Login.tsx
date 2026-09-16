@@ -39,13 +39,12 @@ const Login: React.FC = () => {
         const username = usernameField.current ? usernameField.current.value : form.values.username
         const valuesCurrent: AuthorizationType = {
             // Zadne .toLowerCase() ani .trim() tady: kapitalizaci od mobilnich klavesnic
-            // (ktere ji delaji i pres autoCapitalize="none") resi case-insensitive
-            // porovnani na backendu - api/auth_backends.py. Lowercase na klientovi by nic
-            // nepridal (na username v tokenu ani v UI vliv nema, claim se bere z
-            // `user.username`, tedy z DB - viz api/tokens.py) a jednu vec by aktivne
-            // rozbil: kdyz v DB existuji dve jmena lisici se jen velikosti pismen, backend
-            // zamerne padne zpatky na PRESNOU shodu - a tu by uz nemel z ceho udelat,
-            // protoze presny retezec zahodime driv, nez k nemu dorazi.
+            // (ktere ji delaji i pres autoCapitalize="none") resi normalizace na serveru,
+            // v api/tokens.py. Lowercase na klientovi by nic nepridal (na username v tokenu
+            // ani v UI vliv nema, claim se bere z `user.username`, tedy z DB) a jednu vec by
+            // aktivne rozbil: kdyz v DB existuji dve jmena lisici se jen velikosti pismen,
+            // server zamerne necha napsanou hodnotu byt a rozhodne PRESNA shoda - a tu by uz
+            // nemel z ceho udelat, protoze presny retezec zahodime driv, nez k nemu dorazi.
             username,
             password: passwordField.current ? passwordField.current.value : form.values.password,
         }

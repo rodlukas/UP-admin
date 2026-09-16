@@ -12,7 +12,6 @@ import {
     Title,
     Tooltip,
 } from "@mantine/core"
-import { useMediaQuery } from "@mantine/hooks"
 import {
     faCalendarAlt,
     faClipboardList,
@@ -208,15 +207,6 @@ const FormLectures: React.FC<Props> = (props) => {
     const createLecture = useCreateLecture()
     const updateLecture = useUpdateLecture()
     const deleteLecture = useDeleteLecture()
-    // `Group justify="center"` u checkboxu platby (viz níž) je žádoucí, jen dokud sloupec stojí
-    // vedle ostatních (Grid.Col `sm: 2`, tedy od `48em` výš) — pod `sm` se sloupce zabalí pod
-    // sebe na celou šířku a centrování by checkbox odtrhlo od popisku (na rozdíl od zarovnání
-    // vlevo jako u ostatních polí). `text-align` na obalu tohle neřeší — `Group` centruje přes
-    // flex `justify-content`, na které `text-align` nemá vliv.
-    const isPaidColumnInline = useMediaQuery("(min-width: 48em)", false, {
-        getInitialValueInEffect: false,
-    })
-
     const isClient = (object: ClientType | GroupType): object is ClientType => "phone" in object
 
     const isLecture = (lecture: Props["lecture"]): lecture is LectureType => "id" in lecture
@@ -1038,9 +1028,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             />
                                         </Grid.Col>
                                         <Grid.Col span={{ base: 12, sm: 2 }}>
-                                            <Group
-                                                gap="xs"
-                                                justify={isPaidColumnInline ? "center" : undefined}>
+                                            <Group gap="xs" className={styles.attendancePaidGroup}>
                                                 <Checkbox
                                                     id={`atPaid${member.id}`}
                                                     name="atPaid"

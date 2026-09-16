@@ -1,6 +1,6 @@
 import { Box, Text, Title, Tooltip } from "@mantine/core"
 import { useReducedMotion } from "@mantine/hooks"
-import { useNavigate, useSearch } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
@@ -10,6 +10,7 @@ import { useLecturesFromDay } from "../api/hooks"
 import { useAttendanceStatesContext } from "../contexts/AttendanceStatesContext"
 import ModalLectures from "../forms/ModalLectures"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
+import { clearLectureHighlight } from "../global/clearLectureHighlight"
 import {
     isToday,
     isUserCelebrating,
@@ -40,14 +41,28 @@ type Props = {
     date: string
     /** Identifikace místa, odkud je komponenta použita (pro analytiku). */
     source: AnalyticsSource
+    /**
+     * Lekce, na kterou se má sloupec zarolovat a zvýraznit ji, přišla-li v `?lecture=`
+     * (`UpcomingLectures.tsx`). Komponenta si ji schválně nečte z routeru sama: parametr míří
+     * jen na mřížku diáře, ale `useSearch({ strict: false })` vydá i parametr, který
+     * `validateSearch` routy vůbec nezmiňuje (ověřeno — validace se přes syrový search jen
+     * slučuje, nenahrazuje ho). Routa Přehledu žádný `validateSearch` nemá, takže by sem
+     * `/prehled?lecture=<id dnešní lekce>` dosáhlo a rozjelo rolování, zvýraznění i přepis
+     * URL na stránce, které se to netýká.
+     *
+     * Povinné i s `undefined`: volající tím musí říct, jestli o zvýrazňování stojí. Sloupec,
+     * který ho tiše nedostane, se sice vykreslí správně, ale nezaroluje, nezvýrazní a hlavně
+     * parametr neuklidí — a `Diary` ho neuklidí taky, protože ta maže jen když lekce v týdnu
+     * NENÍ. `?lecture=` by pak v URL visel napořád.
+     */
+    highlightLectureId: number | undefined
 }
 
 /** Komponenta zobrazující lekce pro jeden zadaný den. */
 const DashboardDay: React.FC<Props> = (props) => {
-    const { source } = props
+    const { source, highlightLectureId } = props
     const attendanceStatesContext = useAttendanceStatesContext()
     const navigate = useNavigate()
-    const { lecture: highlightLectureId } = useSearch({ strict: false })
     const [highlightedId, setHighlightedId] = React.useState<number | null>(null)
     // `getInitialValueInEffect: false` ze stejného důvodu jako v `Main.tsx` — aplikace běží jen
     // CSR a efekt níž může doskrolovat hned na prvním commitu, takže hodnotu potřebujeme rovnou.
@@ -106,13 +121,7 @@ const DashboardDay: React.FC<Props> = (props) => {
             block: "center",
         })
         setHighlightedId(matchedLecture.id)
-        // `search: {}`, ne reducer nad `prev`: diář žádný jiný search parametr nemá,
-        // takže není co zachovávat, a `{}` se obejde bez typování neznámého `prev`.
-        // `resetScroll: false` je nutné: tanstack router jinak po KAŽDÉ navigaci (i jen
-        // změně search parametru) sám vynuluje scroll na 0 (`resetScroll` má default `true`),
-        // což by doskrolování o pár řádků výš smazalo — na mobilu, kde dny stojí pod sebou
-        // a scroll bývá o stovky pixelů delší než na desktopu, to bylo vidět pokaždé.
-        void navigate({ to: ".", search: {}, replace: true, resetScroll: false })
+        clearLectureHighlight(navigate)
     }, [showLoading, highlightLectureId, lectures, navigate, prefersReducedMotion])
 
     /** Zvýraznění samo zhasne — nemá zůstat viset, jakmile splnilo svůj účel (ukázat "tady"). */

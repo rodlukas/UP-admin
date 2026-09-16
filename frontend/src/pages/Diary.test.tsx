@@ -1,6 +1,6 @@
 import { onlineManager, QueryClientProvider } from "@tanstack/react-query"
 import { RouterProvider } from "@tanstack/react-router"
-import { render, screen, waitFor } from "@testing-library/react"
+import { act, render, screen, waitFor } from "@testing-library/react"
 import { http, HttpResponse } from "msw"
 import * as React from "react"
 
@@ -38,33 +38,51 @@ function useLecturesByDay(): void {
 }
 
 /**
- * Stavy docházky, které dorazí až po prvním vykreslení — tím se `DashboardDay` drží
- * v `showLoading` i poté, co má vlastní lekce načtené. Přesně ten stav, kvůli kterému
- * `Diary` nesmí uklízet search parametr jen podle doběhnutí týdne.
+ * Stavy docházky, které dorazí až ve chvíli, kdy je test pustí — do té doby drží
+ * `DashboardDay` v `showLoading`, i když má vlastní lekce dávno načtené. Přesně ten stav,
+ * kvůli kterému `Diary` nesmí uklízet search parametr jen podle doběhnutí týdne.
+ *
+ * Řízené promisou, ne časovačem: s časovačem závisí na tom, jestli stihne dřív on, nebo
+ * odpověď msw, takže na pomalém stroji ten stav vůbec nenastane a test projde, aniž by
+ * cokoliv ověřil.
  */
-const LateAttendanceStates: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const GatedAttendanceStates: React.FC<{
+    /** Dokud nedoběhne, tváří se stavy docházky jako načítané. */
+    ready: Promise<void>
+    children: React.ReactNode
+}> = ({ ready, children }) => {
     const [isLoading, setIsLoading] = React.useState(true)
     React.useEffect(() => {
-        const timeout = setTimeout(() => setIsLoading(false), 60)
-        return () => clearTimeout(timeout)
-    }, [])
+        let isCurrent = true
+        void ready.then(() => {
+            if (isCurrent) {
+                setIsLoading(false)
+            }
+        })
+        return () => {
+            isCurrent = false
+        }
+    }, [ready])
     const value = React.useMemo(
         () => ({ isLoading, hasData: !isLoading, attendancestates: data.attendancestates }),
         [isLoading],
     )
     return (
-        <AttendanceStatesContext.Provider value={value}>{children}</AttendanceStatesContext.Provider>
+        <AttendanceStatesContext.Provider value={value}>
+            {children}
+        </AttendanceStatesContext.Provider>
     )
 }
 
-async function setupDiary(path: string, lateAttendanceStates = false) {
-    const diary = lateAttendanceStates ? (
-        <LateAttendanceStates>
+async function setupDiary(path: string, attendanceStatesReady?: Promise<void>) {
+    const diary =
+        attendanceStatesReady === undefined ? (
             <Diary />
-        </LateAttendanceStates>
-    ) : (
-        <Diary />
-    )
+        ) : (
+            <GatedAttendanceStates ready={attendanceStatesReady}>
+                <Diary />
+            </GatedAttendanceStates>
+        )
     const router = await createTestRouter(<MockContexts>{diary}</MockContexts>, { path })
     render(
         <QueryClientProvider client={createQueryClient()}>
@@ -87,11 +105,28 @@ test("the ?lecture= param is cleared when no day in the week holds that lecture"
 })
 
 test("a lecture that is in the week still gets highlighted before the param is cleared", async () => {
-    // Pojistka proti tomu, aby úklid výše nesebral parametr sloupci, který lekci má, ale
-    // čeká ještě na stavy docházky — proto se maže podle "lekce v týdnu není", ne podle
-    // samotného doběhnutí týdne. Stavy docházky proto dorazí až po týdnu.
+    // Pojistka proti tomu, aby úklid v `Diary` nesebral parametr sloupci, který lekci má, ale
+    // čeká ještě na stavy docházky — proto se maže podle „lekce v týdnu není", ne podle
+    // samotného doběhnutí týdne.
     useLecturesByDay()
-    const router = await setupDiary("/?lecture=88", true)
+    let releaseAttendanceStates!: () => void
+    const attendanceStatesReady = new Promise<void>((resolve) => {
+        releaseAttendanceStates = resolve
+    })
+    const router = await setupDiary("/?lecture=88", attendanceStatesReady)
+
+    // Proužek volných dnů se vykreslí, až když doběhne CELÝ týden (`isWeekSettled`), a je
+    // tedy signálem přesně toho okamžiku, ve kterém by úklid podle doběhnutí týdne udeřil —
+    // sloupce zatím pořád čekají na stavy docházky.
+    expect(await screen.findByText("Volno")).toBeInTheDocument()
+    expect(router.state.location.search).toEqual({ lecture: 88 })
+
+    await act(async () => {
+        releaseAttendanceStates()
+        // počkat na tutéž promisu: efekt v `GatedAttendanceStates` na ni visí taky, takže
+        // se tím jeho `setIsLoading` stihne uvnitř `act`
+        await attendanceStatesReady
+    })
 
     const items = await screen.findAllByTestId("lecture")
     // právě jedna lekce 88, právě jeden sloupec ji má — viz `useLecturesByDay`
@@ -116,8 +151,10 @@ test("the ?lecture= param survives while the week is offline", async () => {
     onlineManager.setOnline(false)
     try {
         const router = await setupDiary("/?lecture=88")
-        // parametr musí přežít i poté, co by ho efekt dávno stihl smazat
-        await new Promise((resolve) => setTimeout(resolve, 150))
+        // „Nepodařilo se načíst" vykreslí sloupec právě tehdy, když dotaz doběhl a data
+        // nedorazila — tedy ve stavu, ve kterém by chybný úklid parametr sebral. Čekat na
+        // něj je proto silnější než čekat na uplynulý čas, po kterém se nic tvrdit nedá.
+        await screen.findAllByText("Nepodařilo se načíst")
         expect(router.state.location.search).toEqual({ lecture: 88 })
     } finally {
         onlineManager.setOnline(true)

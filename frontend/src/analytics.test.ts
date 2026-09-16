@@ -1,6 +1,8 @@
 import ReactGA from "react-ga4"
 
-const originalLocation = globalThis.location
+// jsdom (viz `environment` ve vitest.config.ts) `location` vždycky definuje jako vlastní
+// vlastnost; kdyby ne, je rozbité prostředí, ne test
+const originalLocation = Object.getOwnPropertyDescriptor(globalThis, "location")!
 
 /**
  * Postaví handler, kterým `initAnalytics` hlásí zobrazení stránky, a sbírá odeslané cesty.
@@ -41,17 +43,16 @@ afterEach(() => {
     vi.restoreAllMocks()
     // `visit()` výš přepisuje `globalThis.location` prostým objektem — bez vrácení zpět by
     // ho dostal rozbité každý další test v tomhle souboru, který by chtěl něco vykreslit.
-    Object.defineProperty(globalThis, "location", {
-        configurable: true,
-        value: originalLocation,
-    })
+    // Vrací se celý původní deskriptor, ne jen hodnota: `defineProperty` se samotným `value`
+    // nechá vlastnost nezapisovatelnou a nevyčíslitelnou, tedy pořád rozbitou, jen jinak.
+    Object.defineProperty(globalThis, "location", originalLocation)
 })
 
 test("the transient ?lecture= param is kept out of the reported page path", async () => {
     const { sent, visit } = await setupAnalytics()
 
     // proklik z "Nejbližší lekce": router vyřeší trasu s parametrem a teprve po doběhnutí
-    // dotazu si ho diář uklidí (`DashboardDay.tsx`) — jsou to dva `onResolved` na jedné
+    // dotazu si ho diář uklidí (`clearLectureHighlight`) — jsou to dva `onResolved` na jedné
     // stránce. Bez odfiltrování by z toho byly dva pohledy a interní id lekce v GA4 URL.
     visit("/diar/2026/9/14?lecture=88")
     visit("/diar/2026/9/14")

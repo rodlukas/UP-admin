@@ -12,6 +12,7 @@ import APP_URLS from "../APP_URLS"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
+import { clearLectureHighlight } from "../global/clearLectureHighlight"
 import {
     addDays,
     DAYS_IN_WEEK,
@@ -154,7 +155,7 @@ const Diary: React.FC = () => {
         ) {
             return
         }
-        void navigate({ to: ".", search: {}, replace: true, resetScroll: false })
+        clearLectureHighlight(navigate)
     }, [highlightLectureId, isWeekSettled, isWeekLoaded, isHighlightedLectureInWeek, navigate])
 
     /**
@@ -372,7 +373,11 @@ const Diary: React.FC = () => {
                         // s klíčem podle data by se při každém prokliku odmountovala
                         // a znovu namountovala a debounce by nic neznamenal
                         <div key={new Date(day).getDay()} className={styles.weekDayCol}>
-                            <DashboardDay date={day} source="diary" />
+                            <DashboardDay
+                                date={day}
+                                source="diary"
+                                highlightLectureId={highlightLectureId}
+                            />
                         </div>
                     ))}
                 </div>

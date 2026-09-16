@@ -49,11 +49,15 @@ const createChildRoute = (routeConfig: ChildRouteConfig) =>
         getParentRoute: () => rootRoute,
     })
 
+type PrivateRouteOptions = {
+    title?: string
+    validateSearch?: ChildRouteConfig["validateSearch"]
+}
+
 const createPrivateRoute = (
     path: string,
     element: React.ReactElement,
-    title?: string,
-    validateSearch?: ChildRouteConfig["validateSearch"],
+    { title, validateSearch }: PrivateRouteOptions = {},
 ) =>
     createChildRoute({
         path,
@@ -67,11 +71,9 @@ const createPageRoute = (path: string, element: React.ReactElement, title: strin
         component: () => <Page title={title}>{element}</Page>,
     })
 
-const overviewRoute = createPrivateRoute(
-    APP_URLS.prehled.url,
-    <Dashboard />,
-    APP_URLS.prehled.title,
-)
+const overviewRoute = createPrivateRoute(APP_URLS.prehled.url, <Dashboard />, {
+    title: APP_URLS.prehled.title,
+})
 
 const loginRoute = createChildRoute({
     path: APP_URLS.prihlasit.url,
@@ -90,7 +92,9 @@ const loginRoute = createChildRoute({
     ),
 })
 
-const groupsRoute = createPrivateRoute(APP_URLS.skupiny.url, <Groups />, APP_URLS.skupiny.title)
+const groupsRoute = createPrivateRoute(APP_URLS.skupiny.url, <Groups />, {
+    title: APP_URLS.skupiny.title,
+})
 
 /** Lekce, na kterou se má diář po příchodu z "Nejbližší lekce" zarolovat a zvýraznit ji. */
 const validateDiarySearch = (search: Record<string, unknown>): { lecture?: number } => ({
@@ -98,10 +102,12 @@ const validateDiarySearch = (search: Record<string, unknown>): { lecture?: numbe
 })
 
 const diaryRoutes = [APP_URLS.diar.url, `${APP_URLS.diar.url}/$year/$month/$day`].map((path) =>
-    createPrivateRoute(path, <Diary />, undefined, validateDiarySearch),
+    createPrivateRoute(path, <Diary />, { validateSearch: validateDiarySearch }),
 )
 
-const clientsRoute = createPrivateRoute(APP_URLS.klienti.url, <Clients />, APP_URLS.klienti.title)
+const clientsRoute = createPrivateRoute(APP_URLS.klienti.url, <Clients />, {
+    title: APP_URLS.klienti.title,
+})
 
 const createCardRoute = (path: string, isClientPage: boolean) => {
     let route: ReturnType<typeof createChildRoute>
@@ -126,21 +132,15 @@ const createCardRoute = (path: string, isClientPage: boolean) => {
 
 const clientCardRoute = createCardRoute("/klienti/$id", true)
 const groupCardRoute = createCardRoute("/skupiny/$id", false)
-const applicationsRoute = createPrivateRoute(
-    APP_URLS.zajemci.url,
-    <Applications />,
-    APP_URLS.zajemci.title,
-)
-const settingsRoute = createPrivateRoute(
-    APP_URLS.nastaveni.url,
-    <Settings />,
-    APP_URLS.nastaveni.title,
-)
-const statisticsRoute = createPrivateRoute(
-    APP_URLS.statistiky.url,
-    <Statistics />,
-    APP_URLS.statistiky.title,
-)
+const applicationsRoute = createPrivateRoute(APP_URLS.zajemci.url, <Applications />, {
+    title: APP_URLS.zajemci.title,
+})
+const settingsRoute = createPrivateRoute(APP_URLS.nastaveni.url, <Settings />, {
+    title: APP_URLS.nastaveni.title,
+})
+const statisticsRoute = createPrivateRoute(APP_URLS.statistiky.url, <Statistics />, {
+    title: APP_URLS.statistiky.title,
+})
 const notFoundRoute = createPageRoute(
     APP_URLS.nenalezeno.url,
     <NotFound />,

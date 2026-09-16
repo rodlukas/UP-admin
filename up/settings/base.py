@@ -204,9 +204,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# case-insensitive username (viz api/auth_backends.py)
-AUTHENTICATION_BACKENDS = ["api.auth_backends.CaseInsensitiveModelBackend"]
-
 # Internationalization
 LANGUAGE_CODE = "cs"
 TIME_ZONE = "Europe/Prague"

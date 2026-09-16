@@ -1,9 +1,16 @@
-from django.contrib.auth import authenticate, get_user_model
+import base64
+
+from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.exceptions import AuthenticationFailed
+
+from api.tokens import MyTokenObtainSlidingSerializer
 
 AUTH_URL = reverse("token_obtain")
+CLIENTS_URL = reverse("client-list")
 
 
 class CaseInsensitiveLoginTest(TestCase):
@@ -48,9 +55,9 @@ class CaseVariantCollisionLoginTest(TestCase):
     Dvě uživatelská jména lišící se jen velikostí písmen.
 
     Unique index na username je case-sensitive, takže taková dvojice v DB vzniknout
-    může a case-insensitive větev backendu pak nemá jak rozhodnout, kterého uživatele
-    volající myslí. Nesmí to skončit `MultipleObjectsReturned`, tedy HTTP 500 - viz
-    fallback na přesnou shodu v api/auth_backends.py.
+    může a normalizace pak nemá jak rozhodnout, kterého uživatele volající myslí.
+    Napsaná hodnota proto zůstane beze změny a rozhodne přesná shoda ve `ModelBackend`
+    (viz api/tokens.py).
     """
 
     def setUp(self) -> None:
@@ -73,17 +80,20 @@ class CaseVariantCollisionLoginTest(TestCase):
 
 class InactiveUserLoginTest(TestCase):
     """
-    Neaktivní uživatel se nesmí přihlásit ani přes case-insensitive větev.
+    Neaktivní uživatel se nesmí přihlásit ani po normalizaci username.
 
-    Vlastní backend přepisuje `authenticate()` celé, takže kontrola `is_active`
-    (`user_can_authenticate`) v něm drží jen tím, že je ručně opsaná - bez tohohle testu
-    by se dala vypustit, aniž by to cokoliv v suitě poznalo.
+    Normalizace dosazuje username z DB, takže neaktivnímu uživateli otevírá i tvary, které
+    by jinak na přesnou shodu nesedly - kontrola `is_active` musí platit i pro ně.
     """
 
     def setUp(self) -> None:
         get_user_model().objects.create_user(
             username="neaktivni-ucitel", password="test-password", is_active=False
         )
+        # aktivni protejsek se stejnym tvarem jmena, jako kontrola: `AuthenticationFailed` je
+        # stejna pro "uzivatel neexistuje" i pro "existuje, ale je neaktivni", takze bez tehle
+        # dvojice by testy nize prosly i tehdy, kdyby normalizace vubec nebezela
+        get_user_model().objects.create_user(username="aktivni-ucitel", password="test-password")
 
     def test_inactive_user_cannot_log_in_with_exact_username(self) -> None:
         response = self.client.post(
@@ -97,11 +107,19 @@ class InactiveUserLoginTest(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_backend_itself_rejects_inactive_user(self) -> None:
-        # primo pres authenticate(), ne jen pres view - simplejwt ma vlastni
-        # USER_AUTHENTICATION_RULE, takze samotna 401 vyse by neaktivitu potvrdila
-        # i v pripade, ze by ji backend pustil dal
-        self.assertIsNone(authenticate(username="Neaktivni-Ucitel", password="test-password"))
+    def test_normalization_cannot_resurrect_inactive_user(self) -> None:
+        # primo pres serializer, ne pres view: 401 z view nerekne, co ji zpusobilo, a tady
+        # jde o to, ze uzivatele nesmi vzkrisit prave normalizace - ta mu jinou velikost
+        # pismen otevira, takze musi narazit az na `is_active`.
+        # Prvni assert drzi, ze normalizace v tomhle tvaru jmena opravdu bezi; bez nej by
+        # druhy prosel i s uplne vypnutou normalizaci.
+        MyTokenObtainSlidingSerializer().validate(
+            {"username": "Aktivni-Ucitel", "password": "test-password"}
+        )
+        with self.assertRaises(AuthenticationFailed):
+            MyTokenObtainSlidingSerializer().validate(
+                {"username": "Neaktivni-Ucitel", "password": "test-password"}
+            )
 
 
 class DiacriticsLoginTest(TestCase):
@@ -125,3 +143,30 @@ class DiacriticsLoginTest(TestCase):
     def test_login_with_uppercase_diacritics_succeeds(self) -> None:
         response = self.client.post(AUTH_URL, {"username": "ČENĚK", "password": self.password})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class BasicAuthCaseSensitivityTest(TestCase):
+    """
+    Basic auth zůstává na PŘESNOU shodu.
+
+    Normalizace username sedí v serializeru JWT endpointu (api/tokens.py), takže se týká jen
+    přihlášení z aplikace. `BasicAuthentication` je první v `DEFAULT_AUTHENTICATION_CLASSES`,
+    tedy pokrývá celé `/api/v1/`, a jde přes stock `ModelBackend`. Je to vědomý kompromis
+    a tenhle test drží tu hranici, aby se neposunula tiše - třeba návratem globálního
+    `AUTHENTICATION_BACKENDS`, po kterém by se case-insensitive chování rozlilo na celé API.
+    """
+
+    def setUp(self) -> None:
+        get_user_model().objects.create_user(username="ucitel-basic", password="test-password")
+
+    def _get_with_basic_auth(self, username: str) -> HttpResponse:
+        token = base64.b64encode(f"{username}:test-password".encode()).decode()
+        return self.client.get(CLIENTS_URL, headers={"authorization": f"Basic {token}"})
+
+    def test_basic_auth_accepts_exact_username(self) -> None:
+        response = self._get_with_basic_auth("ucitel-basic")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_basic_auth_rejects_different_case(self) -> None:
+        response = self._get_with_basic_auth("Ucitel-Basic")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

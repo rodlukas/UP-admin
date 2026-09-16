@@ -68,8 +68,22 @@ export const dashboardDayWrapper = style({
     backgroundColor: vars.bg.surface,
 })
 
-export const dashboardDayItem = style({
+/**
+ * Přechod podbarvení sdílený obalem lekce a jejím tělem. Sdílí se schválně: v mřížce jsou to
+ * dvě poloviny jedné plochy, takže při potlačeném pohybu nesmí jedna přejíždět a druhá skákat,
+ * a ani doba trvání se nesmí rozejít.
+ */
+const backgroundTransition = {
     transition: "background-color 0.15s ease-in-out",
+    "@media": {
+        "(prefers-reduced-motion: reduce)": {
+            transition: "none",
+        },
+    },
+} as const
+
+export const dashboardDayItem = style({
+    ...backgroundTransition,
     borderTop: vars.borderShort.default,
     selectors: {
         "&:hover": {
@@ -187,14 +201,9 @@ export const lectureBody = style({
     // a ty se zvýrazněním nemění, takže tu žádná svázaná dvojice jako v hlavičce není.
     // Tenhle přechod obsluhuje hover i rozsvícení/zhasnutí zvýraznění — prohlížeč ho bere
     // ze stavu PO změně třídy, takže pravidlo na zvýraznění by na zhasínání stejně nedosáhlo.
-    transition: "background-color 0.15s ease-in-out",
+    ...backgroundTransition,
     backgroundColor: vars.bg.surface,
     padding: "0.6rem 0.85rem",
-    "@media": {
-        "(prefers-reduced-motion: reduce)": {
-            transition: "none",
-        },
-    },
 })
 
 export const lectureBodyCanceled = style({
