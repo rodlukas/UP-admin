@@ -20,6 +20,10 @@ WAIT_TIME_VERY_SHORT = 0.5
 # zaokrouhli nahoru na nasobek te hodnoty - u kroku s vice cekanimi za sebou to dela
 # vetsinu jejich casu. Kratsi interval znamena vic dotazu na WebDriver (levne, driver
 # bezi lokalne) vymenou za radove kratsi prostoje.
+#
+# Niz uz nechod: s 0,03 s je sada sice o cca 15 s rychlejsi, ale kroky sahaji na prvky
+# driv, nez React dokonci prekresleni, a Firefox pak pada na StaleElementReference
+# (mereno: Chrome zeleny, Firefox 7 padu). CI jede Firefox.
 POLL_FREQUENCY = 0.1
 
 # Sonda na loading indikator: React ho vyrenderuje jeste driv, nez WebDriver stihne
