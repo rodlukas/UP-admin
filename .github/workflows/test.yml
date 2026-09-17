@@ -1,4 +1,4 @@
-name: Build & Test
+name: CI
 
 on:
     push:
@@ -48,9 +48,16 @@ jobs:
             # padni driv, nez se cokoliv zacne buildit
             - name: 🔍 Verify UI shards cover every feature file
               run: ./scripts/shell/ci/check_ui_shards.sh
+            # Stitky "1/N" se dopocitavaji, aby v ui-shards.json zustal prosty seznam
+            # a pridani shardu nevynutilo rucni precislovani ostatnich
             - name: 📋 Read UI shards
               id: shards
-              run: echo "list=$(jq -c . .github/ui-shards.json)" >> "$GITHUB_OUTPUT"
+              run: |
+                  total=$(jq 'length' .github/ui-shards.json)
+                  list=$(jq -c --argjson total "$total" \
+                      'to_entries | map({name: "\(.key+1)/\($total)", features: .value})' \
+                      .github/ui-shards.json)
+                  echo "list=$list" >> "$GITHUB_OUTPUT"
 
             # spust skripty pro upravu souboru
             - name: 📝 Create .npmrc file
@@ -122,7 +129,7 @@ jobs:
                   retention-days: 1
 
     test_backend:
-        name: Test - backend & API
+        name: "Test: backend & API"
         needs: build
         runs-on: ubuntu-26.04
 
@@ -167,7 +174,7 @@ jobs:
                   fail_ci_if_error: false
 
     test_ui:
-        name: Test - E2E UI
+        name: "Test: UI ${{ matrix.shard.name }}"
         needs: build
         runs-on: ubuntu-26.04
         strategy:
@@ -193,8 +200,9 @@ jobs:
             # do skriptu jako kod
             - name: 🔍 Run E2E UI tests
               env:
-                  SHARD: ${{ matrix.shard }}
+                  SHARD: ${{ matrix.shard.features }}
               run: |
+                  echo "shard ${{ matrix.shard.name }}: $SHARD"
                   features=""
                   for feature in $SHARD; do
                       features="$features tests/features/$feature.feature"
@@ -252,13 +260,14 @@ jobs:
               env:
                   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_TEST }}
 
-    # Branch protection vyzaduje jeden status check pevneho jmena. Vyjmenovat v nem
+    # Branch protection vyzaduje jeden status check pevneho jmena ("All checks passed").
+    # Vyjmenovat v nem
     # primo joby matice nejde rozumne udrzovat - jejich jmena se meni s kazdou upravou
     # .github/ui-shards.json a pravidlo by se muselo prepisovat s nimi (a dokud by se
     # nezmenilo, PR by cekal na check, ktery uz nikdo nenahlasi). Tenhle job je proto
     # jediny pozadovany check a jen shrnuje vysledek vsech ostatnich.
-    build_and_test:
-        name: Build & Test
+    all_checks_passed:
+        name: All checks passed
         needs: [build, test_backend, test_ui, deploy]
         # musi dobehnout i kdyz nektery z jobu selhal - jinak by se preskocil a check
         # by zase nikdo nenahlasil

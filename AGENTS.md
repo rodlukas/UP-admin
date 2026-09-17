@@ -216,7 +216,7 @@ Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, kter�
 ### Build a nasazení
 
 **CI** ([`.github/workflows/test.yml`](.github/workflows/test.yml)) se spouští na každý push/PR do
-`master` a běží ve třech fázích: **`build` → (`test_backend` ‖ `test_ui` × N) → `deploy`**.
+`master` a běží ve třech fázích: **`Build` → (`Test: backend & API` ‖ `Test: UI 1/N`…) → `Deploy`**.
 
 Rozdělení je dané tím, že frontend build musí předcházet UI testům a deploy je musí následovat.
 Frontend se díky tomu buildí jednou (a jen jednou nahraje mapy do Sentry) a UI stage jede paralelně.
@@ -225,15 +225,16 @@ Frontend se díky tomu buildí jednou (a jen jednou nahraje mapy do Sentry) a UI
    Package Registry (token `GPR_TOKEN`), frontend build, frontend testy (typy + lint + vitest),
    Black, mypy, `collectstatic`. Výsledek (`frontend/build`, `staticfiles`, vygenerovaná šablona)
    jde jako artefakt `build-output` do ostatních jobů.
-2. **`test_backend`** — Django deployment checklist, unit testy a E2E API testy.
-3. **`test_ui`** — E2E UI testy (behave + Selenium/Firefox) rozdělené na shardy.
+2. **`Test: backend & API`** — Django deployment checklist, unit testy a E2E API testy.
+3. **`Test: UI 1/N`** — E2E UI testy (behave + Selenium/Firefox) rozdělené na shardy.
 4. **`deploy`** — nasadí testing verzi na Fly.io (přeskočí pro Dependabot). Python nepotřebuje,
    staticfiles má z artefaktu.
-5. **`build_and_test`** — jen shrne výsledek ostatních jobů. Existuje kvůli branch protection:
+5. **`All checks passed`** — jen shrne výsledek ostatních jobů. Existuje kvůli branch protection:
    ta vyžaduje status check pevného jména, ale jména jobů matice se mění s každou úpravou
    `ui-shards.json`. Je proto **jediný požadovaný check**; vyjmenovávat v pravidle jednotlivé
    shardy by znamenalo přepisovat ho při každé změně rozdělení — a do té doby by PR čekal na
-   check, který už nikdo nenahlásí.
+   check, který už nikdo nenahlásí. Pravidlo se váže na **jméno jobu, ne workflow**, takže
+   přejmenování tohohle jobu znamená i zásah do rulesetu.
 
 Společné nastavení testovacích jobů (Python, závislosti, artefakt, PostgreSQL 18 s českou locale
 v Dockeru, `scripts/shell/release_tasks.sh`) drží composite action
@@ -247,7 +248,8 @@ nezčervenalo, proto na to `build` hned zkraje pouští
 [`scripts/shell/ci/check_ui_shards.sh`](scripts/shell/ci/check_ui_shards.sh): trvá na tom, že
 sjednocení shardů je **přesně** množina souborů v `tests/features` — odhalí zapomenutý nový soubor
 i omylem zdvojený. Po přidání feature souboru ho tedy přidej i do `ui-shards.json`; shardy jsou
-vyvážené podle naměřených časů, ne podle počtu scénářů.
+vyvážené podle naměřených časů, ne podle počtu scénářů. Štítky `1/N` v názvech jobů si `Build`
+dopočítá sám, takže přidání shardu nevynutí ruční přečíslování ostatních.
 
 **Deploy** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) se spouští na git tagy — nasadí produkci na Fly.io a pushne Docker image do ghcr.io.
 
