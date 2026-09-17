@@ -69,9 +69,14 @@ export const dashboardDayWrapper = style({
 })
 
 /**
- * Přechod podbarvení sdílený obalem lekce a jejím tělem. Sdílí se schválně: v mřížce jsou to
- * dvě poloviny jedné plochy, takže při potlačeném pohybu nesmí jedna přejíždět a druhá skákat,
- * a ani doba trvání se nesmí rozejít.
+ * Přechod podbarvení na hoveru, sdílený obalem řádku (`dashboardDayItem`) a tělem lekce
+ * (`lectureBody`). Každý ho ukazuje jinde — obal na řádcích bez těla („Volno", chyba načtení),
+ * tělo na řádcích s lekcí — ale je to tentýž hover téže mřížky, takže se doba trvání ani
+ * výjimka pro potlačený pohyb nesmí rozejít.
+ *
+ * Pozor, `lectureHeader` schválně přechod NEMÁ (viz komentář u něj): při zvýraznění se tak
+ * pruh přebarví skokem, zatímco tělo pod ním přejede. Je to vědomá cena za to, že text
+ * v pruhu nikdy neprojde přes nečitelný mezistav.
  */
 const backgroundTransition = {
     transition: "background-color 0.15s ease-in-out",

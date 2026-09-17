@@ -38,9 +38,11 @@ const Login: React.FC = () => {
         // - v idealnim svete zde bude jen: authContextLogin(form.values)
         const username = usernameField.current ? usernameField.current.value : form.values.username
         const valuesCurrent: AuthorizationType = {
-            // Zadne .toLowerCase() ani .trim() tady: kapitalizaci od mobilnich klavesnic
-            // (ktere ji delaji i pres autoCapitalize="none") resi normalizace na serveru,
-            // v api/tokens.py. Lowercase na klientovi by nic nepridal (na username v tokenu
+            // Zadne .toLowerCase() tady: kapitalizaci od mobilnich klavesnic (ktere ji delaji
+            // i pres autoCapitalize="none") resi normalizace na serveru, v api/tokens.py.
+            // Ta ale resi VYHRADNE velikost pismen - okrajove mezery neorezava ani klient,
+            // ani server, takze vlozene jmeno s mezerou skonci na obycejne 401.
+            // Lowercase na klientovi by nic nepridal (na username v tokenu
             // ani v UI vliv nema, claim se bere z `user.username`, tedy z DB) a jednu vec by
             // aktivne rozbil: kdyz v DB existuji dve jmena lisici se jen velikosti pismen,
             // server zamerne necha napsanou hodnotu byt a rozhodne PRESNA shoda - a tu by uz

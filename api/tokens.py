@@ -37,9 +37,10 @@ class MyTokenObtainSlidingSerializer(TokenObtainSlidingSerializer):
         Browsable API a skripty, kde se jméno nepíše na dotykové klávesnici.
 
         Heslo v plaintextu drží pod tímhle voláním hned několik rámců (`attrs` tady,
-        `authenticate_kwargs` v simplejwt, `data`/`value` v DRF). Django je do svého error
-        reportu nedostane - `ADMINS` ani `handler500` nastavené nejsou, takže žádný nevzniká -
-        a do Sentry je nepustí `EventScrubber(recursive=True)` v `up/settings/production.py`.
+        `authenticate_kwargs` v simplejwt, `data`/`value` v DRF). Do Django error reportu se
+        nedostane - `ADMINS` ani `handler500` nastavené nejsou, takže žádný nevzniká. Sentry
+        ale lokální proměnné rámců posílá (`include_local_variables` má default `True`) a jeho
+        výchozí scrubber rozhoduje podle JMÉNA klíče, takže tahle jména mu projdou.
 
         Cena je jeden dotaz navíc na každý pokus o přihlášení, včetně neúspěšných:
         `__iexact` se překládá na `UPPER("username") = UPPER(%s)`, na což index nesedí,

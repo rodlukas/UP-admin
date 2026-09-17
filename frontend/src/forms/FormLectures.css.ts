@@ -75,16 +75,6 @@ export const nativeDateTimeTrigger = style({
     },
 })
 
-export const formGroup = style({})
-
-globalStyle(`${formGroup} > div:not(:last-child)`, {
-    "@media": {
-        "(max-width: 575.98px)": {
-            marginBottom: "1rem",
-        },
-    },
-})
-
 /**
  * Sekce lekce v plochém jazyce aplikace (bez karet) — shodně s `formSection` ve FormBase.
  * Sousední sekce dělí vlasová linka + bílé místo, ne rámeček.

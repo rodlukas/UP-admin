@@ -107,6 +107,14 @@ export function initAnalytics(
             return
         }
         lastPagePath = pagePath
-        ReactGA.send({ hitType: "pageview", page_path: pagePath })
+        // `location` se musí poslat výslovně: bez něj si `page_location` doplní gtag sám
+        // z `document.location.href`, tedy VČETNĚ přechodného parametru — a GA4 reportuje
+        // podle `page_location`, ne podle `page_path`. Samotné odfiltrování výš by tedy
+        // interní id lekce z GA4 nedostalo (`react-ga4` mapuje `location` → `page_location`).
+        ReactGA.send({
+            hitType: "pageview",
+            page_path: pagePath,
+            location: globalThis.location.origin + pagePath,
+        })
     })
 }

@@ -17,9 +17,15 @@ async function setupAnalytics() {
     const { initAnalytics } = await import("./analytics")
 
     const sent: string[] = []
+    const sentLocations: string[] = []
     vi.spyOn(ReactGA, "initialize").mockImplementation(() => undefined)
     vi.spyOn(ReactGA, "send").mockImplementation((payload) => {
-        sent.push((payload as { page_path: string }).page_path)
+        const { page_path: pagePath, location } = payload as {
+            page_path: string
+            location: string
+        }
+        sent.push(pagePath)
+        sentLocations.push(location)
     })
 
     let resolved: (() => void) | undefined
@@ -32,11 +38,16 @@ async function setupAnalytics() {
         const [pathname, search] = url.split("?")
         Object.defineProperty(globalThis, "location", {
             configurable: true,
-            value: { pathname, search: search === undefined ? "" : `?${search}`, hostname: "x" },
+            value: {
+                pathname,
+                search: search === undefined ? "" : `?${search}`,
+                hostname: "x",
+                origin: "https://x",
+            },
         })
         resolved?.()
     }
-    return { sent, visit }
+    return { sent, sentLocations, visit }
 }
 
 afterEach(() => {
@@ -87,4 +98,14 @@ test("a real page change is still reported", async () => {
     visit("/diar/2026/9/14")
 
     expect(sent).toEqual(["/prehled", "/diar/2026/9/14"])
+})
+
+test("the reported page_location is cleaned too, not just page_path", async () => {
+    const { sentLocations, visit } = await setupAnalytics()
+
+    // `page_location` je to, podle čeho GA4 reportuje. Kdyby se neposlalo, doplní si ho gtag
+    // z `document.location.href` i s `?lecture=`, a odfiltrování výš by bylo k ničemu.
+    visit("/diar/2026/9/14?lecture=88")
+
+    expect(sentLocations).toEqual(["https://x/diar/2026/9/14"])
 })

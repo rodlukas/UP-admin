@@ -7,7 +7,6 @@ Rozšiřuje základní konfiguraci ze souboru base.py.
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
-from sentry_sdk.scrubber import EventScrubber
 import os
 
 from .base import *
@@ -22,13 +21,6 @@ if SENTRY_DSN:
         environment=ENVIRONMENT,
         integrations=[DjangoIntegration()],
         release="%GIT_COMMIT",
-        # SDK posila lokalni promenne ramcu (`include_local_variables` ma default True)
-        # a vychozi scrubber nahrazuje jen klice z denylistu na PRVNI urovni. Heslo
-        # z prihlaseni ale lezi vnorene - `attrs` v serializeru (api/tokens.py),
-        # `authenticate_kwargs` v simplejwt, `data`/`value` v DRF - a tahle jmena
-        # v denylistu nejsou, takze by heslo odeslo v plaintextu. Naměřeno na
-        # `EventScrubber.scrub_event()`: bez `recursive` zbydou 2 vyskyty, s nim 0.
-        event_scrubber=EventScrubber(recursive=True),
     )
     # gunicorn propaguje access log do rootu, odkud ho SDK bere jako breadcrumbs - radky
     # o stahovani statiky by pri stropu 100 breadcrumbu vytlacily to, co uzivatel delal

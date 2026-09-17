@@ -23,7 +23,7 @@ import Diary from "./Diary"
  *
  * Rozdělení: pondělí drží lekci 89, úterý lekci 88 (cílovou), zbytek týdne je volný.
  */
-function useLecturesByDay(): void {
+function mockLecturesByDay(): void {
     const monday = getMonday(new Date())
     const byDate: Record<string, unknown[]> = {
         [toISODate(monday)]: [data.lectures[1]],
@@ -95,7 +95,7 @@ async function setupDiary(path: string, attendanceStatesReady?: Promise<void>) {
 test("the ?lecture= param is cleared when no day in the week holds that lecture", async () => {
     // Mřížka kreslí jen pondělí až pátek, ale "Nejbližší lekce" nabízejí i lekci o víkendu —
     // tam by parametr neuklidil žádný sloupec a visel by v URL dál (viz Diary.tsx).
-    useLecturesByDay()
+    mockLecturesByDay()
     const router = await setupDiary("/?lecture=999")
     await screen.findAllByTestId("lecture")
 
@@ -108,7 +108,7 @@ test("a lecture that is in the week still gets highlighted before the param is c
     // Pojistka proti tomu, aby úklid v `Diary` nesebral parametr sloupci, který lekci má, ale
     // čeká ještě na stavy docházky — proto se maže podle „lekce v týdnu není", ne podle
     // samotného doběhnutí týdne.
-    useLecturesByDay()
+    mockLecturesByDay()
     let releaseAttendanceStates!: () => void
     const attendanceStatesReady = new Promise<void>((resolve) => {
         releaseAttendanceStates = resolve
@@ -129,7 +129,7 @@ test("a lecture that is in the week still gets highlighted before the param is c
     })
 
     const items = await screen.findAllByTestId("lecture")
-    // právě jedna lekce 88, právě jeden sloupec ji má — viz `useLecturesByDay`
+    // právě jedna lekce 88, právě jeden sloupec ji má — viz `mockLecturesByDay`
     const withTargetId = items.filter((item) => item.id === "lecture-88")
     expect(withTargetId).toHaveLength(1)
     expect(withTargetId[0]).toHaveClass(dayStyles.lectureHighlighted)
