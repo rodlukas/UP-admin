@@ -17,10 +17,19 @@ def get_jwt_from_local_storage(driver):
 
 
 def _login_request_running(driver):
-    # SubmitButton hlasi rozpracovany pozadavek pres aria-busy (Login.tsx mu predava
-    # isLoading z AuthContextu); po odhlaseni tlacitko v DOM neni
-    buttons = driver.find_elements(By.CSS_SELECTOR, "[data-qa=button_submit_login]")
-    return bool(buttons) and buttons[0].get_attribute("aria-busy") == "true"
+    """Bezi prave ted prihlasovaci pozadavek?
+
+    SubmitButton ho hlasi pres `aria-busy` (Login.tsx mu predava `isLoading`
+    z AuthContextu). Ptame se jednim dotazem uvnitr prohlizece, ne pres nalezeny
+    element: prave v okamziku, na ktery se tady ceka, React prihlasovaci formular
+    odmountuje, takze mezi `find_elements` a ctenim atributu by reference na tlacitko
+    stihla zeschnout a cekani by spadlo na StaleElementReferenceException. Kdyz
+    tlacitko v DOM neni, zadny pozadavek nebezi.
+    """
+    return driver.execute_script("""
+        const button = document.querySelector("[data-qa=button_submit_login]");
+        return button !== null && button.getAttribute("aria-busy") === "true";
+        """)
 
 
 def wait_login_settled(driver):
