@@ -129,7 +129,7 @@ jobs:
                   retention-days: 1
 
     test_backend:
-        name: "Test: backend & API"
+        name: "Test: Backend & API"
         needs: build
         runs-on: ubuntu-26.04
 

@@ -216,7 +216,7 @@ Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, kter�
 ### Build a nasazení
 
 **CI** ([`.github/workflows/test.yml`](.github/workflows/test.yml)) se spouští na každý push/PR do
-`master` a běží ve třech fázích: **`Build` → (`Test: backend & API` ‖ `Test: UI 1/N`…) → `Deploy`**.
+`master` a běží ve třech fázích: **`Build` → (`Test: Backend & API` ‖ `Test: UI 1/N`…) → `Deploy`**.
 
 Rozdělení je dané tím, že frontend build musí předcházet UI testům a deploy je musí následovat.
 Frontend se díky tomu buildí jednou (a jen jednou nahraje mapy do Sentry) a UI stage jede paralelně.
@@ -225,7 +225,7 @@ Frontend se díky tomu buildí jednou (a jen jednou nahraje mapy do Sentry) a UI
    Package Registry (token `GPR_TOKEN`), frontend build, frontend testy (typy + lint + vitest),
    Black, mypy, `collectstatic`. Výsledek (`frontend/build`, `staticfiles`, vygenerovaná šablona)
    jde jako artefakt `build-output` do ostatních jobů.
-2. **`Test: backend & API`** — Django deployment checklist, unit testy a E2E API testy.
+2. **`Test: Backend & API`** — Django deployment checklist, unit testy a E2E API testy.
 3. **`Test: UI 1/N`** — E2E UI testy (behave + Selenium/Firefox) rozdělené na shardy.
 4. **`deploy`** — nasadí testing verzi na Fly.io (přeskočí pro Dependabot). Python nepotřebuje,
    staticfiles má z artefaktu.
