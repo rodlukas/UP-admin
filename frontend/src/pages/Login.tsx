@@ -37,6 +37,9 @@ const Login: React.FC = () => {
         // - nefunkcni autocomplete v nekterych prohlizecich (predevsim mobily)
         // - v idealnim svete zde bude jen: authContextLogin(form.values)
         const valuesCurrent: AuthorizationType = {
+            // Zadny .toLowerCase() tady: velikost pismen srovnava az server
+            // (`MyTokenObtainSlidingSerializer.validate` v api/tokens.py) a potrebuje k tomu
+            // presny napsany retezec - proc, je u te metody.
             username: usernameField.current ? usernameField.current.value : form.values.username,
             password: passwordField.current ? passwordField.current.value : form.values.password,
         }

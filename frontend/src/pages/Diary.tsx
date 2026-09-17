@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Button, Container, Group, Tooltip } from "@mantine/core"
 import { faChevronLeft, faChevronRight } from "@rodlukas/fontawesome-pro-solid-svg-icons"
-import { Link, useNavigate, useParams } from "@tanstack/react-router"
+import { Link, useNavigate, useParams, useSearch } from "@tanstack/react-router"
 import { assignInlineVars } from "@vanilla-extract/dynamic"
 import classNames from "classnames"
 import * as React from "react"
@@ -12,6 +12,7 @@ import APP_URLS from "../APP_URLS"
 import DashboardDay from "../components/DashboardDay"
 import Heading from "../components/Heading"
 import ModalLecturesWizard from "../forms/ModalLecturesWizard"
+import { clearLectureHighlight } from "../global/clearLectureHighlight"
 import {
     addDays,
     DAYS_IN_WEEK,
@@ -114,6 +115,48 @@ const Diary: React.FC = () => {
 
     const isWeekSettled =
         delayedWeekKey === weekKey && !dayResults.some((result) => result.isLoading)
+
+    /**
+     * Zvýrazňovací parametr `?lecture=` uklízí sloupec, který lekci našel (`DashboardDay`).
+     * Když ji ale nemá nikdo, neuklidí ho nikdo a visí v URL dál — mřížka kreslí jen pondělí
+     * až pátek (`WORK_DAYS_COUNT`), zatímco "Nejbližší lekce" nabízejí i lekci o víkendu.
+     * Tohle je jediné místo, které vidí celý týden, takže úklid patří sem.
+     *
+     * Podmínka je schválně "lekce není v CELÉM týdnu", ne "týden doběhl": sloupec, který
+     * lekci má, čeká ještě na stavy docházky, takže úklid podle samotného `isWeekSettled`
+     * by mu parametr stihl vzít pod rukama a zvýraznění by se nikdy nespustilo.
+     *
+     * A navíc `isWeekLoaded`, protože `isWeekSettled` na tohle nestačí: offline je dotaz
+     * `pending`/`paused`, tedy ani `isLoading`, ani chyba (totéž pravidlo jako u `freeDays`
+     * níž, v `DashboardDay` a v `UpcomingLectures`). Bez něj by se parametr smazal dřív, než
+     * data vůbec dorazí — uživatel klikne v Nejbližších lekcích bez signálu, síť naskočí
+     * o kus dál a lekce se sice načte, ale nikam se nedoroluje a nezvýrazní.
+     *
+     * Plyne z toho, že **selhaný dotaz kteréhokoliv dne úklid zablokuje natrvalo** (chybě
+     * React Query data nedoplní, takže `data` zůstane `undefined`). Je to záměr, ne
+     * opomenutí: o dni, který se nenačetl, nevíme, jestli lekci má, a smazat parametr by
+     * znamenalo tvrdit, že ne. Cena je jen ta, že v URL zůstane viset id lekce — do dalšího
+     * týdne ho uživatel neodnese, odkazy na sousední týdny search parametr neposílají.
+     */
+    const highlightLectureId = useSearch({ strict: false }).lecture
+    const isWeekLoaded = dayResults.every((result) => result.data !== undefined)
+    const isHighlightedLectureInWeek =
+        highlightLectureId != null &&
+        dayResults.some((result) =>
+            result.data?.some((lecture) => lecture.id === highlightLectureId),
+        )
+
+    React.useEffect(() => {
+        if (
+            highlightLectureId == null ||
+            !isWeekSettled ||
+            !isWeekLoaded ||
+            isHighlightedLectureInWeek
+        ) {
+            return
+        }
+        clearLectureHighlight(navigate)
+    }, [highlightLectureId, isWeekSettled, isWeekLoaded, isHighlightedLectureInWeek, navigate])
 
     /**
      * Indexy dnů (0 = pondělí … 4 = pátek), které se **opravdu načetly a jsou prázdné**.
@@ -330,7 +373,11 @@ const Diary: React.FC = () => {
                         // s klíčem podle data by se při každém prokliku odmountovala
                         // a znovu namountovala a debounce by nic neznamenal
                         <div key={new Date(day).getDay()} className={styles.weekDayCol}>
-                            <DashboardDay date={day} source="diary" />
+                            <DashboardDay
+                                date={day}
+                                source="diary"
+                                highlightLectureId={highlightLectureId}
+                            />
                         </div>
                     ))}
                 </div>

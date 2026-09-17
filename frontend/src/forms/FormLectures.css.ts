@@ -1,7 +1,31 @@
 import { globalStyle, style } from "@vanilla-extract/css"
 
+import { GRID_BREAKPOINT_SM } from "../global/constants"
 import { statusNoticeInfo, statusNoticeWarning } from "../global/surfaces.css"
 import { vars } from "../theme/tokens"
+
+/**
+ * Obal checkboxu platby. Centruje se, jen dokud jeho sloupec stojí vedle ostatních
+ * (`Grid.Col span={{ sm: 2 }}`) — pod `GRID_BREAKPOINT_SM` se sloupce zabalí pod sebe na celou
+ * šířku a vycentrovaný checkbox by se odtrhl od svého popisku, na rozdíl od zarovnání vlevo
+ * jako u ostatních polí.
+ */
+export const attendancePaidGroup = style({
+    "@media": {
+        [`(min-width: ${GRID_BREAKPOINT_SM})`]: {
+            selectors: {
+                // `&&` zdvojuje třídu, a tedy specificitu (0,2,0): `Group` si bere
+                // `justify-content` z vlastní třídy přes `--group-justify`, kterou nastavuje
+                // inline, takže jednotřídové pravidlo by na ni nedosáhlo. Zdvojení sedí na
+                // prvku samotném, takže na rozdíl od potomkovského selektoru nezávisí ani na
+                // vnitřní třídě Mantine, ani na tom, že `Group` zůstane přímým potomkem.
+                "&&": {
+                    justifyContent: "center",
+                },
+            },
+        },
+    },
+})
 
 export const prepaidLectureCnt = style({
     display: "inline-block",
@@ -48,25 +72,6 @@ export const nativeDateTimeTrigger = style({
     color: "inherit",
     ":disabled": {
         cursor: "not-allowed",
-    },
-})
-
-export const formGroup = style({})
-
-globalStyle(`${formGroup} > div:not(:last-child)`, {
-    "@media": {
-        "(max-width: 575.98px)": {
-            marginBottom: "1rem",
-        },
-    },
-})
-
-export const attendancePaidCol = style({
-    textAlign: "center",
-    "@media": {
-        "(max-width: 575.98px)": {
-            textAlign: "left",
-        },
     },
 })
 

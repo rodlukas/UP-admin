@@ -46,6 +46,28 @@ export type AnalyticsSource =
 export type EventParams = Record<string, string | number | boolean>
 
 let initialized = false
+let lastPagePath: string | undefined
+
+/**
+ * Search parametry, které neidentifikují stránku, ale nesou jednorázový pokyn pro UI —
+ * do `page_path` nepatří. `lecture` říká diáři, na kterou lekci se má zarolovat
+ * (`UpcomingLectures.tsx`), a ten si ho hned po použití z URL smaže
+ * (`global/clearLectureHighlight.ts`).
+ * Bez tohohle odfiltrování by každá lekce vyrobila v GA4 vlastní URL (a poslala do ní
+ * interní id) a jeden proklik by se napočítal dvakrát: jednou s parametrem, podruhé po
+ * jeho úklidu. Dedupe níž to sám neodchytí — porovnává celou cestu, a ta se liší.
+ */
+const TRANSIENT_SEARCH_PARAMS = ["lecture"]
+
+/** Cesta stránky pro GA4 — bez parametrů, které jsou jen pokynem pro UI. */
+function getPagePath(): string {
+    const params = new URLSearchParams(globalThis.location.search)
+    for (const param of TRANSIENT_SEARCH_PARAMS) {
+        params.delete(param)
+    }
+    const search = params.toString()
+    return globalThis.location.pathname + (search === "" ? "" : `?${search}`)
+}
 
 /** Odešle GA4 custom event. Na neprodukčních prostředích je volání ignorováno (ReactGA není inicializováno). */
 export function trackEvent(name: EventName, params?: EventParams): void {
@@ -74,10 +96,25 @@ export function initAnalytics(
         gaOptions: { send_page_view: false, cookie_domain: globalThis.location.hostname },
     })
     initialized = true
-    onRouteResolved(() =>
+    onRouteResolved(() => {
+        const pagePath = getPagePath()
+        // Proklik z „Nejbližší lekce" vyrobí DVĚ vyřešení trasy na jedné stránce: router
+        // nejdřív vyřeší adresu s `?lecture=`, a teprve po doběhnutí dotazu si ji diář
+        // uklidí (`clearLectureHighlight`). Po odfiltrování výše mají obě shodnou cestu, takže
+        // je tenhle dedupe sloučí do jednoho zobrazení — bez něj by se každý takový proklik
+        // počítal dvakrát.
+        if (pagePath === lastPagePath) {
+            return
+        }
+        lastPagePath = pagePath
+        // `location` se musí poslat výslovně: bez něj si `page_location` doplní gtag sám
+        // z `document.location.href`, tedy VČETNĚ přechodného parametru — a GA4 reportuje
+        // podle `page_location`, ne podle `page_path`. Samotné odfiltrování výš by tedy
+        // interní id lekce z GA4 nedostalo (`react-ga4` mapuje `location` → `page_location`).
         ReactGA.send({
             hitType: "pageview",
-            page_path: globalThis.location.pathname + globalThis.location.search,
-        }),
-    )
+            page_path: pagePath,
+            location: globalThis.location.origin + pagePath,
+        })
+    })
 }

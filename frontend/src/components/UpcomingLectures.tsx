@@ -87,6 +87,7 @@ const UpcomingLectures: React.FC = () => {
                                 month: String(start.getMonth() + 1),
                                 day: String(start.getDate()),
                             }}
+                            search={{ lecture: lecture.id }}
                             className={classNames(dayStyles.lectureHeader, styles.itemLink)}
                             style={assignInlineVars(lectureStyles.lectureVars, {
                                 courseColor: lecture.course.color,

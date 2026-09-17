@@ -1,8 +1,6 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
@@ -93,7 +91,7 @@ def step_impl(context):
     # pockej na pridani stavu ucasti
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
     # (stale reference) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException,),
@@ -109,7 +107,7 @@ def step_impl(context):
     # pockej na update stavu ucasti
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
     # (stale reference) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException,),
@@ -123,7 +121,7 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na smazani stavu ucasti (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: attendancestates_cnt(driver) < context.old_attendancestates_cnt
     )
     # over, ze stav ucasti opravdu neni nalezen
@@ -160,13 +158,8 @@ def step_impl(context, name):
 
 @then("the attendance state is not added")
 def step_impl(context):
-    try:
-        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=form_settings]"))
-        )
-        form_attendancestate_visible = False
-    except TimeoutException:
-        form_attendancestate_visible = True
+    # formular musi odmitnuti signalizovat a zustat otevreny
+    form_attendancestate_visible = helpers.wait_form_rejected(context.browser, "form_settings")
     assert form_attendancestate_visible
     assert attendancestates_cnt(context.browser) == context.old_attendancestates_cnt
 

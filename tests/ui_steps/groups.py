@@ -1,9 +1,7 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
@@ -23,9 +21,7 @@ def find_group_with_context(context):
 
 
 def wait_form_visible(driver):
-    WebDriverWait(driver, helpers.WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=form_group]"))
-    )
+    helpers.wait_form_ready(driver, "form_group")
 
 
 def insert_to_form(context, verify_current_data=False):
@@ -110,7 +106,7 @@ def step_impl(context):
     # pockej na pridani skupiny
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
     # (stale reference) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException,),
@@ -128,7 +124,7 @@ def step_impl(context):
     # pockej na update skupiny
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
     # (stale reference) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException,),
@@ -142,7 +138,7 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na smazani skupiny (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: groups_cnt(driver) < context.old_groups_cnt
     )
     # over, ze skupina opravdu neni nalezena
@@ -177,24 +173,8 @@ def step_impl(context, name):
 
 @then("the group is not added")
 def step_impl(context):
-    # zjisti, zda se objevi alert (skupina se nepridala)
-    try:
-        helpers.wait_for_alert_and_accept(context.browser)
-    except TimeoutException:
-        # alert se neobjevil, zmizel formular?
-        try:
-            WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=form_group]"))
-            )
-        except TimeoutException:
-            # formular nezmizel
-            form_group_visible = True
-        else:
-            # formular zmizel
-            form_group_visible = False
-    else:
-        # alert se objevil, takze formular je stale videt
-        form_group_visible = True
+    # formular musi odmitnuti signalizovat a zustat otevreny
+    form_group_visible = helpers.wait_form_rejected(context.browser, "form_group")
     # pokud nedoslo k problemu pri zadavani clenu do selectu, vse prover; pokud
     # k problemu doslo, skupina se pridala, ale to neni chyba - prida se bez neexistujicich clenu
     if context.member_select_success:
