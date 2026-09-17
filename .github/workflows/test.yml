@@ -15,10 +15,16 @@ env:
     SECRET_KEY: ${{ secrets.SECRET_KEY }}
     GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
 
+# Beh je rozdeleny do tri fazi, protoze frontend build musi predchazet UI testum
+# a deploy je musi nasledovat: build -> (test_backend | test_ui x N) -> deploy.
+# Frontend se tim buildi jen jednou (a jen jednou nahraje mapy do Sentry), UI stage
+# jede paralelne. Rozdeleni UI stage na shardy drzi .github/ui-shards.json.
 jobs:
-    build_and_test:
-        name: Build & Test
+    build:
+        name: Build
         runs-on: ubuntu-26.04
+        outputs:
+            ui_shards: ${{ steps.shards.outputs.list }}
 
         steps:
             # priprav prostredi
@@ -38,6 +44,13 @@ jobs:
               with:
                   python-version: "3.14"
                   cache: "pipenv"
+
+            # padni driv, nez se cokoliv zacne buildit
+            - name: 🔍 Verify UI shards cover every feature file
+              run: ./scripts/shell/ci/check_ui_shards.sh
+            - name: 📋 Read UI shards
+              id: shards
+              run: echo "list=$(jq -c . .github/ui-shards.json)" >> "$GITHUB_OUTPUT"
 
             # spust skripty pro upravu souboru
             - name: 📝 Create .npmrc file
@@ -89,16 +102,37 @@ jobs:
             - name: 🔍 Python - run tests
               run: pipenv run mypy .
 
-            # PostgreSQL
-            # - build custom PSQL container image with CZ locale
-            # - and then start the PSQL service (tcp port 5432 on service container is mapped to the host)
-            # https://github.com/orgs/community/discussions/24923
-            - name: 📦 PostgreSQL - container build & run
-              run: source scripts/shell/postgresql_docker.sh
+            # collectstatic nepotrebuje DB, takze patri sem - deploy si pak vystaci se
+            # stazenym artefaktem a nemusi vubec instalovat Python zavislosti
+            - name: 🔧 Python - collect staticfiles
+              run: DEPLOYED=True pipenv run python manage.py collectstatic --noinput
 
-            # priprav Django aplikaci
-            - name: 🔧 Python - build Django app (staticfiles & migration)
-              run: ./scripts/shell/release_tasks.sh
+            # Vysledek buildu si stahuji testovaci joby i deploy: frontend/build kvuli
+            # STATICFILES_DIRS (production.py pod MANUAL_PRODUCTION), vygenerovana sablona
+            # je shell SPA a staticfiles jde rovnou do image.
+            - name: ⬆️ Upload build output
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build-output
+                  path: |
+                      frontend/build
+                      staticfiles
+                      admin/templates/react-autogenerate.html
+                  if-no-files-found: error
+                  retention-days: 1
+
+    test_backend:
+        name: Test - backend & API
+        needs: build
+        runs-on: ubuntu-26.04
+
+        steps:
+            - name: ☁️ Checkout repo
+              uses: actions/checkout@v7
+              with:
+                  ref: ${{ github.event.pull_request.head.sha || github.sha }}
+            - name: 🔧 Prepare test environment
+              uses: ./.github/actions/test-env
 
             # spust Django deployment checklist
             - name: 🔍 Python - run Django deployment checklist
@@ -108,23 +142,16 @@ jobs:
 
             - name: 🐞 Debug env log
               run: |
-                  node --version
-                  npm --version
                   python --version
                   pipenv --version
-                  firefox --version
-                  geckodriver --version
                   docker exec postgresql_cz psql -U postgres -c "SELECT datcollate, datctype FROM pg_database WHERE datname = current_database();"
                   docker exec postgresql_cz psql --version
-                  docker exec postgresql_cz pg_config --version
 
             # proved testy, spocitej pokryti kodu a posli ho do cloudu
             - name: 🔍 Python - run tests
               run: pipenv run coverage run -a manage.py test
             - name: 🔍 Run E2E API tests
               run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
-            - name: 🔍 Run E2E UI tests
-              run: pipenv run coverage run -a manage.py behave --stage=ui --format=progress3
             - name: 📝 Generate test reports
               run: |
                   pipenv run coverage report
@@ -134,7 +161,78 @@ jobs:
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   files: coverage.xml
+                  # kazdy job posila vlastni report, Codecov si je slouci - bez rozlisujiciho
+                  # jmena by se v UI prekryvaly
+                  name: backend
                   fail_ci_if_error: false
+
+    test_ui:
+        name: Test - E2E UI
+        needs: build
+        runs-on: ubuntu-26.04
+        strategy:
+            # jeden padajici shard nesmi sebrat vysledek ostatnich
+            fail-fast: false
+            matrix:
+                shard: ${{ fromJSON(needs.build.outputs.ui_shards) }}
+
+        steps:
+            - name: ☁️ Checkout repo
+              uses: actions/checkout@v7
+              with:
+                  ref: ${{ github.event.pull_request.head.sha || github.sha }}
+            - name: 🔧 Prepare test environment
+              uses: ./.github/actions/test-env
+
+            - name: 🐞 Debug env log
+              run: |
+                  firefox --version
+                  geckodriver --version
+
+            # shard jde pres env, ne interpolaci do shellu - hodnota se tim nedostane
+            # do skriptu jako kod
+            - name: 🔍 Run E2E UI tests
+              env:
+                  SHARD: ${{ matrix.shard }}
+              run: |
+                  features=""
+                  for feature in $SHARD; do
+                      features="$features tests/features/$feature.feature"
+                  done
+                  pipenv run coverage run -a manage.py behave --stage=ui --format=progress3 $features
+            - name: 📝 Generate test reports
+              run: |
+                  pipenv run coverage report
+                  pipenv run coverage xml
+            - name: ☁️ Upload code coverage
+              uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  files: coverage.xml
+                  # nazev musi byt unikatni i mezi shardy, jinak si reporty prepisou
+                  name: ui-${{ strategy.job-index }}
+                  fail_ci_if_error: false
+
+    deploy:
+        name: Deploy to test Fly.io
+        needs: [test_backend, test_ui]
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        runs-on: ubuntu-26.04
+
+        steps:
+            - name: ☁️ Checkout repo
+              uses: actions/checkout@v7
+              with:
+                  ref: ${{ github.event.pull_request.head.sha || github.sha }}
+            - name: ⬇️ Download build output
+              uses: actions/download-artifact@v4
+              with:
+                  name: build-output
+
+            # do image jde uz nasubstituovany kod (up/); frontend build i staticfiles
+            # nesou hodnoty dosazene uz v build jobu
+            - name: 📝 Apply string substitution
+              run: ./scripts/shell/ci/string_substitution.sh
 
             # smazani dat z buildu, testovani a dokumentace
             - name: 🧹 Cleanup project folder
@@ -150,7 +248,6 @@ jobs:
 
             # nasazeni testing verze na Fly.io
             - name: 🚀 Deploy to test Fly.io
-              if: ${{ github.actor != 'dependabot[bot]' }}
               run: flyctl deploy --remote-only
               env:
                   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_TEST }}

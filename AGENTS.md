@@ -214,17 +214,34 @@ Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, kter�
 
 ### Build a nasazení
 
-**CI** ([`.github/workflows/test.yml`](.github/workflows/test.yml)) se spouští na každý push/PR do `master`:
-1. Nainstaluje Node 26 + Python 3.14 + závislosti
-2. Vytvoří `.npmrc` pro FontAwesome PRO z private GitHub Package Registry (token `GPR_TOKEN`)
-3. Spustí frontend testy (typy + lint + vitest)
-4. Spustí mypy
-5. Nastartuje PostgreSQL 18 s českou locale v Dockeru
-6. Buildne Django (migrace + staticfiles) přes `scripts/shell/release_tasks.sh`
-7. Django deployment checklist
-8. Django unit testy + E2E API testy + E2E UI testy (behave + Selenium/Firefox)
-9. Nahraje code coverage do Codecov
-10. Nasadí testing verzi na Fly.io (přeskočí pro Dependabot)
+**CI** ([`.github/workflows/test.yml`](.github/workflows/test.yml)) se spouští na každý push/PR do
+`master` a běží ve třech fázích: **`build` → (`test_backend` ‖ `test_ui` × N) → `deploy`**.
+
+Rozdělení je dané tím, že frontend build musí předcházet UI testům a deploy je musí následovat.
+Frontend se díky tomu buildí jednou (a jen jednou nahraje mapy do Sentry) a UI stage jede paralelně.
+
+1. **`build`** — Node 26 + Python 3.14 + závislosti, `.npmrc` pro FontAwesome PRO z private GitHub
+   Package Registry (token `GPR_TOKEN`), frontend build, frontend testy (typy + lint + vitest),
+   Black, mypy, `collectstatic`. Výsledek (`frontend/build`, `staticfiles`, vygenerovaná šablona)
+   jde jako artefakt `build-output` do ostatních jobů.
+2. **`test_backend`** — Django deployment checklist, unit testy a E2E API testy.
+3. **`test_ui`** — E2E UI testy (behave + Selenium/Firefox) rozdělené na shardy.
+4. **`deploy`** — nasadí testing verzi na Fly.io (přeskočí pro Dependabot). Python nepotřebuje,
+   staticfiles má z artefaktu.
+
+Společné nastavení testovacích jobů (Python, závislosti, artefakt, PostgreSQL 18 s českou locale
+v Dockeru, `scripts/shell/release_tasks.sh`) drží composite action
+[`.github/actions/test-env`](.github/actions/test-env/action.yml), ať se nedubluje.
+
+Coverage posílá do Codecova každý testovací job zvlášť pod vlastním `name`; Codecov si reporty sloučí.
+
+**Rozdělení UI stage na shardy** je v [`.github/ui-shards.json`](.github/ui-shards.json) — seznam
+feature souborů na shard. Scénář, který by vypadl ze všech shardů, by se tiše nespustil a nic by
+nezčervenalo, proto na to `build` hned zkraje pouští
+[`scripts/shell/ci/check_ui_shards.sh`](scripts/shell/ci/check_ui_shards.sh): trvá na tom, že
+sjednocení shardů je **přesně** množina souborů v `tests/features` — odhalí zapomenutý nový soubor
+i omylem zdvojený. Po přidání feature souboru ho tedy přidej i do `ui-shards.json`; shardy jsou
+vyvážené podle naměřených časů, ne podle počtu scénářů.
 
 **Deploy** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) se spouští na git tagy — nasadí produkci na Fly.io a pushne Docker image do ghcr.io.
 
