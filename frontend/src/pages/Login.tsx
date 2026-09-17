@@ -36,7 +36,6 @@ const Login: React.FC = () => {
         // workaround kvuli https://github.com/facebook/react/issues/1159
         // - nefunkcni autocomplete v nekterych prohlizecich (predevsim mobily)
         // - v idealnim svete zde bude jen: authContextLogin(form.values)
-        const username = usernameField.current ? usernameField.current.value : form.values.username
         const valuesCurrent: AuthorizationType = {
             // Zadne .toLowerCase() tady: kapitalizaci od mobilnich klavesnic (ktere ji delaji
             // i pres autoCapitalize="none") resi normalizace na serveru, v api/tokens.py.
@@ -47,7 +46,7 @@ const Login: React.FC = () => {
             // aktivne rozbil: kdyz v DB existuji dve jmena lisici se jen velikosti pismen,
             // server zamerne necha napsanou hodnotu byt a rozhodne PRESNA shoda - a tu by uz
             // nemel z ceho udelat, protoze presny retezec zahodime driv, nez k nemu dorazi.
-            username,
+            username: usernameField.current ? usernameField.current.value : form.values.username,
             password: passwordField.current ? passwordField.current.value : form.values.password,
         }
         void authContextLogin(valuesCurrent)
