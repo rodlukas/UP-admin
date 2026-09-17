@@ -71,12 +71,6 @@ konkrétní sady tedy stačí tyto příkazy:
 > nainstalovaný a upravit v [souboru .env](../.env) řádek s `TESTS_BROWSER` na:
 > `TESTS_BROWSER=chrome`. Odpovídající chromedriver si Selenium Manager stáhne samo, ručně ho
 > instalovat netřeba.
->
-> Pole data a času lekce jsou nativní `<input type="date">` / `<input type="time">` a hodnota se
-> do nich **nepíše přes `send_keys`** — prohlížeč je plní po segmentech v pořadí podle své locale,
-> takže ISO řetězec z feature souboru v Chrome skončí rozhozený (`2020-07-05` → rok 0507). Plní se
-> proto přes `helpers.set_native_datetime`, které hodnotu nastaví přímo a nativním setterem, aby
-> o změně věděl i React.
 
 Testování lze ještě dále zúžit na **konkrétní testovanou část či operaci (označené tzv. _tagem_)** z
 dané sady testů (_stage_). Pro jednoduchost jsou _tagy_ pro testované části totožné s názvy souborů
