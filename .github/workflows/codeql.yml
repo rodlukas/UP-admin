@@ -9,10 +9,18 @@ on:
         # At 10:00 on day-of-month 1.
         - cron: "0 10 1 * *"
 
+concurrency:
+    group: ci-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
 jobs:
     analyze:
         name: Analyze
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         permissions:
             actions: read
             contents: read

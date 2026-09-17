@@ -4,6 +4,15 @@ on:
     push:
         tags: ["*"]
 
+# Deploye se RADI DO FRONTY, nikdy se nerusi -- zruseni uprostred `flyctl deploy`
+# necha produkci rozjetou mezi dvema verzemi.
+concurrency:
+    group: deploy
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+
 env:
     ENVIRONMENT: CI-deploy
     SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -19,6 +28,11 @@ jobs:
     build_and_deploy:
         name: Build & Deploy
         runs-on: ubuntu-26.04
+        timeout-minutes: 40
+
+        environment:
+            name: production
+            url: https://uspesnyprvnacek.fly.dev/
 
         # github token opravneni pro upload k releasum/do container registru
         permissions:
