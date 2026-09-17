@@ -44,7 +44,11 @@ def before_scenario(context, scenario):
 def after_scenario(context, scenario):
     # odhlaseni - je potreba, jinak testy obcas neprojdou
     context.browser.execute_script("window.localStorage.clear();")
-    # reload resetuje SPA (in-memory TanStack Query cache) - kazdy scenar bezi
-    # ve vlastni DB transakci s novymi radky/ID, stale nacachovana data z minuleho
-    # scenare by vedla na requesty s neexistujicimi ID (napr. PUT pri editaci)
-    context.browser.refresh()
+    # Odnaviguj z aplikace pryc. Po kazde uspesne mutaci invaliduje `mutationCache.onSuccess`
+    # (queryClient.tsx) vsechny queries, takze scenar konci davkou refetchu - a `retry: 1`
+    # jim navic da druhy pokus. Kdyby stranka zustala namountovana, tyhle requesty by dobehly
+    # az do live serveru, ktery uz behave-django boura, a teardown by spadl na
+    # "database couldn't be flushed". Prazdna stranka je proti reloadu aplikace zlomkovy
+    # naklad a SPA (i s in-memory cache TanStack Query) resetuje stejne dobre - dalsi scenar
+    # si ji nacte znovu prihlasenim pres `browser.get(base_url)`.
+    context.browser.get("about:blank")

@@ -1,8 +1,6 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
@@ -36,9 +34,7 @@ def find_client_with_context(context):
 
 
 def wait_form_visible(driver):
-    WebDriverWait(driver, helpers.WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=form_client]"))
-    )
+    helpers.wait_form_ready(driver, "form_client")
 
 
 def insert_to_form(context, verify_current_data=False):
@@ -107,7 +103,7 @@ def step_impl(context):
     # pockej na pridani klienta
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
     # (stale reference) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException,),
@@ -123,7 +119,7 @@ def step_impl(context):
     # pockej na update klientu
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
     # (stale reference) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException,),
@@ -137,7 +133,7 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na smazani klienta (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: clients_cnt(driver) < context.old_clients_cnt
     )
     # over, ze klient opravdu neni nalezen
@@ -174,14 +170,8 @@ def step_impl(context, full_name):
 
 @then("the client is not added")
 def step_impl(context):
-    # zjisti, zda stale sviti formular
-    try:
-        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=form_client]"))
-        )
-        form_client_visible = False
-    except TimeoutException:
-        form_client_visible = True
+    # formular musi odmitnuti signalizovat a zustat otevreny
+    form_client_visible = helpers.wait_form_rejected(context.browser, "form_client")
     assert form_client_visible
     # zavri formular
     helpers.close_modal(context.browser)

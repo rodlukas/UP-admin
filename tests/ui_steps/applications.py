@@ -1,9 +1,7 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
@@ -88,9 +86,7 @@ def find_application_with_context(context):
 
 
 def wait_form_visible(driver):
-    WebDriverWait(driver, helpers.WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=form_application]"))
-    )
+    helpers.wait_form_ready(driver, "form_application")
 
 
 def insert_to_form(context, verify_current_data=False):
@@ -147,7 +143,7 @@ def step_impl(context):
     # pockej na pridani zadosti
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
     # (stale reference) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException,),
@@ -166,7 +162,7 @@ def step_impl(context):
     # pockej na update zadosti
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku
     # (stale reference) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException,),
@@ -181,7 +177,7 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na smazani zadosti (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: applications_cnt(driver) < context.old_applications_cnt
     )
     # over, ze zadost opravdu neni nalezena
@@ -214,24 +210,8 @@ def step_impl(context, full_name, course):
 
 @then("the application is not added")
 def step_impl(context):
-    # zjisti, zda se objevi alert (zadost se nepridala)
-    try:
-        helpers.wait_for_alert_and_accept(context.browser)
-    except TimeoutException:
-        # alert se neobjevil, zmizel formular?
-        try:
-            WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=form_application]"))
-            )
-        except TimeoutException:
-            # formular nezmizel
-            form_application_visible = True
-        else:
-            # formular zmizel
-            form_application_visible = False
-    else:
-        # alert se objevil, takze formular je stale videt
-        form_application_visible = True
+    # formular musi odmitnuti signalizovat a zustat otevreny
+    form_application_visible = helpers.wait_form_rejected(context.browser, "form_application")
     assert form_application_visible
     assert applications_cnt(context.browser) == context.old_applications_cnt
     assert showed_applications_cnts_for_courses_matches(context.browser)

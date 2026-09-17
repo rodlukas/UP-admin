@@ -2,7 +2,6 @@ from behave import when, then
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 # noinspection PyUnresolvedReferences
 from tests.common_steps import login_logout
@@ -17,22 +16,57 @@ def get_jwt_from_local_storage(driver):
     )
 
 
-def check_login(context):
-    # pockej az bude viditelne tlacitko pro odhlaseni, doslo k uspesnemu prihlaseni
+def _login_request_running(driver):
+    """Bezi prave ted prihlasovaci pozadavek?
+
+    SubmitButton ho hlasi pres `aria-busy` (Login.tsx mu predava `isLoading`
+    z AuthContextu). Ptame se jednim dotazem uvnitr prohlizece, ne pres nalezeny
+    element: prave v okamziku, na ktery se tady ceka, React prihlasovaci formular
+    odmountuje, takze mezi `find_elements` a ctenim atributu by reference na tlacitko
+    stihla zeschnout a cekani by spadlo na StaleElementReferenceException. Kdyz
+    tlacitko v DOM neni, zadny pozadavek nebezi.
+    """
+    return driver.execute_script("""
+        const button = document.querySelector("[data-qa=button_submit_login]");
+        return button !== null && button.getAttribute("aria-busy") === "true";
+        """)
+
+
+def wait_login_settled(driver):
+    """Pocka, az pokus o prihlaseni dobehne - at uz uspechem, nebo neuspechem.
+
+    Ceka se na dobehnuti pozadavku, ne na objeveni prihlaseneho rozhrani: u scenare
+    se spatnymi udaji zadne prihlasene rozhrani nikdy neprijde a cekani na nej by
+    vzdycky vycerpalo cely timeout. Poradi obou fazi je podstatne - bez cekani na
+    rozjety pozadavek by se stav cetl jeste pred jeho odeslanim.
+    """
     try:
-        context.button_logout = WebDriverWait(context.browser, helpers.WAIT_TIME).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=button_logout]"))
-        )
-        button_logout_visible = True
+        helpers.wait(driver, helpers.WAIT_TIME_SHORT).until(_login_request_running)
     except TimeoutException:
-        button_logout_visible = False
-    # v localstorage musi byt token
+        # pozadavek uz dobehl driv, nez jsme se na nej stihli podivat (nebo se vubec
+        # nerozjel) - vysledek stejne rozhoduje token, viz check_login
+        return
+    helpers.wait(driver).until_not(_login_request_running)
+
+
+def check_login(context):
+    # pockej, az pokus o prihlaseni dobehne, a teprve pak cti vysledek
+    wait_login_settled(context.browser)
+    # O uspechu rozhoduje token: uklada se hned, jak dorazi odpoved, zatimco prihlasene
+    # rozhrani se vykresli az o nekolik renderu pozdeji. Tlacitko odhlaseni se proto
+    # necha dojet jen tam, kde ho token slibuje - bez toho by bud hrozilo cteni DOM
+    # driv, nez ho React staci prekreslit, nebo by negativni scenar cekal nadarmo.
     jwt = get_jwt_from_local_storage(context.browser)
-    return button_logout_visible, jwt
+    if jwt is None:
+        return False, None
+    context.button_logout = helpers.wait(context.browser).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=button_logout]"))
+    )
+    return True, jwt
 
 
 def wait_form_login_visible(driver):
-    WebDriverWait(driver, helpers.WAIT_TIME).until(
+    helpers.wait(driver, helpers.WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=login_field_username]"))
     )
 
@@ -87,7 +121,7 @@ def step_impl(context):
 def step_impl(context):
     # pokud neni viditelne tlacitko pro odhlaseni, doslo k uspesnemu odhlaseni
     try:
-        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until(
+        helpers.wait(context.browser, helpers.WAIT_TIME_SHORT).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=form_login]"))
         )
         form_login_visible = True
