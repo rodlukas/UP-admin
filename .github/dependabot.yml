@@ -1,3 +1,7 @@
+# Vsechny ekosystemy drzi sedmidenni cooldown - cerstve vydani se nenabizi driv,
+# nez je sance, ze se kompromitovany release stihne odhalit a stahnout. Odpovida
+# tomu, co u projektu na Renovate dela minimumReleaseAge: "7 days".
+# Na security updaty se cooldown nevztahuje, opravy zranitelnosti chodi hned.
 version: 2
 updates:
     - package-ecosystem: "npm"
@@ -6,6 +10,8 @@ updates:
           - npm-github
       schedule:
           interval: "daily"
+      cooldown:
+          default-days: 7
       groups:
           npm-all:
               patterns:
@@ -24,6 +30,8 @@ updates:
       directory: "/"
       schedule:
           interval: "daily"
+      cooldown:
+          default-days: 7
       groups:
           pip-all:
               patterns:
@@ -33,6 +41,8 @@ updates:
       directory: "/"
       schedule:
           interval: "daily"
+      cooldown:
+          default-days: 7
       groups:
           github-actions-all:
               patterns:
