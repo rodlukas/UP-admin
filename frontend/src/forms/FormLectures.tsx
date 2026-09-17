@@ -116,7 +116,7 @@ const FormLecturesSkeleton: React.FC<FormLecturesSkeletonProps> = ({
                 Parametry lekce
             </Title>
             {[0, 1].map((rowIndex) => (
-                <Grid key={rowIndex} align="center" mb="sm" className={styles.formGroup}>
+                <Grid key={rowIndex} align="center" mb="sm">
                     <Grid.Col span={{ base: 12, sm: 4 }}>
                         <Skeleton h={38} radius="sm" />
                     </Grid.Col>
@@ -136,7 +136,7 @@ const FormLecturesSkeleton: React.FC<FormLecturesSkeletonProps> = ({
             {[...new Array(memberCount)].map((_, index) => (
                 <div key={index} className={styles.attendeeBlock}>
                     {withMemberNames && <Skeleton h={20} mb="sm" radius="sm" w="35%" />}
-                    <Grid align="center" mb="sm" className={styles.formGroup}>
+                    <Grid align="center" mb="sm">
                         <Grid.Col span={{ base: 12, sm: 4 }}>
                             <Skeleton h={38} radius="sm" />
                         </Grid.Col>
@@ -789,7 +789,7 @@ const FormLectures: React.FC<Props> = (props) => {
                             <Title order={5} className={styles.sectionTitle}>
                                 Parametry lekce
                             </Title>
-                            <Grid align="center" mb="sm" className={styles.formGroup}>
+                            <Grid align="center" mb="sm">
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
                                     {isClient(props.object) && (
                                         <Group gap="xs" align="center">
@@ -877,7 +877,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     </Tooltip>
                                 </Grid.Col>
                             </Grid>
-                            <Grid align="center" mb="sm" className={styles.formGroup}>
+                            <Grid align="center" mb="sm">
                                 <Grid.Col span={{ base: 12, sm: 4 }}>
                                     <Group gap="xs" align="center">
                                         <Checkbox
@@ -982,7 +982,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                             {TEXTS.WARNING_INACTIVE_CLIENT}
                                         </Alert>
                                     )}
-                                    <Grid align="center" mb="sm" className={styles.formGroup}>
+                                    <Grid align="center" mb="sm">
                                         <Grid.Col span={{ base: 12, sm: 4 }}>
                                             <Select
                                                 id={`atState${member.id}`}
@@ -1028,10 +1028,8 @@ const FormLectures: React.FC<Props> = (props) => {
                                                 data-qa="lecture_select_attendance_attendancestate"
                                             />
                                         </Grid.Col>
-                                        <Grid.Col
-                                            span={{ base: 12, sm: 2 }}
-                                            className={styles.attendancePaidCol}>
-                                            <Group gap="xs" justify="center">
+                                        <Grid.Col span={{ base: 12, sm: 2 }}>
+                                            <Group gap="xs" className={styles.attendancePaidGroup}>
                                                 <Checkbox
                                                     id={`atPaid${member.id}`}
                                                     name="atPaid"
