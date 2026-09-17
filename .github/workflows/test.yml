@@ -251,3 +251,35 @@ jobs:
               run: flyctl deploy --remote-only
               env:
                   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_TEST }}
+
+    # Branch protection vyzaduje jeden status check pevneho jmena. Vyjmenovat v nem
+    # primo joby matice nejde rozumne udrzovat - jejich jmena se meni s kazdou upravou
+    # .github/ui-shards.json a pravidlo by se muselo prepisovat s nimi (a dokud by se
+    # nezmenilo, PR by cekal na check, ktery uz nikdo nenahlasi). Tenhle job je proto
+    # jediny pozadovany check a jen shrnuje vysledek vsech ostatnich.
+    build_and_test:
+        name: Build & Test
+        needs: [build, test_backend, test_ui, deploy]
+        # musi dobehnout i kdyz nektery z jobu selhal - jinak by se preskocil a check
+        # by zase nikdo nenahlasil
+        if: ${{ always() }}
+        runs-on: ubuntu-26.04
+
+        steps:
+            # "skipped" je v poradku: deploy se preskakuje pro Dependabota a preskoceni
+            # kvuli spadlemu predchudci odhali vysledek toho predchudce
+            - name: 🔍 Verify all jobs succeeded
+              env:
+                  RESULTS: ${{ join(needs.*.result, ' ') }}
+              run: |
+                  echo "vysledky jobu: $RESULTS"
+                  for result in $RESULTS; do
+                      case "$result" in
+                          success | skipped) ;;
+                          *)
+                              echo "::error::Nektery job skoncil jako \"$result\"."
+                              exit 1
+                              ;;
+                      esac
+                  done
+                  echo "✅ Vsechny joby probehly."

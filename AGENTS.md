@@ -228,6 +228,11 @@ Frontend se díky tomu buildí jednou (a jen jednou nahraje mapy do Sentry) a UI
 3. **`test_ui`** — E2E UI testy (behave + Selenium/Firefox) rozdělené na shardy.
 4. **`deploy`** — nasadí testing verzi na Fly.io (přeskočí pro Dependabot). Python nepotřebuje,
    staticfiles má z artefaktu.
+5. **`build_and_test`** — jen shrne výsledek ostatních jobů. Existuje kvůli branch protection:
+   ta vyžaduje status check pevného jména, ale jména jobů matice se mění s každou úpravou
+   `ui-shards.json`. Je proto **jediný požadovaný check**; vyjmenovávat v pravidle jednotlivé
+   shardy by znamenalo přepisovat ho při každé změně rozdělení — a do té doby by PR čekal na
+   check, který už nikdo nenahlásí.
 
 Společné nastavení testovacích jobů (Python, závislosti, artefakt, PostgreSQL 18 s českou locale
 v Dockeru, `scripts/shell/release_tasks.sh`) drží composite action
