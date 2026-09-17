@@ -1,9 +1,6 @@
 from behave import when, then, use_step_matcher
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
@@ -134,7 +131,7 @@ def step_impl(context):
     # pockej na pridani kurzu
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku (stale
     # reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException, TimeoutException),
@@ -150,7 +147,7 @@ def step_impl(context):
     # pockej na update kurzu
     # refetch po mutaci muze stranku prekreslit uprostred prochazeni radku (stale
     # reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException, TimeoutException),
@@ -164,7 +161,7 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na smazani kurzu (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: courses_cnt(driver) < context.old_courses_cnt
     )
     # over, ze kurz opravdu neni nalezen
@@ -201,14 +198,8 @@ def step_impl(context, name):
 
 @then("the course is not added")
 def step_impl(context):
-    # zjisti, zda stale sviti formular a zadny kurz nepribyl
-    try:
-        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=form_settings]"))
-        )
-        form_course_visible = False
-    except TimeoutException:
-        form_course_visible = True
+    # formular musi odmitnuti signalizovat a zustat otevreny
+    form_course_visible = helpers.wait_form_rejected(context.browser, "form_settings")
     assert form_course_visible
     assert courses_cnt(context.browser) == context.old_courses_cnt
 
