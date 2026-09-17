@@ -6,6 +6,17 @@ on:
     pull_request:
         branches: ["master"]
 
+# Beh nad stejnou vetvi se rusi, jakmile prijde novejsi commit. Krome usetrenych minut
+# (jeden beh je build + backend + N UI shardu + deploy) tim mizi i zavod, ve kterem by
+# starsi beh nasadil na testing az po novejsim a nechal tam starsi commit.
+# Nasazeni do produkce je v deploy.yml a to se ZAMERNE nerusi, jen radi do fronty.
+concurrency:
+    group: ci-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
 env:
     ENVIRONMENT: CI-test
     SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -23,6 +34,7 @@ jobs:
     build:
         name: Build
         runs-on: ubuntu-26.04
+        timeout-minutes: 25
         outputs:
             ui_shards: ${{ steps.shards.outputs.list }}
 
@@ -132,6 +144,7 @@ jobs:
         name: "Test: Backend & API"
         needs: build
         runs-on: ubuntu-26.04
+        timeout-minutes: 25
 
         steps:
             - name: ☁️ Checkout repo
@@ -177,6 +190,7 @@ jobs:
         name: "Test: UI ${{ matrix.shard.name }}"
         needs: build
         runs-on: ubuntu-26.04
+        timeout-minutes: 30
         strategy:
             # jeden padajici shard nesmi sebrat vysledek ostatnich
             fail-fast: false
@@ -226,6 +240,7 @@ jobs:
         needs: [test_backend, test_ui]
         if: ${{ github.actor != 'dependabot[bot]' }}
         runs-on: ubuntu-26.04
+        timeout-minutes: 20
 
         steps:
             - name: ☁️ Checkout repo
@@ -273,6 +288,7 @@ jobs:
         # by zase nikdo nenahlasil
         if: ${{ always() }}
         runs-on: ubuntu-26.04
+        timeout-minutes: 5
 
         steps:
             # "skipped" je v poradku: deploy se preskakuje pro Dependabota a preskoceni
