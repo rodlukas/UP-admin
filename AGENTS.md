@@ -197,6 +197,7 @@ Obsah leží **v ohraničených panelech na tónované ploše.** Pravidla, kter�
 - CSS: soubory pojmenovány `*.css.ts`, **vždy** vanilla-extract — nikdy inline styly ani plain CSS
 - Testy: Vitest + React Testing Library, soubory colocated se zdrojovým kódem (`*.test.ts` / `*.test.tsx`), API mockované přes MSW
 - **`data-qa` atributy jsou kontrakt s E2E kroky** ([tests/ui_steps/](tests/ui_steps/)) — Selenium se drží jich, ne tříd ani struktury. Neodstraňuj je a needituj jejich hodnoty; při přestavbě UI je přenes na nový prvek. Totéž platí pro `data-qa-canceled` a `data-paid`. Zdokumentované výjimky (kde přes `data-qa` z principu nejde) viz [tests/README.md](tests/README.md).
+- **Do nativních `<input type="date">` / `<input type="time">` nepiš v testech přes `send_keys`** — prohlížeč je plní po segmentech v pořadí podle své locale, takže ISO řetězec z feature souboru skončí v Chrome rozhozený (`2020-07-05` → rok 0507) a formulář se neodešle. Použij `helpers.set_native_datetime`.
 - Selektory v `style()` u vanilla-extract musí cílit na `&`; potomci (`thead th`, `::before`) jdou jen přes `globalStyle` — `tsc` ani ESLint to nezachytí, spadne to až za běhu (`npm run vitest`)
 
 **Pre-commit hooky (Husky + lint-staged):** automaticky spouštějí ESLint a Prettier na staged JS/TS souborech.
