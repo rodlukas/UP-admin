@@ -16,7 +16,7 @@ runs:
         # frontend/build a vygenerovanou sablonu vyrobil build job; release_tasks.sh nize
         # si staticfiles posbira znovu, takze na jejich verzi z artefaktu nezalezi
         - name: ⬇️ Download build output
-          uses: actions/download-artifact@v4
+          uses: actions/download-artifact@v8
           with:
               name: build-output
 
