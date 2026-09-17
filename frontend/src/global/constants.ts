@@ -44,6 +44,16 @@ export const RAIL_ICON_INSET = "1.5rem"
  */
 export const NAVBAR_BREAKPOINT = "62em"
 
+/**
+ * Hranice, od které `Grid.Col span={{ sm: … }}` staví sloupce vedle sebe místo pod sebe.
+ *
+ * Je to Mantine `sm`, tedy výchozí breakpoint, který theme nepřepisuje — stejná konvence jako
+ * `MOBILE_QUERY` v Main.tsx a zlomy v Card.css.ts. `@media` pravidlo, které má platit přesně
+ * od zalomení sloupce, musí sedět na tutéž hodnotu a v `em`: pixelový zlom se s Mantine
+ * rozejde při jiné velikosti písma a pravidlo se přepne jinde než sloupec sám.
+ */
+export const GRID_BREAKPOINT_SM = "48em"
+
 /** Texty notifikací. */
 export enum NOTIFY_TEXT {
     ERROR = "Chyba při provádění požadavku",

@@ -6,8 +6,6 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from tests import common_helpers
 
@@ -150,9 +148,7 @@ def find_lecture_with_context(context):
 
 
 def wait_form_visible(driver):
-    WebDriverWait(driver, helpers.WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=form_lecture]"))
-    )
+    helpers.wait_form_ready(driver, "form_lecture")
 
 
 def find_attendance_in_form(context, client):
@@ -213,12 +209,11 @@ def insert_to_form(context, verify_current_data=False):
         # vyber tedy musi uspet
         assert helpers.combobox_insert(context.browser, course_field, context.course)
     # smaz vsechny udaje
-    helpers.clear_input(date_field)
-    helpers.clear_input(time_field)
     helpers.clear_input(duration_field)
-    # vloz nove udaje
-    date_field.send_keys(context.date)
-    time_field.send_keys(context.time)
+    # vloz nove udaje (datum a cas jsou nativni date/time inputy, viz set_native_datetime -
+    # nastaveni hodnoty prepise i tu puvodni, takze se predem nemaze)
+    helpers.set_native_datetime(context.browser, date_field, context.date)
+    helpers.set_native_datetime(context.browser, time_field, context.time)
     duration_field.send_keys(context.duration)
     if (context.canceled and not canceled_checkbox.is_selected()) or (
         not context.canceled and canceled_checkbox.is_selected()
@@ -341,7 +336,7 @@ def step_impl(context):
     helpers.wait_loading_ends(context.browser)
     # pockej na pridani lekce; refetch po mutaci muze kartu prekreslit uprostred prochazeni
     # lekci (stale reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException, TimeoutException),
@@ -359,7 +354,7 @@ def step_impl(context):
     helpers.wait_loading_ends(context.browser)
     # pockej na update lekci; refetch po mutaci muze kartu prekreslit uprostred prochazeni
     # lekci (stale reference) nebo zavrit cteny tooltip (timeout) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException, TimeoutException),
@@ -373,7 +368,7 @@ def step_impl(context):
     # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji; refetch po mutaci
     # muze kartu prekreslit uprostred prochazeni lekci (stale reference) nebo zavrit cteny
     # tooltip (timeout) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException, TimeoutException),
@@ -389,7 +384,7 @@ def step_impl(context):
     # pockej az se data aktualizuji v DOM - najdi lekci s novymi udaji; refetch po mutaci
     # muze kartu prekreslit uprostred prochazeni lekci (stale reference) nebo zavrit cteny
     # tooltip (timeout) - dalsi poll to zopakuje
-    WebDriverWait(
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException, TimeoutException),
@@ -416,7 +411,7 @@ def step_impl(context):
     # pockej az bude modalni okno kompletne zavrene
     helpers.wait_modal_closed(context.browser)
     # pockej na smazani lekce (zmensi se pocet), nesahame zatim na data, mohla by byt nestabilni kvuli mazani
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: lectures_cnt(driver) < context.old_lectures_cnt
     )
     # over, ze lekce opravdu neni nalezena
@@ -455,15 +450,9 @@ def step_impl(context, client, date, time):
 
 @then("the lecture is not added")
 def step_impl(context):
-    # zjisti, zda stale sviti formular a zadna lekce nepribyla
-    try:
-        WebDriverWait(context.browser, helpers.WAIT_TIME_SHORT).until_not(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=form_lecture]"))
-        )
-        form_group_visible = False
-    except TimeoutException:
-        form_group_visible = True
-    assert form_group_visible
+    # formular musi odmitnuti signalizovat a zustat otevreny
+    form_lecture_visible = helpers.wait_form_rejected(context.browser, "form_lecture")
+    assert form_lecture_visible
     assert lectures_cnt(context.browser) == context.old_lectures_cnt
 
 

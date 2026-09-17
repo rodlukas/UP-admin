@@ -33,9 +33,15 @@ const Main: React.FC = () => {
     // na prvni frame problikl v opacnem stavu.
     const isMobile = useMediaQuery(MOBILE_QUERY, false, { getInitialValueInEffect: false })
 
+    // Drawer se zavírá při odnavigování (překrýval by stránku, na kterou se přešlo) i při
+    // každé změně `isMobile`. Prakticky jde jen o přechod NAD `NAVBAR_BREAKPOINT`, kde drawer
+    // neexistuje a burger je `inert` (viz níž), takže otevřený stav by tam nešlo zavřít a visel
+    // by až do návratu zpátky. Opačný směr je dnes no-op právě proto, že nad breakpointem se
+    // menu otevřít nedá — kdyby burger někdy nad ním zůstal dosažitelný, začne zavírat i
+    // zmenšení okna.
     React.useEffect(() => {
         setIsMenuOpened(false)
-    }, [locationPathname])
+    }, [locationPathname, isMobile])
 
     function toggleNavbar(): void {
         setIsMenuOpened((prevIsMenuOpened) => !prevIsMenuOpened)

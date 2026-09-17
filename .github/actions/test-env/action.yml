@@ -1,0 +1,46 @@
+name: Prepare test environment
+description: >
+    Common setup for jobs that run tests: Python, dependencies, artifacts from the build
+    job, PostgreSQL with the CZ locale and the Django build. Assumes the repo is already
+    checked out.
+
+runs:
+    using: composite
+    steps:
+        - name: 🔧 Setup Python
+          uses: actions/setup-python@v7
+          with:
+              python-version: "3.14"
+              cache: "pipenv"
+
+        # frontend/build a vygenerovanou sablonu vyrobil build job; release_tasks.sh nize
+        # si staticfiles posbira znovu, takze na jejich verzi z artefaktu nezalezi
+        - name: ⬇️ Download build output
+          uses: actions/download-artifact@v8
+          with:
+              name: build-output
+
+        - name: 📝 Apply string substitution
+          shell: bash
+          run: ./scripts/shell/ci/string_substitution.sh
+        - name: 📝 Create dummy .env file
+          shell: bash
+          run: touch .env
+
+        - name: 🔧 Python - install deps
+          shell: bash
+          run: |
+              pip install pipenv==2026.8.0 --only-binary :all:
+              pipenv install --deploy --dev
+
+        # PostgreSQL
+        # - build custom PSQL container image with CZ locale
+        # - and then start the PSQL service (tcp port 5432 on service container is mapped to the host)
+        # https://github.com/orgs/community/discussions/24923
+        - name: 📦 PostgreSQL - container build & run
+          shell: bash
+          run: source scripts/shell/postgresql_docker.sh
+
+        - name: 🔧 Python - build Django app (staticfiles & migration)
+          shell: bash
+          run: ./scripts/shell/release_tasks.sh

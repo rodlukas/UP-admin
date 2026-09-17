@@ -40,7 +40,14 @@ const Dashboard: React.FC = () => {
                         }
                     />
                     <div className={styles.lecturesPanel}>
-                        <DashboardDay date={today} withoutWaiting source="dashboard" />
+                        {/* `highlightLectureId` zásadně `undefined`: `?lecture=` patří mřížce diáře,
+                            Přehled na něj reagovat nesmí (viz `DashboardDay`) */}
+                        <DashboardDay
+                            date={today}
+                            withoutWaiting
+                            source="dashboard"
+                            highlightLectureId={undefined}
+                        />
                     </div>
                     {/*
                      * Samostatná sekce, ne fallback uvnitř `DashboardDay`: nejbližší lekce
