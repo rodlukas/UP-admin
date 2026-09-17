@@ -242,7 +242,6 @@ jobs:
         runs-on: ubuntu-26.04
         timeout-minutes: 20
 
-        # environment vede zaznam nasazeni na zalozce Deployments a napaji badge v README
         environment:
             name: testing
             url: https://uspesnyprvnacek-test.fly.dev/
