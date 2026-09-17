@@ -30,6 +30,11 @@ jobs:
         runs-on: ubuntu-26.04
         timeout-minutes: 40
 
+        # environment vede zaznam nasazeni na zalozce Deployments a napaji badge v README
+        environment:
+            name: production
+            url: https://uspesnyprvnacek.fly.dev/
+
         # github token opravneni pro upload k releasum/do container registru
         permissions:
             contents: write
