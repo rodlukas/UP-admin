@@ -1,3 +1,7 @@
+# Vsechny ekosystemy drzi sedmidenni cooldown - cerstve vydani se nenabizi driv,
+# nez je sance, ze se kompromitovany release stihne odhalit a stahnout. Odpovida
+# tomu, co u projektu na Renovate dela minimumReleaseAge: "7 days".
+# Na security updaty se cooldown nevztahuje, opravy zranitelnosti chodi hned.
 version: 2
 updates:
     - package-ecosystem: "npm"
@@ -6,15 +10,28 @@ updates:
           - npm-github
       schedule:
           interval: "daily"
+      cooldown:
+          default-days: 7
       groups:
           npm-all:
               patterns:
                   - "*"
+      ignore:
+          # TypeScript 7 je nativni Go port a neexportuje klasicke API (v "exports" je jen
+          # ./lib/version.cjs a ./unstable/*), takze type-aware linting na nem nebezi -
+          # @typescript-eslint ma peer ">=4.8.4 <6.1.0" a pri TS 7 rovnou spadne.
+          # Az podporu doda (typescript-eslint/typescript-eslint#10940, mirene na TS >=7.1),
+          # tohle pravidlo smaz.
+          - dependency-name: "typescript"
+            update-types:
+                - "version-update:semver-major"
 
     - package-ecosystem: "pip"
       directory: "/"
       schedule:
           interval: "daily"
+      cooldown:
+          default-days: 7
       groups:
           pip-all:
               patterns:
@@ -24,6 +41,8 @@ updates:
       directory: "/"
       schedule:
           interval: "daily"
+      cooldown:
+          default-days: 7
       groups:
           github-actions-all:
               patterns:
