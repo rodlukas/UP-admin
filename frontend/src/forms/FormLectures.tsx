@@ -207,6 +207,7 @@ const FormLectures: React.FC<Props> = (props) => {
     const createLecture = useCreateLecture()
     const updateLecture = useUpdateLecture()
     const deleteLecture = useDeleteLecture()
+
     const isClient = (object: ClientType | GroupType): object is ClientType => "phone" in object
 
     const isLecture = (lecture: Props["lecture"]): lecture is LectureType => "id" in lecture

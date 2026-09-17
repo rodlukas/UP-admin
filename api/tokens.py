@@ -36,12 +36,6 @@ class MyTokenObtainSlidingSerializer(TokenObtainSlidingSerializer):
         kompromis: do aplikace se přihlašuje z mobilu, kdežto basic auth používá Swagger,
         Browsable API a skripty, kde se jméno nepíše na dotykové klávesnici.
 
-        Heslo v plaintextu drží pod tímhle voláním hned několik rámců (`attrs` tady,
-        `authenticate_kwargs` v simplejwt, `data`/`value` v DRF). Do Django error reportu se
-        nedostane - `ADMINS` ani `handler500` nastavené nejsou, takže žádný nevzniká. Sentry
-        ale lokální proměnné rámců posílá (`include_local_variables` má default `True`) a jeho
-        výchozí scrubber rozhoduje podle JMÉNA klíče, takže tahle jména mu projdou.
-
         Cena je jeden dotaz navíc na každý pokus o přihlášení, včetně neúspěšných:
         `__iexact` se překládá na `UPPER("username") = UPPER(%s)`, na což index nesedí,
         a `authenticate()` si pak dělá vlastní `get_by_natural_key()`. Při počtu uživatelů

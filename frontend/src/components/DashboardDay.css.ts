@@ -204,8 +204,7 @@ export const lectureHeaderCourse = style({
 export const lectureBody = style({
     // Jen `background-color`, nikdy `color`: v těle si text nese vlastní barvy z palety
     // a ty se zvýrazněním nemění, takže tu žádná svázaná dvojice jako v hlavičce není.
-    // Tenhle přechod obsluhuje hover i rozsvícení/zhasnutí zvýraznění — prohlížeč ho bere
-    // ze stavu PO změně třídy, takže pravidlo na zvýraznění by na zhasínání stejně nedosáhlo.
+    // Přechod obsluhuje hover i rozsvícení a zhasnutí zvýraznění.
     ...backgroundTransition,
     backgroundColor: vars.bg.surface,
     padding: "0.6rem 0.85rem",
