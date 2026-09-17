@@ -16,15 +16,36 @@ WAIT_TIME = settings.TESTS_WAIT_TIME
 WAIT_TIME_SHORT = max(1, WAIT_TIME - 2)
 WAIT_TIME_VERY_SHORT = 0.5
 
+# Selenium mezi pokusy ceka POLL_FREQUENCY (vychozi 0,5 s), takze kazde cekani se
+# zaokrouhli nahoru na nasobek te hodnoty - u kroku s vice cekanimi za sebou to dela
+# vetsinu jejich casu. Kratsi interval znamena vic dotazu na WebDriver (levne, driver
+# bezi lokalne) vymenou za radove kratsi prostoje.
+POLL_FREQUENCY = 0.1
+
+# Sonda na loading indikator: React ho vyrenderuje jeste driv, nez WebDriver stihne
+# vratit ridici tok z kliknuti, ktere fetch spustilo (kliknuti je diskretni udalost,
+# React u ni flushuje render synchronne). Namereno pres 42 skutecnych vyskytu: indikator
+# byl v DOM vzdycky uz pri prvnim dotazu, 3-6 ms po kliknuti. Okno je proto kratke
+# a prohledava se hustym pollem - i tak zbyva rad velikosti rezervy.
+WAIT_TIME_LOADING_PROBE = 0.15
+POLL_FREQUENCY_LOADING_PROBE = 0.02
+
+
+def wait(driver, timeout=WAIT_TIME, poll_frequency=POLL_FREQUENCY, **kwargs):
+    """WebDriverWait s poll intervalem projektu misto vychoziho Selenia."""
+    return WebDriverWait(driver, timeout, poll_frequency=poll_frequency, **kwargs)
+
 
 def wait_loading_cycle(driver):
-    # kratka kontrola, zda se loading objevi se zpozdenim; pokud ano, pockej na jeho konec
+    # zjisti, jestli akce vubec spustila fetch; pokud ano, pockej na jeho konec
     try:
-        WebDriverWait(driver, WAIT_TIME_VERY_SHORT).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=loading]"))
-        )
+        wait(
+            driver,
+            WAIT_TIME_LOADING_PROBE,
+            poll_frequency=POLL_FREQUENCY_LOADING_PROBE,
+        ).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=loading]")))
     except TimeoutException:
-        # loading se neobjevil v ramci kratkeho casu, nepokracuj v cekani
+        # zadny fetch nebezi (data uz ma TanStack Query v cache), neni na co cekat
         return
     else:
         wait_loading_ends(driver)
@@ -69,9 +90,7 @@ def get_tooltip_text(driver, element):
             # na trigger nastavuje jen po dobu otevreni) - globalni [role='tooltip'] by
             # mohl matchnout cizi, uz otevreny tooltip jineho triggeru (kurzor zaparkovany
             # po predchozim cteni muze hoverovat jiny element) a vratit spatny text
-            WebDriverWait(driver, timeout).until(
-                lambda _: element.get_attribute("aria-describedby")
-            )
+            wait(driver, timeout).until(lambda _: element.get_attribute("aria-describedby"))
             tooltip_id = element.get_attribute("aria-describedby")
             # poznamka: .text se cte az po novem find_element, ne na referenci z .until(),
             # ktera muze byt stale kvuli prekresleni DOM (StaleElementReferenceException)
@@ -88,8 +107,44 @@ def get_tooltip_text(driver, element):
     return tooltip_text
 
 
+def wait_form_rejected(driver, form_qa):
+    """Pocka, az formular `form_qa` odmitne odeslana data, a vrati, jestli zustal otevreny.
+
+    Ceka se na POZITIVNI signal odmitnuti, ne na to, ze formular nezmizi: signal
+    prijde v desetinach sekundy, zatimco cekani na nepritomnost vzdycky vycerpa cely
+    timeout. Signaly jsou tri a staci kterykoliv z nich:
+
+    - alert prohlizece (data odmitl az server) - rovnou se potvrdi,
+    - `aria-invalid` na poli (chyba z validace Mantine `useForm`),
+    - `:invalid` uvnitr formulare (HTML5 constraint validace u poli s `required`,
+      ta odeslani zastavi uz v prohlizeci a zadnou chybu Mantine nevyvola).
+
+    Pri timeoutu se nic nevyhazuje: vraci se aktualni stav formulare a volajici krok
+    nechtene prijata data nahlasi jako selhani asserce.
+    """
+
+    def _rejected(_driver):
+        if EC.alert_is_present()(_driver):
+            return True
+        return bool(
+            _driver.find_elements(
+                By.CSS_SELECTOR,
+                f"[data-qa={form_qa}] [aria-invalid='true'], [data-qa={form_qa}] :invalid",
+            )
+        )
+
+    try:
+        wait(driver, WAIT_TIME_SHORT).until(_rejected)
+    except TimeoutException:
+        pass
+    else:
+        if EC.alert_is_present()(driver):
+            driver.switch_to.alert.accept()
+    return bool(driver.find_elements(By.CSS_SELECTOR, f"[data-qa={form_qa}]"))
+
+
 def clear_input(element):
-    """Vymaze obsah ovladaneho (React) inputu znak po znaku.
+    """Vymaze obsah ovladaneho (React) inputu odeslanim BACK_SPACE za kazdy znak.
 
     `element.clear()` nastavi hodnotu pres WebDriver primo a jednotlive prohlizece se
     lisi v tom, jake udalosti u toho posilaji - React onChange se nemusi spustit vubec
@@ -97,18 +152,62 @@ def clear_input(element):
     pak pise ZA ni). Mazani BACK_SPACE je bezne uzivatelske chovani a chova se stejne
     ve vsech prohlizecich.
     """
-    for _ in range(len(element.get_attribute("value") or "")):
-        element.send_keys(Keys.BACK_SPACE)
+    length = len(element.get_attribute("value") or "")
+    if length:
+        # jeden prikaz WebDriveru misto jednoho na znak; prohlizec i tak vyvola
+        # samostatnou udalost pro kazdy BACK_SPACE, chovani Reactu se nemeni
+        element.send_keys(Keys.BACK_SPACE * length)
 
 
-def wait_form_settings_visible(driver):
-    WebDriverWait(driver, WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=form_settings]"))
+def wait_form_ready(driver, form_qa):
+    """Pocka, az je formular `form_qa` viditelny a misto kostry v nem jsou skutecna pole.
+
+    Samotny `<form>` je v DOM hned po otevreni modalu, ale formulare, ktere si nejdriv
+    musi nacist data do selectu (zadosti, skupiny, lekce), maji misto poli kostru
+    (`SkeletonShell` nese `data-qa=loading`). Ceka se proto i na jeji zmizeni - jinak
+    zavisi na tom, jestli fetch dobehne driv, nez krok sahne na prvni pole. U formularu
+    bez kostry (klienti, nastaveni) je druhe cekani jeden dotaz navic a hned projde.
+    """
+    wait(driver, WAIT_TIME).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, f"[data-qa={form_qa}]"))
+    )
+    wait(driver, WAIT_TIME).until_not(
+        EC.presence_of_element_located((By.CSS_SELECTOR, f"[data-qa={form_qa}] [data-qa=loading]"))
     )
 
 
+def set_native_datetime(driver, element, value):
+    """Nastavi hodnotu nativniho `<input type=date|time>` tak, aby o ni vedel i React.
+
+    `send_keys` u techto poli neni prenositelny mezi prohlizeci: hodnota se do nich
+    nepise jako text, ale po segmentech v poradi, ktere si prohlizec urcuje podle sve
+    locale. ISO retezec z feature souboru proto v Chrome skonci rozhozeny
+    (`2020-07-05` se ulozi jako rok 0507) a formular se neodesle.
+
+    Hodnota se tedy nastavuje primo, ale pres nativni setter a s udalosti `input`:
+    React si na `value` drzi vlastni tracker a po prostem prirazeni by zadnou zmenu
+    nezaznamenal - controlled input by si pri dalsim renderu vratil puvodni obsah.
+    Cteni zustava na `get_attribute("value")`, ktere je u obou typu vzdy v ISO tvaru.
+    """
+    driver.execute_script(
+        """
+        const setter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype, "value"
+        ).set;
+        setter.call(arguments[0], arguments[1]);
+        arguments[0].dispatchEvent(new Event("input", { bubbles: true }));
+        """,
+        element,
+        value,
+    )
+
+
+def wait_form_settings_visible(driver):
+    wait_form_ready(driver, "form_settings")
+
+
 def wait_loading_ends(driver):
-    WebDriverWait(driver, WAIT_TIME).until_not(
+    wait(driver, WAIT_TIME).until_not(
         EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=loading]"))
     )
 
@@ -119,7 +218,7 @@ def frontend_empty_str(text):
 
 
 def wait_for_alert_and_accept(driver):
-    WebDriverWait(driver, WAIT_TIME_SHORT).until(EC.alert_is_present())
+    wait(driver, WAIT_TIME_SHORT).until(EC.alert_is_present())
     driver.switch_to.alert.accept()
 
 
@@ -143,9 +242,7 @@ def wait_combobox_options(driver, timeout=None):
                 continue
         return False
 
-    return WebDriverWait(driver, timeout if timeout is not None else WAIT_TIME_SHORT).until(
-        _visible_options
-    )
+    return wait(driver, timeout if timeout is not None else WAIT_TIME_SHORT).until(_visible_options)
 
 
 def _combobox_selection_applied(element, value):
@@ -216,7 +313,7 @@ def combobox_insert(driver, element, value):
             # dropdown se mezitim prekreslil - zopakuj cely pokus
             continue
         try:
-            WebDriverWait(
+            wait(
                 driver,
                 WAIT_TIME_SHORT,
                 ignored_exceptions=(StaleElementReferenceException,),
@@ -346,7 +443,7 @@ def is_modal_open(driver):
 
 def wait_modal_closed(driver):
     # pockej na zavreni modalu
-    WebDriverWait(driver, WAIT_TIME).until_not(lambda d: is_modal_open(d))
+    wait(driver, WAIT_TIME).until_not(lambda d: is_modal_open(d))
 
 
 def _find_group_with_activity(activity, context, name, open_card=False, validate_context=False):

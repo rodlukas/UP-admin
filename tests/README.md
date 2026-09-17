@@ -16,6 +16,13 @@ jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML a
 - `helpers._combobox_selection_applied` rozlišuje MultiSelect od obyčejného Selectu strukturálně,
   přes Mantine wrapper class `mantine-MultiSelect-root` (zjišťuje se tím *typ* komponenty, ne
   hodnota v ní — na rozdíl od `data-qa` kontraktu jde o introspekci knihovny, ne appky).
+- `helpers.wait_form_rejected` pozná odmítnutý formulář podle `aria-invalid` (chyba z validace
+  Mantine `useForm`) nebo `:invalid` (HTML5 constraint validace u polí s `required`). Obojí je
+  standardní chování DOM, ne značka konkrétní komponenty, a vlastní atribut by tu nic nepřidal.
+- `ui_steps/login_logout.py` čeká na dokončení přihlašovacího požadavku přes `aria-busy` na
+  odesílacím tlačítku — ten na něj dává `SubmitButton` sám (`aria-busy={loading}`), takže jde
+  o atribut aplikace, ne knihovny.
+
 Testuje se v prohlížeči [Mozilla Firefox](https://www.firefox.cz/) s využitím
 [geckodriver](https://github.com/mozilla/geckodriver).
 
@@ -60,11 +67,16 @@ konkrétní sady tedy stačí tyto příkazy:
 > aplikaci) vidět, stačí upravit v [souboru .env](../.env) řádek s `TESTS_HEADLESS` na:
 > `TESTS_HEADLESS=False`.
 
-> **Info k dalším prohlížečům:** E2E testy jsou dále připraveny i pro spouštění s Google Chrome,
-> stačí nainstalovat
-> [Chrome s chromedriverem](https://developer.chrome.com/docs/chromedriver/downloads/version-selection),
-> konkrétně [zde](https://googlechromelabs.github.io/chrome-for-testing/) a následně upravit v
-> [souboru .env](../.env) řádek s `TESTS_BROWSER` na: `TESTS_BROWSER=chrome`.
+> **Info k dalším prohlížečům:** E2E testy jdou spouštět i v Google Chrome — stačí ho mít
+> nainstalovaný a upravit v [souboru .env](../.env) řádek s `TESTS_BROWSER` na:
+> `TESTS_BROWSER=chrome`. Odpovídající chromedriver si Selenium Manager stáhne samo, ručně ho
+> instalovat netřeba.
+>
+> Pole data a času lekce jsou nativní `<input type="date">` / `<input type="time">` a hodnota se
+> do nich **nepíše přes `send_keys`** — prohlížeč je plní po segmentech v pořadí podle své locale,
+> takže ISO řetězec z feature souboru v Chrome skončí rozhozený (`2020-07-05` → rok 0507). Plní se
+> proto přes `helpers.set_native_datetime`, které hodnotu nastaví přímo a nativním setterem, aby
+> o změně věděl i React.
 
 Testování lze ještě dále zúžit na **konkrétní testovanou část či operaci (označené tzv. _tagem_)** z
 dané sady testů (_stage_). Pro jednoduchost jsou _tagy_ pro testované části totožné s názvy souborů

@@ -1,7 +1,6 @@
 from behave import when, then, use_step_matcher
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 # noinspection PyUnresolvedReferences
 from tests.ui_steps import helpers, login_logout
@@ -33,12 +32,12 @@ def step_impl(context, scheme):
     # pockej na nacteni hlavni stranky
     helpers.wait_loading_ends(context.browser)
     # otevri dropdown prepinace barevneho schematu v navbaru
-    toggle = WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    toggle = helpers.wait(context.browser, helpers.WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=color_scheme_toggle]"))
     )
     toggle.click()
     # pockej na zobrazeni polozky menu (dropdown je portalovany) a vyber dane schema
-    scheme_item = WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    scheme_item = helpers.wait(context.browser, helpers.WAIT_TIME).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, f"[data-qa=color_scheme_{scheme}]"))
     )
     scheme_item.click()
@@ -54,7 +53,7 @@ def step_impl(context):
 @then('the "{scheme}" color scheme is active')
 def step_impl(context, scheme):
     # pockej, az bude na <html> nastavene pozadovane schema
-    WebDriverWait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: get_applied_color_scheme(driver) == scheme
     )
     # volba musi byt persistovana v localStorage (kontrakt mezi Mantine a init skriptem,

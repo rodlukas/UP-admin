@@ -42,9 +42,8 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    # odhlaseni - je potreba, jinak testy obcas neprojdou
+    # Odhlaseni - je potreba, jinak testy obcas neprojdou. Reload stranky uz ne: SPA
+    # (a s ni in-memory cache TanStack Query) resetuje prvni krok dalsiho scenare,
+    # prihlaseni pres `browser.get(base_url)`, coz je plna navigace. Data z minuleho
+    # scenare, jejichz ID uz po rollbacku transakce neexistuji, tim padnou i tak.
     context.browser.execute_script("window.localStorage.clear();")
-    # reload resetuje SPA (in-memory TanStack Query cache) - kazdy scenar bezi
-    # ve vlastni DB transakci s novymi radky/ID, stale nacachovana data z minuleho
-    # scenare by vedla na requesty s neexistujicimi ID (napr. PUT pri editaci)
-    context.browser.refresh()
