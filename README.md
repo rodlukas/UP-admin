@@ -13,23 +13,26 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/test.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/test.yml/badge.svg"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/test.yml"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/rodlukas/UP-admin/test.yml?branch=master&style=flat-square&label=CI"></a>
     <a href="https://codecov.io/gh/rodlukas/UP-admin"><img alt="Codecov" src="https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/rodlukas/UP-admin.svg?style=flat-square"></a>
-    <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/release/rodlukas/UP-admin.svg?style=flat-square"></a>
+    <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square"></a>
     <br>
-    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml/badge.svg"></a>
-    <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://img.shields.io/github/actions/workflow/status/rodlukas/UP-admin/codeql.yml?branch=master&style=flat-square&label=CodeQL"></a>
+    <a href="https://developer.mozilla.org/en-US/observatory/analyze?host=uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
     <a href="https://deepscan.io/dashboard#view=project&tid=8194&pid=10346&bid=141965"><img src="https://deepscan.io/api/teams/8194/projects/10346/branches/141965/badge/grade.svg" alt="DeepScan grade"></a>
-    <a href="https://snyk.io/"><img src="https://img.shields.io/badge/Snyk%20security-monitored-purple" alt="Snyk security"></a>
+    <a href="https://snyk.io/test/github/rodlukas/UP-admin"><img src="https://snyk.io/test/github/rodlukas/UP-admin/badge.svg" alt="Snyk security"></a>
     <br>
-    <a href="https://stackshare.io/rodlukas/upadmin"><img alt="StackShare" src="http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square"></a>
+    <a href="https://stackshare.io/rodlukas/upadmin"><img alt="StackShare" src="https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square"></a>
     <a href="https://github.com/prettier/prettier"><img alt="Code style (js): prettier" src="https://img.shields.io/badge/code_style_(js)-prettier-ff69b4.svg?style=flat-square"></a>
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
+    <a href="https://github.com/microsoft/TypeScript"><img alt="Type checking (js): typescript" src="https://img.shields.io/badge/type_checking_(js)-typescript-3178C6.svg?style=flat-square"></a>
+    <a href="https://github.com/python/mypy"><img alt="Type checking (python): mypy" src="https://img.shields.io/badge/type_checking_(python)-mypy-2a6db2.svg?style=flat-square"></a>
+    <a href="https://github.com/eslint/eslint"><img alt="Linting (js): eslint" src="https://img.shields.io/badge/linting_(js)-eslint-4B32C3.svg?style=flat-square"></a>
     <br>
-    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml/badge.svg"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/rodlukas/UP-admin/deploy.yml?style=flat-square&label=build%20%26%20deploy"></a>
     <a href="https://uspesnyprvnacek.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/production?label=deploy%20%28production%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-test.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/testing?label=deploy%20%28testing%29&style=flat-square"></a>
 </p>
@@ -132,20 +135,24 @@ Includes all the logic and exposes a **REST API** for a client, built on these t
 - [Python 3.14](https://www.python.org/),
 - [Django 6](https://www.djangoproject.com/),
 - [Django REST framework 3](https://www.django-rest-framework.org/),
-- [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
+- [djangorestframework-simplejwt](https://github.com/jazzband/djangorestframework-simplejwt),
 - [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 - [and more...](/Pipfile)
 
+**API documentation** is generated straight from the code with
+**[drf-spectacular](https://github.com/tfranzel/drf-spectacular)** – the OpenAPI schema is served at
+`/api/open-api/` and an interactive **[Swagger UI](https://uspesnyprvnacek.fly.dev/api/docs/)** at
+`/api/docs/`.
+
 Django complex SQL queries are highly **optimized** (multiple times speed increase) (see articles
 [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/),
-[[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
+[[2]](https://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
 **Advanced debugging** in a remote/local environment is offered thanks to
-**[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** and its plugin
-[Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
+**[Django Debug Toolbar](https://github.com/django-commons/django-debug-toolbar)**.
 
 **Static type checking** available across the codebase based on type hints (module
 [typing](https://docs.python.org/3/library/typing.html)), the checking is done via
-**[mypy](http://mypy-lang.org/)** and [Pycharm](https://www.jetbrains.com/pycharm/). **Dead code
+**[mypy](https://mypy-lang.org/)** and [Pycharm](https://www.jetbrains.com/pycharm/). **Dead code
 elimination** is checked with **[vulture](https://github.com/jendrikseipp/vulture/)**.
 
 #### Frontend
@@ -160,7 +167,7 @@ technologies:
 - [FontAwesome 5 PRO](https://fontawesome.com/) (published to a private Github Package Registry),
 - [Tanstack Router](https://tanstack.com/router/),
 - [Tanstack Query (formerly React Query)](https://tanstack.com/query/)
-- [a další...](/frontend/package.json)
+- [and more...](/frontend/package.json)
 
 Main tools used for the frontend development:
 
@@ -171,19 +178,19 @@ Main tools used for the frontend development:
 - [ESlint 9](https://eslint.org/) – linter for static code analysis,
 - [Babel 8](https://babeljs.io/),
 - [husky](https://github.com/typicode/husky) and
-  [lint-staged](https://github.com/okonet/lint-staged) – pre-commit checks (ESlint, Prettier)
-- and [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – for
+  [lint-staged](https://github.com/lint-staged/lint-staged) – pre-commit checks (ESlint, Prettier)
+- and [React Refresh](https://github.com/react/react/tree/main/packages/react-refresh) – for
   [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 The app is **resilient against JS errors** thanks to
-**[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**.
-**[`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)** are used for
-**faster loading** of the whole app.
-[Webpack DevServer](https://webpack.js.org/configuration/dev-server/) is integrated in a development
-phase with [Django](https://www.djangoproject.com/) dev server with all the related benefits
-including [HMR](https://webpack.js.org/guides/hot-module-replacement/). A global state of the app is
-managed with **[React Context](https://reactjs.org/docs/context.html)**. The codebase is built using
-React Functional Components and **[React Hooks](https://reactjs.org/docs/hooks-intro.html)**.
+**[React Error Boundaries](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)**.
+**[`React.lazy` + `React Suspense`](https://react.dev/reference/react/lazy)** are used for **faster
+loading** of the whole app. [Webpack DevServer](https://webpack.js.org/configuration/dev-server/) is
+integrated in a development phase with [Django](https://www.djangoproject.com/) dev server with all
+the related benefits including [HMR](https://webpack.js.org/guides/hot-module-replacement/). A
+global state of the app is managed with
+**[React Context](https://react.dev/learn/passing-data-deeply-with-context)**. The codebase is built
+using React Functional Components and **[React Hooks](https://react.dev/reference/react/hooks)**.
 
 ### Deployed apps and tools
 
@@ -199,9 +206,8 @@ title and color (except for the production).
 >   turned on,
 > - **production** – production version used by a customer, deploy of the releases,
 
-- Deployed apps are **HTTPS-only** (+ advanced security protection, see
-  [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
-  [[2]](https://wsvincent.com/django-best-practices/)).
+- Deployed apps are **HTTPS-only** (+ advanced security protection, see the
+  [Django deployment checklist](https://docs.djangoproject.com/en/stable/howto/deployment/checklist/)).
 - **Automatic code formatting** with **[Black](https://github.com/psf/black)** (Python) and
   **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), both these
   tools are integrated with an IDE and perform automatic enhancements.
@@ -219,10 +225,10 @@ title and color (except for the production).
       with the repo is taken care of by [Sentry](https://sentry.io/) (sorted according to the
       environment, active on deployed apps). Integrated ability to collect **additional feedback
       upon hitting an error from user** thanks to the connection of Sentry and
-      [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
+      [React Error Boundaries](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary).
     - **User flow analysis** thanks to the integration of
       [Google Analytics](https://analytics.google.com/) (via a module
-      [react-ga](https://github.com/react-ga/react-ga)).
+      [react-ga4](https://github.com/codler/react-ga4)).
 - [audit-ci](https://github.com/IBM/audit-ci) is used for automated security review of the project's
   dependency tree on the CI.
 - Various **standards are enforced**: [PEP 8](https://pep8.org),
@@ -247,6 +253,7 @@ title and color (except for the production).
 
 ```
 ├── .github ...... GitHub Actions configuration
+├── .husky ....... Git hooks (pre-commit checks)
 ├── .idea ........ IDE settings (Pycharm from Jetbrains)
 ├── admin ........ Django app for the web app
 ├── api .......... Django app for the REST API
@@ -324,11 +331,11 @@ You can also launch the app with plain Docker without Docker Compose V2, but it'
 <summary>Show me the alternative advanced installation</summary>
 
 <a name="npmpro">
-  
-> **ℹ️ Note:** Node.js and npm are not required since the frontend cannot be built without tokens to private GitHub Package
- registry (for [FontAwesome PRO](https://fontawesome.com/)). Instead of this we'll use automatically generated assets 
- of the latest production version from the CI.
- 
+
+> **ℹ️ Note:** Node.js and npm are not required since the frontend cannot be built without tokens to
+> private GitHub Package registry (for [FontAwesome PRO](https://fontawesome.com/)). Instead of this
+> we'll use automatically generated assets of the latest production version from the CI.
+
 </a>
 
 1.  **Clone the repo**, open its folder and download **the latest production version** of the repo:
@@ -397,6 +404,10 @@ python manage.py runserver 0.0.0.0:8000
 ```
 
 **✅ The app is now available at <http://localhost:8000/>.**
+
+> **ℹ️ Note:** the [`Makefile`](Makefile) offers shortcuts for the everyday dev loop: `make be` for
+> the Django dev server, `make fe` for the webpack dev server and `make db` for the PostgreSQL
+> container (`make help` lists them).
 
 </details>
 

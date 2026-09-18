@@ -13,23 +13,26 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/test.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/test.yml/badge.svg"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/test.yml"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/rodlukas/UP-admin/test.yml?branch=master&style=flat-square&label=CI"></a>
     <a href="https://codecov.io/gh/rodlukas/UP-admin"><img alt="Codecov" src="https://img.shields.io/codecov/c/gh/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/rodlukas/UP-admin.svg?style=flat-square"></a>
-    <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/release/rodlukas/UP-admin.svg?style=flat-square"></a>
+    <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub release" src="https://img.shields.io/github/v/release/rodlukas/UP-admin.svg?style=flat-square"></a>
     <a href="https://github.com/rodlukas/UP-admin/releases/latest"><img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/rodlukas/UP-admin/latest.svg?style=flat-square"></a>
     <br>
-    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml/badge.svg"></a>
-    <a href="https://observatory.mozilla.org/analyze/uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/codeql.yml"><img alt="GitHub CodeQL" src="https://img.shields.io/github/actions/workflow/status/rodlukas/UP-admin/codeql.yml?branch=master&style=flat-square&label=CodeQL"></a>
+    <a href="https://developer.mozilla.org/en-US/observatory/analyze?host=uspesnyprvnacek.fly.dev"><img alt="Mozilla HTTP Observatory Grade" src="https://img.shields.io/mozilla-observatory/grade-score/uspesnyprvnacek.fly.dev?publish&style=flat-square"></a>
     <a href="https://sonarcloud.io/dashboard?id=rodlukas_UP-admin"><img alt="Sonar Quality Gate" src="https://img.shields.io/sonar/quality_gate/rodlukas_UP-admin?server=https%3A%2F%2Fsonarcloud.io&style=flat-square"></a>
     <a href="https://deepscan.io/dashboard#view=project&tid=8194&pid=10346&bid=141965"><img src="https://deepscan.io/api/teams/8194/projects/10346/branches/141965/badge/grade.svg" alt="DeepScan grade"></a>
-    <a href="https://snyk.io/"><img src="https://img.shields.io/badge/Snyk%20security-monitored-purple" alt="Snyk security"></a>
+    <a href="https://snyk.io/test/github/rodlukas/UP-admin"><img src="https://snyk.io/test/github/rodlukas/UP-admin/badge.svg" alt="Snyk security"></a>
     <br>
-    <a href="https://stackshare.io/rodlukas/upadmin"><img alt="StackShare" src="http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square"></a>
+    <a href="https://stackshare.io/rodlukas/upadmin"><img alt="StackShare" src="https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat-square"></a>
     <a href="https://github.com/prettier/prettier"><img alt="Code style (js): prettier" src="https://img.shields.io/badge/code_style_(js)-prettier-ff69b4.svg?style=flat-square"></a>
     <a href="https://github.com/psf/black"><img alt="Code style (python): black" src="https://img.shields.io/badge/code_style_(python)-black-000000.svg?style=flat-square"></a>
+    <a href="https://github.com/microsoft/TypeScript"><img alt="Type checking (js): typescript" src="https://img.shields.io/badge/type_checking_(js)-typescript-3178C6.svg?style=flat-square"></a>
+    <a href="https://github.com/python/mypy"><img alt="Type checking (python): mypy" src="https://img.shields.io/badge/type_checking_(python)-mypy-2a6db2.svg?style=flat-square"></a>
+    <a href="https://github.com/eslint/eslint"><img alt="Linting (js): eslint" src="https://img.shields.io/badge/linting_(js)-eslint-4B32C3.svg?style=flat-square"></a>
     <br>
-    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml"><img alt="GitHub Actions" src="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml/badge.svg"></a>
+    <a href="https://github.com/rodlukas/UP-admin/actions/workflows/deploy.yml"><img alt="GitHub Actions" src="https://img.shields.io/github/actions/workflow/status/rodlukas/UP-admin/deploy.yml?style=flat-square&label=build%20%26%20deploy"></a>
     <a href="https://uspesnyprvnacek.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/production?label=deploy%20%28production%29&style=flat-square"></a>
     <a href="https://uspesnyprvnacek-test.fly.dev/"><img alt="GitHub deployments" src="https://img.shields.io/github/deployments/rodlukas/UP-admin/testing?label=deploy%20%28testing%29&style=flat-square"></a>
 </p>
@@ -127,20 +130,24 @@ Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těc
 - [Python 3.14](https://www.python.org/),
 - [Django 6](https://www.djangoproject.com/),
 - [Django REST framework 3](https://www.django-rest-framework.org/),
-- [djangorestframework-simplejwt](https://github.com/davesque/django-rest-framework-simplejwt),
+- [djangorestframework-simplejwt](https://github.com/jazzband/djangorestframework-simplejwt),
 - [Pipenv](https://pipenv.pypa.io/en/latest/#install-pipenv-today),
 - [a další...](/Pipfile)
 
+**Dokumentace API** se generuje přímo z kódu pomocí
+**[drf-spectacular](https://github.com/tfranzel/drf-spectacular)** – OpenAPI schéma je dostupné na
+`/api/open-api/` a interaktivní **[Swagger UI](https://uspesnyprvnacek.fly.dev/api/docs/)** na
+`/api/docs/`.
+
 V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplexní SQL dotazy** (viz
 články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/),
-[[2]](http://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
+[[2]](https://ses4j.github.io/2015/11/23/optimizing-slow-django-rest-framework-performance/)).
 Aplikace umožňuje **pokročilé debugování** na lokálním i vzdáleném prostředí díky
-**[Django Debug Toolbar](https://github.com/jazzband/django-debug-toolbar)** a jeho doplňku
-[Django Debug Toolbar Request History](https://github.com/djsutho/django-debug-toolbar-request-history/).
+**[Django Debug Toolbar](https://github.com/django-commons/django-debug-toolbar)**.
 
 Pro **statickou typovou kontrolu** se napříč celým kódem používají typové anotace s použitím modulu
 [typing](https://docs.python.org/3/library/typing.html), pro kontrolu typů se používá
-**[mypy](http://mypy-lang.org/)** a [Pycharm](https://www.jetbrains.com/pycharm/). Pro **eliminaci
+**[mypy](https://mypy-lang.org/)** a [Pycharm](https://www.jetbrains.com/pycharm/). Pro **eliminaci
 mrtvého kódu** se také používá **[vulture](https://github.com/jendrikseipp/vulture/)**.
 
 #### Frontend
@@ -165,20 +172,21 @@ Vývoj frontendu je postaven především na:
 - [vanilla-extract](https://vanilla-extract.style/) - typově bezpečná statická CSS,
 - [ESlint 9](https://eslint.org/) – linter pro statickou analýzu kódu,
 - [Babel 8](https://babeljs.io/),
-- [husky](https://github.com/typicode/husky) a [lint-staged](https://github.com/okonet/lint-staged)
-  – pre-commit kontroly (ESlint, Prettier)
-- a [React Refresh](https://github.com/facebook/react/tree/main/packages/react-refresh) – pro
+- [husky](https://github.com/typicode/husky) a
+  [lint-staged](https://github.com/lint-staged/lint-staged) – pre-commit kontroly (ESlint, Prettier)
+- a [React Refresh](https://github.com/react/react/tree/main/packages/react-refresh) – pro
   [HMR](https://webpack.js.org/guides/hot-module-replacement/).
 
 Aplikace je **odolná proti pádům JS** díky
-**[React Error Boundaries](https://reactjs.org/docs/error-boundaries.html)**. Pro **zrychlení
-načítání** celé aplikace se používá lazy loading
-**[`React.lazy` + `React Suspense`](https://reactjs.org/docs/code-splitting.html)**.
+**[React Error Boundaries](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)**.
+Pro **zrychlení načítání** celé aplikace se používá lazy loading
+**[`React.lazy` + `React Suspense`](https://react.dev/reference/react/lazy)**.
 [Webpack DevServer](https://webpack.js.org/configuration/dev-server/) je při vývoji propojený s
 [Django](https://www.djangoproject.com/) dev serverem a umožňuje tak jednoduchý vývoj bez kompromisů
 včetně [HMR](https://webpack.js.org/guides/hot-module-replacement/). Globální stav aplikace je
-spravován přes **[React Context](https://reactjs.org/docs/context.html)**. Codebase je postavená nad
-funkcionálními komponentami a **[React Hooks](https://reactjs.org/docs/hooks-intro.html)**.
+spravován přes **[React Context](https://react.dev/learn/passing-data-deeply-with-context)**.
+Codebase je postavená nad funkcionálními komponentami a
+**[React Hooks](https://react.dev/reference/react/hooks)**.
 
 ### Nasazené aplikace a nástroje
 
@@ -195,8 +203,7 @@ barevným štítkem v horním menu (kromě produkce).
 > - **produkce** – produkční verze používaná zákazníkem, deploy při release,
 
 - Nasazené aplikace jsou **HTTPS-only** (+ pokročilé zabezpečení, viz
-  [[1]](https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/),
-  [[2]](https://wsvincent.com/django-best-practices/)).
+  [kontrolní seznam Djanga pro nasazení](https://docs.djangoproject.com/en/stable/howto/deployment/checklist/)).
 - Pro **automatické formátování kódů** se používá **[Black](https://github.com/psf/black)** (Python)
   a **[Prettier](https://prettier.io/)** (TS, TSX, JS, CSS, HTML, JSON, YAML, TOML, MD), oba
   nástroje jsou napojené na IDE a provádějí automatické úpravy.
@@ -213,10 +220,10 @@ barevným štítkem v horním menu (kromě produkce).
       s repozitářem zařizuje [Sentry](https://sentry.io/) (tříděné podle typu prostředí, aktivní na
       všech nasazených aplikacích). Při chybě na frontendu je možné poslat **zpětnou vazbu vázanou
       ke konkrétní chybě** díky propojení Sentry a
-      [React Error Boundaries](https://reactjs.org/docs/error-boundaries.html).
+      [React Error Boundaries](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary).
     - **Sledování toku uživatelů** umožňuje napojení na
       [Google Analytics](https://analytics.google.com/) (přes modul
-      [react-ga](https://github.com/react-ga/react-ga)).
+      [react-ga4](https://github.com/codler/react-ga4)).
 - [audit-ci](https://github.com/IBM/audit-ci) se používá pro automatizovanou kontrolu zranitelných
   závislostí projektu na CI.
 - Aplikace **respektuje standardy** [PEP 8](https://pep8.org),
@@ -241,6 +248,7 @@ barevným štítkem v horním menu (kromě produkce).
 
 ```
 ├── .github ...... GitHub Actions konfigurace
+├── .husky ....... Git hooks (kontroly před commitem)
 ├── .idea ........ nastavení pro IDE (Pycharm od Jetbrains)
 ├── admin ........ Django aplikace pro webovou aplikaci
 ├── api .......... Django aplikace pro REST API
@@ -316,11 +324,13 @@ Aplikaci také můžete spustit pouze s Dockerem bez Docker Compose V2, ale je t
 <summary>Ukaž mi alternativní pokročilejší instalaci</summary>
 
 <a name="npmpro">
-  
-> **ℹ️ Poznámka:** Node.js ani npm nejsou požadovány, protože ve vlastním prostředí nelze frontend sestavit (je potřeba
- přístup přes token k privátnímu GitHub Package registru pro [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme 
- automaticky sestavenou poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů ke každému release).
- 
+
+> **ℹ️ Poznámka:** Node.js ani npm nejsou požadovány, protože ve vlastním prostředí nelze frontend
+> sestavit (je potřeba přístup přes token k privátnímu GitHub Package registru pro
+> [FontAwesome PRO](https://fontawesome.com/)). Místo toho zde použijeme automaticky sestavenou
+> poslední produkční verzi frontendu z integračního serveru (která se automaticky nahrává do assetů
+> ke každému release).
+
 </a>
 
 1.  Nejdříve **naklonujte repozitář**, otevřete jeho složku a nahrajte si **poslední produkční
@@ -391,6 +401,10 @@ python manage.py runserver 0.0.0.0:8000
 ```
 
 **✅ Aplikace je nyní dostupná na adrese <http://localhost:8000/>.**
+
+> **ℹ️ Poznámka:** [`Makefile`](Makefile) nabízí zkratky pro běžnou vývojovou smyčku: `make be` pro
+> Django dev server, `make fe` pro webpack dev server a `make db` pro PostgreSQL kontejner
+> (`make help` je vypíše).
 
 </details>
 
