@@ -24,9 +24,9 @@
     },
     "devDependencies": {
         "@antebudimir/eslint-plugin-vanilla-extract": "^1.17.0",
-        "@babel/core": "^8.0.5",
-        "@babel/plugin-transform-runtime": "^8.0.1",
-        "@babel/preset-env": "^8.0.5",
+        "@babel/core": "^8.0.6",
+        "@babel/plugin-transform-runtime": "^8.0.6",
+        "@babel/preset-env": "^8.0.6",
         "@babel/preset-react": "^8.0.1",
         "@babel/preset-typescript": "^8.0.1",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.6.3",
@@ -79,7 +79,7 @@
         "terser-webpack-plugin": "^5.6.1",
         "typescript": "^6.0.3",
         "vitest": "^5.0.1",
-        "webpack": "^5.111.0",
+        "webpack": "^5.111.1",
         "webpack-bundle-analyzer": "^5.4.0",
         "webpack-cli": "^7.2.3",
         "webpack-dev-server": "^6.0.0"
