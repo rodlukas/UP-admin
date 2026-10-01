@@ -9,7 +9,7 @@ on:
 # Beh nad stejnou vetvi se rusi, jakmile prijde novejsi commit. Krome usetrenych minut
 # (jeden beh je build + backend + N UI shardu + deploy) tim mizi i zavod, ve kterem by
 # starsi beh nasadil na testing az po novejsim a nechal tam starsi commit.
-# Nasazeni do produkce je v deploy.yml a to se ZAMERNE nerusi, jen radi do fronty.
+# Nasazeni do produkce je v deploy.yml a bezici beh se tam ZAMERNE nerusi.
 concurrency:
     group: ci-${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
