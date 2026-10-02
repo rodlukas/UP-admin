@@ -1,3 +1,5 @@
+# Tydne, ne denne: kazda aktualizace = beh CI z minut sdilenych vsemi repy uctu.
+# Bezpecnostni aktualizace chodi hned bez ohledu na interval.
 # Vsechny ekosystemy drzi sedmidenni cooldown - cerstve vydani se nenabizi driv,
 # nez je sance, ze se kompromitovany release stihne odhalit a stahnout. Odpovida
 # tomu, co u projektu na Renovate dela minimumReleaseAge: "7 days".
@@ -9,7 +11,7 @@ updates:
       registries:
           - npm-github
       schedule:
-          interval: "daily"
+          interval: "weekly"
       cooldown:
           default-days: 7
       groups:
@@ -29,7 +31,7 @@ updates:
     - package-ecosystem: "pip"
       directory: "/"
       schedule:
-          interval: "daily"
+          interval: "weekly"
       cooldown:
           default-days: 7
       groups:
@@ -40,7 +42,7 @@ updates:
     - package-ecosystem: "github-actions"
       directory: "/"
       schedule:
-          interval: "daily"
+          interval: "weekly"
       cooldown:
           default-days: 7
       groups:
