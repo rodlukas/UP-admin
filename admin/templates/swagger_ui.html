@@ -1,0 +1,24 @@
+{% extends "drf_spectacular/swagger_ui.html" %}
+{% comment %}
+Swagger UI ma tmavy motiv jen pres tridu `dark-mode` na <html> a podle systemu ho samo
+nezapne. Skript bezi v <head>, aby tmavy motiv neprobliknul svetlym, a reaguje i na zmenu
+systemoveho nastaveni za behu. Inline skript povoluje `swagger_csp` v up/urls.py.
+{% endcomment %}
+{% block head %}
+    {{ block.super }}
+    <meta name="color-scheme" content="light dark">
+    <style>
+      /* vychozi sablona barvi body natvrdo svetle */
+      html.dark-mode body { background: transparent; }
+    </style>
+    <script>
+      (function () {
+        var query = window.matchMedia("(prefers-color-scheme: dark)");
+        var apply = function () {
+          document.documentElement.classList.toggle("dark-mode", query.matches);
+        };
+        apply();
+        query.addEventListener("change", apply);
+      })();
+    </script>
+{% endblock head %}
