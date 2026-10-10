@@ -424,49 +424,104 @@ The repo contains **complex tests of the API and UI (e2e)** – see the
 
 ## Screenshots
 
-> **ℹ️ Note:** personal details are fictitious.
+> **ℹ️ Note:** personal details are fictitious. Screenshots follow your GitHub theme (light/dark),
+> both variants are in [docs/screenshots](docs/screenshots).
 
 ### Diary
 
-[![screenshot from the diary](docs/screenshots/diary.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/diary-dark.png">
+    <img src="docs/screenshots/diary.png" alt="screenshot from the diary">
+</picture></a>
 
 ### Dashboard (main page)
 
-[![screenshot from the dashboard](docs/screenshots/dashboard.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dashboard-dark.png">
+    <img src="docs/screenshots/dashboard.png" alt="screenshot from the dashboard">
+</picture></a>
 
 ### Client / Group card
 
-[![screenshot from the client card](docs/screenshots/card-client.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-client.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-client.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/card-client-dark.png">
+    <img src="docs/screenshots/card-client.png" alt="screenshot from the client card">
+</picture></a>
 
-[![screenshot from the group card](docs/screenshots/card-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-group.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-group.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/card-group-dark.png">
+    <img src="docs/screenshots/card-group.png" alt="screenshot from the group card">
+</picture></a>
 
 ### Applications for courses
 
-[![screenshot of the applications for course](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/applications-dark.png">
+    <img src="docs/screenshots/applications.png" alt="screenshot of the applications for course">
+</picture></a>
+
+### Statistics
+
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/statistics.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/statistics-dark.png">
+    <img src="docs/screenshots/statistics.png" alt="screenshot of the statistics">
+</picture></a>
 
 ### Settings
 
-[![screenshot of the settings](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/settings-dark.png">
+    <img src="docs/screenshots/settings.png" alt="screenshot of the settings">
+</picture></a>
 
 ### Search
 
-[![screenshot of the search](docs/screenshots/search.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/search.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/search.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/search-dark.png">
+    <img src="docs/screenshots/search.png" alt="screenshot of the search">
+</picture></a>
+
+### API documentation (Swagger)
+
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/api-docs.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/api-docs-dark.png">
+    <img src="docs/screenshots/api-docs.png" alt="screenshot of the Swagger API documentation">
+</picture></a>
 
 ### Lists
 
-[![screenshot of the list of groups](docs/screenshots/groups.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/groups.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/groups.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/groups-dark.png">
+    <img src="docs/screenshots/groups.png" alt="screenshot of the list of groups">
+</picture></a>
 
-[![screenshot of the list of clients](docs/screenshots/clients.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/clients.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/clients.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/clients-dark.png">
+    <img src="docs/screenshots/clients.png" alt="screenshot of the list of clients">
+</picture></a>
 
 ### Forms
 
 #### Edit group lecture
 
-[![screenshot of the group lecture edit form](docs/screenshots/form-lecture.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-lecture.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-lecture.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/form-lecture-dark.png">
+    <img src="docs/screenshots/form-lecture.png" alt="screenshot of the group lecture edit form">
+</picture></a>
 
 #### Edit group
 
-[![screenshot of the group edit](docs/screenshots/form-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/form-group-dark.png">
+    <img src="docs/screenshots/form-group.png" alt="screenshot of the group edit">
+</picture></a>
+
+#### Edit client
+
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-client.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/form-client-dark.png">
+    <img src="docs/screenshots/form-client.png" alt="screenshot of the client edit form">
+</picture></a>
 
 ## History
 
