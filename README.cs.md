@@ -422,49 +422,104 @@ Aplikace obsahuje **rozsáhlé API a UI (e2e) testy** – vizte
 
 ## Screenshoty
 
-> **ℹ️ Poznámka:** údaje v aplikaci jsou smyšlené.
+> **ℹ️ Poznámka:** údaje v aplikaci jsou smyšlené. Screenshoty se řídí motivem GitHubu (světlý/tmavý),
+> obě varianty jsou v [docs/screenshots](docs/screenshots).
 
 ### Diář
 
-[![screenshot z diáře](docs/screenshots/diary.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/diary.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/diary-dark.png">
+    <img src="docs/screenshots/diary.png" alt="screenshot z diáře">
+</picture></a>
 
 ### Přehled (hlavní stránka)
 
-[![screenshot z přehledu](docs/screenshots/dashboard.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/dashboard.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dashboard-dark.png">
+    <img src="docs/screenshots/dashboard.png" alt="screenshot z přehledu">
+</picture></a>
 
 ### Karta klienta / skupiny
 
-[![screenshot z karty klienta](docs/screenshots/card-client.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-client.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-client.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/card-client-dark.png">
+    <img src="docs/screenshots/card-client.png" alt="screenshot z karty klienta">
+</picture></a>
 
-[![screenshot z karty skupiny](docs/screenshots/card-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-group.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/card-group.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/card-group-dark.png">
+    <img src="docs/screenshots/card-group.png" alt="screenshot z karty skupiny">
+</picture></a>
 
 ### Zájemci o kurzy
 
-[![screenshot ze zájemců o kurzy](docs/screenshots/applications.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/applications.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/applications-dark.png">
+    <img src="docs/screenshots/applications.png" alt="screenshot ze zájemců o kurzy">
+</picture></a>
+
+### Statistiky
+
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/statistics.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/statistics-dark.png">
+    <img src="docs/screenshots/statistics.png" alt="screenshot ze statistik">
+</picture></a>
 
 ### Nastavení
 
-[![screenshot z nastavení](docs/screenshots/settings.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/settings.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/settings-dark.png">
+    <img src="docs/screenshots/settings.png" alt="screenshot z nastavení">
+</picture></a>
 
 ### Vyhledávání
 
-[![screenshot z vyhledávání](docs/screenshots/search.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/search.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/search.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/search-dark.png">
+    <img src="docs/screenshots/search.png" alt="screenshot z vyhledávání">
+</picture></a>
+
+### Dokumentace API (Swagger)
+
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/api-docs.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/api-docs-dark.png">
+    <img src="docs/screenshots/api-docs.png" alt="screenshot dokumentace API ve Swaggeru">
+</picture></a>
 
 ### Výpisy
 
-[![screenshot z výpisu skupin](docs/screenshots/groups.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/groups.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/groups.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/groups-dark.png">
+    <img src="docs/screenshots/groups.png" alt="screenshot z výpisu skupin">
+</picture></a>
 
-[![screenshot z výpisu klientů](docs/screenshots/clients.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/clients.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/clients.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/clients-dark.png">
+    <img src="docs/screenshots/clients.png" alt="screenshot z výpisu klientů">
+</picture></a>
 
 ### Formuláře
 
 #### Úprava skupinové lekce
 
-[![screenshot formuláře pro úpravu skupinové lekce](docs/screenshots/form-lecture.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-lecture.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-lecture.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/form-lecture-dark.png">
+    <img src="docs/screenshots/form-lecture.png" alt="screenshot formuláře pro úpravu skupinové lekce">
+</picture></a>
 
 #### Úprava údajů o skupině
 
-[![screenshot formuláře pro úpravu údajů o skupině](docs/screenshots/form-group.png)](https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png)
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-group.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/form-group-dark.png">
+    <img src="docs/screenshots/form-group.png" alt="screenshot formuláře pro úpravu údajů o skupině">
+</picture></a>
+
+#### Úprava klienta
+
+<a href="https://raw.githubusercontent.com/rodlukas/UP-admin/master/docs/screenshots/form-client.png"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/form-client-dark.png">
+    <img src="docs/screenshots/form-client.png" alt="screenshot formuláře pro úpravu klienta">
+</picture></a>
 
 ## Historie
 

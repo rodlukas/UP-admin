@@ -55,3 +55,15 @@ class OpenAPIDocumentationTest(SimpleTestCase):
         response = self.client.get("/api/docs/", secure=True)
         self.assertEqual(response.status_code, 200)
         self.assertIn("text/html", response["Content-Type"])
+
+    def test_swagger_ui_follows_system_color_scheme(self) -> None:
+        """
+        Zkontroluje, zda Swagger UI přepíná tmavý motiv podle systémového nastavení.
+        """
+        response = self.client.get("/api/docs/", secure=True)
+        self.assertEqual(response.status_code, 200)
+        response_content = response.content.decode("utf-8")
+        self.assertIn("prefers-color-scheme: dark", response_content)
+        self.assertIn('classList.toggle("dark-mode"', response_content)
+        # sablona dedi vychozi sablonu drf-spectacular, Swagger UI se tedy dal nacita
+        self.assertIn('id="swagger-ui"', response_content)

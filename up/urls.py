@@ -58,10 +58,12 @@ urlpatterns = [
     path("favicon.ico", FaviconRedirectView.as_view()),
     # OpenAPI schema
     path("api/open-api/", SpectacularAPIView.as_view(), name="schema"),
-    # Swagger UI dokumentace API (CSP úprava jen pro tuto view)
+    # Swagger UI dokumentace API (CSP úprava jen pro tuto view, motiv podle systému)
     path(
         "api/docs/",
-        csp_override(swagger_csp)(SpectacularSwaggerView.as_view(url_name="schema")),
+        csp_override(swagger_csp)(
+            SpectacularSwaggerView.as_view(url_name="schema", template_name="swagger_ui.html")
+        ),
         name="swagger-ui",
     ),
     # vychozi stranka (serviruje React aplikaci)
