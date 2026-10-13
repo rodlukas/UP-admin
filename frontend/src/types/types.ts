@@ -5,16 +5,10 @@ export type Model = {
     id: number
 }
 
-/** Chybová zpráva zobrazená uživateli. */
-export type ErrMsg = React.ReactElement | string
-
 /** React prop pro QA (využívá Selenium). */
 export type QA = {
     "data-qa"?: string
 }
-
-/** Typ reprezentující timeoutID při použití setTimeout. */
-export type TimeoutType = number | undefined
 
 /* *************************************************************************************************
 Utility.

@@ -3,14 +3,6 @@ import { useQuery } from "@tanstack/react-query"
 import { type ClientType, type GroupType } from "../../types/models"
 import GroupService from "../services/GroupService"
 
-/** Hook pro získání všech skupin. */
-export function useGroups() {
-    return useQuery<GroupType[]>({
-        queryKey: ["groups"],
-        queryFn: () => GroupService.getAll(),
-    })
-}
-
 /** Hook pro získání aktivních skupin. */
 export function useActiveGroups(enabled = true) {
     return useQuery<GroupType[]>({

@@ -17,22 +17,6 @@ type Item = LectureType
 type List = Item[]
 type ListWithDate = LectureTypeWithDate[]
 
-/** Získá lekci. */
-function get(id: Item["id"]): Promise<Item> {
-    return axiosRequestData<Item>({
-        url: `${baseUrl}${id}${API_DELIM}`,
-        method: API_METHODS.get,
-    })
-}
-
-/** Získá všechny lekce. */
-function getAll(): Promise<List> {
-    return axiosRequestData<List>({
-        url: baseUrl,
-        method: API_METHODS.get,
-    })
-}
-
 /** Získá všechny lekce dané skupiny (umožňuje definovat řazení). */
 function getAllFromGroupOrdered(group: GroupType["id"], asc: boolean): Promise<List> {
     const url = `${baseUrl}?${API_URLS.lectures.filters.group}=${group}${ordering(asc)}`
@@ -120,8 +104,6 @@ function create(context: LecturePostApi | LecturePostApi[]): Promise<Item> {
 }
 
 const LectureService = {
-    getAll,
-    get,
     create,
     update,
     remove,

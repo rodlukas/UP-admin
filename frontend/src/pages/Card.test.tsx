@@ -176,6 +176,24 @@ test("renders the analysis summary once the lectures loaded", async () => {
     expect(screen.queryByText("Analýzu se nepodařilo načíst")).not.toBeInTheDocument()
 })
 
+// naplánovaná lekce ještě neproběhla - jinak by „Proběhlé“ i „Zaplaceno“ započítaly i předplacené
+// budoucí termíny (statistiky na backendu berou jen `start <= now`)
+test("counts only past lectures as happened", async () => {
+    lecturesAllMock.mockResolvedValue([
+        createLecture(1, "2020-05-04T10:00:00"),
+        createLecture(2, "2099-05-11T10:00:00"),
+    ])
+    await renderCard()
+    await openAnalysisTab()
+
+    expect(
+        await screen.findByText((_, element) => element?.textContent === "1Proběhlé"),
+    ).toBeInTheDocument()
+    expect(
+        screen.getByText((_, element) => element?.textContent === "1/1Zaplaceno"),
+    ).toBeInTheDocument()
+})
+
 // Rozdíl mezi `isPending` a `isLoading` je vidět JEN offline: dotaz je pak `pending`
 // s `fetchStatus: "paused"`, takže nikdy nic nenačte. S `isPending` by tu kostra zůstala
 // napořád a uživatel by se nedozvěděl, že je odpojený.
