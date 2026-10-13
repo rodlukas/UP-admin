@@ -30,6 +30,7 @@ import {
     MONTH_LABELS,
 } from "../components/charts"
 import ClientName from "../components/ClientName"
+import { LoadErrorEmptyState } from "../components/EmptyState"
 import Heading from "../components/Heading"
 import {
     ChartSkeleton,
@@ -902,7 +903,13 @@ const Statistics: React.FC = () => {
     const [chartMetric, setChartMetric] = React.useState<ChartMetric>("lectures")
     const [compactCharts, setCompactCharts] = React.useState(false)
 
-    const { data: statistics, isFetching: statisticsFetching } = useStatistics({
+    const {
+        data: statistics,
+        isFetching: statisticsFetching,
+        // `isLoading`, ne `isPending`: offline je dotaz `pending` s `fetchStatus: "paused"`
+        // a kostra by místo chybového stavu zůstala napořád
+        isLoading: statisticsLoading,
+    } = useStatistics({
         year: lecturesYear,
     })
 
@@ -963,7 +970,8 @@ const Statistics: React.FC = () => {
              * samostatné `SkeletonShell` by tu při prvním vstupu na stránku byly zároveň
              * (a po 25 s by uživatel dostal dvě totožná hlášení "Načíst stránku znovu").
              */}
-            {!statistics && (
+            {!statistics && !statisticsLoading && <LoadErrorEmptyState resource="Statistiky" />}
+            {!statistics && statisticsLoading && (
                 <SkeletonShell>
                     {/* Klienti mají 3 řádky rozpadu (Aktivní/Neaktivní/Bez lekce),
                         Skupiny jen 2 (Aktivní/Neaktivní) */}

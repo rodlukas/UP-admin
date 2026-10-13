@@ -3,28 +3,6 @@ import { useQueries, useQuery } from "@tanstack/react-query"
 import { type ClientType, type GroupType, type LectureType, type LectureTypeWithDate } from "../../types/models"
 import LectureService from "../services/LectureService"
 
-/** Hook pro získání všech lekcí. */
-export function useLectures() {
-    return useQuery<LectureType[]>({
-        queryKey: ["lectures"],
-        queryFn: () => LectureService.getAll(),
-    })
-}
-
-/** Hook pro získání jedné lekce. */
-export function useLecture(id: LectureType["id"] | undefined) {
-    return useQuery<LectureType>({
-        queryKey: ["lectures", id],
-        queryFn: () => {
-            if (!id) {
-                throw new Error("Lecture ID is required")
-            }
-            return LectureService.get(id)
-        },
-        enabled: !!id,
-    })
-}
-
 /** Hook pro získání lekcí dané skupiny. */
 export function useLecturesFromGroup(groupId: GroupType["id"] | undefined, asc = true) {
     return useQuery<LectureType[]>({

@@ -15,14 +15,6 @@ function get(id: Item["id"]): Promise<Item> {
     })
 }
 
-/** Získá všechny skupiny. */
-function getAll(): Promise<List> {
-    return axiosRequestData<List>({
-        url: baseUrl,
-        method: API_METHODS.get,
-    })
-}
-
 /** Získá aktivní skupiny. */
 function getActive(): Promise<List> {
     return axiosRequestData<List>({
@@ -92,7 +84,6 @@ function deactivateAll(ids: Item["id"][]): Promise<void> {
 }
 
 const GroupService = {
-    getAll,
     get,
     getActive,
     getInactive,

@@ -11,7 +11,7 @@ import DeleteIconButton from "../components/buttons/DeleteIconButton"
 import ClientName from "../components/ClientName"
 import ClientPhone from "../components/ClientPhone"
 import { courseBandVars } from "../components/CourseName.css"
-import EmptyState from "../components/EmptyState"
+import EmptyState, { LoadErrorEmptyState } from "../components/EmptyState"
 import Heading from "../components/Heading"
 import { SkeletonShell } from "../components/Skeletons"
 import ModalApplications from "../forms/ModalApplications"
@@ -96,9 +96,13 @@ const Applications: React.FC = () => {
     return (
         <Container>
             <Heading title={APP_URLS.zajemci.title} buttons={<ModalApplications />} />
-            {isLoading ? (
-                <ApplicationListSkeleton />
-            ) : (
+            {isLoading && <ApplicationListSkeleton />}
+            {/* bez dat po načítání = chyba nebo offline, ne prázdný seznam; podle `data`,
+                ne `isError`, protože selhaný refetch si data z cache nechá (viz Clients.tsx) */}
+            {!isLoading && applicationsData === undefined && (
+                <LoadErrorEmptyState resource="Zájemce" />
+            )}
+            {!isLoading && applicationsData !== undefined && (
                 <>
                     {applications.map((courseApplications) => {
                         const cnt = courseApplications.objects.length
