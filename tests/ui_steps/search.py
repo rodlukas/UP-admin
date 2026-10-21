@@ -36,7 +36,7 @@ def step_impl(context, name):
     )
 
 
-@when('user searches for "{query}"')
+@when('user types "{query}" into the search')
 def step_impl(context, query):
     field = flows.open_spotlight(context.browser)
     field.send_keys(query)

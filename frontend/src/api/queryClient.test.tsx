@@ -2,6 +2,8 @@ import { QueryClientProvider, QueryObserver } from "@tanstack/react-query"
 import { act, renderHook } from "@testing-library/react"
 import * as React from "react"
 
+import { type ClientType } from "../types/models"
+
 import { useDeleteClient } from "./hooks"
 import { createQueryClient } from "./queryClient"
 import ClientService from "./services/ClientService"
@@ -13,7 +15,7 @@ const DELETED_ID = 5
 
 describe("createQueryClient – invalidation after a mutation", () => {
     test("does not refetch the deleted client, but refetches everything else except the bank", async () => {
-        vi.mocked(ClientService).remove.mockResolvedValue(undefined as never)
+        vi.mocked(ClientService).remove.mockResolvedValue({ id: DELETED_ID } as ClientType)
         const queryClient = createQueryClient()
         const queryFns = {
             deleted: vi.fn().mockResolvedValue({}),

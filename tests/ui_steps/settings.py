@@ -1,7 +1,6 @@
 from behave import when, then
 from selenium.webdriver.common.by import By
 
-from tests.ui_steps import flows
 from tests.ui_steps import helpers
 
 # noinspection PyUnresolvedReferences

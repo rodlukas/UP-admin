@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 from tests import fixtures
-from tests.bank_override import block_real_bank
+from tests.bank_override import assert_no_real_request, block_real_bank
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
@@ -55,6 +55,7 @@ def before_all(context):
 
 def after_all(context):
     context.browser.quit()
+    assert_no_real_request(context)
 
 
 def before_scenario(context, scenario):

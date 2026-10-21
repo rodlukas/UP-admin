@@ -170,8 +170,10 @@ jobs:
             # proved testy, spocitej pokryti kodu a posli ho do cloudu
             - name: 🔍 Python - run tests
               run: pipenv run coverage run -a manage.py test
+            # scenare jen pro UI vynecha uz filtr tagu - preskoceni v before_scenario by stalo
+            # zbytecny setup testu (live server, flush DB)
             - name: 🔍 Run E2E API tests
-              run: pipenv run coverage run -a manage.py behave --stage=api --format=progress3
+              run: pipenv run coverage run -a manage.py behave --stage=api --tags=-ui_only --format=progress3
             - name: 📝 Generate test reports
               run: |
                   pipenv run coverage report
@@ -221,7 +223,8 @@ jobs:
                   for feature in $SHARD; do
                       features="$features tests/features/$feature.feature"
                   done
-                  pipenv run coverage run -a manage.py behave --stage=ui --format=progress3 $features
+                  # scenare jen pro API vynecha uz filtr tagu (viz krok E2E API testu)
+                  pipenv run coverage run -a manage.py behave --stage=ui --tags=-api_only --format=progress3 $features
             - name: 📝 Generate test reports
               run: |
                   pipenv run coverage report

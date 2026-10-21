@@ -1,5 +1,5 @@
 from behave import when, then
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 
 # noinspection PyUnresolvedReferences
@@ -18,7 +18,7 @@ def step_impl(context):
 @then("the statistics page shows {clients:d} clients and {groups:d} groups")
 def step_impl(context, clients, groups):
     helpers.wait(
-        context.browser, helpers.WAIT_TIME, ignored_exceptions=(NoSuchElementException,)
+        context.browser, helpers.WAIT_TIME, ignored_exceptions=(StaleElementReferenceException,)
     ).until(
         lambda driver: stat_total(driver, "stat_card_clients") == str(clients)
         and stat_total(driver, "stat_card_groups") == str(groups)

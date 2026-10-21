@@ -2,6 +2,7 @@ from behave import when, then, use_step_matcher
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 
+from admin.models import Client
 from tests import common_helpers
 
 # noinspection PyUnresolvedReferences
@@ -63,21 +64,15 @@ def step_impl(context, expected_phone):
         lambda driver: driver.find_element(By.CSS_SELECTOR, "[data-qa=client_phone]").text
         == expected_phone
     )
+    # telefon je i v kazdem radku seznamu - ulozena hodnota potvrdi, ze se upravil klient z karty
+    surname, firstname = helpers.heading_text(context.browser, "client_name").split(" ", 1)
+    stored_phone = Client.objects.get(surname=surname, firstname=firstname).phone
+    assert stored_phone == expected_phone.replace(" ", ""), stored_phone
 
 
 @then('the client "{full_name}" is gone from the list')
 def step_impl(context, full_name):
-    helpers.wait_modal_closed(context.browser)
-    # smazani z karty navic navaze na seznam klientu (SPA navigace) - prepinac
-    # aktivni/neaktivni, na ktery sahne find_client, tak chvili po prechodu nemusi
-    # jeste v DOM byt (nebo zase zmizi pri doprovodnem prekresleni); dalsi pokus to zopakuje
-    helpers.wait(
-        context.browser,
-        helpers.WAIT_TIME,
-        ignored_exceptions=(NoSuchElementException, StaleElementReferenceException),
-    ).until(lambda driver: not helpers.find_client(context, full_name))
-    # karta smazaneho klienta se jeste dotaze na jeho data - nesmi skoncit chybou
-    helpers.assert_only_notifications(context.browser, {"Klient smazán"})
+    helpers.wait_gone_from_list(context, helpers.find_client, full_name, "Klient smazán")
 
 
 def insert_to_form(context, verify_current_data=False):

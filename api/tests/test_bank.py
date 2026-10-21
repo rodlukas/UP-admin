@@ -10,6 +10,8 @@ from django.core.cache import cache
 from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
 
+from api.services import FIO_CACHE_KEY
+
 from .fio import fio_response, fio_statement, fio_transaction
 
 URL = "/api/v1/bank/"
@@ -24,7 +26,8 @@ class BankViewTest(TestCase):
         self.api = APIClient()
         self.api.force_authenticate(user=user)
         # uspesny vypis se cachuje - testy nesmi videt vypis z predchoziho testu
-        cache.clear()
+        cache.delete(FIO_CACHE_KEY)
+        self.addCleanup(cache.delete, FIO_CACHE_KEY)
         patcher = mock.patch("api.services.requests.get")
         self.fio_get = patcher.start()
         self.addCleanup(patcher.stop)
@@ -90,6 +93,7 @@ class BankViewTest(TestCase):
     def test_unknown_fio_status_is_reported(self) -> None:
         self.fio_get.return_value = fio_response(418, b"")
         response = self.api.get(URL, secure=True)
+        self.assertEqual(response.status_code, 500)
         self.assertIn("neznámá chyba Fio API", response.json()["error_info"])
 
     def test_timeout_is_reported_as_unavailable_api(self) -> None:

@@ -77,13 +77,13 @@ konkrétní sady tedy stačí tyto příkazy:
 > instalovat netřeba.
 >
 > Chrome, který spouští Selenium, dostane vždy `--use-mock-keychain --password-store=basic`, aby
-> nesahal do systémové Klíčenky macOS. Volitelně lze jako proměnné prostředí (ne v `.env`)
-> nastavit `TESTS_CHROME_BINARY` (cesta ke konkrétnímu už staženému Chromiu, např. od Playwrightu)
+> nesahal do systémové Klíčenky macOS. Volitelně lze (v prostředí i v `.env`) nastavit
+> `TESTS_CHROME_BINARY` (cesta ke konkrétnímu už staženému Chromiu, např. od Playwrightu)
 > a `TESTS_CHROME_DEBUGGER_ADDRESS` (např. `127.0.0.1:9222` — testy se místo spuštění vlastního
 > prohlížeče připojí k už běžícímu Chromiu přes CDP; jeho přepínače pak určuje ten, kdo ho
 > spustil).
 
-> **Firefox visí na `TimeoutException: Failed to read marionette port`:** pokud má nainstalovaný
+> **Firefox na macOS visí na `TimeoutException: Failed to read marionette port`:** pokud má nainstalovaný
 > Firefox staženou a připravenou aktualizaci ke spuštění ("staged"), při dalším spuštění
 > (i tomhle testovacím) se ji pokusí nejdřív dokončit — přepsat `/Applications/Firefox.app`, což
 > vyžaduje heslo správce. V automatizovaném běhu to nemá kdo potvrdit a visí to donekonečna.
@@ -147,9 +147,10 @@ python manage.py behave --stage=ui --tags=groups
     behave označí jako nepoužitý a při optimalizacích jej může odstranit. Proto je u těchto importů
     direktiva `# noinspection PyUnresolvedReferences`, která tomuto zamezí a zároveň umožní
     automatickou optimalizaci importů nad celým projektem bez výjimek.
--   Skutečné Fio API se v testech nevolá nikdy: `before_all` obou _stage_ banku vypne a odpověď
-    Fio podvrhne ([`bank_override.py`](bank_override.py)), i když lokální `.env` banku zapíná.
-    Scénáře banky si stav nastaví samy (`features/bank.feature`).
+-   Skutečné Fio API se v testech nevolá nikdy: `before_all` obou _stage_ banku vypne a zablokuje
+    každý HTTP požadavek přes `requests` ([`bank_override.py`](bank_override.py)), i když lokální
+    `.env` banku zapíná; `after_all` pak ověří, že se o žádný nikdo nepokusil. Scénáře banky si
+    stav i odpověď Fio podvrhnou samy (`features/bank.feature`).
 -   Scénář s tagem `ui_only` se v API _stage_ přeskočí a scénář s tagem `api_only` v UI _stage_ —
     používá se tam, kde má smysl jen jedna z nich (čistě frontendové chování, resp. stav, který UI
     neumí vyvolat ani ukázat). Přeskakování zajišťují `before_scenario` v

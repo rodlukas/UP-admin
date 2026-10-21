@@ -12,6 +12,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from behave import use_step_matcher
 
+use_step_matcher("parse")
+
 from tests.ui_steps import applications as application_ui
 
 use_step_matcher("parse")
@@ -143,12 +145,10 @@ def add_lecture_for_new_group_with_new_client(
 
 def open_spotlight(driver):
     helpers.click(driver, "[data-qa=button_search]")
-    field = helpers.wait(driver).until(
+    # Spotlight.Search predava data-qa primo na <input>
+    return helpers.wait(driver).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=spotlight_search]"))
     )
-    if field.tag_name != "input":
-        field = field.find_element(By.CSS_SELECTOR, "input")
-    return field
 
 
 def spotlight_pick(driver, query, result_label=None):

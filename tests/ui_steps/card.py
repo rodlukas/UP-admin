@@ -16,7 +16,7 @@ lecture_ui = flows.lecture_ui
 
 @when('user changes the phone of "{full_name}" on her card to "{new_phone}"')
 def step_impl(context, full_name, new_phone):
-    lecture_ui.open_client_card(context, full_name)
+    assert lecture_ui.open_client_card(context, full_name)
     helpers.wait_loading_ends(context.browser)
     client_ui.set_phone_on_open_card(context, new_phone)
 
@@ -24,7 +24,7 @@ def step_impl(context, full_name, new_phone):
 @when('user deletes "{full_name}" from her card')
 @when('user tries to delete "{full_name}" from her card')
 def step_impl(context, full_name):
-    lecture_ui.open_client_card(context, full_name)
+    assert lecture_ui.open_client_card(context, full_name)
     helpers.wait_loading_ends(context.browser)
     client_ui.delete_client_on_open_card(context)
 
@@ -38,7 +38,7 @@ def step_impl(context):
 
 @when('user renames group "{old_name}" to "{new_name}" on its card')
 def step_impl(context, old_name, new_name):
-    lecture_ui.open_group_card(context, old_name)
+    assert lecture_ui.open_group_card(context, old_name)
     helpers.wait_loading_ends(context.browser)
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_group]").click()
     group_ui.wait_form_visible(context.browser)
@@ -59,7 +59,7 @@ def step_impl(context, expected_name):
 
 @when('user deletes group "{name}" from its card')
 def step_impl(context, name):
-    lecture_ui.open_group_card(context, name)
+    assert lecture_ui.open_group_card(context, name)
     helpers.wait_loading_ends(context.browser)
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_group]").click()
     group_ui.wait_form_visible(context.browser)
@@ -69,22 +69,12 @@ def step_impl(context, name):
 
 @then('the group "{name}" is gone from the list')
 def step_impl(context, name):
-    helpers.wait_modal_closed(context.browser)
-    # smazani z karty navic navaze na seznam skupin (SPA navigace) - prepinac
-    # aktivni/neaktivni, na ktery sahne find_group, tak chvili po prechodu nemusi
-    # jeste v DOM byt (nebo zase zmizi pri doprovodnem prekresleni); dalsi pokus to zopakuje
-    helpers.wait(
-        context.browser,
-        helpers.WAIT_TIME,
-        ignored_exceptions=(NoSuchElementException, StaleElementReferenceException),
-    ).until(lambda driver: not helpers.find_group(context, name))
-    # karta smazane skupiny se jeste dotaze na jeji lekce - nesmi skoncit chybou
-    helpers.assert_only_notifications(context.browser, {"Skupina smazána"})
+    helpers.wait_gone_from_list(context, helpers.find_group, name, "Skupina smazána")
 
 
 @when('user deactivates "{full_name}" from her card')
 def step_impl(context, full_name):
-    lecture_ui.open_client_card(context, full_name)
+    assert lecture_ui.open_client_card(context, full_name)
     helpers.wait_loading_ends(context.browser)
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_deactivate]").click()
     helpers.wait_for_alert_and_accept(context.browser)
@@ -99,7 +89,7 @@ def step_impl(context):
 
 @when('user opens the analysis of "{full_name}"')
 def step_impl(context, full_name):
-    lecture_ui.open_client_card(context, full_name)
+    assert lecture_ui.open_client_card(context, full_name)
     helpers.wait_loading_ends(context.browser)
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=card_tab_analysis]").click()
 
@@ -113,7 +103,7 @@ def step_impl(context):
 
 @when('user opens the card of "{full_name}"')
 def step_impl(context, full_name):
-    lecture_ui.open_client_card(context, full_name)
+    assert lecture_ui.open_client_card(context, full_name)
     helpers.wait_loading_ends(context.browser)
 
 

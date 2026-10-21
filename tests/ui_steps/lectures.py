@@ -24,6 +24,17 @@ def lectures_cnt(driver):
     return len(get_lectures(driver))
 
 
+def wait_card_heading(driver, qa, name):
+    # seznam ma na kazdem radku vlastni tlacitka a udaje se stejnymi data-qa jako karta -
+    # kroky nad kartou smi pokracovat az ve chvili, kdy karta opravdu ukazuje dany zaznam
+    helpers.wait(
+        driver, helpers.WAIT_TIME, ignored_exceptions=(StaleElementReferenceException,)
+    ).until(
+        lambda d: d.find_elements(By.CSS_SELECTOR, f"h1 [data-qa={qa}]")
+        and helpers.heading_text(d, qa) == name
+    )
+
+
 def open_group_card(context, name):
     # otevri skupiny z menu
     helpers.open_groups(context.browser)
@@ -31,6 +42,8 @@ def open_group_card(context, name):
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu s danym nazvem a otevri jeji kartu
     found_group = helpers.find_group(context, name, True)
+    if found_group:
+        wait_card_heading(context.browser, "group_name", name)
     return found_group
 
 
@@ -41,6 +54,8 @@ def open_client_card(context, full_name):
     helpers.wait_loading_ends(context.browser)
     # najdi klienta s danym jmenem a otevri jeho kartu
     found_client = helpers.find_client(context, full_name, True)
+    if found_client:
+        wait_card_heading(context.browser, "client_name", full_name)
     return found_client
 
 

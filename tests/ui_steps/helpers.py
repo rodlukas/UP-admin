@@ -44,29 +44,60 @@ def click(driver, selector):
     """Pocka na prvek, odroluje k nemu a klikne az ve chvili, kdy je klikatelny."""
     element = wait(driver).until(EC.presence_of_element_located((By.CSS_SELECTOR, selector)))
     driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-    wait(driver).until(EC.element_to_be_clickable((By.CSS_SELECTOR, selector)))
+    element = wait(driver).until(EC.element_to_be_clickable((By.CSS_SELECTOR, selector)))
     element.click()
     return element
+
+
+def page_title(driver):
+    return driver.find_element(By.TAG_NAME, "h1").text
+
+
+def wait_page_title(driver, condition):
+    """Pocka, az nadpis stranky (h1) splni podminku; h1 se pri prekresleni nahrazuje."""
+    wait(driver, ignored_exceptions=(StaleElementReferenceException,)).until(
+        lambda d: condition(page_title(d))
+    )
 
 
 def heading_text(driver, qa):
     return driver.find_element(By.CSS_SELECTOR, f"h1 [data-qa={qa}]").text
 
 
+def notification_texts(driver):
+    # notifikace se po 4 s samy zaviraji - mezi nalezenim a ctenim textu muze zmizet
+    texts = set()
+    for notification in driver.find_elements(By.CSS_SELECTOR, "[data-qa=notification]"):
+        try:
+            texts.add(notification.text)
+        except StaleElementReferenceException:
+            pass
+    return texts
+
+
 def wait_notification(driver, text):
     """Pocka na notifikaci s textem - mutace je tim dokoncena (hodi se pred reloadem)."""
-    wait(driver).until(
-        lambda d: any(
-            text in notification.text
-            for notification in d.find_elements(By.CSS_SELECTOR, "[data-qa=notification]")
-        )
-    )
+    wait(driver).until(lambda d: any(text in shown for shown in notification_texts(d)))
 
 
 def assert_only_notifications(driver, allowed):
     """Over, ze na strance nevisi zadna jina notifikace nez ocekavane (napr. chybova)."""
-    texts = {n.text for n in driver.find_elements(By.CSS_SELECTOR, "[data-qa=notification]")}
+    texts = notification_texts(driver)
     assert texts <= set(allowed), f"neocekavane notifikace: {texts - set(allowed)}"
+
+
+def wait_gone_from_list(context, find, name, deleted_message):
+    """Po smazani z karty pocka, az zaznam zmizi ze seznamu, a overi, ze nevisi chyba."""
+    wait_modal_closed(context.browser)
+    # smazani z karty navaze na seznam (SPA navigace) - prepinac aktivni/neaktivni, na ktery
+    # hledani sahne, chvili po prechodu nemusi byt v DOM; dalsi pokus to zopakuje
+    wait(
+        context.browser,
+        WAIT_TIME,
+        ignored_exceptions=(NoSuchElementException, StaleElementReferenceException),
+    ).until(lambda driver: not find(context, name))
+    # karta smazaneho zaznamu se jeste dotaze na jeho data - nesmi skoncit chybou
+    assert_only_notifications(context.browser, {deleted_message})
 
 
 def wait_loading_cycle(driver):

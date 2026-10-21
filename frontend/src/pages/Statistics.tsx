@@ -42,6 +42,7 @@ import { tableFlat, tableScrollOverflow } from "../global/surfaces.css"
 import { numericCell } from "../global/utility.css"
 import { vars } from "../theme/tokens"
 import { type StatisticsType } from "../types/models"
+import { type QA } from "../types/types"
 
 import * as styles from "./Statistics.css"
 
@@ -93,10 +94,8 @@ type EntityStatCardRow = {
     dotColor?: string
 }
 
-type EntityStatCardProps = {
+type EntityStatCardProps = QA & {
     title: string
-    /** `data-qa` karty pro E2E kroky. */
-    qa?: string
     total?: number
     rows: EntityStatCardRow[]
     note?: string
@@ -148,7 +147,13 @@ const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
 )
 
 /** Karta se statistikami entity nebo skupiny metrik. */
-const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, qa, total, rows, note }) => (
+const EntityStatCard: React.FC<EntityStatCardProps> = ({
+    title,
+    total,
+    rows,
+    note,
+    "data-qa": qa,
+}) => (
     <div className={styles.statCard} data-qa={qa}>
         <div className={styles.statCardTitle}>{title}</div>
         {note ? <div className={styles.statNote}>{note}</div> : null}
@@ -917,6 +922,15 @@ const Statistics: React.FC = () => {
         year: lecturesYear,
     })
 
+    // Roky z posledních načtených dat: po chybě načtení jiného roku je `statistics` undefined
+    // a přepínač musí dál nabízet návrat na kterýkoli z nich (aktualizace během renderu,
+    // ne v efektu - viz „Storing information from previous renders“ v dokumentaci Reactu).
+    const loadedYears = statistics?.lectures.available_years
+    const [availableYears, setAvailableYears] = React.useState<number[]>([])
+    if (loadedYears && loadedYears !== availableYears) {
+        setAvailableYears(loadedYears)
+    }
+
     React.useEffect(() => {
         const media = globalThis.matchMedia?.("(max-width: 767px)")
         if (!media) {
@@ -943,7 +957,7 @@ const Statistics: React.FC = () => {
                 onChange={(value) => setLecturesYear(value === YEAR_ALL ? null : Number(value))}
                 data={[
                     { value: YEAR_ALL, label: "Celkem" },
-                    ...(statistics?.lectures.available_years ?? []).map((y) => ({
+                    ...availableYears.map((y) => ({
                         value: String(y),
                         label: String(y),
                     })),
@@ -1014,7 +1028,7 @@ const Statistics: React.FC = () => {
                     <div>
                         <EntityStatCard
                             title="Klienti"
-                            qa="stat_card_clients"
+                            data-qa="stat_card_clients"
                             total={statistics.clients.total}
                             rows={[
                                 {
@@ -1038,7 +1052,7 @@ const Statistics: React.FC = () => {
                     <div>
                         <EntityStatCard
                             title="Skupiny"
-                            qa="stat_card_groups"
+                            data-qa="stat_card_groups"
                             total={statistics.groups.total}
                             rows={[
                                 {

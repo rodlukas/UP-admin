@@ -21,7 +21,7 @@ Feature: Search for clients and groups
 
   @search @ui_only
   Scenario: Search with no match stays empty
-    When user searches for "zzzzzz"
+    When user types "zzzzzz" into the search
     Then the search shows no results
 
   @search @ui_only

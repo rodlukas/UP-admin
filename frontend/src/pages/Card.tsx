@@ -136,8 +136,8 @@ const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactiva
     if (!object.active) {
         return (
             <Alert
-                // pozadi i ramecek dodava `staleAlert`, viz ClientsGroups.css.ts
                 data-qa="card_inactive_notice"
+                // pozadi i ramecek dodava `staleAlert`, viz ClientsGroups.css.ts
                 variant="transparent"
                 color="yellow"
                 mt={0}

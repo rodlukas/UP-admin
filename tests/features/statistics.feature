@@ -21,7 +21,7 @@ Feature: Statistics
     When user requests statistics for year "1999"
     Then the statistics show 0 lectures
 
-  @statistics @ui_only
+  @statistics @ui_only @fast.row1.1
   Scenario: Statistics page shows client and group totals
     When user opens the statistics page
     Then the statistics page shows 5 clients and 4 groups

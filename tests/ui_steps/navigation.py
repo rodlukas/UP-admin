@@ -31,9 +31,7 @@ def step_impl(context):
         context.browser.find_element(By.CSS_SELECTOR, f"[data-qa={qa}]").click()
         helpers.wait_loading_ends(context.browser)
         try:
-            helpers.wait(context.browser, helpers.WAIT_TIME).until(
-                lambda driver: expected_text in driver.find_element(By.TAG_NAME, "h1").text
-            )
+            helpers.wait_page_title(context.browser, lambda title: expected_text in title)
             context.section_results[qa] = True
         except Exception:
             context.section_results[qa] = False

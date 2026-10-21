@@ -32,7 +32,7 @@ Feature: Bank account
     When user opens the dashboard
     Then the dashboard shows that the bank connection is disabled
 
-  @bank @ui_only
+  @bank @ui_only @fast.row1.1
   Scenario: Dashboard shows the balance and recent payments
     Given the bank reports balance 12000 CZK, rent 8000 CZK and a payment of 1500 CZK noted "Platba za lekce"
     And the logged user

@@ -22,8 +22,3 @@ def step_impl(context, balance, rent, amount, note):
         FIO_API_KEY="test-token",
         BANK_RENT_PRICE=rent,
     )
-
-
-@given("the bank answers with error status {status_code:d}")
-def step_impl(context, status_code):
-    use_bank(context, fio_response(status_code, b""), BANK_ACTIVE=True, FIO_API_KEY="test-token")

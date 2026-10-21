@@ -12,18 +12,12 @@ from tests.ui_steps import login_logout
 lecture_ui = flows.lecture_ui
 
 
-def diary_title(driver):
-    return driver.find_element(By.TAG_NAME, "h1").text
-
-
 def open_diary_week(context, date):
     year, month, day = (int(part) for part in date.split("-"))
     context.browser.get(f"{context.base_url}/diar/{year}/{month}/{day}")
     # po plnem nacteni stranky se aplikace teprve namountuje - samotne wait_loading_ends by
     # mohlo skoncit driv, nez se nacitani vubec objevi
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: "Týden" in diary_title(driver)
-    )
+    helpers.wait_page_title(context.browser, lambda title: "Týden" in title)
     helpers.wait_loading_ends(context.browser)
 
 
@@ -85,13 +79,27 @@ def step_impl(context, date, time, group_name, course_name, firstname, surname, 
     ' and note "{note}"'
 )
 def step_impl(context, time, date, duration, note):
+    # krok meni jen trvani a poznamku - kurz, ucastnika, stav ucasti a platbu si zapamatuje
+    # z DB pred upravou, aby kontrola na karte odhalila i jejich nechtenou zmenu pri ulozeni
+    lecture = Lecture.objects.select_related("course").get(
+        start=common_helpers.prepare_start(date, time)
+    )
+    attendance = lecture.attendances.select_related("client", "attendancestate").get()
+    attendances = [
+        lecture_ui.attendance_dict(
+            common_helpers.client_full_name(attendance.client.firstname, attendance.client.surname),
+            attendance.attendancestate.name,
+            attendance.paid,
+            note,
+        )
+    ]
     open_diary_week(context, date)
     lecture_div = helpers.wait(context.browser, helpers.WAIT_TIME).until(
         lambda driver: next(
             (
-                lecture
-                for lecture in driver.find_elements(By.CSS_SELECTOR, "[data-qa=lecture]")
-                if time in lecture.text
+                element
+                for element in driver.find_elements(By.CSS_SELECTOR, "[data-qa=lecture]")
+                if time in element.text
             ),
             False,
         )
@@ -110,19 +118,6 @@ def step_impl(context, time, date, duration, note):
     note_field.send_keys(note)
     helpers.submit_form(context, "button_submit_lecture")
     helpers.wait_modal_closed(context.browser)
-    # krok meni jen trvani a poznamku - kurz, ucastnika, stav ucasti a platbu prevezme z DB
-    lecture = Lecture.objects.select_related("course").get(
-        start=common_helpers.prepare_start(date, time)
-    )
-    attendance = lecture.attendances.select_related("client", "attendancestate").get()
-    attendances = [
-        lecture_ui.attendance_dict(
-            common_helpers.client_full_name(attendance.client.firstname, attendance.client.surname),
-            attendance.attendancestate.name,
-            attendance.paid,
-            note,
-        )
-    ]
     lecture_ui.load_data_to_context(
         context, lecture.course.name, date, time, duration, str(lecture.canceled), attendances
     )
@@ -131,20 +126,16 @@ def step_impl(context, time, date, duration, note):
 @when("user moves to the next diary week and back")
 def step_impl(context):
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=menu_diary]").click()
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: "Týden" in diary_title(driver)
-    )
-    context.original_diary_title = diary_title(context.browser)
+    helpers.wait_page_title(context.browser, lambda title: "Týden" in title)
+    context.original_diary_title = helpers.page_title(context.browser)
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_week_next]").click()
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: "Týden" in diary_title(driver)
-        and diary_title(driver) != context.original_diary_title
+    helpers.wait_page_title(
+        context.browser,
+        lambda title: "Týden" in title and title != context.original_diary_title,
     )
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_week_prev]").click()
 
 
 @then("the diary title returns to the original week")
 def step_impl(context):
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: diary_title(driver) == context.original_diary_title
-    )
+    helpers.wait_page_title(context.browser, lambda title: title == context.original_diary_title)

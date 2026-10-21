@@ -1,10 +1,17 @@
-from behave import when, then
+from behave import given, when, then
 from rest_framework import status
 
+from api.tests.fio import fio_response
 from tests.api_steps import helpers
+from tests.bank_override import use_bank
 
 # noinspection PyUnresolvedReferences
 from tests.common_steps import bank as bank_common, login_logout
+
+
+@given("the bank answers with error status {status_code:d}")
+def step_impl(context, status_code):
+    use_bank(context, fio_response(status_code, b""), BANK_ACTIVE=True, FIO_API_KEY="test-token")
 
 
 @when("user requests the bank statement")

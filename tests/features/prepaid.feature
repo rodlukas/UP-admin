@@ -23,7 +23,7 @@ Feature: Prepaid lectures and counters
     When user sets the prepaid counter of "Rodová Petra" in group "Slabika 1" to 4
     Then the prepaid counter of "Rodová Petra" in group "Slabika 1" is 4
 
-  @prepaid @ui_only
+  @prepaid @ui_only @fast.row1.1
   Scenario: Add prepaid lectures from the client card
     When user adds 2 prepaid lectures for "Rod Lukáš" in course "Kurz Slabika" from the card
     Then the card shows 2 prepaid lectures

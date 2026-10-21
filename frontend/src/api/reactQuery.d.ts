@@ -15,6 +15,8 @@ declare module "@tanstack/react-query" {
             /** Po úspěšné mutaci nezobrazovat žádnou notifikaci. */
             skipSuccessNotification?: boolean
             /** Klíč query záznamu, který mutace maže (z jejích proměnných). */
+            // metoda, ne vlastnost: parametry metod jsou bivariantní, takže sem jde předat
+            // `clientQueryKey(id)` s konkrétním typem proměnných mutace
             deletedQueryKey?(variables: unknown): QueryKey
         }
     }
