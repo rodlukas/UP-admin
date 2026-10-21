@@ -278,7 +278,7 @@ const MembershipPrepaidInput: React.FC<RowProps> = ({ membership, isGroupActive 
     }
 
     return (
-        <div className={styles.memberCard}>
+        <div className={styles.memberCard} data-qa="membership_prepaid">
             {/* order/size odděleně (viz `memberHeading`, který si font-size řídí sám) —
                 sémanticky h2: PrepaidCounters se používá jen na kartě skupiny, přímo pod
                 h1 jménem skupiny, žádná mezilehlá úroveň nadpisu tam není */}
@@ -291,6 +291,7 @@ const MembershipPrepaidInput: React.FC<RowProps> = ({ membership, isGroupActive 
             <Tooltip label="Počet předplacených lekcí">
                 <NumberInput
                     aria-label="Počet předplacených lekcí"
+                    data-qa="prepaid_counter"
                     id={`prepaid_cnt${membership.id}`}
                     value={value}
                     min={0}

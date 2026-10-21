@@ -65,8 +65,14 @@ const MyNavLink: React.FC<MyNavLinkProps> = ({
 
 /** Položky navigace. `qa` atributy jsou kontrakt s E2E kroky — neměnit ani nemazat. */
 const NAV_ITEMS = [
-    { url: APP_URLS.prehled.url, label: "Přehled", icon: faHouse, exact: true },
-    { url: APP_URLS.diar.url, label: "Diář", icon: faCalendar },
+    {
+        url: APP_URLS.prehled.url,
+        label: "Přehled",
+        icon: faHouse,
+        exact: true,
+        qa: "menu_dashboard",
+    },
+    { url: APP_URLS.diar.url, label: "Diář", icon: faCalendar, qa: "menu_diary" },
     { url: APP_URLS.klienti.url, label: "Klienti", icon: faUser, qa: "menu_clients" },
     { url: APP_URLS.skupiny.url, label: "Skupiny", icon: faUsers, qa: "menu_groups" },
     {
@@ -138,6 +144,7 @@ const Menu: React.FC<Props> = ({ closeNavbar }) => {
                         spotlight.open()
                     }}
                     className={styles.spotlightButton}
+                    data-qa="button_search"
                     aria-label={`Otevřít vyhledávání (${spotlightShortcutLabel})`}>
                     <FontAwesomeIcon icon={faSearch} fixedWidth />
                     <span className={styles.navLabel}>Hledat</span>

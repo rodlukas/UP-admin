@@ -1,5 +1,5 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 
 from tests import common_helpers
@@ -35,6 +35,47 @@ def find_client_with_context(context):
 
 def wait_form_visible(driver):
     helpers.wait_form_ready(driver, "form_client")
+
+
+def set_phone_on_open_card(context, new_phone):
+    # pouziva se z karty i z vysledku vyhledavani (sdileny krok "the open card shows phone")
+    context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_client]").click()
+    wait_form_visible(context.browser)
+    phone_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=client_field_phone]")
+    helpers.clear_input(phone_field)
+    phone_field.send_keys(new_phone)
+    helpers.submit_form(context, "button_submit_client")
+    helpers.wait_modal_closed(context.browser)
+    helpers.wait_loading_ends(context.browser)
+
+
+def delete_client_on_open_card(context):
+    # pouziva se z karty i z vysledku vyhledavani (sdileny krok "is gone from the list")
+    context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_client]").click()
+    wait_form_visible(context.browser)
+    context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_delete_client]").click()
+    helpers.wait_for_alert_and_accept(context.browser)
+
+
+@then('the open card shows phone "{expected_phone}"')
+def step_impl(context, expected_phone):
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: driver.find_element(By.CSS_SELECTOR, "[data-qa=client_phone]").text
+        == expected_phone
+    )
+
+
+@then('the client "{full_name}" is gone from the list')
+def step_impl(context, full_name):
+    helpers.wait_modal_closed(context.browser)
+    # smazani z karty navic navaze na seznam klientu (SPA navigace) - prepinac
+    # aktivni/neaktivni, na ktery sahne find_client, tak chvili po prechodu nemusi
+    # jeste v DOM byt (nebo zase zmizi pri doprovodnem prekresleni); dalsi pokus to zopakuje
+    helpers.wait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(NoSuchElementException, StaleElementReferenceException),
+    ).until(lambda driver: not helpers.find_client(context, full_name))
 
 
 def insert_to_form(context, verify_current_data=False):

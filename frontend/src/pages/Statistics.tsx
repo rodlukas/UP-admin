@@ -147,12 +147,14 @@ const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
 
 /** Karta se statistikami entity nebo skupiny metrik. */
 const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, total, rows, note }) => (
-    <div className={styles.statCard}>
+    <div className={styles.statCard} data-qa="stat_card" data-title={title}>
         <div className={styles.statCardTitle}>{title}</div>
         {note ? <div className={styles.statNote}>{note}</div> : null}
         {total !== undefined && (
             <>
-                <div className={styles.metricValue}>{total}</div>
+                <div className={styles.metricValue} data-qa="stat_total">
+                    {total}
+                </div>
                 <div className={styles.totalLabel}>celkem</div>
             </>
         )}

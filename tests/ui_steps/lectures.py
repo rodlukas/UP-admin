@@ -541,6 +541,69 @@ def step_impl(context, client, date, time, new_attendancestate):
     choose_attendancestate(lecture_to_update, new_attendancestate)
 
 
+@when("the success notification disappears")
+def step_impl(context):
+    # predchozi krok (pridani lekce) jen klikne na Ulozit a hned se vrati, bez cekani na
+    # dokonceni mutace - to normalne resi az nasledujici "Then" (viz "the lecture is added").
+    # Tenhle krok se pouziva MISTO nej (napr. kdyz navazuje uprava uplne jine entity), takze
+    # musi nejdriv sam pockat na zavreni modalu, driv nez muze mit smysl kontrolovat notifikaci
+    helpers.wait_modal_closed(context.browser)
+    # Notifications maji zIndex nad modaly (index.tsx) a vychozi autoClose 4 s - predchozi
+    # uspesna mutace muze nechat toast viset pres tlacitko dalsiho formulare (ktery je pak
+    # ElementClickInterceptedException), kdyz na sebe dve mutace v jednom scenari naleznou
+    # rychle za sebou
+    helpers.wait(context.browser, helpers.WAIT_TIME + 5).until(
+        lambda driver: len(driver.find_elements(By.CSS_SELECTOR, "[data-qa=notification]")) == 0
+    )
+
+
+@when(
+    'user syncs the lecture of group "{group_name}" at "{date}", "{time}" to the current group members'
+)
+def step_impl(context, group_name, date, time):
+    # predchozi krok (pridani lekce) nechal v kontextu stare attendances (puvodni clenove
+    # pred zmenou skupiny) - find_lecture by se je pokusil dohledat na karte bez ohledu na
+    # validate_context a spadl by na chybejicim clenovi (NoneType.find_element)
+    context.attendances = []
+    # otevri kartu skupiny
+    open_group_card(context, group_name)
+    # pockej na nacteni
+    helpers.wait_loading_ends(context.browser)
+    # najdi lekci a klikni u ni na Upravit
+    lecture_to_update = find_lecture(context, date, time)
+    assert lecture_to_update
+    lecture_to_update.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_lecture]").click()
+    # pockej az bude viditelny formular
+    wait_form_visible(context.browser)
+    # tlacitko se zobrazuje jen kdyz se ucastnici lekce rozesli se soucasnymi cleny skupiny
+    # (FormLectures.tsx, areAttendantsEqualToMembers) - jeho pritomnost samotna je cast testu
+    sync_button = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_submit_lecture_sync_members]"
+    )
+    sync_button.click()
+    helpers.wait_modal_closed(context.browser)
+
+
+@then(
+    'the lecture attendees of group "{group_name}" at "{date}", "{time}" are "{name1}", "{name2}" and "{name3}"'
+)
+def step_impl(context, group_name, date, time, name1, name2, name3):
+    # editace lekce z karty skupiny po zavreni modalu nechava uzivatele na te same karte
+    helpers.wait_loading_ends(context.browser)
+    lecture_to_update = helpers.wait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_lecture(context, date, time))
+    attendee_names = {
+        element.text
+        for element in lecture_to_update.find_elements(
+            By.CSS_SELECTOR, "[data-qa=lecture_attendance] [data-qa=client_name]"
+        )
+    }
+    assert attendee_names == {name1, name2, name3}, f"ucastnici: {attendee_names}"
+
+
 use_step_matcher("re")
 
 

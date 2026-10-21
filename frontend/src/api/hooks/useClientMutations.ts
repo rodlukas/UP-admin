@@ -29,6 +29,8 @@ export function useDeleteClient() {
         mutationFn: (id) => ClientService.remove(id),
         meta: {
             successMessage: "Klient smazán",
+            // viz komentář u `removesDetailQuery` v queryClient.tsx
+            removesDetailQuery: "clients",
         },
     })
 }

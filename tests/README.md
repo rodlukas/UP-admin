@@ -19,6 +19,8 @@ jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML a
 - `helpers.wait_form_rejected` pozná odmítnutý formulář podle `aria-invalid` (chyba z validace
   Mantine `useForm`) nebo `:invalid` (HTML5 constraint validace u polí s `required`). Obojí je
   standardní chování DOM, ne značka konkrétní komponenty, a vlastní atribut by tu nic nepřidal.
+- nadpis stránky se čte přes `h1` (navigace mezi sekcemi, týden v diáři) — každá stránka má
+  právě jeden `h1`, jde o sémantiku stránky, ne o strukturu konkrétní komponenty.
 - `ui_steps/login_logout.py` čeká na dokončení přihlašovacího požadavku přes `aria-busy` na
   odesílacím tlačítku — ten na něj dává `SubmitButton` sám (`aria-busy={loading}`), takže jde
   o atribut aplikace, ne knihovny.
@@ -71,6 +73,19 @@ konkrétní sady tedy stačí tyto příkazy:
 > nainstalovaný a upravit v [souboru .env](../.env) řádek s `TESTS_BROWSER` na:
 > `TESTS_BROWSER=chrome`. Odpovídající chromedriver si Selenium Manager stáhne samo, ručně ho
 > instalovat netřeba.
+>
+> Chrome se spouští vždy s `--use-mock-keychain --password-store=basic`, aby nesahal do systémové
+> Klíčenky macOS. Volitelně lze v prostředí nastavit `TESTS_CHROME_BINARY` (cesta ke konkrétnímu
+> už staženému Chromiu, např. od Playwrightu) a `TESTS_CHROME_DEBUGGER_ADDRESS` (např.
+> `127.0.0.1:9222` — testy se místo spuštění vlastního prohlížeče připojí k už běžícímu Chromiu
+> přes CDP).
+
+> **Firefox visí na `TimeoutException: Failed to read marionette port`:** pokud má nainstalovaný
+> Firefox staženou a připravenou aktualizaci ke spuštění ("staged"), při dalším spuštění
+> (i tomhle testovacím) se ji pokusí nejdřív dokončit — přepsat `/Applications/Firefox.app`, což
+> vyžaduje heslo správce. V automatizovaném běhu to nemá kdo potvrdit a visí to donekonečna.
+> Pomůže normální restart (ukončení a nové spuštění) běžného Firefoxu, který aktualizaci
+> dokončí obvyklou cestou.
 
 Testování lze ještě dále zúžit na **konkrétní testovanou část či operaci (označené tzv. _tagem_)** z
 dané sady testů (_stage_). Pro jednoduchost jsou _tagy_ pro testované části totožné s názvy souborů
@@ -81,15 +96,28 @@ k dispozici _tagy_ pro CRUD operace (`add`, `delete` a `edit`) a také pro přih
 
 **Tabulka s jednotlivými testovanými částmi:**
 
-| testovaná část       | název _tagu_ i souborů s testy |
-| -------------------- | ------------------------------ |
-| zájemci o kurzy      | `applications`                 |
-| stavy účasti         | `attendancestates`             |
-| klienti              | `clients`                      |
-| kurzy                | `courses`                      |
-| skupiny              | `groups`                       |
-| lekce                | `lectures`                     |
-| přihlášení/odhlášení | `login_logout`                 |
+| testovaná část                         | název _tagu_ i souborů s testy |
+| -------------------------------------- | ------------------------------ |
+| zájemci o kurzy                        | `applications`                 |
+| stavy účasti                           | `attendancestates`             |
+| bankovní účet                          | `bank`                         |
+| karty klientů a skupin                 | `card`                         |
+| klienti                                | `clients`                      |
+| barevné schéma                         | `color_scheme`                 |
+| data bez vlastního UI (jen API)        | `consistency`                  |
+| kurzy                                  | `courses`                      |
+| přehled                                | `dashboard`                    |
+| diář                                   | `diary`                        |
+| skupiny                                | `groups`                       |
+| lekce                                  | `lectures`                     |
+| přihlášení/odhlášení                   | `login_logout`                 |
+| navigace a filtry seznamů              | `navigation`                   |
+| klient přidaný uvnitř jiného formuláře | `nested`                       |
+| předplacené lekce                      | `prepaid`                      |
+| připomenutí platby (jen API)           | `remind_pay`                   |
+| vyhledávání                            | `search`                       |
+| nastavení                              | `settings`                     |
+| statistiky                             | `statistics`                   |
 
 Příklad spuštění testů API pro klienty a lekce – tedy testů ze _stage_ (sady testů) **API** s _tagy_
 (testovanými částmi) `clients`:
@@ -116,12 +144,14 @@ python manage.py behave --stage=ui --tags=groups
     behave označí jako nepoužitý a při optimalizacích jej může odstranit. Proto je u těchto importů
     direktiva `# noinspection PyUnresolvedReferences`, která tomuto zamezí a zároveň umožní
     automatickou optimalizaci importů nad celým projektem bez výjimek.
+-   Scénář s tagem `ui_only` se v API _stage_ přeskočí a scénář s tagem `api_only` v UI _stage_ —
+    používá se tam, kde má smysl jen jedna z nich (čistě frontendové chování, resp. stav, který UI
+    neumí vyvolat ani ukázat). Přeskakování zajišťují `before_scenario` v
+    [`api_environment.py`](api_environment.py) a [`ui_environment.py`](ui_environment.py).
 -   Vzhledem k časové náročnosti UI testů je připraven pro rychlé (smoke) testování tag
     `fast.row1.1` – od každé funkcionality se vyzkouší jeden nejdůležitější příklad reprezentující
     nejčastější použití. Tyto testy se hodí zejména pro rychlý lokální test před zapsáním změn do
     repozitáře.
--   V souboru [MANUAL_TESTS](MANUAL_TESTS.md) je seznam oblastí a průchodů v aplikaci, které nejsou
-    pokryty automatizovanými testy.
 
 ## Unit testy frontendu
 

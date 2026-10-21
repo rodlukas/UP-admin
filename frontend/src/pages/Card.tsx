@@ -160,7 +160,11 @@ const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactiva
                 </span>
                 {/* `default` varianta: syte zlute tlacitko bylo na mekkem notice
                     nejhlasitejsi veci stranky, stejne jako na Klientech */}
-                <Button variant="default" disabled={isDeactivatePending} onClick={onDeactivate}>
+                <Button
+                    variant="default"
+                    disabled={isDeactivatePending}
+                    onClick={onDeactivate}
+                    data-qa="button_deactivate">
                     Přesunout do neaktivních
                     {isDeactivatePending && (
                         <FontAwesomeIcon icon={faSpinnerThird} spin className={iconAfterText} />
@@ -518,8 +522,14 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                     }}
                     className={styles.tabs}>
                     <Tabs.List>
-                        <Tabs.Tab value="lekce">Lekce</Tabs.Tab>
-                        {isClientObject(object) && <Tabs.Tab value="analyza">Analýza</Tabs.Tab>}
+                        <Tabs.Tab value="lekce" data-qa="card_tab_lectures">
+                            Lekce
+                        </Tabs.Tab>
+                        {isClientObject(object) && (
+                            <Tabs.Tab value="analyza" data-qa="card_tab_analysis">
+                                Analýza
+                            </Tabs.Tab>
+                        )}
                     </Tabs.List>
 
                     {isClientObject(object) && (

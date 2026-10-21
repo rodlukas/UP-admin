@@ -199,7 +199,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                 </div>
             </div>
             {analysis.monthlyData.length > 0 && (
-                <div className={styles.chartDivider}>
+                <div className={styles.chartDivider} data-qa="client_analysis_chart">
                     <ResponsiveContainer width="100%" height={190}>
                         <BarChart data={analysis.monthlyData} margin={CHART_MARGIN}>
                             <CartesianGrid

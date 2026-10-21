@@ -97,6 +97,7 @@ function handleError(axiosError: AxiosError, getNavigate?: () => NavigateFn | un
         message: errorMessage,
         color: "red",
         autoClose: 15000,
+        "data-qa": "notification",
     })
 
     // Speciální zpracování pro určité status kódy
@@ -141,7 +142,7 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
             onError: (error: unknown) => {
                 handleError(error as AxiosError, getNavigate)
             },
-            onSuccess: (_data, _variables, _context, mutation) => {
+            onSuccess: (_data, variables, _context, mutation) => {
                 // Invalidujeme všechny queries po každé úspěšné mutaci.
                 // Invalidace pouze refetchuje aktivní queries a označí ostatní jako stale,
                 // takže se refetchují až když budou potřeba.
@@ -149,8 +150,23 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                 // Výjimka: bankovní data (["bank"]) nezávisí na mutacích v aplikaci a dotazují
                 // se na externí rate-limited API (banka má vlastní manuální refresh s minutovým
                 // limitem), proto je z plošné invalidace vyjmeme.
+                //
+                // Druhá výjimka: `removesDetailQuery` v meta mazací mutace (useDeleteClient,
+                // useDeleteGroup) jmenuje query klíč smazaného záznamu (["clients", id] resp.
+                // ["groups", id]) - ten z invalidace vyjmeme taky, jinak by ho aktivní karta
+                // (uživatel maže klienta/skupinu přímo z její karty) plošná invalidace hned
+                // refetchla, server by na smazané ID odpověděl 404 a globální handler chyby
+                // (viz handleError níž) by kartu přesměroval na "Nenalezeno" dřív, než stihne
+                // doběhnout vlastní navigace zpět na seznam po zavření modalu.
+                const removedDetailKey = mutation.options.meta?.removesDetailQuery as
+                    string | undefined
+                const isRemovedDetail = (queryKey: readonly unknown[]): boolean =>
+                    removedDetailKey !== undefined &&
+                    queryKey[0] === removedDetailKey &&
+                    queryKey[1] === variables
                 void queryClient.invalidateQueries({
-                    predicate: (query) => query.queryKey[0] !== "bank",
+                    predicate: (query) =>
+                        query.queryKey[0] !== "bank" && !isRemovedDetail(query.queryKey),
                 })
 
                 // Notifikace potlačíme, pokud je v meta nastaveno skipSuccessNotification
@@ -165,6 +181,7 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                     message: successMessage ?? "Uloženo",
                     color: "green",
                     autoClose: 4000,
+                    "data-qa": "notification",
                 })
             },
         }),

@@ -196,7 +196,7 @@ const Bank: React.FC = () => {
         }
         if (isBankError(bankData)) {
             return (
-                <Text className={styles.bankDangerText} ta="center">
+                <Text className={styles.bankDangerText} ta="center" data-qa="bank_error">
                     {bankData.error_info}
                 </Text>
             )
@@ -205,7 +205,7 @@ const Bank: React.FC = () => {
     }
 
     return (
-        <div className={styles.bankWrapper}>
+        <div className={styles.bankWrapper} data-qa="bank">
             <Box
                 className={classNames(styles.bankTitle, {
                     [styles.bankTitleSuccess]: isEnoughMoney,

@@ -29,6 +29,8 @@ export function useDeleteGroup() {
         mutationFn: (id) => GroupService.remove(id),
         meta: {
             successMessage: "Skupina smazána",
+            // viz komentář u `removesDetailQuery` v queryClient.tsx
+            removesDetailQuery: "groups",
         },
     })
 }
