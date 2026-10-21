@@ -79,6 +79,21 @@ def before_scenario(context, scenario):
     context.user = fixtures.user()
 
 
+def after_step(context, step):
+    # CI z padleho UI kroku jinak ukaze jen TimeoutException bez obsahu stranky - vypis, kde
+    # prohlizec byl a co na strance videl (behave vystup kroku zobrazi u chyby)
+    if step.status.name not in ("failed", "error"):
+        return
+    try:
+        url = context.browser.current_url
+        text = context.browser.execute_script("return document.body ? document.body.innerText : ''")
+    except Exception as err:  # prohlizec muze byt v nestandardnim stavu (alert, padly)
+        print(f"[ui-debug] stav prohlizece nelze precist: {err!r}")
+        return
+    print(f"[ui-debug] url: {url}")
+    print(f"[ui-debug] text stranky:\n{text[:2000]}")
+
+
 def after_scenario(context, scenario):
     # scenar byl preskocen (viz before_scenario) - prohlizec nikdy neopustil "about:blank",
     # kde je localStorage nedostupny (SecurityError) a odhlaseni tedy nema smysl

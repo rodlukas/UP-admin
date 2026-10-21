@@ -52,7 +52,11 @@ def step_impl(context):
 
 @then("the not found page is shown")
 def step_impl(context):
-    assert context.browser.find_element(By.CSS_SELECTOR, "[data-qa=page_not_found]")
+    # po plnem nacteni stranky se aplikace teprve namountuje - wait_loading_ends v predchozim
+    # kroku muze skoncit driv, nez se vubec objevi nacitani
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: driver.find_elements(By.CSS_SELECTOR, "[data-qa=page_not_found]")
+    )
 
 
 @when('user filters the client list by "{query}"')

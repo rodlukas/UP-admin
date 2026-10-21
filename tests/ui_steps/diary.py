@@ -13,6 +13,11 @@ lecture_ui = flows.lecture_ui
 def open_diary_week(context, date):
     year, month, day = (int(part) for part in date.split("-"))
     context.browser.get(f"{context.base_url}/diar/{year}/{month}/{day}")
+    # po plnem nacteni stranky se aplikace teprve namountuje - samotne wait_loading_ends by
+    # mohlo skoncit driv, nez se nacitani vubec objevi
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: "Týden" in driver.find_element(By.TAG_NAME, "h1").text
+    )
     helpers.wait_loading_ends(context.browser)
 
 
