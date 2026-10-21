@@ -3,6 +3,8 @@ import { useMutation } from "@tanstack/react-query"
 import { type GroupPostApi, type GroupPutApi, type GroupType } from "../../types/models"
 import GroupService from "../services/GroupService"
 
+import { groupQueryKey } from "./useGroupQuery"
+
 /** Hook pro vytvoření skupiny. */
 export function useCreateGroup() {
     return useMutation<GroupType, unknown, GroupPostApi>({
@@ -29,8 +31,7 @@ export function useDeleteGroup() {
         mutationFn: (id) => GroupService.remove(id),
         meta: {
             successMessage: "Skupina smazána",
-            // viz komentář u `removesDetailQuery` v queryClient.tsx
-            removesDetailQuery: "groups",
+            deletedQueryKey: groupQueryKey,
         },
     })
 }

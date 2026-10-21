@@ -1,5 +1,11 @@
 import { notifications } from "@mantine/notifications"
-import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
+import {
+    matchQuery,
+    MutationCache,
+    QueryCache,
+    QueryClient,
+    type QueryKey,
+} from "@tanstack/react-query"
 import { type AxiosError } from "axios"
 import * as React from "react"
 
@@ -151,22 +157,21 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                 // se na externí rate-limited API (banka má vlastní manuální refresh s minutovým
                 // limitem), proto je z plošné invalidace vyjmeme.
                 //
-                // Druhá výjimka: `removesDetailQuery` v meta mazací mutace (useDeleteClient,
-                // useDeleteGroup) jmenuje query klíč smazaného záznamu (["clients", id] resp.
-                // ["groups", id]) - ten z invalidace vyjmeme taky, jinak by ho aktivní karta
-                // (uživatel maže klienta/skupinu přímo z její karty) plošná invalidace hned
-                // refetchla, server by na smazané ID odpověděl 404 a globální handler chyby
-                // (viz handleError níž) by kartu přesměroval na "Nenalezeno" dřív, než stihne
-                // doběhnout vlastní navigace zpět na seznam po zavření modalu.
-                const removedDetailKey = mutation.options.meta?.removesDetailQuery as
-                    string | undefined
-                const isRemovedDetail = (queryKey: readonly unknown[]): boolean =>
-                    removedDetailKey !== undefined &&
-                    queryKey[0] === removedDetailKey &&
-                    queryKey[1] === variables
+                // Druhá výjimka: smazaný záznam (`deletedQueryKey` v meta mazací mutace).
+                // Při mazání z karty je jeho detail ještě aktivní, refetch by dostal 404
+                // a handleError by kartu přesměroval na "Nenalezeno" dřív, než po zavření
+                // modalu sama naviguje zpět na seznam.
+                const deletedQueryKey = (
+                    mutation.options.meta?.deletedQueryKey as
+                        ((variables: unknown) => QueryKey) | undefined
+                )?.(variables)
                 void queryClient.invalidateQueries({
                     predicate: (query) =>
-                        query.queryKey[0] !== "bank" && !isRemovedDetail(query.queryKey),
+                        query.queryKey[0] !== "bank" &&
+                        !(
+                            deletedQueryKey &&
+                            matchQuery({ queryKey: deletedQueryKey, exact: true }, query)
+                        ),
                 })
 
                 // Notifikace potlačíme, pokud je v meta nastaveno skipSuccessNotification

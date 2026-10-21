@@ -3,6 +3,8 @@ import { useMutation } from "@tanstack/react-query"
 import { type ClientPostApi, type ClientPutApi, type ClientType } from "../../types/models"
 import ClientService from "../services/ClientService"
 
+import { clientQueryKey } from "./useClientQuery"
+
 /** Hook pro vytvoření klienta. */
 export function useCreateClient() {
     return useMutation<ClientType, unknown, ClientPostApi>({
@@ -29,8 +31,7 @@ export function useDeleteClient() {
         mutationFn: (id) => ClientService.remove(id),
         meta: {
             successMessage: "Klient smazán",
-            // viz komentář u `removesDetailQuery` v queryClient.tsx
-            removesDetailQuery: "clients",
+            deletedQueryKey: clientQueryKey,
         },
     })
 }

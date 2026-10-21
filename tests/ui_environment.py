@@ -24,10 +24,8 @@ def before_all(context):
         if headless:
             options.add_argument("--headless=new")
         options.add_argument("--force-prefers-reduced-motion")
-        # macOS: bez techto dvou prepinacu sahá headless Chrome se vzdálenym debug portem
-        # (coz je presne to, co pouziva Selenium) do systemove Klicenky (polozka "Chrome
-        # Safe Storage") - bezpecnostni dohled na pracovnim Macu to vyhodnoti jako krádez
-        # hesel. Playwright/Puppeteer/chrome-launcher je pridavaji sami, Selenium ne.
+        # bez techto prepinacu Chrome na macOS sahá do systemove Klicenky; Playwright
+        # a Puppeteer je pridavaji sami, Selenium ne
         options.add_argument("--use-mock-keychain")
         options.add_argument("--password-store=basic")
         # volitelne: konkretni uz stazeny Chromium binary (napr. od Playwright) misto Chrome
@@ -49,18 +47,6 @@ def before_all(context):
         if headless:
             options.add_argument("--headless")
         options.set_preference("ui.prefersReducedMotion", 1)
-        # Pokud bezici "skutecny" Firefox na tomhle Macu ma stazenou/pripravenou
-        # aktualizaci ke staazeni ("staged"), kazde DALSI spusteni Firefoxu (i tohle,
-        # samostatny automatizacni profil) se ji pokusi dokoncit - prepsat
-        # /Applications/Firefox.app, coz vyzaduje admin opravneni a bez nikoho, kdo by
-        # dialog potvrdil, to visi donekonecna (geckodriver pak hlasi "Failed to read
-        # marionette port", protoze Firefox misto spusteni ceka na update). Vypnuti
-        # automatickych aktualizaci v tomhle profilu snizuje riziko, ze se cokoliv
-        # nestaguje skrz TUHLE instanci - jiz jednou stagovanou aktualizaci z beziciho
-        # "skutecneho" Firefoxu to ale neresi (viz tests/README.md).
-        options.set_preference("app.update.auto", False)
-        options.set_preference("app.update.staging.enabled", False)
-        options.set_preference("app.update.service.enabled", False)
         context.browser = webdriver.Firefox(options=options)
 
     context.browser.set_window_size(SCREEN_WIDTH, SCREEN_HEIGHT)
