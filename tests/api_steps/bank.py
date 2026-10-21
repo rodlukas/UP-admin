@@ -15,5 +15,23 @@ def step_impl(context):
 @then("the bank connection is reported as disabled")
 def step_impl(context):
     assert context.resp.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-    error_info = context.resp.json()["error_info"]
-    assert "zakázáno" in error_info
+    assert "zakázáno" in context.resp.json()["error_info"]
+
+
+@then(
+    "the bank statement shows balance {balance:d} CZK, rent {rent:d} CZK"
+    ' and the payment "{note}"'
+)
+def step_impl(context, balance, rent, note):
+    assert context.resp.status_code == status.HTTP_200_OK
+    data = context.resp.json()
+    assert data["accountStatement"]["info"]["closingBalance"] == balance
+    assert data["rent_price"] == rent
+    transactions = data["accountStatement"]["transactionList"]["transaction"]
+    assert [t["column25"]["value"] for t in transactions] == [note]
+
+
+@then('the bank reports the error "{message}"')
+def step_impl(context, message):
+    assert context.resp.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+    assert message in context.resp.json()["error_info"]

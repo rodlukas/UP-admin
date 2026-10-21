@@ -1,10 +1,11 @@
-Feature: Data the interface does not expose on its own
+Feature: Data consistency rules enforced by the API
 
   Background: Prepared database and logged user
     Given the database with some clients, groups, courses and attendance states
     And the logged user
 
-  # pruvodce a karty tyhle stavy neukazuji jako samostatny pruchod; jen API stage
+  # UI pokryva stejna pravidla v lectures.feature (projeveni zmen clenu) a card.feature
+  # (mazani klienta s lekcemi); tady se overuje primo vysledek v datech API
   @consistency @api_only @fast.row1.1
   Scenario: Removing a group member drops their attendance
     When user adds a group lecture and then removes "Jirušková Aneta" from "Slabika 4" with refresh

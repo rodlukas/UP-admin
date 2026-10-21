@@ -95,6 +95,8 @@ type EntityStatCardRow = {
 
 type EntityStatCardProps = {
     title: string
+    /** `data-qa` karty pro E2E kroky. */
+    qa?: string
     total?: number
     rows: EntityStatCardRow[]
     note?: string
@@ -146,8 +148,8 @@ const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
 )
 
 /** Karta se statistikami entity nebo skupiny metrik. */
-const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, total, rows, note }) => (
-    <div className={styles.statCard} data-qa="stat_card" data-title={title}>
+const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, qa, total, rows, note }) => (
+    <div className={styles.statCard} data-qa={qa}>
         <div className={styles.statCardTitle}>{title}</div>
         {note ? <div className={styles.statNote}>{note}</div> : null}
         {total !== undefined && (
@@ -972,7 +974,13 @@ const Statistics: React.FC = () => {
              * samostatné `SkeletonShell` by tu při prvním vstupu na stránku byly zároveň
              * (a po 25 s by uživatel dostal dvě totožná hlášení "Načíst stránku znovu").
              */}
-            {!statistics && !statisticsLoading && <LoadErrorEmptyState resource="Statistiky" />}
+            {!statistics && !statisticsLoading && (
+                <>
+                    {/* i po chybě musí jít přepnout zpět na jiný (třeba už načtený) rok */}
+                    {yearFilter}
+                    <LoadErrorEmptyState resource="Statistiky" />
+                </>
+            )}
             {!statistics && statisticsLoading && (
                 <SkeletonShell>
                     {/* Klienti mají 3 řádky rozpadu (Aktivní/Neaktivní/Bez lekce),
@@ -1006,6 +1014,7 @@ const Statistics: React.FC = () => {
                     <div>
                         <EntityStatCard
                             title="Klienti"
+                            qa="stat_card_clients"
                             total={statistics.clients.total}
                             rows={[
                                 {
@@ -1029,6 +1038,7 @@ const Statistics: React.FC = () => {
                     <div>
                         <EntityStatCard
                             title="Skupiny"
+                            qa="stat_card_groups"
                             total={statistics.groups.total}
                             rows={[
                                 {

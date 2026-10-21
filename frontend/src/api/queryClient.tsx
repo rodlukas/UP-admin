@@ -3,8 +3,8 @@ import {
     matchQuery,
     MutationCache,
     QueryCache,
+    type Query,
     QueryClient,
-    type QueryKey,
 } from "@tanstack/react-query"
 import { type AxiosError } from "axios"
 import * as React from "react"
@@ -160,30 +160,30 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                 // Druhá výjimka: smazaný záznam (`deletedQueryKey` v meta mazací mutace).
                 // Při mazání z karty je jeho detail ještě aktivní, refetch by dostal 404
                 // a handleError by kartu přesměroval na "Nenalezeno" dřív, než po zavření
-                // modalu sama naviguje zpět na seznam.
-                const deletedQueryKey = (
-                    mutation.options.meta?.deletedQueryKey as
-                        ((variables: unknown) => QueryKey) | undefined
-                )?.(variables)
+                // modalu sama naviguje zpět na seznam. Jen se označí jako zastaralý, aby
+                // ho případný návrat na kartu načetl znovu.
+                const deletedQueryKey = mutation.options.meta?.deletedQueryKey?.(variables)
+                const isDeletedQuery = (query: Query): boolean =>
+                    deletedQueryKey !== undefined &&
+                    matchQuery({ queryKey: deletedQueryKey, exact: true }, query)
                 void queryClient.invalidateQueries({
-                    predicate: (query) =>
-                        query.queryKey[0] !== "bank" &&
-                        !(
-                            deletedQueryKey &&
-                            matchQuery({ queryKey: deletedQueryKey, exact: true }, query)
-                        ),
+                    predicate: (query) => query.queryKey[0] !== "bank" && !isDeletedQuery(query),
                 })
+                if (deletedQueryKey !== undefined) {
+                    void queryClient.invalidateQueries({
+                        queryKey: deletedQueryKey,
+                        exact: true,
+                        refetchType: "none",
+                    })
+                }
 
                 // Notifikace potlačíme, pokud je v meta nastaveno skipSuccessNotification
                 if (mutation.options.meta?.skipSuccessNotification) {
                     return
                 }
 
-                // Získáme success zprávu z mutation meta, pokud je k dispozici
-                const successMessage = mutation.options.meta?.successMessage as string | undefined
-
                 notifications.show({
-                    message: successMessage ?? "Uloženo",
+                    message: mutation.options.meta?.successMessage ?? "Uloženo",
                     color: "green",
                     autoClose: 4000,
                     "data-qa": "notification",

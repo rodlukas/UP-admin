@@ -3,6 +3,7 @@ import json
 from behave import when, then
 from rest_framework import status
 
+from tests import common_helpers
 from tests.api_steps import helpers
 
 # noinspection PyUnresolvedReferences
@@ -15,27 +16,7 @@ from tests.common_steps import lectures
 def step_impl(context, removed_client, group_name):
     group = helpers.find_group_with_name(context.api_client, group_name)
     assert group
-    attendancestate = helpers.find_attendancestate_with_name(context.api_client, "OK")
-    # pridej lekci s ucasti vsech soucasnych clenu skupiny
-    attendances = [
-        {
-            "client_id": membership["client"]["id"],
-            "attendancestate": attendancestate["id"],
-            "paid": True,
-            "note": "",
-        }
-        for membership in group["memberships"]
-    ]
-    lecture_resp = context.api_client.post(
-        helpers.API_LECTURES,
-        {
-            "group_id": group["id"],
-            "duration": 40,
-            "canceled": False,
-            "start": "2018-06-01T10:00:00",
-            "attendances": attendances,
-        },
-    )
+    lecture_resp = helpers.add_group_lecture(context.api_client, group, "2018-06-01T10:00:00")
     assert lecture_resp.status_code == status.HTTP_201_CREATED
     lecture = json.loads(lecture_resp.content)
     context.lecture_id = lecture["id"]
@@ -43,9 +24,13 @@ def step_impl(context, removed_client, group_name):
     # odeber klienta z clenstvi skupiny
     removed_client_parsed = helpers.parse_client_full_name(removed_client)
     remaining_memberships = [
-        {"client_id": membership["client"]["id"]}
+        membership
         for membership in group["memberships"]
         if not helpers.client_full_names_equal(membership["client"], removed_client_parsed)
+    ]
+    context.remaining_clients = [
+        common_helpers.client_full_name(m["client"]["firstname"], m["client"]["surname"])
+        for m in remaining_memberships
     ]
     group_resp = context.api_client.put(
         f"{helpers.API_GROUPS}{group['id']}/",
@@ -53,7 +38,7 @@ def step_impl(context, removed_client, group_name):
             "name": group["name"],
             "course_id": group["course"]["id"],
             "active": group["active"],
-            "memberships": remaining_memberships,
+            "memberships": [{"client_id": m["client"]["id"]} for m in remaining_memberships],
         },
     )
     assert group_resp.status_code == status.HTTP_200_OK
@@ -86,12 +71,11 @@ def step_impl(context, removed_client, group_name):
 def step_impl(context, removed_client):
     lecture_resp = context.api_client.get(f"{helpers.API_LECTURES}{context.lecture_id}/")
     assert lecture_resp.status_code == status.HTTP_200_OK
-    lecture = json.loads(lecture_resp.content)
-    parsed = helpers.parse_client_full_name(removed_client)
-    assert not any(
-        helpers.client_full_names_equal(attendance["client"], parsed)
-        for attendance in lecture["attendances"]
-    )
+    attendances = json.loads(lecture_resp.content)["attendances"]
+    assert helpers.find_by_client_full_name(attendances, removed_client) is None
+    # ucast zbylych clenu musi zustat - jinak by prosla i obnova, ktera smaze vsechny ucasti
+    for remaining_client in context.remaining_clients:
+        assert helpers.find_by_client_full_name(attendances, remaining_client) is not None
 
 
 @when('user tries to delete the client "{full_name}" through the API')

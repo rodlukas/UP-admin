@@ -1,9 +1,11 @@
 from rest_framework.test import APIClient
 
 from tests import fixtures
+from tests.bank_override import block_real_bank
 
 
 def before_all(context):
+    block_real_bank(context)
     context.api_client = APIClient()
 
 

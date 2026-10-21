@@ -76,6 +76,8 @@ def step_impl(context, full_name):
         helpers.WAIT_TIME,
         ignored_exceptions=(NoSuchElementException, StaleElementReferenceException),
     ).until(lambda driver: not helpers.find_client(context, full_name))
+    # karta smazaneho klienta se jeste dotaze na jeho data - nesmi skoncit chybou
+    helpers.assert_only_notifications(context.browser, {"Klient smazán"})
 
 
 def insert_to_form(context, verify_current_data=False):

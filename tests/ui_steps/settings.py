@@ -27,7 +27,7 @@ def select_attendance_state(driver, field_id, name):
 
 def assert_state_after_reload(context, field_id, name):
     # reload by rozdelanou mutaci zrusil - pockej na potvrzeni ulozeni
-    flows.wait_notification(context.browser, "Změna konfigurace stavů účasti uložena")
+    helpers.wait_notification(context.browser, "Změna konfigurace stavů účasti uložena")
     context.browser.refresh()
     helpers.wait_loading_ends(context.browser)
     # pole se po reloadu znovu vytvari - hledej ho znovu pri kazdem pokusu, ne jen jednou

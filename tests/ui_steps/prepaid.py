@@ -8,7 +8,6 @@ from tests.ui_steps import helpers
 # noinspection PyUnresolvedReferences
 from tests.ui_steps import login_logout
 
-client_ui = flows.client_ui
 lecture_ui = flows.lecture_ui
 
 
@@ -33,8 +32,6 @@ def prepaid_counter_input(driver, full_name):
     'user adds {count:d} prepaid lectures for "{full_name}" in course "{course_name}" from the card'
 )
 def step_impl(context, count, full_name, course_name):
-    client_ui.open_clients(context.browser)
-    helpers.wait_loading_ends(context.browser)
     lecture_ui.open_client_card(context, full_name)
     helpers.wait_loading_ends(context.browser)
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_add_lecture]").click()
@@ -50,7 +47,6 @@ def step_impl(context, count, full_name, course_name):
     helpers.submit_form(context, "button_submit_lecture")
     helpers.wait_modal_closed(context.browser)
     helpers.wait_loading_ends(context.browser)
-    context.created_count = count
 
 
 @then("the card shows {count:d} prepaid lectures")
@@ -73,7 +69,7 @@ def step_impl(context, full_name, group_name, count):
     # Enter pole opusti (blur) a tim spusti ulozeni; Tab by ve Firefoxu fokus nepresunul
     field.send_keys(Keys.ENTER)
     # hodnota v poli je jen lokalni stav - pockej na potvrzeni ulozeni serverem
-    flows.wait_notification(context.browser, "Předplacené lekce uloženy")
+    helpers.wait_notification(context.browser, "Předplacené lekce uloženy")
 
 
 @then('the card of group "{group_name}" shows prepaid counter {count:d} for "{full_name}"')

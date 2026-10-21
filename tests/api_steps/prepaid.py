@@ -28,11 +28,7 @@ def prepaid_lecture_dict(api_client, client, course, paid):
 def find_membership(api_client, group_name, client_full_name):
     group = helpers.find_group_with_name(api_client, group_name)
     assert group
-    client_parsed = helpers.parse_client_full_name(client_full_name)
-    for membership in group["memberships"]:
-        if helpers.client_full_names_equal(membership["client"], client_parsed):
-            return membership
-    return None
+    return helpers.find_by_client_full_name(group["memberships"], client_full_name)
 
 
 @when('user creates {count:d} prepaid lectures for "{full_name}" in course "{course_name}"')
@@ -76,15 +72,13 @@ def step_impl(context, full_name, course_name):
 @then("the prepaid lecture is rejected")
 def step_impl(context):
     assert context.resp.status_code == status.HTTP_400_BAD_REQUEST
+    assert "Předplacenou lekci nelze nastavit jako nezaplacenou." in context.resp.content.decode()
 
 
 @when('user sets the prepaid counter of "{full_name}" in group "{group_name}" to {count:d}')
 def step_impl(context, full_name, group_name, count):
     membership = find_membership(context.api_client, group_name, full_name)
     assert membership
-    context.membership_id = membership["id"]
-    context.group_name = group_name
-    context.client_full_name = full_name
     context.resp = context.api_client.patch(
         f"{helpers.API_MEMBERSHIPS}{membership['id']}/", {"prepaid_cnt": count}
     )

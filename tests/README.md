@@ -11,8 +11,8 @@ Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/se
 [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html). Pro
 jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa`. Výjimky:
 
-- comboboxy Mantine `Select`/`MultiSelect`, do kterých se hodnota vkládá přes
-  `helpers.combobox_insert`, se hledají přímo přes `id` elementu.
+- comboboxy Mantine `Select`/`MultiSelect` se hledají přímo přes `id` elementu (vkládání přes
+  `helpers.combobox_insert`, výběr v Nastavení a v průvodci přidáním lekce).
 - `helpers._combobox_selection_applied` rozlišuje MultiSelect od obyčejného Selectu strukturálně,
   přes Mantine wrapper class `mantine-MultiSelect-root` (zjišťuje se tím *typ* komponenty, ne
   hodnota v ní — na rozdíl od `data-qa` kontraktu jde o introspekci knihovny, ne appky).
@@ -40,7 +40,9 @@ Testuje se v prohlížeči [Mozilla Firefox](https://www.firefox.cz/) s využit�
 Ve **složkách [`api_steps`](api_steps) a [`ui_steps`](ui_steps)** jsou soubory s názvy
 **`<testovana_cast>.py`** – ty pokrývají danou testovanou část aplikace popsanou v souboru
 `features/<testovana_cast>.feature` (např. skupiny, klienty...). Dále je v obou složkách vždy soubor
-**`helpers.py`**, který obsahuje pomocné funkce používané v rámci dané složky.
+**`helpers.py`**, který obsahuje pomocné funkce používané v rámci dané složky. Ve složce `ui_steps`
+je navíc **[`flows.py`](ui_steps/flows.py)** se sdílenými průchody (průvodce přidáním lekce,
+vyhledávání), přes který ostatní moduly znovu používají kroky klientů, skupin a lekcí.
 
 Složka **[`common_steps`](common_steps)** obsahuje kroky, které jsou používané pro API i UI testy
 dané části `<testovana_cast>.py`.
@@ -74,11 +76,12 @@ konkrétní sady tedy stačí tyto příkazy:
 > `TESTS_BROWSER=chrome`. Odpovídající chromedriver si Selenium Manager stáhne samo, ručně ho
 > instalovat netřeba.
 >
-> Chrome se spouští vždy s `--use-mock-keychain --password-store=basic`, aby nesahal do systémové
-> Klíčenky macOS. Volitelně lze v prostředí nastavit `TESTS_CHROME_BINARY` (cesta ke konkrétnímu
-> už staženému Chromiu, např. od Playwrightu) a `TESTS_CHROME_DEBUGGER_ADDRESS` (např.
-> `127.0.0.1:9222` — testy se místo spuštění vlastního prohlížeče připojí k už běžícímu Chromiu
-> přes CDP).
+> Chrome, který spouští Selenium, dostane vždy `--use-mock-keychain --password-store=basic`, aby
+> nesahal do systémové Klíčenky macOS. Volitelně lze jako proměnné prostředí (ne v `.env`)
+> nastavit `TESTS_CHROME_BINARY` (cesta ke konkrétnímu už staženému Chromiu, např. od Playwrightu)
+> a `TESTS_CHROME_DEBUGGER_ADDRESS` (např. `127.0.0.1:9222` — testy se místo spuštění vlastního
+> prohlížeče připojí k už běžícímu Chromiu přes CDP; jeho přepínače pak určuje ten, kdo ho
+> spustil).
 
 > **Firefox visí na `TimeoutException: Failed to read marionette port`:** pokud má nainstalovaný
 > Firefox staženou a připravenou aktualizaci ke spuštění ("staged"), při dalším spuštění
@@ -144,6 +147,9 @@ python manage.py behave --stage=ui --tags=groups
     behave označí jako nepoužitý a při optimalizacích jej může odstranit. Proto je u těchto importů
     direktiva `# noinspection PyUnresolvedReferences`, která tomuto zamezí a zároveň umožní
     automatickou optimalizaci importů nad celým projektem bez výjimek.
+-   Skutečné Fio API se v testech nevolá nikdy: `before_all` obou _stage_ banku vypne a odpověď
+    Fio podvrhne ([`bank_override.py`](bank_override.py)), i když lokální `.env` banku zapíná.
+    Scénáře banky si stav nastaví samy (`features/bank.feature`).
 -   Scénář s tagem `ui_only` se v API _stage_ přeskočí a scénář s tagem `api_only` v UI _stage_ —
     používá se tam, kde má smysl jen jedna z nich (čistě frontendové chování, resp. stav, který UI
     neumí vyvolat ani ukázat). Přeskakování zajišťují `before_scenario` v

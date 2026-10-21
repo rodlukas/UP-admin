@@ -341,7 +341,7 @@ const AppSpotlight: React.FC = () => {
                     ))}
                 </Spotlight.ActionsList>
             ) : (
-                <Spotlight.Empty>{emptyMessage}</Spotlight.Empty>
+                <Spotlight.Empty data-qa="spotlight_empty">{emptyMessage}</Spotlight.Empty>
             )}
             <Spotlight.Footer>
                 <div className={styles.footer}>

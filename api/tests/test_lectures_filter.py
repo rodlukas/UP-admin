@@ -85,6 +85,19 @@ class LectureClientFilterTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(_ids(response.json()), {self.lecture_individual.pk, self.lecture_group.pk})
 
+    def test_group_filter_returns_group_lectures(self) -> None:
+        group_id = self.lecture_group.group_id
+        response = self.api.get(f"/api/v1/lectures/?group={group_id}", secure=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(_ids(response.json()), {self.lecture_group.pk})
+
+    def test_group_filter_with_missing_group_returns_empty_list(self) -> None:
+        # karta prave smazane skupiny se na jeji lekce jeste jednou dotaze - chyba 400 by se
+        # uzivateli ukazala jako chybova notifikace
+        response = self.api.get("/api/v1/lectures/?group=999999", secure=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
     def test_include_group_without_client_is_noop(self) -> None:
         response = self.api.get("/api/v1/lectures/?includeGroup=true", secure=True)
         self.assertEqual(response.status_code, 200)

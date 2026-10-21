@@ -1,14 +1,10 @@
 import json
 
-from behave import when, then, use_step_matcher
+from behave import when, then
 from django.conf import settings
 from rest_framework import status
 
 from tests.api_steps import helpers
-
-# jine moduly nechavaji matcher na "re"; bez explicitniho parse by se kroky
-# registrovaly jako regularni vyrazy
-use_step_matcher("parse")
 
 # noinspection PyUnresolvedReferences
 from tests.common_steps import login_logout
@@ -58,15 +54,3 @@ def step_impl(context):
     # posli dotaz na endpoint - vyzaduje prihlaseni
     resp = context.api_client.get(helpers.API_CLIENTS)
     assert resp.status_code == status.HTTP_401_UNAUTHORIZED
-
-
-@when("user requests the client list without logging in")
-def step_impl(context):
-    # predchozi scenar mohl v klientovi nechat token
-    context.api_client.credentials()
-    context.resp = context.api_client.get(helpers.API_CLIENTS)
-
-
-@then("the request is rejected as unauthorized")
-def step_impl(context):
-    assert context.resp.status_code == status.HTTP_401_UNAUTHORIZED

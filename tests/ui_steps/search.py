@@ -25,14 +25,14 @@ def step_impl(context, query, result_label):
 @then('the client card of "{full_name}" is open')
 def step_impl(context, full_name):
     helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: flows.heading_text(driver, "client_name") == full_name
+        lambda driver: helpers.heading_text(driver, "client_name") == full_name
     )
 
 
 @then('the group card of "{name}" is open')
 def step_impl(context, name):
     helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: flows.heading_text(driver, "group_name") == name
+        lambda driver: helpers.heading_text(driver, "group_name") == name
     )
 
 
@@ -44,7 +44,10 @@ def step_impl(context, query):
 
 @then("the search shows no results")
 def step_impl(context):
-    flows.wait_text(context.browser, "Žádné výsledky odpovídající dotazu.")
+    helpers.wait(context.browser, helpers.WAIT_TIME).until(
+        lambda driver: driver.find_element(By.CSS_SELECTOR, "[data-qa=spotlight_empty]").text
+        == "Žádné výsledky odpovídající dotazu."
+    )
 
 
 @when('user changes the phone on the open card to "{new_phone}"')

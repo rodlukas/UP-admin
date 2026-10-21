@@ -93,9 +93,10 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
     const analysis = React.useMemo(() => {
         const now = new Date()
         const scheduled = lectures.filter((l): l is LectureTypeWithDate => l.start !== null)
-        // budouci (i predplacene) terminy jeste neprobehly - stejne jako statistiky (`start <= now`)
-        const happened = scheduled.filter((l) => !l.canceled && new Date(l.start) <= now)
-        const notHappened = scheduled.filter((l) => l.canceled)
+        // budoucí termíny se do proběhlých ani zrušených nepočítají — stejně jako ve statistikách
+        const past = scheduled.filter((l) => new Date(l.start) <= now)
+        const happened = past.filter((l) => !l.canceled)
+        const notHappened = past.filter((l) => l.canceled)
 
         const excused = notHappened.filter((l) => {
             const att = l.attendances.find((a) => a.client.id === clientId)

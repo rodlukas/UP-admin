@@ -51,6 +51,8 @@ test("shows a load error when the statistics never arrived", async () => {
 
     expect(await screen.findByText("Statistiky se nepodařilo načíst")).toBeInTheDocument()
     expect(screen.queryByTestId("loading")).not.toBeInTheDocument()
+    // přepínač roku zůstává - jinak by se z neúspěšného roku nešlo vrátit bez obnovení stránky
+    expect(screen.getByRole("radio", { name: "Celkem" })).toBeInTheDocument()
 })
 
 // offline je dotaz `pending` s `fetchStatus: "paused"`: nic nenačte, ale ani nehlásí chybu

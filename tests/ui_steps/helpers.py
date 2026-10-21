@@ -40,6 +40,35 @@ def wait(driver, timeout=WAIT_TIME, poll_frequency=POLL_FREQUENCY, **kwargs):
     return WebDriverWait(driver, timeout, poll_frequency=poll_frequency, **kwargs)
 
 
+def click(driver, selector):
+    """Pocka na prvek, odroluje k nemu a klikne az ve chvili, kdy je klikatelny."""
+    element = wait(driver).until(EC.presence_of_element_located((By.CSS_SELECTOR, selector)))
+    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+    wait(driver).until(EC.element_to_be_clickable((By.CSS_SELECTOR, selector)))
+    element.click()
+    return element
+
+
+def heading_text(driver, qa):
+    return driver.find_element(By.CSS_SELECTOR, f"h1 [data-qa={qa}]").text
+
+
+def wait_notification(driver, text):
+    """Pocka na notifikaci s textem - mutace je tim dokoncena (hodi se pred reloadem)."""
+    wait(driver).until(
+        lambda d: any(
+            text in notification.text
+            for notification in d.find_elements(By.CSS_SELECTOR, "[data-qa=notification]")
+        )
+    )
+
+
+def assert_only_notifications(driver, allowed):
+    """Over, ze na strance nevisi zadna jina notifikace nez ocekavane (napr. chybova)."""
+    texts = {n.text for n in driver.find_elements(By.CSS_SELECTOR, "[data-qa=notification]")}
+    assert texts <= set(allowed), f"neocekavane notifikace: {texts - set(allowed)}"
+
+
 def wait_loading_cycle(driver):
     # zjisti, jestli akce vubec spustila fetch; pokud ano, pockej na jeho konec
     try:

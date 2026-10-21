@@ -1,6 +1,7 @@
 import re
 
 from behave import when, then
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 
 from tests.ui_steps import helpers
@@ -65,20 +66,24 @@ def step_impl(context, query):
     helpers.wait_loading_ends(context.browser)
     search_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=table_search]")
     search_field.send_keys(query)
-    helpers.wait_loading_cycle(context.browser)
 
 
 @when("user switches the client list to inactive")
 def step_impl(context):
     helpers.toggle_switcher_active(context.browser, False)
-    helpers.wait_loading_cycle(context.browser)
 
 
 @then("the client list shows only {names}")
 def step_impl(context, names):
     expected = set(re.findall(r'"([^"]+)"', names))
-    found = {
-        element.text
-        for element in context.browser.find_elements(By.CSS_SELECTOR, "[data-qa=client_name]")
-    }
-    assert found == expected, f"ocekavano {expected}, nalezeno {found}"
+
+    def found(driver):
+        return {
+            element.text
+            for element in driver.find_elements(By.CSS_SELECTOR, "[data-qa=client_name]")
+        }
+
+    # filtr i prepinac bezi na klientovi bez fetche - seznam se prekresli az chvili po akci
+    helpers.wait(
+        context.browser, helpers.WAIT_TIME, ignored_exceptions=(StaleElementReferenceException,)
+    ).until(lambda driver: found(driver) == expected)

@@ -1,4 +1,4 @@
-from behave import when, then
+from behave import when
 
 from tests.ui_steps import flows
 from tests.ui_steps import helpers
@@ -20,8 +20,3 @@ def step_impl(context, date, time, full_name, course_name, duration):
     flows.add_lecture_for_existing(
         context, "client", full_name, course_name, date, time, duration, attendances, wizard_date=""
     )
-
-
-@then('the single lecture is on the card of "{full_name}"')
-def step_impl(context, full_name):
-    flows.lecture_visible_on_card(context, lecture_ui.open_client_card, full_name)

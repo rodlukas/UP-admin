@@ -62,6 +62,10 @@ def check_login(context):
     context.button_logout = helpers.wait(context.browser).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=button_logout]"))
     )
+    # Tlacitko odhlaseni je videt uz na /prihlasit, presmerovani pryc (Navigate v Login.tsx)
+    # dobiha az po nem - nasledny browser.get() by jinak toto presmerovani prebilo
+    # a prohlizec by skoncil na Prehledu misto na pozadovane adrese
+    helpers.wait(context.browser).until(lambda driver: "/prihlasit" not in driver.current_url)
     return True, jwt
 
 

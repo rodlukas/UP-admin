@@ -1,20 +1,11 @@
-"""Sdilene pruchody pro pruvodce lekci, karty a vyhledavani.
+"""Sdilene pruchody pro pruvodce lekci a vyhledavani.
 
-Soubor sam neregistruje kroky behave, ale import nize ano - kazdy modul s kroky
-(applications.py, clients.py, groups.py, lectures.py) si pri prvnim naimportovani
-zaregistruje vsechny sve kroky, at uz ho nacita primo behave pri prochazeni adresare,
-nebo tenhle import.
-Bez explicitniho use_step_matcher("parse") mezi importy by dalsi modul zdedil "re",
-na ktere predchozi prepina matcher na konci sveho souboru - behave by pak jeho kroky
-zaregistroval jednou jako regularni vyraz (pres tento import) a podruhe jako parse
-retezec (az behave dojde k danemu souboru v adresari primo), coz konci jako
-AmbiguousStep.
-
-Proto vsechny ostatni moduly s kroky, ktere potrebuji znovupouzit pruchody klientu/
-skupin/lekci (card.py, dashboard.py, diary.py, nested.py, search.py, ...), importuji
-misto primeho "from tests.ui_steps import clients" radeji tenhle soubor a pristupuji
-k `client_ui`/`group_ui`/`lecture_ui` jako k jeho atributum - rika se tim bezpecne
-importum nad rizene jen na jednom miste.
+Moduly s kroky, ktere potrebuji pruchody klientu, skupin a lekci, importuji tenhle soubor
+a pouzivaji `client_ui`/`group_ui`/`lecture_ui`, ne primo `from tests.ui_steps import
+clients`. Prvni import modulu s kroky je zaregistruje s prave platnym matcherem a moduly
+na konci prepinaji na "re" - resety mezi importy nize drzi "parse" pro kazdy z nich na
+jednom miste. Behave pozdejsi registraci tehoz kroku ze stejneho mista ignoruje, takze
+spatne zvoleny matcher by krok tise rozbil.
 """
 
 from selenium.webdriver.common.by import By
@@ -36,28 +27,16 @@ use_step_matcher("parse")
 from tests.ui_steps import helpers
 from tests.ui_steps import lectures as lecture_ui
 
-# lectures.py na konci sveho souboru prepina matcher na "re" (viz docstring vyse) -
-# bez tohoto resetu by to zdedil kazdy modul, ktery si z tohoto souboru neco importuje
 use_step_matcher("parse")
-
-
-def click(driver, selector):
-    element = helpers.wait(driver).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, selector))
-    )
-    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
-    helpers.wait(driver).until(EC.element_to_be_clickable((By.CSS_SELECTOR, selector)))
-    element.click()
-    return element
 
 
 def open_wizard(driver, date):
     # prazdne date je pruvodce v zahlavi (datum doplni uzivatel ve formulari)
-    click(driver, f"[data-qa=button_add_lecture_wizard][data-date='{date}']")
+    helpers.click(driver, f"[data-qa=button_add_lecture_wizard][data-date='{date}']")
 
 
 def choose_wizard_target(driver, kind):
-    click(driver, f"[data-qa=wizard_lecture_{kind}]")
+    helpers.click(driver, f"[data-qa=wizard_lecture_{kind}]")
     return "client" if kind == "client" else "group"
 
 
@@ -102,7 +81,7 @@ def add_lecture_for_existing(
 
 
 def add_client_in_open_form(context, firstname, surname, phone, email, note):
-    click(context.browser, "[data-qa=button_add_client]")
+    helpers.click(context.browser, "[data-qa=button_add_client]")
     client_ui.load_data_to_context(context, firstname, surname, phone, email, note, "True")
     client_ui.insert_to_form(context)
     helpers.submit_form(context, "button_submit_client")
@@ -149,7 +128,7 @@ def add_lecture_for_new_group_with_new_client(
     # nelze cekat na wait_modal_closed, ale rovnou na pripraveny formular lekce
     open_wizard(context.browser, date if wizard_date is None else wizard_date)
     choose_wizard_target(context.browser, "group")
-    click(context.browser, "[data-qa=button_add_group]")
+    helpers.click(context.browser, "[data-qa=button_add_group]")
     fill_group_form_with_new_client(context, group_name, course_name, firstname, surname)
     helpers.submit_form(context, "button_submit_group")
     helpers.wait_form_ready(context.browser, "form_lecture")
@@ -162,15 +141,8 @@ def add_lecture_for_new_group_with_new_client(
     return full_name
 
 
-def lecture_visible_on_card(context, opener, who):
-    assert opener(context, who)
-    helpers.wait(context.browser).until(
-        lambda driver: lecture_ui.find_lecture_with_context(context)
-    )
-
-
 def open_spotlight(driver):
-    click(driver, "[data-qa=button_search]")
+    helpers.click(driver, "[data-qa=button_search]")
     field = helpers.wait(driver).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=spotlight_search]"))
     )
@@ -195,21 +167,3 @@ def spotlight_pick(driver, query, result_label=None):
         )
     )
     option.click()
-
-
-def heading_text(driver, qa):
-    return driver.find_element(By.CSS_SELECTOR, f"h1 [data-qa={qa}]").text
-
-
-def wait_text(driver, text):
-    helpers.wait(driver).until(EC.text_to_be_present_in_element((By.TAG_NAME, "body"), text))
-
-
-def wait_notification(driver, text):
-    """Pocka na notifikaci s textem - mutace je tim dokoncena (hodi se pred reloadem)."""
-    helpers.wait(driver).until(
-        lambda d: any(
-            text in notification.text
-            for notification in d.find_elements(By.CSS_SELECTOR, "[data-qa=notification]")
-        )
-    )

@@ -18,9 +18,3 @@ Feature: Login and logout
     Given the logged user
     When user logs out of app
     Then user is logged out of app
-
-  # bez prihlaseni nema UI co ukazat; krok je jen v API stage
-  @login_logout @api_only
-  Scenario: Anonymous request is rejected
-    When user requests the client list without logging in
-    Then the request is rejected as unauthorized

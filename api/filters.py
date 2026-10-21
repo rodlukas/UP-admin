@@ -46,7 +46,8 @@ class StrictBooleanFilter(filters.Filter):
 class LectureFilter(filters.FilterSet):
     """
     Filtr lekcí podle startu (date, dateFrom), skupiny (group) a klienta (client).
-    Filtr skupiny je základní.
+    Filtr skupiny je číselný jako filtr klienta: neexistující skupina vrátí prázdný seznam,
+    ne chybu 400 (karta právě smazané skupiny se ještě jednou dotazuje na její lekce).
     Filtr startu a klienta umožňuje filtrovat jednodušším URL parametrem, než konkrétní cestou k related_field (xx_yy).
     Filtr dateFrom vrátí lekce od daného dne včetně (start__date >= hodnota) — používá ho
     přehled pro nejbližší příští lekce, kde je potřeba rozsah, ne konkrétní den.
@@ -57,6 +58,7 @@ class LectureFilter(filters.FilterSet):
     """
 
     date = filters.DateFilter(field_name="start__date")
+    group = filters.NumberFilter(field_name="group")
     dateFrom = filters.DateFilter(field_name="start__date", lookup_expr="gte")
     canceled = StrictBooleanFilter(field_name="canceled")
     client = filters.NumberFilter(field_name="attendances__client", method="filter_client")
@@ -76,7 +78,7 @@ class LectureFilter(filters.FilterSet):
 
     class Meta:
         model = Lecture
-        fields = "date", "dateFrom", "canceled", "group"
+        fields = "date", "dateFrom", "canceled"
 
 
 class GroupFilter(filters.FilterSet):

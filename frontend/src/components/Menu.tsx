@@ -116,7 +116,7 @@ const Menu: React.FC<Props> = ({ closeNavbar }) => {
                             exact={"exact" in item ? item.exact : false}
                             label={item.label}
                             icon={item.icon}
-                            data-qa={"qa" in item ? item.qa : undefined}
+                            data-qa={item.qa}
                             onCloseNavbar={closeNavbar}
                         />
                     </li>

@@ -543,15 +543,9 @@ def step_impl(context, client, date, time, new_attendancestate):
 
 @when("the success notification disappears")
 def step_impl(context):
-    # predchozi krok (pridani lekce) jen klikne na Ulozit a hned se vrati, bez cekani na
-    # dokonceni mutace - to normalne resi az nasledujici "Then" (viz "the lecture is added").
-    # Tenhle krok se pouziva MISTO nej (napr. kdyz navazuje uprava uplne jine entity), takze
-    # musi nejdriv sam pockat na zavreni modalu, driv nez muze mit smysl kontrolovat notifikaci
+    # pouziva se misto "Then" po mutaci, na kterou hned navazuje dalsi formular: notifikace
+    # (nad modaly, autoClose 4 s) by jinak prekryla jeho tlacitko
     helpers.wait_modal_closed(context.browser)
-    # Notifications maji zIndex nad modaly (index.tsx) a vychozi autoClose 4 s - predchozi
-    # uspesna mutace muze nechat toast viset pres tlacitko dalsiho formulare (ktery je pak
-    # ElementClickInterceptedException), kdyz na sebe dve mutace v jednom scenari naleznou
-    # rychle za sebou
     helpers.wait(context.browser, helpers.WAIT_TIME + 5).until(
         lambda driver: len(driver.find_elements(By.CSS_SELECTOR, "[data-qa=notification]")) == 0
     )
@@ -588,20 +582,47 @@ def step_impl(context, group_name, date, time):
     'the lecture attendees of group "{group_name}" at "{date}", "{time}" are "{name1}", "{name2}" and "{name3}"'
 )
 def step_impl(context, group_name, date, time, name1, name2, name3):
-    # editace lekce z karty skupiny po zavreni modalu nechava uzivatele na te same karte
-    helpers.wait_loading_ends(context.browser)
-    lecture_to_update = helpers.wait(
+    # editace lekce z karty skupiny po zavreni modalu nechava uzivatele na te same karte;
+    # karta se po ulozeni refetchuje, ucastnici se proto ctou opakovane az do shody
+    expected = {name1, name2, name3}
+
+    def attendee_names(driver):
+        lecture = find_lecture(context, date, time)
+        if not lecture:
+            return set()
+        return {
+            element.text
+            for element in lecture.find_elements(
+                By.CSS_SELECTOR, "[data-qa=lecture_attendance] [data-qa=client_name]"
+            )
+        }
+
+    helpers.wait(
         context.browser,
         helpers.WAIT_TIME,
         ignored_exceptions=(StaleElementReferenceException, TimeoutException),
-    ).until(lambda driver: find_lecture(context, date, time))
-    attendee_names = {
-        element.text
-        for element in lecture_to_update.find_elements(
-            By.CSS_SELECTOR, "[data-qa=lecture_attendance] [data-qa=client_name]"
-        )
-    }
-    assert attendee_names == {name1, name2, name3}, f"ucastnici: {attendee_names}"
+    ).until(lambda driver: attendee_names(driver) == expected)
+
+
+def wait_lecture_on_card(context, open_card, who):
+    """Otevre kartu a pocka, az na ni bude lekce z kontextu (viz "the lecture is added")."""
+    assert open_card(context, who)
+    helpers.wait_loading_ends(context.browser)
+    helpers.wait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_lecture_with_context(context))
+
+
+@then('the single lecture is on the card of "{full_name}"')
+def step_impl(context, full_name):
+    wait_lecture_on_card(context, open_client_card, full_name)
+
+
+@then('the group lecture is on the card of "{group_name}"')
+def step_impl(context, group_name):
+    wait_lecture_on_card(context, open_group_card, group_name)
 
 
 use_step_matcher("re")

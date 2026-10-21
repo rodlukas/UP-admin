@@ -4,28 +4,15 @@ from rest_framework import status
 from tests import common_helpers
 from tests.api_steps import helpers
 
-# "user sets the prepaid counter..." pro Pozadi i reuziti kroku z prepaid.py registruje
-# behave samo (prime prochazeni adresare tests/api_steps) - odsud se NESMI importovat
-# primo (viz docstring tests/ui_steps/flows.py - stejne riziko AmbiguousStep, jen pro
-# tests/api_steps misto tests/ui_steps)
-
 # noinspection PyUnresolvedReferences
 from tests.common_steps import lectures
-
-
-def find_attendance(lecture, full_name):
-    parsed = helpers.parse_client_full_name(full_name)
-    for attendance in lecture["attendances"]:
-        if helpers.client_full_names_equal(attendance["client"], parsed):
-            return attendance
-    return None
 
 
 def assert_remind_pay(context, expected):
     lecture_resp = context.api_client.get(f"{helpers.API_LECTURES}{context.lecture_id}/")
     assert lecture_resp.status_code == status.HTTP_200_OK
     lecture = lecture_resp.json()
-    attendance = find_attendance(lecture, context.attendance_client)
+    attendance = helpers.find_by_client_full_name(lecture["attendances"], context.attendance_client)
     assert attendance is not None
     assert attendance["remind_pay"] is expected, f"remind_pay: {attendance['remind_pay']}"
 
@@ -43,26 +30,7 @@ def step_impl(context, full_name, date, time):
 def step_impl(context, group_name):
     group = helpers.find_group_with_name(context.api_client, group_name)
     assert group
-    attendancestate = helpers.find_attendancestate_with_name(context.api_client, "OK")
-    attendances = [
-        {
-            "client_id": membership["client"]["id"],
-            "attendancestate": attendancestate["id"],
-            "paid": True,
-            "note": "",
-        }
-        for membership in group["memberships"]
-    ]
-    resp = context.api_client.post(
-        helpers.API_LECTURES,
-        {
-            "group_id": group["id"],
-            "duration": 40,
-            "canceled": False,
-            "start": "2018-06-02T10:00:00",
-            "attendances": attendances,
-        },
-    )
+    resp = helpers.add_group_lecture(context.api_client, group, "2018-06-02T10:00:00")
     assert resp.status_code == status.HTTP_201_CREATED
     context.lecture_id = resp.json()["id"]
 

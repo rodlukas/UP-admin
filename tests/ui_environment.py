@@ -6,12 +6,14 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 from tests import fixtures
+from tests.bank_override import block_real_bank
 
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
 
 
 def before_all(context):
+    block_real_bank(context)
     browser_name = settings.TESTS_BROWSER.lower()
     headless = settings.TESTS_HEADLESS
 
@@ -24,7 +26,7 @@ def before_all(context):
         if headless:
             options.add_argument("--headless=new")
         options.add_argument("--force-prefers-reduced-motion")
-        # bez techto prepinacu Chrome na macOS sahá do systemove Klicenky; Playwright
+        # bez techto prepinacu Chrome na macOS saha do systemove Klicenky; Playwright
         # a Puppeteer je pridavaji sami, Selenium ne
         options.add_argument("--use-mock-keychain")
         options.add_argument("--password-store=basic")
@@ -35,9 +37,8 @@ def before_all(context):
         chrome_binary = os.environ.get("TESTS_CHROME_BINARY")
         if chrome_binary:
             options.binary_location = chrome_binary
-        # volitelne: pripoj se na uz bezici Chromium pres CDP (napr. spustene primo
-        # Playwrightem) misto spousteni vlastniho prohlizece - hodi se v prostredich, kde
-        # Selenium samo spoustet prohlizec nesmi, ale pripojit se na uz bezici proces ano
+        # volitelne: pripoj se na uz bezici Chromium pres CDP misto spousteni vlastniho
+        # prohlizece (prepinace vyse pak urcuje ten, kdo prohlizec spustil)
         debugger_address = os.environ.get("TESTS_CHROME_DEBUGGER_ADDRESS")
         if debugger_address:
             options.add_experimental_option("debuggerAddress", debugger_address)
@@ -57,8 +58,7 @@ def after_all(context):
 
 
 def before_scenario(context, scenario):
-    # scenare, ktere jdou overit jen pres API (anonymni pozadavek, projeveni zmen clenu),
-    # v UI stage nemaji kroky a preskakuji se
+    # scenare overujici jen data API (bez UI pruchodu) v UI stage nemaji kroky a preskakuji se
     if "api_only" in scenario.effective_tags:
         scenario.skip(reason="scenar je urceny jen pro API stage (--stage=api)")
         return

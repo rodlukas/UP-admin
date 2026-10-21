@@ -137,6 +137,7 @@ const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactiva
         return (
             <Alert
                 // pozadi i ramecek dodava `staleAlert`, viz ClientsGroups.css.ts
+                data-qa="card_inactive_notice"
                 variant="transparent"
                 color="yellow"
                 mt={0}
@@ -522,9 +523,7 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                     }}
                     className={styles.tabs}>
                     <Tabs.List>
-                        <Tabs.Tab value="lekce" data-qa="card_tab_lectures">
-                            Lekce
-                        </Tabs.Tab>
+                        <Tabs.Tab value="lekce">Lekce</Tabs.Tab>
                         {isClientObject(object) && (
                             <Tabs.Tab value="analyza" data-qa="card_tab_analysis">
                                 Analýza
