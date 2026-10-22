@@ -1,4 +1,5 @@
 from behave import when, then
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 
 from tests.ui_steps import helpers
@@ -29,11 +30,10 @@ def assert_state_after_reload(context, field_id, name):
     helpers.wait_notification(context.browser, "Změna konfigurace stavů účasti uložena")
     context.browser.refresh()
     helpers.wait_loading_ends(context.browser)
-    # pole se po reloadu znovu vytvari - hledej ho znovu pri kazdem pokusu, ne jen jednou
-    # pred cekanim (jinak StaleElementReferenceException)
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: driver.find_element(By.ID, field_id).get_attribute("value") == name
-    )
+    # pole se po reloadu znovu vytvari - hleda se pri kazdem pokusu a zastarale se ignoruje
+    helpers.wait(
+        context.browser, helpers.WAIT_TIME, ignored_exceptions=(StaleElementReferenceException,)
+    ).until(lambda driver: driver.find_element(By.ID, field_id).get_attribute("value") == name)
 
 
 @when('user sets the default attendance state to "{name}" in settings')

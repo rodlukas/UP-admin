@@ -1,4 +1,5 @@
 import os
+import sys
 
 from django.conf import settings
 from selenium import webdriver
@@ -26,20 +27,29 @@ def before_all(context):
         if headless:
             options.add_argument("--headless=new")
         options.add_argument("--force-prefers-reduced-motion")
-        # bez techto prepinacu Chrome na macOS saha do systemove Klicenky; Playwright
-        # a Puppeteer je pridavaji sami, Selenium ne
+        # bez techto prepinacu Chrome na macOS saha do systemove Klicenky; pridavaji se
+        # explicitne, aby nezalezelo na tom, co pridava ktera verze chromedriveru
         options.add_argument("--use-mock-keychain")
         options.add_argument("--password-store=basic")
-        # volitelne: konkretni uz stazeny Chromium binary (napr. od Playwright) misto Chrome
-        # for Testing stazeneho Selenium Managerem. Nastavuje se i v attach rezimu nize
-        # (binary se samo nespusti), protoze podle nej Selenium Manager pozna, jakou verzi
-        # chromedriveru si ma stahnout.
+        # konkretni uz stazeny Chromium (napr. od Playwrightu); bez nej Selenium Manager vezme
+        # nainstalovany Google Chrome a Chrome for Testing stahne jen tam, kde zadny neni.
+        # Nastavuje se i v attach rezimu nize (binary se samo nespusti), protoze podle nej
+        # Selenium Manager pozna, jakou verzi chromedriveru si ma stahnout.
         chrome_binary = os.environ.get("TESTS_CHROME_BINARY")
+        # pripoj se na uz bezici Chromium pres CDP misto spousteni vlastniho prohlizece
+        # (prepinace vyse pak urcuje ten, kdo prohlizec spustil)
+        debugger_address = os.environ.get("TESTS_CHROME_DEBUGGER_ADDRESS")
+        # nainstalovany Google Chrome sdili klic v Klicence s beznym prohlizecem uzivatele -
+        # na macOS ho testy samy nespousti (ani bez TESTS_CHROME_BINARY, ani pres nej)
+        if sys.platform == "darwin" and not debugger_address:
+            if not chrome_binary or "Google Chrome.app" in chrome_binary:
+                raise RuntimeError(
+                    "Na macOS potrebuje TESTS_BROWSER=chrome TESTS_CHROME_BINARY s jinym Chromiem"
+                    " nez nainstalovanym Google Chrome, nebo TESTS_CHROME_DEBUGGER_ADDRESS"
+                    " (viz tests/README.md)."
+                )
         if chrome_binary:
             options.binary_location = chrome_binary
-        # volitelne: pripoj se na uz bezici Chromium pres CDP misto spousteni vlastniho
-        # prohlizece (prepinace vyse pak urcuje ten, kdo prohlizec spustil)
-        debugger_address = os.environ.get("TESTS_CHROME_DEBUGGER_ADDRESS")
         if debugger_address:
             options.add_experimental_option("debuggerAddress", debugger_address)
         context.browser = webdriver.Chrome(options=options)
@@ -54,8 +64,13 @@ def before_all(context):
 
 
 def after_all(context):
-    context.browser.quit()
-    assert_no_real_request(context)
+    try:
+        # prohlizec nemusi existovat, pokud before_all selhal pri jeho spousteni
+        browser = getattr(context, "browser", None)
+        if browser is not None:
+            browser.quit()
+    finally:
+        assert_no_real_request(context)
 
 
 def before_scenario(context, scenario):

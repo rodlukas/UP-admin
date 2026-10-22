@@ -11,23 +11,9 @@ from tests.common_steps import lectures
 def step_impl(context, full_name, course_name, date, time):
     client = helpers.find_client_with_full_name(context.api_client, full_name)
     course = helpers.find_course_with_name(context.api_client, course_name)
-    attendancestate = helpers.find_attendancestate_with_name(context.api_client, "OK")
     resp = context.api_client.post(
         helpers.API_LECTURES,
-        {
-            "course_id": course["id"],
-            "duration": course["duration"],
-            "canceled": False,
-            "start": f"{date}T{time}:00",
-            "attendances": [
-                {
-                    "client_id": client["id"],
-                    "attendancestate": attendancestate["id"],
-                    "paid": True,
-                    "note": "",
-                }
-            ],
-        },
+        helpers.single_lecture_payload(context.api_client, client, course, f"{date}T{time}:00"),
     )
     assert resp.status_code == status.HTTP_201_CREATED
 

@@ -176,6 +176,22 @@ test("renders the analysis summary once the lectures loaded", async () => {
     expect(screen.queryByText("Analýzu se nepodařilo načíst")).not.toBeInTheDocument()
 })
 
+// klient jen s budoucími lekcemi nemá co analyzovat - souhrn samých nul by vypadal jako výsledek
+test("shows an empty state for a client with only future lectures", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] })
+    vi.setSystemTime(new Date("2026-06-01T12:00:00"))
+    try {
+        lecturesAllMock.mockResolvedValue([createLecture(1, "2026-06-08T10:00:00")])
+        await renderCard()
+        await openAnalysisTab()
+
+        expect(await screen.findByText(/žádnou proběhlou lekci/)).toBeInTheDocument()
+        expect(screen.queryByText("Proběhlé")).not.toBeInTheDocument()
+    } finally {
+        vi.useRealTimers()
+    }
+})
+
 // budoucí termín ještě neproběhl ani nebyl zrušen - jinak by „Proběhlé“, „Zaplaceno“ i „Zrušené“
 // započítaly i předplacené budoucí termíny (statistiky na backendu berou jen `start <= now`)
 test("counts only past lectures as happened or canceled", async () => {

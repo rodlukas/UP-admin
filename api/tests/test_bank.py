@@ -63,7 +63,11 @@ class BankViewTest(TestCase):
             for t in data["accountStatement"]["transactionList"]["transaction"]
         ]
         self.assertEqual(notes, ["novější platba", "starší platba"])
-        self.assertEqual(data["accountStatement"]["info"], {"closingBalance": 12000})
+        info = data["accountStatement"]["info"]
+        self.assertEqual(info["closingBalance"], 12000)
+        self.assertEqual(info["currency"], "CZK")
+        for removed in ("yearList", "idList", "idFrom", "idTo", "idLastDownload"):
+            self.assertNotIn(removed, info)
         self.assertEqual(data["rent_price"], 8000)
         self.assertIsInstance(data["fetch_timestamp"], int)
 

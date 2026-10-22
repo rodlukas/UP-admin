@@ -24,17 +24,6 @@ def lectures_cnt(driver):
     return len(get_lectures(driver))
 
 
-def wait_card_heading(driver, qa, name):
-    # seznam ma na kazdem radku vlastni tlacitka a udaje se stejnymi data-qa jako karta -
-    # kroky nad kartou smi pokracovat az ve chvili, kdy karta opravdu ukazuje dany zaznam
-    helpers.wait(
-        driver, helpers.WAIT_TIME, ignored_exceptions=(StaleElementReferenceException,)
-    ).until(
-        lambda d: d.find_elements(By.CSS_SELECTOR, f"h1 [data-qa={qa}]")
-        and helpers.heading_text(d, qa) == name
-    )
-
-
 def open_group_card(context, name):
     # otevri skupiny z menu
     helpers.open_groups(context.browser)
@@ -43,7 +32,7 @@ def open_group_card(context, name):
     # najdi skupinu s danym nazvem a otevri jeji kartu
     found_group = helpers.find_group(context, name, True)
     if found_group:
-        wait_card_heading(context.browser, "group_name", name)
+        helpers.wait_card_heading(context.browser, "group_name", name)
     return found_group
 
 
@@ -55,7 +44,7 @@ def open_client_card(context, full_name):
     # najdi klienta s danym jmenem a otevri jeho kartu
     found_client = helpers.find_client(context, full_name, True)
     if found_client:
-        wait_card_heading(context.browser, "client_name", full_name)
+        helpers.wait_card_heading(context.browser, "client_name", full_name)
     return found_client
 
 
@@ -570,12 +559,11 @@ def step_impl(context):
     'user syncs the lecture of group "{group_name}" at "{date}", "{time}" to the current group members'
 )
 def step_impl(context, group_name, date, time):
-    # predchozi krok (pridani lekce) nechal v kontextu stare attendances (puvodni clenove
-    # pred zmenou skupiny) - find_lecture by se je pokusil dohledat na karte bez ohledu na
-    # validate_context a spadl by na chybejicim clenovi (NoneType.find_element)
+    # find_lecture cte context.attendances i bez validate_context; pridani lekce v predchozim
+    # kroku tam nechalo puvodni cleny - lekce se tu hleda jen podle data a casu
     context.attendances = []
     # otevri kartu skupiny
-    open_group_card(context, group_name)
+    assert open_group_card(context, group_name)
     # pockej na nacteni
     helpers.wait_loading_ends(context.browser)
     # najdi lekci a klikni u ni na Upravit
@@ -599,6 +587,7 @@ def step_impl(context, group_name, date, time):
 def step_impl(context, group_name, date, time, name1, name2, name3):
     # editace lekce z karty skupiny po zavreni modalu nechava uzivatele na te same karte;
     # karta se po ulozeni refetchuje, ucastnici se proto ctou opakovane az do shody
+    helpers.wait_card_heading(context.browser, "group_name", group_name)
     expected = {name1, name2, name3}
 
     def attendee_names(driver):

@@ -173,7 +173,7 @@ jobs:
             # scenare jen pro UI vynecha uz filtr tagu - preskoceni v before_scenario by stalo
             # zbytecny setup testu (live server, flush DB)
             - name: 🔍 Run E2E API tests
-              run: pipenv run coverage run -a manage.py behave --stage=api --tags=-ui_only --format=progress3
+              run: pipenv run coverage run -a manage.py behave --stage=api --tags="not ui_only" --format=progress3
             - name: 📝 Generate test reports
               run: |
                   pipenv run coverage report
@@ -224,7 +224,7 @@ jobs:
                       features="$features tests/features/$feature.feature"
                   done
                   # scenare jen pro API vynecha uz filtr tagu (viz krok E2E API testu)
-                  pipenv run coverage run -a manage.py behave --stage=ui --tags=-api_only --format=progress3 $features
+                  pipenv run coverage run -a manage.py behave --stage=ui --tags="not api_only" --format=progress3 $features
             - name: 📝 Generate test reports
               run: |
                   pipenv run coverage report

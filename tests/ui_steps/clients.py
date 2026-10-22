@@ -1,5 +1,5 @@
 from behave import when, then, use_step_matcher
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 
 from admin.models import Client
@@ -60,7 +60,9 @@ def delete_client_on_open_card(context):
 
 @then('the open card shows phone "{expected_phone}"')
 def step_impl(context, expected_phone):
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(
+        context.browser, helpers.WAIT_TIME, ignored_exceptions=(StaleElementReferenceException,)
+    ).until(
         lambda driver: driver.find_element(By.CSS_SELECTOR, "[data-qa=client_phone]").text
         == expected_phone
     )

@@ -943,8 +943,8 @@ const Statistics: React.FC = () => {
     }, [])
 
     // Rok – filtr. Nezávisí na `statistics` (funguje i s jen "Celkem" před prvním
-    // dotažením) — proto se skládá jednou a vkládá beze změny do obou větví níže, ne
-    // uvnitř samotné podmínky na `statistics`.
+    // dotažením) — proto se skládá jednou a vkládá beze změny do všech větví níže
+    // (kostra, chyba, data), ne uvnitř samotné podmínky na `statistics`.
     const yearFilter = (
         <div className={styles.filterSection}>
             <div className={styles.filterHeading}>Rozsah lekcí</div>
@@ -988,13 +988,6 @@ const Statistics: React.FC = () => {
              * samostatné `SkeletonShell` by tu při prvním vstupu na stránku byly zároveň
              * (a po 25 s by uživatel dostal dvě totožná hlášení "Načíst stránku znovu").
              */}
-            {!statistics && !statisticsLoading && (
-                <>
-                    {/* i po chybě musí jít přepnout zpět na jiný (třeba už načtený) rok */}
-                    {yearFilter}
-                    <LoadErrorEmptyState resource="Statistiky" />
-                </>
-            )}
             {!statistics && statisticsLoading && (
                 <SkeletonShell>
                     {/* Klienti mají 3 řádky rozpadu (Aktivní/Neaktivní/Bez lekce),
@@ -1018,6 +1011,13 @@ const Statistics: React.FC = () => {
                     {/* LecturesYearCourseSection: ani jedno */}
                     <ChartSkeleton />
                 </SkeletonShell>
+            )}
+            {!statistics && !statisticsLoading && (
+                <>
+                    {/* i po chybě musí jít přepnout zpět na jiný (třeba už načtený) rok */}
+                    {yearFilter}
+                    <LoadErrorEmptyState resource="Statistiky" />
+                </>
             )}
             {statistics && (
                 <SimpleGrid

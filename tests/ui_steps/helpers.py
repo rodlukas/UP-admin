@@ -49,6 +49,12 @@ def click(driver, selector):
     return element
 
 
+def wait_visible(driver, qa):
+    return wait(driver).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, f"[data-qa={qa}]"))
+    )
+
+
 def page_title(driver):
     return driver.find_element(By.TAG_NAME, "h1").text
 
@@ -62,6 +68,15 @@ def wait_page_title(driver, condition):
 
 def heading_text(driver, qa):
     return driver.find_element(By.CSS_SELECTOR, f"h1 [data-qa={qa}]").text
+
+
+def wait_card_heading(driver, qa, name):
+    # seznam ma na kazdem radku vlastni tlacitka a udaje se stejnymi data-qa jako karta -
+    # kroky nad kartou smi pokracovat az ve chvili, kdy karta opravdu ukazuje dany zaznam
+    wait(driver, ignored_exceptions=(StaleElementReferenceException,)).until(
+        lambda d: d.find_elements(By.CSS_SELECTOR, f"h1 [data-qa={qa}]")
+        and heading_text(d, qa) == name
+    )
 
 
 def notification_texts(driver):
@@ -88,6 +103,8 @@ def assert_only_notifications(driver, allowed):
 
 def wait_gone_from_list(context, find, name, deleted_message):
     """Po smazani z karty pocka, az zaznam zmizi ze seznamu, a overi, ze nevisi chyba."""
+    # potvrzeni smazani se ceka hned - notifikace se po 4 s sama zavre
+    wait_notification(context.browser, deleted_message)
     wait_modal_closed(context.browser)
     # smazani z karty navaze na seznam (SPA navigace) - prepinac aktivni/neaktivni, na ktery
     # hledani sahne, chvili po prechodu nemusi byt v DOM; dalsi pokus to zopakuje

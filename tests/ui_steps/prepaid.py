@@ -1,4 +1,5 @@
 from behave import when, then
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -80,6 +81,8 @@ def step_impl(context, group_name, count, full_name):
     # po reloadu se hodnota nacte ze serveru, takze dokazuje, ze se skutecne ulozila
     context.browser.refresh()
     helpers.wait_loading_ends(context.browser)
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
+    helpers.wait(
+        context.browser, helpers.WAIT_TIME, ignored_exceptions=(StaleElementReferenceException,)
+    ).until(
         lambda driver: prepaid_counter_input(driver, full_name).get_attribute("value") == str(count)
     )

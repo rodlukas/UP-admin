@@ -1,7 +1,7 @@
 from behave import when, then
 from selenium.webdriver.common.by import By
 
-from admin.models import Group, Lecture
+from admin.models import Group
 from tests import common_helpers
 from tests.ui_steps import flows
 from tests.ui_steps import helpers
@@ -58,9 +58,7 @@ def step_impl(context, date, time, group_name, duration):
 )
 def step_impl(context, date, time, firstname, surname, course_name, duration):
     open_diary_week(context, date)
-    flows.add_lecture_for_new_client(
-        context, firstname, surname, "", "", "", course_name, date, time, duration
-    )
+    flows.add_lecture_for_new_client(context, firstname, surname, course_name, date, time, duration)
 
 
 @when(
@@ -79,47 +77,8 @@ def step_impl(context, date, time, group_name, course_name, firstname, surname, 
     ' and note "{note}"'
 )
 def step_impl(context, time, date, duration, note):
-    # krok meni jen trvani a poznamku - kurz, ucastnika, stav ucasti a platbu si zapamatuje
-    # z DB pred upravou, aby kontrola na karte odhalila i jejich nechtenou zmenu pri ulozeni
-    lecture = Lecture.objects.select_related("course").get(
-        start=common_helpers.prepare_start(date, time)
-    )
-    attendance = lecture.attendances.select_related("client", "attendancestate").get()
-    attendances = [
-        lecture_ui.attendance_dict(
-            common_helpers.client_full_name(attendance.client.firstname, attendance.client.surname),
-            attendance.attendancestate.name,
-            attendance.paid,
-            note,
-        )
-    ]
-    open_diary_week(context, date)
-    lecture_div = helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: next(
-            (
-                element
-                for element in driver.find_elements(By.CSS_SELECTOR, "[data-qa=lecture]")
-                if time in element.text
-            ),
-            False,
-        )
-    )
-    lecture_div.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_lecture]").click()
-    helpers.wait_form_ready(context.browser, "form_lecture")
-    duration_field = context.browser.find_element(
-        By.CSS_SELECTOR, "[data-qa=lecture_field_duration]"
-    )
-    helpers.clear_input(duration_field)
-    duration_field.send_keys(duration)
-    note_field = context.browser.find_element(
-        By.CSS_SELECTOR, "[data-qa=lecture_field_attendance_note]"
-    )
-    helpers.clear_input(note_field)
-    note_field.send_keys(note)
-    helpers.submit_form(context, "button_submit_lecture")
-    helpers.wait_modal_closed(context.browser)
-    lecture_ui.load_data_to_context(
-        context, lecture.course.name, date, time, duration, str(lecture.canceled), attendances
+    flows.edit_lecture_in_day(
+        context, date, time, duration, note, lambda: open_diary_week(context, date)
     )
 
 

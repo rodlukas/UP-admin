@@ -9,7 +9,7 @@ import requests
 
 
 def fio_transaction(transaction_id: int, amount: float, note: str, date: str) -> dict:
-    """Jeden pohyb na účtu (`date` ve tvaru rrrr-mm-dd+GMT)."""
+    """Jeden pohyb na účtu (`date` ve tvaru rrrr-mm-dd+hhmm, např. 2026-10-01+0200)."""
     return {
         "column0": {"value": date},
         "column1": {"value": amount},
@@ -25,7 +25,15 @@ def fio_statement(balance: float, transactions: list[dict]) -> dict:
     return {
         "accountStatement": {
             "info": {
+                "accountId": "2000000000",
+                "bankId": "2010",
+                "currency": "CZK",
+                "iban": "CZ0000000000000000000000",
+                "bic": "FIOBCZPPXXX",
+                "openingBalance": balance,
                 "closingBalance": balance,
+                "dateStart": "2026-09-20+0200",
+                "dateEnd": "2026-10-20+0200",
                 "yearList": None,
                 "idList": None,
                 "idFrom": 1,

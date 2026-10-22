@@ -247,9 +247,10 @@ feature souborů na shard. Scénář, který by vypadl ze všech shardů, by se 
 nezčervenalo, proto na to `build` hned zkraje pouští
 [`scripts/shell/ci/check_ui_shards.sh`](scripts/shell/ci/check_ui_shards.sh): trvá na tom, že
 sjednocení shardů je **přesně** množina souborů v `tests/features` — odhalí zapomenutý nový soubor
-i omylem zdvojený. Po přidání feature souboru ho tedy přidej i do `ui-shards.json`; shardy jsou
-vyvážené podle naměřených časů, ne podle počtu scénářů. Štítky `1/N` v názvech jobů si `Build`
-dopočítá sám, takže přidání shardu nevynutí ruční přečíslování ostatních.
+i omylem zdvojený. Po přidání feature souboru ho tedy přidej i do `ui-shards.json` (i když má jen
+`api_only` scénáře); shardy jsou vyvážené podle naměřených časů, ne podle počtu scénářů. Štítky
+`1/N` v názvech jobů si `Build` dopočítá sám, takže přidání shardu nevynutí ruční přečíslování
+ostatních.
 
 **Deploy** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) se spouští na git tagy — nasadí produkci na Fly.io a pushne Docker image do ghcr.io.
 

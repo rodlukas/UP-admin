@@ -7,24 +7,6 @@ from tests.api_steps import helpers
 from tests.common_steps import lectures
 
 
-def prepaid_lecture_dict(api_client, client, course, paid):
-    attendancestate = helpers.find_attendancestate_with_name(api_client, "OK")
-    return {
-        "course_id": course["id"],
-        "duration": course["duration"],
-        "canceled": False,
-        "start": None,
-        "attendances": [
-            {
-                "client_id": client["id"],
-                "attendancestate": attendancestate["id"],
-                "paid": paid,
-                "note": "",
-            }
-        ],
-    }
-
-
 def find_membership(api_client, group_name, client_full_name):
     group = helpers.find_group_with_name(api_client, group_name)
     assert group
@@ -37,7 +19,10 @@ def step_impl(context, count, full_name, course_name):
     course = helpers.find_course_with_name(context.api_client, course_name)
     context.client_id = client["id"]
     context.course_id = course["id"]
-    payload = [prepaid_lecture_dict(context.api_client, client, course, True) for _ in range(count)]
+    payload = [
+        helpers.single_lecture_payload(context.api_client, client, course, None, True)
+        for _ in range(count)
+    ]
     context.resp = context.api_client.post(helpers.API_LECTURES, payload)
     context.created_count = count
 
@@ -65,7 +50,7 @@ def step_impl(context):
 def step_impl(context, full_name, course_name):
     client = helpers.find_client_with_full_name(context.api_client, full_name)
     course = helpers.find_course_with_name(context.api_client, course_name)
-    payload = prepaid_lecture_dict(context.api_client, client, course, False)
+    payload = helpers.single_lecture_payload(context.api_client, client, course, None, False)
     context.resp = context.api_client.post(helpers.API_LECTURES, payload)
 
 

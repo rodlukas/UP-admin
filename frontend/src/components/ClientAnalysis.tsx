@@ -78,6 +78,17 @@ const ChartTooltip: React.FC<TooltipContentProps> = ({ active, label, payload })
 }
 
 /** Analýza docházky klienta — souhrn a graf proběhlých lekcí po měsících s rozlišením kurzů. */
+/** Proč analýza nemá z čeho počítat (žádná lekce / žádná s termínem / žádná proběhlá). */
+function emptyAnalysisDescription(lectureCount: number, scheduledCount: number): string {
+    if (lectureCount === 0) {
+        return "Klient zatím nemá žádnou lekci."
+    }
+    if (scheduledCount === 0) {
+        return "Žádná z lekcí klienta nemá termín — analýza počítá jen s naplánovanými."
+    }
+    return "Klient zatím nemá žádnou proběhlou lekci — analýza počítá jen s lekcemi, které už začaly."
+}
+
 const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
     // `hasData`, ne `isSuccess`: při SELHANÉM REFETCHI si TanStack Query data z cache nechá,
     // takže `excused` se pořád spočítá správně — schovat čísla za `NoInfo` by zahodilo platné
@@ -148,21 +159,17 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                 }
             })
 
-        return { scheduled, happened, notHappened, excused, paid, courses, monthlyData }
+        return { scheduled, past, happened, notHappened, excused, paid, courses, monthlyData }
     }, [lectures, clientId, attendancestates])
 
-    // Bez jediné lekce s termínem není z čeho počítat souhrn ani graf. `null` by tu nechalo
-    // celou záložku prázdnou, což vypadá stejně jako rozbité načtení (viz Card.tsx).
-    if (analysis.scheduled.length === 0) {
+    // Bez jediné lekce s termínem do dneška není z čeho počítat souhrn ani graf. `null` by tu
+    // nechalo celou záložku prázdnou, což vypadá stejně jako rozbité načtení (viz Card.tsx).
+    if (analysis.past.length === 0) {
         return (
             <EmptyState
                 icon={faChartBar}
                 title="Není co analyzovat"
-                description={
-                    lectures.length === 0
-                        ? "Klient zatím nemá žádnou lekci."
-                        : "Žádná z lekcí klienta nemá termín — analýza počítá jen s naplánovanými."
-                }
+                description={emptyAnalysisDescription(lectures.length, analysis.scheduled.length)}
             />
         )
     }

@@ -4,8 +4,8 @@ Feature: Data consistency rules enforced by the API
     Given the database with some clients, groups, courses and attendance states
     And the logged user
 
-  # UI pokryva stejna pravidla v lectures.feature (projeveni zmen clenu) a card.feature
-  # (mazani klienta s lekcemi); tady se overuje primo vysledek v datech API
+  # UI pokryva v card.feature odmitnute mazani klienta s lekcemi a v lectures.feature
+  # projeveni pridaneho clena skupiny; odebrani clena a odpovedi API se overuji jen tady
   @consistency @api_only @fast.row1.1
   Scenario: Removing a group member drops their attendance
     When user adds a group lecture and then removes "Jirušková Aneta" from "Slabika 4" with refresh

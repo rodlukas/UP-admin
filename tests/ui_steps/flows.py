@@ -1,4 +1,4 @@
-"""Sdilene pruchody pro pruvodce lekci a vyhledavani.
+"""Sdilene pruchody pro pruvodce lekci, upravu lekce v dennim prehledu a vyhledavani.
 
 Moduly s kroky, ktere potrebuji pruchody klientu, skupin a lekci, importuji tenhle soubor
 a pouzivaji `client_ui`/`group_ui`/`lecture_ui`, ne primo `from tests.ui_steps import
@@ -8,9 +8,13 @@ jednom miste. Behave pozdejsi registraci tehoz kroku ze stejneho mista ignoruje,
 spatne zvoleny matcher by krok tise rozbil.
 """
 
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from behave import use_step_matcher
+
+from admin.models import Lecture
+from tests import common_helpers
 
 use_step_matcher("parse")
 
@@ -33,13 +37,15 @@ use_step_matcher("parse")
 
 
 def open_wizard(driver, date):
-    # prazdne date je pruvodce v zahlavi (datum doplni uzivatel ve formulari)
-    helpers.click(driver, f"[data-qa=button_add_lecture_wizard][data-date='{date}']")
+    # prazdne date je pruvodce v zahlavi Prehledu (datum doplni uzivatel ve formulari);
+    # stejny pruvodce bez data ma i prazdny stav "Nejblizsi lekce", proto se hleda v nadpisu
+    scope = "[data-qa=dashboard_today_heading] " if date == "" else ""
+    helpers.click(driver, f"{scope}[data-qa=button_add_lecture_wizard][data-date='{date}']")
 
 
 def choose_wizard_target(driver, kind):
+    """Vybere v pruvodci lekci klienta, nebo skupiny ("client"/"group" = id vyberoveho pole)."""
     helpers.click(driver, f"[data-qa=wizard_lecture_{kind}]")
-    return "client" if kind == "client" else "group"
 
 
 def pick_wizard_target(driver, field_id, value):
@@ -74,33 +80,36 @@ def add_lecture_for_existing(
     # datum uzivatel doplni az ve formulari) - diar oproti tomu ma pruvodce u kazdeho
     # dne zvlast (data-date odpovida dni), tam se wizard_date rovna datu lekce
     open_wizard(context.browser, date if wizard_date is None else wizard_date)
-    field_id = choose_wizard_target(context.browser, kind)
-    pick_wizard_target(context.browser, field_id, target)
+    choose_wizard_target(context.browser, kind)
+    pick_wizard_target(context.browser, kind, target)
     lecture_ui.load_data_to_context(
         context, obj, date, time, duration, "False", attendances, is_group=kind == "group"
     )
     submit_lecture(context)
 
 
-def add_client_in_open_form(context, firstname, surname, phone, email, note):
+def add_client_in_open_form(context, firstname, surname):
+    """Prida noveho klienta (jen jmeno a prijmeni) z tlacitka v uz otevrenem formulari."""
     helpers.click(context.browser, "[data-qa=button_add_client]")
-    client_ui.load_data_to_context(context, firstname, surname, phone, email, note, "True")
+    client_ui.load_data_to_context(context, firstname, surname, "", "", "", "True")
     client_ui.insert_to_form(context)
     helpers.submit_form(context, "button_submit_client")
+    # vnoreny formular klienta se zavre (a klienta preda nadrazenemu formulari) az po ulozeni
+    # na serveru - do te doby jeho modal prekryva nadrazeny formular
+    helpers.wait(context.browser).until_not(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "[data-qa=form_client]"))
+    )
 
 
-def add_lecture_for_new_client(
-    context, firstname, surname, phone, email, note, course, date, time, duration
-):
+def add_lecture_for_new_client(context, firstname, surname, course, date, time, duration):
     open_wizard(context.browser, date)
     choose_wizard_target(context.browser, "client")
-    add_client_in_open_form(context, firstname, surname, phone, email, note)
+    add_client_in_open_form(context, firstname, surname)
     helpers.wait_form_ready(context.browser, "form_lecture")
-    full_name = f"{surname} {firstname}"
+    full_name = common_helpers.client_full_name(firstname, surname)
     attendances = [lecture_ui.attendance_dict(full_name, "OK", "True", "")]
     lecture_ui.load_data_to_context(context, course, date, time, duration, "False", attendances)
     submit_lecture(context)
-    return full_name
 
 
 def fill_group_form_with_new_client(context, name, course_name, firstname, surname):
@@ -115,11 +124,11 @@ def fill_group_form_with_new_client(context, name, course_name, firstname, surna
     name_field.send_keys(name)
     course_field = context.browser.find_element(By.ID, "course")
     assert helpers.combobox_insert(context.browser, course_field, course_name)
-    add_client_in_open_form(context, firstname, surname, "", "", "")
+    add_client_in_open_form(context, firstname, surname)
 
 
 def add_lecture_for_new_group_with_new_client(
-    context, group_name, course_name, firstname, surname, date, time, duration, wizard_date=None
+    context, group_name, course_name, firstname, surname, date, time, duration
 ):
     # wizard v pruvodci lekce nabizi "nebo pridejte novou skupinu" (button_add_group) misto
     # vyberu existujici - otevre stejny FormGroups jako na strance Skupiny, jen vnoreny
@@ -128,19 +137,18 @@ def add_lecture_for_new_group_with_new_client(
     # hodnot lekce a vyberovy modal pritom zustava otevreny (jen s kostrou) - pocet modalu
     # tedy NIKDY neklesne na nulu (na rozdil od primeho pridani skupiny v nested.py), proto
     # nelze cekat na wait_modal_closed, ale rovnou na pripraveny formular lekce
-    open_wizard(context.browser, date if wizard_date is None else wizard_date)
+    open_wizard(context.browser, date)
     choose_wizard_target(context.browser, "group")
     helpers.click(context.browser, "[data-qa=button_add_group]")
     fill_group_form_with_new_client(context, group_name, course_name, firstname, surname)
     helpers.submit_form(context, "button_submit_group")
     helpers.wait_form_ready(context.browser, "form_lecture")
-    full_name = f"{surname} {firstname}"
+    full_name = common_helpers.client_full_name(firstname, surname)
     attendances = [lecture_ui.attendance_dict(full_name, "OK", "True", "")]
     lecture_ui.load_data_to_context(
         context, group_name, date, time, duration, "False", attendances, is_group=True
     )
     submit_lecture(context)
-    return full_name
 
 
 def open_spotlight(driver):
@@ -167,3 +175,53 @@ def spotlight_pick(driver, query, result_label=None):
         )
     )
     option.click()
+
+
+def edit_lecture_in_day(context, date, time, duration, note, open_day):
+    """Upravi trvani a poznamku lekce v dennim prehledu (diar, Prehled) otevrenem `open_day`.
+
+    Kurz, ucastnika, stav ucasti a platbu si zapamatuje z DB pred upravou, aby kontrola
+    na karte odhalila i jejich nechtenou zmenu pri ulozeni.
+    """
+    lecture = Lecture.objects.select_related("course").get(
+        start=common_helpers.prepare_start(date, time)
+    )
+    attendance = lecture.attendances.select_related("client", "attendancestate").get()
+    attendances = [
+        lecture_ui.attendance_dict(
+            common_helpers.client_full_name(attendance.client.firstname, attendance.client.surname),
+            attendance.attendancestate.name,
+            attendance.paid,
+            note,
+        )
+    ]
+    open_day()
+    lecture_div = helpers.wait(
+        context.browser, helpers.WAIT_TIME, ignored_exceptions=(StaleElementReferenceException,)
+    ).until(
+        lambda driver: next(
+            (
+                element
+                for element in driver.find_elements(By.CSS_SELECTOR, "[data-qa=lecture]")
+                if element.find_element(By.CSS_SELECTOR, "[data-qa=lecture_start]").text == time
+            ),
+            False,
+        )
+    )
+    lecture_div.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_lecture]").click()
+    helpers.wait_form_ready(context.browser, "form_lecture")
+    duration_field = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=lecture_field_duration]"
+    )
+    helpers.clear_input(duration_field)
+    duration_field.send_keys(duration)
+    note_field = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=lecture_field_attendance_note]"
+    )
+    helpers.clear_input(note_field)
+    note_field.send_keys(note)
+    helpers.submit_form(context, "button_submit_lecture")
+    helpers.wait_modal_closed(context.browser)
+    lecture_ui.load_data_to_context(
+        context, lecture.course.name, date, time, duration, str(lecture.canceled), attendances
+    )

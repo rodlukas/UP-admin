@@ -90,6 +90,25 @@ def find_by_client_full_name(items, full_name):
     return next((item for item in items if client_full_names_equal(item["client"], parsed)), None)
 
 
+def single_lecture_payload(api_client, client, course, start, paid=True):
+    """Telo pozadavku na lekci jednotlivce s ucasti "OK" (start None = predplacena lekce)."""
+    attendancestate = find_attendancestate_with_name(api_client, "OK")
+    return {
+        "course_id": course["id"],
+        "duration": course["duration"],
+        "canceled": False,
+        "start": start,
+        "attendances": [
+            {
+                "client_id": client["id"],
+                "attendancestate": attendancestate["id"],
+                "paid": paid,
+                "note": "",
+            }
+        ],
+    }
+
+
 def add_group_lecture(api_client, group, start):
     """Prida skupine zaplacenou lekci s ucasti "OK" vsech jejich soucasnych clenu."""
     attendancestate = find_attendancestate_with_name(api_client, "OK")

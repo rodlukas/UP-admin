@@ -1,9 +1,11 @@
 import { Group, Title } from "@mantine/core"
 import * as React from "react"
 
+import { type QA } from "../types/types"
+
 import * as styles from "./Heading.css"
 
-type Props = {
+type Props = QA & {
     /** Jakýkoliv uzel JSX tvořící nadpis. */
     title: React.ReactNode
     /** Jakýkoliv uzel JSX tvořící tlačítka. */
@@ -18,8 +20,9 @@ type Props = {
 }
 
 /** Komponenta pro jednotné zobrazení nadpisu stránky napříč aplikací. */
-const Heading: React.FC<Props> = ({ title, buttons, order = 1, size }) => (
+const Heading: React.FC<Props> = ({ title, buttons, order = 1, size, "data-qa": qa }) => (
     <Group
+        data-qa={qa}
         justify="space-between"
         align="center"
         mt="md"

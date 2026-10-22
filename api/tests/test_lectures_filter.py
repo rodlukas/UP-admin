@@ -20,6 +20,7 @@ class LectureClientFilterTest(TestCase):
     Filtr `client` vrací jen individuální lekce klienta (group=null).
     Filtr `client` + `includeGroup=true` vrací i skupinové lekce klienta.
     Samotný `includeGroup=true` (bez client) nemá efekt.
+    Filtr `group` vrací lekce skupiny; neexistující skupina vrátí prázdný seznam, ne 400.
     """
 
     def setUp(self) -> None:

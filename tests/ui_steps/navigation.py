@@ -13,14 +13,15 @@ from tests.ui_steps import login_logout
 # nazev sekce z menu, ale neco vlastniho (nadpis dnesniho dne, resp. tyden); u ostatnich
 # sekci sedi s popiskem v menu (Menu.tsx NAV_ITEMS). Hleda se jen v h1, protoze popisky
 # menu jsou na strance vzdy, takze hledani v celem body by proslo i bez otevreni sekce
+# Prehled je posledni: po prihlaseni na nem uzivatel uz je, prvni kontrola by nic neoverila
 SECTION_TEXTS = {
-    "menu_dashboard": "Dnešní lekce",
     "menu_diary": "Týden",
     "menu_clients": "Klienti",
     "menu_groups": "Skupiny",
     "menu_applications": "Zájemci",
     "menu_statistics": "Statistiky",
     "menu_settings": "Nastavení",
+    "menu_dashboard": "Dnešní lekce",
 }
 
 

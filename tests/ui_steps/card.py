@@ -1,7 +1,5 @@
 from behave import when, then
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 
 from tests.ui_steps import flows
 from tests.ui_steps import helpers
@@ -52,9 +50,7 @@ def step_impl(context, old_name, new_name):
 
 @then('the open card shows group name "{expected_name}"')
 def step_impl(context, expected_name):
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        lambda driver: helpers.heading_text(driver, "group_name") == expected_name
-    )
+    helpers.wait_card_heading(context.browser, "group_name", expected_name)
 
 
 @when('user deletes group "{name}" from its card')
@@ -82,9 +78,7 @@ def step_impl(context, full_name):
 
 @then("the open card says the client is inactive")
 def step_impl(context):
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=card_inactive_notice]"))
-    )
+    helpers.wait_visible(context.browser, "card_inactive_notice")
 
 
 @when('user opens the analysis of "{full_name}"')
@@ -96,9 +90,7 @@ def step_impl(context, full_name):
 
 @then("the analysis shows a chart")
 def step_impl(context):
-    helpers.wait(context.browser, helpers.WAIT_TIME).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=client_analysis_chart]"))
-    )
+    helpers.wait_visible(context.browser, "client_analysis_chart")
 
 
 @when('user opens the card of "{full_name}"')
