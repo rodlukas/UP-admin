@@ -21,10 +21,13 @@ export function useInactiveGroups(enabled = true) {
     })
 }
 
+/** Klíč query s detailem skupiny (sdílí ho `useGroup` a `useDeleteGroup`). */
+export const groupQueryKey = (id: GroupType["id"] | undefined) => ["groups", id] as const
+
 /** Hook pro získání jedné skupiny. */
 export function useGroup(id: GroupType["id"] | undefined) {
     return useQuery<GroupType>({
-        queryKey: ["groups", id],
+        queryKey: groupQueryKey(id),
         queryFn: () => {
             if (!id) {
                 throw new Error("Group ID is required")

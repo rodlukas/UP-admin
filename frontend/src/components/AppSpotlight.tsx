@@ -322,6 +322,7 @@ const AppSpotlight: React.FC = () => {
                 size="xl"
                 placeholder="Hledat klienta nebo skupinu…"
                 aria-label="Globální vyhledávání"
+                data-qa="spotlight_search"
                 leftSection={<FontAwesomeIcon icon={faSearch} />}
             />
             {results.length > 0 ? (
@@ -329,13 +330,18 @@ const AppSpotlight: React.FC = () => {
                     {results.map((resultGroup) => (
                         <Spotlight.ActionsGroup key={resultGroup.group} label={resultGroup.group}>
                             {resultGroup.actions.map(({ id, ...action }) => (
-                                <Spotlight.Action key={id} highlightQuery {...action} />
+                                <Spotlight.Action
+                                    key={id}
+                                    highlightQuery
+                                    data-qa="spotlight_result"
+                                    {...action}
+                                />
                             ))}
                         </Spotlight.ActionsGroup>
                     ))}
                 </Spotlight.ActionsList>
             ) : (
-                <Spotlight.Empty>{emptyMessage}</Spotlight.Empty>
+                <Spotlight.Empty data-qa="spotlight_empty">{emptyMessage}</Spotlight.Empty>
             )}
             <Spotlight.Footer>
                 <div className={styles.footer}>

@@ -29,10 +29,13 @@ export function useInactiveClients(enabled = true) {
     })
 }
 
+/** Klíč query s detailem klienta (sdílí ho `useClient` a `useDeleteClient`). */
+export const clientQueryKey = (id: ClientType["id"] | undefined) => ["clients", id] as const
+
 /** Hook pro získání jednoho klienta. */
 export function useClient(id: ClientType["id"] | undefined) {
     return useQuery<ClientType>({
-        queryKey: ["clients", id],
+        queryKey: clientQueryKey(id),
         queryFn: () => {
             if (!id) {
                 throw new Error("Client ID is required")

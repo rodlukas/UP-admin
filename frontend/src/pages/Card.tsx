@@ -136,6 +136,7 @@ const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactiva
     if (!object.active) {
         return (
             <Alert
+                data-qa="card_inactive_notice"
                 // pozadi i ramecek dodava `staleAlert`, viz ClientsGroups.css.ts
                 variant="transparent"
                 color="yellow"
@@ -160,7 +161,11 @@ const Alerts: React.FC<AlertsProps> = ({ object, isDeactivatePending, onDeactiva
                 </span>
                 {/* `default` varianta: syte zlute tlacitko bylo na mekkem notice
                     nejhlasitejsi veci stranky, stejne jako na Klientech */}
-                <Button variant="default" disabled={isDeactivatePending} onClick={onDeactivate}>
+                <Button
+                    variant="default"
+                    disabled={isDeactivatePending}
+                    onClick={onDeactivate}
+                    data-qa="button_deactivate">
                     Přesunout do neaktivních
                     {isDeactivatePending && (
                         <FontAwesomeIcon icon={faSpinnerThird} spin className={iconAfterText} />
@@ -519,7 +524,11 @@ const Card: React.FC<CardProps> = ({ id, isClientPage }) => {
                     className={styles.tabs}>
                     <Tabs.List>
                         <Tabs.Tab value="lekce">Lekce</Tabs.Tab>
-                        {isClientObject(object) && <Tabs.Tab value="analyza">Analýza</Tabs.Tab>}
+                        {isClientObject(object) && (
+                            <Tabs.Tab value="analyza" data-qa="card_tab_analysis">
+                                Analýza
+                            </Tabs.Tab>
+                        )}
                     </Tabs.List>
 
                     {isClientObject(object) && (

@@ -11,14 +11,17 @@ Pro **testování UI** se používá [Selenium](https://github.com/SeleniumHQ/se
 [oficiální binding pro Python](https://seleniumhq.github.io/selenium/docs/api/py/index.html). Pro
 jednoduchý přístup k elementům stránky je zaveden jednotný vlastní HTML atribut `data-qa`. Výjimky:
 
-- comboboxy Mantine `Select`/`MultiSelect`, do kterých se hodnota vkládá přes
-  `helpers.combobox_insert`, se hledají přímo přes `id` elementu.
+- comboboxy Mantine `Select`/`MultiSelect` se hledají přímo přes `id` elementu (vkládání přes
+  `helpers.combobox_insert`, výběr v Nastavení a v průvodci přidáním lekce).
 - `helpers._combobox_selection_applied` rozlišuje MultiSelect od obyčejného Selectu strukturálně,
   přes Mantine wrapper class `mantine-MultiSelect-root` (zjišťuje se tím *typ* komponenty, ne
   hodnota v ní — na rozdíl od `data-qa` kontraktu jde o introspekci knihovny, ne appky).
 - `helpers.wait_form_rejected` pozná odmítnutý formulář podle `aria-invalid` (chyba z validace
   Mantine `useForm`) nebo `:invalid` (HTML5 constraint validace u polí s `required`). Obojí je
   standardní chování DOM, ne značka konkrétní komponenty, a vlastní atribut by tu nic nepřidal.
+- nadpis stránky se čte přes `h1` (navigace mezi sekcemi, týden v diáři; jméno na kartě klienta
+  či skupiny jako `h1 [data-qa=client_name]`, protože stejné `data-qa` mají i řádky seznamu) —
+  každá stránka má právě jeden `h1`, jde o sémantiku stránky, ne o strukturu konkrétní komponenty.
 - `ui_steps/login_logout.py` čeká na dokončení přihlašovacího požadavku přes `aria-busy` na
   odesílacím tlačítku — ten na něj dává `SubmitButton` sám (`aria-busy={loading}`), takže jde
   o atribut aplikace, ne knihovny.
@@ -38,7 +41,11 @@ Testuje se v prohlížeči [Mozilla Firefox](https://www.firefox.cz/) s využit�
 Ve **složkách [`api_steps`](api_steps) a [`ui_steps`](ui_steps)** jsou soubory s názvy
 **`<testovana_cast>.py`** – ty pokrývají danou testovanou část aplikace popsanou v souboru
 `features/<testovana_cast>.feature` (např. skupiny, klienty...). Dále je v obou složkách vždy soubor
-**`helpers.py`**, který obsahuje pomocné funkce používané v rámci dané složky.
+**`helpers.py`**, který obsahuje pomocné funkce používané v rámci dané složky. Ve složce `ui_steps`
+je navíc **[`flows.py`](ui_steps/flows.py)** se sdílenými průchody (průvodce přidáním lekce,
+úprava lekce v denním přehledu, vyhledávání); přes něj ostatní moduly používají i pomocné funkce
+modulů zájemců, klientů, skupin a lekcí (`application_ui`, `client_ui`, `group_ui`,
+`lecture_ui`).
 
 Složka **[`common_steps`](common_steps)** obsahuje kroky, které jsou používané pro API i UI testy
 dané části `<testovana_cast>.py`.
@@ -67,10 +74,25 @@ konkrétní sady tedy stačí tyto příkazy:
 > aplikaci) vidět, stačí upravit v [souboru .env](../.env) řádek s `TESTS_HEADLESS` na:
 > `TESTS_HEADLESS=False`.
 
-> **Info k dalším prohlížečům:** E2E testy jdou spouštět i v Google Chrome — stačí ho mít
-> nainstalovaný a upravit v [souboru .env](../.env) řádek s `TESTS_BROWSER` na:
-> `TESTS_BROWSER=chrome`. Odpovídající chromedriver si Selenium Manager stáhne samo, ručně ho
-> instalovat netřeba.
+> **Info k dalším prohlížečům:** E2E testy jdou spouštět i v Chromu — v [souboru .env](../.env)
+> stačí upravit řádek s `TESTS_BROWSER` na `TESTS_BROWSER=chrome`. Odpovídající chromedriver si
+> Selenium Manager stáhne samo, ručně ho instalovat netřeba.
+>
+> Bez dalšího nastavení Selenium Manager použije nainstalovaný Google Chrome (a Chrome for Testing
+> stáhne jen tam, kde žádný není). Na macOS proto testy vyžadují (v prostředí nebo v `.env`)
+> `TESTS_CHROME_BINARY` — cestu ke konkrétnímu už staženému Chromiu, např. od Playwrightu, ne
+> k nainstalovanému Google Chrome — nebo `TESTS_CHROME_DEBUGGER_ADDRESS` (např. `127.0.0.1:9222`;
+> testy se místo spuštění vlastního prohlížeče připojí k už běžícímu Chromiu přes CDP a jeho
+> přepínače i časové pásmo pak určuje ten, kdo ho spustil — časy lekcí v testech počítají
+> s `Europe/Prague`, které jinak prohlížeči předá testovací proces). Chrome, který spouští Selenium, dostane vždy `--use-mock-keychain
+> --password-store=basic`, aby nesahal do systémové Klíčenky macOS.
+
+> **Firefox na macOS visí na `TimeoutException: Failed to read marionette port`:** pokud má nainstalovaný
+> Firefox staženou a připravenou aktualizaci ke spuštění ("staged"), při dalším spuštění
+> (i tomhle testovacím) se ji pokusí nejdřív dokončit — přepsat `/Applications/Firefox.app`, což
+> vyžaduje heslo správce. V automatizovaném běhu to nemá kdo potvrdit a visí to donekonečna.
+> Pomůže normální restart (ukončení a nové spuštění) běžného Firefoxu, který aktualizaci
+> dokončí obvyklou cestou.
 
 Testování lze ještě dále zúžit na **konkrétní testovanou část či operaci (označené tzv. _tagem_)** z
 dané sady testů (_stage_). Pro jednoduchost jsou _tagy_ pro testované části totožné s názvy souborů
@@ -81,15 +103,28 @@ k dispozici _tagy_ pro CRUD operace (`add`, `delete` a `edit`) a také pro přih
 
 **Tabulka s jednotlivými testovanými částmi:**
 
-| testovaná část       | název _tagu_ i souborů s testy |
-| -------------------- | ------------------------------ |
-| zájemci o kurzy      | `applications`                 |
-| stavy účasti         | `attendancestates`             |
-| klienti              | `clients`                      |
-| kurzy                | `courses`                      |
-| skupiny              | `groups`                       |
-| lekce                | `lectures`                     |
-| přihlášení/odhlášení | `login_logout`                 |
+| testovaná část                         | název _tagu_ i souborů s testy |
+| -------------------------------------- | ------------------------------ |
+| zájemci o kurzy                        | `applications`                 |
+| stavy účasti                           | `attendancestates`             |
+| bankovní účet                          | `bank`                         |
+| karty klientů a skupin                 | `card`                         |
+| klienti                                | `clients`                      |
+| barevné schéma                         | `color_scheme`                 |
+| data bez vlastního UI (jen API)        | `consistency`                  |
+| kurzy                                  | `courses`                      |
+| přehled                                | `dashboard`                    |
+| diář                                   | `diary`                        |
+| skupiny                                | `groups`                       |
+| lekce                                  | `lectures`                     |
+| přihlášení/odhlášení                   | `login_logout`                 |
+| navigace a filtry seznamů              | `navigation`                   |
+| klient přidaný uvnitř jiného formuláře | `nested`                       |
+| předplacené lekce                      | `prepaid`                      |
+| připomenutí platby (jen API)           | `remind_pay`                   |
+| vyhledávání                            | `search`                       |
+| nastavení                              | `settings`                     |
+| statistiky                             | `statistics`                   |
 
 Příklad spuštění testů API pro klienty a lekce – tedy testů ze _stage_ (sady testů) **API** s _tagy_
 (testovanými částmi) `clients`:
@@ -116,12 +151,21 @@ python manage.py behave --stage=ui --tags=groups
     behave označí jako nepoužitý a při optimalizacích jej může odstranit. Proto je u těchto importů
     direktiva `# noinspection PyUnresolvedReferences`, která tomuto zamezí a zároveň umožní
     automatickou optimalizaci importů nad celým projektem bez výjimek.
+-   Skutečné Fio API se v testech nevolá nikdy: `before_all` obou _stage_ banku vypne a zablokuje
+    každý HTTP požadavek přes `requests` ([`bank_override.py`](bank_override.py)), i když lokální
+    `.env` banku zapíná; `after_all` pak ověří, že se o žádný nikdo nepokusil. Scénáře banky si
+    stav i odpověď Fio podvrhnou samy (`features/bank.feature`).
+-   Scénář s tagem `ui_only` se v API _stage_ přeskočí a scénář s tagem `api_only` v UI _stage_ —
+    má kroky jen pro jednu z nich (UI průchod, resp. ověření dat přímo v odpovědi API).
+    Přeskakování zajišťují `before_scenario` v [`api_environment.py`](api_environment.py)
+    a [`ui_environment.py`](ui_environment.py); CI navíc pouští každou _stage_ s filtrem
+    `--tags="not ui_only"`, resp. `--tags="not api_only"`, aby se pro přeskočené scénáře zbytečně
+    nespouštěl live server a nemazala databáze. Do `.github/ui-shards.json` patří i feature soubory
+    jen s `api_only` scénáři — kontrola shardů trvá na všech souborech.
 -   Vzhledem k časové náročnosti UI testů je připraven pro rychlé (smoke) testování tag
     `fast.row1.1` – od každé funkcionality se vyzkouší jeden nejdůležitější příklad reprezentující
     nejčastější použití. Tyto testy se hodí zejména pro rychlý lokální test před zapsáním změn do
     repozitáře.
--   V souboru [MANUAL_TESTS](MANUAL_TESTS.md) je seznam oblastí a průchodů v aplikaci, které nejsou
-    pokryty automatizovanými testy.
 
 ## Unit testy frontendu
 

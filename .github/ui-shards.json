@@ -1,5 +1,5 @@
 [
-    "clients attendancestates",
-    "lectures courses login_logout color_scheme",
-    "groups applications"
+    "clients attendancestates bank consistency nested settings",
+    "lectures courses login_logout color_scheme dashboard diary remind_pay",
+    "groups applications card navigation prepaid search statistics"
 ]

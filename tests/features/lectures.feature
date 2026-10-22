@@ -94,3 +94,12 @@ Feature: Operations with lectures
   Scenario: Delete lecture
     When user deletes the lecture of the client "Rodová Petra" at "2018-05-07", "20:00"
     Then the lecture is deleted
+
+  @edit @lectures @ui_only
+  Scenario: Saving a lecture with diverged group membership can sync attendees
+    When user adds new group lecture for group "Slabika 4" with date "2018-05-10", time "15:00", duration "40", canceled "False", attendance of the client "Rodová Petra" is: "OK", paid "True", note "" and attendance of the client "Jirušková Aneta" is: "OK", paid "True", note ""
+    And the success notification disappears
+    And user updates the data of group "Slabika 4" to name "Slabika 4", course "Předškolák s ADHD", activity "True" and clients to "Rodová Petra", "Jirušková Aneta" and "Uhlíř Jaroslav"
+    And the success notification disappears
+    And user syncs the lecture of group "Slabika 4" at "2018-05-10", "15:00" to the current group members
+    Then the lecture attendees of group "Slabika 4" at "2018-05-10", "15:00" are "Rodová Petra", "Jirušková Aneta" and "Uhlíř Jaroslav"

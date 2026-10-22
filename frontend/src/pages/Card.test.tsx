@@ -176,22 +176,49 @@ test("renders the analysis summary once the lectures loaded", async () => {
     expect(screen.queryByText("Analýzu se nepodařilo načíst")).not.toBeInTheDocument()
 })
 
-// naplánovaná lekce ještě neproběhla - jinak by „Proběhlé“ i „Zaplaceno“ započítaly i předplacené
-// budoucí termíny (statistiky na backendu berou jen `start <= now`)
-test("counts only past lectures as happened", async () => {
-    lecturesAllMock.mockResolvedValue([
-        createLecture(1, "2020-05-04T10:00:00"),
-        createLecture(2, "2099-05-11T10:00:00"),
-    ])
-    await renderCard()
-    await openAnalysisTab()
+// klient jen s budoucími lekcemi nemá co analyzovat - souhrn samých nul by vypadal jako výsledek
+test("shows an empty state for a client with only future lectures", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] })
+    vi.setSystemTime(new Date("2026-06-01T12:00:00"))
+    try {
+        lecturesAllMock.mockResolvedValue([createLecture(1, "2026-06-08T10:00:00")])
+        await renderCard()
+        await openAnalysisTab()
 
-    expect(
-        await screen.findByText((_, element) => element?.textContent === "1Proběhlé"),
-    ).toBeInTheDocument()
-    expect(
-        screen.getByText((_, element) => element?.textContent === "1/1Zaplaceno"),
-    ).toBeInTheDocument()
+        expect(await screen.findByText(/žádnou proběhlou lekci/)).toBeInTheDocument()
+        expect(screen.queryByText("Proběhlé")).not.toBeInTheDocument()
+    } finally {
+        vi.useRealTimers()
+    }
+})
+
+// budoucí termín ještě neproběhl ani nebyl zrušen - jinak by „Proběhlé“, „Zaplaceno“ i „Zrušené“
+// započítaly i předplacené budoucí termíny (statistiky na backendu berou jen `start <= now`)
+test("counts only past lectures as happened or canceled", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] })
+    vi.setSystemTime(new Date("2026-06-01T12:00:00"))
+    try {
+        lecturesAllMock.mockResolvedValue([
+            createLecture(1, "2026-05-04T10:00:00"),
+            createLecture(2, "2026-06-08T10:00:00"),
+            { ...createLecture(3, "2026-05-11T10:00:00"), canceled: true },
+            { ...createLecture(4, "2026-06-15T10:00:00"), canceled: true },
+        ])
+        await renderCard()
+        await openAnalysisTab()
+
+        expect(
+            await screen.findByText((_, element) => element?.textContent === "1Proběhlé"),
+        ).toBeInTheDocument()
+        expect(
+            screen.getByText((_, element) => element?.textContent === "1/1Zaplaceno"),
+        ).toBeInTheDocument()
+        expect(
+            screen.getByText((_, element) => element?.textContent === "1Zrušené"),
+        ).toBeInTheDocument()
+    } finally {
+        vi.useRealTimers()
+    }
 })
 
 // Rozdíl mezi `isPending` a `isLoading` je vidět JEN offline: dotaz je pak `pending`

@@ -17,6 +17,9 @@ API_CLIENTS = api_url("/clients/")
 API_COURSES = api_url("/courses/")
 API_GROUPS = api_url("/groups/")
 API_LECTURES = api_url("/lectures/")
+API_MEMBERSHIPS = api_url("/memberships/")
+API_BANK = api_url("/bank/")
+API_STATS = api_url("/stats/")
 
 
 def parse_client_full_name(full_name):
@@ -79,6 +82,54 @@ def client_full_names_equal(client1, client2):
         client2.get("firstname"), client2.get("surname")
     )
     return client1_full_name == client2_full_name
+
+
+def find_by_client_full_name(items, full_name):
+    """Vrati prvni ucast/clenstvi, jehoz klient ma dane cele jmeno (jinak None)."""
+    parsed = parse_client_full_name(full_name)
+    return next((item for item in items if client_full_names_equal(item["client"], parsed)), None)
+
+
+def single_lecture_payload(api_client, client, course, start, paid=True):
+    """Telo pozadavku na lekci jednotlivce s ucasti "OK" (start None = predplacena lekce)."""
+    attendancestate = find_attendancestate_with_name(api_client, "OK")
+    return {
+        "course_id": course["id"],
+        "duration": course["duration"],
+        "canceled": False,
+        "start": start,
+        "attendances": [
+            {
+                "client_id": client["id"],
+                "attendancestate": attendancestate["id"],
+                "paid": paid,
+                "note": "",
+            }
+        ],
+    }
+
+
+def add_group_lecture(api_client, group, start):
+    """Prida skupine zaplacenou lekci s ucasti "OK" vsech jejich soucasnych clenu."""
+    attendancestate = find_attendancestate_with_name(api_client, "OK")
+    return api_client.post(
+        API_LECTURES,
+        {
+            "group_id": group["id"],
+            "duration": 40,
+            "canceled": False,
+            "start": start,
+            "attendances": [
+                {
+                    "client_id": membership["client"]["id"],
+                    "attendancestate": attendancestate["id"],
+                    "paid": True,
+                    "note": "",
+                }
+                for membership in group["memberships"]
+            ],
+        },
+    )
 
 
 def find_application_with_client_and_course(api_client, client, course):

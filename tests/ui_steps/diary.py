@@ -1,0 +1,100 @@
+from behave import when, then
+from selenium.webdriver.common.by import By
+
+from admin.models import Group
+from tests import common_helpers
+from tests.ui_steps import flows
+from tests.ui_steps import helpers
+
+# noinspection PyUnresolvedReferences
+from tests.ui_steps import login_logout
+
+lecture_ui = flows.lecture_ui
+
+
+def open_diary_week(context, date):
+    year, month, day = (int(part) for part in date.split("-"))
+    context.browser.get(f"{context.base_url}/diar/{year}/{month}/{day}")
+    # po plnem nacteni stranky se aplikace teprve namountuje - samotne wait_loading_ends by
+    # mohlo skoncit driv, nez se nacitani vubec objevi
+    helpers.wait_page_title(context.browser, lambda title: "Týden" in title)
+    helpers.wait_loading_ends(context.browser)
+
+
+@when(
+    'user adds a single lecture from the diary on "{date}" at "{time}" for "{full_name}"'
+    ' in course "{course_name}" with duration "{duration}"'
+)
+def step_impl(context, date, time, full_name, course_name, duration):
+    open_diary_week(context, date)
+    attendances = [lecture_ui.attendance_dict(full_name, "OK", "True", "")]
+    flows.add_lecture_for_existing(
+        context, "client", full_name, course_name, date, time, duration, attendances
+    )
+
+
+@when(
+    'user adds a group lecture from the diary on "{date}" at "{time}" for group "{group_name}"'
+    ' with duration "{duration}"'
+)
+def step_impl(context, date, time, group_name, duration):
+    open_diary_week(context, date)
+    # formular po vyberu skupiny zalozi radek ucasti pro kazdeho jejiho clena
+    memberships = Group.objects.get(name=group_name).memberships.select_related("client")
+    attendances = [
+        lecture_ui.attendance_dict(
+            common_helpers.client_full_name(m.client.firstname, m.client.surname), "OK", "True", ""
+        )
+        for m in memberships.order_by("pk")
+    ]
+    flows.add_lecture_for_existing(
+        context, "group", group_name, group_name, date, time, duration, attendances
+    )
+
+
+@when(
+    'user adds a lecture from the diary on "{date}" at "{time}" for a new client "{firstname}"'
+    ' "{surname}" in course "{course_name}" with duration "{duration}"'
+)
+def step_impl(context, date, time, firstname, surname, course_name, duration):
+    open_diary_week(context, date)
+    flows.add_lecture_for_new_client(context, firstname, surname, course_name, date, time, duration)
+
+
+@when(
+    'user adds a lecture from the diary on "{date}" at "{time}" for a new group "{group_name}"'
+    ' in course "{course_name}" with a new client "{firstname}" "{surname}" and duration "{duration}"'
+)
+def step_impl(context, date, time, group_name, course_name, firstname, surname, duration):
+    open_diary_week(context, date)
+    flows.add_lecture_for_new_group_with_new_client(
+        context, group_name, course_name, firstname, surname, date, time, duration
+    )
+
+
+@when(
+    'user edits the lecture at "{time}" on "{date}" from the diary to duration "{duration}"'
+    ' and note "{note}"'
+)
+def step_impl(context, time, date, duration, note):
+    flows.edit_lecture_in_day(
+        context, date, time, duration, note, lambda: open_diary_week(context, date)
+    )
+
+
+@when("user moves to the next diary week and back")
+def step_impl(context):
+    context.browser.find_element(By.CSS_SELECTOR, "[data-qa=menu_diary]").click()
+    helpers.wait_page_title(context.browser, lambda title: "Týden" in title)
+    context.original_diary_title = helpers.page_title(context.browser)
+    context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_week_next]").click()
+    helpers.wait_page_title(
+        context.browser,
+        lambda title: "Týden" in title and title != context.original_diary_title,
+    )
+    context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_week_prev]").click()
+
+
+@then("the diary title returns to the original week")
+def step_impl(context):
+    helpers.wait_page_title(context.browser, lambda title: title == context.original_diary_title)

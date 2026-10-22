@@ -62,6 +62,12 @@ def check_login(context):
     context.button_logout = helpers.wait(context.browser).until(
         EC.visibility_of_element_located((By.CSS_SELECTOR, "[data-qa=button_logout]"))
     )
+    # Tlacitko odhlaseni je videt uz na /prihlasit; presmerovani na Prehled (Navigate
+    # v Login.tsx) router dokonci az pozdeji, adresa se pritom meni driv nez obsah. Nasledny
+    # browser.get() by jinak dobihajici presmerovani prebilo a prohlizec by skoncil na Prehledu
+    # misto na pozadovane adrese - prihlaseni z base_url proto konci az vykreslenym Prehledem.
+    helpers.wait_page_title(context.browser, lambda title: title == "Dnešní lekce")
+    helpers.wait_loading_ends(context.browser)
     return True, jwt
 
 
