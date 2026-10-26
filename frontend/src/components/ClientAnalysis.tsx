@@ -77,7 +77,6 @@ const ChartTooltip: React.FC<TooltipContentProps> = ({ active, label, payload })
     )
 }
 
-/** Analýza docházky klienta — souhrn a graf proběhlých lekcí po měsících s rozlišením kurzů. */
 /** Proč analýza nemá z čeho počítat (žádná lekce / žádná s termínem / žádná proběhlá). */
 function emptyAnalysisDescription(lectureCount: number, scheduledCount: number): string {
     if (lectureCount === 0) {
@@ -89,6 +88,7 @@ function emptyAnalysisDescription(lectureCount: number, scheduledCount: number):
     return "Klient zatím nemá žádnou proběhlou lekci — analýza počítá jen s lekcemi, které už začaly."
 }
 
+/** Analýza docházky klienta — souhrn a graf proběhlých lekcí po měsících s rozlišením kurzů. */
 const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
     // `hasData`, ne `isSuccess`: při SELHANÉM REFETCHI si TanStack Query data z cache nechá,
     // takže `excused` se pořád spočítá správně — schovat čísla za `NoInfo` by zahodilo platné

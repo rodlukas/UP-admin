@@ -9,8 +9,15 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from tests import fixtures
 from tests.bank_override import assert_no_real_request, block_real_bank
 
+LOOPBACK_HOSTS = ("127.0.0.1", "localhost", "[::1]")
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
+
+
+def is_installed_google_chrome(binary):
+    # i pres symlink a bez ohledu na velikost pismen (macOS); Chrome for Testing je v poradku
+    real = os.path.realpath(binary).lower()
+    return "google chrome" in real and "for testing" not in real
 
 
 def before_all(context):
@@ -42,7 +49,7 @@ def before_all(context):
         # nainstalovany Google Chrome sdili klic v Klicence s beznym prohlizecem uzivatele -
         # na macOS ho testy samy nespousti (ani bez TESTS_CHROME_BINARY, ani pres nej)
         if sys.platform == "darwin" and not debugger_address:
-            if not chrome_binary or "Google Chrome.app" in chrome_binary:
+            if not chrome_binary or is_installed_google_chrome(chrome_binary):
                 raise RuntimeError(
                     "Na macOS potrebuje TESTS_BROWSER=chrome TESTS_CHROME_BINARY s jinym Chromiem"
                     " nez nainstalovanym Google Chrome, nebo TESTS_CHROME_DEBUGGER_ADDRESS"
@@ -50,6 +57,12 @@ def before_all(context):
                 )
         if chrome_binary:
             options.binary_location = chrome_binary
+        # testy v prohlizeci mazou localStorage a vypisuji text stranky - cizi stroj nikdy
+        if debugger_address and debugger_address.rpartition(":")[0] not in LOOPBACK_HOSTS:
+            raise RuntimeError(
+                "TESTS_CHROME_DEBUGGER_ADDRESS musi byt host:port a mirit na tento pocitac"
+                f" ({debugger_address})."
+            )
         if debugger_address:
             options.add_experimental_option("debuggerAddress", debugger_address)
         context.browser = webdriver.Chrome(options=options)

@@ -1,11 +1,12 @@
 """Nastaveni banky pro E2E testy - skutecne Fio API se v testech nevola nikdy.
 
 Lokalni .env muze mit BANK_ACTIVE=True a ostry FIO_API_KEY; Prehled nacita banku hned po
-prihlaseni, takze bez vychoziho vypnuti (`block_real_bank` v api/ui_environment.py) by kazdy
-UI scenar poslal skutecny dotaz do banky.
+prihlaseni, takze bez vychoziho vypnuti (`block_real_bank` v api_environment.py a
+ui_environment.py) by kazdy UI scenar poslal skutecny dotaz do banky.
 """
 
 from unittest import mock
+from urllib.parse import urlsplit
 
 from django.core.cache import cache
 from django.test import override_settings
@@ -54,4 +55,8 @@ def block_real_bank(context):
 def assert_no_real_request(context):
     # vyjimka z pojistky v live serveru UI stage skonci jen chybou 500 v prohlizeci
     # (bankovni chyby frontend neoznamuje) - proto se pokus overuje az tady
-    assert not context.real_request_guard.called, "E2E testy se pokusily o skutecny HTTP pozadavek"
+    attempts = [call.args[0] for call in context.real_request_guard.call_args_list]
+    # URL Fio API nese v ceste API klic - vypisuje se jen metoda a hostitel
+    assert not attempts, "E2E testy se pokusily o skutecny HTTP pozadavek: " + ", ".join(
+        f"{request.method} {urlsplit(request.url).netloc}" for request in attempts
+    )

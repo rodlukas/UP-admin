@@ -159,7 +159,17 @@ test("shows an empty state for a client with no dated lectures", async () => {
     await openAnalysisTab()
 
     expect(await screen.findByText("Není co analyzovat")).toBeInTheDocument()
+    expect(screen.getByText(/nemá termín/)).toBeInTheDocument()
     expect(screen.queryByText("Analýzu se nepodařilo načíst")).not.toBeInTheDocument()
+})
+
+test("shows an empty state for a client without any lecture", async () => {
+    lecturesAllMock.mockResolvedValue([])
+    await renderCard()
+    await openAnalysisTab()
+
+    expect(await screen.findByText("Není co analyzovat")).toBeInTheDocument()
+    expect(screen.getByText("Klient zatím nemá žádnou lekci.")).toBeInTheDocument()
 })
 
 test("renders the analysis summary once the lectures loaded", async () => {

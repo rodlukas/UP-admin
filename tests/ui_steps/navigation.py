@@ -1,7 +1,11 @@
 import re
 
 from behave import when, then
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import (
+    NoSuchElementException,
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 
 from tests.ui_steps import helpers
@@ -33,15 +37,23 @@ def step_impl(context):
         helpers.wait_loading_ends(context.browser)
         try:
             helpers.wait_page_title(context.browser, lambda title: expected_text in title)
-            context.section_results[qa] = True
-        except Exception:
-            context.section_results[qa] = False
+            context.section_results[qa] = None
+        except TimeoutException:
+            # sekce se nepovedlo otevrit - ostatni se i tak projdou, selhani hlasi az dalsi krok
+            try:
+                context.section_results[qa] = helpers.page_title(context.browser)
+            except NoSuchElementException:
+                context.section_results[qa] = "(bez h1)"
 
 
 @then("each section shows its title")
 def step_impl(context):
-    failed = [qa for qa, ok in context.section_results.items() if not ok]
-    assert not failed, f"sekce bez ocekavaneho textu: {failed}"
+    failed = {
+        qa: f'h1 "{title}", ocekavano "{SECTION_TEXTS[qa]}"'
+        for qa, title in context.section_results.items()
+        if title is not None
+    }
+    assert not failed, f"sekce bez ocekavaneho nadpisu: {failed}"
 
 
 @when("user opens an address that does not exist")

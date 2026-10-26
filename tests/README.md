@@ -81,16 +81,19 @@ konkrétní sady tedy stačí tyto příkazy:
 > Bez dalšího nastavení Selenium Manager použije nainstalovaný Google Chrome (a Chrome for Testing
 > stáhne jen tam, kde žádný není). Na macOS proto testy vyžadují (v prostředí nebo v `.env`)
 > `TESTS_CHROME_BINARY` — cestu ke konkrétnímu už staženému Chromiu, např. od Playwrightu, ne
-> k nainstalovanému Google Chrome — nebo `TESTS_CHROME_DEBUGGER_ADDRESS` (např. `127.0.0.1:9222`;
-> testy se místo spuštění vlastního prohlížeče připojí k už běžícímu Chromiu přes CDP a jeho
-> přepínače i časové pásmo pak určuje ten, kdo ho spustil — časy lekcí v testech počítají
-> s `Europe/Prague`, které jinak prohlížeči předá testovací proces). Chrome, který spouští Selenium, dostane vždy `--use-mock-keychain
-> --password-store=basic`, aby nesahal do systémové Klíčenky macOS.
+> k nainstalovanému Google Chrome — nebo `TESTS_CHROME_DEBUGGER_ADDRESS` (např. `127.0.0.1:9222`).
+> V tom případě se testy místo spuštění vlastního prohlížeče připojí k už běžícímu Chromiu přes CDP
+> a jeho přepínače i časové pásmo pak určuje ten, kdo ho spustil — časy lekcí v testech počítají
+> s `Europe/Prague`, které jinak prohlížeči předá testovací proces. Adresa musí mířit na tento
+> počítač (`127.0.0.1`, `localhost`, `[::1]`) a prohlížeč má být vyhrazený pro testy: ty v něm
+> v každém scénáři mažou `localStorage` a při chybě vypisují text stránky. Chrome, který spouští
+> Selenium, dostane vždy `--use-mock-keychain --password-store=basic`, aby nesahal do systémové
+> Klíčenky macOS.
 
-> **Firefox na macOS visí na `TimeoutException: Failed to read marionette port`:** pokud má nainstalovaný
-> Firefox staženou a připravenou aktualizaci ke spuštění ("staged"), při dalším spuštění
-> (i tomhle testovacím) se ji pokusí nejdřív dokončit — přepsat `/Applications/Firefox.app`, což
-> vyžaduje heslo správce. V automatizovaném běhu to nemá kdo potvrdit a visí to donekonečna.
+> **Firefox na macOS visí na `TimeoutException: Failed to read marionette port`:** pokud má
+> nainstalovaný Firefox staženou a připravenou aktualizaci ke spuštění ("staged"), při dalším
+> spuštění (i tomhle testovacím) se ji pokusí nejdřív dokončit — přepsat `/Applications/Firefox.app`,
+> což vyžaduje heslo správce. V automatizovaném běhu to nemá kdo potvrdit a visí to donekonečna.
 > Pomůže normální restart (ukončení a nové spuštění) běžného Firefoxu, který aktualizaci
 > dokončí obvyklou cestou.
 
