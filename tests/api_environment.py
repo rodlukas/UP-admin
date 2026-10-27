@@ -1,10 +1,16 @@
 from rest_framework.test import APIClient
 
 from tests import fixtures
+from tests.bank_override import assert_no_real_request, block_real_bank
 
 
 def before_all(context):
+    block_real_bank(context)
     context.api_client = APIClient()
+
+
+def after_all(context):
+    assert_no_real_request(context)
 
 
 def before_scenario(context, scenario):

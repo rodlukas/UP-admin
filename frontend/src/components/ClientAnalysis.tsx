@@ -77,6 +77,17 @@ const ChartTooltip: React.FC<TooltipContentProps> = ({ active, label, payload })
     )
 }
 
+/** Proč analýza nemá z čeho počítat (žádná lekce / žádná s termínem / žádná proběhlá). */
+function emptyAnalysisDescription(lectureCount: number, scheduledCount: number): string {
+    if (lectureCount === 0) {
+        return "Klient zatím nemá žádnou lekci."
+    }
+    if (scheduledCount === 0) {
+        return "Žádná z lekcí klienta nemá termín — analýza počítá jen s naplánovanými."
+    }
+    return "Klient zatím nemá žádnou proběhlou lekci — analýza počítá jen s lekcemi, které už začaly."
+}
+
 /** Analýza docházky klienta — souhrn a graf proběhlých lekcí po měsících s rozlišením kurzů. */
 const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
     // `hasData`, ne `isSuccess`: při SELHANÉM REFETCHI si TanStack Query data z cache nechá,
@@ -93,9 +104,10 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
     const analysis = React.useMemo(() => {
         const now = new Date()
         const scheduled = lectures.filter((l): l is LectureTypeWithDate => l.start !== null)
-        // budouci (i predplacene) terminy jeste neprobehly - stejne jako statistiky (`start <= now`)
-        const happened = scheduled.filter((l) => !l.canceled && new Date(l.start) <= now)
-        const notHappened = scheduled.filter((l) => l.canceled)
+        // budoucí termíny se do proběhlých ani zrušených nepočítají — stejně jako ve statistikách
+        const past = scheduled.filter((l) => new Date(l.start) <= now)
+        const happened = past.filter((l) => !l.canceled)
+        const notHappened = past.filter((l) => l.canceled)
 
         const excused = notHappened.filter((l) => {
             const att = l.attendances.find((a) => a.client.id === clientId)
@@ -147,21 +159,17 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                 }
             })
 
-        return { scheduled, happened, notHappened, excused, paid, courses, monthlyData }
+        return { scheduled, past, happened, notHappened, excused, paid, courses, monthlyData }
     }, [lectures, clientId, attendancestates])
 
-    // Bez jediné lekce s termínem není z čeho počítat souhrn ani graf. `null` by tu nechalo
-    // celou záložku prázdnou, což vypadá stejně jako rozbité načtení (viz Card.tsx).
-    if (analysis.scheduled.length === 0) {
+    // Bez jediné lekce s termínem do dneška není z čeho počítat souhrn ani graf. `null` by tu
+    // nechalo celou záložku prázdnou, což vypadá stejně jako rozbité načtení (viz Card.tsx).
+    if (analysis.past.length === 0) {
         return (
             <EmptyState
                 icon={faChartBar}
                 title="Není co analyzovat"
-                description={
-                    lectures.length === 0
-                        ? "Klient zatím nemá žádnou lekci."
-                        : "Žádná z lekcí klienta nemá termín — analýza počítá jen s naplánovanými."
-                }
+                description={emptyAnalysisDescription(lectures.length, analysis.scheduled.length)}
             />
         )
     }
@@ -199,7 +207,7 @@ const ClientAnalysis: React.FC<Props> = ({ clientId, lectures }) => {
                 </div>
             </div>
             {analysis.monthlyData.length > 0 && (
-                <div className={styles.chartDivider}>
+                <div className={styles.chartDivider} data-qa="client_analysis_chart">
                     <ResponsiveContainer width="100%" height={190}>
                         <BarChart data={analysis.monthlyData} margin={CHART_MARGIN}>
                             <CartesianGrid

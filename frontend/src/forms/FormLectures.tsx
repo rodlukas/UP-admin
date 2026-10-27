@@ -800,7 +800,12 @@ const FormLectures: React.FC<Props> = (props) => {
                                                     onChangePrepaid()
                                                     onChange(e)
                                                 }}
-                                                label="Předplaceno"
+                                                data-qa="lecture_checkbox_prepaid"
+                                                label={
+                                                    <span data-qa="lecture_label_prepaid">
+                                                        Předplaceno
+                                                    </span>
+                                                }
                                             />
                                             {!isLecture(props.lecture) && (
                                                 <TextInput
@@ -808,6 +813,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                                     className={styles.prepaidLectureCnt}
                                                     disabled={!prepaid}
                                                     id="prepaidCnt"
+                                                    data-qa="lecture_field_prepaid_cnt"
                                                     value={prepaidCnt}
                                                     required={prepaid}
                                                     withAsterisk={prepaid}
@@ -1144,6 +1150,7 @@ const FormLectures: React.FC<Props> = (props) => {
                                     loading={isSubmit}
                                     onClick={(e): void => onSubmit(e, true)}
                                     id="FormLectures_SubmitWithClientChanges"
+                                    data-qa="button_submit_lecture_sync_members"
                                     variant="light"
                                     color="gray"
                                     disabled={

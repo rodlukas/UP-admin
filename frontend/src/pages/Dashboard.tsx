@@ -32,6 +32,7 @@ const Dashboard: React.FC = () => {
                     {/* jediný h1 stránky (osnova pro čtečky / axe page-has-heading-one);
                         vizuálně zůstává h2, aby ladil se sousední sekcí Bankovní účet */}
                     <Heading
+                        data-qa="dashboard_today_heading"
                         title="Dnešní lekce"
                         order={1}
                         size="h2"

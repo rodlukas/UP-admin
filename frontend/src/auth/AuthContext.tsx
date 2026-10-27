@@ -93,6 +93,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                                     "Neúspěšný pokus o obnovení vašeho přihlášení (pravděpodobně z důvodu delší neaktivity). Přihlašte se, prosím, znovu!",
                                 color: "yellow",
                                 autoClose: false,
+                                "data-qa": "notification",
                             })
                         }
                         return

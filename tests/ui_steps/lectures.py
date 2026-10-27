@@ -31,6 +31,8 @@ def open_group_card(context, name):
     helpers.wait_loading_ends(context.browser)
     # najdi skupinu s danym nazvem a otevri jeji kartu
     found_group = helpers.find_group(context, name, True)
+    if found_group:
+        helpers.wait_card_heading(context.browser, "group_name", name)
     return found_group
 
 
@@ -41,6 +43,8 @@ def open_client_card(context, full_name):
     helpers.wait_loading_ends(context.browser)
     # najdi klienta s danym jmenem a otevri jeho kartu
     found_client = helpers.find_client(context, full_name, True)
+    if found_client:
+        helpers.wait_card_heading(context.browser, "client_name", full_name)
     return found_client
 
 
@@ -539,6 +543,90 @@ def step_impl(context, client, date, time, new_attendancestate):
     save_old_lectures_cnt_to_context(context)
     # vyber novy stav ucasti
     choose_attendancestate(lecture_to_update, new_attendancestate)
+
+
+@when("the success notification disappears")
+def step_impl(context):
+    # pouziva se misto "Then" po mutaci, na kterou hned navazuje dalsi formular: notifikace
+    # (nad modaly, autoClose 4 s) by jinak prekryla jeho tlacitko
+    helpers.wait_modal_closed(context.browser)
+    helpers.wait(context.browser, helpers.WAIT_TIME + 5).until(
+        lambda driver: len(driver.find_elements(By.CSS_SELECTOR, "[data-qa=notification]")) == 0
+    )
+
+
+@when(
+    'user syncs the lecture of group "{group_name}" at "{date}", "{time}" to the current group members'
+)
+def step_impl(context, group_name, date, time):
+    # find_lecture cte context.attendances i bez validate_context; pridani lekce v predchozim
+    # kroku tam nechalo puvodni cleny - lekce se tu hleda jen podle data a casu
+    context.attendances = []
+    # otevri kartu skupiny
+    assert open_group_card(context, group_name)
+    # pockej na nacteni
+    helpers.wait_loading_ends(context.browser)
+    # najdi lekci a klikni u ni na Upravit
+    lecture_to_update = find_lecture(context, date, time)
+    assert lecture_to_update
+    lecture_to_update.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_lecture]").click()
+    # pockej az bude viditelny formular
+    wait_form_visible(context.browser)
+    # tlacitko se zobrazuje jen kdyz se ucastnici lekce rozesli se soucasnymi cleny skupiny
+    # (FormLectures.tsx, areAttendantsEqualToMembers) - jeho pritomnost samotna je cast testu
+    sync_button = context.browser.find_element(
+        By.CSS_SELECTOR, "[data-qa=button_submit_lecture_sync_members]"
+    )
+    sync_button.click()
+    helpers.wait_modal_closed(context.browser)
+
+
+@then(
+    'the lecture attendees of group "{group_name}" at "{date}", "{time}" are "{name1}", "{name2}" and "{name3}"'
+)
+def step_impl(context, group_name, date, time, name1, name2, name3):
+    # editace lekce z karty skupiny po zavreni modalu nechava uzivatele na te same karte;
+    # karta se po ulozeni refetchuje, ucastnici se proto ctou opakovane az do shody
+    helpers.wait_card_heading(context.browser, "group_name", group_name)
+    expected = {name1, name2, name3}
+
+    def attendee_names(driver):
+        lecture = find_lecture(context, date, time)
+        if not lecture:
+            return set()
+        return {
+            element.text
+            for element in lecture.find_elements(
+                By.CSS_SELECTOR, "[data-qa=lecture_attendance] [data-qa=client_name]"
+            )
+        }
+
+    helpers.wait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: attendee_names(driver) == expected)
+
+
+def wait_lecture_on_card(context, open_card, who):
+    """Otevre kartu a pocka, az na ni bude lekce z kontextu (viz "the lecture is added")."""
+    assert open_card(context, who)
+    helpers.wait_loading_ends(context.browser)
+    helpers.wait(
+        context.browser,
+        helpers.WAIT_TIME,
+        ignored_exceptions=(StaleElementReferenceException, TimeoutException),
+    ).until(lambda driver: find_lecture_with_context(context))
+
+
+@then('the single lecture is on the card of "{full_name}"')
+def step_impl(context, full_name):
+    wait_lecture_on_card(context, open_client_card, full_name)
+
+
+@then('the group lecture is on the card of "{group_name}"')
+def step_impl(context, group_name):
+    wait_lecture_on_card(context, open_group_card, group_name)
 
 
 use_step_matcher("re")

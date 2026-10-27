@@ -1,5 +1,11 @@
 import { notifications } from "@mantine/notifications"
-import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query"
+import {
+    matchQuery,
+    MutationCache,
+    QueryCache,
+    type Query,
+    QueryClient,
+} from "@tanstack/react-query"
 import { type AxiosError } from "axios"
 import * as React from "react"
 
@@ -97,6 +103,7 @@ function handleError(axiosError: AxiosError, getNavigate?: () => NavigateFn | un
         message: errorMessage,
         color: "red",
         autoClose: 15000,
+        "data-qa": "notification",
     })
 
     // Speciální zpracování pro určité status kódy
@@ -141,7 +148,7 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
             onError: (error: unknown) => {
                 handleError(error as AxiosError, getNavigate)
             },
-            onSuccess: (_data, _variables, _context, mutation) => {
+            onSuccess: (_data, variables, _context, mutation) => {
                 // Invalidujeme všechny queries po každé úspěšné mutaci.
                 // Invalidace pouze refetchuje aktivní queries a označí ostatní jako stale,
                 // takže se refetchují až když budou potřeba.
@@ -149,22 +156,37 @@ export function createQueryClient(getNavigate?: () => NavigateFn | undefined): Q
                 // Výjimka: bankovní data (["bank"]) nezávisí na mutacích v aplikaci a dotazují
                 // se na externí rate-limited API (banka má vlastní manuální refresh s minutovým
                 // limitem), proto je z plošné invalidace vyjmeme.
+                //
+                // Druhá výjimka: smazaný záznam (`deletedQueryKey` v meta mazací mutace).
+                // Při mazání z karty je jeho detail ještě aktivní, refetch by dostal 404
+                // a handleError by kartu přesměroval na "Nenalezeno" dřív, než po zavření
+                // modalu sama naviguje zpět na seznam. Jen se označí jako zastaralý, aby
+                // ho případný návrat na kartu načetl znovu.
+                const deletedQueryKey = mutation.options.meta?.deletedQueryKey?.(variables)
+                const isDeletedQuery = (query: Query): boolean =>
+                    deletedQueryKey !== undefined &&
+                    matchQuery({ queryKey: deletedQueryKey, exact: true }, query)
                 void queryClient.invalidateQueries({
-                    predicate: (query) => query.queryKey[0] !== "bank",
+                    predicate: (query) => query.queryKey[0] !== "bank" && !isDeletedQuery(query),
                 })
+                if (deletedQueryKey !== undefined) {
+                    void queryClient.invalidateQueries({
+                        queryKey: deletedQueryKey,
+                        exact: true,
+                        refetchType: "none",
+                    })
+                }
 
                 // Notifikace potlačíme, pokud je v meta nastaveno skipSuccessNotification
                 if (mutation.options.meta?.skipSuccessNotification) {
                     return
                 }
 
-                // Získáme success zprávu z mutation meta, pokud je k dispozici
-                const successMessage = mutation.options.meta?.successMessage as string | undefined
-
                 notifications.show({
-                    message: successMessage ?? "Uloženo",
+                    message: mutation.options.meta?.successMessage ?? "Uloženo",
                     color: "green",
                     autoClose: 4000,
+                    "data-qa": "notification",
                 })
             },
         }),

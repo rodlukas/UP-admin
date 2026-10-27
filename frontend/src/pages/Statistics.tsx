@@ -42,6 +42,7 @@ import { tableFlat, tableScrollOverflow } from "../global/surfaces.css"
 import { numericCell } from "../global/utility.css"
 import { vars } from "../theme/tokens"
 import { type StatisticsType } from "../types/models"
+import { type QA } from "../types/types"
 
 import * as styles from "./Statistics.css"
 
@@ -93,7 +94,7 @@ type EntityStatCardRow = {
     dotColor?: string
 }
 
-type EntityStatCardProps = {
+type EntityStatCardProps = QA & {
     title: string
     total?: number
     rows: EntityStatCardRow[]
@@ -146,13 +147,21 @@ const MetricToggle: React.FC<MetricToggleProps> = ({ value, onChange }) => (
 )
 
 /** Karta se statistikami entity nebo skupiny metrik. */
-const EntityStatCard: React.FC<EntityStatCardProps> = ({ title, total, rows, note }) => (
-    <div className={styles.statCard}>
+const EntityStatCard: React.FC<EntityStatCardProps> = ({
+    title,
+    total,
+    rows,
+    note,
+    "data-qa": qa,
+}) => (
+    <div className={styles.statCard} data-qa={qa}>
         <div className={styles.statCardTitle}>{title}</div>
         {note ? <div className={styles.statNote}>{note}</div> : null}
         {total !== undefined && (
             <>
-                <div className={styles.metricValue}>{total}</div>
+                <div className={styles.metricValue} data-qa="stat_total">
+                    {total}
+                </div>
                 <div className={styles.totalLabel}>celkem</div>
             </>
         )}
@@ -913,6 +922,15 @@ const Statistics: React.FC = () => {
         year: lecturesYear,
     })
 
+    // Roky z posledních načtených dat: po chybě načtení jiného roku je `statistics` undefined
+    // a přepínač musí dál nabízet návrat na kterýkoli z nich (aktualizace během renderu,
+    // ne v efektu - viz „Storing information from previous renders“ v dokumentaci Reactu).
+    const loadedYears = statistics?.lectures.available_years
+    const [availableYears, setAvailableYears] = React.useState<number[]>([])
+    if (loadedYears && loadedYears !== availableYears) {
+        setAvailableYears(loadedYears)
+    }
+
     React.useEffect(() => {
         const media = globalThis.matchMedia?.("(max-width: 767px)")
         if (!media) {
@@ -925,8 +943,8 @@ const Statistics: React.FC = () => {
     }, [])
 
     // Rok – filtr. Nezávisí na `statistics` (funguje i s jen "Celkem" před prvním
-    // dotažením) — proto se skládá jednou a vkládá beze změny do obou větví níže, ne
-    // uvnitř samotné podmínky na `statistics`.
+    // dotažením) — proto se skládá jednou a vkládá beze změny do všech větví níže
+    // (kostra, chyba, data), ne uvnitř samotné podmínky na `statistics`.
     const yearFilter = (
         <div className={styles.filterSection}>
             <div className={styles.filterHeading}>Rozsah lekcí</div>
@@ -939,7 +957,7 @@ const Statistics: React.FC = () => {
                 onChange={(value) => setLecturesYear(value === YEAR_ALL ? null : Number(value))}
                 data={[
                     { value: YEAR_ALL, label: "Celkem" },
-                    ...(statistics?.lectures.available_years ?? []).map((y) => ({
+                    ...availableYears.map((y) => ({
                         value: String(y),
                         label: String(y),
                     })),
@@ -970,7 +988,6 @@ const Statistics: React.FC = () => {
              * samostatné `SkeletonShell` by tu při prvním vstupu na stránku byly zároveň
              * (a po 25 s by uživatel dostal dvě totožná hlášení "Načíst stránku znovu").
              */}
-            {!statistics && !statisticsLoading && <LoadErrorEmptyState resource="Statistiky" />}
             {!statistics && statisticsLoading && (
                 <SkeletonShell>
                     {/* Klienti mají 3 řádky rozpadu (Aktivní/Neaktivní/Bez lekce),
@@ -995,6 +1012,13 @@ const Statistics: React.FC = () => {
                     <ChartSkeleton />
                 </SkeletonShell>
             )}
+            {!statistics && !statisticsLoading && (
+                <>
+                    {/* i po chybě musí jít přepnout zpět na jiný (třeba už načtený) rok */}
+                    {yearFilter}
+                    <LoadErrorEmptyState resource="Statistiky" />
+                </>
+            )}
             {statistics && (
                 <SimpleGrid
                     // dve karty ve ctyrsloupcove mrizce nechavaly pulku radku prazdnou;
@@ -1004,6 +1028,7 @@ const Statistics: React.FC = () => {
                     <div>
                         <EntityStatCard
                             title="Klienti"
+                            data-qa="stat_card_clients"
                             total={statistics.clients.total}
                             rows={[
                                 {
@@ -1027,6 +1052,7 @@ const Statistics: React.FC = () => {
                     <div>
                         <EntityStatCard
                             title="Skupiny"
+                            data-qa="stat_card_groups"
                             total={statistics.groups.total}
                             rows={[
                                 {

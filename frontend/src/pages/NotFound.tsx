@@ -6,7 +6,7 @@ import Heading from "../components/Heading"
 
 /** Stránka, na kterou se uživatel dostane při neexistující stránce/objektu. */
 const NotFound: React.FC = () => (
-    <Container>
+    <Container data-qa="page_not_found">
         <Heading title={APP_URLS.nenalezeno.title} />
         <p>Stránka nebo hledaný objekt neexistuje!</p>
     </Container>

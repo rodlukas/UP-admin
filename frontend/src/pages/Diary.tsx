@@ -296,6 +296,7 @@ const Diary: React.FC = () => {
                                 <Tooltip label="Předchozí týden">
                                     <Link
                                         aria-label="Předchozí týden"
+                                        data-qa="button_week_prev"
                                         to="/diar/$year/$month/$day"
                                         params={prevMondayParams}
                                         className={styles.arrowLink}
@@ -314,6 +315,7 @@ const Diary: React.FC = () => {
                                 <Tooltip label="Další týden">
                                     <Link
                                         aria-label="Další týden"
+                                        data-qa="button_week_next"
                                         to="/diar/$year/$month/$day"
                                         params={nextMondayParams}
                                         className={styles.arrowLink}

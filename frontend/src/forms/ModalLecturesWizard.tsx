@@ -271,6 +271,8 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                                 disabled={props.isFetching}
                                 // tlacitko obsahuje jen ikony - jmeno pro ctecky z tooltipu
                                 aria-label={title}
+                                data-qa="button_add_lecture_wizard"
+                                data-date={props.date ?? ""}
                                 rightSection={
                                     !props.isFetching && (
                                         <FontAwesomeIcon icon={faChevronDown} size="sm" />
@@ -290,10 +292,14 @@ const ModalLecturesWizard: React.FC<Props> = (props) => {
                         </Menu.Target>
                     </Tooltip>
                     <Menu.Dropdown>
-                        <Menu.Item onClick={(): void => setClient(true)}>
+                        <Menu.Item
+                            data-qa="wizard_lecture_client"
+                            onClick={(): void => setClient(true)}>
                             Přidat lekci <strong>klienta</strong>…
                         </Menu.Item>
-                        <Menu.Item onClick={(): void => setClient(false)}>
+                        <Menu.Item
+                            data-qa="wizard_lecture_group"
+                            onClick={(): void => setClient(false)}>
                             Přidat lekci <strong>skupiny</strong>…
                         </Menu.Item>
                     </Menu.Dropdown>

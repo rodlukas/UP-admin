@@ -168,7 +168,9 @@ const DashboardDay: React.FC<Props> = (props) => {
                             dne (h2), vzhled zůstává h4 */}
                         <Title order={3} size="h4" className={lectureStyles.lectureTitle}>
                             <Tooltip label={courseDuration(lecture.duration)}>
-                                <strong>{prettyTime(new Date(lecture.start))}</strong>
+                                <strong data-qa="lecture_start">
+                                    {prettyTime(new Date(lecture.start))}
+                                </strong>
                             </Tooltip>
                         </Title>
                         <CourseName

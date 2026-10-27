@@ -99,7 +99,7 @@ const Bank: React.FC = () => {
             return isLoadingState ? "načítání" : "neznámý"
         }
         return (
-            <span className={`${nowrap} ${bold}`}>
+            <span className={`${nowrap} ${bold}`} data-qa="bank_balance">
                 {prettyAmount(bankData.accountStatement.info.closingBalance)}
             </span>
         )
@@ -129,7 +129,7 @@ const Bank: React.FC = () => {
             const rowClassName = isToday(date) ? styles.bankRowToday : undefined
             return (
                 <React.Fragment key={id}>
-                    <Table.Tr className={rowClassName}>
+                    <Table.Tr className={rowClassName} data-qa="bank_transaction">
                         <Table.Td
                             colSpan={duplicates && !isNarrow ? 2 : undefined}
                             data-gdpr
@@ -196,7 +196,7 @@ const Bank: React.FC = () => {
         }
         if (isBankError(bankData)) {
             return (
-                <Text className={styles.bankDangerText} ta="center">
+                <Text className={styles.bankDangerText} ta="center" data-qa="bank_error">
                     {bankData.error_info}
                 </Text>
             )
@@ -205,7 +205,7 @@ const Bank: React.FC = () => {
     }
 
     return (
-        <div className={styles.bankWrapper}>
+        <div className={styles.bankWrapper} data-qa="bank">
             <Box
                 className={classNames(styles.bankTitle, {
                     [styles.bankTitleSuccess]: isEnoughMoney,
@@ -229,6 +229,7 @@ const Bank: React.FC = () => {
                                     <span
                                         tabIndex={0}
                                         role="img"
+                                        data-qa="bank_rent_warning"
                                         aria-label="Varování: nedostatek peněz na zaplacení nájmu">
                                         {/* eslint-enable jsx-a11y/no-noninteractive-tabindex */}
                                         <FontAwesomeIcon
