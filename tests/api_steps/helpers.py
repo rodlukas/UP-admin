@@ -18,7 +18,6 @@ API_COURSES = api_url("/courses/")
 API_GROUPS = api_url("/groups/")
 API_LECTURES = api_url("/lectures/")
 API_MEMBERSHIPS = api_url("/memberships/")
-API_BANK = api_url("/bank/")
 API_STATS = api_url("/stats/")
 
 

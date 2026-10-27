@@ -1,11 +1,7 @@
 import re
 
 from behave import when, then
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    StaleElementReferenceException,
-    TimeoutException,
-)
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 
 from tests.ui_steps import helpers
@@ -31,29 +27,20 @@ SECTION_TEXTS = {
 
 @when("user opens every section from the menu")
 def step_impl(context):
-    context.section_results = {}
+    context.opened_sections = []
     for qa, expected_text in SECTION_TEXTS.items():
         context.browser.find_element(By.CSS_SELECTOR, f"[data-qa={qa}]").click()
         helpers.wait_loading_ends(context.browser)
         try:
             helpers.wait_page_title(context.browser, lambda title: expected_text in title)
-            context.section_results[qa] = None
         except TimeoutException:
-            # sekce se nepovedlo otevrit - ostatni se i tak projdou, selhani hlasi az dalsi krok
-            try:
-                context.section_results[qa] = helpers.page_title(context.browser)
-            except NoSuchElementException:
-                context.section_results[qa] = "(bez h1)"
+            raise AssertionError(f'sekce {qa}: h1 neobsahuje "{expected_text}"') from None
+        context.opened_sections.append(qa)
 
 
 @then("each section shows its title")
 def step_impl(context):
-    failed = {
-        qa: f'h1 "{title}", ocekavano "{SECTION_TEXTS[qa]}"'
-        for qa, title in context.section_results.items()
-        if title is not None
-    }
-    assert not failed, f"sekce bez ocekavaneho nadpisu: {failed}"
+    assert context.opened_sections == list(SECTION_TEXTS)
 
 
 @when("user opens an address that does not exist")

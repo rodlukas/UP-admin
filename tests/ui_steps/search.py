@@ -8,8 +8,6 @@ from tests.ui_steps import helpers
 # noinspection PyUnresolvedReferences
 from tests.ui_steps import login_logout
 
-client_ui = flows.client_ui
-
 
 def open_from_search(context, query, result_label):
     flows.spotlight_pick(context.browser, query, result_label)
@@ -52,13 +50,3 @@ def step_impl(context):
         lambda driver: driver.find_element(By.CSS_SELECTOR, "[data-qa=spotlight_empty]").text
         == "Žádné výsledky odpovídající dotazu."
     )
-
-
-@when('user changes the phone on the open card to "{new_phone}"')
-def step_impl(context, new_phone):
-    client_ui.set_phone_on_open_card(context, new_phone)
-
-
-@when("user deletes the client on the open card")
-def step_impl(context):
-    client_ui.delete_client_on_open_card(context)

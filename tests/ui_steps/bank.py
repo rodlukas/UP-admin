@@ -1,13 +1,33 @@
 import re
 
-from behave import when, then
+from behave import given, when, then
 from selenium.webdriver.common.by import By
 
-# noinspection PyUnresolvedReferences
-from tests.common_steps import bank as bank_common
+from api.tests.fio import fio_response, fio_statement, fio_transaction
+from tests.bank_override import use_bank
 
 # noinspection PyUnresolvedReferences
 from tests.ui_steps import helpers, login_logout
+
+
+@given("the bank connection is turned off")
+def step_impl(context):
+    use_bank(context, BANK_ACTIVE=False)
+
+
+@given(
+    "the bank reports balance {balance:d} CZK, rent {rent:d} CZK"
+    ' and a payment of {amount:d} CZK noted "{note}"'
+)
+def step_impl(context, balance, rent, amount, note):
+    statement = fio_statement(balance, [fio_transaction(1, amount, note, "2026-10-20+0200")])
+    use_bank(
+        context,
+        fio_response(200, statement),
+        BANK_ACTIVE=True,
+        FIO_API_KEY="test-token",
+        BANK_RENT_PRICE=rent,
+    )
 
 
 @when("user opens the dashboard")

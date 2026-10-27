@@ -1,12 +1,10 @@
 """Sdilene pruchody pro pruvodce lekci, upravu lekce v dennim prehledu a vyhledavani.
 
 Moduly s kroky, ktere potrebuji pruchody klientu, skupin a lekci, importuji tenhle soubor
-a pouzivaji `client_ui`/`group_ui`/`lecture_ui`, ne primo `from tests.ui_steps import
-clients`. Prvni import modulu s kroky je zaregistruje s prave platnym matcherem a moduly
-na konci prepinaji na "re" - resety mezi importy nize drzi "parse" pro kazdy z nich na
-jednom miste. Behave pozdejsi registraci tehoz kroku ze stejneho mista ignoruje, takze
-spatne zvoleny matcher by krok tise rozbil.
+a pouzivaji `client_ui`/`group_ui`/`lecture_ui`, ne primo `from tests.ui_steps import clients`.
 """
+
+import importlib
 
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.by import By
@@ -15,25 +13,22 @@ from behave import use_step_matcher
 
 from admin.models import Lecture
 from tests import common_helpers
-
-use_step_matcher("parse")
-
-from tests.ui_steps import applications as application_ui
-
-use_step_matcher("parse")
-
-from tests.ui_steps import clients as client_ui
-
-use_step_matcher("parse")
-
-from tests.ui_steps import groups as group_ui
-
-use_step_matcher("parse")
-
 from tests.ui_steps import helpers
-from tests.ui_steps import lectures as lecture_ui
 
-use_step_matcher("parse")
+
+def _import_steps(name):
+    # kroky modulu se registruji s matcherem platnym pri importu a moduly koncí na "re";
+    # dalsi modul (a kod za tim) musi zacit zase v "parse"
+    use_step_matcher("parse")
+    module = importlib.import_module(f"tests.ui_steps.{name}")
+    use_step_matcher("parse")
+    return module
+
+
+application_ui = _import_steps("applications")
+client_ui = _import_steps("clients")
+group_ui = _import_steps("groups")
+lecture_ui = _import_steps("lectures")
 
 
 def open_wizard(driver, date):

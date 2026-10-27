@@ -96,13 +96,13 @@ const Applications: React.FC = () => {
     return (
         <Container>
             <Heading title={APP_URLS.zajemci.title} buttons={<ModalApplications />} />
+            {isLoading && <ApplicationListSkeleton />}
             {/* bez dat po načítání = chyba nebo offline, ne prázdný seznam; podle `data`,
                 ne `isError`, protože selhaný refetch si data z cache nechá (viz Clients.tsx) */}
-            {isLoading ? (
-                <ApplicationListSkeleton />
-            ) : applicationsData === undefined ? (
+            {!isLoading && applicationsData === undefined && (
                 <LoadErrorEmptyState resource="Zájemce" />
-            ) : (
+            )}
+            {!isLoading && applicationsData !== undefined && (
                 <>
                     {applications.map((courseApplications) => {
                         const cnt = courseApplications.objects.length

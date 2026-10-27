@@ -39,7 +39,6 @@ def wait_form_visible(driver):
 
 
 def set_phone_on_open_card(context, new_phone):
-    # pouziva se z karty i z vysledku vyhledavani (sdileny krok "the open card shows phone")
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_client]").click()
     wait_form_visible(context.browser)
     phone_field = context.browser.find_element(By.CSS_SELECTOR, "[data-qa=client_field_phone]")
@@ -51,7 +50,6 @@ def set_phone_on_open_card(context, new_phone):
 
 
 def delete_client_on_open_card(context):
-    # pouziva se z karty i z vysledku vyhledavani (sdileny krok "is gone from the list")
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_edit_client]").click()
     wait_form_visible(context.browser)
     context.browser.find_element(By.CSS_SELECTOR, "[data-qa=button_delete_client]").click()
