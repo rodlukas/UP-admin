@@ -9,7 +9,6 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from tests import fixtures
 from tests.bank_override import assert_no_real_request, block_real_bank
 
-LOOPBACK_HOSTS = ("127.0.0.1", "localhost", "[::1]")
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
 
@@ -39,32 +38,19 @@ def before_all(context):
         options.add_argument("--use-mock-keychain")
         options.add_argument("--password-store=basic")
         # konkretni uz stazeny Chromium (napr. od Playwrightu); bez nej Selenium Manager vezme
-        # nainstalovany Google Chrome a Chrome for Testing stahne jen tam, kde zadny neni.
-        # Nastavuje se i v attach rezimu nize (binary se samo nespusti), protoze podle nej
-        # Selenium Manager pozna, jakou verzi chromedriveru si ma stahnout.
+        # nainstalovany Google Chrome a Chrome for Testing stahne jen tam, kde zadny neni
         chrome_binary = os.environ.get("TESTS_CHROME_BINARY")
-        # pripoj se na uz bezici Chromium pres CDP misto spousteni vlastniho prohlizece
-        # (prepinace vyse pak urcuje ten, kdo prohlizec spustil)
-        debugger_address = os.environ.get("TESTS_CHROME_DEBUGGER_ADDRESS")
         # nainstalovany Google Chrome sdili klic v Klicence s beznym prohlizecem uzivatele -
         # na macOS ho testy samy nespousti (ani bez TESTS_CHROME_BINARY, ani pres nej)
-        if sys.platform == "darwin" and not debugger_address:
-            if not chrome_binary or is_installed_google_chrome(chrome_binary):
-                raise RuntimeError(
-                    "Na macOS potrebuje TESTS_BROWSER=chrome TESTS_CHROME_BINARY s jinym Chromiem"
-                    " nez nainstalovanym Google Chrome, nebo TESTS_CHROME_DEBUGGER_ADDRESS"
-                    " (viz tests/README.md)."
-                )
+        if sys.platform == "darwin" and (
+            not chrome_binary or is_installed_google_chrome(chrome_binary)
+        ):
+            raise RuntimeError(
+                "Na macOS potrebuje TESTS_BROWSER=chrome TESTS_CHROME_BINARY s jinym Chromiem"
+                " nez nainstalovanym Google Chrome (viz tests/README.md)."
+            )
         if chrome_binary:
             options.binary_location = chrome_binary
-        # testy v prohlizeci mazou localStorage a vypisuji text stranky - cizi stroj nikdy
-        if debugger_address and debugger_address.rpartition(":")[0] not in LOOPBACK_HOSTS:
-            raise RuntimeError(
-                "TESTS_CHROME_DEBUGGER_ADDRESS musi byt host:port a mirit na tento pocitac"
-                f" ({debugger_address})."
-            )
-        if debugger_address:
-            options.add_experimental_option("debuggerAddress", debugger_address)
         context.browser = webdriver.Chrome(options=options)
     else:
         options = FirefoxOptions()

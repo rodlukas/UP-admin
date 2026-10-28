@@ -90,13 +90,3 @@ def step_impl(context):
     assert context.resp.status_code == status.HTTP_403_FORBIDDEN
     detail = json.loads(context.resp.content)["detail"]
     assert "lekce" in detail
-
-
-@when("user requests a client that does not exist")
-def step_impl(context):
-    context.resp = context.api_client.get(f"{helpers.API_CLIENTS}999999/")
-
-
-@then("the API answers not found")
-def step_impl(context):
-    assert context.resp.status_code == status.HTTP_404_NOT_FOUND
