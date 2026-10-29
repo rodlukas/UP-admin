@@ -22,7 +22,7 @@ import SortableTh from "../components/SortableTh"
 import TableToolbar from "../components/TableToolbar"
 import { useGroupsActiveContext } from "../contexts/GroupsActiveContext"
 import ModalGroups from "../forms/ModalGroups"
-import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
+import { TEXTS } from "../global/constants"
 import { tableFlat } from "../global/surfaces.css"
 import { iconAfterText, middle } from "../global/utility.css"
 import { areAllMembersActive, isStaleActive, pluralizeCs } from "../global/utils"
@@ -281,8 +281,7 @@ const Groups: React.FC = () => {
                         <Group gap="sm" wrap="nowrap">
                             <FontAwesomeIcon icon={faCalendarTimes} />
                             <span>
-                                {staleGroups.length} {staleText} lekci déle než{" "}
-                                {DAYS_WITHOUT_LECTURE_WARNING} dní.
+                                {staleGroups.length} {staleText} lekci déle než půl roku.
                             </span>
                         </Group>
                         {/* `default` varianta: stejný důvod jako na Klientech (Clients.tsx) */}

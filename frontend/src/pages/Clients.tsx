@@ -19,7 +19,7 @@ import SortableTh from "../components/SortableTh"
 import TableToolbar from "../components/TableToolbar"
 import { useClientsActiveContext } from "../contexts/ClientsActiveContext"
 import ModalClients from "../forms/ModalClients"
-import { DAYS_WITHOUT_LECTURE_WARNING, TEXTS } from "../global/constants"
+import { TEXTS } from "../global/constants"
 import { tableFlat } from "../global/surfaces.css"
 import { iconAfterText } from "../global/utility.css"
 import { isStaleActive, pluralizeCs } from "../global/utils"
@@ -272,8 +272,7 @@ const Clients: React.FC = () => {
                         <Group gap="sm" wrap="nowrap">
                             <FontAwesomeIcon icon={faCalendarTimes} />
                             <span>
-                                {staleClients.length} {staleText} lekci déle než{" "}
-                                {DAYS_WITHOUT_LECTURE_WARNING} dní.
+                                {staleClients.length} {staleText} lekci déle než půl roku.
                             </span>
                         </Group>
                         {/* `default` varianta: sytě žluté tlačítko by na žlutém notice bylo
