@@ -5,6 +5,10 @@ WORKDIR /usr/src/up-admin
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# uzivatel, pod kterym aplikace bezi (USER nize); zaklada se pred kopirovanim kodu,
+# aby vrstva zustala v cache
+RUN useradd --system --user-group --no-create-home --uid 10001 up-admin
+
 # copy pipenv files to container
 COPY Pipfile Pipfile.lock ./
 
@@ -17,7 +21,6 @@ COPY . .
 # aplikace (gunicorn, release_command s migracemi) bezi bez roota. Kod zustava rootovi,
 # takze ho proces nemuze prepsat; za behu nic na disk nezapisuje (cache je v DB, logy
 # na stdout, gunicorn si docasne soubory dava do /tmp)
-RUN useradd --system --user-group --no-create-home --uid 10001 up-admin
 USER up-admin
 
 # expose the port
