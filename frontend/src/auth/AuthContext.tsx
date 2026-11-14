@@ -1,5 +1,6 @@
 import { notifications } from "@mantine/notifications"
 import { useNavigate } from "@tanstack/react-router"
+import { isAxiosError } from "axios"
 import * as React from "react"
 
 import { trackEvent } from "../analytics"
@@ -86,7 +87,19 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                             const { token: newToken } = await LoginService.refresh(data)
                             Token.save(newToken)
                             setIsAuth(true)
-                        } catch {
+                        } catch (err) {
+                            if (!isAxiosError(err) || err.response === undefined) {
+                                // server nedostupny (vypadek site) - token neodmitl, plati
+                                // dal do expirace a obnovi se pri pristi kontrole
+                                setIsAuth(decodedToken.exp >= getCurrentDate())
+                                return
+                            }
+                            // server token odmitl (vyprsel refresh_exp, uzivatel smazany,
+                            // deaktivovany nebo zmenil heslo) - token je potreba smazat:
+                            // `Login` by ho jinak podle `exp` vzal za platny a poslal
+                            // uzivatele zpet, `AuthChecking` by zkusil refresh znovu a tak
+                            // dokola
+                            Token.remove()
                             setIsAuth(false)
                             notifications.show({
                                 message:

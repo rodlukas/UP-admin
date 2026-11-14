@@ -176,7 +176,9 @@ SIMPLE_JWT = {
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.SlidingToken",),
     "AUTH_HEADER_TYPES": ("Bearer",),
     # token nese otisk hesla - po zmene hesla starsi tokeny prestanou platit (overuje
-    # JWTAuthentication u kazdeho pozadavku i refresh v api/tokens.py)
+    # JWTAuthentication u kazdeho pozadavku i refresh v api/tokens.py). Otisk je z ulozeneho
+    # hashe, ne z hesla: kdyz nova verze Djanga zvedne pocet iteraci PBKDF2, prvni prihlaseni
+    # hash prepocita a tokeny na ostatnich zarizenich prestanou platit taky.
     "CHECK_REVOKE_TOKEN": True,
 }
 
