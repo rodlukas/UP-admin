@@ -1,5 +1,6 @@
 import { notifications } from "@mantine/notifications"
 import { useNavigate } from "@tanstack/react-router"
+import { isAxiosError } from "axios"
 import * as React from "react"
 
 import { trackEvent } from "../analytics"
@@ -78,7 +79,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                 const decodedToken = Token.decodeToken(token)
                 if (refreshExpiringToken) {
                     const dif = decodedToken.exp - getCurrentDate()
-                    Token.logToConsole(token, decodedToken, dif)
+                    Token.logToConsole(decodedToken, dif)
                     if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
                         // token jeste plati, ale prodluz jeho platnost
                         try {
@@ -86,7 +87,20 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                             const { token: newToken } = await LoginService.refresh(data)
                             Token.save(newToken)
                             setIsAuth(true)
-                        } catch {
+                        } catch (err) {
+                            if (!isAxiosError(err) || err.response?.status !== 401) {
+                                // server token neodmitl - vypadek site nebo docasna chyba
+                                // (502/503 behem nasazeni, 429, 500): token plati dal do
+                                // expirace a obnovi se pri pristi kontrole
+                                setIsAuth(decodedToken.exp >= getCurrentDate())
+                                return
+                            }
+                            // server token odmitl (401: vyprsel refresh_exp, uzivatel
+                            // smazany, deaktivovany nebo zmenil heslo) - token je potreba
+                            // smazat: `Login` by ho jinak podle `exp` vzal za platny a poslal
+                            // uzivatele zpet, `AuthChecking` by zkusil refresh znovu a tak
+                            // dokola
+                            Token.remove()
                             setIsAuth(false)
                             notifications.show({
                                 message:

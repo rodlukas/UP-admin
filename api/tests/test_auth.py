@@ -1,15 +1,21 @@
 import base64
+import os
+from unittest import mock
 
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
+from django.core.cache import cache
 from django.http import HttpResponse
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 
+from admin.models import Client as ClientModel
+from api.throttles import ClientIpScopedRateThrottle
 from api.tokens import MyTokenObtainSlidingSerializer
 
 AUTH_URL = reverse("token_obtain")
+REFRESH_URL = reverse("token_refresh")
 CLIENTS_URL = reverse("client-list")
 
 
@@ -145,28 +151,144 @@ class DiacriticsLoginTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class BasicAuthCaseSensitivityTest(TestCase):
+class BasicAuthDisabledTest(TestCase):
     """
-    Basic auth zůstává na PŘESNOU shodu.
+    Basic auth API nepřijímá.
 
-    Normalizace username sedí v serializeru JWT endpointu (api/tokens.py), takže se týká jen
-    přihlášení z aplikace. `BasicAuthentication` je první v `DEFAULT_AUTHENTICATION_CLASSES`,
-    tedy pokrývá celé `/api/v1/`, a jde přes stock `ModelBackend`. Je to vědomý kompromis
-    a tenhle test drží tu hranici, aby se neposunula tiše - třeba návratem globálního
-    `AUTHENTICATION_BACKENDS`, po kterém by se case-insensitive chování rozlilo na celé API.
+    Prohlížeč si basic auth pamatuje a posílá ji sám, i s formulářem odeslaným z cizí
+    stránky, a DRF u ní CSRF nekontroluje. Navíc každý požadavek s ní hashuje heslo dřív,
+    než by ho mohl zastavit throttling. Testy drží, že se nevrátí tiše.
     """
 
     def setUp(self) -> None:
         get_user_model().objects.create_user(username="ucitel-basic", password="test-password")
+        token = base64.b64encode(b"ucitel-basic:test-password").decode()
+        self.basic_header = {"authorization": f"Basic {token}"}
 
-    def _get_with_basic_auth(self, username: str) -> HttpResponse:
-        token = base64.b64encode(f"{username}:test-password".encode()).decode()
-        return self.client.get(CLIENTS_URL, headers={"authorization": f"Basic {token}"})
-
-    def test_basic_auth_accepts_exact_username(self) -> None:
-        response = self._get_with_basic_auth("ucitel-basic")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_basic_auth_rejects_different_case(self) -> None:
-        response = self._get_with_basic_auth("Ucitel-Basic")
+    def test_valid_basic_credentials_are_rejected(self) -> None:
+        response = self.client.get(CLIENTS_URL, headers=self.basic_header)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_challenge_does_not_ask_browser_for_basic_credentials(self) -> None:
+        # `WWW-Authenticate: Basic` by prohlizeci nabidl nativni dialog a ulozeni udaju
+        response = self.client.get(CLIENTS_URL)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertTrue(response["WWW-Authenticate"].startswith("Bearer"))
+
+    def test_cross_site_form_post_with_basic_credentials_creates_nothing(self) -> None:
+        csrf_client = Client(enforce_csrf_checks=True)
+        response = csrf_client.post(
+            CLIENTS_URL,
+            "firstname=x&surname=y&phone=&email=&note=csrf&active=true",
+            content_type="application/x-www-form-urlencoded",
+            headers={**self.basic_header, "origin": "https://evil.example"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertFalse(ClientModel.objects.filter(note="csrf").exists())
+
+
+class TokenRevocationTest(TestCase):
+    """
+    Odebraný přístup ruší i už vydané tokeny.
+
+    Bez načtení uživatele při každém požadavku (`JWTAuthentication`), `CHECK_REVOKE_TOKEN`
+    a kontroly uživatele při refreshi (api/tokens.py) by token smazaného, deaktivovaného
+    nebo přeheslovaného uživatele dál fungoval a obnovoval se až do konce
+    `SLIDING_TOKEN_REFRESH_LIFETIME`.
+    """
+
+    def setUp(self) -> None:
+        self.user = get_user_model().objects.create_user(
+            username="odchazejici-ucitel", password="test-password"
+        )
+        response = self.client.post(
+            AUTH_URL, {"username": "odchazejici-ucitel", "password": "test-password"}
+        )
+        self.token = response.json()["token"]
+
+    def _get_clients(self) -> HttpResponse:
+        return self.client.get(CLIENTS_URL, headers={"authorization": f"Bearer {self.token}"})
+
+    def _refresh(self) -> HttpResponse:
+        return self.client.post(REFRESH_URL, {"token": self.token})
+
+    def _assert_revoked(self) -> None:
+        self.assertEqual(self._get_clients().status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(self._refresh().status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_valid_token_works_and_refreshes(self) -> None:
+        # kontrola: bez odebrani pristupu token funguje, jinak by testy nize nic nedokazaly
+        self.assertEqual(self._get_clients().status_code, status.HTTP_200_OK)
+        self.assertEqual(self._refresh().status_code, status.HTTP_200_OK)
+
+    def test_deactivated_user(self) -> None:
+        self.user.is_active = False
+        self.user.save()
+        self._assert_revoked()
+
+    def test_password_change(self) -> None:
+        self.user.set_password("nove-heslo")
+        self.user.save()
+        self._assert_revoked()
+
+    def test_deleted_user(self) -> None:
+        self.user.delete()
+        self._assert_revoked()
+
+
+class LoginThrottleTest(TestCase):
+    """
+    Přihlášení má limit pokusů na IP adresu a odmítnutý pokus už heslo nehashuje.
+
+    V testech je limit vypnutý (`DEFAULT_THROTTLE_RATES` v up/settings/base.py), tady se
+    zapíná přímo na throttle třídě - DRF si sazby čte jednou při importu.
+    """
+
+    def setUp(self) -> None:
+        cache.clear()
+        get_user_model().objects.create_user(username="ucitel-limit", password="test-password")
+        patcher = mock.patch.object(
+            ClientIpScopedRateThrottle, "THROTTLE_RATES", {"jwt-auth": "2/min"}
+        )
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.addCleanup(cache.clear)
+
+    def _login(self, ip: str) -> HttpResponse:
+        return self.client.post(
+            AUTH_URL,
+            {"username": "ucitel-limit", "password": "spatne-heslo"},
+            headers={"fly-client-ip": ip},
+        )
+
+    def test_attempts_over_limit_are_rejected_before_password_check(self) -> None:
+        with mock.patch(
+            "rest_framework_simplejwt.serializers.authenticate", wraps=authenticate
+        ) as spy:
+            self.assertEqual(self._login("192.0.2.1").status_code, status.HTTP_401_UNAUTHORIZED)
+            self.assertEqual(self._login("192.0.2.1").status_code, status.HTTP_401_UNAUTHORIZED)
+            throttled = self._login("192.0.2.1")
+        self.assertEqual(throttled.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
+        self.assertEqual(spy.call_count, 2)
+        # hlaska je cela cesky - dovetek DRF "Expected available in ..." nema ceskou lokalizaci
+        self.assertRegex(
+            throttled.json()["detail"],
+            r"^Příliš mnoho pokusů o přihlášení\. Zkuste to znovu za \d+ s\.$",
+        )
+
+    @mock.patch.dict(os.environ, {"FLY_APP_NAME": "uspesnyprvnacek-test"})
+    def test_limit_is_per_client_ip_on_fly(self) -> None:
+        self._login("192.0.2.1")
+        self._login("192.0.2.1")
+        self.assertEqual(self._login("192.0.2.2").status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_client_sent_fly_header_is_ignored_off_fly(self) -> None:
+        # mimo Fly hlavicku nikdo neprepisuje - vlastni hodnotou by si utocnik pri kazdem
+        # pokusu zalozil nove pocitadlo
+        with mock.patch.dict(os.environ):
+            os.environ.pop("FLY_APP_NAME", None)
+            self._login("192.0.2.1")
+            self._login("192.0.2.2")
+            self.assertEqual(
+                self._login("192.0.2.3").status_code, status.HTTP_429_TOO_MANY_REQUESTS
+            )

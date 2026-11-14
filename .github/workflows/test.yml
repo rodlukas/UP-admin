@@ -264,9 +264,7 @@ jobs:
             - name: 📝 Apply string substitution
               run: ./scripts/shell/ci/string_substitution.sh
 
-            # smazani dat z buildu, testovani a dokumentace
-            - name: 🧹 Cleanup project folder
-              run: ./scripts/shell/ci/cleanup.sh
+            # co do image nepatri (testy, dokumentace, .git, ...), vynechava .dockerignore
 
             # nastavime spravnou fly.io konfiguraci
             - name: 🧹 Pre-deploy tasks Fly.io - config files

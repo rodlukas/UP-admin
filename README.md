@@ -142,7 +142,9 @@ Includes all the logic and exposes a **REST API** for a client, built on these t
 **API documentation** is generated straight from the code with
 **[drf-spectacular](https://github.com/tfranzel/drf-spectacular)** – the OpenAPI schema is served at
 `/api/open-api/` and an interactive **[Swagger UI](https://uspesnyprvnacek.fly.dev/api/docs/)** at
-`/api/docs/`.
+`/api/docs/`. The API accepts only JWT: when you are signed in to the app, Swagger UI picks up its
+token automatically; otherwise get a token from `POST /api/v1/jwt-auth/` and paste it into
+**Authorize**.
 
 Django complex SQL queries are highly **optimized** (multiple times speed increase) (see articles
 [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/),

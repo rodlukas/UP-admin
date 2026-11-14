@@ -32,10 +32,14 @@ export default class Token {
         return jwtDecode(token)
     }
 
-    static logToConsole(token: TokenCodedType, decoded: TokenDecodedType, dif: number): void {
+    /**
+     * Vypíše do konzole platnost tokenu. Samotný token ne: Sentry z konzole dělá
+     * breadcrumbs a posílá je s každou chybou, a token je plnohodnotné přihlášení.
+     */
+    static logToConsole(decoded: TokenDecodedType, dif: number): void {
         // eslint-disable-next-line no-console
         console.info(
-            `%ctoken:\t${token}\ncas:\t${prettyDateTime(new Date())}\nvyprsi:\t${prettyDateTime(
+            `%ccas:\t${prettyDateTime(new Date())}\nvyprsi:\t${prettyDateTime(
                 new Date(decoded.exp * 1000),
             )}\ndif:\t${dif} s (cca. ${Math.round(dif / 60)} min; cca. ${Math.round(
                 dif / 3600,

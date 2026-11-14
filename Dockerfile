@@ -5,6 +5,10 @@ WORKDIR /usr/src/up-admin
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# uzivatel, pod kterym aplikace bezi (USER nize); zaklada se pred kopirovanim kodu,
+# aby vrstva zustala v cache
+RUN useradd --system --user-group --no-create-home --uid 10001 up-admin
+
 # copy pipenv files to container
 COPY Pipfile Pipfile.lock ./
 
@@ -13,6 +17,11 @@ RUN pipenv install --deploy --system
 
 # copy all files and directories to container
 COPY . .
+
+# aplikace (gunicorn, release_command s migracemi) bezi bez roota. Kod zustava rootovi,
+# takze ho proces nemuze prepsat; za behu nic na disk nezapisuje (cache je v DB, logy
+# na stdout, gunicorn si docasne soubory dava do /tmp)
+USER up-admin
 
 # expose the port
 EXPOSE 8000
@@ -30,7 +39,10 @@ EXPOSE 8000
 # max-requests je pojistka proti rustu RSS.
 # access log jde na stdout, tedy do `fly logs` - bez nej neni u incidentu videt, jake
 # requesty byly v letu.
+# Ridici socket (gunicornc) se nepouziva a bez domovskeho adresare uzivatele by ho
+# gunicorn neumel zalozit.
 CMD ["gunicorn", "--bind", ":8000", \
+     "--no-control-socket", \
      "--preload", \
      "--worker-class", "gthread", "--workers", "1", "--threads", "4", \
      "--timeout", "60", "--graceful-timeout", "30", \
