@@ -2,7 +2,7 @@
 Vlastní definice způsobu serializace JWT tokenů.
 """
 
-from typing import Any
+from typing import Any, NoReturn
 
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema
@@ -17,7 +17,7 @@ from rest_framework_simplejwt.serializers import (
 from rest_framework_simplejwt.tokens import SlidingToken, Token
 from rest_framework_simplejwt.views import TokenObtainSlidingView, TokenRefreshSlidingView
 
-from api.throttles import ClientIpScopedRateThrottle
+from api.throttles import ClientIpScopedRateThrottle, LoginThrottled
 
 
 class MyTokenObtainSlidingSerializer(TokenObtainSlidingSerializer):
@@ -92,6 +92,9 @@ class MyTokenObtainSlidingView(TokenObtainSlidingView):
     # DEFAULT_THROTTLE_RATES)
     throttle_classes = [ClientIpScopedRateThrottle]
     throttle_scope = "jwt-auth"
+
+    def throttled(self, request: Request, wait: float | None) -> NoReturn:
+        raise LoginThrottled(wait)
 
     @extend_schema(
         summary="Získání JWT tokenu",

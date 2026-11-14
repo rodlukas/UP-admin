@@ -267,10 +267,14 @@ class LoginThrottleTest(TestCase):
         ) as spy:
             self.assertEqual(self._login("192.0.2.1").status_code, status.HTTP_401_UNAUTHORIZED)
             self.assertEqual(self._login("192.0.2.1").status_code, status.HTTP_401_UNAUTHORIZED)
-            self.assertEqual(
-                self._login("192.0.2.1").status_code, status.HTTP_429_TOO_MANY_REQUESTS
-            )
+            throttled = self._login("192.0.2.1")
+        self.assertEqual(throttled.status_code, status.HTTP_429_TOO_MANY_REQUESTS)
         self.assertEqual(spy.call_count, 2)
+        # hlaska je cela cesky - dovetek DRF "Expected available in ..." nema ceskou lokalizaci
+        self.assertRegex(
+            throttled.json()["detail"],
+            r"^Příliš mnoho pokusů o přihlášení\. Zkuste to znovu za \d+ s\.$",
+        )
 
     @mock.patch.dict(os.environ, {"FLY_APP_NAME": "uspesnyprvnacek-test"})
     def test_limit_is_per_client_ip_on_fly(self) -> None:
