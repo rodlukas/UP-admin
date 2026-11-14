@@ -78,7 +78,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                 const decodedToken = Token.decodeToken(token)
                 if (refreshExpiringToken) {
                     const dif = decodedToken.exp - getCurrentDate()
-                    Token.logToConsole(token, decodedToken, dif)
+                    Token.logToConsole(decodedToken, dif)
                     if (dif > 0 && dif <= AUTH_REFRESH_THRESHOLD) {
                         // token jeste plati, ale prodluz jeho platnost
                         try {

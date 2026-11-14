@@ -78,16 +78,24 @@ if not DEPLOYED:
 
 # API
 REST_FRAMEWORK = {
-    # pouziva se JWTTokenUserAuthentication, aby se neprovadel pri kazdem req DB lookup na uzivatele
+    # Jediny zpusob prihlaseni je JWT (aplikace i Swagger, viz SWAGGER_UI_SETTINGS).
+    # JWTAuthentication pri kazdem pozadavku nacte uzivatele z DB, takze token smazaneho,
+    # deaktivovaneho nebo preheslovaneho uzivatele (CHECK_REVOKE_TOKEN) prestane platit hned.
+    # Basic auth tu neni: prohlizec si ji pamatuje a posila sam (cross-site formular by
+    # proti API prosel bez CSRF kontroly) a kazdy pozadavek s ni hashuje heslo jeste pred
+    # jakymkoli throttlingem.
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # BasicAuthentication pro OpenAPI dokumentaci a Browsable API
-        "rest_framework.authentication.BasicAuthentication",
-        # JWTTokenUserAuthentication pro pristup k API z frontendu
-        "rest_framework_simplejwt.authentication.JWTTokenUserAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    # jen JSON: Browsable API (HTML) se bez basic/session auth prihlasit neda, API se
+    # prochazi ve Swaggeru (/api/docs/)
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # limit pro prihlaseni (api/tokens.py) na IP adresu; testy prihlasuji desitky uzivatelu
+    # za sebou z jedne adresy, proto v nich limit neplati (test throttlingu si ho nastavi sam)
+    "DEFAULT_THROTTLE_RATES": {"jwt-auth": None if TESTS_RUNNING else "10/min"},
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
@@ -96,6 +104,28 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Dokumentace *REST API* pro aplikaci **ÚPadmin**. **[Přejít do aplikace](/)**",
     "VERSION": "1.0.0",
     "SWAGGER_UI_FAVICON_HREF": "/static/admin/favicon.ico",
+    # Swagger se prihlasuje JWT tokenem (Authorize -> jwtAuth). Kdo je prihlaseny v aplikaci,
+    # nemusi nic zadavat: po nacteni se pouzije token, ktery aplikace drzi v localStorage pod
+    # klicem "jwt" (AUTH_STORAGE_KEY ve frontend/src/auth/Token.ts) - Swagger bezi na stejnem
+    # originu. Retezec (ne dict) drf-spectacular vlozi do SwaggerUIBundle({...}) beze zmeny,
+    # takze muze obsahovat JS funkci; `ui` je konstanta z jeho swagger_ui.js.
+    # - bez `persistAuthorization`: Swagger by si token ulozil do vlastniho klice
+    #   v localStorage a odhlaseni z aplikace (maze jen "jwt") by tu kopii nechalo
+    # - jen jednou: prihlaseni v drf-spectacular znovu stahne schema a `onComplete` se muze
+    #   spustit po kazdem nacteni definice - bez pojistky by se to tocilo dokola
+    "SWAGGER_UI_SETTINGS": """{
+        deepLinking: true,
+        onComplete: (() => {
+            let done = false;
+            return () => {
+                const token = localStorage.getItem("jwt");
+                if (!done && token) {
+                    done = true;
+                    ui.preauthorizeApiKey("jwtAuth", token);
+                }
+            };
+        })(),
+    }""",
     "TAGS": [
         {
             "name": "Klienti",
@@ -145,6 +175,9 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=2),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.SlidingToken",),
     "AUTH_HEADER_TYPES": ("Bearer",),
+    # token nese otisk hesla - po zmene hesla starsi tokeny prestanou platit (overuje
+    # JWTAuthentication u kazdeho pozadavku i refresh v api/tokens.py)
+    "CHECK_REVOKE_TOKEN": True,
 }
 
 MIDDLEWARE = [

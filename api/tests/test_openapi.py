@@ -67,3 +67,23 @@ class OpenAPIDocumentationTest(SimpleTestCase):
         self.assertIn('classList.toggle("dark-mode"', response_content)
         # sablona dedi vychozi sablonu drf-spectacular, Swagger UI se tedy dal nacita
         self.assertIn('id="swagger-ui"', response_content)
+
+    def test_schema_offers_only_jwt_auth(self) -> None:
+        """
+        Zkontroluje, že se Swagger přihlašuje jen JWT tokenem - basic auth API nepřijímá.
+        """
+        response = self.client.get("/api/open-api/?format=json", secure=True)
+        self.assertEqual(response.status_code, 200)
+        schemes = response.json()["components"]["securitySchemes"]
+        self.assertEqual(set(schemes), {"jwtAuth"})
+        self.assertEqual(schemes["jwtAuth"]["scheme"], "bearer")
+
+    def test_swagger_ui_reuses_app_token(self) -> None:
+        """
+        Zkontroluje, že Swagger UI po načtení převezme JWT token přihlášené aplikace.
+        """
+        response = self.client.get("/api/docs/", secure=True)
+        self.assertEqual(response.status_code, 200)
+        response_content = response.content.decode("utf-8")
+        self.assertIn('localStorage.getItem("jwt")', response_content)
+        self.assertIn('ui.preauthorizeApiKey("jwtAuth", token)', response_content)
