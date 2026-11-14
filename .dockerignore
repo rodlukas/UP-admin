@@ -1,8 +1,13 @@
+# Jediny seznam toho, co do Docker image nepatri - plati pro deploy na Fly (test.yml,
+# deploy.yml) i pro verejny image v ghcr.io. CI pred buildem nic nemaze, takze kdyby tenhle
+# soubor chybel, dostane se do image vsechno vcetne .git (s tokenem z actions/checkout)
+# a .github. Frontend se do image nekopiruje: jeho build uz je ve staticfiles.
 Dockerfile
 node_modules
 .git
 fly.prod.toml
 fly.test.toml
+fly.toml
 frontend
 docs
 .idea
@@ -31,3 +36,7 @@ SECURITY.md
 .dockerignore
 .gitattributes
 .gitignore
+.husky
+.mcp.json
+AGENTS.md
+CLAUDE.md
