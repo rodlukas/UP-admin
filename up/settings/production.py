@@ -7,6 +7,7 @@ Rozšiřuje základní konfiguraci ze souboru base.py.
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
+from sentry_sdk.scrubber import DEFAULT_DENYLIST, EventScrubber
 import os
 
 from .base import *
@@ -21,6 +22,11 @@ if SENTRY_DSN:
         environment=ENVIRONMENT,
         integrations=[DjangoIntegration()],
         release="%GIT_COMMIT",
+        # SDK posila u chyb i lokalni promenne ramcu a jeho vychozi scrubber maze jen klice
+        # presne ze seznamu a jen na nejvyssi urovni. `url_secret` (api/services.py) nese
+        # Fio token v URL a heslo z prihlaseni lezi vnorene v `attrs` (api/tokens.py) -
+        # oboji se ma smazat uz tady, ne az serverovym scrubbingem v Sentry.
+        event_scrubber=EventScrubber(denylist=[*DEFAULT_DENYLIST, "url_secret"], recursive=True),
     )
     # gunicorn propaguje access log do rootu, odkud ho SDK bere jako breadcrumbs - radky
     # o stahovani statiky by pri stropu 100 breadcrumbu vytlacily to, co uzivatel delal

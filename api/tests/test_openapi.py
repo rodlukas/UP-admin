@@ -67,3 +67,40 @@ class OpenAPIDocumentationTest(SimpleTestCase):
         self.assertIn('classList.toggle("dark-mode"', response_content)
         # sablona dedi vychozi sablonu drf-spectacular, Swagger UI se tedy dal nacita
         self.assertIn('id="swagger-ui"', response_content)
+
+    def test_schema_offers_only_jwt_auth(self) -> None:
+        """
+        Zkontroluje, že se Swagger přihlašuje jen JWT tokenem - basic auth API nepřijímá.
+        """
+        response = self.client.get("/api/open-api/?format=json", secure=True)
+        self.assertEqual(response.status_code, 200)
+        schemes = response.json()["components"]["securitySchemes"]
+        self.assertEqual(set(schemes), {"jwtAuth"})
+        self.assertEqual(schemes["jwtAuth"]["scheme"], "bearer")
+
+    def test_swagger_ui_reuses_app_token(self) -> None:
+        """
+        Zkontroluje, že Swagger UI po načtení převezme JWT token přihlášené aplikace.
+        """
+        response = self.client.get("/api/docs/", secure=True)
+        self.assertEqual(response.status_code, 200)
+        response_content = response.content.decode("utf-8")
+        self.assertIn('localStorage.getItem("jwt")', response_content)
+        self.assertIn('ui.preauthorizeApiKey("jwtAuth", token)', response_content)
+
+    def test_schema_ignores_anonymous_version_parameter(self) -> None:
+        """
+        Zkontroluje, že schéma nebere libovolný `?version=` (ALLOWED_VERSIONS).
+
+        drf-spectacular by hodnotu dosadil do `info.version` i do hlavičky
+        `Content-Disposition`: CR/LF končí chybou 500, uvozovky přidávají parametry hlavičky.
+        """
+        for version in ("x\r\nSet-Cookie: a=b", "x\"; filename*=UTF-8''evil.html; a=\""):
+            with self.subTest(version=version):
+                response = self.client.get(
+                    "/api/open-api/", {"format": "json", "version": version}, secure=True
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json()["info"]["version"], "1.0.0")
+                self.assertNotIn("x", response["Content-Disposition"].split("ÚPadmin API")[1])
+                self.assertNotIn("Set-Cookie", response)

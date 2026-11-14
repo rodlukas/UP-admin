@@ -2,16 +2,22 @@
 Vlastní definice způsobu serializace JWT tokenů.
 """
 
-from typing import Any
+from typing import Any, NoReturn
 
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework_simplejwt.serializers import TokenObtainSlidingSerializer
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.models import TokenUser
-from rest_framework_simplejwt.tokens import Token
+from rest_framework_simplejwt.serializers import (
+    TokenObtainSlidingSerializer,
+    TokenRefreshSlidingSerializer,
+)
+from rest_framework_simplejwt.tokens import SlidingToken, Token
 from rest_framework_simplejwt.views import TokenObtainSlidingView, TokenRefreshSlidingView
+
+from api.throttles import ClientIpScopedRateThrottle, LoginThrottled
 
 
 class MyTokenObtainSlidingSerializer(TokenObtainSlidingSerializer):
@@ -30,11 +36,9 @@ class MyTokenObtainSlidingSerializer(TokenObtainSlidingSerializer):
         atribut je jen hint, který některé klávesnice a prohlížeče ignorují, takže srovnat
         to musí server.
 
-        Platí jen pro tenhle endpoint, tedy pro přihlášení z aplikace. `BasicAuthentication`
-        je v `DEFAULT_AUTHENTICATION_CLASSES` první, takže basic auth funguje na celém
-        `/api/v1/` — a ta jde přes stock `ModelBackend`, tedy na přesnou shodu. Je to vědomý
-        kompromis: do aplikace se přihlašuje z mobilu, kdežto basic auth používá Swagger,
-        Browsable API a skripty, kde se jméno nepíše na dotykové klávesnici.
+        Tenhle endpoint je jediné místo, kde API ověřuje heslo (aplikace i Swagger se
+        přihlašují JWT tokenem, viz `DEFAULT_AUTHENTICATION_CLASSES`), takže normalizace
+        platí pro každé přihlášení.
 
         Cena je jeden dotaz navíc na každý pokus o přihlášení, včetně neúspěšných:
         `__iexact` se překládá na `UPPER("username") = UPPER(%s)`, na což index nesedí,
@@ -83,6 +87,14 @@ class MyTokenObtainSlidingView(TokenObtainSlidingView):
     """
 
     serializer_class = MyTokenObtainSlidingSerializer
+    # overeni hesla je umyslne drahe (PBKDF2) a endpoint je verejny - throttle bezi pred
+    # serializerem, takze odmitnuty pozadavek uz heslo nehashuje (limit viz
+    # DEFAULT_THROTTLE_RATES)
+    throttle_classes = [ClientIpScopedRateThrottle]
+    throttle_scope = "jwt-auth"
+
+    def throttled(self, request: Request, wait: float | None) -> NoReturn:
+        raise LoginThrottled(wait)
 
     @extend_schema(
         summary="Získání JWT tokenu",
@@ -93,10 +105,28 @@ class MyTokenObtainSlidingView(TokenObtainSlidingView):
         return super().post(request, *args, **kwargs)
 
 
+class MyTokenRefreshSlidingSerializer(TokenRefreshSlidingSerializer):
+    """
+    Refresh sliding tokenu jen pro uživatele, kterému přístup pořád platí.
+
+    Stock `TokenRefreshSlidingSerializer` ověří jen podpis a `refresh_exp` a token znovu
+    podepíše - uživatele vůbec nenačte. Token smazaného, deaktivovaného nebo přeheslovaného
+    uživatele by se tak dal obnovovat až do konce `SLIDING_TOKEN_REFRESH_LIFETIME`. Kontrolu
+    proto dělá stejná `JWTAuthentication.get_user` jako u každého požadavku na API
+    (existence, `is_active`, `CHECK_REVOKE_TOKEN`).
+    """
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, str]:
+        JWTAuthentication().get_user(SlidingToken(attrs["token"]))
+        return super().validate(attrs)
+
+
 class MyTokenRefreshSlidingView(TokenRefreshSlidingView):
     """
     View zařizující refresh JWT tokenu.
     """
+
+    serializer_class = MyTokenRefreshSlidingSerializer
 
     @extend_schema(
         summary="Obnovení JWT tokenu",

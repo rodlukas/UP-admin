@@ -108,9 +108,8 @@ jobs:
             - name: 🧹 Post-deploy tasks Github Releases
               run: ./scripts/shell/ci/remove_frontend_zip.sh
 
-            # smazani dat z buildu, testovani a dokumentace
-            - name: 🧹 Cleanup project folder
-              run: ./scripts/shell/ci/cleanup.sh
+            # co do image nepatri (zdrojaky frontendu, testy, .git, ...), vynechava
+            # .dockerignore - plati pro Fly i pro image v ghcr.io
 
             # nastavime spravnou fly.io konfiguraci
             - name: 🧹 Pre-deploy tasks Fly.io

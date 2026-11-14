@@ -137,7 +137,8 @@ Obsahuje veškerou logiku a pro klienta vystavuje **REST API**, postaven na těc
 **Dokumentace API** se generuje přímo z kódu pomocí
 **[drf-spectacular](https://github.com/tfranzel/drf-spectacular)** – OpenAPI schéma je dostupné na
 `/api/open-api/` a interaktivní **[Swagger UI](https://uspesnyprvnacek.fly.dev/api/docs/)** na
-`/api/docs/`.
+`/api/docs/`. API přijímá jen JWT: kdo je přihlášený v aplikaci, tomu Swagger UI převezme token
+sám; jinak se token získá přes `POST /api/v1/jwt-auth/` a vloží do **Authorize**.
 
 V Djangu jsou pro mnohonásobné zrychlení pokročile **optimalizované komplexní SQL dotazy** (viz
 články [[1]](https://www.revsys.com/tidbits/django-performance-simple-things/),
