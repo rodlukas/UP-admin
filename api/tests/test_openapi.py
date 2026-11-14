@@ -87,3 +87,20 @@ class OpenAPIDocumentationTest(SimpleTestCase):
         response_content = response.content.decode("utf-8")
         self.assertIn('localStorage.getItem("jwt")', response_content)
         self.assertIn('ui.preauthorizeApiKey("jwtAuth", token)', response_content)
+
+    def test_schema_ignores_anonymous_version_parameter(self) -> None:
+        """
+        Zkontroluje, že schéma nebere libovolný `?version=` (ALLOWED_VERSIONS).
+
+        drf-spectacular by hodnotu dosadil do `info.version` i do hlavičky
+        `Content-Disposition`: CR/LF končí chybou 500, uvozovky přidávají parametry hlavičky.
+        """
+        for version in ("x\r\nSet-Cookie: a=b", "x\"; filename*=UTF-8''evil.html; a=\""):
+            with self.subTest(version=version):
+                response = self.client.get(
+                    "/api/open-api/", {"format": "json", "version": version}, secure=True
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json()["info"]["version"], "1.0.0")
+                self.assertNotIn("x", response["Content-Disposition"].split("ÚPadmin API")[1])
+                self.assertNotIn("Set-Cookie", response)

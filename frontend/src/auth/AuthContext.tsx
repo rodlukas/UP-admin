@@ -88,15 +88,16 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
                             Token.save(newToken)
                             setIsAuth(true)
                         } catch (err) {
-                            if (!isAxiosError(err) || err.response === undefined) {
-                                // server nedostupny (vypadek site) - token neodmitl, plati
-                                // dal do expirace a obnovi se pri pristi kontrole
+                            if (!isAxiosError(err) || err.response?.status !== 401) {
+                                // server token neodmitl - vypadek site nebo docasna chyba
+                                // (502/503 behem nasazeni, 429, 500): token plati dal do
+                                // expirace a obnovi se pri pristi kontrole
                                 setIsAuth(decodedToken.exp >= getCurrentDate())
                                 return
                             }
-                            // server token odmitl (vyprsel refresh_exp, uzivatel smazany,
-                            // deaktivovany nebo zmenil heslo) - token je potreba smazat:
-                            // `Login` by ho jinak podle `exp` vzal za platny a poslal
+                            // server token odmitl (401: vyprsel refresh_exp, uzivatel
+                            // smazany, deaktivovany nebo zmenil heslo) - token je potreba
+                            // smazat: `Login` by ho jinak podle `exp` vzal za platny a poslal
                             // uzivatele zpet, `AuthChecking` by zkusil refresh znovu a tak
                             // dokola
                             Token.remove()

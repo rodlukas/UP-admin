@@ -77,6 +77,9 @@ if not DEPLOYED:
     INSTALLED_APPS.append("behave_django")
 
 # API
+# verze API v OpenAPI schematu (SPECTACULAR_SETTINGS) a jedina, kterou schema prijme
+# v ?version= (REST_FRAMEWORK ALLOWED_VERSIONS)
+API_VERSION = "1.0.0"
 REST_FRAMEWORK = {
     # Jediny zpusob prihlaseni je JWT (aplikace i Swagger, viz SWAGGER_UI_SETTINGS).
     # JWTAuthentication pri kazdem pozadavku nacte uzivatele z DB, takze token smazaneho,
@@ -96,13 +99,18 @@ REST_FRAMEWORK = {
     # limit pro prihlaseni (api/tokens.py) na IP adresu; testy prihlasuji desitky uzivatelu
     # za sebou z jedne adresy, proto v nich limit neplati (test throttlingu si ho nastavi sam)
     "DEFAULT_THROTTLE_RATES": {"jwt-auth": None if TESTS_RUNNING else "10/min"},
+    # API verzovani nema (DEFAULT_VERSIONING_CLASS neni), seznam cte jen drf-spectacular:
+    # bez nej by vzal libovolny anonymni ?version= z /api/open-api/ a dosadil ho do
+    # info.version i do hlavicky Content-Disposition - CR/LF tam konci chybou 500 (a udalosti
+    # v Sentry), uvozovky pridavaji do hlavicky vlastni parametry. Mimo seznam se ignoruje.
+    "ALLOWED_VERSIONS": (API_VERSION,),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "ÚPadmin API",
     "DESCRIPTION": "Dokumentace *REST API* pro aplikaci **ÚPadmin**. **[Přejít do aplikace](/)**",
-    "VERSION": "1.0.0",
+    "VERSION": API_VERSION,
     "SWAGGER_UI_FAVICON_HREF": "/static/admin/favicon.ico",
     # Swagger se prihlasuje JWT tokenem (Authorize -> jwtAuth). Kdo je prihlaseny v aplikaci,
     # nemusi nic zadavat: po nacteni se pouzije token, ktery aplikace drzi v localStorage pod

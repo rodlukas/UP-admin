@@ -90,6 +90,20 @@ describe("AuthContext - obnovení tokenu", () => {
         expect(screen.getByTestId("is-auth")).toHaveTextContent("true")
     })
 
+    test.each([429, 500, 502, 503])(
+        "při dočasné chybě serveru (%i) token nechá a uživatele neodhlásí",
+        async (status) => {
+            // typicky 502/503 od Fly proxy behem nasazeni - token server neodmitl
+            server.use(http.post(REFRESH_URL, () => new HttpResponse(null, { status })))
+            await renderAuth()
+
+            await refresh()
+
+            expect(Token.get()).toBe(expiringToken)
+            expect(screen.getByTestId("is-auth")).toHaveTextContent("true")
+        },
+    )
+
     test("obnovený token uloží", async () => {
         const newToken = makeToken(3 * 60 * 60)
         server.use(http.post(REFRESH_URL, () => HttpResponse.json({ token: newToken })))
